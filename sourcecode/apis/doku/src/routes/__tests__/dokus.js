@@ -1,14 +1,14 @@
-import db from '@cerpus-private/edlib-node-utils/services/db.js';
-import versionClient from '@cerpus-private/edlib-node-utils/apiClients/version/index.js';
-import licenseClient from '@cerpus-private/edlib-node-utils/apiClients/license/index.js';
-import coreInternalClient from '@cerpus-private/edlib-node-utils/apiClients/coreInternal/index.js';
+import db from '@cerpus/edlib-node-utils/services/db.js';
+import versionClient from '@cerpus/edlib-node-utils/apiClients/version/index.js';
+import licenseClient from '@cerpus/edlib-node-utils/apiClients/license/index.js';
+import coreInternalClient from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
 import request from '../../tests/request.js';
 import addContextToRequest from '../../middlewares/addContextToRequest.js';
 import { buildRawContext } from '../../context';
 
-jest.mock('@cerpus-private/edlib-node-utils/apiClients/version/index.js');
-jest.mock('@cerpus-private/edlib-node-utils/apiClients/license/index.js');
-jest.mock('@cerpus-private/edlib-node-utils/apiClients/coreInternal/index.js');
+jest.mock('@cerpus/edlib-node-utils/apiClients/version/index.js');
+jest.mock('@cerpus/edlib-node-utils/apiClients/license/index.js');
+jest.mock('@cerpus/edlib-node-utils/apiClients/coreInternal/index.js');
 jest.mock('../../middlewares/addContextToRequest.js');
 
 describe('Test endpoints', () => {

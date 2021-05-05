@@ -1,9 +1,9 @@
 import apiConfig from '../../config/apis.js';
-import license from '@cerpus-private/edlib-node-utils/apiClients/license/index.js';
-import version from '@cerpus-private/edlib-node-utils/apiClients/version/index.js';
-import status from '@cerpus-private/edlib-node-utils/services/status.js';
-import id from '@cerpus-private/edlib-node-utils/apiClients/id/index.js';
-import coreInternal from '@cerpus-private/edlib-node-utils/apiClients/coreInternal/index.js';
+import license from '@cerpus/edlib-node-utils/apiClients/license/index.js';
+import version from '@cerpus/edlib-node-utils/apiClients/version/index.js';
+import status from '@cerpus/edlib-node-utils/services/status.js';
+import id from '@cerpus/edlib-node-utils/apiClients/id/index.js';
+import coreInternal from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
 
 export default (req) => {
     const idApi = id(req, apiConfig.id);

@@ -1,6 +1,6 @@
 import knex, {
     dbHelpers,
-} from '@cerpus-private/edlib-node-utils/services/db.js';
+} from '@cerpus/edlib-node-utils/services/db.js';
 import DataLoader from 'dataloader';
 import { v4 as v4Uuid } from 'uuid';
 

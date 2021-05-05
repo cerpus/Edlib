@@ -1,13 +1,13 @@
 import Joi from '@hapi/joi';
-import { validateJoi } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import {
     NotFoundException,
     validationExceptionError,
     ValidationException,
     UnauthorizedException,
-} from '@cerpus-private/edlib-node-utils/exceptions/index.js';
-import versionPurposes from '@cerpus-private/edlib-node-utils/constants/versionPurposes.js';
-import externalSystemNames from '@cerpus-private/edlib-node-utils/constants/externalSystemNames.js';
+} from '@cerpus/edlib-node-utils/exceptions/index.js';
+import versionPurposes from '@cerpus/edlib-node-utils/constants/versionPurposes.js';
+import externalSystemNames from '@cerpus/edlib-node-utils/constants/externalSystemNames.js';
 import moment from 'moment';
 
 const dokuValidationCreate = Joi.object().keys({

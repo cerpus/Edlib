@@ -1,5 +1,5 @@
 import express from 'express';
-import { runAsync } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
 import dokuResourcesController from '../controllers/dokuResources.js';
 import auth, { authTypes } from '../middlewares/auth.js';
 

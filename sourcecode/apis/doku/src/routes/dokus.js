@@ -1,6 +1,6 @@
 import express from 'express';
 import dokuController from '../controllers/doku.js';
-import { runAsync } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
 
 const { Router } = express;
 

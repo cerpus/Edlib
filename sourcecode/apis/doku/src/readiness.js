@@ -1,5 +1,5 @@
-import knex from '@cerpus-private/edlib-node-utils/services/db.js';
-import { ApiException } from '@cerpus-private/edlib-node-utils/exceptions/index.js';
+import knex from '@cerpus/edlib-node-utils/services/db.js';
+import { ApiException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 export default async () => {
     const migrations = await knex.migrate.list();

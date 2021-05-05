@@ -1,4 +1,4 @@
-import env from '@cerpus-private/edlib-node-utils/services/env.js';
+import env from '@cerpus/edlib-node-utils/services/env.js';
 
 export default {
     license: {

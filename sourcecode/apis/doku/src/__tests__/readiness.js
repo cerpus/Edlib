@@ -1,6 +1,6 @@
-import db from '@cerpus-private/edlib-node-utils/services/db.js';
+import db from '@cerpus/edlib-node-utils/services/db.js';
 import readiness from '../readiness.js';
-import { ApiException } from '@cerpus-private/edlib-node-utils/exceptions/index.js';
+import { ApiException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 describe('Readiness', () => {
     test('Throws when database isnt migrated', async () => {

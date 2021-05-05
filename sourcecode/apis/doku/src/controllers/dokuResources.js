@@ -1,4 +1,4 @@
-import { NotFoundException } from '@cerpus-private/edlib-node-utils/exceptions/index.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 export default {
     getAllForDoku: async (req, res, next) => {
