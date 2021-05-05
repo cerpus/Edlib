@@ -28,3 +28,4 @@ jobs:
           with:
             package: sourcecode/npm/nodeUtils/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
+            access: public

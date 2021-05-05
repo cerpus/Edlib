@@ -4,7 +4,6 @@
   "private": false,
   "type": "module",
   "main": "src/index.js",
-  "repository": "ssh://git@app-cerpus-stash.cerpus.net:7999/edlib/npm-edlib-node-utils.git",
   "author": "Max Moeschinger <m.moeschinger@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
