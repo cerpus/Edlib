@@ -39,7 +39,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: ghcr.io/cerpus/Edlib/api-doku:${{ github.sha }},ghcr.io/cerpus/Edlib/api-doku:latest
+            tags: ghcr.io/cerpus/edlib/api-doku:${{ github.sha }},ghcr.io/cerpus/edlib/api-doku:latest
             context: sourcecode/apis/doku
         - name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}
