@@ -8,7 +8,7 @@ on:
       - ".github/workflows/api-doku.yaml"
 
 env:
-  working-directory: sourcecode/apis/doku
+  workingDirectory: sourcecode/apis/doku
 
 jobs:
   test:
@@ -20,8 +20,8 @@ jobs:
           with:
             node-version: 14
         - name: "Yarn install"
-          run: cd ${{ working-directory }}; yarn
+          run: cd ${{ env.workingDirectory }}; yarn
           shell: bash
         - name: "Run tests"
-          run: cd ${{ working-directory }}; yarn test
+          run: cd ${{ env.workingDirectory }}; yarn test
           shell: bash
