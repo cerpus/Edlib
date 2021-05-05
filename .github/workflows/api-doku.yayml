@@ -1,0 +1,22 @@
+name: "api-doku"
+
+on:
+  push:
+    paths:
+      - "sourcecode/apis/doku/**"
+      - ".github/workflows/api-doku.yaml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+        - uses: actions/checkout@v2
+        - run: cd sourcecode/apis/doku
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v2
+          with:
+            node-version: ${{ matrix.node-version }}
+        - run: yarn test
