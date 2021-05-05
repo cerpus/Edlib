@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - "sourcecode/apis/doku/**"
-      - ".github/actions/nodeApiWorkflow/**"
       - ".github/workflows/api-doku.yaml"
 
 env:

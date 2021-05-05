@@ -1,6 +1,7 @@
 {
   "name": "@cerpus/edlib-node-utils",
   "version": "1.0.0",
+  "private": false,
   "type": "module",
   "main": "src/index.js",
   "repository": "ssh://git@app-cerpus-stash.cerpus.net:7999/edlib/npm-edlib-node-utils.git",
