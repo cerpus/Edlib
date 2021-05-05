@@ -37,9 +37,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags:
-              - docker.pkg.github.com/cerpus/edlib/api-doku:${{GITHUB_SHA}}
-              - docker.pkg.github.com/cerpus/edlib/api-doku:latest
+            tags: docker.pkg.github.com/cerpus/edlib/api-doku:${{GITHUB_SHA}},docker.pkg.github.com/cerpus/edlib/api-doku:latest
             context: sourcecode/apis/doku
         - name: Image digest
           run: echo ${{ steps.docker_build.outputs.digest }}
