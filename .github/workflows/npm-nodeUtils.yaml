@@ -1,0 +1,30 @@
+name: "npm-nodeUtils"
+
+on:
+  push:
+    paths:
+      - "sourcecode/npm/nodeUtils/**"
+      - ".github/workflows/npm-nodeUtils.yaml"
+
+env:
+  workingDirectory: sourcecode/npm/nodeUtils
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+        - name: Use Node.js 14
+          uses: actions/setup-node@v2
+          with:
+            node-version: 14
+        - name: "Yarn install"
+          run: cd ${{ env.workingDirectory }}; yarn
+          shell: bash
+        - name: "Run tests"
+          run: cd ${{ env.workingDirectory }}; yarn test
+          shell: bash
+        - uses: JS-DevTools/npm-publish@v1
+          with:
+            package: sourcecode/npm/nodeUtils/package.json
+            token: ${{ secrets.NPM_CERPUS_SECRET }}

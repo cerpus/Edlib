@@ -1,0 +1,6 @@
+{
+    "name": "edlibapi-resources",
+    "testResultsProcessor": "jest-bamboo-reporter",
+    "collectCoverage": true,
+    "coverageReporters": ["text"]
+}
