@@ -16,10 +16,10 @@ runs:
       with:
         node-version: 14
     - name: "Yarn install"
-      run: cd ${{ inputs.who-to-greet }}; yarn
+      run: "cd ${{ inputs.working-directory }}; yarn"
       shell: bash
     - name: "Run tests"
-      run: cd ${{ inputs.who-to-greet }}; yarn test
+      run: "cd ${{ inputs.working-directory }}; yarn test"
       shell: bash
     - id: random-number-generator
       run: echo "::set-output name=random-id::$(echo $RANDOM)"
