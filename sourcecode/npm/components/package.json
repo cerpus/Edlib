@@ -1,0 +1,90 @@
+{
+  "name": "@cerpus/edlib-components",
+  "version": "2.0.1",
+  "private": false,
+  "main": "dist/index.js",
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "peerDependencies": {
+    "@cerpus/ui": "^2.0.0",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-router-dom": "^5.1.2",
+    "styled-components": "^5.0.1"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.6.0",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.6.3",
+    "babel-preset-react-app": "^10.0.0",
+    "classnames": "^2.2.6",
+    "debug": "^4.3.1",
+    "draft-convert": "^2.1.10",
+    "draft-js": "^0.11.7",
+    "i18next": "^19.8.7",
+    "immutable": "^4.0.0-rc.12",
+    "joi": "^17.4.0",
+    "load-script": "^1.0.0",
+    "lodash": "^4.17.20",
+    "moment": "^2.28.0",
+    "moment-hooks": "^1.2.1",
+    "polished": "^4.1.0",
+    "prop-types": "^15.7.2",
+    "query-string": "^7.0.0",
+    "react-helmet": "^6.1.0",
+    "react-i18next": "^11.8.5",
+    "react-mathquill": "^1.0.1",
+    "react-popper": "^2.2.4",
+    "store": "^2.0.12",
+    "treply-scripts": "^1.10.0"
+  },
+  "scripts": {
+    "dev": "babel src -d dist --copy-files -w",
+    "build": "rm -rf dist && babel src -d dist --copy-files",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public",
+    "prepare": "npm run build",
+    "translate": "i18next-scanner --config i18n-scanner.config.js"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.12.13",
+    "@babel/core": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.12.15",
+    "@babel/preset-env": "^7.12.13",
+    "@babel/preset-react": "^7.12.13",
+    "@cerpus/ui": "^2.0.0",
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "@storybook/addon-actions": "^6.1.17",
+    "@storybook/addon-links": "^6.1.17",
+    "@storybook/addons": "^6.1.17",
+    "@storybook/react": "^6.1.17",
+    "babel-loader": "^8.2.2",
+    "i18next-scanner": "^3.0.0",
+    "prettier": "^2.2.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.1"
+  }
+}

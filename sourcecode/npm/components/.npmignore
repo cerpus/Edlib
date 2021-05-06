@@ -1,0 +1,7 @@
+/.storybook
+/public
+/src
+/.babelrc
+/.prettierignore
+/.prettierrc
+/.idea
