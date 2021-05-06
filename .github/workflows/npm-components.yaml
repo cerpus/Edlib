@@ -10,7 +10,7 @@ env:
   workingDirectory: sourcecode/npm/components
 
 jobs:
-  test:
+  publish-if-needed:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v2
