@@ -1,6 +1,6 @@
 import logger from '../services/logger.js';
 import authorizationJwtMiddleware from './authorizationJwt.js';
-import { ApiException } from '../exceptions/index.js';
+import { ApiException, UnauthorizedException } from '../exceptions/index.js';
 import * as errorReporting from '../services/errorReporting.js';
 import moment from 'moment';
 import JsonWebToken from 'jsonwebtoken';
@@ -27,30 +27,69 @@ export default (req, res, next) => {
             return next();
         }
 
-        req.context.services.auth
-            .verifyTokenAgainstAuth(req.authorizationJwt, {
-                ignoreExpiration: true,
-            })
-            .then((r) => {
-                const leeway = 60 * 60;
-                const exp = moment.unix(r.exp + leeway);
-
-                if (!exp.isAfter(moment())) {
-                    throw new JsonWebToken.TokenExpiredError(
-                        'jwt expired',
-                        new Date(exp.unix() * 1000)
+        const verify = async () => {
+            let info = null;
+            if (req.context.services.edlibAuth) {
+                try {
+                    const r = await req.context.services.edlibAuth.verifyTokenAgainstAuth(
+                        req.authorizationJwt,
+                        {
+                            ignoreExpiration: true,
+                        }
                     );
+
+                    info = {
+                        exp: r.exp,
+                        user: {
+                            ...r.payload.user,
+                            identityId: r.payload.user.id,
+                        },
+                    };
+                } catch (e) {
+                    logger.error(e);
                 }
+            }
 
-                req.authTokenContent = r;
-                req.user = r.app_metadata;
+            if (!info) {
+                const r = await req.context.services.auth.verifyTokenAgainstAuth(
+                    req.authorizationJwt,
+                    {
+                        ignoreExpiration: true,
+                    }
+                );
 
-                errorReporting.setUser({
-                    id: req.user.identityId,
-                });
+                info = {
+                    exp: r.exp,
+                    user: {
+                        ...r.app_metadata,
+                        id: r.app_metadata.identityId,
+                    },
+                };
+            }
 
-                next();
-            })
+            if (!info) {
+                throw new UnauthorizedException();
+            }
+
+            const leeway = 60 * 60;
+            const exp = moment.unix(info.exp + leeway);
+
+            if (!exp.isAfter(moment())) {
+                throw new JsonWebToken.TokenExpiredError(
+                    'jwt expired',
+                    new Date(exp.unix() * 1000)
+                );
+            }
+
+            req.user = info.user;
+
+            errorReporting.setUser({
+                id: req.user.id,
+            });
+        };
+
+        verify()
+            .then(() => next())
             .catch((e) => {
                 logger.error(e);
                 next();
