@@ -1,21 +1,30 @@
 import JsonWebToken from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
+import getExternalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 
-const client = jwksClient({
-    strictSsl: false,
-    jwksUri: externalTokenVerifierConfig.wellKnownEndpoint,
-    timeout: 2000,
-});
+let jwksClients = {};
 
 const getKeyFromAuth = (header, callback) => {
-    client.getSigningKey(header.kid, function (err, key) {
-        console.error(err);
-        if (err) {
-            return callback(err);
+    getExternalTokenVerifierConfig().then((externalTokenVerifierConfig) => {
+        if (!jwksClients[externalTokenVerifierConfig.wellKnownEndpoint]) {
+            jwksClients[
+                externalTokenVerifierConfig.wellKnownEndpoint
+            ] = jwksClient({
+                strictSsl: false,
+                jwksUri: externalTokenVerifierConfig.wellKnownEndpoint,
+                timeout: 2000,
+            });
         }
 
-        callback(null, key.publicKey || key.rsaPublicKey);
+        jwksClients[
+            externalTokenVerifierConfig.wellKnownEndpoint
+        ].getSigningKey(header.kid, function (err, key) {
+            if (err) {
+                return callback(err);
+            }
+
+            callback(null, key.publicKey || key.rsaPublicKey);
+        });
     });
 };
 

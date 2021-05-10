@@ -57,7 +57,7 @@ describe('Test endpoints', () => {
     describe('Health', () => {
         test('Check if returned http code is 200 when everything is up', async () => {
             const response = await request((c) =>
-                c.get(`/resources/_ah/health?probe=readiness`)
+                c.get(`/_ah/health?probe=readiness`)
             );
 
             expect(response.statusCode).toBe(200);
@@ -67,7 +67,7 @@ describe('Test endpoints', () => {
             await db.migrate.rollback({}, true);
 
             const response = await request((c) =>
-                c.get(`/resources/_ah/health?probe=readiness`)
+                c.get(`/_ah/health?probe=readiness`)
             );
 
             expect(response.statusCode).toBe(503);
@@ -75,16 +75,14 @@ describe('Test endpoints', () => {
 
         test('Check if returned http code is 503 when wrong probe is passed', async () => {
             const response = await request((c) =>
-                c.get(`/resources/_ah/health?probe=liveness`)
+                c.get(`/_ah/health?probe=liveness`)
             );
 
             expect(response.statusCode).toBe(503);
         });
 
         test('Check if returned http code is 503 when no probe is passed', async () => {
-            const response = await request((c) =>
-                c.get(`/resources/_ah/health`)
-            );
+            const response = await request((c) => c.get(`/_ah/health`));
 
             expect(response.statusCode).toBe(503);
         });
