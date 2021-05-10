@@ -4,9 +4,9 @@
     "collectCoverage": true,
     "coverageReporters": ["text"],
     "transformIgnorePatterns": [
-        "/node_modules/(?!@cerpus-private|uuid|colorette).+\\.js$"
+        "/node_modules/(?!@cerpus|uuid|colorette).+\\.js$"
     ],
     "moduleNameMapper": {
-        "^(@cerpus-private/edlib-node-utils)\\/(.+)(?<!package\\.json)$": "<rootDir>/node_modules/$1/src/$2"
+        "^(@cerpus/edlib-node-utils)\\/(.+)(?<!package\\.json)$": "<rootDir>/node_modules/$1/src/$2"
     }
 }
