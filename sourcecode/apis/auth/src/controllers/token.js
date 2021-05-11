@@ -1,13 +1,12 @@
 import externalAuthService from '../services/externalAuth.js';
 import jwksProviderService from '../services/jwksProvider.js';
-import getExternalTokenVerifierConfig from '../config/externalTokenVerifier.js';
+import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 
 import _ from 'lodash';
 import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 export default {
     convertToken: async (req) => {
-        const externalTokenVerifierConfig = await getExternalTokenVerifierConfig();
         const payload = await externalAuthService.verifyToken(
             req.body.externalToken
         );
