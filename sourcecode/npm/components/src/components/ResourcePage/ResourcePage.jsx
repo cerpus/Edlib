@@ -181,9 +181,9 @@ const ResourcePage = ({
         React.useMemo(
             () => ({
                 limit: pageSize,
-                skip: page * pageSize,
+                offset: page * pageSize,
                 resourceCapabilities: ['view'],
-                sortingOrder,
+                orderBy: sortingOrder,
                 ...(filters && filters.requestData),
             }),
             [page, sortingOrder, filters && filters.requestData, pageSize]

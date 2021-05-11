@@ -55,7 +55,13 @@ export const EdlibComponentsProvider = ({
     edlibUrl = null,
     configuration = {},
 }) => {
-    const { token, error, loading, getToken } = useToken(getJwt);
+    const actualEdlibUrl =
+        !edlibUrl || edlibUrl.length === 0 ? urls.defaultEdlibUrl : edlibUrl;
+
+    const { token, error, loading, getToken } = useToken(
+        getJwt,
+        actualEdlibUrl
+    );
 
     React.useEffect(() => {
         i18n.changeLanguage(language);
@@ -88,10 +94,7 @@ export const EdlibComponentsProvider = ({
                 },
                 config: {
                     urls: {
-                        edlibUrl:
-                            !edlibUrl || edlibUrl.length === 0
-                                ? urls.defaultEdlibUrl
-                                : edlibUrl,
+                        edlibUrl: actualEdlibUrl,
                         dokuUrl:
                             !dokuUrl || dokuUrl.length === 0
                                 ? urls.defaultDokuUrl

@@ -2,15 +2,12 @@ import _ from 'lodash';
 import resourceTypes from '../../config/resourceTypes';
 
 const getResourceName = (resource) => {
-    if (
-        resource.resourceType === resourceTypes.H5P &&
-        resource.contentAuthorType
-    ) {
-        const formatedType = resource.contentAuthorType.toLowerCase();
+    if (resource.version.externalSystemName === 'contentauthor') {
+        const formatedType = resource.version.contentType.toLowerCase();
 
         if (formatedType.startsWith('h5p.')) {
             return `H5P - ${_.startCase(
-                resource.contentAuthorType.substring(4)
+                resource.version.contentType.substring(4)
             )}`;
         } else if (formatedType === 'article') {
             return 'Article';

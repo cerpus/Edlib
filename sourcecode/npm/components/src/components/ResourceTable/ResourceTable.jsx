@@ -135,33 +135,32 @@ const ResourceTable = ({
                     >
                         <ImageCell vc>
                             <ResourceIcon
-                                resourceType={resource.resourceType}
-                                contentAuthorType={resource.contentAuthorType}
+                                resourceVersion={resource.version}
                                 fontSizeRem={2}
                             />
                         </ImageCell>
                         <Cell vc>
-                            <Title>{resource.name}</Title>
+                            <Title>{resource.version.title}</Title>
                             <UnderTitle>{getResourceName(resource)}</UnderTitle>
                         </Cell>
                         <Cell vc secondary>
-                            {resource.created &&
-                                moment(resource.created).format('D. MMM YY')}
+                            {moment(resource.version.createdAt).format(
+                                'D. MMM YY'
+                            )}
                         </Cell>
                         <Cell vc secondary>
                             {resource.author}
                         </Cell>
                         <Cell vc secondary>
-                            {resource.language}
+                            {resource.version.language}
                         </Cell>
                         {hideResourceColumns.indexOf(
                             resourceColumns.LICENSE
                         ) === -1 && (
                             <Cell vc secondary>
-                                <License license={resource.license} />
+                                <License license={resource.version.license} />
                             </Cell>
                         )}
-
                         <ResourceIconCell
                             className="actions"
                             secondary

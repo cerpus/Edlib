@@ -4,9 +4,9 @@ import H5PIcon from '../Icons/H5P';
 import FontAwesomeIcon from '../Icons/FontAwesome';
 import MaterialIcon from '../Icons/Material';
 
-const getIconType = (resourceType, contentAuthorType) => {
-    if (resourceType === resourceTypes.H5P && contentAuthorType) {
-        const formatedType = contentAuthorType.toLowerCase();
+const getIconType = (resourceVersion) => {
+    if (resourceVersion.externalSystemName === 'contentauthor') {
+        const formatedType = resourceVersion.contentType.toLowerCase();
 
         if (formatedType.startsWith('h5p.')) {
             return 'h5p';
@@ -21,24 +21,20 @@ const getIconType = (resourceType, contentAuthorType) => {
         }
     }
 
-    if (resourceType === resourceTypes.URL) {
+    if (resourceVersion.externalSystemName === resourceTypes.URL) {
         return 'link';
     }
 
     return 'external';
 };
 
-const ResourceIcon = ({
-    resourceType,
-    contentAuthorType,
-    fontSizeRem = 1.5,
-}) => {
-    const type = getIconType(resourceType, contentAuthorType);
+const ResourceIcon = ({ resourceVersion, fontSizeRem = 1.5 }) => {
+    const type = getIconType(resourceVersion);
 
     if (type === 'h5p') {
         return (
             <H5PIcon
-                name={contentAuthorType.substring('H5P.'.length)}
+                name={resourceVersion.contentType.substring('H5P.'.length)}
                 fontSizeRem={fontSizeRem * 2}
             />
         );

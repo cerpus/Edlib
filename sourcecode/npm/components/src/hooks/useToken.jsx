@@ -1,35 +1,13 @@
 import React from 'react';
-import moment from 'moment';
 import debug from 'debug';
+import request from '../helpers/request';
+import { isTokenExpired } from '../helpers/token.js';
 
 const log = debug('edlib-components:useToken');
 const checkFrequency = 5 * 1000; //milliseconds
 const tokenExpiryMargin = 2 * 60; //seconds
 
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-        atob(base64)
-            .split('')
-            .map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join('')
-    );
-
-    return JSON.parse(jsonPayload);
-}
-
-const isTokenExpired = (token, marginSec = 0) => {
-    const payload = parseJwt(token);
-
-    return moment
-        .unix(payload.exp)
-        .isSameOrBefore(moment().add(marginSec, 'seconds'));
-};
-
-export default (getJwt) => {
+export default (getJwt, edlibUrl) => {
     const [jwt, setJwt] = React.useState(null);
     const [jwtLoading, setJwtLoading] = React.useState(null);
     const [jwtError, setJwtError] = React.useState(null);
@@ -54,18 +32,49 @@ export default (getJwt) => {
         }
 
         setJwtLoading(true);
-        getJwt()
-            .then((tempJwt) => {
-                if (!tempJwt) {
-                    setJwtError('jwt was not returned from getJwt function');
-                    console.error('jwt was not returned from getJwt function');
-                } else if (isTokenExpired(tempJwt)) {
-                    setJwtError('Returned token has expired');
-                    console.error('Returned token has expired');
-                } else {
-                    setJwt(tempJwt);
-                }
-            })
+        const _update = async () => {
+            let newInternalToken = null;
+            if (!jwt) {
+                const externalToken = await getJwt();
+
+                const { token: internalToken } = await request(
+                    `${edlibUrl}/auth/v1/jwt/convert`,
+                    'POST',
+                    {
+                        body: {
+                            externalToken,
+                        },
+                    }
+                );
+
+                newInternalToken = internalToken;
+            } else {
+                const { token: internalToken } = await request(
+                    `${edlibUrl}/auth/v3/jwt/refresh`,
+                    'POST',
+                    {
+                        body: {
+                            token: jwt,
+                        },
+                    }
+                );
+
+                newInternalToken = internalToken;
+            }
+
+            if (!newInternalToken) {
+                setJwtError('jwt was not returned from getJwt function');
+                return console.error(
+                    'jwt was not returned from getJwt function'
+                );
+            } else if (isTokenExpired(newInternalToken)) {
+                setJwtError('Returned token has expired');
+                return console.error('Returned token has expired');
+            }
+
+            return setJwt(newInternalToken);
+        };
+        _update()
             .catch((e) => {
                 console.error(e);
                 setJwtError('Noe skjedde');

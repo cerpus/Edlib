@@ -17,7 +17,6 @@ import CssReset from '../../components/CSSReset';
 import useRequestWithToken from '../../hooks/useRequestWithToken';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
-import { ThemeProvider, themes } from '@cerpus/ui';
 import ExportWrapper from '../../components/ExportWrapper';
 
 const getStartPage = (userConfiguredStartPage) => {

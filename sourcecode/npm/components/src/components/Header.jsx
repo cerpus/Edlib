@@ -63,24 +63,20 @@ export default ({ onClose, viewportHeight }) => {
 
     const editorMapping = {
         [resourceEditors.H5P]: {
-            link: '/resources/new/H5P',
+            link: '/resources/new/contentauthor?group=h5p',
             label: t('Interaktivitet'),
         },
         [resourceEditors.QUESTION_SET]: {
-            link: '/resources/new/questionset',
+            link: '/resources/new/contentauthor?group=questionset',
             label: t('Spørsmål'),
         },
-        [resourceEditors.VIDEO]: {
-            link: '/resources/new/H5P.InteractiveVideo',
-            label: t('Video'),
-        },
         [resourceEditors.ARTICLE]: {
-            link: '/resources/new/article',
+            link: '/resources/new/contentauthor?group=article',
             label: t('Tekst'),
         },
 
         [resourceEditors.EMBED]: {
-            link: '/resources/new/embed',
+            link: '/resources/new/contentauthor?group=link',
             label: 'Link',
         },
         [resourceEditors.DOKU]: {

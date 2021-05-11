@@ -74,11 +74,11 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
             error: false,
         });
 
-        await onInsert(resource.edlibId);
+        await onInsert(resource.id);
     }, [onInsert, setActionStatus, resource]);
 
     const editResource = React.useCallback(() => {
-        history.push(`/resources/${resource.edlibId}`);
+        history.push(`/resources/${resource.id}`);
         onClose();
     }, [resource]);
 
@@ -112,8 +112,8 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 <Header>
                                     <div>
                                         <ResourceType>{source}</ResourceType>
-                                        <Title>{resource.name}</Title>
-                                        <p>{resource.description}</p>
+                                        <Title>{resource.version.name}</Title>
+                                        <p>{resource.version.description}</p>
                                     </div>
                                     <div>
                                         {isMobile && (

@@ -20,7 +20,7 @@ export const EdlibModal = () => {
                         edlibUrl={edlibApiUrl}
                         getJwt={getJwt}
                         configuration={{
-                            canReturnResources: true,
+                            canReturnResources: false,
                         }}
                     >
                         <EdlibModalComponent

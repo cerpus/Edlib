@@ -20,9 +20,7 @@ const ResourceEditorRoute = ({ match }) => {
                 if (canReturnResources) {
                     onInsert(resourceId);
                 } else {
-                    setTimeout(() => {
-                        history.push(`/my-content?sortBy=created`);
-                    }, 3000);
+                    history.push(`/my-content?sortBy=created`);
                 }
             }}
             loading={loading}

@@ -93,8 +93,24 @@ const StyledH5PIcon = styled.div`
     }
 `;
 
+const getIcon = (name) => {
+    if (!name) {
+        return null;
+    }
+
+    const icon = Object.entries(iconFiles).find(
+        ([key, src]) => key.toLowerCase() === name.toLowerCase()
+    );
+
+    if (!icon) {
+        return null;
+    }
+
+    return icon[1];
+};
+
 const H5PIcon = ({ name, fontSizeRem = 1 }) => {
-    const src = name && iconFiles[name];
+    const src = getIcon(name);
 
     if (!src) {
         console.warn('H5P icon with name ' + name + ' was not found');

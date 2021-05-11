@@ -7,14 +7,14 @@ export default (requestBody, wait) => {
 
     const options = React.useMemo(
         () => ({
-            body: requestBody,
+            query: requestBody,
         }),
         [requestBody]
     );
 
     const { error, loading, response, refetch } = useFetchWithToken(
-        edlib('/resources/v1/resources'),
-        'POST',
+        edlib('/resources/v2/resources'),
+        'GET',
         options,
         wait
     );

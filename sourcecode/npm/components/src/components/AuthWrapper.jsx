@@ -1,26 +1,26 @@
 import React from 'react';
 import store from 'store';
 import { FormGroup, Input, Label } from '@cerpus/ui';
-import request from '../helpers/request';
+import { isTokenExpired } from '../helpers/token.js';
 
-const AuthWrapper = ({ children, edlibApiUrl }) => {
-    const [refreshToken, setRefreshToken] = React.useState(() => {
-        const storedToken = store.get('refreshToken');
+const AuthWrapper = ({ children }) => {
+    const [jwtToken, setJwtToken] = React.useState(() => {
+        const storedToken = store.get('jwtToken');
         return storedToken ? storedToken : '';
     });
 
     React.useEffect(() => {
-        store.set('refreshToken', refreshToken);
-    }, [refreshToken]);
+        store.set('jwtToken', jwtToken);
+    }, [jwtToken]);
 
-    if (!refreshToken) {
+    if (!jwtToken) {
         return (
             <FormGroup>
                 <Label>Refresh token</Label>
                 <Input
-                    value={refreshToken}
+                    value={jwtToken}
                     onChange={(e) =>
-                        setRefreshToken(e.target.value.replace(/["]+/g, ''))
+                        setJwtToken(e.target.value.replace(/["]+/g, ''))
                     }
                 />
             </FormGroup>
@@ -29,22 +29,12 @@ const AuthWrapper = ({ children, edlibApiUrl }) => {
 
     return children({
         getJwt: async () => {
-            try {
-                const { authToken } = await request(
-                    `${edlibApiUrl}/auth/v1/jwt/refresh`,
-                    'GET',
-                    {
-                        query: {
-                            refresh_token: refreshToken,
-                        },
-                    }
-                );
-
-                return authToken;
-            } catch (e) {
-                setRefreshToken(null);
-                throw e;
+            if (jwtToken && isTokenExpired(jwtToken)) {
+                setJwtToken(null);
+                return null;
             }
+
+            return jwtToken;
         },
     });
 };

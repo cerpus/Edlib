@@ -5,6 +5,8 @@ import { Spinner } from '@cerpus/ui';
 import Lti from './Editors/Lti';
 import Doku from './Editors/Doku';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
+import queryString from 'query-string';
+import { useLocation } from 'react-router-dom';
 
 const ResourceEditor = ({
     edlibId,
@@ -15,13 +17,26 @@ const ResourceEditor = ({
 }) => {
     const { edlib } = useConfig();
     const { language } = useEdlibComponentsContext();
+    const location = useLocation();
+
+    const group = React.useMemo(() => {
+        const query = queryString.parse(location.search);
+
+        return query.group ? query.group : null;
+    }, [location]);
+
     const url = React.useMemo(() => {
         if (edlibId) {
-            return edlib(`/resources/v1/resources/${edlibId}/launch-editor`);
+            return edlib(`/lti/v2/resources/${edlibId}`);
         }
 
-        return edlib(`/resources/v1/launch-editor/${type}`);
-    }, [edlibId, type]);
+        let createPath = `/lti/v2/editors/${type}/launch`;
+        if (group) {
+            createPath += `?group=${group}`;
+        }
+
+        return edlib(createPath);
+    }, [edlibId, type, group]);
 
     const { error, fetchLoading, response } = useFetchWithToken(
         url,
@@ -56,7 +71,7 @@ const ResourceEditor = ({
         return <Doku editorData={response.data} />;
     }
 
-    return <Lti data={response.data} onResourceReturned={onResourceReturned} />;
+    return <Lti data={response} onResourceReturned={onResourceReturned} />;
 };
 
 export default ResourceEditor;
