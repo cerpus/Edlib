@@ -18,9 +18,10 @@ jobs:
           uses: actions/setup-node@v2
           with:
             node-version: 14
-        - name: "Yarn install"
-          run: cd ${{ env.workingDirectory }}; yarn
-          shell: bash
+        - name: "Yarn install with cache"
+          uses: bahmutov/npm-install@v1
+          with:
+            working-directory: ${{ env.workingDirectory }}
         - uses: JS-DevTools/npm-publish@v1
           with:
             package: sourcecode/npm/components/package.json
@@ -28,6 +29,6 @@ jobs:
             access: public
         - name: "Deploy beta components package to npm"
           if: github.ref == 'refs/heads/beta'
-          run: cd ${{ env.workingDirectory }}; yarn publish --new-version 0.0.0-${{ github.sha }} --tag beta
+          run: cd ${{ env.workingDirectory }}; npm version 0.0.0-${{ github.sha }}; npm publish --tag beta
           env:
-            INPUT_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}
+            NODE_AUTH_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}
