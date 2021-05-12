@@ -31,4 +31,4 @@ jobs:
           if: github.ref == 'refs/heads/beta'
           run: cd ${{ env.workingDirectory }}; npm version 0.0.0-${{ github.sha }}; npm publish --tag beta
           env:
-            NODE_AUTH_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}
+            INPUT_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}
