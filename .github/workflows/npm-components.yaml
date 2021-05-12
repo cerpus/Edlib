@@ -28,6 +28,6 @@ jobs:
             access: public
         - name: "Deploy beta components package to npm"
           if: github.ref == 'refs/heads/beta'
-          run: yarn publish --new-version 0.0.0-${{ github.sha }} --tag beta
+          run: cd ${{ env.workingDirectory }}; yarn publish --new-version 0.0.0-${{ github.sha }} --tag beta
           env:
             INPUT_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}
