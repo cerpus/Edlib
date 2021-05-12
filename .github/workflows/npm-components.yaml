@@ -26,7 +26,7 @@ jobs:
             package: sourcecode/npm/components/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
             access: public
-        - uses: JS-DevTools/npm-publish@v1
+        - name: "Deploy beta components package to npm"
           if: github.ref == 'refs/heads/beta'
           run: yarn publish --new-version 0.0.0-${{ GITHUB_SHA }} --tag beta
           env:
