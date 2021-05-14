@@ -1,5 +1,10 @@
 import env from '@cerpus/edlib-node-utils/services/env.js';
 
+const contentAuthorUrl = env(
+    'EDLIBCOMMON_CONTENTAUTHOR_URL',
+    'https://contentauthor.local'
+);
+
 export default {
     version: {
         url: env('VERSIONAPI_URL', 'http://versioningapi:8080'),
@@ -13,11 +18,17 @@ export default {
     },
     externalResourceAPIS: {
         contentauthor: {
-            url: 'https://contentauthor.local/v1/content',
-            ltiUrl: 'https://contentauthor.local/lti-content',
+            url: `${contentAuthorUrl}/v1/content`,
+            ltiUrl: `${contentAuthorUrl}/lti-content`,
             getAllGroups: ['h5p', 'questionset', 'article', 'game'],
-            ltiConsumerSecret: 'secret2',
-            ltiConsumerKey: 'h5p',
+            ltiConsumerKey: env(
+                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY',
+                'h5p'
+            ),
+            ltiConsumerSecret: env(
+                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET',
+                'secret2'
+            ),
         },
     },
 };
