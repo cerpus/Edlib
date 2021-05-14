@@ -9,13 +9,7 @@ const getDatabase = () => {
         return `${process.env.EDLIBCOMMON_DB_PREFIX}${process.env.DB_NAME}`;
     }
 
-    if (process.env.NODE_ENV === 'test') {
-        return 'mydb';
-    }
-
-    throw new Error(
-        'Unknown database name. Please provide the appropriate env variables.'
-    );
+    return 'mydb';
 };
 
 export default {
