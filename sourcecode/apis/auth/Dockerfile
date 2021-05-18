@@ -29,4 +29,4 @@ CMD [ "yarn", "start" ]
 #
 FROM base as dev
 RUN yarn global add nodemon
-CMD update-ca-certificates; yarn; yarn dev
+CMD update-ca-certificates; yarn; yarn migrate; yarn dev

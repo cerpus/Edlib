@@ -2,6 +2,6 @@ import appConfig from './app.js';
 
 export default {
     url:
-        'https://a56c9b0829f04e518a2a2fd428f72d90@o483279.ingest.sentry.io/5534988',
+        'https://8c663927acc1468094bdf097cee71e25@o483279.ingest.sentry.io/5771307',
     enable: appConfig.isProduction,
 };
