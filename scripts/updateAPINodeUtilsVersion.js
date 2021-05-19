@@ -3,17 +3,21 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-const version = packageNodeUtils.version;
+const args = process.argv.slice(2);
+
+let version = packageNodeUtils.version;
 
 const folder = path.resolve(__dirname, "../sourcecode/apis");
+
+if (args.length !== 0) {
+  version = args[0];
+}
 
 fs.readdir(folder, (err, files) => {
   files.forEach((projectName) => {
     const projectFolder = path.resolve(folder, projectName);
     const packagePath = path.resolve(projectFolder, "package.json");
-    const re = new RegExp(
-      /"@cerpus\/edlib-node-utils": "\^?([0-9*]\.[0-9*]\.[0-9*])"/
-    );
+    const re = new RegExp(/"@cerpus\/edlib-node-utils": "\^?(.*)"/);
     fs.writeFileSync(
       packagePath,
       fs
