@@ -7,7 +7,7 @@ export default (req, res, next) => {
             return next(err);
         }
 
-        if (!req.user.admin) {
+        if (!req.user.isAdmin) {
             throw new UnauthorizedException();
         }
 

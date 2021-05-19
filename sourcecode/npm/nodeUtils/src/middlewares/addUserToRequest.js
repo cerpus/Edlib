@@ -63,6 +63,7 @@ export default (req, res, next) => {
                     user: {
                         ...r.app_metadata,
                         id: r.app_metadata.identityId,
+                        isAdmin: r.app_metadata.admin,
                     },
                 };
             }

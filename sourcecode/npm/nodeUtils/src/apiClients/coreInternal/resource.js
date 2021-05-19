@@ -18,7 +18,7 @@ export default (core) => {
 
         await helpers.delayAsync(200);
 
-        return get(type, id, level + 1);
+        return fromExternalIdInfo(type, id, level + 1);
     };
 
     const structure = async (resourceId) => {
