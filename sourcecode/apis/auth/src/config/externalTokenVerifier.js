@@ -5,5 +5,6 @@ export default {
         firstName: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_FIRSTNAME,
         lastName: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_LASTNAME,
         email: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_EMAIL,
+        isAdmin: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN,
     },
 };

@@ -17,6 +17,8 @@ export default {
             return { ...user, [property]: _.get(payload, path) };
         }, {});
 
+        user.isAdmin = user.isAdmin ? 1 : 0;
+
         let dbUser = await req.context.db.user.getById(user.id);
         if (!dbUser) {
             dbUser = await req.context.db.user.create(user);
