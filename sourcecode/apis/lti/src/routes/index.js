@@ -8,10 +8,11 @@ import usageViewController from '../controllers/usageView.js';
 import consumerController from '../controllers/consumer.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
+import syncController from '../controllers/sync.js';
 
 const { Router } = express;
 
-export default async () => {
+export default async ({ pubSubConnection }) => {
     const router = Router();
     const apiRouter = Router();
 
@@ -56,6 +57,8 @@ export default async () => {
         '/v1/consumers/:key',
         runAsync(consumerController.getConsumerByKey)
     );
+    apiRouter.get('/v1/sync-lti/:jobId', runAsync(syncController.getJobStatus));
+    apiRouter.post('/v1/sync-lti', runAsync(syncController.syncLti));
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
@@ -72,7 +75,7 @@ export default async () => {
         }
     });
 
-    router.use(addContextToRequest, apiRouter);
+    router.use(addContextToRequest({ pubSubConnection }), apiRouter);
 
     return router;
 };

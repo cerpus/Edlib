@@ -1,6 +1,13 @@
 exports.up = function (knex) {
     return knex.schema.createTable('usages', function (table) {
         table.uuid('id').notNullable().primary();
+        table
+            .integer('consumerId')
+            .unsigned()
+            .nullable()
+            .references('id')
+            .inTable('consumers')
+            .onDelete('SET NULL');
         table.uuid('resourceId').notNullable();
         table.uuid('resourceVersionId').nullable();
         table
