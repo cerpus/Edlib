@@ -7,7 +7,7 @@
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
     "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js",
-    "test": "jest --config=./jest.config.json"
+    "test": "jest --runInBand --config=./jest.config.json"
   },
   "engines": {
     "node": ">= 14.0.0"
