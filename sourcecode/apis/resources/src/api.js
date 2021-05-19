@@ -8,24 +8,33 @@ import sync from './subscribers/sync.js';
 const start = async () => {
     const pubSubConnection = await setupPubSub();
 
-    await subscribe(
-        pubSubConnection,
-        'edlibResourceUpdate',
-        'saveToEdlibResourcesAPI',
-        async (msg) => {
-            await saveEdlibResourcesAPI(JSON.parse(msg.content));
-        }
-    );
-    await subscribe(
-        pubSubConnection,
-        '__internal_edlibResource_sync',
-        'sync',
-        async () => {
-            await sync();
-        }
+    await Promise.all(
+        [
+            {
+                exchangeName: 'edlibResourceUpdate',
+                subscriptionName: 'saveToEdlibResourcesAPI',
+                handler: saveEdlibResourcesAPI,
+            },
+            {
+                exchangeName: '__internal_edlibResource_sync',
+                subscriptionName: 'sync',
+                handler: sync,
+            },
+        ].map((subscriber) => {
+            const handler = subscriber.handler({ pubSubConnection });
+
+            return subscribe(
+                pubSubConnection,
+                subscriber.exchangeName,
+                subscriber.subscriptionName,
+                async (msg) => {
+                    await handler(JSON.parse(msg.content));
+                }
+            );
+        })
     );
 
-    setupApi(router, {
+    setupApi(() => router({ pubSubConnection }), {
         errorReportingConfig,
     });
 };

@@ -107,7 +107,11 @@ const saveToDb = async (context, validatedData) => {
     return await context.db.resourceVersion.create(dbResourceVersionData);
 };
 
-export default async (data, saveToSearchIndex = true, waitForIndex) => {
+export default ({ pubSubConnection }) => async (
+    data,
+    saveToSearchIndex = true,
+    waitForIndex
+) => {
     let validatedData;
     try {
         validatedData = validateJoi(
@@ -130,13 +134,28 @@ export default async (data, saveToSearchIndex = true, waitForIndex) => {
         console.error(e);
         return;
     }
-    const context = buildRawContext();
+    const context = buildRawContext({}, {}, { pubSubConnection });
 
     const resourceVersion = await saveToDb(context, validatedData);
 
     if (!resourceVersion) {
         console.error('Resource version was not created.');
         return;
+    }
+
+    try {
+        const info = await context.services.coreInternal.resource.fromExternalIdInfo(
+            resourceVersion.externalSystemName,
+            resourceVersion.externalSystemId
+        );
+
+        if (info && info.uuid) {
+            await context.db.resourceVersion.update(resourceVersion.id, {
+                id: info.uuid,
+            });
+        }
+    } catch (e) {
+        console.error(e);
     }
 
     if (saveToSearchIndex) {

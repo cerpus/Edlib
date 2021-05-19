@@ -8,10 +8,11 @@ import ltiController from '../controllers/lti.js';
 import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
+import syncController from '../controllers/sync.js';
 
 const { Router } = express;
 
-export default async () => {
+export default async ({ pubSubConnection }) => {
     const router = Router();
     const apiRouter = Router();
 
@@ -46,14 +47,43 @@ export default async () => {
         });
     });
 
+    /**
+     * @swagger
+     *
+     *  /v1/tenants/:tenantId/resources:
+     *      get:
+     *          description: Get resources for a tenant
+     *          produces:
+     *              - application/json
+     */
     apiRouter.get(
         '/v1/tenants/:tenantId/resources',
         runAsync(resourceController.getTenantResources)
     );
+
+    /**
+     * @swagger
+     *
+     *  /v1/resources:
+     *      get:
+     *          description: Get public resources
+     *          produces:
+     *              - application/json
+     */
     apiRouter.get(
         '/v1/resources',
         runAsync(resourceController.getPublicResources)
     );
+
+    /**
+     * @swagger
+     *
+     *  /v1/resources/:resourceId:
+     *      get:
+     *          description: Get public resources
+     *          produces:
+     *              - application/json
+     */
     apiRouter.get(
         '/v1/resources/:resourceId',
         runAsync(resourceController.getResource)
@@ -82,6 +112,14 @@ export default async () => {
         '/v1/external-systems/:externalSystemName/resources/:externalSystemId',
         runAsync(resourceController.ensureResourceExists)
     );
+    apiRouter.get(
+        '/v1/sync-resources/:jobId',
+        runAsync(syncController.getJobStatus)
+    );
+    apiRouter.post(
+        '/v1/sync-resources',
+        runAsync(syncController.syncResources)
+    );
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
@@ -98,7 +136,7 @@ export default async () => {
         }
     });
 
-    router.use(addContextToRequest, apiRouter);
+    router.use(addContextToRequest({ pubSubConnection }), apiRouter);
 
     return router;
 };

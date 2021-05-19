@@ -31,4 +31,7 @@ export default {
             ),
         },
     },
+    coreInternal: {
+        url: env('EDLIBCOMMON_CORE_INTERNAL_URL', 'http://core'),
+    },
 };
