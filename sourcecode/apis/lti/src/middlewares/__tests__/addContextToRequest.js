@@ -4,7 +4,7 @@ describe('Middlewares', () => {
     describe('addContextToRequest', () => {
         let req = {};
         const next = jest.fn();
-        addContextToRequest(req, {}, next);
+        addContextToRequest({})(req, {}, next);
 
         test('context is present', () => {
             expect(req.context).toBeDefined();
