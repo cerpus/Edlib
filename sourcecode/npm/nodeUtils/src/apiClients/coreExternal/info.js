@@ -1,5 +1,5 @@
-import helpers from '@cerpus-private/edlib-node-utils/helpers/index.js';
-import { NotFoundException } from '@cerpus-private/edlib-node-utils/exceptions/index.js';
+import helpers from '../../helpers/index.js';
+import { NotFoundException } from '../../exceptions/index.js';
 
 export default (core) => {
     const get = async (type, id, level = 0) => {
