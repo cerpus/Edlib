@@ -3,6 +3,7 @@ import { buildRawContext } from '../context/index.js';
 import apiConfig from '../config/apis.js';
 import saveEdlibResourcesAPI from './saveEdlibResourcesAPI.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
+import { logger } from '@cerpus/edlib-node-utils/index.js';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
@@ -95,6 +96,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             message: `Ferdig med å synkronisere ${resourceCount} ressurser`,
         });
     } catch (e) {
+        logger.error(e);
         await context.db.sync.update(jobId, {
             message: e.message,
             failedAt: new Date(),
