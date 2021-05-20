@@ -5,6 +5,6 @@ export default {
         url: env('EDLIBCOMMON_CORE_INTERNAL_URL', 'http://core'),
     },
     resource: {
-        url: env('RESOURCE_API_URL', 'http://resourcesapi'),
+        url: env('RESOURCE_API_URL', 'http://resourceapi'),
     },
 };
