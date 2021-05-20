@@ -6,14 +6,16 @@ exports.up = function (knex) {
             .notNullable()
             .references('id')
             .inTable('usages')
-            .onDelete('CASCADE');
+            .onDelete('CASCADE')
+            .onUpdate('CASCADE');
         table
             .integer('consumerUserId')
             .unsigned()
             .nullable()
             .references('id')
             .inTable('consumerUsers')
-            .onDelete('SET NULL');
+            .onDelete('SET NULL')
+            .onUpdate('CASCADE');
         table
             .timestamp('createdAt', { useTz: true })
             .notNullable()

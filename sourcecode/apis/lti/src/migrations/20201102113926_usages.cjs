@@ -7,7 +7,8 @@ exports.up = function (knex) {
             .nullable()
             .references('id')
             .inTable('consumers')
-            .onDelete('SET NULL');
+            .onDelete('SET NULL')
+            .onUpdate('CASCADE');
         table.uuid('resourceId').notNullable();
         table.uuid('resourceVersionId').nullable();
         table

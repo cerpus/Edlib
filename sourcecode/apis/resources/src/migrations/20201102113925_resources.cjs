@@ -1,7 +1,13 @@
 exports.up = function (knex) {
     return knex.schema.createTable('resources', function (table) {
         table.uuid('id').notNullable().primary();
-        table.uuid('resourceGroupId').notNullable();
+        table
+            .uuid('resourceGroupId')
+            .notNullable()
+            .references('id')
+            .inTable('resourceGroups')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
         table.text('deletedReason').nullable();
         table
             .timestamp('deletedAt', { useTz: true })

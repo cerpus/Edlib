@@ -1,7 +1,13 @@
 exports.up = function (knex) {
     return knex.schema.createTable('resourceVersions', function (table) {
         table.uuid('id').notNullable().primary();
-        table.uuid('resourceId').notNullable();
+        table
+            .uuid('resourceId')
+            .notNullable()
+            .references('id')
+            .inTable('resources')
+            .onDelete('RESTRICT')
+            .onUpdate('CASCADE');
         table.string('externalSystemName', 50).notNullable();
         table.string('externalSystemId', 36).notNullable();
         table.text('title').notNullable();
