@@ -7,7 +7,9 @@ export default (resource) => {
     const { edlib } = useConfig();
 
     const { error, loading, response: preview } = useFetchWithToken(
-        edlib(`/lti/v2/resources/${resource.id}/preview`),
+        edlib(
+            `/lti/v2/resources/${resource.id}/preview?resourceVersionId=${resource.version.id}`
+        ),
         'GET'
     );
 
