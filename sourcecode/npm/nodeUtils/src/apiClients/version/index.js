@@ -8,6 +8,7 @@ import {
 } from '../../exceptions/index.js';
 import versionPurposes from '../../constants/versionPurposes.js';
 import * as errorReporting from '../../services/errorReporting.js';
+import requestExceptionHandler from '../../helpers/requestExceptionHandler.js';
 
 const createVersionAxios = (req, config) => async (options) => {
     try {
@@ -21,7 +22,7 @@ const createVersionAxios = (req, config) => async (options) => {
             },
         });
     } catch (e) {
-        throw e;
+        exceptionTranslator(e, 'Versioning API');
     }
 };
 
@@ -72,30 +73,32 @@ export default (req, config) => {
         ).data;
     };
 
-    const getForResource = async (externalSystemName, externalSystemId) => {
-        const _externalSystemName = validateExternalName(externalSystemName);
+    const getForResource = requestExceptionHandler(
+        async (externalSystemName, externalSystemId) => {
+            const _externalSystemName = validateExternalName(
+                externalSystemName
+            );
 
-        try {
             return (
                 await versionAxios({
                     url: `/v1/resources/${_externalSystemName}/${externalSystemId}`,
                 })
             ).data.data;
-        } catch (e) {
-            if (e.response && e.response.status === 404) {
-                return null;
-            }
-            throw e;
-        }
-    };
+        },
+        { nullOnNotFound: true }
+    );
 
-    const getVersionParents = async (id) => {
-        return (
-            await versionAxios({
-                url: `/v1/resources/${id}/parents`,
-            })
-        ).data.data;
-    };
+    const getVersionParents = requestExceptionHandler(
+        async (id) =>
+            (
+                await versionAxios({
+                    url: `/v1/resources/${id}/parents`,
+                })
+            ).data.data,
+        {
+            nullOnNotFound: true,
+        }
+    );
 
     const create = async (
         versionPurpose,

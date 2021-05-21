@@ -3,6 +3,7 @@ import {
     NotFoundException,
     ApiException,
     ValidationException,
+    ClientException,
 } from '../exceptions/index.js';
 import logger from './logger.js';
 
@@ -13,6 +14,10 @@ export default (e, serviceName = 'API') => {
 
     if ([302, 401].indexOf(e.response.status) !== -1) {
         throw new UnauthorizedException();
+    }
+
+    if (e.response.status === 400) {
+        throw new ClientException();
     }
 
     if (e.response.status === 404) {
