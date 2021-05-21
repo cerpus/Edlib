@@ -48,7 +48,9 @@ export default {
             req.params.externalSystemId
         );
 
-        await saveEdlibResourcesAPI(externalResource, true, true);
+        await saveEdlibResourcesAPI({
+            pubSubConnection: req.context.pubSubConnection,
+        })(externalResource, true, true);
 
         return await req.context.db.resourceVersion.getByExternalId(
             req.params.externalSystemName,

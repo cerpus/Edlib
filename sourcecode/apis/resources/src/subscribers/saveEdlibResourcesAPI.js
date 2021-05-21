@@ -126,6 +126,7 @@ export default ({ pubSubConnection }) => async (
                 isListed: Joi.boolean().required(),
                 language: Joi.string().min(1).required(),
                 contentType: Joi.string().min(1).optional(),
+                license: Joi.string().allow(null).optional().default(null),
                 updatedAt: Joi.date().iso().required(),
                 createdAt: Joi.date().iso().required(),
             })
