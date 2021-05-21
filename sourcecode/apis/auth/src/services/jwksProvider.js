@@ -39,7 +39,7 @@ export const wellKnownJwks = async (context) => {
     return keyStore.toJSON();
 };
 
-export const encrypt = async (context, payload, expireHours = 72, audience) => {
+export const encrypt = async (context, payload, expireHours = 72, subject) => {
     const keyStore = await getKeyStore(context);
     const [key] = keyStore.all({ use: 'sig' });
 
@@ -47,8 +47,7 @@ export const encrypt = async (context, payload, expireHours = 72, audience) => {
     const actualPayload = JSON.stringify({
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * expireHours,
         iat: Math.floor(Date.now() / 1000),
-        sub: 'test',
-        aud: audience,
+        sub: subject,
         payload,
     });
 

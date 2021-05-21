@@ -39,7 +39,8 @@ export default {
             token: await jwksProviderService.encrypt(
                 req.context,
                 { type: 'user', user },
-                1
+                1,
+                user.id
             ),
         };
     },
@@ -58,7 +59,8 @@ export default {
             token: await jwksProviderService.encrypt(
                 req.context,
                 { type: 'user', user },
-                1
+                1,
+                user.id
             ),
         };
     },
