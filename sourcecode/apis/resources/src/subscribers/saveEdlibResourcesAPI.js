@@ -14,10 +14,11 @@ const findResourceFromParentVersions = async (context, version) => {
         version.id
     );
 
-    if (versionParents.length === 0) {
+    if (!versionParents || versionParents.length === 0) {
         logger.error(
             `Unexpected response from version API. A version with purpose "update" must always have parents`
         );
+        return;
     }
 
     const resourceVersion = await context.db.resourceVersion.getFirstFromExternalSytemReference(
