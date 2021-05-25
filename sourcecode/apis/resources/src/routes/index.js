@@ -22,7 +22,7 @@ export default async ({ pubSubConnection }) => {
         swaggerUi.setup(
             swaggerJSDoc({
                 swaggerDefinition: {
-                    basePath: '/dokus',
+                    basePath: '/',
                 },
                 apis: ['./src/routes/**/*.js'],
             })
@@ -50,15 +50,46 @@ export default async ({ pubSubConnection }) => {
     /**
      * @swagger
      *
-     *  /v1/tenants/:tenantId/resources:
+     *  /v1/tenants/{tenantId}/resources:
      *      get:
      *          description: Get resources for a tenant
      *          produces:
      *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: tenantId
+     *                schema:
+     *                  type: string
+     *                required: true
      */
     apiRouter.get(
         '/v1/tenants/:tenantId/resources',
         runAsync(resourceController.getTenantResources)
+    );
+
+    /**
+     * @swagger
+     *
+     *  /v1/tenants/{tenantId}/resources/{resourceId}:
+     *      delete:
+     *          description: Delete a resource for a tenant
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: tenantId
+     *                schema:
+     *                  type: string
+     *                required: true
+     *              - in: path
+     *                name: resourceId
+     *                schema:
+     *                  type: string
+     *                required: true
+     */
+    apiRouter.delete(
+        '/v1/tenants/:tenantId/resources/:resourceId',
+        runAsync(resourceController.deleteTenantResource)
     );
 
     /**
@@ -78,11 +109,17 @@ export default async ({ pubSubConnection }) => {
     /**
      * @swagger
      *
-     *  /v1/resources/:resourceId:
+     *  /v1/resources/{resourceId}:
      *      get:
      *          description: Get public resources
      *          produces:
      *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: resourceId
+     *                schema:
+     *                  type: string
+     *                required: true
      */
     apiRouter.get(
         '/v1/resources/:resourceId',

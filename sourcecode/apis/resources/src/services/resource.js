@@ -1,3 +1,4 @@
+import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import Joi from 'joi';
 import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
@@ -83,7 +84,24 @@ const transformElasticResources = async (
     });
 };
 
+const hasResourceWriteAccess = async (context, resource, tenantId) => {
+    const resourceVersion = await context.db.resourceVersion.getLatestPublishedResourceVersion(
+        resource.id
+    );
+
+    if (!resourceVersion) {
+        return false;
+    }
+
+    if (resourceVersion.ownerId !== tenantId) {
+        return false;
+    }
+
+    return true;
+};
+
 export default {
     getResourcesFromRequest,
     transformElasticResources,
+    hasResourceWriteAccess,
 };

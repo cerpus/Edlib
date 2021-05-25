@@ -172,10 +172,6 @@ export default ({ pubSubConnection }) => async (
             resourceVersion.resourceId
         );
 
-        if (!resource) {
-            return;
-        }
-
         await elasticSearchService.syncResource(
             context,
             resource,

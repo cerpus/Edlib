@@ -127,11 +127,11 @@ const ResourceTable = ({
                 <div />
             </HeaderRow>
             {resources
-                .filter((resource) => !idsToHide.has(resource.edlibId))
+                .filter((resource) => !idsToHide.has(resource.id))
                 .map((resource) => (
                     <BodyRow
                         onClick={() => onResourceClick(resource)}
-                        key={resource.edlibId}
+                        key={resource.id}
                     >
                         <ImageCell vc>
                             <ResourceIcon
@@ -171,40 +171,35 @@ const ResourceTable = ({
                                     resource={resource}
                                     showDeleteButton={showDeleteButton}
                                     onOpen={() =>
-                                        setCurrentEditContextId(
-                                            resource.edlibId
-                                        )
+                                        setCurrentEditContextId(resource.id)
                                     }
                                     onClose={() =>
                                         setCurrentEditContextId(null)
                                     }
                                     isOpen={
-                                        resource.edlibId ===
-                                        currentEditContextId
+                                        resource.id === currentEditContextId
                                     }
                                     onEdit={() => {
                                         setCurrentEditContextId(null);
                                         history.push(
-                                            `/resources/${resource.edlibId}`
+                                            `/resources/${resource.id}`
                                         );
                                     }}
                                     onTranslate={() => {
                                         setCurrentEditContextId(null);
                                         history.push(
-                                            `/resources/${resource.edlibId}/nno`
+                                            `/resources/${resource.id}/nno`
                                         );
                                     }}
                                     onUse={async () => {
                                         setCurrentEditContextId(null);
-                                        await onInsert(resource.edlibId);
+                                        await onInsert(resource.id);
                                     }}
                                     onShowVersions={() =>
                                         setResourceVersionModal(resource)
                                     }
                                     onRemove={() =>
-                                        setShowConfirmDeletionModal(
-                                            resource.edlibId
-                                        )
+                                        setShowConfirmDeletionModal(resource.id)
                                     }
                                 />
                             </CogWrapper>

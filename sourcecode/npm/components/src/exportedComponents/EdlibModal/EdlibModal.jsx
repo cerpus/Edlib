@@ -70,7 +70,7 @@ const EdlibModal = ({
                             },
                             onRemove: async (edlibId) => {
                                 await request(
-                                    edlib(`/resources/v1/resources/${edlibId}`),
+                                    edlib(`/resources/v2/resources/${edlibId}`),
                                     'DELETE'
                                 );
                             },

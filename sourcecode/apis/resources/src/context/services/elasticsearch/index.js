@@ -10,6 +10,7 @@ export default () => {
             id: resourceId,
         });
     };
+
     const updateOrCreate = async (resource, waitForIndex = false) => {
         return client.update({
             index: apiConfig.elasticsearch.resourceIndexPrefix,

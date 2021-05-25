@@ -42,6 +42,28 @@ export default {
             req.params.tenantId
         );
     },
+    deleteTenantResource: async (req) => {
+        const resource = await req.context.db.resource.getById(
+            req.params.resourceId
+        );
+
+        if (
+            !resource ||
+            !(await resourceService.hasResourceWriteAccess(
+                req.context,
+                resource,
+                req.params.tenantId
+            ))
+        ) {
+            throw new NotFoundException('resource');
+        }
+
+        await req.context.services.elasticsearch.remove(resource.id);
+
+        return req.context.db.resource.update(resource.id, {
+            deletedAt: new Date(),
+        });
+    },
     ensureResourceExists: async (req) => {
         const externalResource = await req.context.services.externalResourceFetcher.getById(
             req.params.externalSystemName,

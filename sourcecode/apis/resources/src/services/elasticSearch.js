@@ -1,4 +1,14 @@
 export const syncResource = async (context, resource, waitForIndex) => {
+    if (!resource) {
+        return;
+    }
+
+    const shouldDelete = resource.deletedAt !== null;
+
+    if (shouldDelete) {
+        return context.services.elasticsearch.remove(resource.id);
+    }
+
     const latestVersion = await context.db.resourceVersion.getLatestResourceVersion(
         resource.id
     );
