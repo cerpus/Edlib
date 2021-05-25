@@ -3,6 +3,7 @@ import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import Joi from 'joi';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
+import moment from 'moment';
 
 const findResourceFromParentVersions = async (context, version) => {
     if (!version) {
@@ -150,6 +151,12 @@ export default ({ pubSubConnection }) => async (
             resourceVersion.externalSystemName,
             resourceVersion.externalSystemId
         );
+
+        if (info.deletedAt) {
+            await context.db.resource.update(resourceVersion.resourceId, {
+                deletedAt: moment(info.deletedAt).toDate(),
+            });
+        }
 
         if (info && info.uuid) {
             await context.db.resourceVersion.update(resourceVersion.id, {
