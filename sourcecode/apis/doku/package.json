@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus/edlib-node-utils": "0.0.0-91266232ba82f4863502455e829467a9060d4b0c",
+    "@cerpus/edlib-node-utils": "v0.0.0-5b14704611ef2f671ba61eda644bdafe56500998",
     "@hapi/joi": "^17.1.1",
     "axios": "^0.21.1",
     "babel-plugin-transform-default-import": "^1.0.0",

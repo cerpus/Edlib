@@ -3,12 +3,14 @@ import resourceVersion from '../repositories/resourceVersion.js';
 import services from './services/index.js';
 import resourceGroup from '../repositories/resourceGroup.js';
 import sync from '../repositories/sync.js';
+import resourceVersionCollaborator from "../repositories/resourceVersionCollaborator.js";
 
 export const buildRawContext = (req = {}, res = {}, { pubSubConnection }) => ({
     services: services(req, res),
     db: {
         resource: resource(),
         resourceVersion: resourceVersion(),
+        resourceVersionCollaborator: resourceVersionCollaborator(),
         resourceGroup: resourceGroup(),
         sync: sync(),
     },

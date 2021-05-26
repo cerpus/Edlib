@@ -1,4 +1,4 @@
-import { publish } from '../services/pubSub.js';
+import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 export default {
@@ -17,10 +17,9 @@ export default {
         if (!currentSyncJob) {
             currentSyncJob = await req.context.db.sync.create({});
 
-            await publish(
+            await pubsub.publish(
                 req.context.pubSubConnection,
                 '__internal_edlibResource_sync',
-                'sync',
                 JSON.stringify({
                     jobId: currentSyncJob.id,
                 })

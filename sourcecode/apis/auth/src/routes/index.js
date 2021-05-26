@@ -5,12 +5,13 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import jwksController from '../controllers/jwks.js';
 import tokenController from '../controllers/token.js';
+import userController from '../controllers/user.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 
 const { Router } = express;
 
-export default async () => {
+export default async ({ pubSubConnection }) => {
     const router = Router();
     const apiRouter = Router();
 
@@ -82,6 +83,34 @@ export default async () => {
      *                  description: Successful request
      */
     apiRouter.post('/v1/convert-token', runAsync(tokenController.convertToken));
+    /**
+     * @swagger
+     *
+     *  /v1/users-by-email:
+     *      post:
+     *          description: Convert external token to internal token
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: body
+     *                name: request
+     *                schema:
+     *                  type: object
+     *                  properties:
+     *                      emails:
+     *                          type: array
+     *                          items:
+     *                              type: string
+     *                      required:
+     *                          - email
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.post(
+        '/v1/users-by-email',
+        runAsync(userController.getUsersByEmail)
+    );
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
@@ -98,7 +127,7 @@ export default async () => {
         }
     });
 
-    router.use(addContextToRequest, apiRouter);
+    router.use(addContextToRequest({ pubSubConnection }), apiRouter);
 
     return router;
 };

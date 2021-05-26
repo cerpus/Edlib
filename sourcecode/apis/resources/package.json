@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus/edlib-node-utils": "0.0.0-4cce5a5157b31cdea37960cc1bbb3ae82b7c529e",
+    "@cerpus/edlib-node-utils": "v0.0.0-5b14704611ef2f671ba61eda644bdafe56500998",
     "@elastic/elasticsearch": "^7.12.0",
     "amqplib": "^0.7.1",
     "babel-plugin-transform-default-import": "^1.0.0",

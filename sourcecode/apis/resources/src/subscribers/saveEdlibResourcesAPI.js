@@ -39,10 +39,10 @@ const findResourceFromParentVersions = async (context, version) => {
     return context.db.resource.getById(resourceVersion.resourceId);
 };
 
-const saveToDb = async (context, validatedData) => {
+const saveResourceVersion = async (context, resourceVersionValidatedData) => {
     const version = await context.services.version.getForResource(
-        validatedData.externalSystemName,
-        validatedData.externalSystemId
+        resourceVersionValidatedData.externalSystemName,
+        resourceVersionValidatedData.externalSystemId
     );
 
     if (!version) {
@@ -53,12 +53,12 @@ const saveToDb = async (context, validatedData) => {
     }
 
     const dbResourceVersion = await context.db.resourceVersion.getByExternalId(
-        validatedData.externalSystemName,
-        validatedData.externalSystemId
+        resourceVersionValidatedData.externalSystemName,
+        resourceVersionValidatedData.externalSystemId
     );
 
     let dbResourceVersionData = {
-        ...validatedData,
+        ...resourceVersionValidatedData,
     };
 
     if (dbResourceVersion) {
@@ -109,6 +109,136 @@ const saveToDb = async (context, validatedData) => {
     return await context.db.resourceVersion.create(dbResourceVersionData);
 };
 
+const saveToDb = async (context, validatedData) => {
+    const {
+        collaborators,
+        emailCollaborators,
+        ...resourceVersionValidatedData
+    } = validatedData;
+
+    const resourceVersion = await saveResourceVersion(
+        context,
+        resourceVersionValidatedData
+    );
+
+    if (!resourceVersion) {
+        return;
+    }
+
+    let collaboratorIdMap = collaborators.reduce(
+        (collaboratorIdMap, collaboratorId) => ({
+            ...collaboratorIdMap,
+            [collaboratorId]: {
+                tenantId: collaboratorId,
+            },
+        }),
+        {}
+    );
+
+    const usersFromEmail =
+        emailCollaborators.length === 0
+            ? []
+            : await context.services.edlibAuth.getUsersByEmail(
+                  emailCollaborators
+              );
+
+    collaboratorIdMap = usersFromEmail.reduce(
+        (collaboratorIdMap, user) => ({
+            ...collaboratorIdMap,
+            [user.id]: {
+                tenantId: user.id,
+                email: user.email,
+            },
+        }),
+        collaboratorIdMap
+    );
+
+    const emailWithoutUsers = emailCollaborators.filter(
+        (emailCollaborator) =>
+            !usersFromEmail.some((user) => user.email === emailCollaborator)
+    );
+
+    const collaboratorsData = [
+        ...Object.values(collaboratorIdMap),
+        ...emailWithoutUsers.map((email) => ({ email })),
+    ];
+
+    const resourceVersionCollaborators = await context.db.resourceVersionCollaborator.getForResourceVersion(
+        resourceVersion.id
+    );
+
+    const toDelete = resourceVersionCollaborators.filter(
+        (resourceVersionCollaborator) => {
+            if (resourceVersionCollaborator.tenantId) {
+                return !collaboratorIdMap[resourceVersionCollaborator.tenantId];
+            }
+
+            return !emailWithoutUsers.some(
+                (email) => email === resourceVersionCollaborator.email
+            );
+        }
+    );
+
+    const getDbRowFromCollaboratorData = (collaboratorData) => {
+        if (collaboratorData.tenantId) {
+            return resourceVersionCollaborators.find(
+                (resourceVersionCollaborator) =>
+                    resourceVersionCollaborator.tenantId ===
+                    collaboratorData.tenantId
+            );
+        }
+
+        return resourceVersionCollaborators.find(
+            (resourceVersionCollaborator) =>
+                resourceVersionCollaborator.email === collaboratorData.email
+        );
+    };
+
+    const toCreate = collaboratorsData.filter(
+        (collaboratorData) => !getDbRowFromCollaboratorData(collaboratorData)
+    );
+
+    const toUpdate = collaboratorsData.reduce((toUpdate, collaboratorData) => {
+        const dbRow = getDbRowFromCollaboratorData(collaboratorData);
+
+        if (!dbRow) {
+            return toUpdate;
+        }
+
+        return [
+            ...toUpdate,
+            {
+                ...collaboratorData,
+                id: dbRow.id,
+            },
+        ];
+    }, []);
+
+    await context.db.resourceVersionCollaborator.remove(
+        toDelete.map((collaboratorToDelete) => collaboratorToDelete.id)
+    );
+
+    await Promise.all(
+        toCreate.map((collaboratorToCreate) =>
+            context.db.resourceVersionCollaborator.create({
+                ...collaboratorToCreate,
+                resourceVersionId: resourceVersion.id,
+            })
+        )
+    );
+
+    await Promise.all(
+        toUpdate.map((collaboratorToUpdate) =>
+            context.db.resourceVersionCollaborator.update(
+                collaboratorToUpdate.id,
+                collaboratorToUpdate
+            )
+        )
+    );
+
+    return resourceVersion;
+};
+
 export default ({ pubSubConnection }) => async (
     data,
     saveToSearchIndex = true,
@@ -130,6 +260,14 @@ export default ({ pubSubConnection }) => async (
                 license: Joi.string().allow(null).optional().default(null),
                 updatedAt: Joi.date().iso().required(),
                 createdAt: Joi.date().iso().required(),
+                collaborators: Joi.array()
+                    .items(Joi.string().min(1))
+                    .optional(),
+                emailCollaborators: Joi.array()
+                    .items(Joi.string().email())
+                    .min(0)
+                    .optional()
+                    .default([]),
             })
         );
     } catch (e) {

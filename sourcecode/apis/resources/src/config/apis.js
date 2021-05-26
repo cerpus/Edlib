@@ -34,4 +34,7 @@ export default {
     coreInternal: {
         url: env('EDLIBCOMMON_CORE_INTERNAL_URL', 'http://core'),
     },
+    edlibAuth: {
+        url: env('EDLIB_AUTH_URL', 'http://authapi'),
+    },
 };

@@ -1,4 +1,4 @@
-import { setup as setupPubSub, publish } from './src/services/pubSub.js';
+import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 import { buildRawContext } from './src/context/index.js';
 
 const data = {
@@ -12,7 +12,7 @@ const data = {
 };
 
 const run = async () => {
-    const pubSubConnection = await setupPubSub('amqp://localhost');
+    const pubSubConnection = await pubsub.setup('amqp://localhost');
 
     // await publish(
     //     pubSubConnection,
@@ -20,12 +20,7 @@ const run = async () => {
     //     'saveToEdlibResourcesAPI',
     //     JSON.stringify(data)
     // );
-    await publish(
-        pubSubConnection,
-        '__internal_edlibResource_sync',
-        'sync',
-        ''
-    );
+    await pubsub.publish(pubSubConnection, '__internal_edlibResource_sync', '');
 };
 
 run();

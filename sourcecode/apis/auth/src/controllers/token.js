@@ -4,6 +4,7 @@ import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 
 import _ from 'lodash';
 import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 
 export default {
     convertToken: async (req) => {
@@ -22,6 +23,14 @@ export default {
         let dbUser = await req.context.db.user.getById(user.id);
         if (!dbUser) {
             dbUser = await req.context.db.user.create(user);
+
+            await pubsub.publish(
+                req.context.pubSubConnection,
+                'edlib_new_user',
+                JSON.stringify({
+                    user: dbUser,
+                })
+            );
         } else {
             dbUser = await req.context.db.user.update(user.id, {
                 ...user,

@@ -5,10 +5,18 @@ const client = new Client({ node: apiConfig.elasticsearch.url });
 
 export default () => {
     const remove = async (resourceId) => {
-        return client.delete({
-            index: apiConfig.elasticsearch.resourceIndexPrefix,
-            id: resourceId,
-        });
+        try {
+            return await client.delete({
+                index: apiConfig.elasticsearch.resourceIndexPrefix,
+                id: resourceId,
+            });
+        } catch (e) {
+            if (e.meta && e.meta.statusCode === 404) {
+                return;
+            }
+
+            throw e;
+        }
     };
 
     const updateOrCreate = async (resource, waitForIndex = false) => {

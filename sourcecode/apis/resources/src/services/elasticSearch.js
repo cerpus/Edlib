@@ -14,11 +14,15 @@ export const syncResource = async (context, resource, waitForIndex) => {
     );
 
     if (resource.deletedAt || !latestVersion) {
-        await context.services.elasticsearch.remove(resource.id);
+        return context.services.elasticsearch.remove(resource.id);
     }
 
     const latestPublishedVersion = await context.db.resourceVersion.getLatestPublishedResourceVersion(
         resource.id
+    );
+
+    const latestVersionCollaborators = await context.db.resourceVersionCollaborator.getWithTenantsForResourceVersion(
+        latestVersion.id
     );
 
     const resourceVersionToElasticVersion = (resourceVersion) => ({
@@ -34,6 +38,9 @@ export const syncResource = async (context, resource, waitForIndex) => {
         createdAt: resourceVersion.createdAt,
     });
 
+    console.log(resource.id);
+    console.log(latestVersionCollaborators.map((c) => c.tenantId));
+
     const elasticData = {
         id: resource.id,
         publicVersion:
@@ -41,7 +48,10 @@ export const syncResource = async (context, resource, waitForIndex) => {
                 ? resourceVersionToElasticVersion(latestPublishedVersion)
                 : undefined,
         protectedVersion: resourceVersionToElasticVersion(latestVersion),
-        protectedUserIds: [latestVersion.ownerId],
+        protectedUserIds: [
+            latestVersion.ownerId,
+            ...latestVersionCollaborators.map((c) => c.tenantId),
+        ],
     };
 
     await context.services.elasticsearch.updateOrCreate(

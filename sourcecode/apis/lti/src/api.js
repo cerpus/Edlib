@@ -4,11 +4,11 @@ import errorReportingConfig from './config/errorReporting.js';
 import { buildRawContext } from './context/index.js';
 import fileParserService from './services/fileParser.js';
 import consumerService from './services/consumer.js';
-import { setup as setupPubSub, subscribe } from './services/pubSub.js';
 import sync from './subscribers/sync.js';
+import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 
 const start = async () => {
-    const pubSubConnection = await setupPubSub();
+    const pubSubConnection = await pubsub.setup();
     const context = buildRawContext({}, {}, { pubSubConnection });
 
     // Set consumers from configuration file
@@ -36,7 +36,7 @@ const start = async () => {
         ].map((subscriber) => {
             const handler = subscriber.handler({ pubSubConnection });
 
-            return subscribe(
+            return pubsub.subscribe(
                 pubSubConnection,
                 subscriber.exchangeName,
                 subscriber.subscriptionName,
