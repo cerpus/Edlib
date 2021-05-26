@@ -1,5 +1,5 @@
 import amqp from 'amqplib';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import logger from './logger.js';
 
 export const setup = (url = 'amqp://rabbitmq') =>
     new Promise((resolve, reject) => {
