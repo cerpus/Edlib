@@ -61,5 +61,8 @@
     "plugins": [
       "transform-default-import"
     ]
+  },
+  "peerDependencies": {
+    "amqplib": "^0.8.0"
   }
 }

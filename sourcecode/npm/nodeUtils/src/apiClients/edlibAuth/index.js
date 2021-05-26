@@ -78,9 +78,22 @@ export default (req, config) => {
         ).data;
     };
 
+    const getUsersByEmail = async (emails) => {
+        return (
+            await authAxios({
+                url: `/v1/users-by-email`,
+                method: 'POST',
+                data: {
+                    emails,
+                },
+            })
+        ).data;
+    };
+
     return {
         convertToken,
         refreshToken,
+        getUsersByEmail,
         verifyTokenAgainstAuth,
         config,
     };
