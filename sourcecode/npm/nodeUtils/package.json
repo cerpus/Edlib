@@ -42,6 +42,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.0",
     "@babel/preset-env": "^7.12.0",
+    "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^26.5.3",
     "jest-bamboo-reporter": "^1.2.1",
