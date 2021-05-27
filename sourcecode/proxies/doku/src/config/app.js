@@ -1,4 +1,4 @@
-import { config } from '@cerpus-private/edlib-node-utils/index.js';
+import { config } from '@cerpus/edlib-node-utils/index.js';
 
 export default {
     shouldEnableDevFeatures: config.app.shouldEnableDevFeatures,

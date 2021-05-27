@@ -2,7 +2,7 @@ import express from 'express';
 import runAsync from '../services/runAsync.js';
 import dokusController from '../controllers/dokus.js';
 import ltiController from '../controllers/lti.js';
-import { isUserAuthenticated } from '@cerpus-private/edlib-node-utils/middlewares/index.js';
+import { isUserAuthenticated } from '@cerpus/edlib-node-utils/middlewares/index.js';
 
 const { Router } = express;
 

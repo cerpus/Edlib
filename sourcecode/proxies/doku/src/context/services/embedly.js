@@ -1,7 +1,7 @@
 import axios from 'axios';
 import crypto from 'crypto';
 import embedlyConfig from '../../config/embedly.js';
-import { cacheWrapper } from '@cerpus-private/edlib-node-utils/services/redis.js';
+import { cacheWrapper } from '@cerpus/edlib-node-utils/services/redis.js';
 
 const getForUrl = cacheWrapper(
     (args) =>

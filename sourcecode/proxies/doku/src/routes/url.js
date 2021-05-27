@@ -1,5 +1,5 @@
 import express from 'express';
-import { runAsync } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
 import urlController from '../controllers/url.js';
 
 const { Router } = express;

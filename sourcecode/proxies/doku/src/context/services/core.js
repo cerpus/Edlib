@@ -1,7 +1,7 @@
 // @todo remove this file!
 import appConfig from '../../config/app.js';
 import axios from 'axios';
-import { UnauthorizedException } from '@cerpus-private/edlib-node-utils/exceptions/index.js';
+import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 const coreAxios = (req) => async (options) => {
     try {

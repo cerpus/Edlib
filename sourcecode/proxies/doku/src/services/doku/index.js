@@ -1,6 +1,6 @@
 import apisConfig from '../../config/apis.js';
 import axios from 'axios';
-import { exceptionTranslator } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { exceptionTranslator } from '@cerpus/edlib-node-utils/services/index.js';
 
 const dokuAxios = (req) => async (options) => {
     try {

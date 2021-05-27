@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus-private/edlib-node-utils": "git+http://npmgit.cerpus.net/edlib-node-utils#2.0.17",
+    "@cerpus/edlib-node-utils": "1.1.1",
     "@hapi/joi": "^17.1.1",
     "axios": "^0.21.1",
     "babel-plugin-transform-default-import": "^1.0.0",

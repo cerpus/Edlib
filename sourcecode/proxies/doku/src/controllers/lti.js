@@ -1,5 +1,5 @@
 import Joi from '@hapi/joi';
-import { validateJoi } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 
 export default {
     viewDoku: async (req, res, next) => {

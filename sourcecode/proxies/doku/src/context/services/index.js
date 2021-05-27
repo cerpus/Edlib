@@ -1,7 +1,7 @@
-import coreExternal from '@cerpus-private/edlib-node-utils/apiClients/coreExternal/index.js';
-import auth from '@cerpus-private/edlib-node-utils/apiClients/auth/index.js';
+import coreExternal from '@cerpus/edlib-node-utils/apiClients/coreExternal/index.js';
+import auth from '@cerpus/edlib-node-utils/apiClients/auth/index.js';
 import embedly from './embedly.js';
-import status from '@cerpus-private/edlib-node-utils/services/status.js';
+import status from '@cerpus/edlib-node-utils/services/status.js';
 import doku from '../../services/doku';
 import apiConfig from '../../config/apis.js';
 
