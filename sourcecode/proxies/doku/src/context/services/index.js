@@ -2,7 +2,7 @@ import coreExternal from '@cerpus/edlib-node-utils/apiClients/coreExternal/index
 import auth from '@cerpus/edlib-node-utils/apiClients/auth/index.js';
 import embedly from './embedly.js';
 import status from '@cerpus/edlib-node-utils/services/status.js';
-import doku from '../../services/doku';
+import doku from '../../services/doku/index.js';
 import apiConfig from '../../config/apis.js';
 
 export default (req, res) => {
