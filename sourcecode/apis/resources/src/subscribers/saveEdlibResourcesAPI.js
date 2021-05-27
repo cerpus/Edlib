@@ -258,6 +258,12 @@ export default ({ pubSubConnection }) => async (
                 language: Joi.string().min(1).required(),
                 contentType: Joi.string().min(1).optional(),
                 license: Joi.string().allow(null).optional().default(null),
+                maxScore: Joi.number()
+                    .min(1)
+                    .allow(null)
+                    .empty(0)
+                    .optional()
+                    .default(null),
                 updatedAt: Joi.date().iso().required(),
                 createdAt: Joi.date().iso().required(),
                 collaborators: Joi.array()

@@ -38,9 +38,6 @@ export const syncResource = async (context, resource, waitForIndex) => {
         createdAt: resourceVersion.createdAt,
     });
 
-    console.log(resource.id);
-    console.log(latestVersionCollaborators.map((c) => c.tenantId));
-
     const elasticData = {
         id: resource.id,
         publicVersion:

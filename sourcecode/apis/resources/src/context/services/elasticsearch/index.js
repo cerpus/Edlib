@@ -9,6 +9,7 @@ export default () => {
             return await client.delete({
                 index: apiConfig.elasticsearch.resourceIndexPrefix,
                 id: resourceId,
+                retry_on_conflict: 5,
             });
         } catch (e) {
             if (e.meta && e.meta.statusCode === 404) {
@@ -29,6 +30,7 @@ export default () => {
                 detect_noop: !waitForIndex,
             },
             refresh: waitForIndex ? 'wait_for' : false,
+            retry_on_conflict: 5,
         });
     };
 
@@ -85,7 +87,7 @@ export default () => {
 
         const query = {
             bool: {
-                should: [
+                must: [
                     {
                         exists: {
                             field,
