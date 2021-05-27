@@ -28,13 +28,9 @@ const AuthProviderContainer = ({ children }) => {
                 return setResponse(null);
             }
 
-            request('/auth/v1/jwt/refresh', 'GET', {
-                query: {
-                    refresh_token: refreshToken,
-                },
-            })
-                .then(({ authToken }) => {
-                    store.set(storageKeys.AUTH_TOKEN, authToken);
+            request('/auth/v3/jwt/refresh', 'POST')
+                .then(({ token }) => {
+                    store.set(storageKeys.AUTH_TOKEN, token);
                 })
                 .catch(() => {
                     setResponse(null);
@@ -53,11 +49,11 @@ const AuthProviderContainer = ({ children }) => {
                 refetch: fetch,
                 logout: () => {
                     setResponse(null);
+                    store.remove(storageKeys.AUTH_TOKEN);
                 },
-                login: ({ user, authToken, refreshToken }) => {
+                login: ({ user, token }) => {
                     setResponse(user);
-                    store.set(storageKeys.AUTH_TOKEN, authToken);
-                    store.set(storageKeys.REFRESH_TOKEN, refreshToken);
+                    store.set(storageKeys.AUTH_TOKEN, token);
                 },
                 loginUrl,
             }}

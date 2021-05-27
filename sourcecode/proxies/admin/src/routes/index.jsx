@@ -1,24 +1,24 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Home from './Home.jsx';
-import Header from '../components/Header.jsx';
 import authContext from '../contexts/auth.js';
 import LoginCallback from './LoginCallback';
 import LogoutCallback from './LogoutCallback';
-import { Spinner } from 'reactstrap';
 import Login from './Login.jsx';
 import SystemStatuses from './SystemStatuses';
+import { Box, CircularProgress } from '@material-ui/core';
+import Page from '../components/Page';
+import Jobs from './Jobs';
 
 const Index = ({ isAuthenticated }) => {
     return (
-        <>
-            <Header />
+        <Page>
             {isAuthenticated && (
                 <Switch>
-                    <Route exact path="/" component={Home} />
+                    <Route exact path="/dashboard" component={Home} />
                     <Route
                         exact
-                        path="/system-status"
+                        path="/monitoring/system-status"
                         component={SystemStatuses}
                     />
                     <Route
@@ -26,6 +26,8 @@ const Index = ({ isAuthenticated }) => {
                         path="/logout/callback"
                         component={LogoutCallback}
                     />
+                    <Route path="/jobs" component={Jobs} />
+                    <Redirect to="/dashboard" />
                 </Switch>
             )}
             {!isAuthenticated && (
@@ -39,7 +41,7 @@ const Index = ({ isAuthenticated }) => {
                     <Redirect to="/login" />
                 </Switch>
             )}
-        </>
+        </Page>
     );
 };
 
@@ -48,9 +50,9 @@ export default () => {
 
     if (isAuthenticating) {
         return (
-            <div className="d-flex justify-content-center align-content-center ml-3">
-                <Spinner />
-            </div>
+            <Box justifyContent="center" display="flex">
+                <CircularProgress />
+            </Box>
         );
     }
 
