@@ -1,4 +1,5 @@
 import React from 'react';
+import * as queryString from 'query-string';
 
 export class RequestError extends Error {
     constructor(response) {
@@ -44,6 +45,4 @@ const getHeaders = (options) => {
 };
 
 const queryParams = (params) =>
-    Object.keys(params)
-        .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-        .join('&');
+    queryString.stringify(params, { arrayFormat: 'bracket' });
