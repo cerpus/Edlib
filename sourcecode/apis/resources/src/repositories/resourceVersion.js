@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, {
-    dbHelpers,
-} from '@cerpus/edlib-node-utils/services/db.js';
+import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
 
 const table = 'resourceVersions';
 
@@ -76,6 +74,11 @@ const getLatestPublishedResourceVersion = async (resourceId) =>
         .orderBy('createdAt', 'DESC')
         .first();
 
+const getContentTypesForExternalSystemName = async (externalSystemName) =>
+    knex(table)
+        .distinct('contentType')
+        .where('externalSystemName', externalSystemName);
+
 export default () => ({
     create,
     update,
@@ -85,4 +88,5 @@ export default () => ({
     getFirstFromExternalSytemReference,
     getLatestResourceVersion,
     getLatestPublishedResourceVersion,
+    getContentTypesForExternalSystemName,
 });

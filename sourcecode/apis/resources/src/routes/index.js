@@ -9,6 +9,7 @@ import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 import syncController from '../controllers/sync.js';
+import contentTypes from './contentTypes.js';
 
 const { Router } = express;
 
@@ -115,6 +116,13 @@ export default async ({ pubSubConnection }) => {
      *                   type: string
      *                collectionFormat: multi
      *                description: A list of licenses to match. If none provided all licenses will match
+     *              - in: query
+     *                name: contentTypes
+     *                type: array
+     *                items:
+     *                   type: string
+     *                collectionFormat: multi
+     *                description: A list of content types to match. If none provided all content types will match
      *          responses:
      *              200:
      *                  description: Successful request
@@ -175,6 +183,8 @@ export default async ({ pubSubConnection }) => {
         '/v1/sync-resources',
         runAsync(syncController.syncResources)
     );
+
+    apiRouter.use(await contentTypes());
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
