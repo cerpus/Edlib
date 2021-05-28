@@ -1,5 +1,5 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import Joi from 'joi';
+import _ from 'lodash';
 import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
 
@@ -16,14 +16,34 @@ const getResourcesFromRequestValidation = (data) => {
                 .allow('created', 'usage')
                 .default('created')
                 .optional(),
+            licenses: Joi.array().items(Joi.string()).default([]).optional(),
         })
     );
 };
 
 const getResourcesFromRequest = async (req, tenantId) => {
-    const { limit, offset, orderBy } = getResourcesFromRequestValidation(
-        req.query
-    );
+    const {
+        limit,
+        offset,
+        orderBy,
+        licenses,
+    } = getResourcesFromRequestValidation(req.query);
+
+    const field = !tenantId ? 'publicVersion' : 'protectedVersion';
+
+    let extraQuery = {};
+
+    if (licenses.length !== 0) {
+        _.set(
+            extraQuery,
+            'bool.should',
+            licenses.map((license) => ({
+                match_phrase: {
+                    [`${field}.license.keyword`]: license.toLowerCase(),
+                },
+            }))
+        );
+    }
 
     const { body } = await req.context.services.elasticsearch.search(
         tenantId,
@@ -36,7 +56,8 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 orderBy === 'usage' ? 'createdAt' : 'createdAt' //@todo use correct column
             }`,
             direction: 'DESC',
-        }
+        },
+        Object.keys(extraQuery).length === 0 ? null : extraQuery
     );
 
     return {

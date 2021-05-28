@@ -9,7 +9,6 @@ export default () => {
             return await client.delete({
                 index: apiConfig.elasticsearch.resourceIndexPrefix,
                 id: resourceId,
-                retry_on_conflict: 5,
             });
         } catch (e) {
             if (e.meta && e.meta.statusCode === 404) {
@@ -81,7 +80,8 @@ export default () => {
             limit: 20,
             offset: 0,
         },
-        orderBy
+        orderBy,
+        extraQuery
     ) => {
         const field = !tenantId ? 'publicVersion' : 'protectedVersion';
 
@@ -98,6 +98,7 @@ export default () => {
                             protectedUserIds: tenantId,
                         },
                     },
+                    extraQuery,
                 ].filter(Boolean),
             },
         };

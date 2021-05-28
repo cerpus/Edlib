@@ -281,6 +281,11 @@ export default ({ pubSubConnection }) => async (
         console.error(e);
         return;
     }
+
+    if (validatedData.license) {
+        validatedData.license = validatedData.license.toLowerCase();
+    }
+
     const context = buildRawContext({}, {}, { pubSubConnection });
 
     const resourceVersion = await saveToDb(context, validatedData);
