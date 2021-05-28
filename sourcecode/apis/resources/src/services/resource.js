@@ -16,17 +16,29 @@ const getResourcesFromRequestValidation = (data) => {
                 .allow('created', 'usage')
                 .default('created')
                 .optional(),
+            searchString: Joi.string()
+                .min(1)
+                .optional()
+                .empty('')
+                .allow(null)
+                .default(null),
             licenses: Joi.array().items(Joi.string()).default([]).optional(),
         })
     );
 };
 
 const getResourcesFromRequest = async (req, tenantId) => {
+    // ensure licenses is always an array
+    if (req.query.licenses && !Array.isArray(req.query.licenses)) {
+        req.query.licenses = [req.query.licenses];
+    }
+
     const {
         limit,
         offset,
         orderBy,
         licenses,
+        searchString,
     } = getResourcesFromRequestValidation(req.query);
 
     const field = !tenantId ? 'publicVersion' : 'protectedVersion';
@@ -43,6 +55,20 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 },
             }))
         );
+    }
+
+    if (searchString) {
+        _.set(extraQuery, 'bool.must', [
+            ..._.get(extraQuery, 'bool.must', []),
+            {
+                match: {
+                    [`${field}.title`]: {
+                        query: searchString,
+                        fuzziness: 'AUTO',
+                    },
+                },
+            },
+        ]);
     }
 
     const { body } = await req.context.services.elasticsearch.search(

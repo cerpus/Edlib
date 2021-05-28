@@ -61,6 +61,9 @@ export default async ({ pubSubConnection }) => {
      *                schema:
      *                  type: string
      *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
      */
     apiRouter.get(
         '/v1/tenants/:tenantId/resources',
@@ -100,6 +103,21 @@ export default async ({ pubSubConnection }) => {
      *          description: Get public resources
      *          produces:
      *              - application/json
+     *          parameters:
+     *              - in: query
+     *                name: searchString
+     *                type: string
+     *                description: A string to search for. If nothing is provided, everything will match
+     *              - in: query
+     *                name: licenses
+     *                type: array
+     *                items:
+     *                   type: string
+     *                collectionFormat: multi
+     *                description: A list of licenses to match. If none provided all licenses will match
+     *          responses:
+     *              200:
+     *                  description: Successful request
      */
     apiRouter.get(
         '/v1/resources',
