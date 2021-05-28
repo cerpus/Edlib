@@ -6,7 +6,7 @@ import useTranslation from '../../hooks/useTranslation';
 import Checkbox from './components/Checkbox';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 
-const H5PTypes = ({ h5pTypes }) => {
+const H5PTypes = ({ contentTypes }) => {
     const { t } = useTranslation();
     const { edlib } = useConfig();
 
@@ -14,14 +14,14 @@ const H5PTypes = ({ h5pTypes }) => {
     const approvedH5psConfig = getUserConfig('approvedH5ps') || null;
 
     const { loading, response } = useFetchWithToken(
-        edlib(`/resources/v1/filters/content-author-types`)
+        edlib(`/resources/v1/content-types/contentauthor`)
     );
 
     if (!response || loading) {
         return <Spinner />;
     }
 
-    const allH5ps = response
+    const allH5ps = response.data
         .filter((item) => item.length !== 0)
         .map((item) => ({
             title: t(`h5pTypes.${item.toUpperCase()}`),
@@ -51,8 +51,8 @@ const H5PTypes = ({ h5pTypes }) => {
             {approvedH5ps.map(({ title, value }) => (
                 <FormGroup key={value}>
                     <Checkbox
-                        onToggle={() => h5pTypes.toggle(value)}
-                        checked={h5pTypes.has(value)}
+                        onToggle={() => contentTypes.toggle(value)}
+                        checked={contentTypes.has(value)}
                         title={title}
                     />
                 </FormGroup>
@@ -65,8 +65,8 @@ const H5PTypes = ({ h5pTypes }) => {
             {notApprovedH5ps.map(({ title, value }) => (
                 <FormGroup key={value}>
                     <Checkbox
-                        onToggle={() => h5pTypes.toggle(value)}
-                        checked={h5pTypes.has(value)}
+                        onToggle={() => contentTypes.toggle(value)}
+                        checked={contentTypes.has(value)}
                         title={title}
                     />
                 </FormGroup>

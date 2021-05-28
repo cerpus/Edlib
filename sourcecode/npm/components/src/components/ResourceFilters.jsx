@@ -35,8 +35,8 @@ const ResourceFilters = ({ filters }) => {
         {
             type: resourceFilters.H5P_TYPE,
             title: t('H5P Type'),
-            count: filters.h5pTypes.value.length,
-            content: <H5PTypes h5pTypes={filters.h5pTypes} />,
+            count: filters.contentTypes.value.length,
+            content: <H5PTypes contentTypes={filters.contentTypes} />,
         },
         {
             type: resourceFilters.LICENSE,
