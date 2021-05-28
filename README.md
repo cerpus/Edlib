@@ -1,4 +1,8 @@
-# Environment variables
+# Edlib
+
+EdLib is an application for creating, sharing, storing and using rich, interactive learning resources in the cloud.
+
+## Environment variables
 
 - EDLIBCOMMON_CONTENTAUTHOR_URL
 - EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY
