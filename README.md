@@ -22,7 +22,13 @@ Well, the internet is a huge collection of self-contained content repositories l
 
 *Screenshot: Edlib Content Author with interactive video content type editor*
 
+### Metadata
+
+Edlib includes the ability to record metadata on learning objects. The setting of metadata can be done both directly &mdash;on the object itself&mdash; or indirectly via transitive relations. Setting contextual metadata on learning objects is a means to an end, not an end in itself; that is, contextual metadata is about **findability** of content for both creators and learners. 
+
 ## Feature Support
+
+Edlib is continuously evolving with existing features being refined and other features being added (or removed). The following is a list of major features, some of which are still in active development.
 
 ### Existing Features
 
@@ -53,7 +59,7 @@ Documentation to help you install Edlib and start developing against it is curre
 
 ## Developer Documentation
 
-We are currently working on developer-specific documentation and as soon as we have something meaningful we will make it available. Check back for updates.
+We are currently working on [developer-specific documentation](https://github.com/cerpus/Edlib/issues/1) and as soon as we have something meaningful we will make it available. Check back for updates.
 
 ## How to Contribute
 
