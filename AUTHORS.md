@@ -11,7 +11,7 @@
 - [Runar Moen](https://github.com/rypskar): Team leader
 - [Tor-Martin Karlsen](https://github.com/tmkarlsen): Support engineer and tester
 - Thomas Sivertsen: PHP, Java and JavaScript developer
-- Tommy Nordeng: Visionary leader and (original) product owner
+- Tommy W. Nordeng: Visionary leader and (original) product owner <3
 - [Brett Kromkamp](https://github.com/brettkromkamp): Team leader
 
 ## Contributors
