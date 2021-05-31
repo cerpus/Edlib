@@ -2,7 +2,7 @@
 
 EdLib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing and using rich interactive learning resources in the cloud.
 
-> The individual learner is at the center of everything we do and our vision is to provide first-class open learning for as many people as possible. &mdash; Tommy Nordeng (co-founder of Cerpus)
+> The individual learner is at the center of everything we do and our vision is to provide first-class open learning tools and content to as many people as possible. &mdash; Tommy Nordeng (co-founder of Cerpus)
 
 We strongly believe that the individual learner should be in focus. Everything we do is based around this belief, all the way from technical solutions and content creation through to user interface design and the resulting learning experience. 
 
