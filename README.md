@@ -4,17 +4,30 @@ EdLib is an application for creating, sharing, storing and using rich, interacti
 
 ## Why?
 
-Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out of Norther Norway which is focused on developing educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
+Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
 
 ## Feature Support
 
 ### Existing Features
 
+* Support for all of H5P's open-source [content types](https://h5p.org/content-types-and-applications)
+* Content browser to easily find and re-use existing Edlib content
+* Resource versioning
+* Licensing module with a [Creative-Commons](https://creativecommons.org/) license selector
+* Authoring workflows including the ability to maintain resources private or to publicly publish them
+* Collaboration functionality 
+
 ### Features in Development
+
+* &quot;Doku&quot; content type 
 
 ## Installation
 
+Documentation to help you install Edlib and start developing against it is currently being worked on.
+
 ## Developer Documentation
+
+We are currently working on developer-specific documentation and as soon as we have something meaningful we will make it available. 
 
 ## How to Contribute
 
