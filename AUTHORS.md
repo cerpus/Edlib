@@ -8,9 +8,10 @@
 - Jon-Eirik Pettersen: PHP and Java developer, DevOps engineer
 - Max Moeschinger: JavaScript and Node.js developer
 - Odd-Arne Johansen: PHP developer
+- Runar Moen: Team leader
 - Tor-Martin Karlsen: Support engineer and tester
 - Thomas Sivertsen: PHP, Java and JavaScript developer
-- Tommy Nordeng: Visionary leader and product owner
+- Tommy Nordeng: Visionary leader and (original) product owner
 - Brett Kromkamp: Team leader
 
 ## Contributors

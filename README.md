@@ -12,7 +12,7 @@ Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out o
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
 
-*Screenshot: Edlib Content Author*
+*Screenshot: Edlib Content Author with interactive video content type editor*
 
 ## Feature Support
 
