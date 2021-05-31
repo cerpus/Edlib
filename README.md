@@ -2,7 +2,7 @@
 
 EdLib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing and using rich interactive learning resources in the cloud.
 
-> The individual learner is at the center of everything we do and our vision is to provide first-class open learning tools and content to as many people as possible. &mdash; Tommy Nordeng (co-founder of Cerpus)
+> The individual learner is at the center of everything we do and our vision is to provide first-class open learning tools and content to as many of those individuals as possible. &mdash; Tommy W. Nordeng (co-founder of Cerpus)
 
 We strongly believe that the individual learner should be in focus. Everything we do is based around this belief, all the way from technical solutions and content creation through to user interface design and the resulting learning experience. 
 
@@ -21,10 +21,6 @@ Well, the internet is a huge collection of self-contained content repositories l
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
 
 *Screenshot: Edlib Content Author with interactive video content type editor*
-
-### Metadata
-
-Edlib includes the ability to record metadata on learning objects. The setting of metadata can be done both directly &mdash;on the object itself&mdash; or indirectly via transitive relations. Setting contextual metadata on learning objects is a means to an end, not an end in itself; that is, contextual metadata is about **findability** of content for both creators and learners. 
 
 ## Feature Support
 
@@ -69,6 +65,10 @@ We are currently working on [developer-specific documentation](https://github.co
 4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to [AUTHORS](https://github.com/cerpus/Edlib/blob/master/AUTHORS.md).
 
 ## Miscellaneous
+
+### Metadata
+
+Edlib includes the ability to record metadata on learning objects. The setting of metadata can be done both directly &mdash;on the object itself&mdash; or indirectly via transitive relations. Setting contextual metadata on learning objects is a means to an end, not an end in itself; that is, contextual metadata is about **findability** of content for both creators and learners. 
 
 ### Environment variables
 
