@@ -2,7 +2,7 @@
 
 EdLib is an application for creating, sharing, storing and using rich interactive learning resources in the cloud.
 
-<img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/static/img/edlib-content-explorer.png" alt="Edlib content explorer" width="800">
+<img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib content explorer" width="800">
 
 ## Why?
 
