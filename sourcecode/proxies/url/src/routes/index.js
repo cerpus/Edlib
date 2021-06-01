@@ -52,7 +52,7 @@ export default async () => {
         res.json(features);
     });
 
-    router.get('/resources/_ah/health', (req, res) => {
+    router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
 
         if (probe === 'liveness') {
