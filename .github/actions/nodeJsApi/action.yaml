@@ -15,7 +15,7 @@ runs:
   using: "composite"
   steps:
     - name: Get release name
-      id: releaseNameGenerator
+      id: release-name-generator
       shell: bash
       run: |
         RELEASE_NAME=""
