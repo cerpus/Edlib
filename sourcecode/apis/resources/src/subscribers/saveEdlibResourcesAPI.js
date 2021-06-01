@@ -266,7 +266,12 @@ export default ({ pubSubConnection }) => async (
                 externalSystemName: Joi.string().min(1).required(),
                 externalSystemId: Joi.string().min(1).required(),
                 title: Joi.string().min(1).required(),
-                ownerId: Joi.string().min(1).required(),
+                ownerId: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .empty(null)
+                    .optional()
+                    .default(null),
                 isPublished: Joi.boolean().required(),
                 isListed: Joi.boolean().required(),
                 language: Joi.string()
