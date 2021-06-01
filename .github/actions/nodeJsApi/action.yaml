@@ -8,6 +8,9 @@ outputs:
   release-name:
     description: "The tag of the release"
     value: ${{ steps.release-name-generator.outputs.release-name }}
+  test:
+    description: "Test value"
+    value: "test value"
 runs:
   using: "composite"
   steps:
