@@ -14,9 +14,9 @@ Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out o
 
 ## Why? 
 
-So, Edlib... what's that all about?
+Edlib allows you to create highly interactive H5P-based learning resources. The H5P platform provides a wealth of different interactive content types for learning purposes. We very much believe that an increased level of meaningful interaction leads to a higher level of engagement. A higher level of engagement, in turn, leads to an increased motivation ultimately resulting in a more positive learning outcome for the learner.
 
-Well, the internet is a huge collection of self-contained content repositories like Wikipedia and YouTube with many purpose-built tools to create rich interactive content. So, the question becomes: *How can we combine the vast trove of &mdash;existing, high-quality&mdash; content with the necessary creation tools to ensure a superior learning experience for the individual learner?*
+What's more, the internet is a huge collection of self-contained content repositories like Wikipedia and YouTube with many purpose-built tools to create rich interactive content. So, the question becomes: *How can we combine the vast trove of &mdash;existing, high-quality&mdash; content with the necessary creation tools to ensure a superior learning experience for the individual learner?* We think that, at least, a part of the answer to that question is to make the threshold for acquiring external content extremely low. In Edlib, for example, a YouTube video can be converted into an Edlib resource by just providing its URL and from that point onwards it will be included in the Edlib content repository just like any other Edlib resource for the purpose of reuse.
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
 
@@ -46,7 +46,7 @@ Edlib is continuously evolving with existing features being refined and other fe
 
 ### Features in Development
 
-* The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a fully-fledged **learning** resource. 
+* The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a full-fledged **learning** resource. 
 * The ability to include a recommendation engine to surface relevant content for course and game creators (currently in closed-beta).
 
 ## Installation
