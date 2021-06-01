@@ -10,7 +10,6 @@ export default {
             throw new NotFoundException('url');
         }
 
-        console.log(urlInfo);
         if (urlInfo.embed.html) {
             res.render('ltiViewUrlEmbeded', {
                 name: urlInfo.name,

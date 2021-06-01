@@ -8,7 +8,7 @@ const urlAxios = async (options) => {
             ...options,
             url: `${apis.url.url}${options.url}`,
             maxRedirects: 0,
-            timeout: 5000,
+            timeout: 30000,
         });
     } catch (e) {
         exceptionTranslator(e);

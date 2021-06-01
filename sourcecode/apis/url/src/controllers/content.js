@@ -10,7 +10,7 @@ export default {
                 externalSystemName: 'url',
                 externalSystemId: dbUrl.id,
                 title: dbUrl.name,
-                ownerId: 'all',
+                ownerId: null,
                 isPublished: true,
                 isListed: true,
                 language: null,

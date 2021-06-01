@@ -13,7 +13,6 @@ const getForUrl = cacheWrapper(
         const response = await axios.get('https://api.embedly.com/1/oembed', {
             params: { url, key: embedlyConfig.key },
         });
-        console.log(response);
 
         return response.data;
     }
