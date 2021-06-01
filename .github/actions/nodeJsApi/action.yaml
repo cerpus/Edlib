@@ -7,10 +7,12 @@ inputs:
 outputs:
   release-name:
     description: "The tag of the release"
+    value: ${{ steps.release-name-generator.outputs.release-name }}
 runs:
   using: "composite"
   steps:
     - name: Get release name
+      id: releaseNameGenerator
       shell: bash
       run: |
         RELEASE_NAME=""
@@ -21,4 +23,4 @@ runs:
         RELEASE_NAME="$RELEASE_NAME$SHORT_SHA"
 
         echo $RELEASE_NAME
-        echo '::set-output name=release-name::$RELEASE_NAME'
+        echo "::set-output name=release-name::$RELEASE_NAME"
