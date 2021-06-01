@@ -8,6 +8,13 @@ const MigrateCore = () => {
             <Grid container>
                 <Grid item md={12}>
                     <Job
+                        name="Flytt url fra core til edlib2"
+                        startUrl="/url/v1/sync-resources"
+                        statusUrl={(jobId) => `/url/v1/sync-resources/${jobId}`}
+                    />
+                </Grid>
+                <Grid item md={12}>
+                    <Job
                         name="Sync ressurser"
                         startUrl="/resources/v1/sync-resources"
                         statusUrl={(jobId) =>
