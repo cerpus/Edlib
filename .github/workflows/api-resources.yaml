@@ -34,6 +34,16 @@ jobs:
             registry: ghcr.io
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
+        - name: Get release name
+          run: |
+            RELEASE_NAME=""
+            if [ "${{ github.ref }}" = "refs/heads/beta"]; then
+              RELEASE_NAME="beta-"
+            fi
+            SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`
+            RELEASE_NAME="$RELEASE_NAME$SHORT_SHA"
+
+            echo '::set-output name=RELEASE_NAME::$RELEASE_NAME'
         - name: Build and push app
           id: docker_build_app
           uses: docker/build-push-action@v2
