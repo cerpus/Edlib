@@ -21,7 +21,7 @@ jobs:
         - name: Get release name
           id: releaseName
           uses: ./.github/actions/nodeJsApi
-        - run: echo ${{ steps.releaseName.outputs.release-name }}
+        - run: echo "hash is ${{ steps.releaseName.outputs.release-name }}"
 
 #        - name: "Yarn install with cache"
 #          uses: bahmutov/npm-install@v1
