@@ -13,6 +13,7 @@ jobs:
   build_test_pushdocker:
     runs-on: ubuntu-latest
     steps:
+        - uses: actions/checkout@v2
         - name: Get release name
           id: releaseName
           uses: ./.github/actions/nodeJsApi
