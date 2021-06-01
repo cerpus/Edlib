@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import moment from 'moment';
+import externalSystemService from '../services/externalSystem.js';
 
 const findResourceFromParentVersions = async (context, version) => {
     if (!version) {
@@ -40,16 +41,28 @@ const findResourceFromParentVersions = async (context, version) => {
 };
 
 const saveResourceVersion = async (context, resourceVersionValidatedData) => {
-    const version = await context.services.version.getForResource(
-        resourceVersionValidatedData.externalSystemName,
-        resourceVersionValidatedData.externalSystemId
-    );
+    let versionPurpose = 'create';
+    let actualVersion = null;
 
-    if (!version) {
-        logger.error(
-            'Version was not found for resource. Make sure versions are saved into the versioningapi. It is required to build the resource data model'
+    if (
+        !externalSystemService.getConfig(
+            resourceVersionValidatedData.externalSystemName
+        ).disableVersioning
+    ) {
+        const version = await context.services.version.getForResource(
+            resourceVersionValidatedData.externalSystemName,
+            resourceVersionValidatedData.externalSystemId
         );
-        return;
+
+        if (!version) {
+            logger.error(
+                'Version was not found for resource. Make sure versions are saved into the versioningapi. It is required to build the resource data model'
+            );
+            return;
+        }
+
+        versionPurpose = version.versionPurpose.toLowerCase();
+        actualVersion = version;
     }
 
     const dbResourceVersion = await context.db.resourceVersion.getByExternalId(
@@ -69,18 +82,21 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
     }
 
     // Purpose is update. a version with purpose update should always have a parent version.
-    if (version.versionPurpose.toLowerCase() === 'update') {
-        const resource = await findResourceFromParentVersions(context, version);
+    if (versionPurpose === 'update') {
+        const resource = await findResourceFromParentVersions(
+            context,
+            actualVersion
+        );
 
         if (!resource) {
             return;
         }
 
         dbResourceVersionData.resourceId = resource.id;
-    } else if (version.versionPurpose.toLowerCase() === 'translation') {
+    } else if (versionPurpose === 'translation') {
         const siblingResource = await findResourceFromParentVersions(
             context,
-            version.parent
+            actualVersion && actualVersion.parent
         );
 
         if (!siblingResource) {
@@ -92,9 +108,7 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         });
 
         dbResourceVersionData.resourceId = resource.id;
-    } else if (
-        ['create', 'copy'].indexOf(version.versionPurpose.toLowerCase()) !== -1
-    ) {
+    } else if (['create', 'copy'].indexOf(versionPurpose) !== -1) {
         const resourceGroup = await context.db.resourceGroup.create({});
         const resource = await context.db.resource.create({
             resourceGroupId: resourceGroup.id,
@@ -102,7 +116,7 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
 
         dbResourceVersionData.resourceId = resource.id;
     } else {
-        console.error(`Unknown version purpose ${version.versionPurpose}`);
+        console.error(`Unknown version purpose ${versionPurpose}`);
         return;
     }
 
@@ -255,7 +269,11 @@ export default ({ pubSubConnection }) => async (
                 ownerId: Joi.string().min(1).required(),
                 isPublished: Joi.boolean().required(),
                 isListed: Joi.boolean().required(),
-                language: Joi.string().min(1).required(),
+                language: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .optional()
+                    .default(null),
                 contentType: Joi.string().min(1).optional(),
                 license: Joi.string().allow(null).optional().default(null),
                 maxScore: Joi.number()
@@ -268,7 +286,8 @@ export default ({ pubSubConnection }) => async (
                 createdAt: Joi.date().iso().required(),
                 collaborators: Joi.array()
                     .items(Joi.string().min(1))
-                    .optional(),
+                    .optional()
+                    .default([]),
                 emailCollaborators: Joi.array()
                     .items(Joi.string().email())
                     .min(0)

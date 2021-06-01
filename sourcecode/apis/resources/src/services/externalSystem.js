@@ -5,7 +5,8 @@ import {
 } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 const getConfig = (externalSystemName) => {
-    const config = apiConfig.externalResourceAPIS[externalSystemName];
+    const config =
+        apiConfig.externalResourceAPIS[externalSystemName.toLowerCase()];
 
     if (!config) {
         throw new NotFoundException(externalSystemName);

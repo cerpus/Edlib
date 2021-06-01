@@ -5,6 +5,8 @@ const contentAuthorUrl = env(
     'https://contentauthor.local'
 );
 
+const edlibUrl = env('EDLIBCOMMON_URL', 'https://api.edlib.local');
+
 export default {
     version: {
         url: env('VERSIONAPI_URL', 'http://versioningapi:8080'),
@@ -21,6 +23,19 @@ export default {
             url: `${contentAuthorUrl}/v1/content`,
             ltiUrl: `${contentAuthorUrl}/lti-content`,
             getAllGroups: ['h5p', 'questionset', 'article', 'game'],
+            ltiConsumerKey: env(
+                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY',
+                'h5p'
+            ),
+            ltiConsumerSecret: env(
+                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET',
+                'secret2'
+            ),
+        },
+        url: {
+            disableVersioning: true,
+            url: `http://urlapi/v1/content`,
+            ltiUrl: `${edlibUrl}/url/v1/lti-view`,
             ltiConsumerKey: env(
                 'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY',
                 'h5p'
