@@ -1,0 +1,24 @@
+name: 'Node JS API'
+description: 'creates a package of the current branch'
+inputs:
+  workingDirectory:
+    description: "Path of the source code"
+    required: true
+outputs:
+  release-name:
+    description: "The tag of the release"
+runs:
+  using: "composite"
+  steps:
+    - name: Get release name
+      shell: bash
+      run: |
+        RELEASE_NAME=""
+        if [ "${{ github.ref }}" = "refs/heads/beta" ]; then
+          RELEASE_NAME="beta-"
+        fi
+        SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`
+        RELEASE_NAME="$RELEASE_NAME$SHORT_SHA"
+
+        echo $RELEASE_NAME
+        echo '::set-output name=release-name::$RELEASE_NAME'
