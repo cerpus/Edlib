@@ -18,6 +18,11 @@ jobs:
           uses: actions/setup-node@v2
           with:
             node-version: 14
+
+        - name: Get release name
+          id: releaseName
+          uses: ./.github/actions/nodeJsApi
+
         - name: "Yarn install with cache"
           uses: bahmutov/npm-install@v1
           with:
@@ -39,7 +44,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: ghcr.io/cerpus/edlib/api-url-app:${{ github.sha }}
+            tags: ghcr.io/cerpus/edlib/api-url-app:${{ steps.releaseName.outputs.release-name }}
             context: sourcecode/apis/url
             target: prod
         - name: Build and push migration container
@@ -47,7 +52,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: ghcr.io/cerpus/edlib/api-url-migration:${{ github.sha }}
+            tags: ghcr.io/cerpus/edlib/api-url-migration:${{ steps.releaseName.outputs.release-name }}
             context: sourcecode/apis/url
             target: migrations
         - name: Image digest
