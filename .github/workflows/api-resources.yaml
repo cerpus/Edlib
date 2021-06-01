@@ -27,6 +27,7 @@ jobs:
             SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`
             RELEASE_NAME="$RELEASE_NAME$SHORT_SHA"
 
+            echo $RELEASE_NAME
             echo '::set-output name=RELEASE_NAME::$RELEASE_NAME'
 #        - name: "Yarn install with cache"
 #          uses: bahmutov/npm-install@v1
