@@ -32,22 +32,38 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             []
         );
 
-        const percentPerConfig = Math.floor(100 / syncs.length);
+        const totalResourceCount = (
+            await Promise.all(
+                syncs.map(async (syncConfig) => {
+                    const {
+                        pagination,
+                    } = await context.services.externalResourceFetcher.getAll(
+                        syncConfig.name,
+                        { ...syncConfig.params }
+                    );
+
+                    return pagination ? pagination.totalCount : 0;
+                })
+            )
+        ).reduce((totalCount, resourceCount) => totalCount + resourceCount, 0);
+
         let resourceCount = 0;
 
-        for (let [index, syncConfig] of syncs.entries()) {
-            await context.db.sync.update(jobId, {
-                percentDone: percentPerConfig * index,
-                message: `Running sync for ${
-                    syncConfig.name
-                } with params ${JSON.stringify(syncConfig.params)}`,
-            });
-
+        for (let syncConfig of syncs) {
             let run = true;
             const limit = 100;
             let offset = 0;
 
             while (run) {
+                await context.db.sync.update(jobId, {
+                    percentDone: Math.floor(
+                        (resourceCount / totalResourceCount) * 100
+                    ),
+                    message: `${resourceCount} of ${totalResourceCount} done. Running sync for ${
+                        syncConfig.name
+                    } with params ${JSON.stringify(syncConfig.params)}`,
+                });
+
                 const {
                     resources,
                 } = await context.services.externalResourceFetcher.getAll(
