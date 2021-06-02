@@ -5,6 +5,7 @@ import saveEdlibResourcesAPI from './subscribers/saveEdlibResourcesAPI.js';
 import sync from './subscribers/sync.js';
 import newUser from './subscribers/newUser.js';
 import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
+import { buildRawContext } from './context/index.js';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -40,6 +41,9 @@ const start = async () => {
             );
         })
     );
+
+    const context = await buildRawContext({}, {}, { pubSubConnection });
+    await context.services.elasticsearch.createOrIgnoreIndex();
 
     setupApi(() => router({ pubSubConnection }), {
         errorReportingConfig,
