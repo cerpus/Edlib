@@ -33,6 +33,11 @@ jobs:
           id: releaseName
           uses: ./.github/actions/nodeJsApi
 
+        - name: Run step when a file changes
+          if: contains(steps.changed-files.outputs.modified_files, 'versions/beta')
+          run: |
+            echo "Deploy new beta version"
+
 #        - name: "Yarn install with cache"
 #          uses: bahmutov/npm-install@v1
 #          with:
