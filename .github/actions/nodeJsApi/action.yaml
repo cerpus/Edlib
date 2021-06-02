@@ -20,10 +20,10 @@ runs:
       run: |
         RELEASE_NAME=""
         if [ "${{ github.ref }}" = "refs/heads/beta" ]; then
-          VERSION=`cat versions/beta | tr -d '[:space:]')`
+          VERSION=`cat versions/beta | tr -d '[:space:]'`
           RELEASE_NAME="beta-$VERSION"
         elif [ "${{ github.ref }}" = "refs/heads/master" ]; then
-          VERSION=`cat versions/beta | tr -d '[:space:]')`
+          VERSION=`cat versions/beta | tr -d '[:space:]'`
           RELEASE_NAME="$VERSION"
         else
           SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`
