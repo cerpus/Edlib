@@ -108,11 +108,11 @@ module.exports = {
             },
             {
               label: 'Contact us',
-              to: '/about/contact-us',
+              to: '/docs/about/contact-us',
             },
             {
               label: 'Careers',
-              to: '/about/careers',
+              to: '/docs/about/careers',
             },
             {
               label: 'GitHub',

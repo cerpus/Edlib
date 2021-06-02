@@ -40,7 +40,7 @@ Edlib is continuously evolving with existing features being refined and other fe
 * Collaboration functionality.
 * Easy integration with third-party APIs including audio, video and image APIs.
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
-* [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support (with limited support for for version 2.0)
+* [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Resource versioning. 
 * Language support.
 
