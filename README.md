@@ -12,7 +12,7 @@ Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out o
 
 *Screenshot: Edlib Content Explorer*
 
-## Why? 
+## Why Edlib? 
 
 Edlib allows you to create highly interactive H5P-based learning resources. The H5P platform provides a wealth of different interactive content types for learning purposes. We believe that an increased level of meaningful **interactions** leads to a higher level of **engagement**. A higher level of engagement, in turn, leads to increased **motivation** ultimately resulting in a more positive **learning outcome** for the learner.
 

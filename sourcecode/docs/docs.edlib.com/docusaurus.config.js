@@ -18,7 +18,9 @@ module.exports = {
       },
       items: [
         {to: '/docs/intro', label: 'Documentation', position: 'left'},
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/blog', label: 'Blog', position: 'left'},        
+        {to: '/careers', label: 'Careers', position: 'left'},
+        {to: '/contact-us', label: 'Contact Us', position: 'left'},
         {
           href: 'https://github.com/cerpus',
           label: 'GitHub',
@@ -108,12 +110,12 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'Contact us',
-              to: '/contact-us',
-            },
-            {
               label: 'Careers',
               to: '/careers',
+            },
+            {
+              label: 'Contact us',
+              to: '/contact-us',
             },
             {
               label: 'GitHub',
@@ -122,7 +124,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
+      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
     },
   },
   presets: [
