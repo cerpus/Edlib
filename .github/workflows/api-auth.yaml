@@ -9,6 +9,7 @@ on:
 
 env:
   workingDirectory: sourcecode/apis/auth
+
 jobs:
   build_test_pushdocker:
     runs-on: ubuntu-latest
