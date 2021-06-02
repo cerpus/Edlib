@@ -46,7 +46,7 @@ jobs:
             files: |
               versions/beta
               versions/official
-        - name: Run step when a file changes
+        - name: Set should release to true if conditions are met
           id: release-after-check
           if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/master') && github.ref == 'refs/heads/master')
           run: |
