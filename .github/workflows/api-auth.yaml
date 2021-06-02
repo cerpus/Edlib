@@ -3,6 +3,7 @@ name: "api-auth"
 on:
   push:
     paths:
+      - "versions/**"
       - "sourcecode/apis/auth/**"
       - ".github/workflows/api-auth.yaml"
 
