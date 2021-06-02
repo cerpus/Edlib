@@ -8,7 +8,7 @@ EdLib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) a
 
 Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing innovative educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
 
-## Why? 
+## Why Edlib? 
 
 Edlib allows you to create highly interactive H5P-based learning resources. The H5P platform provides a wealth of different interactive content types for learning purposes. We believe that an increased level of meaningful **interactions** leads to a higher level of **engagement**. A higher level of engagement, in turn, leads to increased **motivation** ultimately resulting in a more positive **learning outcome** for the learner.
 

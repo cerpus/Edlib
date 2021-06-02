@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+title: Contact Us
 ---
 
 # Contact Us
