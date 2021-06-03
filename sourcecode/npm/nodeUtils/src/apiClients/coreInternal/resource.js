@@ -21,6 +21,18 @@ export default (core) => {
         return fromExternalIdInfo(type, id, level + 1);
     };
 
+    const multipleFromExternalIdInfo = async (ids) => {
+        const response = await core({
+            url: `/v2/external-resource-info`,
+            method: 'POST',
+            data: {
+                ids,
+            },
+        });
+
+        return response.data;
+    };
+
     const structure = async (resourceId) => {
         const response = await core({
             url: `/v2/resource/${resourceId}/structure`,
@@ -63,6 +75,7 @@ export default (core) => {
 
     return {
         fromExternalIdInfo,
+        multipleFromExternalIdInfo,
         structure,
         info,
         convertLaunchUrlToEdlibId,
