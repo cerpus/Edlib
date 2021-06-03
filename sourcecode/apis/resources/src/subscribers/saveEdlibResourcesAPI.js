@@ -82,7 +82,7 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
     }
 
     // Purpose is update. a version with purpose update should always have a parent version.
-    if (versionPurpose === 'update') {
+    if (['update', 'upgrade'].indexOf(versionPurpose) !== -1) {
         const resource = await findResourceFromParentVersions(
             context,
             actualVersion
@@ -108,7 +108,9 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         });
 
         dbResourceVersionData.resourceId = resource.id;
-    } else if (['create', 'copy'].indexOf(versionPurpose) !== -1) {
+    } else if (
+        ['create', 'copy', 'import', 'initial'].indexOf(versionPurpose) !== -1
+    ) {
         const resourceGroup = await context.db.resourceGroup.create({});
         const resource = await context.db.resource.create({
             resourceGroupId: resourceGroup.id,
