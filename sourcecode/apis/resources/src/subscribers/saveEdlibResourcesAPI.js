@@ -1,10 +1,8 @@
 import { buildRawContext } from '../context/index.js';
 import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import Joi from 'joi';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
-import moment from 'moment';
 import externalSystemService from '../services/externalSystem.js';
 
 const findResourceFromParentVersions = async (context, version) => {
@@ -320,29 +318,6 @@ export default ({ pubSubConnection }) => async (
     if (!resourceVersion) {
         console.error('Resource version was not created.');
         return;
-    }
-
-    try {
-        const info = await context.services.coreInternal.resource.fromExternalIdInfo(
-            resourceVersion.externalSystemName,
-            resourceVersion.externalSystemId
-        );
-
-        if (info.deletedAt) {
-            await context.db.resource.update(resourceVersion.resourceId, {
-                deletedAt: moment(info.deletedAt).toDate(),
-            });
-        }
-
-        if (info && info.uuid) {
-            await context.db.resourceVersion.update(resourceVersion.id, {
-                id: info.uuid,
-            });
-        }
-    } catch (e) {
-        if (!(e instanceof NotFoundException)) {
-            throw e;
-        }
     }
 
     if (saveToSearchIndex) {

@@ -2,6 +2,9 @@ import Joi from 'joi';
 import _ from 'lodash';
 import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import moment from 'moment';
+import { ApiException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
@@ -174,8 +177,63 @@ const hasResourceWriteAccess = async (context, resource, tenantId) => {
     return true;
 };
 
+const retrieveCoreInfo = async (context, resourceVersions) => {
+    try {
+        const coreInfos = await context.services.coreInternal.resource.multipleFromExternalIdInfo(
+            resourceVersions.map((rv) => ({
+                externalSystemName: rv.externalSystemName,
+                externalSystemId: rv.externalSystemId,
+            }))
+        );
+
+        await Promise.all(
+            coreInfos.map(
+                async ({
+                    externalSystemName,
+                    externalSystemId,
+                    resourceInfo,
+                }) => {
+                    const resourceVersion = resourceVersions.find(
+                        (rv) =>
+                            rv.externalSystemName === externalSystemName &&
+                            rv.externalSystemId === externalSystemId
+                    );
+
+                    if (!resourceVersion) {
+                        throw new ApiException('Resource not found');
+                    }
+                    if (resourceInfo.deletedAt) {
+                        await context.db.resource.update(
+                            resourceVersion.resourceId,
+                            {
+                                deletedAt: moment(
+                                    resourceInfo.deletedAt
+                                ).toDate(),
+                            }
+                        );
+                    }
+
+                    if (resourceInfo && resourceInfo.uuid) {
+                        await context.db.resourceVersion.update(
+                            resourceVersion.id,
+                            {
+                                id: resourceInfo.uuid,
+                            }
+                        );
+                    }
+                }
+            )
+        );
+    } catch (e) {
+        if (!(e instanceof NotFoundException)) {
+            throw e;
+        }
+    }
+};
+
 export default {
     getResourcesFromRequest,
     transformElasticResources,
     hasResourceWriteAccess,
+    retrieveCoreInfo,
 };

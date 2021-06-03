@@ -79,6 +79,13 @@ const getContentTypesForExternalSystemName = async (externalSystemName) =>
         .distinct('contentType')
         .where('externalSystemName', externalSystemName);
 
+const getAllPaginated = async (offset, limit) =>
+    knex(table)
+        .select('*')
+        .orderBy('createdAt', 'ASC')
+        .offset(offset)
+        .limit(limit);
+
 export default () => ({
     create,
     update,
@@ -89,4 +96,5 @@ export default () => ({
     getLatestResourceVersion,
     getLatestPublishedResourceVersion,
     getContentTypesForExternalSystemName,
+    getAllPaginated,
 });
