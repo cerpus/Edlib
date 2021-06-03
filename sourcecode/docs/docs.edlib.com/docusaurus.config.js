@@ -18,6 +18,7 @@ module.exports = {
       },
       items: [
         {to: '/docs/intro', label: 'Documentation', position: 'left'},
+        {to: '/docs/developers/getting-started', label: 'Developers', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},        
         {to: '/careers', label: 'Careers', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
