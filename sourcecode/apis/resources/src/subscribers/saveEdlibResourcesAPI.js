@@ -1,5 +1,6 @@
 import { buildRawContext } from '../context/index.js';
 import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import Joi from 'joi';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
@@ -339,7 +340,9 @@ export default ({ pubSubConnection }) => async (
             });
         }
     } catch (e) {
-        console.error(e);
+        if (!(e instanceof NotFoundException)) {
+            throw e;
+        }
     }
 
     if (saveToSearchIndex) {
