@@ -1,3 +1,5 @@
+import logger from '../services/logger.js';
+
 export default class ApiException extends Error {
     status = 500;
     report = true;
@@ -14,6 +16,11 @@ export default class ApiException extends Error {
 
     getBody() {
         return errorResponse(this.message, 'server_error');
+    }
+
+    logDetails() {
+        logger.error(this.message);
+        logger.error(this.stack);
     }
 }
 

@@ -1,4 +1,5 @@
 export { default as ApiException } from './apiException.js';
+export { default as AxiosException } from './axiosException.js';
 export { default as ClientException } from './client.js';
 export { default as EndpointNotFoundException } from './endpointNotFound.js';
 export { default as NotFoundException } from './notFound.js';

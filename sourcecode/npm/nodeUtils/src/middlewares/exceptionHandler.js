@@ -26,7 +26,11 @@ export default (
             body.trace = err.stack;
         }
 
-        logger.error(err.stack);
+        if (err.logDetails) {
+            err.logDetails();
+        } else {
+            logger.error(err.stack);
+        }
 
         res.status(status).json(body);
     };

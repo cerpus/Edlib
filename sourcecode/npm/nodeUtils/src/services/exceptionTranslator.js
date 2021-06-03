@@ -6,6 +6,7 @@ import {
     ClientException,
 } from '../exceptions/index.js';
 import logger from './logger.js';
+import AxiosException from '../exceptions/axiosException.js';
 
 export default (e, serviceName = 'API') => {
     if (!e.response) {
@@ -40,6 +41,10 @@ export default (e, serviceName = 'API') => {
     );
     logger.error(e.response.status);
     logger.error(e.response.data);
+
+    if (e.isAxiosError) {
+        throw new AxiosException(e);
+    }
 
     throw new ApiException('Service request failed');
 };
