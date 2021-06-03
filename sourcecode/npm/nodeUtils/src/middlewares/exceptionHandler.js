@@ -23,9 +23,10 @@ export default (
         }
 
         if (!appConfig.isProduction) {
-            logger.error(err.stack);
             body.trace = err.stack;
         }
+
+        logger.error(err.stack);
 
         res.status(status).json(body);
     };
