@@ -51,7 +51,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
         for (let syncConfig of syncs) {
             let run = true;
-            const limit = 100;
+            const limit = 50;
             let offset = 0;
 
             while (run) {
@@ -88,7 +88,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
         }
 
         let run = true;
-        const limit = 100;
+        const limit = 50;
         let offset = 0;
         while (run) {
             const resources = await context.db.resource.getAllPaginated(
