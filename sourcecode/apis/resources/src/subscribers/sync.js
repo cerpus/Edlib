@@ -55,7 +55,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
         for (let syncConfig of syncs) {
             let run = true;
-            const limit = 50;
+            const limit = 10;
             let offset = 0;
 
             while (run) {
