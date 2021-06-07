@@ -186,44 +186,33 @@ const retrieveCoreInfo = async (context, resourceVersions) => {
             }))
         );
 
-        await Promise.all(
-            coreInfos.map(
-                async ({
-                    externalSystemName,
-                    externalSystemId,
-                    resourceInfo,
-                }) => {
-                    const resourceVersion = resourceVersions.find(
-                        (rv) =>
-                            rv.externalSystemName === externalSystemName &&
-                            rv.externalSystemId === externalSystemId
-                    );
+        for (let {
+            externalSystemName,
+            externalSystemId,
+            resourceInfo,
+        } of coreInfos) {
+            const resourceVersion = resourceVersions.find(
+                (rv) =>
+                    rv.externalSystemName === externalSystemName &&
+                    rv.externalSystemId === externalSystemId
+            );
 
-                    if (!resourceVersion) {
-                        throw new ApiException('Resource not found');
-                    }
-                    if (resourceInfo.deletedAt) {
-                        await context.db.resource.update(
-                            resourceVersion.resourceId,
-                            {
-                                deletedAt: moment(
-                                    resourceInfo.deletedAt
-                                ).toDate(),
-                            }
-                        );
-                    }
+            if (!resourceVersion) {
+                throw new ApiException('Resource not found');
+            }
 
-                    if (resourceInfo && resourceInfo.uuid) {
-                        await context.db.resourceVersion.update(
-                            resourceVersion.id,
-                            {
-                                id: resourceInfo.uuid,
-                            }
-                        );
-                    }
-                }
-            )
-        );
+            if (resourceInfo.deletedAt) {
+                await context.db.resource.update(resourceVersion.resourceId, {
+                    deletedAt: moment(resourceInfo.deletedAt).toDate(),
+                });
+            }
+
+            if (resourceInfo && resourceInfo.uuid) {
+                await context.db.resourceVersion.update(resourceVersion.id, {
+                    id: resourceInfo.uuid,
+                });
+            }
+        }
     } catch (e) {
         if (!(e instanceof NotFoundException)) {
             throw e;
