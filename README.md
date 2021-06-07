@@ -12,11 +12,11 @@ Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out o
 
 *Screenshot: Edlib Content Explorer*
 
-## Why? 
+## Why Edlib? 
 
-Edlib allows you to create highly interactive H5P-based learning resources. The H5P platform provides a wealth of different interactive content types for learning purposes. We believe that an increased level of meaningful **interactions** leads to a higher level of **engagement**. A higher level of engagement, in turn, leads to increased **motivation** ultimately resulting in a more positive **learning outcome** for the learner.
+Edlib allows you to create highly interactive H5P-based learning resources. The H5P platform provides a wealth of different interactive and rich content types for learning purposes. We believe that an increased level of meaningful **interactions** leads to a higher level of **engagement**. A higher level of engagement, in turn, leads to increased **motivation** ultimately resulting in a more positive **learning outcome** for the learner.
 
-What's more, the internet is a huge collection of self-contained content repositories like Wikipedia and YouTube with many purpose-built tools to create rich interactive content. So, the question becomes: *How can we combine the vast trove of &mdash;existing, high-quality&mdash; content with the necessary creation tools to ensure a superior learning experience for the individual learner?* We think that, at least, a part of the answer to that question is to make the threshold for acquiring external content extremely low. In Edlib, for example, a YouTube video can be converted into an Edlib resource by just providing its URL and from that point onwards it will be included in the Edlib content repository just like any other Edlib resource for the purpose of reuse.
+What's more, the internet is a huge collection of self-contained content repositories like Wikipedia and YouTube with many purpose-built tools to create rich interactive content. So, the question becomes: *How can we combine the vast trove of &mdash;existing, high-quality&mdash; content with the necessary creation tools to ensure a superior learning experience for the individual learner?* We think that, at least, a part of the answer to that question is to make the threshold for acquiring external content as low as possible. In Edlib, for example, a YouTube video can be converted into an Edlib resource by just providing its URL and from that point onwards it will be included in the Edlib content repository just like any other Edlib resource for the purpose of reuse.
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
 
@@ -33,14 +33,14 @@ Edlib is continuously evolving with existing features being refined and other fe
    * **Course presentation**: A presentation content type which allows users to add multiple choice questions, fill in the blanks, text, and other types of interactions to their presentations.
    * **Flash cards**: Interactive flashcards. Create a set of stylish and intuitive flashcards that have images paired with questions and answers. 
    * **Quiz**: A content type allowing creatives to create quizzes. Many question types are supported like multiple choice, fill-in-the-blanks, drag-the-words, mark-the-words and regular drag-and-drop.
-* Content browser to easily find and re-use existing Edlib content. Content can be filtered by H5P content type, tags, [Creative-Commons](https://creativecommons.org/) license and so forth.
+* Content explorer to easily find and re-use existing Edlib content. Content can be filtered by H5P content type, tags, [Creative-Commons](https://creativecommons.org/) license and so forth.
 * Create content-by-URL: the ability to point to an existing (publicly available) resource and turn it into an Edlib-based learning resource.
-* Licensing module with a Creative-Commons license selector.
+* Licensing module with an intelligent Creative-Commons license selector.
 * Authoring workflows including the ability to maintain resources private or to make them publicly available.
 * Collaboration functionality.
 * Easy integration with third-party APIs including audio, video and image APIs.
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
-* [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support (with limited support for for version 2.0)
+* [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Resource versioning. 
 * Language support.
 

@@ -1,7 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Edlib',
-  tagline: 'Edlib allows you to create, store, share and use rich, interactive learning resources in the cloud',
+  tagline: 'Edlib is the intelligent option to manage your interactive learning resources in the cloud',
   url: 'https://docs.edlib.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -17,7 +17,11 @@ module.exports = {
         src: 'img/edlib-logo.png',
       },
       items: [
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/docs/intro', label: 'Documentation', position: 'left'},
+        {to: '/docs/developers/getting-started', label: 'Developers', position: 'left'},
+        {to: '/blog', label: 'Blog', position: 'left'},        
+        {to: '/careers', label: 'Careers', position: 'left'},
+        {to: '/contact-us', label: 'Contact Us', position: 'left'},
         {
           href: 'https://github.com/cerpus',
           label: 'GitHub',
@@ -107,12 +111,12 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'Contact us',
-              to: '/about/contact-us',
+              label: 'Careers',
+              to: '/careers',
             },
             {
-              label: 'Careers',
-              to: '/about/careers',
+              label: 'Contact us',
+              to: '/contact-us',
             },
             {
               label: 'GitHub',
@@ -121,7 +125,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
+      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
     },
   },
   presets: [
@@ -130,15 +134,9 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

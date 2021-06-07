@@ -2,8 +2,8 @@
 slug: hello-world
 title: Hello
 author: Brett Alistair Kromkamp
-author_url: https://github.com/brettkromkampcerpus
-author_image_url: https://github.com/brettkromkampcerpus.png?size=460
+author_url: https://github.com/brettkromkamp
+author_image_url: https://github.com/brettkromkamp.png?size=460
 tags: [hello, edlib, open-education-content, h5p]
 ---
 

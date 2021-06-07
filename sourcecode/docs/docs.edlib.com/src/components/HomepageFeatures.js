@@ -5,7 +5,7 @@ import styles from './HomepageFeatures.module.css';
 const FeatureList = [
   {
     title: 'Easy to Use',
-    Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
+    Svg: require('../../static/img/undraw_options.svg').default,
     description: (
       <>
         Edlib was designed from the ground up to be ...
@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'Focus on What Matters',
-    Svg: require('../../static/img/undraw_docusaurus_tree.svg').default,
+    Svg: require('../../static/img/undraw_focus.svg').default,
     description: (
       <>
         Edlib lets you focus on your ...
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Powered by H5P',
-    Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
+    Svg: require('../../static/img/undraw_powerful.svg').default,
     description: (
       <>
         Edlib ...
