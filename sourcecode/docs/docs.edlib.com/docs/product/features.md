@@ -69,7 +69,14 @@ Pending
 
 #### The &quot;Doku&quot; Content Type
 
-From a user-perspective, the Doku content type is a block editor which allows the user to add block-based content (for example, text, H5Ps, videos and images) to a vertically-aligned collection of content. From a combined pedagogical and technical point of view, the Doku content type provides the first level of formal context: it allows for the grouping of the individual educational resources themselves (and related info and instructions) into a larger context. The Doku (block) editor will have access to the lowest (atomic) level of EdLib resources, that is, H5Ps. 
+The Doku content type is a block editor which allows the user to add block-based content (for example, text, H5Ps, videos and images) to a vertically-aligned collection of content. 
+
+<div class="text--center">
+    <img class="edlib-image" alt="Edlib Doku (block) editor" src="/img/edlib-doku.png" />
+    <em>Edlib Doku (block) editor</em>
+</div>
+
+From a combined pedagogical and technical point of view, the Doku content type provides the first level of formal context: it allows for the grouping of the individual resources themselves (and related information and instructions) into a larger context ultimately resulting in a full-fledged **learning** resource. The Edlib Content Explorer combined with the Edlib recommendation engine will provide the Doku (block) editor with access to the lowest *atomic* level of EdLib resources &mdash;H5Ps&mdash; from which the user can choose to build the contextualised learning resources. 
 
 #### Recommendation Engine
 
