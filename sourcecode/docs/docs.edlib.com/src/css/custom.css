@@ -29,3 +29,7 @@
 html {
   font-family: 'Lato', sans-serif;
 }
+
+.edlib-image {
+  border: 1px solid rgb(149, 152, 161);
+}
