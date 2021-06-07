@@ -7,8 +7,8 @@ module.exports = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'cerpus', // Usually your GitHub org/user name.
-  projectName: 'Edlib', // Usually your repo name.
+  organizationName: 'cerpus',
+  projectName: 'Edlib',
   themeConfig: {
     navbar: {
       title: 'Edlib',
@@ -23,7 +23,7 @@ module.exports = {
         {to: '/careers', label: 'Careers', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
         {
-          href: 'https://github.com/cerpus',
+          href: 'https://github.com/cerpus/Edlib',
           label: 'GitHub',
           position: 'right',
         },
@@ -120,7 +120,7 @@ module.exports = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/cerpus',
+              href: 'https://github.com/cerpus/Edlib',
             },
           ],
         },

@@ -5,7 +5,7 @@ import styles from './HomepageFeatures.module.css';
 const FeatureList = [
   {
     title: 'Easy to Use',
-    Svg: require('../../static/img/undraw_options.svg').default,
+    Svg: require('../../static/img/options.svg').default,
     description: (
       <>
         Edlib was designed from the ground up to be as intuitive as possible while still providing you access to advanced collaboration, licensing and sharing features. Edlib is also easily integrated into third-party learning applications.
@@ -14,7 +14,7 @@ const FeatureList = [
   },
   {
     title: 'Focus on What Matters',
-    Svg: require('../../static/img/undraw_focus.svg').default,
+    Svg: require('../../static/img/focus.svg').default,
     description: (
       <>
         Edlib lets you focus on your content with efficient workflows for creating and managing content, licensing content appropriately, collaborating with other content creators, sharing content with learners and ultimately, getting an understanding of how students are interacting with the learning content.
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Powered by H5P',
-    Svg: require('../../static/img/undraw_powerful.svg').default,
+    Svg: require('../../static/img/powerful.svg').default,
     description: (
       <>
          Edlib was specificlly developed to enable the straightforward creation and management of <a href="https://h5p.org/">H5P</a>-based interactive learning resources.
