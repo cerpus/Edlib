@@ -21,20 +21,34 @@ Edlib is continuously evolving with existing features being refined and other fe
 * Easy integration with third-party APIs including audio, video and image APIs.
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
 * [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
+* Integrate against the LMS of your choice. Through LTI you can track results directly in your learning management systems.
+* More and better usage tracking with analysis will help you understand your students and create even better content.
 * Resource versioning. 
 * Language support.
 
 #### H5P
 
-Pending
+H5P is a powerful content creation platform for learning resources. H5P makes it easy to create, share and reuse HTML5-based interactive content. H5P enables everyone to create rich, interactive learning experiences more efficiently.
+
+H5P content is responsive and mobile-friendly allowing for the same rich, interactive content on desktop computers, smartphones and tablets alike.
 
 #### Content Explorer
 
-Pending
+Edlib's Content Explorer allows you to easily find and re-use existing Edlib content. Content can be filtered by H5P content type, tags, [Creative-Commons](https://creativecommons.org/) license and so forth.
 
-#### H5P
+<div class="text--center">
+    <img class="edlib-image" alt="Edlib Content Explorer" src="/img/edlib-content-explorer.png" />
+    <em>Image: Edlib Context Explorer</em>
+</div>
 
-Pending
+#### Content Author
+
+Edlib's Content Author provides quick access to purpose-built content authoring environments for all [H5P open-source content types](https://h5p.org/content-types-and-applications). 
+
+<div class="text--center">
+    <img class="edlib-image" alt="Edlib Content Author: H5P interactive video editor" src="/img/edlib-content-author.png" />
+    <em>Image: Edlib Content Author &mdash; <a href="https://h5p.org/interactive-video">H5P interactive video</a> editor</em>
+</div>
 
 #### Question Bank
 
@@ -55,4 +69,21 @@ Pending
 
 #### The &quot;Doku&quot; Content Type
 
-Pending
+From a user-perspective, the Doku content type is a block editor which allows the user to add block-based content (for example, text, H5Ps, videos and images) to a vertically-aligned collection of content. From a combined pedagogical and technical point of view, the Doku content type provides the first level of formal context: it allows for the grouping of the individual educational resources themselves (and related info and instructions) into a larger context. The Doku (block) editor will have access to the lowest (atomic) level of EdLib resources, that is, H5Ps. 
+
+#### Recommendation Engine
+
+The recommendation engine recommends and ranks relevant content (for course and game creators) based on three main information sources:
+
+1. Content together with its metadata
+2. Collections of content
+3. Learning outcomes
+
+<div class="text--center">
+    <img class="edlib-image" alt="Recommendation engine in the Edstep course builder" src="/img/edstep-recommendation-engine.png" />
+    <em>Image: Recommendation engine in the <a href="https://edstep.com/">Edstep</a> course builder (with suggestions on the right-hand side of the screen)</em>
+    <br/>
+    <br/>
+</div>
+
+What's more, the recommendation engine provides a set of APIs to work with content, collections and recommendations. Finally, the recommendation engine also provides an administrative interface to manually manage content, collections and to tweak ranking parameters.
