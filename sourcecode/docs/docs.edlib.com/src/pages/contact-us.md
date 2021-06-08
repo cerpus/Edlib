@@ -4,11 +4,11 @@ title: Contact Us
 
 # Contact Us
 
-Do you need help with your next educational project? We can help with your online courses and educational games. Apart from [Edlib](https://github.com/cerpus/Edlib), we also build our own educational applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; and we would love to help you build yours.
+Do you need help with your next educational project? We can help with your online courses and educational games. Apart from [Edlib](https://github.com/cerpus/Edlib), we are also building our own educational applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; and we would love to help you build yours.
 
 ## Get In Touch
 
-Want to get in touch? We'd love to hear from you. Here's how you can reach us.
+Want to get in touch? It would be great to hear from you. Here's how you can reach us.
 
 **Cerpus AS**<br/>
 Phone: +47 76 11 99 00<br/>
