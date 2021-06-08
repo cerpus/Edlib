@@ -136,6 +136,7 @@ export default () => {
 
         return client.search({
             index: apiConfig.elasticsearch.resourceIndexPrefix,
+            track_total_hits: true,
             body: {
                 from: pagination.offset,
                 size: pagination.limit,
