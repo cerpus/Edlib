@@ -1,6 +1,6 @@
 import React from 'react';
 import Job from './Job.jsx';
-import request from '../../../../../helpers/request.js';
+import request from '../../helpers/request.js';
 
 const JobContainer = ({ name, startUrl, statusUrl }) => {
     const [status, setStatus] = React.useState({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Grid } from '@material-ui/core';
-import Job from './Job';
+import Job from '../../../../components/Job';
 
 const MigrateCore = () => {
     return (
@@ -16,10 +16,8 @@ const MigrateCore = () => {
                 <Grid item md={12}>
                     <Job
                         name="Sync ressurser"
-                        startUrl="/resources/v1/sync-resources"
-                        statusUrl={(jobId) =>
-                            `/resources/v1/sync-resources/${jobId}`
-                        }
+                        startUrl="/resources/v1/jobs/migrate-old-data"
+                        statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
                     />
                 </Grid>
                 <Grid item md={12}>

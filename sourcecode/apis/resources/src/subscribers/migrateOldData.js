@@ -59,7 +59,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             let offset = 0;
 
             while (run) {
-                await context.db.sync.update(jobId, {
+                await context.db.job.update(jobId, {
                     percentDone: Math.floor(
                         (resourceCount / totalResourceCount / numberOfSteps) *
                             100
@@ -98,7 +98,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             const limit = 50;
             let offset = 0;
             while (run) {
-                await context.db.sync.update(jobId, {
+                await context.db.job.update(jobId, {
                     percentDone: Math.floor(
                         (coreSyncCount / totalResourceCount / numberOfSteps) *
                             100 +
@@ -131,7 +131,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             const limit = 50;
             let offset = 0;
             while (run) {
-                await context.db.sync.update(jobId, {
+                await context.db.job.update(jobId, {
                     percentDone: Math.floor(
                         (elasticsearchSyncCount /
                             totalResourceCount /
@@ -161,13 +161,13 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             }
         }
 
-        await context.db.sync.update(jobId, {
+        await context.db.job.update(jobId, {
             doneAt: new Date(),
             message: `Ferdig med å synkronisere ${resourceCount} ressurser.`,
         });
     } catch (e) {
         logger.error(e);
-        await context.db.sync.update(jobId, {
+        await context.db.job.update(jobId, {
             message: e.message,
             failedAt: new Date(),
             doneAt: new Date(),

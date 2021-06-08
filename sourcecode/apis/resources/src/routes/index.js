@@ -8,7 +8,7 @@ import ltiController from '../controllers/lti.js';
 import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
-import syncController from '../controllers/sync.js';
+import jobController from '../controllers/job.js';
 import contentTypes from './contentTypes.js';
 
 const { Router } = express;
@@ -179,14 +179,8 @@ export default async ({ pubSubConnection }) => {
         '/v1/external-systems/:externalSystemName/resources/:externalSystemId',
         runAsync(resourceController.ensureResourceExists)
     );
-    apiRouter.get(
-        '/v1/sync-resources/:jobId',
-        runAsync(syncController.getJobStatus)
-    );
-    apiRouter.post(
-        '/v1/sync-resources',
-        runAsync(syncController.syncResources)
-    );
+    apiRouter.post('/v1/jobs/:jobName', runAsync(jobController.startJob));
+    apiRouter.get('/v1/jobs/:jobId', runAsync(jobController.getJobStatus));
 
     apiRouter.use(await contentTypes());
 

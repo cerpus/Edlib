@@ -54,7 +54,10 @@ const Sidebar = () => {
             name: 'Jobber',
             to: '/jobs',
             icon: <LocalOffer />,
-            subLinks: [{ name: 'Migrate old core data', to: '/migrate-core' }],
+            subLinks: [
+                { name: 'Migrate old core data', to: '/migrate-core' },
+                { name: 'Ressurser', to: '/resources' },
+            ],
         },
     ];
 

@@ -2,10 +2,12 @@ import { setupApi } from '@cerpus/edlib-node-utils/index.js';
 import router from './routes/index.js';
 import errorReportingConfig from './config/errorReporting.js';
 import saveEdlibResourcesAPI from './subscribers/saveEdlibResourcesAPI.js';
-import sync from './subscribers/sync.js';
+import migrateOldData from './subscribers/migrateOldData.js';
+import refreshElasticsearchIndex from './subscribers/refreshElasticsearchIndex.js';
 import newUser from './subscribers/newUser.js';
 import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 import { buildRawContext } from './context/index.js';
+import jobNames from './constants/jobNames.js';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -14,18 +16,22 @@ const start = async () => {
         [
             {
                 exchangeName: 'edlibResourceUpdate',
-                subscriptionName: 'edlibResourceUpdate-resourceapi_handler',
                 handler: saveEdlibResourcesAPI,
             },
             {
-                exchangeName: '__internal_edlibResource_sync',
-                subscriptionName:
-                    '__internal_edlibResource_sync-resourceapi_handler',
-                handler: sync,
+                exchangeName:
+                    '__internal_edlibResource_jobs_' +
+                    jobNames.MIGRATE_OLD_DATA,
+                handler: migrateOldData,
+            },
+            {
+                exchangeName:
+                    '__internal_edlibResource_jobs_' +
+                    jobNames.REFRESH_ELASTICSEARCH_INDEX,
+                handler: refreshElasticsearchIndex,
             },
             {
                 exchangeName: 'edlib_new_user',
-                subscriptionName: 'edlib_new_user-resourceapi_handler',
                 handler: newUser,
             },
         ].map((subscriber) => {
@@ -34,7 +40,7 @@ const start = async () => {
             return pubsub.subscribe(
                 pubSubConnection,
                 subscriber.exchangeName,
-                subscriber.subscriptionName,
+                subscriber.exchangeName + '-resourceapi_handler',
                 async (msg) => {
                     await handler(JSON.parse(msg.content));
                 }

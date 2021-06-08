@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, {
-    dbHelpers,
-} from '@cerpus/edlib-node-utils/services/db.js';
+import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
 
 const table = 'resources';
 
@@ -36,10 +34,14 @@ const getAllPaginated = async (offset, limit) =>
         .offset(offset)
         .limit(limit);
 
+const count = async () =>
+    (await knex(table).count('*', { as: 'count' }).first()).count;
+
 export default () => ({
     create,
     update,
     getById,
     getByIds,
     getAllPaginated,
+    count,
 });
