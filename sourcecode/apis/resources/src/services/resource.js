@@ -170,11 +170,23 @@ const hasResourceWriteAccess = async (context, resource, tenantId) => {
         return false;
     }
 
-    if (resourceVersion.ownerId !== tenantId) {
-        return false;
+    return hasResourceVersionAccess(context, resourceVersion, tenantId);
+};
+
+const hasResourceVersionAccess = async (context, resourceVersion, tenantId) => {
+    if (resourceVersion.ownerId === tenantId) {
+        return true;
     }
 
-    return true;
+    const collaborators = await context.db.resourceVersionCollaborator.getForResourceVersion(
+        resourceVersion.id
+    );
+
+    if (collaborators.some((c) => c.tenantId === tenantId)) {
+        return true;
+    }
+
+    return false;
 };
 
 const retrieveCoreInfo = async (context, resourceVersions) => {
@@ -224,5 +236,6 @@ export default {
     getResourcesFromRequest,
     transformElasticResources,
     hasResourceWriteAccess,
+    hasResourceVersionAccess,
     retrieveCoreInfo,
 };

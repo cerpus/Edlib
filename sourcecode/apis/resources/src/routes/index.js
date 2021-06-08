@@ -168,6 +168,10 @@ export default async ({ pubSubConnection }) => {
         runAsync(ltiController.getResourceLtiInfo)
     );
     apiRouter.get(
+        '/v1/tenants/:tenantId/resources/:resourceId/lti-info',
+        runAsync(ltiController.getResourceLtiInfo)
+    );
+    apiRouter.get(
         '/v1/create-lti-info/:externalSystemName',
         runAsync(ltiController.getLtiCreateInfo)
     );

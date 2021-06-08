@@ -41,19 +41,50 @@ export default () => {
         if (!exists) {
             const versionProperties = {
                 id: { type: 'text' },
-                externalSystemName: { type: 'text' },
+                externalSystemName: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 title: { type: 'text' },
                 description: { type: 'text' },
-                license: { type: 'text' },
-                language: { type: 'text' },
-                contentType: { type: 'text' },
+                license: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
+                language: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
+                contentType: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 isListed: { type: 'boolean' },
+                createdAt: { type: 'date' },
+                updatedAt: { type: 'date' },
             };
 
             await client.indices.create({
                 index: apiConfig.elasticsearch.resourceIndexPrefix,
                 body: {
                     mappings: {
+                        dynamic: false,
                         properties: {
                             id: { type: 'text' },
                             publicVersion: {
