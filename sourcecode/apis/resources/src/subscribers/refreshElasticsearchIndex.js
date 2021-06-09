@@ -3,8 +3,6 @@ import { buildRawContext } from '../context/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import { logger } from '@cerpus/edlib-node-utils/index.js';
 
-const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
-
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
 

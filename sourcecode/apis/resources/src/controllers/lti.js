@@ -4,12 +4,12 @@ import resourceService from '../services/resource.js';
 
 export default {
     getResourceLtiInfo: async (req) => {
-        if (
-            !(await resourceService.isPublished(
-                req.context,
-                req.params.resourceId
-            ))
-        ) {
+        const resourceStatus = await resourceService.status(
+            req.context,
+            req.params.resourceId
+        );
+
+        if (!resourceStatus.isPublished) {
             throw new NotFoundException('resource');
         }
 

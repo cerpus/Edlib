@@ -233,13 +233,12 @@ const status = async (context, resourceId) => {
         resourceId
     );
 
-    if (resourceVersion && resourceVersion.isPublished === 1) {
-        return true;
-    }
+    const isPublished = resourceVersion && resourceVersion.isPublished === 1;
 
     return {
-        isListed: resourceVersion && resourceVersion.isListed === 1,
-        isPublished: resourceVersion && resourceVersion.isPublished === 1,
+        isListed:
+            resourceVersion && isPublished && resourceVersion.isListed === 1,
+        isPublished,
     };
 };
 
