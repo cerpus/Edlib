@@ -118,16 +118,15 @@ Ultimately, you should be able to develop and maintain functional and stable web
 
 #### Responsibilities
 
-* Participate in the entire application lifecycle, focusing on coding and debugging
+* Participate in the entire application lifecycle
 * Write clean code to develop functional web applications
 * Troubleshoot and debug applications
 * Perform UI tests to optimize performance
 * Manage cutting-edge technologies to improve legacy applications
-* Collaborate with Front-end developers to integrate user-facing elements with server side logic
+* Collaborate with front-end developers to integrate user-facing elements with server side logic
 * Gather and address technical and design requirements
 * Provide training and support to internal teams
 * Build reusable code and libraries for future use
-* Liaise with developers, designers and system administrators to identify new features
 * Follow emerging technologies
 
 #### Requirements
@@ -144,4 +143,4 @@ Ultimately, you should be able to develop and maintain functional and stable web
 If you are interested in applying for any of the above-mentioned roles, then please don't hesitate to get in touch with us:
 
 Phone: +47 76 11 99 00<br/>
-E-mail: post@cerpus.com<br/>
+Email: post@cerpus.com<br/>

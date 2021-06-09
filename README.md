@@ -48,6 +48,7 @@ Edlib is continuously evolving with existing features being refined and other fe
 
 * The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a full-fledged **learning** resource. 
 * The ability to include a recommendation engine to surface relevant content for course and game creators (currently in closed-beta).
+* The Question Bank service to assist with the auto-generation of, for example, [H5P Question Sets](https://h5p.org/question-set) or educational games
 
 ## Installation
 

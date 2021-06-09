@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Features
 
-Edlib is continuously evolving with existing features being refined and other features being added (or removed). The following is a list of major features, several of which are in active development.
+Edlib is continuously evolving with existing features being refined and new features being added. The following is a list of major features, several of which are in active development.
 
 ### Existing Features
 
@@ -14,7 +14,7 @@ Edlib is continuously evolving with existing features being refined and other fe
    * **Flash cards**: Interactive flashcards. Create a set of stylish and intuitive flashcards that have images paired with questions and answers. 
    * **Quiz**: A content type allowing creatives to create quizzes. Many question types are supported like multiple choice, fill-in-the-blanks, drag-the-words, mark-the-words and regular drag-and-drop.
 * Content explorer to easily find and re-use existing Edlib content. Content can be filtered by H5P content type, tags, [Creative-Commons](https://creativecommons.org/) license and so forth.
-* Create content-by-URL: the ability to point to an existing (publicly available) resource and turn it into an Edlib-based learning resource.
+* Create &lsquo;content-by-URL&rsquo;: the ability to reference an existing (publicly available) resource and turn it into an Edlib-based learning resource.
 * Licensing module with an intelligent Creative-Commons license selector.
 * Authoring workflows including the ability to maintain resources private or to make them publicly available.
 * Collaboration functionality.
@@ -38,6 +38,7 @@ Edlib's Content Explorer allows you to easily find and re-use existing Edlib con
 
 <div class="text--center">
     <img class="edlib-image" alt="Edlib Content Explorer" src="/img/edlib-content-explorer.png" />
+    <br/>
     <em>Image: Edlib Context Explorer</em>
 </div>
 
@@ -47,12 +48,9 @@ Edlib's Content Author provides quick access to purpose-built content authoring 
 
 <div class="text--center">
     <img class="edlib-image" alt="Edlib Content Author: H5P interactive video editor" src="/img/edlib-content-author.png" />
+    <br/>
     <em>Image: Edlib Content Author &mdash; <a href="https://h5p.org/interactive-video">H5P interactive video</a> editor</em>
 </div>
-
-#### Question Bank
-
-Pending
 
 #### Resource Versioning
 
@@ -66,6 +64,7 @@ Pending
 
 * The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a full-fledged **learning** resource. 
 * The ability to include a recommendation engine to surface relevant content for course and game creators (currently in closed-beta).
+* The Question Bank service to assist with the auto-generation of, for example, [H5P Question Sets](https://h5p.org/question-set) or educational games
 
 #### The &quot;Doku&quot; Content Type
 
@@ -73,6 +72,7 @@ The Doku content type is a block editor which allows the user to add block-based
 
 <div class="text--center">
     <img class="edlib-image" alt="Edlib Doku (block) editor" src="/img/edlib-doku.png" />
+    <br/>
     <em>Image: Edlib Doku (block) editor</em>
     <br/>
     <br/>
@@ -89,10 +89,25 @@ The recommendation engine recommends and ranks relevant content (for course and 
 3. Learning outcomes
 
 <div class="text--center">
-    <img class="edlib-image" alt="Recommendation engine in the Edstep course builder" src="/img/edstep-recommendation-engine.png" />
-    <em>Image: Recommendation engine in the <a href="https://edstep.com/">Edstep</a> course builder (with suggestions on the right-hand side of the screen)</em>
+    <img class="edlib-image" alt="Recommendation Engine in the Edstep course builder" src="/img/edstep-recommendation-engine.png" />
+    <br/>
+    <em>Image: Recommendation Engine in the <a href="https://edstep.com/">Edstep</a> course builder (with suggestions from the Recommendation Engine on the right-hand side of the screen)</em>
     <br/>
     <br/>
 </div>
 
 What's more, the recommendation engine provides a set of APIs to work with content, collections and recommendations. Finally, the recommendation engine also provides an administrative interface to manually manage content, collections and to tweak ranking parameters.
+
+#### Question Bank
+
+The Edlib Question Bank is a separate Edlib service to manage question sets and related answers. Question sets can be tagged and categorized. What's more, individual answers have a &quot;degree of correctness&quot; property allowing for questions and the accompanying answers to go beyond the rigid *right vs. wrong* dichotomy.
+
+<div class="text--center">
+    <img class="edlib-image" alt="Edlib Question Bank high-level architecture" src="/img/edlib-question-bank-architecture.png" />
+    <br/>
+    <em>Image: Edlib Question Bank high-level architecture</em>
+    <br/>
+    <br/>
+</div>
+
+Currently, the Edlib Question Bank is used primarily to auto-generate [H5P Question Sets](https://h5p.org/question-set) or &quot;Who Wants to Be a Millionaire&quot;-like educational games. 
