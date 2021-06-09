@@ -8,11 +8,15 @@ import { getResourceName, ResourceIcon } from '../Resource';
 import ResourceVersions from '../ResourceVersions';
 import useTranslation from '../../hooks/useTranslation';
 import moment from 'moment';
-import { Modal } from '@cerpus/ui';
 import useArray from '../../hooks/useArray';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceColumns from '../../constants/resourceColumns';
-import { Button } from '@material-ui/core';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+} from '@material-ui/core';
 
 const Row = styled.div`
     display: grid;
@@ -210,37 +214,36 @@ const ResourceTable = ({
                 onClose={() => setResourceVersionModal(null)}
                 selectedResource={resourceVersionModal}
             />
-            <Modal
-                isOpen={showConfirmDeletionModal}
+            <Dialog
+                open={showConfirmDeletionModal}
                 onClose={() => setShowConfirmDeletionModal(false)}
-                displayCloseButton={true}
+                maxWidth="sm"
+                fullWidth
             >
-                <div style={{ padding: 20 }}>
-                    <h3>Er du sikker?</h3>
-                    <div>
-                        <Button
-                            color="primary"
-                            variant="outlined"
-                            onClick={() => setShowConfirmDeletionModal(false)}
-                        >
-                            Lukk
-                        </Button>
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            style={{ marginLeft: 5 }}
-                            onClick={() => {
-                                onRemove(showConfirmDeletionModal).then(() => {
-                                    idsToHide.push(showConfirmDeletionModal);
-                                    setShowConfirmDeletionModal(false);
-                                });
-                            }}
-                        >
-                            Fjern
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
+                <DialogTitle>Er du sikker?</DialogTitle>
+                <DialogActions>
+                    <Button
+                        color="primary"
+                        variant="outlined"
+                        onClick={() => setShowConfirmDeletionModal(false)}
+                    >
+                        Lukk
+                    </Button>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        style={{ marginLeft: 5 }}
+                        onClick={() => {
+                            onRemove(showConfirmDeletionModal).then(() => {
+                                idsToHide.push(showConfirmDeletionModal);
+                                setShowConfirmDeletionModal(false);
+                            });
+                        }}
+                    >
+                        Fjern
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };

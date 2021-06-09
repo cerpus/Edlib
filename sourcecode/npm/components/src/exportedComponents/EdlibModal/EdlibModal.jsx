@@ -1,5 +1,4 @@
 import React from 'react';
-import { Modal } from '@cerpus/ui';
 import Header from '../../components/Header';
 import { MemoryRouter, Switch, Route } from 'react-router-dom';
 import MyContent from './routes/MyContent';
@@ -18,6 +17,7 @@ import useRequestWithToken from '../../hooks/useRequestWithToken';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
 import ExportWrapper from '../../components/ExportWrapper';
+import { Modal } from '@material-ui/core';
 
 const getStartPage = (userConfiguredStartPage) => {
     if (
@@ -77,66 +77,77 @@ const EdlibModal = ({
                         }}
                     >
                         <Modal
-                            isOpen={true}
+                            open={true}
                             width="100%"
                             onClose={onClose}
-                            displayCloseButton={false}
-                            removePadding={removePadding}
+                            style={{ margin: 20 }}
                         >
-                            <CssReset>
-                                {!loadingConfig && (
-                                    <div
-                                        style={{
-                                            height,
-                                            position: 'relative',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            lineHeight: '24px',
-                                            fontSize: 16,
-                                        }}
-                                    >
-                                        <Header
-                                            onClose={onClose}
-                                            viewportHeight={height}
-                                        />
-                                        <div style={{ flex: 1, minHeight: 0 }}>
-                                            <Switch>
-                                                <Route
-                                                    path="/resources/new/:type"
-                                                    component={NewResource}
-                                                />
-                                                <Route
-                                                    exact
-                                                    path="/resources/:edlibId"
-                                                    component={EditResource}
-                                                />
-                                                <Route
-                                                    exact
-                                                    path="/resources/:edlibId/edit-done"
-                                                    component={ResourceEditDone}
-                                                />
-                                                <Route
-                                                    exact
-                                                    path="/resources/:edlibId/:translateToLanguage"
-                                                    component={EditResource}
-                                                />
-                                                <Route
-                                                    path="/link-author"
-                                                    component={LinkAuthor}
-                                                />
-                                                <Route
-                                                    path="/my-content"
-                                                    component={MyContent}
-                                                />
-                                                <Route
-                                                    path="/shared-content"
-                                                    component={SharedContent}
-                                                />
-                                            </Switch>
+                            <div>
+                                <CssReset>
+                                    {!loadingConfig && (
+                                        <div
+                                            style={{
+                                                height,
+                                                position: 'relative',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                lineHeight: '24px',
+                                                fontSize: 16,
+                                                backgroundColor: 'white',
+                                            }}
+                                        >
+                                            <Header
+                                                onClose={onClose}
+                                                viewportHeight={height}
+                                            />
+                                            <div
+                                                style={{
+                                                    flex: 1,
+                                                    minHeight: 0,
+                                                }}
+                                            >
+                                                <Switch>
+                                                    <Route
+                                                        path="/resources/new/:type"
+                                                        component={NewResource}
+                                                    />
+                                                    <Route
+                                                        exact
+                                                        path="/resources/:edlibId"
+                                                        component={EditResource}
+                                                    />
+                                                    <Route
+                                                        exact
+                                                        path="/resources/:edlibId/edit-done"
+                                                        component={
+                                                            ResourceEditDone
+                                                        }
+                                                    />
+                                                    <Route
+                                                        exact
+                                                        path="/resources/:edlibId/:translateToLanguage"
+                                                        component={EditResource}
+                                                    />
+                                                    <Route
+                                                        path="/link-author"
+                                                        component={LinkAuthor}
+                                                    />
+                                                    <Route
+                                                        path="/my-content"
+                                                        component={MyContent}
+                                                    />
+                                                    <Route
+                                                        path="/shared-content"
+                                                        component={
+                                                            SharedContent
+                                                        }
+                                                    />
+                                                </Switch>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </CssReset>
+                                    )}
+                                </CssReset>
+                            </div>
                         </Modal>
                     </ResourceCapabilitiesProvider>
                 </ConfigurationProvider>

@@ -1,12 +1,10 @@
 import React from 'react';
+import { Spinner, useIsDevice } from '@cerpus/ui';
 import {
-    Modal,
-    ModalBody,
-    ModalSplitter,
-    Spinner,
-    useIsDevice,
-} from '@cerpus/ui';
-import { ArrowForward, Edit as EditIcon } from '@material-ui/icons';
+    ArrowForward,
+    Edit as EditIcon,
+    Close as CloseIcon,
+} from '@material-ui/icons';
 import styled from 'styled-components';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import useResourceCapabilitiesFlags from '../../hooks/useResourceCapabilities';
@@ -18,7 +16,7 @@ import useTranslation from '../../hooks/useTranslation';
 import { useHistory } from 'react-router-dom';
 import { resourceCapabilities } from '../../config/resource';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
-import { Button } from '@material-ui/core';
+import { Box, Button, Dialog, DialogContent } from '@material-ui/core';
 
 const Header = styled.div`
     display: flex;
@@ -54,6 +52,13 @@ const Meta = styled.div`
     }
 `;
 
+const Splitter = styled.div`
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 2px;
+    background-color: rgb(209, 213, 218);
+`;
+
 const ResourceModal = ({ isOpen, onClose, resource }) => {
     const { t } = useTranslation();
     const history = useHistory();
@@ -85,34 +90,34 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
     const capabilities = useResourceCapabilitiesFlags(resource);
 
     return (
-        <Modal width={900} onClose={onClose} isOpen={isOpen}>
-            <ResourcePreview resource={resource}>
-                {({ loading, error, frame, license, source }) => {
-                    if (loading) {
+        <Dialog maxWidth="md" fullWidth onClose={onClose} open={isOpen}>
+            <DialogContent>
+                <ResourcePreview resource={resource}>
+                    {({ loading, error, frame, license, source }) => {
+                        if (loading) {
+                            return (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        padding: '20px 0',
+                                    }}
+                                >
+                                    <Spinner />
+                                </div>
+                            );
+                        }
+
+                        if (error) {
+                            return <div>Noe skjedde</div>;
+                        }
+
                         return (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    padding: '20px 0',
-                                }}
-                            >
-                                <Spinner />
-                            </div>
-                        );
-                    }
-
-                    if (error) {
-                        return <div>Noe skjedde</div>;
-                    }
-
-                    return (
-                        <>
-                            <ModalBody>
+                            <>
                                 <Header>
                                     <div>
                                         <ResourceType>{source}</ResourceType>
-                                        <Title>{resource.version.name}</Title>
+                                        <Title>{resource.version.title}</Title>
                                         <p>{resource.version.description}</p>
                                     </div>
                                     <div>
@@ -154,9 +159,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                 {capabilities[
                                                     resourceCapabilities.EDIT
                                                 ] && (
-                                                    <div
-                                                        style={{ marginTop: 5 }}
-                                                    >
+                                                    <Box marginTop={1}>
                                                         <Button
                                                             color="primary"
                                                             variant="outlined"
@@ -172,19 +175,26 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                                 'Rediger ressurs'
                                                             ).toUpperCase()}
                                                         </Button>
-                                                    </div>
+                                                    </Box>
                                                 )}
                                             </>
                                         )}
+                                        <Box marginTop={1}>
+                                            <Button
+                                                color="primary"
+                                                variant="outlined"
+                                                onClick={onClose}
+                                                endIcon={<CloseIcon />}
+                                                fullWidth
+                                            >
+                                                {t('Lukk').toUpperCase()}
+                                            </Button>
+                                        </Box>
                                     </div>
                                 </Header>
-                            </ModalBody>
-                            <ModalSplitter />
-                            <ModalBody>
+                                <Splitter />
                                 <div style={{ marginTop: 20 }}>{frame}</div>
-                            </ModalBody>
-                            <ModalSplitter />
-                            <ModalBody>
+                                <Splitter />
                                 <Footer>
                                     <Meta>
                                         <div>Publiseringsdato</div>
@@ -201,12 +211,12 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                         </div>
                                     </Meta>
                                 </Footer>
-                            </ModalBody>
-                        </>
-                    );
-                }}
-            </ResourcePreview>
-        </Modal>
+                            </>
+                        );
+                    }}
+                </ResourcePreview>
+            </DialogContent>
+        </Dialog>
     );
 };
 
