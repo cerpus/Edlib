@@ -162,7 +162,7 @@ const transformElasticResources = async (
 };
 
 const hasResourceWriteAccess = async (context, resource, tenantId) => {
-    const resourceVersion = await context.db.resourceVersion.getLatestPublishedResourceVersion(
+    const resourceVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
         resource.id
     );
 
@@ -170,10 +170,6 @@ const hasResourceWriteAccess = async (context, resource, tenantId) => {
         return false;
     }
 
-    return hasResourceVersionAccess(context, resourceVersion, tenantId);
-};
-
-const hasResourceVersionAccess = async (context, resourceVersion, tenantId) => {
     if (resourceVersion.ownerId === tenantId) {
         return true;
     }
@@ -232,10 +228,32 @@ const retrieveCoreInfo = async (context, resourceVersions) => {
     }
 };
 
+const status = async (context, resourceId) => {
+    const resourceVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
+        resourceId
+    );
+
+    if (resourceVersion && resourceVersion.isPublished === 1) {
+        return true;
+    }
+
+    return {
+        isListed: resourceVersion && resourceVersion.isListed === 1,
+        isPublished: resourceVersion && resourceVersion.isPublished === 1,
+    };
+};
+
+const isPublished = async (context, resourceId) => {
+    const resourceStatus = await status(context, resourceId);
+
+    return resourceStatus.isPublished;
+};
+
 export default {
     getResourcesFromRequest,
     transformElasticResources,
     hasResourceWriteAccess,
-    hasResourceVersionAccess,
     retrieveCoreInfo,
+    isPublished,
+    status,
 };

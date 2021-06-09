@@ -66,6 +66,13 @@ const getLatestResourceVersion = async (resourceId) =>
         .orderBy('createdAt', 'DESC')
         .first();
 
+const getLatestNonDraftResourceVersion = async (resourceId) =>
+    knex(table)
+        .select('*')
+        .where('resourceId', resourceId)
+        .orderBy('createdAt', 'DESC')
+        .first();
+
 const getLatestPublishedResourceVersion = async (resourceId) =>
     knex(table)
         .select('*')
@@ -97,4 +104,5 @@ export default () => ({
     getLatestPublishedResourceVersion,
     getContentTypesForExternalSystemName,
     getAllPaginated,
+    getLatestNonDraftResourceVersion,
 });

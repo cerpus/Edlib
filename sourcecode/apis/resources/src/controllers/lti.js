@@ -4,6 +4,15 @@ import resourceService from '../services/resource.js';
 
 export default {
     getResourceLtiInfo: async (req) => {
+        if (
+            !(await resourceService.isPublished(
+                req.context,
+                req.params.resourceId
+            ))
+        ) {
+            throw new NotFoundException('resource');
+        }
+
         let resourceVersion;
         if (req.query.versionId) {
             resourceVersion = await req.context.db.resourceVersion.getById(
@@ -12,7 +21,7 @@ export default {
         }
 
         if (!resourceVersion) {
-            resourceVersion = await req.context.db.resourceVersion.getLatestPublishedResourceVersion(
+            resourceVersion = await req.context.db.resourceVersion.getLatestNonDraftResourceVersion(
                 req.params.resourceId
             );
         }
@@ -24,14 +33,58 @@ export default {
             throw new NotFoundException('resource');
         }
 
-        if (
-            req.params.tenantId &&
-            !(await resourceService.hasResourceVersionAccess(
+        return externalSystemService.getLtiResourceInfo(resourceVersion);
+    },
+    getTenantResourceLtiInfo: async (req) => {
+        let resourceVersion;
+        if (req.query.versionId) {
+            resourceVersion = await req.context.db.resourceVersion.getById(
+                req.query.versionId
+            );
+        }
+
+        if (!resourceVersion) {
+            resourceVersion = await req.context.db.resourceVersion.getLatestNonDraftResourceVersion(
+                req.params.resourceId
+            );
+        }
+
+        if (!resourceVersion) {
+            throw new NotFoundException('resource');
+        }
+
+        const resource = await req.context.db.resource.getById(
+            resourceVersion.resourceId
+        );
+
+        if (!resource) {
+            throw new NotFoundException('resource');
+        }
+
+        const resourceStatus = await resourceService.status(
+            req.context,
+            req.params.resourceId
+        );
+
+        const canGet = async () => {
+            if (resourceStatus.isPublished && resourceStatus.isListed) {
+                return true;
+            }
+
+            const hasWriteAccess = await resourceService.hasResourceWriteAccess(
                 req.context,
-                resourceVersion,
+                resource,
                 req.params.tenantId
-            ))
-        ) {
+            );
+
+            if (hasWriteAccess) {
+                return true;
+            }
+
+            return false;
+        };
+
+        if (!(await canGet())) {
             throw new NotFoundException('resource');
         }
 

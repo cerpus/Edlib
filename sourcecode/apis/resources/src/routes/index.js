@@ -163,13 +163,61 @@ export default async ({ pubSubConnection }) => {
         '/v1/resources-from-external/:externalSystemName/:externalSystemId',
         runAsync(resourceController.getResourceFromExternalId)
     );
+
+    /**
+     * @swagger
+     *
+     *  /v1/resources/{resourceId}/lti-info:
+     *      get:
+     *          description: Get resource info to launch a lti request
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: resourceId
+     *                type: string
+     *                required: true
+     *              - in: query
+     *                name: mustBeShared
+     *                type: string
+     *                enum:
+     *                    - "true"
+     *                    - "false"
+     *                default: "false"
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
     apiRouter.get(
         '/v1/resources/:resourceId/lti-info',
         runAsync(ltiController.getResourceLtiInfo)
     );
+
+    /**
+     * @swagger
+     *
+     *  /v1/tenants/{tenantId}/resources/{resourceId}/lti-info:
+     *      get:
+     *          description: Get resource info to launch a lti request and verify user has access
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: tenantId
+     *                type: string
+     *                required: true
+     *              - in: path
+     *                name: resourceId
+     *                type: string
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
     apiRouter.get(
         '/v1/tenants/:tenantId/resources/:resourceId/lti-info',
-        runAsync(ltiController.getResourceLtiInfo)
+        runAsync(ltiController.getTenantResourceLtiInfo)
     );
     apiRouter.get(
         '/v1/create-lti-info/:externalSystemName',
