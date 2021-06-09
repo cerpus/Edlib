@@ -5,18 +5,37 @@ import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 import _ from 'lodash';
 import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
+import appConfig from '../config/app.js';
+import JsonWebToken from 'jsonwebtoken';
 
 export default {
     convertToken: async (req) => {
-        const payload = await externalAuthService.verifyToken(
-            req.body.externalToken
-        );
+        let user;
 
-        const user = Object.entries(
-            externalTokenVerifierConfig.propertyPaths
-        ).reduce((user, [property, path]) => {
-            return { ...user, [property]: _.get(payload, path) };
-        }, {});
+        if (appConfig.allowFakeToken) {
+            const { data } = await JsonWebToken.decode(req.body.externalToken);
+            if (data && data.user && data.isFakeToken) {
+                user = {
+                    id: data.user.id,
+                    firstName: data.user.firstName,
+                    lastName: data.user.lastName,
+                    email: data.user.email,
+                    isAdmin: data.user.isAdmin,
+                };
+            }
+        }
+
+        if (!user) {
+            const payload = await externalAuthService.verifyToken(
+                req.body.externalToken
+            );
+
+            user = Object.entries(
+                externalTokenVerifierConfig.propertyPaths
+            ).reduce((user, [property, path]) => {
+                return { ...user, [property]: _.get(payload, path) };
+            }, {});
+        }
 
         user.isAdmin = user.isAdmin ? 1 : 0;
 
