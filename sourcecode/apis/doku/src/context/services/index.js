@@ -1,18 +1,17 @@
 import apiConfig from '../../config/apis.js';
-import license from '@cerpus/edlib-node-utils/apiClients/license/index.js';
-import version from '@cerpus/edlib-node-utils/apiClients/version/index.js';
-import status from '@cerpus/edlib-node-utils/services/status.js';
-import id from '@cerpus/edlib-node-utils/apiClients/id/index.js';
-import coreInternal from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
+import { apiClients, services } from '@cerpus/edlib-node-utils';
 
 export default (req) => {
-    const idApi = id(req, apiConfig.id);
-    const licenseApi = license(req, apiConfig.license, {
+    const idApi = apiClients.id(req, apiConfig.id);
+    const licenseApi = apiClients.license(req, apiConfig.license, {
         idApiClient: idApi,
     });
-    const versionApi = version(req, apiConfig.version);
-    const coreInternalApi = coreInternal(req, apiConfig.coreInternal);
-    const statusService = status({
+    const versionApi = apiClients.version(req, apiConfig.version);
+    const coreInternalApi = apiClients.coreInternal(
+        req,
+        apiConfig.coreInternal
+    );
+    const statusService = services.status({
         licenseApi,
         versionApi,
         coreInternalApi,

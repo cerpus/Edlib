@@ -1,6 +1,6 @@
 import express from 'express';
 import StatusController from '../controllers/status.js';
-import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
+import { runAsync } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 

@@ -3,8 +3,7 @@ import jwksProviderService from '../services/jwksProvider.js';
 import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 
 import _ from 'lodash';
-import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
-import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
+import { UnauthorizedException, pubsub } from '@cerpus/edlib-node-utils';
 import appConfig from '../config/app.js';
 import JsonWebToken from 'jsonwebtoken';
 

@@ -1,6 +1,4 @@
-import knex, {
-    dbHelpers,
-} from '@cerpus/edlib-node-utils/services/db.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 import DataLoader from 'dataloader';
 import { v4 as v4Uuid } from 'uuid';
 
@@ -92,22 +90,18 @@ const update = async (id, doku) =>
 
 const get = async (offset, limit, orderBy) =>
     formatDokuOut(
-        await knex(table)
-            .select('*')
-            .orderBy(orderBy)
-            .offset(offset)
-            .limit(limit)
+        await db(table).select('*').orderBy(orderBy).offset(offset).limit(limit)
     );
 
 const getCount = async () => {
-    const [{ count }] = await knex(table).count('* as count');
+    const [{ count }] = await db(table).count('* as count');
 
     return parseInt(count);
 };
 
 const getById = () =>
     new DataLoader(async (ids) => {
-        const dokus = await knex(table).select('*').whereIn('id', ids);
+        const dokus = await db(table).select('*').whereIn('id', ids);
         return formatDokuOut(
             ids.map((id) => dokus.find((doku) => doku.id === id))
         );
