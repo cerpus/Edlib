@@ -1,5 +1,4 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
-import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
+import { NotFoundException, pubsub } from '@cerpus/edlib-node-utils';
 
 export default {
     getJobStatus: async (req, res, next) => {

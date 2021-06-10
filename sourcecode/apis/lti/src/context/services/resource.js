@@ -1,7 +1,7 @@
 import apis from '../../config/apis.js';
 import axios from 'axios';
-import { exceptionTranslator } from '@cerpus/edlib-node-utils/services/index.js';
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { exceptionTranslator } from '@cerpus/edlib-node-utils';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 const resourceAxios = async (options) => {
     console.log(`${options.method} ${apis.resource.url}${options.url}`);

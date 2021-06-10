@@ -1,11 +1,11 @@
-import { setupApi } from '@cerpus/edlib-node-utils/index.js';
+import { setupApi } from '@cerpus/edlib-node-utils';
 import router from './routes/index.js';
 import errorReportingConfig from './config/errorReporting.js';
 import { buildRawContext } from './context/index.js';
 import fileParserService from './services/fileParser.js';
 import consumerService from './services/consumer.js';
 import sync from './subscribers/sync.js';
-import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
+import { pubsub } from '@cerpus/edlib-node-utils';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();

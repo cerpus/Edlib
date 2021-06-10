@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { validateJoi } from '@cerpus/edlib-node-utils';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 export default {
     createUsage: async (req, res, next) => {
@@ -18,6 +18,7 @@ export default {
         });
     },
     getUsage: async (req, res, next) => {
+        throw new NotFoundException('usage');
         const usage = await req.context.db.usage.getById(req.params.usageId);
         if (!usage) {
             throw new NotFoundException('usage');
