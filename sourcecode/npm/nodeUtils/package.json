@@ -2,18 +2,17 @@
   "name": "@cerpus/edlib-node-utils",
   "version": "1.2.0",
   "private": false,
-  "type": "module",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "author": "Max Moeschinger <m.moeschinger@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "test": "ENABLE_LOGGING=0 jest --config=./jest.config.json"
+    "test": "ENABLE_LOGGING=0 jest --config=./jest.config.json",
+    "build": "babel src -d lib",
+    "prepare": "npm run build"
   },
   "engines": {
     "node": ">= 14.0.0"
-  },
-  "exports": {
-    "./": "./src/"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
@@ -40,28 +39,15 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0",
-    "@babel/preset-env": "^7.12.0",
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.5",
+    "@babel/node": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^26.5.3",
     "jest-bamboo-reporter": "^1.2.1",
     "prettier": "^2.1.2"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      "transform-default-import"
-    ]
   },
   "peerDependencies": {
     "amqplib": "^0.8.0"

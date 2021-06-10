@@ -7,7 +7,7 @@ import logRequest from '../middlewares/logRequest.js';
 import endpointNotFoundHandler from '../middlewares/endpointNotFoundHandler.js';
 import exceptionHandler from '../middlewares/exceptionHandler.js';
 import * as errorReporting from '../services/errorReporting.js';
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import prepareTrace from '../middlewares/prepareTrace.js';
 
 const app = express();
