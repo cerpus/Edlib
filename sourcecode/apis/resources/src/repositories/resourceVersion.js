@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 
 const table = 'resourceVersions';
 
@@ -32,18 +32,18 @@ const create = async (resourceVersion) => {
 const update = (id, resourceVersion) =>
     dbHelpers.updateId(table, id, format(resourceVersion));
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
-const getByIds = async (ids) => knex(table).select('*').whereIn('id', ids);
+const getById = async (id) => db(table).select('*').where('id', id).first();
+const getByIds = async (ids) => db(table).select('*').whereIn('id', ids);
 
 const getByExternalId = async (systemName, id) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('externalSystemName', systemName.toLowerCase())
         .where('externalSystemId', id)
         .first();
 
 const getFirstFromExternalSytemReference = async (externalSystemReferences) => {
-    const queryBeforeWhere = knex(table).select('*');
+    const queryBeforeWhere = db(table).select('*');
 
     externalSystemReferences.forEach(
         ({ externalSystemName, externalSystemId }) => {
@@ -60,21 +60,21 @@ const getFirstFromExternalSytemReference = async (externalSystemReferences) => {
 };
 
 const getLatestResourceVersion = async (resourceId) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('resourceId', resourceId)
         .orderBy('createdAt', 'DESC')
         .first();
 
 const getLatestNonDraftResourceVersion = async (resourceId) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('resourceId', resourceId)
         .orderBy('createdAt', 'DESC')
         .first();
 
 const getLatestPublishedResourceVersion = async (resourceId) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('resourceId', resourceId)
         .where('isPublished', true)
@@ -82,12 +82,12 @@ const getLatestPublishedResourceVersion = async (resourceId) =>
         .first();
 
 const getContentTypesForExternalSystemName = async (externalSystemName) =>
-    knex(table)
+    db(table)
         .distinct('contentType')
         .where('externalSystemName', externalSystemName);
 
 const getAllPaginated = async (offset, limit) =>
-    knex(table)
+    db(table)
         .select('*')
         .orderBy('createdAt', 'ASC')
         .offset(offset)

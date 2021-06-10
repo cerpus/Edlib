@@ -1,8 +1,5 @@
 import apiConfig from '../config/apis.js';
-import {
-    NotFoundException,
-    ApiException,
-} from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { NotFoundException, ApiException } from '@cerpus/edlib-node-utils';
 
 const getConfig = (externalSystemName) => {
     const config =

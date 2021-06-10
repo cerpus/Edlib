@@ -2,10 +2,10 @@ import axios from 'axios';
 import {
     NotFoundException,
     AxiosException,
-} from '@cerpus/edlib-node-utils/exceptions/index.js';
+    exceptionTranslator,
+    logger,
+} from '@cerpus/edlib-node-utils';
 import apiConfig from '../../config/apis.js';
-import { exceptionTranslator } from '@cerpus/edlib-node-utils/services/index.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
 
 const getUrl = (externalSystemName) => {
     const externalApiConfig =

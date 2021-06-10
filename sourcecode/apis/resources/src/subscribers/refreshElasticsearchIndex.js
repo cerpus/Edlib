@@ -1,7 +1,7 @@
 import Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger } from '@cerpus/edlib-node-utils';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });

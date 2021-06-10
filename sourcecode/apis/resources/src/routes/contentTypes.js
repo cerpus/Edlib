@@ -1,6 +1,6 @@
 import express from 'express';
-import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
-import contentTypeController from "../controllers/contentType.js";
+import { runAsync } from '@cerpus/edlib-node-utils';
+import contentTypeController from '../controllers/contentType.js';
 
 const { Router } = express;
 

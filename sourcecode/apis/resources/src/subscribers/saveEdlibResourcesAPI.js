@@ -1,7 +1,6 @@
 import { buildRawContext } from '../context/index.js';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import Joi from 'joi';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger, validateJoi } from '@cerpus/edlib-node-utils';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import externalSystemService from '../services/externalSystem.js';
 

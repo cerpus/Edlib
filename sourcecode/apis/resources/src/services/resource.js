@@ -1,10 +1,12 @@
 import Joi from 'joi';
 import _ from 'lodash';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
+import {
+    validateJoi,
+    NotFoundException,
+    ApiException,
+} from '@cerpus/edlib-node-utils';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import moment from 'moment';
-import { ApiException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';

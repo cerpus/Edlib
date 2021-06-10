@@ -4,7 +4,7 @@ import apiConfig from '../config/apis.js';
 import saveEdlibResourcesAPI from './saveEdlibResourcesAPI.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import resourceService from '../services/resource.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger } from '@cerpus/edlib-node-utils';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });

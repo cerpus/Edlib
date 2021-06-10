@@ -1,13 +1,12 @@
 import express from 'express';
 import addContextToRequest from '../middlewares/addContextToRequest.js';
-import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
+import { runAsync, logger } from '@cerpus/edlib-node-utils';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import resourceController from '../controllers/resource.js';
 import ltiController from '../controllers/lti.js';
 import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
 import jobController from '../controllers/job.js';
 import contentTypes from './contentTypes.js';
 

@@ -1,11 +1,10 @@
-import { setupApi } from '@cerpus/edlib-node-utils/index.js';
+import { setupApi, pubsub } from '@cerpus/edlib-node-utils';
 import router from './routes/index.js';
 import errorReportingConfig from './config/errorReporting.js';
 import saveEdlibResourcesAPI from './subscribers/saveEdlibResourcesAPI.js';
 import migrateOldData from './subscribers/migrateOldData.js';
 import refreshElasticsearchIndex from './subscribers/refreshElasticsearchIndex.js';
 import newUser from './subscribers/newUser.js';
-import { pubsub } from '@cerpus/edlib-node-utils/services/index.js';
 import { buildRawContext } from './context/index.js';
 import jobNames from './constants/jobNames.js';
 

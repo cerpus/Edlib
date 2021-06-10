@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 
 const table = 'resources';
 
@@ -24,18 +24,18 @@ const update = (id, resource) =>
         updatedAt: new Date(),
     });
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
-const getByIds = async (ids) => knex(table).select('*').whereIn('id', ids);
+const getById = async (id) => db(table).select('*').where('id', id).first();
+const getByIds = async (ids) => db(table).select('*').whereIn('id', ids);
 
 const getAllPaginated = async (offset, limit) =>
-    knex(table)
+    db(table)
         .select('*')
         .orderBy('createdAt', 'DESC')
         .offset(offset)
         .limit(limit);
 
 const count = async () =>
-    (await knex(table).count('*', { as: 'count' }).first()).count;
+    (await db(table).count('*', { as: 'count' }).first()).count;
 
 export default () => ({
     create,

@@ -1,4 +1,4 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 import externalSystemService from '../services/externalSystem.js';
 import resourceService from '../services/resource.js';
 
