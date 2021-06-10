@@ -10,6 +10,8 @@ export { default as env } from './services/env.js';
 export { default as exceptionTranslator } from './services/exceptionTranslator.js';
 export * as pubsub from './services/pubSub.js';
 export * as services from './services/index.js';
+export { default as redis } from './services/redis.js';
+export * as redisHelpers from './services/redis.js';
 
 export * as apiClients from './apiClients/index.js';
 
