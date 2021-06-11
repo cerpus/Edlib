@@ -130,6 +130,10 @@ const saveToDb = async (context, validatedData) => {
         ...resourceVersionValidatedData
     } = validatedData;
 
+    if (resourceVersionValidatedData.authorOverwrite) {
+        resourceVersionValidatedData.authorOverwrite = `${resourceVersionValidatedData.authorOverwrite.firstName} ${resourceVersionValidatedData.authorOverwrite.lastName}`;
+    }
+
     const resourceVersion = await saveResourceVersion(
         context,
         resourceVersionValidatedData
@@ -298,6 +302,14 @@ export default ({ pubSubConnection }) => async (
                     .min(0)
                     .optional()
                     .default([]),
+                authorOverwrite: Joi.object({
+                    firstName: Joi.string().required(),
+                    lastName: Joi.string().required(),
+                })
+                    .optional()
+                    .allow(null)
+                    .empty(null)
+                    .default(null),
             })
         );
     } catch (e) {

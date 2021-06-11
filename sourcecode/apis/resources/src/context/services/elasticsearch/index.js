@@ -75,6 +75,42 @@ export default () => {
                         },
                     },
                 },
+                owner: {
+                    properties: {
+                        id: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                        firstName: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                        lastName: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                    },
+                },
+                authorOverwrite: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 isListed: { type: 'boolean' },
                 createdAt: { type: 'date' },
                 updatedAt: { type: 'date' },
