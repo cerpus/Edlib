@@ -11,12 +11,7 @@ import moment from 'moment';
 import useArray from '../../hooks/useArray';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceColumns from '../../constants/resourceColumns';
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogTitle,
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 
 const Row = styled.div`
     display: grid;
@@ -153,7 +148,7 @@ const ResourceTable = ({
                             )}
                         </Cell>
                         <Cell vc secondary>
-                            {resource.author}
+                            {resource.version.authorOverwrite}
                         </Cell>
                         <Cell vc secondary>
                             {resource.version.language}
