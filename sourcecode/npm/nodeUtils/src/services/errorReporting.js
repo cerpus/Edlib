@@ -1,4 +1,4 @@
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import Tracing from '@sentry/tracing';
 import { URL } from 'url';
 import logger from './logger.js';
