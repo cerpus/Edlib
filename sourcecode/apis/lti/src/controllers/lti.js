@@ -18,7 +18,6 @@ export default {
         });
     },
     getUsage: async (req, res, next) => {
-        throw new NotFoundException('usage');
         const usage = await req.context.db.usage.getById(req.params.usageId);
         if (!usage) {
             throw new NotFoundException('usage');
