@@ -130,10 +130,6 @@ const saveToDb = async (context, validatedData) => {
         ...resourceVersionValidatedData
     } = validatedData;
 
-    if (resourceVersionValidatedData.authorOverwrite) {
-        resourceVersionValidatedData.authorOverwrite = `${resourceVersionValidatedData.authorOverwrite.firstName} ${resourceVersionValidatedData.authorOverwrite.lastName}`;
-    }
-
     const resourceVersion = await saveResourceVersion(
         context,
         resourceVersionValidatedData
@@ -320,6 +316,10 @@ export default ({ pubSubConnection }) => async (
 
     if (validatedData.license) {
         validatedData.license = validatedData.license.toLowerCase();
+    }
+
+    if (validatedData.authorOverwrite) {
+        validatedData.authorOverwrite = `${validatedData.authorOverwrite.firstName} ${validatedData.authorOverwrite.lastName}`;
     }
 
     const context = buildRawContext({}, {}, { pubSubConnection });
