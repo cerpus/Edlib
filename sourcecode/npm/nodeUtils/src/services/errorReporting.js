@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import Tracing from '@sentry/tracing';
+import * as Tracing from '@sentry/tracing';
 import { URL } from 'url';
 import logger from './logger.js';
 import appConfig from '../envConfig/app.js';
