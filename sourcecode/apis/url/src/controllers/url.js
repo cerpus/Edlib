@@ -1,4 +1,4 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 export default {
     getById: async (req) => {

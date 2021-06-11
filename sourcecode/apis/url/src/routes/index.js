@@ -1,12 +1,11 @@
 import express from 'express';
 import addContextToRequest from '../middlewares/addContextToRequest.js';
-import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
+import { runAsync, logger } from '@cerpus/edlib-node-utils';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import readiness from '../readiness.js';
 import syncController from '../controllers/sync.js';
 import urlController from '../controllers/url.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
 import content from './content.js';
 
 const { Router } = express;

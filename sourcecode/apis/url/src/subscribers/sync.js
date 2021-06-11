@@ -1,6 +1,6 @@
 import Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger } from '@cerpus/edlib-node-utils';
 import moment from 'moment';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {

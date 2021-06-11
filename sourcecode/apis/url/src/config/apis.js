@@ -1,4 +1,4 @@
-import env from '@cerpus/edlib-node-utils/services/env.js';
+import { env } from '@cerpus/edlib-node-utils';
 
 export default {
     version: {

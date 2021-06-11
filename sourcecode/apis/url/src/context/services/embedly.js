@@ -1,9 +1,9 @@
 import axios from 'axios';
 import crypto from 'crypto';
 import embedlyConfig from '../../config/embedly.js';
-import { cacheWrapper } from '@cerpus/edlib-node-utils/services/redis.js';
+import { redisHelpers } from '@cerpus/edlib-node-utils';
 
-const getForUrl = cacheWrapper(
+const getForUrl = redisHelpers.cacheWrapper(
     (args) =>
         `embedly-${crypto
             .createHash('md5')

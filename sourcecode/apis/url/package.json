@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus/edlib-node-utils": "v0.0.0-45070b356f9fe0f9b23c905e789a5497352dc6fb",
+    "@cerpus/edlib-node-utils": "v0.0.0-415150b96e961711bc3427326523f0bf643024f2",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^26.6.3",
