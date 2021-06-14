@@ -6,6 +6,7 @@ import fileParserService from './services/fileParser.js';
 import consumerService from './services/consumer.js';
 import sync from './subscribers/sync.js';
 import { pubsub } from '@cerpus/edlib-node-utils';
+import logLtiUsageView from './subscribers/logLtiUsageView.js';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -30,8 +31,11 @@ const start = async () => {
         [
             {
                 exchangeName: '__internal_edlibLti_sync',
-                subscriptionName: '__internal_edlibLti_sync-sync',
                 handler: sync,
+            },
+            {
+                exchangeName: 'edlib_ltiUsageView',
+                handler: logLtiUsageView,
             },
         ].map((subscriber) => {
             const handler = subscriber.handler({ pubSubConnection });
@@ -39,9 +43,8 @@ const start = async () => {
             return pubsub.subscribe(
                 pubSubConnection,
                 subscriber.exchangeName,
-                subscriber.subscriptionName,
+                subscriber.exchangeName + '-apiLtiHandler',
                 async (msg) => {
-                    console.log('meesage');
                     await handler(JSON.parse(msg.content));
                 }
             );

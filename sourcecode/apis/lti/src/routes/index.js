@@ -47,6 +47,31 @@ export default async ({ pubSubConnection }) => {
         });
     });
 
+    /**
+     * @swagger
+     *
+     *  /v1/usage-views:
+     *      get:
+     *          description: Get all usage views with pagination
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: query
+     *                name: limit
+     *                type: string
+     *                default: "100"
+     *                required: true
+     *              - in: query
+     *                name: offset
+     *                type: string
+     *                default: "0"
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.get('/v1/usage-views', runAsync(ltiController.getUsageViews));
+
     apiRouter.post('/v1/usages', runAsync(ltiController.createUsage));
     apiRouter.get('/v1/usages/:usageId', runAsync(ltiController.getUsage));
     apiRouter.post(

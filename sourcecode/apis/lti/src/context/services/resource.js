@@ -4,7 +4,6 @@ import { exceptionTranslator } from '@cerpus/edlib-node-utils';
 import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 const resourceAxios = async (options) => {
-    console.log(`${options.method} ${apis.resource.url}${options.url}`);
     try {
         return await axios({
             ...options,

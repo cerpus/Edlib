@@ -24,4 +24,27 @@ export default {
         }
         return usage;
     },
+    getUsageViews: async (req, res, next) => {
+        const { offset, limit } = validateJoi(
+            req.query,
+            Joi.object().keys({
+                offset: Joi.number().min(0).optional().default(0),
+                limit: Joi.number().min(1).optional().default(100),
+            })
+        );
+
+        const usageViews = await req.context.db.usageView.getPaginatedWithResourceInfo(
+            offset,
+            limit
+        );
+
+        return {
+            pagination: {
+                count: await req.context.db.usageView.count(),
+                offset: offset,
+                limit: limit,
+            },
+            usageViews,
+        };
+    },
 };

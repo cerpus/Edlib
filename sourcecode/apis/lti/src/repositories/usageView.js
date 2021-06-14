@@ -21,6 +21,14 @@ const create = async (usage) => {
 const update = (id, usage) => dbHelpers.updateId(table, id, usage);
 
 const getById = async (id) => db(table).select('*').where('id', id).first();
+const getPaginatedWithResourceInfo = async (offset, limit) =>
+    db(table)
+        .select('usageViews.*')
+        .select('u.resourceId')
+        .select('u.resourceVersionId')
+        .join('usages as u', 'u.id', 'usageViews.usageId')
+        .offset(offset)
+        .limit(limit);
 
 const createOrUpdate = async (usageView) => {
     const existing = await getById(usageView.id);
@@ -32,9 +40,14 @@ const createOrUpdate = async (usageView) => {
     return create(usageView);
 };
 
+const count = async () =>
+    (await db(table).count('*', { as: 'count' }).first()).count;
+
 export default () => ({
     create,
     update,
     createOrUpdate,
     getById,
+    getPaginatedWithResourceInfo,
+    count,
 });
