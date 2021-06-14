@@ -62,8 +62,7 @@ We are currently working on [developer-specific documentation](https://github.co
 
 Cerpus welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/Cerpus/Edlib/blob/master/CONTRIBUTING.md).
 
-In general, we follow the "fork-and-pull" Git workflow.
-
+In general, we follow the "fork-and-pull" Git workflow:
  1. **Fork** the [repository](https://github.com/cerpus/Edlib) on GitHub
  2. **Clone** the project to your own machine
  3. **Commit** changes to your own branch
