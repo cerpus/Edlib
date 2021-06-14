@@ -7,13 +7,13 @@ sidebar_position: 2
 As of **June 2021** we have defined Edlib's high-level roadmap to be the following:
 
 1. Open source Edlib
-    * Choose an open source license
-    * Make the source code available on GitHub
+    * Choose an [open-source license](https://github.com/cerpus/Edlib/blob/master/LICENSE)
+    * Make the source code available on [GitHub](https://github.com/cerpus/Edlib)
     * Provide the initial [developer-focused documentation](https://github.com/cerpus/Edlib/issues/1)
 2. Implement Edlib's new sharing features
     * Create and manage resource collections
     * Easily distribute both individual resources and resource collections together with relevant metadata inlcuding (but not limited to) learning goals, tags, descriptions, education level and so forth
-    * The ability to connect Edlib resources to national curricula standards, starting with Norway's national curricula standard, [UDIR](https://www.udir.no/laring-og-trivsel/lareplanverket/)
+    * The ability to connect Edlib resources to national curricula standards, starting with Norway's national standard, [UDIR](https://www.udir.no/laring-og-trivsel/lareplanverket/)
     * Share content privately, publicly or in groups 
 3. Implement Edlib's new question bank feature
 4. Improve Edlib's user experience

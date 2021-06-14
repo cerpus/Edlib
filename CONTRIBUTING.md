@@ -1,14 +1,12 @@
-# Contributing to Edlib Open Source Projects
+# Contributing to the Edlib Open Source Project
 
 Cerpus welcomes contributions to our [open source projects on Github](https://github.com/cerpus/Edlib). When contributing, please follow the [Cerpus Community Code of Conduct](CODE_OF_CONDUCT.md).
 
-Issues
-------
+## Issues
 
 Feel free to submit [issues and enhancement](https://github.com/cerpus/Edlib/issues) requests.
 
-Contributing
-------------
+## Contributing
 
 Please refer to each project's style and contribution guidelines for submitting patches and additions. In general, we follow the "fork-and-pull" Git workflow.
 
@@ -20,8 +18,7 @@ Please refer to each project's style and contribution guidelines for submitting 
 
 NOTE: Be sure to merge the latest from "upstream" before making a pull request!
 
-Copyright and Licensing
------------------------
+## Copyright and Licensing
 
 Edlib is licensed under the [GPL 3.0 license](https://www.gnu.org/licenses/gpl-3.0-standalone.html).
 

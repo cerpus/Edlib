@@ -11,6 +11,7 @@ Whether publicly or privately, and whether in-person or online, we expect all me
 ## Expectations
 
 Behavior we encourage:
+
 - Share your ideas, but also listen to others
 - Be professional, kind, and considerate in technical discussions and disagreements
 - Respect personal boundaries and preferences
