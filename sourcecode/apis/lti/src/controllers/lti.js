@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { validateJoi } from '@cerpus/edlib-node-utils';
 import { NotFoundException } from '@cerpus/edlib-node-utils';
+import appConfig from '../config/app.js';
 
 export default {
     createUsage: async (req, res, next) => {
@@ -14,7 +15,9 @@ export default {
 
         return await req.context.db.usage.create({
             resourceId,
-            resourceVersionId,
+            resourceVersionId: appConfig.features.autoUpdateLtiUsage
+                ? null
+                : resourceVersionId,
         });
     },
     getUsage: async (req, res, next) => {

@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import moment from 'moment';
+import appConfig from '../config/app.js';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
@@ -71,7 +72,9 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     id: ltiUsage.uuid,
                     consumerId,
                     resourceId: edlibResource.id,
-                    resourceVersionId: edlibResource.version.id,
+                    resourceVersionId: appConfig.features.autoUpdateLtiUsage
+                        ? null
+                        : edlibResource.version.id,
                 });
 
                 ltiUsageIds.push(ltiUsage.uuid);
