@@ -33,6 +33,20 @@ export default () => {
         });
     };
 
+    const incrementView = async (resourceId) => {
+        return client.update({
+            index: apiConfig.elasticsearch.resourceIndexPrefix,
+            id: resourceId,
+            body: {
+                script: {
+                    lang: 'painless',
+                    source:
+                        'ctx._source.views = ctx._source.views != null ? ctx._source.views + 1 : 1',
+                },
+            },
+        });
+    };
+
     const createOrIgnoreIndex = async () => {
         const { body: exists } = await client.indices.exists({
             index: apiConfig.elasticsearch.resourceIndexPrefix,
@@ -132,6 +146,7 @@ export default () => {
                             protectedUserIds: {
                                 type: 'text',
                             },
+                            views: { type: 'integer' },
                         },
                     },
                 },
@@ -192,5 +207,6 @@ export default () => {
         remove,
         createOrIgnoreIndex,
         search,
+        incrementView,
     };
 };

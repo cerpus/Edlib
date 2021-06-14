@@ -7,6 +7,8 @@ import refreshElasticsearchIndex from './subscribers/refreshElasticsearchIndex.j
 import newUser from './subscribers/newUser.js';
 import { buildRawContext } from './context/index.js';
 import jobNames from './constants/jobNames.js';
+import saveTrackingResourceVersion from './subscribers/saveTrackingResourceVersion.js';
+import syncLtiUsageViews from './subscribers/syncLtiUsageViews.js';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -30,8 +32,18 @@ const start = async () => {
                 handler: refreshElasticsearchIndex,
             },
             {
+                exchangeName:
+                    '__internal_edlibResource_jobs_' +
+                    jobNames.SYNC_LTI_USAGE_VIEWS,
+                handler: syncLtiUsageViews,
+            },
+            {
                 exchangeName: 'edlib_new_user',
                 handler: newUser,
+            },
+            {
+                exchangeName: 'edlib_trackingResourceVersion',
+                handler: saveTrackingResourceVersion,
             },
         ].map((subscriber) => {
             const handler = subscriber.handler({ pubSubConnection });

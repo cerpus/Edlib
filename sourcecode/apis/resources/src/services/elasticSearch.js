@@ -32,6 +32,10 @@ export const syncResource = async (context, resource, waitForIndex) => {
         latestVersion.id
     );
 
+    const viewCount = await context.db.trackingResourceVersion.getCountForResource(
+        latestVersion.resourceId
+    );
+
     const resourceVersionToElasticVersion = (resourceVersion) => ({
         id: resourceVersion.id,
         externalSystemName: resourceVersion.externalSystemName,
@@ -56,6 +60,7 @@ export const syncResource = async (context, resource, waitForIndex) => {
             latestVersion.ownerId,
             ...latestVersionCollaborators.map((c) => c.tenantId),
         ],
+        views: viewCount,
     };
 
     await context.services.elasticsearch.updateOrCreate(

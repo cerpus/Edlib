@@ -52,4 +52,7 @@ export default {
     edlibAuth: {
         url: env('EDLIB_AUTH_URL', 'http://authapi'),
     },
+    lti: {
+        url: env('LTI_API_URL', 'http://ltiapi'),
+    },
 };

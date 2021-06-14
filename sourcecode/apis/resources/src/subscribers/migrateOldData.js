@@ -1,4 +1,4 @@
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import apiConfig from '../config/apis.js';
 import saveEdlibResourcesAPI from './saveEdlibResourcesAPI.js';

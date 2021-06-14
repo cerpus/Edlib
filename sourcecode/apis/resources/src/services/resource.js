@@ -110,9 +110,12 @@ const getResourcesFromRequest = async (req, tenantId) => {
             offset,
         },
         {
-            column: `${getElasticVersionFieldKey(tenantId === null)}.${
-                orderBy === 'usage' ? 'createdAt' : 'createdAt' //@todo use correct column
-            }`,
+            column:
+                orderBy === 'usage'
+                    ? 'views'
+                    : `${getElasticVersionFieldKey(
+                          tenantId === null
+                      )}.createdAt`,
             direction: 'DESC',
         },
         Object.keys(extraQuery).length === 0 ? null : extraQuery
