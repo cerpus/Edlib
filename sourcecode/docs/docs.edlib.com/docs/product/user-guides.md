@@ -4,4 +4,4 @@ sidebar_position: 3
 
 # User Guides
 
-Pending
+User guides are currently being worked on. Check back for updates.

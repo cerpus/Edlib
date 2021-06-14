@@ -52,8 +52,8 @@ module.exports = {
               to: '/docs/product/demos',
             },
             {
-              label: 'Knowledge base',
-              to: '/docs/product/knowledge-base',
+              label: 'Frequently asked questions',
+              to: '/docs/product/faq',
             },
             {
               label: 'Launch & success support',
