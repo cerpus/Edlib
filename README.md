@@ -6,7 +6,7 @@ Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) a
 
 We strongly believe that the focus should be on the individual learner. Everything we do is based around this belief, all the way from technical solutions and content creation through to user interface design and the resulting learning experience. 
 
-Edlib is being developed by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing innovative educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
+Edlib is being developed with :heart: by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing innovative educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
 
@@ -60,10 +60,19 @@ We are currently working on [developer-specific documentation](https://github.co
 
 ## How to Contribute
 
-1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug.
-2. Fork the [repository](https://github.com/cerpus/Edlib) on GitHub to start making your changes to the **master** branch (or branch off of it).
-3. Write a test which shows that the bug was fixed or that the feature works as expected.
-4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to [AUTHORS](https://github.com/cerpus/Edlib/blob/master/AUTHORS.md).
+Cerpus welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/Cerpus/Edlib/blob/master/CONTRIBUTING.md).
+
+In general, we follow the "fork-and-pull" Git workflow.
+
+ 1. **Fork** the [repository](https://github.com/cerpus/Edlib) on GitHub
+ 2. **Clone** the project to your own machine
+ 3. **Commit** changes to your own branch
+ 4. **Push** your work back up to your fork
+ 5. Submit a **Pull request** so that we can review your changes. :) Make sure to add yourself to [AUTHORS](https://github.com/cerpus/Edlib/blob/master/AUTHORS.md).
+
+### Issues
+
+If something isn't working the way you expected, please take a look at [previously logged issues](https://github.com/cerpus/Edlib/issues?q=is%3Aissue+is%3Aclosed) that resolve common problems first.  Have you found a new bug? Want to request a new feature? We'd love to hear from you.  Please let us know by submitting an [issue](https://github.com/cerpus/Edlib/issues).
 
 ## Miscellaneous
 

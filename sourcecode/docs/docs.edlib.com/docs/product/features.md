@@ -54,11 +54,11 @@ Edlib's Content Author provides quick access to purpose-built content authoring 
 
 #### Resource Versioning
 
-Pending
+Documentation in relation to the versioning of resources is currently being worked on. Check back for updates.
 
 #### Language Support
 
-Pending
+Documentation in relation to language support is currently being worked on. Check back for updates.
 
 ### Features in Development
 
