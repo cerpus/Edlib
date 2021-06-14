@@ -63,8 +63,11 @@ const EdlibModal = ({
                 >
                     <ResourceCapabilitiesProvider
                         value={{
-                            onInsert: async (edlibId) => {
-                                const info = await createResourceLink(edlibId);
+                            onInsert: async (resourceId, resourceVersionId) => {
+                                const info = await createResourceLink(
+                                    resourceId,
+                                    resourceVersionId
+                                );
 
                                 onResourceSelected(info);
                             },

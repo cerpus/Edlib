@@ -79,7 +79,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
             error: false,
         });
 
-        await onInsert(resource.id);
+        await onInsert(resource.id, resource.version.id);
     }, [onInsert, setActionStatus, resource]);
 
     const editResource = React.useCallback(() => {
