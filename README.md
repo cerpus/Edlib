@@ -6,7 +6,7 @@ Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) a
 
 We strongly believe that the focus should be on the individual learner. Everything we do is based around this belief, all the way from technical solutions and content creation through to user interface design and the resulting learning experience. 
 
-Edlib is being developed with :heart:&nbsp;by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing innovative educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
+Edlib is being developed with :heart:&nbsp;&nbsp;by [Cerpus](https://cerpus.com/), a company based out of Northern Norway which is focused on developing innovative educational services and applications. Edlib was specificlly developed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's own applications &mdash;[Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/)&mdash; as well as being easily capable of integration into third-party learning applications. 
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
 
