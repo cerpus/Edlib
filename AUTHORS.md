@@ -1,4 +1,4 @@
-# Contributors to the Edlib project
+# Contributors To The Edlib Project
 
 ## Creators and Maintainers
 
@@ -12,11 +12,11 @@
 - [Runar Moen](https://github.com/rypskar): Team leader
 - [Tor-Martin Karlsen](https://github.com/tmkarlsen): Support engineer and tester
 - Thomas Sivertsen: PHP, Java and JavaScript developer
-- Tommy W. Nordeng: Visionary leader and (original) product owner <3
+- Tommy W. Nordeng: Visionary leader and (original) product owner :heart:
 - [Brett Kromkamp](https://github.com/brettkromkamp): Team leader
 
 ## Contributors
 
 In chronological order:
 
-- Pending.
+- Knut Inge Skifjeld <knutinge@ndla.no>, "Teamleder Utforske" at [NDLA](https://om.ndla.no/)

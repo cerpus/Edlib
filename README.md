@@ -24,7 +24,7 @@ What's more, the internet is a huge collection of self-contained content reposit
 
 ## Feature Support
 
-Edlib is continuously evolving with existing features being refined and other features being added (or removed). The following is a list of major features, several of which are in active development.
+Edlib is continuously evolving with existing features being refined and new features being added. The following is a list of major features, several of which are in active development.
 
 ### Existing Features
 
@@ -37,12 +37,12 @@ Edlib is continuously evolving with existing features being refined and other fe
 * Create content-by-URL: the ability to point to an existing (publicly available) resource and turn it into an Edlib-based learning resource.
 * Licensing module with an intelligent Creative-Commons license selector.
 * Authoring workflows including the ability to maintain resources private or to make them publicly available.
-* Collaboration functionality.
+* Collaboration functionality for content creators.
 * Easy integration with third-party APIs including audio, video and image APIs.
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
 * [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Resource versioning. 
-* Language support.
+* The ability to easily and quickly create language variants of the same underlying resource.
 
 ### Features in Development
 

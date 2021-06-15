@@ -7,6 +7,7 @@ sidebar_position: 5
 [Gamilab](https://gamilab.com/) is an online platform where you can find and create easy, fun and educational games. Gamilab uses game elements to motivate and engage players to learn faster and better, and to be more involved in their learning. By using elements like points, stars, highscores and badges we make learning feel like a game and motivate the player to learn while playing.
 
 <iframe class="edlib-iframe" title="Test your gamification knowledge" width="800" height="600" src="https://gamilab.com/play/01f9e063-d44f-47be-a4e1-6199de06929c/embed" />
+<br/>
 <em>Gamilab game: Test Your Gamification Knowledge</em>
 <br/>
 <br/>

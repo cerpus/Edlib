@@ -4,4 +4,4 @@ sidebar_position: 4
 
 # API Documentation
 
-Pending
+In-depth developer-specific documentation is currently being worked on. Check back for updates.

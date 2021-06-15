@@ -17,14 +17,14 @@ Edlib is continuously evolving with existing features being refined and new feat
 * Create &lsquo;content-by-URL&rsquo;: the ability to reference an existing (publicly available) resource and turn it into an Edlib-based learning resource.
 * Licensing module with an intelligent Creative-Commons license selector.
 * Authoring workflows including the ability to maintain resources private or to make them publicly available.
-* Collaboration functionality.
+* Collaboration functionality for content creators.
 * Easy integration with third-party APIs including audio, video and image APIs.
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
 * [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Integrate against the LMS of your choice. Through LTI you can track results directly in your learning management systems.
 * More and better usage tracking with analysis will help you understand your students and create even better content.
 * Resource versioning. 
-* Language support.
+* The ability to easily and quickly create language variants of the same underlying resource.
 
 #### H5P
 
@@ -64,7 +64,7 @@ Documentation in relation to language support is currently being worked on. Chec
 
 * The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a full-fledged **learning** resource. 
 * The ability to include a recommendation engine to surface relevant content for course and game creators (currently in closed-beta).
-* The Question Bank service to assist with the auto-generation of, for example, [H5P Question Sets](https://h5p.org/question-set) or educational games
+* The Question Bank service to assist with the auto-generation of, for example, [H5P Question Sets](https://h5p.org/question-set) or educational games.
 
 #### The &quot;Doku&quot; Content Type
 
