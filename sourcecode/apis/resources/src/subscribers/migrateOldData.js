@@ -175,12 +175,15 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             message: `Ferdig med å synkronisere ${resourceCount} ressurser.`,
         });
     } catch (e) {
-        logger.error(e);
         await context.db.job.update(jobId, {
             message: e.message,
             failedAt: new Date(),
             doneAt: new Date(),
         });
-        Sentry.captureException(e);
+
+        if (!(e instanceof JobKilledException)) {
+            logger.error(e);
+            Sentry.captureException(e);
+        }
     }
 };
