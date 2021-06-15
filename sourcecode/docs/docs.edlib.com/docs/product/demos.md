@@ -11,4 +11,6 @@ sidebar_position: 5
 <br/>
 <br/>
 
-With Edlib, Gamilab can use [H5P-based content](https://h5p.org/content-types-and-applications) for in-game exercises. For example, in the game above, different H5P-based content types are used including [Multiple Choice](https://h5p.org/multichoice), [Fill in the Blanks](https://h5p.org/fill-in-the-blanks) and [Find the Hotspot](https://h5p.org/image-hotspot-question).
+With Edlib, Gamilab can use [H5P-based content](https://h5p.org/content-types-and-applications) for in-game exercises. For example, in the game above, different H5P-based content types are used, including [Multiple Choice](https://h5p.org/multichoice), [Fill in the Blanks](https://h5p.org/fill-in-the-blanks) and [Find the Hotspot](https://h5p.org/image-hotspot-question).
+
+To actually play the game above, provide a nickname and click on the Continue button and follow the instructions. Good luck! :wink:
