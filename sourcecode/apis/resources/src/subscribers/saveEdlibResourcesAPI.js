@@ -298,10 +298,8 @@ export default ({ pubSubConnection }) => async (
                     .min(0)
                     .optional()
                     .default([]),
-                authorOverwrite: Joi.object({
-                    firstName: Joi.string().required(),
-                    lastName: Joi.string().required(),
-                })
+                authorOverwrite: Joi.string()
+                    .min(1)
                     .optional()
                     .allow(null)
                     .empty(null)
@@ -316,10 +314,6 @@ export default ({ pubSubConnection }) => async (
 
     if (validatedData.license) {
         validatedData.license = validatedData.license.toLowerCase();
-    }
-
-    if (validatedData.authorOverwrite) {
-        validatedData.authorOverwrite = `${validatedData.authorOverwrite.firstName} ${validatedData.authorOverwrite.lastName}`;
     }
 
     const context = buildRawContext({}, {}, { pubSubConnection });
