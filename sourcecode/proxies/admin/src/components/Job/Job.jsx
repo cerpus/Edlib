@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, CircularProgress, LinearProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
-const Job = ({ start, status, name }) => {
+const Job = ({ start, status, name, onStop, showKillButton }) => {
     return (
         <>
             <h2>{name}</h2>
@@ -18,6 +18,13 @@ const Job = ({ start, status, name }) => {
                         />
                     </div>
                     <div>{status.message}</div>
+                    {!status.killingStarted && showKillButton && (
+                        <div>
+                            <Button variant="contained" onClick={onStop}>
+                                Stop
+                            </Button>
+                        </div>
+                    )}
                 </>
             )}
             {status.done && <Alert severity="success">{status.message}</Alert>}

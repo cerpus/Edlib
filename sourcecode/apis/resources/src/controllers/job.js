@@ -11,6 +11,17 @@ export default {
 
         return syncJob;
     },
+    killJob: async (req, res, next) => {
+        let syncJob = await req.context.db.job.getById(req.params.jobId);
+
+        if (!syncJob) {
+            throw new NotFoundException('sync');
+        }
+
+        return await req.context.db.job.update(req.params.jobId, {
+            shouldKill: true,
+        });
+    },
     startJob: async (req, res, next) => {
         let currentSyncJob = await req.context.db.job.getRunning(
             req.params.jobName

@@ -18,6 +18,7 @@ const MigrateCore = () => {
                         name="2. Sync ressurser"
                         startUrl="/resources/v1/jobs/migrate-old-data"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
+                        showKillButton
                     />
                 </Grid>
                 <Grid item md={12}>
@@ -32,6 +33,7 @@ const MigrateCore = () => {
                         name="4. Sync lti usage views with resourceapi"
                         startUrl="/resources/v1/jobs/sync-lti-usage-views"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
+                        showKillButton
                     />
                 </Grid>
             </Grid>

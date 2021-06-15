@@ -228,6 +228,7 @@ export default async ({ pubSubConnection }) => {
     );
     apiRouter.post('/v1/jobs/:jobName', runAsync(jobController.startJob));
     apiRouter.get('/v1/jobs/:jobId', runAsync(jobController.getJobStatus));
+    apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
 
     apiRouter.use(await contentTypes());
 

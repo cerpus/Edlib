@@ -2,7 +2,12 @@ import React from 'react';
 import Job from './Job.jsx';
 import request from '../../helpers/request.js';
 
-const JobContainer = ({ name, startUrl, statusUrl }) => {
+const JobContainer = ({
+    name,
+    startUrl,
+    statusUrl,
+    showKillButton = false,
+}) => {
     const [status, setStatus] = React.useState({
         loading: false,
         error: false,
@@ -35,6 +40,15 @@ const JobContainer = ({ name, startUrl, statusUrl }) => {
             })
             .catch(errorHandler);
     }, []);
+
+    const onStop = React.useCallback(() => {
+        setStatus({
+            ...status,
+            killingStarted: true,
+        });
+
+        request(statusUrl(currentJobId), 'DELETE').catch(errorHandler);
+    }, [currentJobId, status]);
 
     React.useEffect(() => {
         if (!currentJobId) {
@@ -75,7 +89,15 @@ const JobContainer = ({ name, startUrl, statusUrl }) => {
         return () => clearInterval(interval);
     }, [currentJobId]);
 
-    return <Job start={start} status={status} name={name} />;
+    return (
+        <Job
+            start={start}
+            status={status}
+            name={name}
+            onStop={onStop}
+            showKillButton={showKillButton}
+        />
+    );
 };
 
 export default JobContainer;

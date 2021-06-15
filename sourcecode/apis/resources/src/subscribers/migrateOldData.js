@@ -5,6 +5,15 @@ import saveEdlibResourcesAPI from './saveEdlibResourcesAPI.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import resourceService from '../services/resource.js';
 import { logger } from '@cerpus/edlib-node-utils';
+import JobKilledException from '../exceptions/JobKilledException.js';
+
+const updateJobInfo = async (context, jobId, data) => {
+    const { shouldKill } = await context.db.job.update(jobId, data);
+
+    if (shouldKill) {
+        throw new JobKilledException();
+    }
+};
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
@@ -59,7 +68,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             let offset = 0;
 
             while (run) {
-                await context.db.job.update(jobId, {
+                await updateJobInfo(context, jobId, {
                     percentDone: Math.floor(
                         (resourceCount / totalResourceCount / numberOfSteps) *
                             100
@@ -98,7 +107,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             const limit = 50;
             let offset = 0;
             while (run) {
-                await context.db.job.update(jobId, {
+                await updateJobInfo(context, jobId, {
                     percentDone: Math.floor(
                         (coreSyncCount / totalResourceCount / numberOfSteps) *
                             100 +
@@ -131,7 +140,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             const limit = 50;
             let offset = 0;
             while (run) {
-                await context.db.job.update(jobId, {
+                await updateJobInfo(context, jobId, {
                     percentDone: Math.floor(
                         (elasticsearchSyncCount /
                             totalResourceCount /
@@ -161,7 +170,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             }
         }
 
-        await context.db.job.update(jobId, {
+        await updateJobInfo(context, jobId, {
             doneAt: new Date(),
             message: `Ferdig med å synkronisere ${resourceCount} ressurser.`,
         });

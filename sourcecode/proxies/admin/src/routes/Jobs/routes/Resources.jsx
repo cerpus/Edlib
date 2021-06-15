@@ -11,6 +11,7 @@ const Resources = () => {
                         name="Sync lti usage views with resourceapi"
                         startUrl="/resources/v1/jobs/sync-lti-usage-views"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
+                        showKillButton
                     />
                 </Grid>
                 <Grid item md={12}>
@@ -18,6 +19,7 @@ const Resources = () => {
                         name="Oppdater elasticsearch index"
                         startUrl="/resources/v1/jobs/refresh-elasticsearch-index"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
+                        showKillButton
                     />
                 </Grid>
             </Grid>
