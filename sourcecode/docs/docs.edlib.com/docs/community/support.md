@@ -4,4 +4,16 @@ sidebar_position: 2
 
 # Support
 
-Pending
+## Discussions
+
+Join our [GitHub Discussions](https://github.com/cerpus/Edlib/discussions) to ask questions and propose features.
+
+## Bugs
+
+Use the GitHub project to report bugs: [Edlib](https://github.com/cerpus/Edlib/issues).
+
+:::note
+
+Please don't use GitHub issues to ask questions.
+
+:::

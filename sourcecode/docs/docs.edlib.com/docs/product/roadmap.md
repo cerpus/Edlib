@@ -21,7 +21,5 @@ As of **June 2021** we have defined Edlib's high-level roadmap to be the followi
 6. Finalise Edlib's recommendation engine and accompanying API
 
 :::note 
-
 Last updated June 14, 2021. 
-
 :::
