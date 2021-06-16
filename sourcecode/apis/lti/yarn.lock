@@ -1092,10 +1092,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cerpus/edlib-node-utils@v0.0.0-820ff17337a581d2f0368803a25ebaa7f399be35":
-  version "0.0.0-820ff17337a581d2f0368803a25ebaa7f399be35"
-  resolved "https://registry.yarnpkg.com/@cerpus/edlib-node-utils/-/edlib-node-utils-0.0.0-820ff17337a581d2f0368803a25ebaa7f399be35.tgz#68d5ceb557c175a17d772fcb2b206ad5b552d231"
-  integrity sha512-uSSfebIO3ZbPkP0O06OTXbCAhH0vlLU2C0S9lojdSs6HFCPgu454m7Kq5SG1UkuHmNRyTGPxnnE03+yoxPk9bA==
+"@cerpus/edlib-node-utils@v0.0.0-0303db8c9eee2b9da3680309799692de787223b4":
+  version "0.0.0-0303db8c9eee2b9da3680309799692de787223b4"
+  resolved "https://registry.yarnpkg.com/@cerpus/edlib-node-utils/-/edlib-node-utils-0.0.0-0303db8c9eee2b9da3680309799692de787223b4.tgz#793c49bc0e46d7dcb273a1abf3c7f35a0e7607cb"
+  integrity sha512-8lz1MZdImZp0uoNUuUkecieKDBXg80yAmk1nVhvAe6oUFPPX2TJhlW7237MeR04VGG15E+MjnhycfYssYK9ccQ==
   dependencies:
     "@hapi/joi" "^17.1.1"
     "@sentry/node" "^5.27.6"
