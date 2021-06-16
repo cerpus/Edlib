@@ -2,8 +2,6 @@ import mysql from 'mysql';
 import dbConfig from '../envConfig/db.js';
 import appConfig from '../envConfig/app.js';
 import knex from 'knex';
-import logger from './logger.js';
-import chalk from 'chalk';
 import moment from 'moment-timezone';
 import path from 'path';
 
