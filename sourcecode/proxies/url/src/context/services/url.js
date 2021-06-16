@@ -1,6 +1,6 @@
 import apis from '../../config/apis.js';
 import axios from 'axios';
-import { exceptionTranslator } from '@cerpus/edlib-node-utils/services/index.js';
+import { exceptionTranslator } from '@cerpus/edlib-node-utils';
 
 const urlAxios = async (options) => {
     try {

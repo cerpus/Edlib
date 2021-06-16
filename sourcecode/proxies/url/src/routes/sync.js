@@ -1,7 +1,7 @@
 import express from 'express';
 import runAsync from '../services/runAsync.js';
 import SyncController from '../controllers/sync.js';
-import { isUserAdmin } from '@cerpus/edlib-node-utils/middlewares/index.js';
+import { middlewares } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -10,13 +10,13 @@ export default async () => {
 
     router.post(
         '/v1/sync-resources',
-        isUserAdmin,
+        middlewares.isUserAdmin,
         runAsync(SyncController.syncResources)
     );
 
     router.get(
         '/v1/sync-resources/:jobId',
-        isUserAdmin,
+        middlewares.isUserAdmin,
         runAsync(SyncController.getSyncJobStatus)
     );
 
