@@ -101,6 +101,19 @@ module.exports = {
           ],
         },
         {
+          title: 'Community',
+          items: [
+            {
+              label: 'Contributing',
+              to: '/docs/community/contributing',
+            },
+            {
+              label: 'Support',
+              to: '/docs/community/support',
+            },
+          ],
+        },
+        {
           title: 'About',
           items: [
             {

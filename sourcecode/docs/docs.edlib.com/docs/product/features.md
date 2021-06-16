@@ -65,6 +65,7 @@ Documentation in relation to language support is currently being worked on. Chec
 * The &quot;Doku&quot; content type which allows for the bundling of multiple resources into a collection of resources and/or the further contextualisation of H5P-based resources with supplementary content &mdash;or instructions&mdash; effectively converting an interactive resource into a full-fledged **learning** resource. 
 * The ability to include a recommendation engine to surface relevant content for course and game creators (currently in closed-beta).
 * The Question Bank service to assist with the auto-generation of, for example, [H5P Question Sets](https://h5p.org/question-set) or educational games.
+* The ability to share content to individual users, groups of users or as private resources that are only accessible by means of the accompanying resource links. Users should also be able to easily and correctly license content by means of a simple choice-based license selector (based on Creative-Commons licenses). 
 
 #### The &quot;Doku&quot; Content Type
 
