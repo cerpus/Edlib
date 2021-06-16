@@ -3,7 +3,6 @@ import Joi from 'joi';
 import { logger, validateJoi } from '@cerpus/edlib-node-utils';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import externalSystemService from '../services/externalSystem.js';
-import { startTimer, stopTimer } from '../services/timer.js';
 
 const findResourceFromParentVersions = async (context, version) => {
     if (!version) {
@@ -48,12 +47,10 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
             resourceVersionValidatedData.externalSystemName
         ).disableVersioning
     ) {
-        const getVersionTimer = startTimer();
         const version = await context.services.version.getForResource(
             resourceVersionValidatedData.externalSystemName,
             resourceVersionValidatedData.externalSystemId
         );
-        stopTimer(getVersionTimer, 'context.services.version.getForResource');
 
         if (!version) {
             logger.error(
@@ -84,12 +81,10 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
 
     // Purpose is update. a version with purpose update should always have a parent version.
     if (['update', 'upgrade'].indexOf(versionPurpose) !== -1) {
-        const getParentVersionTimer = startTimer();
         const resource = await findResourceFromParentVersions(
             context,
             actualVersion
         );
-        stopTimer(getParentVersionTimer, 'findResourceFromParentVersions');
 
         if (!resource) {
             return;
@@ -97,12 +92,10 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
 
         dbResourceVersionData.resourceId = resource.id;
     } else if (versionPurpose === 'translation') {
-        const getParentVersionTimer = startTimer();
         const siblingResource = await findResourceFromParentVersions(
             context,
             actualVersion && actualVersion.parent
         );
-        stopTimer(getParentVersionTimer, 'findResourceFromParentVersions');
 
         if (!siblingResource) {
             return;
@@ -325,9 +318,7 @@ export default ({ pubSubConnection }) => async (
 
     const context = buildRawContext({}, {}, { pubSubConnection });
 
-    const saveToDbTimer = startTimer();
     const resourceVersion = await saveToDb(context, validatedData);
-    stopTimer(saveToDbTimer, 'saveEdlibResourcesApi.saveToDb');
 
     if (!resourceVersion) {
         console.error('Resource version was not created.');

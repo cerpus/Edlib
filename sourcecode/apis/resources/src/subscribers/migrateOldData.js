@@ -6,7 +6,6 @@ import * as elasticSearchService from '../services/elasticSearch.js';
 import resourceService from '../services/resource.js';
 import { logger } from '@cerpus/edlib-node-utils';
 import JobKilledException from '../exceptions/JobKilledException.js';
-import { startTimer, stopTimer } from '../services/timer.js';
 
 const updateJobInfo = async (context, jobId, data) => {
     const { shouldKill } = await context.db.job.update(jobId, data);
@@ -79,26 +78,19 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     } with params ${JSON.stringify(syncConfig.params)}`,
                 });
 
-                const getAllFromExternalProviderTimer = startTimer();
                 const {
                     resources,
                 } = await context.services.externalResourceFetcher.getAll(
                     syncConfig.name,
                     { offset: offset, limit, ...syncConfig.params }
                 );
-                stopTimer(
-                    getAllFromExternalProviderTimer,
-                    'context.services.externalResourceFetcher.getAll'
-                );
 
                 for (let resource of resources) {
                     resourceCount++;
-                    const start = startTimer();
                     await saveEdlibResourcesAPI({ pubSubConnection })(
                         resource,
                         false
                     );
-                    stopTimer(start, 'Save edlib resources api function');
                 }
 
                 if (resources.length === 0) {
