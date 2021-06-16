@@ -6,8 +6,7 @@
     "dev": "nodemon src/api.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
-    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js",
-    "test": "jest --config=./jest.config.json"
+    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js"
   },
   "engines": {
     "node": ">= 16.0.0"
@@ -17,7 +16,7 @@
     "@cerpus/edlib-node-utils": "v0.0.0-cc025cb16b6ade089c7ab0d10c1e83eabd5329d3",
     "amqplib": "^0.7.1",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^26.6.3",
+    "jest": "^27.0.4",
     "joi": "^17.4.0",
     "js-yaml": "^4.1.0",
     "prettier": "^2.2.1",
