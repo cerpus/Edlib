@@ -3,14 +3,23 @@ import { buildRawContext } from '../context/index.js';
 import moment from 'moment';
 import appConfig from '../config/app.js';
 
+const pageSize = 1000;
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
 
     try {
+        const {
+            pagination: usagePagination,
+        } = await context.services.coreInternal.lti.getAllUsages(1, 0);
+        const {
+            pagination: usageViewPagination,
+        } = await context.services.coreInternal.lti.getAllUsageViews(1, 0);
+        const totalCount =
+            usagePagination.totalCount + usageViewPagination.totalCount;
+
         let ltiUsageCount = 0;
         let ltiUsageViewCount = 0;
-
-        const limit = 100;
+        let missingResourceCount = 0;
 
         let run = true;
         let offset = 0;
@@ -38,11 +47,19 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
         );
 
         while (run) {
-            const ltiUsages = await context.services.coreInternal.lti.getAllUsages(
-                limit,
+            await context.db.sync.update(jobId, {
+                percentDone: Math.floor((ltiUsageCount / totalCount) * 100),
+                message: `${ltiUsageCount} of ${usagePagination.totalCount} lti usage, ${ltiUsageViewCount} of ${usageViewPagination.totalCount} lti usage views and ${missingResourceCount} manglende referanser til en ressurs`,
+            });
+
+            const {
+                results: ltiUsages,
+            } = await context.services.coreInternal.lti.getAllUsages(
+                pageSize,
                 offset
             );
 
+            const bulk = [];
             for (let ltiUsage of ltiUsages) {
                 ltiUsageCount++;
                 const edlibResource = await context.services.resource.getResourceFromExternalSystemInfo(
@@ -51,6 +68,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                 );
 
                 if (!edlibResource) {
+                    missingResourceCount++;
                     continue;
                 }
 
@@ -68,7 +86,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     consumerId = consumers[ltiUsage.consumerKey].id;
                 }
 
-                await context.db.usage.createOrUpdate({
+                bulk.push({
                     id: ltiUsage.uuid,
                     consumerId,
                     resourceId: edlibResource.id,
@@ -80,22 +98,34 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                 ltiUsageIds.push(ltiUsage.uuid);
             }
 
+            if (bulk.length !== 0) {
+                await context.db.usage.createManyOrIgnore(bulk);
+            }
+
             if (ltiUsages.length === 0) {
                 run = false;
             }
 
-            offset = offset + limit;
+            offset = offset + pageSize;
         }
 
         run = true;
         offset = 0;
 
         while (run) {
-            const ltiUsageViews = await context.services.coreInternal.lti.getAllUsageViews(
-                limit,
+            await context.db.sync.update(jobId, {
+                percentDone: Math.floor((ltiUsageCount / totalCount) * 100),
+                message: `${ltiUsageCount} of ${usagePagination.totalCount} lti usage, ${ltiUsageViewCount} of ${usageViewPagination.totalCount} lti usage views and ${missingResourceCount} manglende referanser til en ressurs`,
+            });
+
+            const {
+                results: ltiUsageViews,
+            } = await context.services.coreInternal.lti.getAllUsageViews(
+                pageSize,
                 offset
             );
 
+            const bulk = [];
             for (let ltiUsageView of ltiUsageViews) {
                 ltiUsageViewCount++;
                 let consumerId = null;
@@ -132,7 +162,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     consumerUserId = consumerUsers[ltiUsageView.tenantId].id;
                 }
 
-                await context.db.usageView.createOrUpdate({
+                bulk.push({
                     id: ltiUsageView.id,
                     usageId: ltiUsageView.resourceUsageId,
                     consumerUserId: consumerUserId,
@@ -140,16 +170,20 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                 });
             }
 
+            if (bulk.length !== 0) {
+                await context.db.usageView.createManyOrIgnore(bulk);
+            }
+
             if (ltiUsageViews.length === 0) {
                 run = false;
             }
 
-            offset = offset + limit;
+            offset = offset + pageSize;
         }
 
         await context.db.sync.update(jobId, {
             doneAt: new Date(),
-            message: `Ferdig med å synkronisere ${ltiUsageCount} "lti usage" og ${ltiUsageViewCount} "lti usage views"`,
+            message: `Ferdig med å synkronisere ${ltiUsageCount} "lti usage" og ${ltiUsageViewCount} "lti usage views" og ${missingResourceCount} manglende referanser til en ressurs`,
         });
     } catch (e) {
         console.error(e);
