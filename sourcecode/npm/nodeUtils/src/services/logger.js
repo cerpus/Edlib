@@ -12,9 +12,10 @@ const logger = Winston.createLogger({
     transports: [
         new Winston.transports.Console(),
         !appConfig.isTest &&
+            appConfig.logstashUrl &&
             new LogstashTransport({
                 logstash: {
-                    host: 'logstash.elk',
+                    host: appConfig.logstashUrl,
                     port: 9605,
                 },
             }),

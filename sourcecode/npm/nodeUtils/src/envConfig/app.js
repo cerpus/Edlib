@@ -10,4 +10,5 @@ export default {
     environment: env('POD_NAMESPACE', 'local'),
     shouldEnableDevFeatures: env('DEPLOYMENT_ENVIRONMENT', 'dev') === 'dev',
     serviceName: env('SERVICE_NAME'),
+    logstashUrl: env('EDLIBCOMMON_LOGSTASH_URL', null),
 };
