@@ -10,7 +10,7 @@ import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
 import ExportWrapper from '../../components/ExportWrapper';
 import { Modal } from '@material-ui/core';
-import EdlibModalContent from './EdlibModalContent.jsx';
+import EdlibModalContent from './EdlibModalContent';
 
 const getStartPage = (userConfiguredStartPage) => {
     if (
