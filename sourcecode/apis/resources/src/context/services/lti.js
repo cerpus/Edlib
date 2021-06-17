@@ -5,10 +5,10 @@ import { exceptionTranslator } from '@cerpus/edlib-node-utils';
 const ltiAxios = async (options) => {
     try {
         return await axios({
+            timeout: 5000,
+            maxRedirects: 0,
             ...options,
             url: `${apis.lti.url}${options.url}`,
-            maxRedirects: 0,
-            timeout: 5000,
         });
     } catch (e) {
         exceptionTranslator(e);
@@ -29,6 +29,7 @@ const getUsageViews = async (
                 offset,
                 hideTotalCount,
             },
+            timeout: 120000,
         })
     ).data;
 };
