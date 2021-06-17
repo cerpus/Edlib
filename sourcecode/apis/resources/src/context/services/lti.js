@@ -15,7 +15,11 @@ const ltiAxios = async (options) => {
     }
 };
 
-const getUsageViews = async (offset = 0, limit = 100) => {
+const getUsageViews = async (
+    offset = 0,
+    limit = 100,
+    hideTotalCount = false
+) => {
     return (
         await ltiAxios({
             url: `/v1/usage-views`,
@@ -23,6 +27,7 @@ const getUsageViews = async (offset = 0, limit = 100) => {
             params: {
                 limit,
                 offset,
+                hideTotalCount,
             },
         })
     ).data;

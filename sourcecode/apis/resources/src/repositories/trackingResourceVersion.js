@@ -8,6 +8,13 @@ const create = async (trackingResourceVersion) => {
     return getById(id);
 };
 
+const createManyOrIgnore = async (trackingResourceVersions) => {
+    await db(table)
+        .insert(trackingResourceVersions)
+        .onConflict('externalReference')
+        .ignore();
+};
+
 const getById = async (id) => db(table).select('*').where('id', id).first();
 const getByExternalReference = async (externalReference) =>
     db(table).select('*').where('externalReference', externalReference).first();
@@ -26,4 +33,5 @@ export default () => ({
     getById,
     getByExternalReference,
     getCountForResource,
+    createManyOrIgnore,
 });

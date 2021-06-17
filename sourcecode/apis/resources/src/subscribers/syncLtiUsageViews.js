@@ -3,6 +3,7 @@ import { buildRawContext } from '../context/index.js';
 import { logger, NotFoundException } from '@cerpus/edlib-node-utils';
 import moment from 'moment';
 
+const pageSize = 1000;
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
 
@@ -14,7 +15,6 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
         {
             // save all resources to local elasticsearch instance
             let run = true;
-            const limit = 50;
             let offset = 0;
             while (run) {
                 await context.db.job.update(jobId, {
@@ -26,18 +26,13 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
                 const { usageViews } = await context.services.lti.getUsageViews(
                     offset,
-                    limit
+                    pageSize,
+                    true
                 );
 
+                const batch = [];
+
                 for (let usageView of usageViews) {
-                    const trackingResourceVersion = await context.db.trackingResourceVersion.getByExternalReference(
-                        usageView.id
-                    );
-
-                    if (trackingResourceVersion) {
-                        continue;
-                    }
-
                     let resourceVersionId = usageView.resourceVersionId;
 
                     if (!resourceVersionId) {
@@ -52,18 +47,24 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                         resourceVersionId = resourceVersion.id;
                     }
 
-                    await context.db.trackingResourceVersion.create({
+                    batch.push({
                         externalReference: usageView.id,
                         resourceVersionId,
                         createdAt: moment(usageView.createdAt).toDate(),
                     });
                 }
 
+                if (batch.length !== 0) {
+                    await context.db.trackingResourceVersion.createManyOrIgnore(
+                        batch
+                    );
+                }
+
                 if (usageViews.length === 0) {
                     run = false;
                 }
 
-                offset = offset + limit;
+                offset = offset + pageSize;
                 usageViewCount = usageViewCount + usageViews.length;
             }
         }

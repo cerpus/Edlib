@@ -28,11 +28,12 @@ export default {
         return usage;
     },
     getUsageViews: async (req, res, next) => {
-        const { offset, limit } = validateJoi(
+        const { offset, limit, hideTotalCount } = validateJoi(
             req.query,
             Joi.object().keys({
                 offset: Joi.number().min(0).optional().default(0),
                 limit: Joi.number().min(1).optional().default(100),
+                hideTotalCount: Joi.boolean().optional().default(false),
             })
         );
 
@@ -43,7 +44,9 @@ export default {
 
         return {
             pagination: {
-                count: await req.context.db.usageView.count(),
+                count: !hideTotalCount
+                    ? await req.context.db.usageView.count()
+                    : undefined,
                 offset: offset,
                 limit: limit,
             },
