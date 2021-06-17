@@ -29,7 +29,7 @@ jobs:
           working-directory: ${{ env.workingDirectory }}
 
       - name: "Run tests"
-        run: cd ${{ env.workingDirectory }}; yarn test
+        run: cd ${{ env.workingDirectory }}; node node_modules/jest/bin/jest.js --runInBand --colors --verbose --forceExit --config=./jest.config.json
         shell: bash
 
   check_if_should_release:
