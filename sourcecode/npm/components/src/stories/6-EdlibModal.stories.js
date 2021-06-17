@@ -47,9 +47,9 @@ export const EdlibModalIframe = () => {
                         edlibUrl={edlibApiUrl}
                         getJwt={getJwt}
                     >
-                        <div style={{ height: '90vh' }}>
+                        <div style={{ height: '50vh' }}>
                             <EdlibModalComponent
-                                removePadding
+                                contentOnly
                                 enableDoku
                                 enableVersionInterface
                                 onClose={action('on close')}
