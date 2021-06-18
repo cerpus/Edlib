@@ -1,5 +1,5 @@
 import express from 'express';
-import runAsync from '../services/runAsync.js';
+import { runAsync } from '@cerpus/edlib-node-utils';
 import SyncController from '../controllers/sync.js';
 import { middlewares } from '@cerpus/edlib-node-utils';
 
