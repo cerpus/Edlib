@@ -1,7 +1,7 @@
 import express from 'express';
 import runAsync from '../services/runAsync.js';
 import recommenderController from '../controllers/recommender.js';
-import { isUserAdmin } from '@cerpus/edlib-node-utils/middlewares/index.js';
+import { middlewares } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -10,7 +10,7 @@ export default async () => {
 
     router.post(
         '/v1/recommender/index-all',
-        isUserAdmin,
+        middlewares.isUserAdmin,
         runAsync(recommenderController.indexAll)
     );
 

@@ -1,13 +1,13 @@
 #
 # base container, creates environment
 #
-FROM node:14 AS base
+FROM node:16 AS base
 WORKDIR /var/www/app
 
 #
 # appbase container, contains app and dependencies
 #
-FROM node:14 AS appbase
+FROM node:16 AS appbase
 COPY . .
 RUN yarn install
 
