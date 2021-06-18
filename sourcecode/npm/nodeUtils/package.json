@@ -2,12 +2,13 @@
   "name": "@cerpus/edlib-node-utils",
   "version": "1.2.0",
   "private": false,
+  "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "author": "Max Moeschinger <m.moeschinger@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "test": "ENABLE_LOGGING=0 jest --config=./jest.config.json",
+    "test": "jest",
     "build": "babel src -d lib",
     "prepare": "npm run build"
   },
@@ -19,6 +20,7 @@
     "@sentry/node": "^6.7.1",
     "@sentry/tracing": "^6.7.1",
     "await-lock": "^2.1.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.1",
     "cookie-parser": "^1.4.5",
