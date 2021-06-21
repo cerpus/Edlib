@@ -19,6 +19,6 @@ Although a lot more needs to be done with regards to open-sourcing Edlib, the wo
 
 &mdash; Tor-Martin and The Edlib team
 
----
-
+:::note
 If you have any further questions with regards to Edlib, then take a look at the [Frequently Asked Questions](/docs/product/faq) page which will hopefully provide you with relevant answers. Alternatively, you can also [get in touch](/contact-us) with us if you are interested to know more about Edlib.
+:::

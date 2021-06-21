@@ -45,6 +45,10 @@ module.exports = {
               to: '/docs/product/roadmap',
             },
             {
+              label: 'Ecosystem',
+              to: '/docs/product/ecosystem',
+            },
+            {
               label: 'User guides',
               to: '/docs/product/user-guides',
             },
