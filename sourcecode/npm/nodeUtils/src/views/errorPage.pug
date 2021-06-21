@@ -1,0 +1,53 @@
+html
+    head
+        title=message
+        style.
+            body, html, .cover {
+                width: 100%;
+                height: 100%;
+                background-color: #21232a;
+                padding: 0;
+                margin: 0;
+                color: white;
+            }
+
+            .cover {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            h1 {
+                text-align: center;
+                font-family: inherit;
+                font-weight: 500;
+                line-height: 1.1;
+                color: inherit;
+                font-size: 36px;
+            }
+
+            h1 small {
+                font-size: 68%;
+                font-weight: 400;
+                line-height: 1;
+                color: #777;
+                margin-left: 10px;
+            }
+
+            .lead {
+                text-align: center;
+                color: silver;
+                font-size: 21px;
+                line-height: 1.4;
+            }
+    body
+        div(class="cover")
+            div
+                h1
+                    span=statusPhrase
+                    small=status
+                if message
+                    p.lead=message
+                if stack
+                    pre.error__stack-trace
+                        code.shell #{stack}

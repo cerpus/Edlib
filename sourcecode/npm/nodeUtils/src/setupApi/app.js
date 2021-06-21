@@ -9,12 +9,13 @@ import exceptionHandler from '../middlewares/exceptionHandler.js';
 import * as errorReporting from '../services/errorReporting.js';
 import * as Sentry from '@sentry/node';
 import prepareTrace from '../middlewares/prepareTrace.js';
+import viewsDir from '../views/__dirname';
 
 const app = express();
 
 export default async (
     buildRouter,
-    { errorReportingConfig, trustProxy, configureApp } = {
+    { errorReportingConfig, trustProxy, configureApp, extraViewDir } = {
         trustProxy: false,
         configureApp: () => {},
     }
@@ -36,6 +37,14 @@ export default async (
         app.set('trust proxy', true);
     }
 
+    const viewsDirs = [viewsDir];
+
+    if (extraViewDir) {
+        viewsDirs.push(extraViewDir);
+    }
+
+    app.set('view engine', 'pug');
+    app.set('views', viewsDirs);
     app.use(prepareTrace);
     app.use(helmet.hidePoweredBy());
     app.use(function (req, res, next) {

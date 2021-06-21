@@ -2,14 +2,14 @@
   "name": "@cerpus/edlib-node-utils",
   "version": "1.2.0",
   "private": false,
-  "type": "module",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "author": "Max Moeschinger <m.moeschinger@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "test": "jest",
-    "build": "babel src -d lib",
+    "build": "babel src -d lib --copy-files",
+    "dev": "babel src -d lib --copy-files --watch",
     "prepare": "npm run build"
   },
   "engines": {
@@ -28,6 +28,7 @@
     "dotenv-expand": "^5.1.0",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
+    "http-status-codes": "^2.1.4",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.0.3",
     "knex": "^0.95.6",

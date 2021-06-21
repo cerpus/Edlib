@@ -1,6 +1,7 @@
 import { ApiException } from '../exceptions/index.js';
 import appConfig from '../envConfig/app.js';
 import logger from '../services/logger.js';
+import { getReasonPhrase } from 'http-status-codes';
 
 export default (
     err,
@@ -22,8 +23,10 @@ export default (
             body = err.getBody();
         }
 
-        if (!appConfig.isProduction) {
+        if (appConfig.displayDetailedErrors) {
             body.trace = err.stack;
+        } else {
+            body.message = null;
         }
 
         if (err.logDetails) {
@@ -32,7 +35,20 @@ export default (
             logger.error(err.stack);
         }
 
-        res.status(status).json(body);
+        res.status(status);
+        if (req.is('application/json')) {
+            res.json({
+                ...body,
+                message: body.message || getReasonPhrase(status),
+            });
+        } else {
+            res.render('errorPage', {
+                message: body.message,
+                status,
+                statusPhrase: getReasonPhrase(status),
+                stack: body.stack,
+            });
+        }
     };
 
     then();
