@@ -76,7 +76,7 @@ export const EditResourceModal = () => {
                     >
                         <EditEdlibResourceModal
                             ltiLaunchUrl={
-                                'https://core-external.local/lti/launch/e482edb3-ab31-4d27-a801-dc79c0c2b711'
+                                'https://api.edlib.local/lti/v2/lti-links/e38a3bf6-160a-401e-be57-1749182eaf1d'
                             }
                             onUpdateDone={action('Resource update done')}
                         />
@@ -99,7 +99,7 @@ export const EditResourceModalFrame = () => {
                         <EditEdlibResourceModal
                             removePadding
                             ltiLaunchUrl={
-                                'https://core-external.local/lti/launch/e482edb3-ab31-4d27-a801-dc79c0c2b711'
+                                'https://api.edlib.local/lti/v2/lti-links/e38a3bf6-160a-401e-be57-1749182eaf1d'
                             }
                             onUpdateDone={action('Resource update done')}
                         />
