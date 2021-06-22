@@ -46,7 +46,7 @@ export default (
                 message: body.message,
                 status,
                 statusPhrase: getReasonPhrase(status),
-                stack: body.stack,
+                stack: body.trace,
             });
         }
     };
