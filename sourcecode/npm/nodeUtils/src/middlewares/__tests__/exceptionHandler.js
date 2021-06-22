@@ -6,6 +6,7 @@ const mockRes = () => {
 
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
+    res.render = jest.fn().mockReturnValue(res);
 
     return res;
 };
@@ -16,7 +17,7 @@ describe('Middlewares', () => {
             const next = jest.fn();
             const res = mockRes();
 
-            exceptionHandler({}, {}, res, next);
+            exceptionHandler({}, { is: () => false }, res, next);
 
             test('next to not be called', () => {
                 expect(next).not.toBeCalled();
@@ -27,7 +28,7 @@ describe('Middlewares', () => {
             });
 
             test('json to be called', () => {
-                expect(res.json).toBeCalled();
+                expect(res.render).toBeCalled();
             });
 
             test('status to be 500', () => {
@@ -41,7 +42,7 @@ describe('Middlewares', () => {
 
             exceptionHandler(
                 new Validation(validationError('key', 'body', 'test')),
-                {},
+                { is: () => false },
                 res,
                 next
             );
@@ -55,7 +56,7 @@ describe('Middlewares', () => {
             });
 
             test('json to be called', () => {
-                expect(res.json).toBeCalled();
+                expect(res.render).toBeCalled();
             });
 
             test('status to be 422', () => {
