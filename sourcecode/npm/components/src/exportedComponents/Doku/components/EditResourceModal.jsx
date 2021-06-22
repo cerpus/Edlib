@@ -16,7 +16,7 @@ const EditResourceModal = ({ updateEdlibResourceData = null, onClose }) => {
                 <>
                     <ResourceEditor
                         edlibId={updateEdlibResourceData.data.edlibId}
-                        onResourceReturned={(edlibId) => {
+                        onResourceReturned={({ resourceId: edlibId }) => {
                             onBlockUpdateData(
                                 updateEdlibResourceData.entityKey,
                                 { ...updateEdlibResourceData.data, edlibId }

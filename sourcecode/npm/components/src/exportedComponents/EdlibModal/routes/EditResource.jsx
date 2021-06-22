@@ -15,7 +15,7 @@ const ResourceEditorRoute = ({ match }) => {
         <ResourceEditor
             edlibId={match.params.edlibId}
             translateToLanguage={match.params.translateToLanguage}
-            onResourceReturned={(resourceId) => {
+            onResourceReturned={({ resourceId }) => {
                 setLoading(true);
                 if (canReturnResources) {
                     onInsert(resourceId);

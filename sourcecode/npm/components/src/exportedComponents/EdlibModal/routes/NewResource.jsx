@@ -13,7 +13,7 @@ const ContentAuthor = ({ match }) => {
 
     return (
         <ResourceEditor
-            onResourceReturned={(resourceId) => {
+            onResourceReturned={({ resourceId }) => {
                 setLoading(true);
                 if (canReturnResources) {
                     onInsert(resourceId);

@@ -35,12 +35,15 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     return (
         <ResourceEditor
             edlibId={response.id}
-            onResourceReturned={async (newEdlibId) => {
-                if (newEdlibId === response.id) {
+            onResourceReturned={async ({ resourceId, resourceVersionId }) => {
+                if (
+                    resourceId === response.id &&
+                    resourceVersionId === response.version.id
+                ) {
                     return onUpdateDone(null);
                 }
 
-                const info = await createResourceLink(newEdlibId);
+                const info = await createResourceLink(resourceId);
 
                 onUpdateDone(info);
             }}
