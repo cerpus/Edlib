@@ -7,6 +7,7 @@ import {
 } from '../exceptions/index.js';
 import logger from './logger.js';
 import AxiosException from '../exceptions/axiosException.js';
+import EndpointNotFoundException from '../exceptions/endpointNotFound.js';
 
 export default (e, serviceName = 'API') => {
     if (!e.response) {
@@ -17,12 +18,31 @@ export default (e, serviceName = 'API') => {
         throw new UnauthorizedException();
     }
 
+    const responseData = e.response.data;
+
     if (e.response.status === 400) {
         throw new ClientException();
     }
 
     if (e.response.status === 404) {
-        throw new NotFoundException();
+        if (
+            responseData &&
+            responseData.type === 'endpoint_not_found' &&
+            responseData.error
+        ) {
+            throw new EndpointNotFoundException(
+                e.config.url,
+                e.config.method,
+                true
+            );
+        }
+
+        let field =
+            responseData.error && responseData.error.parameter
+                ? responseData.error.parameter
+                : 'unknown';
+
+        throw new NotFoundException(field);
     }
 
     if (e.response.status === 422) {

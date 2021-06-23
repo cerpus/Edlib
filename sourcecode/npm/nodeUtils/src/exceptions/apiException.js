@@ -22,6 +22,10 @@ export default class ApiException extends Error {
         logger.error(this.message);
         logger.error(this.stack);
     }
+
+    getExtraMap() {
+        return {};
+    }
 }
 
 export const errorResponse = (message, type, error = null) => ({

@@ -38,4 +38,13 @@ export default class AxiosException extends ApiException {
         logger.error('requestInfo', this.requestInfo);
         logger.error('response', this.response);
     }
+
+    getExtraMap() {
+        return {
+            errorSource: 'axios',
+            responseData: this.response.data,
+            responseCode: this.response.status,
+            url: this.requestInfo.url,
+        };
+    }
 }

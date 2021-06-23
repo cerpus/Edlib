@@ -11,6 +11,7 @@ export { default as exceptionTranslator } from './services/exceptionTranslator.j
 export * as pubsub from './services/pubSub.js';
 export { default as redis } from './services/redis.js';
 export * as redisHelpers from './services/redis.js';
+export * as errorReporting from './services/errorReporting.js';
 
 export { default as helpers } from './helpers/index.js';
 export { default as config } from './envConfig/index.js';

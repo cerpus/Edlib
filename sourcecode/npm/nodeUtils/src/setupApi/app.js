@@ -7,9 +7,9 @@ import logRequest from '../middlewares/logRequest.js';
 import endpointNotFoundHandler from '../middlewares/endpointNotFoundHandler.js';
 import exceptionHandler from '../middlewares/exceptionHandler.js';
 import * as errorReporting from '../services/errorReporting.js';
-import * as Sentry from '@sentry/node';
 import prepareTrace from '../middlewares/prepareTrace.js';
 import viewsDir from '../views/__dirname';
+import { logExpressError } from '../services/errorReporting.js';
 
 const app = express();
 
@@ -69,7 +69,7 @@ export default async (
     app.use(cookieParser());
     app.use(compiledRouter);
     app.use(endpointNotFoundHandler);
-    app.use(Sentry.Handlers.errorHandler());
+    app.use(logExpressError);
     app.use(exceptionHandler);
 
     return app;

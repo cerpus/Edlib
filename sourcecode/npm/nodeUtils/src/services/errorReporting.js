@@ -3,6 +3,7 @@ import * as Tracing from '@sentry/tracing';
 import { URL } from 'url';
 import logger from './logger.js';
 import appConfig from '../envConfig/app.js';
+import { ApiException } from '../exceptions';
 
 export const setUser = ({ id }) => {
     Sentry.setUser({
@@ -59,8 +60,23 @@ export const getTraceHeaders = (req) => {
     return {};
 };
 
+export const logExpressError = Sentry.Handlers.errorHandler({
+    shouldHandleError: (error) => {
+        if (error instanceof ApiException) {
+            console.log(`should report ${error.report}`);
+            return error.report;
+        }
+
+        return true;
+    },
+});
+
 export const captureException = (e) => {
-    const extraMap = {};
+    let extraMap = {};
+
+    if (e instanceof ApiException) {
+        extraMap = e.getExtraMap();
+    }
 
     if (e.isAxiosError) {
         extraMap.errorSource = 'axios';
