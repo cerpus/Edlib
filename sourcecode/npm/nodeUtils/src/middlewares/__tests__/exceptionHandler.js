@@ -17,7 +17,12 @@ describe('Middlewares', () => {
             const next = jest.fn();
             const res = mockRes();
 
-            exceptionHandler({}, { is: () => false }, res, next);
+            exceptionHandler(
+                {},
+                { is: () => false, accepts: () => null },
+                res,
+                next
+            );
 
             test('next to not be called', () => {
                 expect(next).not.toBeCalled();
@@ -42,7 +47,7 @@ describe('Middlewares', () => {
 
             exceptionHandler(
                 new Validation(validationError('key', 'body', 'test')),
-                { is: () => false },
+                { is: () => false, accepts: () => null },
                 res,
                 next
             );
