@@ -44,7 +44,7 @@ export const syncResource = async (context, resource, waitForIndex) => {
         license: resourceVersion.license,
         language: resourceVersion.language,
         contentType: resourceVersion.contentType,
-        isListed: resourceVersion.isListed === 1,
+        isListed: resourceVersion.isListed,
         authorOverwrite: resourceVersion.authorOverwrite,
         updatedAt: resourceVersion.updatedAt,
         createdAt: resourceVersion.createdAt,

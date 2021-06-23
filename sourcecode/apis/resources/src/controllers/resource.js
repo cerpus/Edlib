@@ -1,5 +1,6 @@
 import { NotFoundException } from '@cerpus/edlib-node-utils';
 import resourceService from '../services/resource.js';
+import resourceAccessService from '../services/resourceAccess.js';
 import saveEdlibResourcesAPI from '../subscribers/saveEdlibResourcesAPI.js';
 
 export default {
@@ -49,7 +50,7 @@ export default {
 
         if (
             !resource ||
-            !(await resourceService.hasResourceWriteAccess(
+            !(await resourceAccessService.hasResourceAccess(
                 req.context,
                 resource,
                 req.params.tenantId

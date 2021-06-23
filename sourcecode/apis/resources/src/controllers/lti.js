@@ -1,18 +1,9 @@
 import { NotFoundException } from '@cerpus/edlib-node-utils';
 import externalSystemService from '../services/externalSystem.js';
-import resourceService from '../services/resource.js';
+import resourceAccessService from '../services/resourceAccess.js';
 
 export default {
     getResourceLtiInfo: async (req) => {
-        const resourceStatus = await resourceService.status(
-            req.context,
-            req.params.resourceId
-        );
-
-        if (!resourceStatus.isPublished) {
-            throw new NotFoundException('resource');
-        }
-
         let resourceVersion;
         if (req.query.versionId) {
             resourceVersion = await req.context.db.resourceVersion.getById(
@@ -28,7 +19,11 @@ export default {
 
         if (
             !resourceVersion ||
-            resourceVersion.resourceId !== req.params.resourceId
+            resourceVersion.resourceId !== req.params.resourceId ||
+            !(await resourceAccessService.isResourceVersionViewable(
+                req.context,
+                resourceVersion
+            ))
         ) {
             throw new NotFoundException('resource');
         }
@@ -53,38 +48,13 @@ export default {
             throw new NotFoundException('resource');
         }
 
-        const resource = await req.context.db.resource.getById(
-            resourceVersion.resourceId
-        );
-
-        if (!resource) {
-            throw new NotFoundException('resource');
-        }
-
-        const resourceStatus = await resourceService.status(
-            req.context,
-            req.params.resourceId
-        );
-
-        const canGet = async () => {
-            if (resourceStatus.isPublished && resourceStatus.isListed) {
-                return true;
-            }
-
-            const hasWriteAccess = await resourceService.hasResourceWriteAccess(
+        if (
+            !(await resourceAccessService.isResourceVersionViewableByTenant(
                 req.context,
-                resource,
+                resourceVersion,
                 req.params.tenantId
-            );
-
-            if (hasWriteAccess) {
-                return true;
-            }
-
-            return false;
-        };
-
-        if (!(await canGet())) {
+            ))
+        ) {
             throw new NotFoundException('resource');
         }
 
