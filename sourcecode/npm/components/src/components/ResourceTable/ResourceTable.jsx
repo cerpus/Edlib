@@ -192,7 +192,10 @@ const ResourceTable = ({
                                     }}
                                     onUse={async () => {
                                         setCurrentEditContextId(null);
-                                        await onInsert(resource.id);
+                                        await onInsert(
+                                            resource.id,
+                                            resource.version.id
+                                        );
                                     }}
                                     onShowVersions={() =>
                                         setResourceVersionModal(resource)

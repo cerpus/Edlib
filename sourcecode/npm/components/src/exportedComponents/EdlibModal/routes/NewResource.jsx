@@ -13,10 +13,10 @@ const ContentAuthor = ({ match }) => {
 
     return (
         <ResourceEditor
-            onResourceReturned={({ resourceId }) => {
+            onResourceReturned={({ resourceId, resourceVersionId }) => {
                 setLoading(true);
                 if (canReturnResources) {
-                    onInsert(resourceId);
+                    onInsert(resourceId, resourceVersionId);
                 } else {
                     history.push(`/my-content?sortBy=created`);
                 }
