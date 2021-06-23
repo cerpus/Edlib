@@ -22,6 +22,13 @@ const queryBuilder = !appConfig.isTest
               database: dbConfig.database,
               password: dbConfig.password,
               port: dbConfig.port,
+              typeCast: function (field, next) {
+                  if (field.type === 'TINY' && field.length === 1) {
+                      return field.string() === '1'; // 1 = true, 0 = false
+                  }
+
+                  return next();
+              },
           },
           pool: { min: 1, max: 10 },
           ...commonConfig,
