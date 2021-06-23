@@ -63,7 +63,6 @@ export const getTraceHeaders = (req) => {
 export const logExpressError = Sentry.Handlers.errorHandler({
     shouldHandleError: (error) => {
         if (error instanceof ApiException) {
-            console.log(`should report ${error.report}`);
             return error.report;
         }
 

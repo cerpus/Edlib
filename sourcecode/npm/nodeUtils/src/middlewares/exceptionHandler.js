@@ -36,19 +36,24 @@ export default (
         }
 
         res.status(status);
-        if (req.is('application/json')) {
-            res.json({
-                ...body,
-                message: body.message || getReasonPhrase(status),
-            });
-        } else {
-            res.render('errorPage', {
-                message: body.message,
-                status,
-                statusPhrase: getReasonPhrase(status),
-                stack: body.trace,
-            });
+
+        if (!req.accepts('json')) {
+            try {
+                return res.render('errorPage', {
+                    message: body.message,
+                    status,
+                    statusPhrase: getReasonPhrase(status),
+                    stack: body.trace,
+                });
+            } catch (e) {
+                logger.error('PUG npm package is not installed');
+            }
         }
+
+        res.json({
+            ...body,
+            message: body.message || getReasonPhrase(status),
+        });
     };
 
     then();
