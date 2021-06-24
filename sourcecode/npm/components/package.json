@@ -8,15 +8,15 @@
     "node": ">=12.0.0"
   },
   "peerDependencies": {
-    "@cerpus/ui": "^2.0.0",
-    "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-router-dom": "^5.1.2",
     "styled-components": "^5.0.1"
   },
   "dependencies": {
+    "@cerpus/ui": "^2.0.3",
+    "@material-ui/core": "^4.0.0",
+    "@material-ui/icons": "^4.0.0",
     "@popperjs/core": "^2.6.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -73,9 +73,6 @@
     "@babel/plugin-transform-runtime": "^7.12.15",
     "@babel/preset-env": "^7.12.13",
     "@babel/preset-react": "^7.12.13",
-    "@cerpus/ui": "^2.0.0",
-    "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
     "@storybook/addon-actions": "^6.1.17",
     "@storybook/addon-links": "^6.1.17",
     "@storybook/addons": "^6.1.17",
