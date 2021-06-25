@@ -15,7 +15,7 @@ export default {
         resourceIndexPrefix: 'edlib-resources',
         url: env(
             'EDLIBCOMMON_ELASTICSEARCH_URL',
-            'http://elasticsearch-latest:9200'
+            'http://elasticsearch:9200'
         ),
     },
     externalResourceAPIS: {
