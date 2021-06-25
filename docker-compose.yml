@@ -565,11 +565,12 @@ services:
     build:
       context: ./localSetup/projects/edlibfacade
     entrypoint: /before-start.sh
-    command: /start-app.sh
+    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888;/start-app.sh"
     volumes:
       - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
       - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
       - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
+      - ./localSetup/helpers/start-scripts:/start-scripts
     environment:
       CONFIGSERVICE_URI: http://configserver:8888
       EDLIB_API_URL: https://api.edlib.local
