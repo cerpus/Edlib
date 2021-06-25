@@ -2,8 +2,8 @@
 
 cd "$(dirname "$0")"
 
-./initialize-data-folders.sh
 ./git-clone-ssh.sh
+./initialize-data-folders.sh
 ./_tmp_checkout-beta-branches.sh
 ./update-all.sh
 ./update-certs.sh
