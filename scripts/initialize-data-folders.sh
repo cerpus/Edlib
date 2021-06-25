@@ -17,5 +17,8 @@ cp -R ../sourcecode/not_migrated/h5pviewer/storage contentauthor
 mkdir -p licenseapi
 cp -R ../sourcecode/not_migrated/licenseapi/storage licenseapi
 
+popd
 
+pushd localSetup/projects/elasticsearch
+chmod 400 password.txt
 popd
