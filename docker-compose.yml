@@ -284,7 +284,7 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
       - ./data/edlib-lti/node_modules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
@@ -306,7 +306,7 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
       - ./data/edlib-auth/node_modules:/var/www/app/node_modules
       - ./sourcecode/apis/auth/src:/var/www/app/src
