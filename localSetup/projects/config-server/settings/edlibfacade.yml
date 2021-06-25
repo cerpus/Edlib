@@ -1,0 +1,26 @@
+edlib:
+  core:
+    uri: https://core-external.local
+    client: 3898bcbf-73f9-4f6f-8264-cf27b46ae57a
+    secret: 9727f4d4-b174-4d2c-98c8-91d63107c56e
+
+jwt:
+  rsa256:
+    named:
+      names: ndlatest
+      ndlatest:
+        pub.str: https://ndla-test.eu.auth0.com/.well-known/jwks.json
+#    expiration-leeway-hours: 24
+
+cerpus.application.profile: http://localhost:8080/config/ndla.json
+cerpus:
+  application:
+    profile: https://edlibfacade.local/config/ndla.json
+  auto-publish: "true"
+  enableEdlib2: "true"
+#server:
+#  forward-headers-strategy: FRAMEWORK
+server:
+  use-forward-headers: true
+  tomcat:
+    protocol-header: x-forwarded-proto
