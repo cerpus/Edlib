@@ -592,3 +592,12 @@ services:
       - ./sourcecode/not_migrated/edlibfacade-test/package.json:/app/package.json
       - ./sourcecode/not_migrated/edlibfacade-test/package-lock.json:/app/package-lock.json
       - ./localSetup/projects/edlibfacade-test/config.json:/app/public/config.json
+
+  npm-components-storybook:
+    tty: true
+    build:
+      context: ./sourcecode/npm/components
+      dockerfile: Dockerfile
+    volumes:
+      - ./sourcecode/npm/components:/app
+      - ./data/npm-components-storybook/node_modules:/app/node_modules

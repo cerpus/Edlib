@@ -33,6 +33,7 @@ DOMAINS=(
   "DNS:localhost"
   "DNS:contentauthor.local"
   "DNS:api.edlib.local"
+  "DNS:npm.components.edlib.local"
 )
 DNS=$(IFS=, ; echo "${DOMAINS[*]}")
 

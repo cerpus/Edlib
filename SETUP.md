@@ -8,3 +8,4 @@
 ## Install
 
 1. run `./scripts/first-time-setup.sh`
+2. While you wait for the script to finish, add the content of `host.example` to /etc/hosts. 
