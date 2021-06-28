@@ -1,11 +1,11 @@
 import React from 'react';
 
-import useFetch from '../hooks/useFetch.jsx';
-import AuthContext from '../contexts/auth.js';
-import configContext from '../contexts/config.js';
-import request from '../helpers/request.js';
+import useFetch from '../../hooks/useFetch.jsx';
+import AuthContext from '../../contexts/auth.js';
+import configContext from '../../contexts/config.js';
+import request from '../../helpers/request.js';
 import store from 'store';
-import storageKeys from '../constants/storageKeys.js';
+import storageKeys from '../../constants/storageKeys.js';
 
 const AuthProviderContainer = ({ children }) => {
     const fetch = async () => {};

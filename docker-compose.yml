@@ -373,7 +373,7 @@ services:
       - ./sourcecode/not_migrated/edlibapi-iframe/package.json:/app/package.json
       - ./sourcecode/not_migrated/edlibapi-iframe/yarn.lock:/app/yarn.lock
 
-  edlib-admin-frontend:
+  proxy-admin:
     tty: true
     build:
       context: ./sourcecode/proxies/admin
@@ -384,12 +384,11 @@ services:
     environment:
       WDS_SOCKET_PATH: /admin/sockjs-node
     volumes:
-      - ./data/edlib-admin-frontend/node_modules:/var/www/app/node_modules
-      - ./sourcecode/proxies/admin/src:/var/www/app/src
-      - ./sourcecode/proxies/admin/public:/var/www/app/public
-      - ./sourcecode/proxies/admin/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/admin/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/projects/edlib-admin-frontend/.env:/var/www/app/.env
+      - ./data/proxy-admin/node_modules:/app/node_modules
+      - ./sourcecode/proxies/admin/src:/app/src
+      - ./sourcecode/proxies/admin/public:/app/public
+      - ./sourcecode/proxies/admin/package.json:/app/package.json
+      - ./sourcecode/proxies/admin/yarn.lock:/app/yarn.lock
 
   edlibapi-auth:
     build:
