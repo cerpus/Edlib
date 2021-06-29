@@ -190,7 +190,7 @@ const retrieveCoreInfo = async (context, resourceVersions) => {
                 throw new ApiException('Resource not found');
             }
 
-            if (resourceInfo.deletedAt) {
+            if (resourceInfo && resourceInfo.deletedAt) {
                 await context.db.resource.update(resourceVersion.resourceId, {
                     deletedAt: moment(resourceInfo.deletedAt).toDate(),
                 });
