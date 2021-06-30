@@ -96,10 +96,10 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     continue;
                 }
 
-                resumeData = null;
                 let run = true;
                 const limit = 1000;
                 let offset = resumeData ? resumeData.offset : 0;
+                resumeData = null;
 
                 while (run) {
                     await updateJobInfo(context, jobId, {
@@ -140,7 +140,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                             step: steps.EXTERNAL_SYNC,
                             offset,
                             stepKey: key,
-                            currentResourceCount: resourceCount,
+                            resourceCount: resourceCount,
                         },
                     });
                 }
