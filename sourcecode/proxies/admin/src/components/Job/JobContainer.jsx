@@ -1,12 +1,14 @@
 import React from 'react';
 import Job from './Job.jsx';
 import request from '../../helpers/request.js';
+import useFetch from '../../hooks/useFetch.jsx';
 
 const JobContainer = ({
     name,
     startUrl,
     statusUrl,
     showKillButton = false,
+    resumable = false,
 }) => {
     const [status, setStatus] = React.useState({
         loading: false,
@@ -16,9 +18,15 @@ const JobContainer = ({
     });
     const [currentJobId, setCurrentJobId] = React.useState(null);
 
+    const { response, loading, error } = useFetch(
+        startUrl + '/resumable',
+        'GET',
+        React.useMemo(() => ({}), []),
+        !resumable
+    );
+
     const errorHandler = React.useCallback(
         (error) => {
-            console.log(error);
             setCurrentJobId(null);
             setStatus({
                 error: true,
@@ -40,6 +48,19 @@ const JobContainer = ({
             })
             .catch(errorHandler);
     }, []);
+
+    const onResume = React.useCallback(() => {
+        setStatus({
+            loading: true,
+            error: false,
+        });
+
+        request(statusUrl(response.id) + '/resume', 'POST')
+            .then(({ jobId }) => {
+                setCurrentJobId(jobId);
+            })
+            .catch(errorHandler);
+    }, [response]);
 
     const onStop = React.useCallback(() => {
         setStatus({
@@ -95,7 +116,9 @@ const JobContainer = ({
             status={status}
             name={name}
             onStop={onStop}
+            onResume={onResume}
             showKillButton={showKillButton}
+            showResumeButton={!!response}
         />
     );
 };

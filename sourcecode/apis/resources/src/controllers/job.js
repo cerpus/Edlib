@@ -2,6 +2,15 @@ import { NotFoundException, pubsub } from '@cerpus/edlib-node-utils';
 import jobNames from '../constants/jobNames.js';
 
 export default {
+    getResumableJob: async (req, res, next) => {
+        let syncJob = await req.context.db.job.getLatest(req.params.jobName);
+
+        if (!syncJob || !syncJob.resumeData) {
+            throw new NotFoundException('sync');
+        }
+
+        return syncJob;
+    },
     getJobStatus: async (req, res, next) => {
         let syncJob = await req.context.db.job.getById(req.params.jobId);
 
@@ -47,6 +56,31 @@ export default {
 
         return {
             jobId: currentSyncJob.id,
+        };
+    },
+    resumeJob: async (req, res, next) => {
+        let job = await req.context.db.job.getById(req.params.jobId);
+
+        if (!job) {
+            throw new NotFoundException('job');
+        }
+
+        await req.context.db.job.update(req.params.jobId, {
+            failedAt: null,
+            shouldKill: false,
+            doneAt: null,
+        });
+
+        await pubsub.publish(
+            req.context.pubSubConnection,
+            '__internal_edlibResource_jobs_' + job.type,
+            JSON.stringify({
+                jobId: job.id,
+            })
+        );
+
+        return {
+            jobId: job.id,
         };
     },
 };

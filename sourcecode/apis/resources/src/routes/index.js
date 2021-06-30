@@ -227,7 +227,12 @@ export default async ({ pubSubConnection }) => {
         runAsync(resourceController.ensureResourceExists)
     );
     apiRouter.post('/v1/jobs/:jobName', runAsync(jobController.startJob));
+    apiRouter.get(
+        '/v1/jobs/:jobName/resumable',
+        runAsync(jobController.getResumableJob)
+    );
     apiRouter.get('/v1/jobs/:jobId', runAsync(jobController.getJobStatus));
+    apiRouter.post('/v1/jobs/:jobId/resume', runAsync(jobController.resumeJob));
     apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
 
     apiRouter.use(await contentTypes());
