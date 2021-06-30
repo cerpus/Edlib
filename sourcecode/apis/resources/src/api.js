@@ -9,6 +9,8 @@ import { buildRawContext } from './context/index.js';
 import jobNames from './constants/jobNames.js';
 import saveTrackingResourceVersion from './subscribers/saveTrackingResourceVersion.js';
 import syncLtiUsageViews from './subscribers/syncLtiUsageViews.js';
+import syncCoreIds from './subscribers/syncCoreIds.js';
+import syncExternalResources from './subscribers/syncExternalResources.js';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -36,6 +38,17 @@ const start = async () => {
                     '__internal_edlibResource_jobs_' +
                     jobNames.SYNC_LTI_USAGE_VIEWS,
                 handler: syncLtiUsageViews,
+            },
+            {
+                exchangeName:
+                    '__internal_edlibResource_jobs_' + jobNames.SYNC_CORE_IDS,
+                handler: syncCoreIds,
+            },
+            {
+                exchangeName:
+                    '__internal_edlibResource_jobs_' +
+                    jobNames.SYNC_EXTERNAL_RESOURCES,
+                handler: syncExternalResources,
             },
             {
                 exchangeName: 'edlib_new_user',

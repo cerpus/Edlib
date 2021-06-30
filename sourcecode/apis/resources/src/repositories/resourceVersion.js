@@ -93,6 +93,9 @@ const getAllPaginated = async (offset, limit) =>
         .offset(offset)
         .limit(limit);
 
+const count = async () =>
+    (await db(table).count('*', { as: 'count' }).first()).count;
+
 export default () => ({
     create,
     update,
@@ -105,4 +108,5 @@ export default () => ({
     getContentTypesForExternalSystemName,
     getAllPaginated,
     getLatestNonDraftResourceVersion,
+    count,
 });
