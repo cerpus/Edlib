@@ -75,12 +75,28 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             )
         ).reduce((totalCount, resourceCount) => totalCount + resourceCount, 0);
 
-        let resourceCount = 0;
-        let coreSyncCount = 0;
-        let elasticsearchSyncCount = 0;
+        let resourceCount =
+            resumeData && resumeData.resourceCount
+                ? resumeData.resourceCount
+                : 0;
+        let coreSyncCount =
+            resumeData && resumeData.coreSyncCount
+                ? resumeData.coreSyncCount
+                : 0;
+        let elasticsearchSyncCount =
+            resumeData && resumeData.elasticsearchSyncCount
+                ? resumeData.elasticsearchSyncCount
+                : 0;
 
         if (!resumeData || resumeData.step === steps.EXTERNAL_SYNC) {
             for (let syncConfig of syncs) {
+                const key = JSON.stringify(syncConfig);
+
+                if (resumeData && key !== resumeData.stepKey) {
+                    continue;
+                }
+
+                resumeData = null;
                 let run = true;
                 const limit = 1000;
                 let offset = resumeData ? resumeData.offset : 0;
@@ -96,10 +112,6 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                         message: `Step 1, retrieve resources from external systems. ${resourceCount} of ${totalResourceCount} done. Running sync for ${
                             syncConfig.name
                         } with params ${JSON.stringify(syncConfig.params)}`,
-                        resumeData: {
-                            step: steps.EXTERNAL_SYNC,
-                            offset,
-                        },
                     });
 
                     const {
@@ -122,6 +134,15 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                     }
 
                     offset = offset + limit;
+
+                    await updateJobInfo(context, jobId, {
+                        resumeData: {
+                            step: steps.EXTERNAL_SYNC,
+                            offset,
+                            stepKey: key,
+                            currentResourceCount: resourceCount,
+                        },
+                    });
                 }
             }
 
@@ -159,6 +180,13 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
                 coreSyncCount = coreSyncCount + resourceVersions.length;
                 offset = offset + limit;
+
+                await updateJobInfo(context, jobId, {
+                    resumeData: {
+                        offset,
+                        coreSyncCount,
+                    },
+                });
             }
             resumeData = null;
         }
@@ -196,6 +224,13 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                 offset = offset + limit;
                 elasticsearchSyncCount =
                     elasticsearchSyncCount + resources.length;
+
+                await updateJobInfo(context, jobId, {
+                    resumeData: {
+                        offset,
+                        elasticsearchSyncCount,
+                    },
+                });
             }
 
             resumeData = null;
