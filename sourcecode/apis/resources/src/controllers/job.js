@@ -5,7 +5,7 @@ export default {
     getResumableJob: async (req, res, next) => {
         let syncJob = await req.context.db.job.getLatest(req.params.jobName);
 
-        if (!syncJob || !syncJob.resumeData) {
+        if (!syncJob || !syncJob.resumeData || !syncJob.doneAt) {
             throw new NotFoundException('sync');
         }
 
