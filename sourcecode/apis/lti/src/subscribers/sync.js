@@ -61,6 +61,14 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
             const bulk = [];
             for (let ltiUsage of ltiUsages) {
+                // ignore resources with empty ids
+                if (
+                    !ltiUsage.externalSystemId ||
+                    ltiUsage.externalSystemId.length === 0
+                ) {
+                    continue;
+                }
+
                 ltiUsageCount++;
                 const edlibResource = await context.services.resource.getResourceFromExternalSystemInfo(
                     ltiUsage.externalSystemName,
