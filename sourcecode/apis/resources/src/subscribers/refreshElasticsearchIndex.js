@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import { logger } from '@cerpus/edlib-node-utils';
+import { updateJobInfo } from '../services/job.js';
 
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
@@ -11,12 +12,11 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
         let resourceCount = 0;
 
         {
-            // save all resources to local elasticsearch instance
             let run = true;
             const limit = 50;
             let offset = 0;
             while (run) {
-                await context.db.job.update(jobId, {
+                await updateJobInfo(context, jobId, {
                     percentDone: Math.floor(
                         (resourceCount / totalResourceCount) * 100
                     ),
