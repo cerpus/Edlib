@@ -24,7 +24,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
         while (run) {
             await updateJobInfo(context, jobId, {
                 percentDone: Math.floor(
-                    (coreSyncCount / totalResourceCount) * 100 + 100 / 3
+                    (coreSyncCount / totalResourceCount) * 100
                 ),
                 message: `Step 2, sync resources with core. ${coreSyncCount} of ${totalResourceCount} done.`,
             });
