@@ -150,20 +150,24 @@ const transformElasticResources = async (
         )
     );
 
-    return elasticsearchResources.map((esr) => {
-        return {
-            ...resources.find((r) => r.id === esr._source.id),
-            version: resourceVersions.find(
-                (rv) =>
-                    rv.id ===
-                    esr._source[getElasticVersionFieldKey(isPublicResources)].id
-            ),
-            resourceCapabilities: [
-                resourceCapabilities.VIEW,
-                resourceCapabilities.EDIT, //@todo fix based on type
-            ],
-        };
-    });
+    return elasticsearchResources
+        .map((esr) => {
+            return {
+                ...resources.find((r) => r.id === esr._source.id),
+                version: resourceVersions.find(
+                    (rv) =>
+                        rv.id ===
+                        esr._source[
+                            getElasticVersionFieldKey(isPublicResources)
+                        ].id
+                ),
+                resourceCapabilities: [
+                    resourceCapabilities.VIEW,
+                    resourceCapabilities.EDIT, //@todo fix based on type
+                ],
+            };
+        })
+        .filter((esr) => esr.version);
 };
 
 const retrieveCoreInfo = async (context, resourceVersions) => {
