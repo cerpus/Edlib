@@ -97,7 +97,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                 }
 
                 let run = true;
-                const limit = 1000;
+                const limit = 100;
                 let offset = resumeData ? resumeData.offset : 0;
                 resumeData = null;
 
