@@ -21,12 +21,14 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
                             params: {
                                 group: groupName,
                             },
+                            limit: groupName === 'article' ? 100 : 1000,
                         }))
                     );
                 } else {
                     syncs.push({
                         name,
                         params: {},
+                        limit: 1000,
                     });
                 }
 
@@ -63,7 +65,7 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             }
 
             let run = true;
-            const limit = 1000;
+            const limit = syncConfig.limit;
             let offset = resumeData ? resumeData.offset : 0;
             resumeData = null;
 
