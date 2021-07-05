@@ -8,7 +8,7 @@ import usageViewController from '../controllers/usageView.js';
 import consumerController from '../controllers/consumer.js';
 import readiness from '../readiness.js';
 import { logger } from '@cerpus/edlib-node-utils';
-import syncController from '../controllers/sync.js';
+import jobController from '../controllers/job.js';
 
 const { Router } = express;
 
@@ -82,8 +82,15 @@ export default async ({ pubSubConnection }) => {
         '/v1/consumers/:key',
         runAsync(consumerController.getConsumerByKey)
     );
-    apiRouter.get('/v1/sync-lti/:jobId', runAsync(syncController.getJobStatus));
-    apiRouter.post('/v1/sync-lti', runAsync(syncController.syncLti));
+
+    apiRouter.post('/v1/jobs/:jobName', runAsync(jobController.startJob));
+    apiRouter.get(
+        '/v1/jobs/:jobName/resumable',
+        runAsync(jobController.getResumableJob)
+    );
+    apiRouter.get('/v1/jobs/:jobId', runAsync(jobController.getJobStatus));
+    apiRouter.post('/v1/jobs/:jobId/resume', runAsync(jobController.resumeJob));
+    apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;

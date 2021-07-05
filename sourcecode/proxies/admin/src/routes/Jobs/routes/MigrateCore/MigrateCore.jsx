@@ -33,14 +33,25 @@ const MigrateCore = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Job
-                        name="4. Sync lti"
-                        startUrl="/lti/v1/sync-lti"
-                        statusUrl={(jobId) => `/lti/v1/sync-lti/${jobId}`}
+                        name="4. Sync lti usage"
+                        startUrl="/lti/v1/jobs/migrate-lti-usages-from-core"
+                        statusUrl={(jobId) => `/lti/v1/jobs/${jobId}`}
+                        showKillButton
+                        resumable
                     />
                 </Grid>
                 <Grid item md={12}>
                     <Job
-                        name="5. Sync lti usage views with resourceapi"
+                        name="5. Sync lti usage views"
+                        startUrl="/lti/v1/jobs/migrate-lti-usage-views-from-core"
+                        statusUrl={(jobId) => `/lti/v1/jobs/${jobId}`}
+                        showKillButton
+                        resumable
+                    />
+                </Grid>
+                <Grid item md={12}>
+                    <Job
+                        name="6. Sync lti usage views with resourceapi"
                         startUrl="/resources/v1/jobs/sync-lti-usage-views"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
                         showKillButton
@@ -48,7 +59,7 @@ const MigrateCore = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Job
-                        name="6. Oppdater elasticsearch index"
+                        name="7. Oppdater elasticsearch index"
                         startUrl="/resources/v1/jobs/refresh-elasticsearch-index"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
                         showKillButton
