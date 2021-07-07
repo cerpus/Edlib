@@ -37,7 +37,7 @@ export default (
 
         res.status(status);
 
-        if (!req.accepts('json')) {
+        if (req.accepts('html')) {
             try {
                 return res.render('errorPage', {
                     message: body.message,
