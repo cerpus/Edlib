@@ -13,10 +13,7 @@ export default {
     },
     elasticsearch: {
         resourceIndexPrefix: 'edlib-resources',
-        url: env(
-            'EDLIBCOMMON_ELASTICSEARCH_URL',
-            'http://elasticsearch-latest:9200'
-        ),
+        url: env('EDLIBCOMMON_ELASTICSEARCH_URL', 'http://elasticsearch:9200'),
     },
     externalResourceAPIS: {
         contentauthor: {

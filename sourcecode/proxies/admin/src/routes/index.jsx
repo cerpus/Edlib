@@ -6,6 +6,7 @@ import LoginCallback from './LoginCallback';
 import LogoutCallback from './LogoutCallback';
 import Login from './Login.jsx';
 import SystemStatuses from './SystemStatuses';
+import Settings from './Settings';
 import { Box, CircularProgress } from '@material-ui/core';
 import Page from '../components/Page';
 import Jobs from './Jobs';
@@ -27,6 +28,7 @@ const Index = ({ isAuthenticated }) => {
                         component={LogoutCallback}
                     />
                     <Route path="/jobs" component={Jobs} />
+                    <Route path="/settings" component={Settings} />
                     <Redirect to="/dashboard" />
                 </Switch>
             )}

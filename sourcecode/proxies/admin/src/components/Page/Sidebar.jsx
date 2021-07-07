@@ -9,11 +9,11 @@ import {
     makeStyles,
 } from '@material-ui/core';
 import {
-    Assessment,
     Dashboard,
     ExpandLess,
     ExpandMore,
     LocalOffer,
+    Settings,
 } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +44,17 @@ const Sidebar = () => {
 
     const links = [
         { name: 'Dashboard', to: '/dashboard', icon: <Dashboard /> },
+        {
+            name: 'Innstillinger',
+            to: '/settings',
+            icon: <Settings />,
+            subLinks: [
+                {
+                    name: 'Eksterne applikasjoner',
+                    to: '/external-applications',
+                },
+            ],
+        },
         {
             name: 'Overvåking',
             to: '/monitoring',

@@ -12,10 +12,8 @@ git clone ${TRANSPORT}edlib/doku-lti-viewer.git
 git clone ${TRANSPORT}brain/edlibfacade.git
 git clone ${TRANSPORT}edlib/edlibapi-iframe.git
 git clone ${TRANSPORT}edlib/edlibapi-auth.git
-git clone ${TRANSPORT}edlib/edlibapi-lti.git
 git clone ${TRANSPORT}edlib/edlibapi-proxy.git
 git clone ${TRANSPORT}edlib/edlibapi-recommendations.git
-git clone ${TRANSPORT}edlib/edlibapi-resources.git
 git clone ${TRANSPORT}brain/h5pviewer.git
 git clone ${TRANSPORT}brain/licenseapi.git
 git clone ${TRANSPORT}brain/metadataservice.git

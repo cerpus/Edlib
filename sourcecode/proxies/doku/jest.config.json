@@ -1,5 +1,5 @@
 {
-    "name": "edlibapi-resources",
+    "name": "proxy-doku",
     "testResultsProcessor": "jest-bamboo-reporter",
     "collectCoverage": true,
     "coverageReporters": ["text"],

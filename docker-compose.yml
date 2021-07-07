@@ -407,9 +407,9 @@ services:
       - ./sourcecode/not_migrated/edlibapi-auth/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-  edlibapi-lti:
+  proxy-lti:
     build:
-      context: ./sourcecode/not_migrated/edlibapi-lti
+      context: ./sourcecode/proxies/lti
       dockerfile: Dockerfile
       target: dev
     env_file:
@@ -418,11 +418,11 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     volumes:
-      - ./data/edlibapi-lti/node_modules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/edlibapi-lti/src:/var/www/app/src
-      - ./sourcecode/not_migrated/edlibapi-lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/not_migrated/edlibapi-lti/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/edlibapi-lti/yarn.lock:/var/www/app/yarn.lock
+      - ./data/proxy-lti/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/lti/src:/var/www/app/src
+      - ./sourcecode/proxies/lti/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/lti/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
       - ./localSetup/helpers/start-scripts:/start-scripts
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -458,9 +458,9 @@ services:
       - ./sourcecode/proxies/doku/package.json:/var/www/app/package.json
       - ./sourcecode/proxies/doku/yarn.lock:/var/www/app/yarn.lock
 
-  edlibapi-resources:
+  proxy-resource:
     build:
-      context: ./sourcecode/not_migrated/edlibapi-resources
+      context: ./sourcecode/proxies/resource
       dockerfile: Dockerfile
       target: dev
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672 authapi:80;update-ca-certificates; yarn; yarn dev'"
@@ -470,13 +470,13 @@ services:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/edlibapi-resources/node_modules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/edlibapi-resources/src:/var/www/app/src
-      - ./sourcecode/not_migrated/edlibapi-resources/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/not_migrated/edlibapi-resources/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/edlibapi-resources/yarn.lock:/var/www/app/yarn.lock
+      - ./data/proxy-resource/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/resource/src:/var/www/app/src
+      - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/resource/yarn.lock:/var/www/app/yarn.lock
       - ./localSetup/helpers/start-scripts:/start-scripts
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - authapi
 
@@ -495,70 +495,70 @@ services:
       - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-#  re-recommender:
-#    build:
-#      context: ./sourcecode/not_migrated/re-recommender
-#      target: appdev
-#    environment:
-#      PHP_FPM_HOST: "re-recommender-fpm:31004"
-#    volumes:
-#      - ./sourcecode/not_migrated/re-recommender/docker/nginx-dev.conf:/etc/nginx/nginx.conf
-#    depends_on:
-#      - re-recommender-fpm
-#
-#  re-recommender-fpm:
-#    build:
-#      context: ./sourcecode/not_migrated/re-recommender
-#      target: phpfpmdev
-#    command: /dev-startup.sh
-#    environment:
-#      DB_HOST: mysql
-#      DB_PORT: 3306
-#      DB_DATABASE: re_recommender
-#      DB_USERNAME: root
-#      DB_PASSWORD: mysqlpassword
-#    volumes:
-#      - ./localSetup/helpers/start-scripts:/start-scripts
-#      - ./sourcecode/not_migrated/re-recommender:/app
-#      - ./localSetup/projects/re-recommender/.env:/app/.env
-#      - ./localSetup/projects/re-recommender/startup.sh:/dev-startup.sh
-#      - ./data/re-recommender/storage/logs:/app/storage/logs
-#      - ./data/re-recommender/bootstrap/cache:/app/bootstrap/cache
-#    depends_on:
-#      - mysql
-#      - elasticsearch
+  #  re-recommender:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-recommender
+  #      target: appdev
+  #    environment:
+  #      PHP_FPM_HOST: "re-recommender-fpm:31004"
+  #    volumes:
+  #      - ./sourcecode/not_migrated/re-recommender/docker/nginx-dev.conf:/etc/nginx/nginx.conf
+  #    depends_on:
+  #      - re-recommender-fpm
+  #
+  #  re-recommender-fpm:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-recommender
+  #      target: phpfpmdev
+  #    command: /dev-startup.sh
+  #    environment:
+  #      DB_HOST: mysql
+  #      DB_PORT: 3306
+  #      DB_DATABASE: re_recommender
+  #      DB_USERNAME: root
+  #      DB_PASSWORD: mysqlpassword
+  #    volumes:
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #      - ./sourcecode/not_migrated/re-recommender:/app
+  #      - ./localSetup/projects/re-recommender/.env:/app/.env
+  #      - ./localSetup/projects/re-recommender/startup.sh:/dev-startup.sh
+  #      - ./data/re-recommender/storage/logs:/app/storage/logs
+  #      - ./data/re-recommender/bootstrap/cache:/app/bootstrap/cache
+  #    depends_on:
+  #      - mysql
+  #      - elasticsearch
 
-#  re-content-index:
-#    build:
-#      context: ./sourcecode/not_migrated/re-content-index
-#      target: appdev
-#    environment:
-#      PHP_FPM_HOST: "re-content-index-fpm:31004"
-#    volumes:
-#      - ./sourcecode/not_migrated/re-content-index/docker/nginx-dev.conf:/etc/nginx/nginx.conf
-#    depends_on:
-#      - re-content-index-fpm
-#
-#  re-content-index-fpm:
-#    build:
-#      context: ./sourcecode/not_migrated/re-content-index
-#      target: phpfpmdev
-#    command: /dev-startup.sh
-#    environment:
-#      DB_HOST: mysql
-#      DB_PORT: 3306
-#      DB_DATABASE: re_content_index
-#      DB_USERNAME: root
-#      DB_PASSWORD: mysqlpassword
-#    volumes:
-#      - ./localSetup/helpers/start-scripts:/start-scripts
-#      - ./sourcecode/not_migrated/re-content-index:/app
-#      - ./localSetup/projects/re-content-index/.env:/app/.env
-#      - ./localSetup/projects/re-content-index/startup.sh:/dev-startup.sh
-#      - ./data/re-content-index/storage/logs:/app/storage/logs
-#      - ./data/re-content-index/bootstrap/cache:/app/bootstrap/cache
-#    depends_on:
-#      - mysql
+  #  re-content-index:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-content-index
+  #      target: appdev
+  #    environment:
+  #      PHP_FPM_HOST: "re-content-index-fpm:31004"
+  #    volumes:
+  #      - ./sourcecode/not_migrated/re-content-index/docker/nginx-dev.conf:/etc/nginx/nginx.conf
+  #    depends_on:
+  #      - re-content-index-fpm
+  #
+  #  re-content-index-fpm:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-content-index
+  #      target: phpfpmdev
+  #    command: /dev-startup.sh
+  #    environment:
+  #      DB_HOST: mysql
+  #      DB_PORT: 3306
+  #      DB_DATABASE: re_content_index
+  #      DB_USERNAME: root
+  #      DB_PASSWORD: mysqlpassword
+  #    volumes:
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #      - ./sourcecode/not_migrated/re-content-index:/app
+  #      - ./localSetup/projects/re-content-index/.env:/app/.env
+  #      - ./localSetup/projects/re-content-index/startup.sh:/dev-startup.sh
+  #      - ./data/re-content-index/storage/logs:/app/storage/logs
+  #      - ./data/re-content-index/bootstrap/cache:/app/bootstrap/cache
+  #    depends_on:
+  #      - mysql
 
   edlibfacade:
     build:

@@ -16,12 +16,4 @@ pushd edlibapi-iframe
 git checkout -b feature/EDL-1036-bruke-nye-strukturen-i-api-et origin/feature/EDL-1036-bruke-nye-strukturen-i-api-et
 popd
 
-pushd edlibapi-lti
-git checkout -b feature/EDL-1036-bruke-nye-strukturen-i-api-et origin/feature/EDL-1036-bruke-nye-strukturen-i-api-et
-popd
-
-pushd edlibapi-resources
-git checkout -b feature/EDL-1036-bruke-nye-strukturen-i-api-et origin/feature/EDL-1036-bruke-nye-strukturen-i-api-et
-popd
-
 popd
