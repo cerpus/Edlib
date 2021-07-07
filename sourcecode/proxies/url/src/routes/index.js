@@ -19,7 +19,7 @@ export default async () => {
         swaggerUi.setup(
             swaggerJSDoc({
                 swaggerDefinition: {
-                    basePath: '/dokus',
+                    basePath: '/urls',
                 },
                 apis: ['./src/routes/**/*.js'],
             })
