@@ -33,7 +33,7 @@ describe('Middlewares', () => {
             });
 
             test('json to be called', () => {
-                expect(res.render).toBeCalled();
+                expect(res.json).toBeCalled();
             });
 
             test('status to be 500', () => {
@@ -61,7 +61,7 @@ describe('Middlewares', () => {
             });
 
             test('json to be called', () => {
-                expect(res.render).toBeCalled();
+                expect(res.json).toBeCalled();
             });
 
             test('status to be 422', () => {
