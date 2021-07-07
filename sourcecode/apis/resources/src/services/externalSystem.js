@@ -14,6 +14,17 @@ const getConfig = (externalSystemName) => {
 
 export default {
     getConfig,
+    isVersioningEnabled: (externalSystemName, groupName) => {
+        const config = getConfig(externalSystemName);
+
+        return (
+            !config.disableVersioning &&
+            (!Array.isArray(config.disableVersioningGroups) ||
+                config.disableVersioningGroups.indexOf(
+                    groupName.toLowerCase()
+                ) === -1)
+        );
+    },
     getLtiResourceInfo: (resourceVersion) => {
         const config = getConfig(resourceVersion.externalSystemName);
 

@@ -23,6 +23,7 @@ export default {
             url: `${contentAuthorUrl}/v1/content`,
             ltiUrl: `${contentAuthorUrl}/lti-content`,
             getAllGroups: ['h5p', 'questionset', 'article', 'game'],
+            disableVersioningGroups: ['questionset'],
             ltiConsumerKey: env(
                 'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY',
                 'h5p'

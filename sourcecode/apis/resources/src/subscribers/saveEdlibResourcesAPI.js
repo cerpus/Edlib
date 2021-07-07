@@ -43,9 +43,10 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
     let actualVersion = null;
 
     if (
-        !externalSystemService.getConfig(
-            resourceVersionValidatedData.externalSystemName
-        ).disableVersioning
+        externalSystemService.isVersioningEnabled(
+            resourceVersionValidatedData.externalSystemName,
+            resourceVersionValidatedData.contentType
+        )
     ) {
         const version = await context.services.version.getForResource(
             resourceVersionValidatedData.externalSystemName,

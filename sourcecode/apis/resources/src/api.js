@@ -2,7 +2,6 @@ import { setupApi, pubsub } from '@cerpus/edlib-node-utils';
 import router from './routes/index.js';
 import errorReportingConfig from './config/errorReporting.js';
 import saveEdlibResourcesAPI from './subscribers/saveEdlibResourcesAPI.js';
-import migrateOldData from './subscribers/migrateOldData.js';
 import refreshElasticsearchIndex from './subscribers/refreshElasticsearchIndex.js';
 import newUser from './subscribers/newUser.js';
 import { buildRawContext } from './context/index.js';
@@ -20,12 +19,6 @@ const start = async () => {
             {
                 exchangeName: 'edlibResourceUpdate',
                 handler: saveEdlibResourcesAPI,
-            },
-            {
-                exchangeName:
-                    '__internal_edlibResource_jobs_' +
-                    jobNames.MIGRATE_OLD_DATA,
-                handler: migrateOldData,
             },
             {
                 exchangeName:
