@@ -22,12 +22,12 @@ const Resources = ({
             {resources.length === 0 && t('Fant ingen ressurser')}
             {resources.map((resource, index) =>
                 rowWrapper({
-                    resourceId: resource.edlibId,
+                    resourceId: resource.id,
                     resource,
                     index,
                     children: () => (
                         <Resource
-                            key={resource.edlibId}
+                            key={resource.id}
                             resource={resource}
                             onPreview={() => setSelectedResource(resource)}
                         />
