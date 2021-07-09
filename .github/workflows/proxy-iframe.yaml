@@ -13,7 +13,6 @@ env:
 jobs:
   check_if_should_release:
     runs-on: ubuntu-latest
-    needs: test
     outputs:
       should-release: ${{ steps.release-after-check.outputs.should-release || 'no' }}
     steps:
