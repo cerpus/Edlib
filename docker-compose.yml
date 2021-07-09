@@ -356,10 +356,10 @@ services:
       - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
       - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
 
-  edlibapi-iframe:
+  proxy-iframe:
     tty: true
     build:
-      context: ./sourcecode/not_migrated/edlibapi-iframe
+      context: ./sourcecode/proxies/iframe
       dockerfile: Dockerfile
       target: dev
     env_file:
@@ -367,11 +367,11 @@ services:
     environment:
       WDS_SOCKET_PATH: /iframe/sockjs-node
     volumes:
-      - ./data/edlibapi-iframe/node_modules:/app/node_modules
-      - ./sourcecode/not_migrated/edlibapi-iframe/src:/app/src
-      - ./sourcecode/not_migrated/edlibapi-iframe/public:/app/public
-      - ./sourcecode/not_migrated/edlibapi-iframe/package.json:/app/package.json
-      - ./sourcecode/not_migrated/edlibapi-iframe/yarn.lock:/app/yarn.lock
+      - ./data/proxy-iframe/node_modules:/app/node_modules
+      - ./sourcecode/proxies/iframe/src:/app/src
+      - ./sourcecode/proxies/iframe/public:/app/public
+      - ./sourcecode/proxies/iframe/package.json:/app/package.json
+      - ./sourcecode/proxies/iframe/yarn.lock:/app/yarn.lock
 
   proxy-admin:
     tty: true
@@ -390,9 +390,9 @@ services:
       - ./sourcecode/proxies/admin/package.json:/app/package.json
       - ./sourcecode/proxies/admin/yarn.lock:/app/yarn.lock
 
-  edlibapi-auth:
+  proxy-auth:
     build:
-      context: ./sourcecode/not_migrated/edlibapi-auth
+      context: ./sourcecode/proxies/auth
       dockerfile: Dockerfile
       target: dev
     env_file:
@@ -400,11 +400,11 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/edlibapi-auth/node_modules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/edlibapi-auth/src:/var/www/app/src
-      - ./sourcecode/not_migrated/edlibapi-auth/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/not_migrated/edlibapi-auth/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/edlibapi-auth/yarn.lock:/var/www/app/yarn.lock
+      - ./data/proxy-auth/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/auth/src:/var/www/app/src
+      - ./sourcecode/proxies/auth/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/auth/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/auth/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-lti:
@@ -426,9 +426,9 @@ services:
       - ./localSetup/helpers/start-scripts:/start-scripts
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-  edlibapi-recommendations:
+  proxy-recommendation:
     build:
-      context: ./sourcecode/not_migrated/edlibapi-recommendations
+      context: ./sourcecode/proxies/recommendation
       dockerfile: Dockerfile
       target: dev
     env_file:
@@ -436,13 +436,13 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/edlibapi-recommendations/node_modules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/edlibapi-recommendations/src:/var/www/app/src
-      - ./sourcecode/not_migrated/edlibapi-recommendations/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/not_migrated/edlibapi-recommendations/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/edlibapi-recommendations/yarn.lock:/var/www/app/yarn.lock
+      - ./data/proxy-recommendation/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/recommendation/src:/var/www/app/src
+      - ./sourcecode/proxies/recommendation/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/recommendation/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/recommendation/yarn.lock:/var/www/app/yarn.lock
 
-  edlibapi-dokus:
+  proxy-doku:
     build:
       context: ./sourcecode/proxies/doku
       dockerfile: Dockerfile
@@ -452,7 +452,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/edlibapi-doku/node_modules:/var/www/app/node_modules
+      - ./data/proxy-doku/node_modules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
       - ./sourcecode/proxies/doku/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/doku/package.json:/var/www/app/package.json

@@ -1,19 +1,19 @@
 {
-  "name": "proxy-url",
+  "name": "edlibapi-recommenations",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/api.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
-    "test": "jest --config=./jest.config.json"
+    "test": "ENABLE_LOGGING=0 jest --config=./jest.config.json"
   },
   "engines": {
     "node": ">= 16.0.0"
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus/edlib-node-utils": "v0.0.0-b96977839998ac409926cb7ec18f989bbb163ccb",
+    "@cerpus/edlib-node-utils": "v0.0.0-809950fcbc231a23d84be79f4acae423b1e9dec7",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
     "axios": "^0.21.1",
@@ -23,10 +23,26 @@
     "pug": "^3.0.2",
     "supertest": "^6.1.3",
     "swagger-jsdoc": "^6.0.2",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "jest-bamboo-reporter": "^1.2.1",
     "nodemon": "^2.0.7"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      "transform-default-import"
+    ]
   }
 }
