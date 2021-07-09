@@ -28,7 +28,7 @@ import {
     withStyles,
 } from '@material-ui/core';
 import { ResourceIcon } from '../Resource';
-import CssReset from '../CSSReset';
+import ResetMuiDialog from '../ResetMuiDialog.jsx';
 
 const Footer = styled.div`
     margin-top: 30px;
@@ -99,7 +99,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
     const capabilities = useResourceCapabilitiesFlags(resource);
 
     return (
-        <Dialog
+        <ResetMuiDialog
             maxWidth="md"
             fullWidth
             onClose={onClose}
@@ -108,122 +108,117 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                 paperScrollPaper: classes.dialog,
             }}
         >
-            <CssReset>
-                <MuiDialogTitle
-                    disableTypography
-                    className={classes.dialogTitle}
-                >
-                    <Box display="flex">
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="center"
-                        >
-                            <ResourceIcon
-                                resourceVersion={resource.version}
-                                fontSizeRem={2}
-                            />
-                        </Box>
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="center"
-                            marginLeft={1}
-                        >
-                            <Typography variant="h6">
-                                {resource.version.title}
-                            </Typography>
-                        </Box>
+            <MuiDialogTitle disableTypography className={classes.dialogTitle}>
+                <Box display="flex">
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                    >
+                        <ResourceIcon
+                            resourceVersion={resource.version}
+                            fontSizeRem={2}
+                        />
                     </Box>
-                    {onClose ? (
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="center"
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        marginLeft={1}
+                    >
+                        <Typography variant="h6">
+                            {resource.version.title}
+                        </Typography>
+                    </Box>
+                </Box>
+                {onClose ? (
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                    >
+                        <IconButton
+                            aria-label="close"
+                            className={classes.closeButton}
+                            onClick={onClose}
                         >
-                            <IconButton
-                                aria-label="close"
-                                className={classes.closeButton}
-                                onClick={onClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        </Box>
-                    ) : null}
-                </MuiDialogTitle>
-                <DialogContent dividers>
-                    <ResourcePreview resource={resource}>
-                        {({ loading, error, frame }) => {
-                            if (loading) {
-                                return (
-                                    <div
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            padding: '20px 0',
-                                        }}
-                                    >
-                                        <Spinner />
-                                    </div>
-                                );
-                            }
-
-                            if (error) {
-                                return <div>Noe skjedde</div>;
-                            }
-
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                ) : null}
+            </MuiDialogTitle>
+            <DialogContent dividers>
+                <ResourcePreview resource={resource}>
+                    {({ loading, error, frame }) => {
+                        if (loading) {
                             return (
-                                <>
-                                    <div>{frame}</div>
-                                    <Footer>
-                                        <Meta>
-                                            <div>Publiseringsdato</div>
-                                            <div>
-                                                {moment(
-                                                    resource.version.createdAt
-                                                ).format('D. MMMM YYYY')}
-                                            </div>
-                                        </Meta>
-                                        <Meta>
-                                            <div>Lisens</div>
-                                            <div>
-                                                <License
-                                                    license={
-                                                        resource.version.license
-                                                    }
-                                                />
-                                            </div>
-                                        </Meta>
-                                    </Footer>
-                                </>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        padding: '20px 0',
+                                    }}
+                                >
+                                    <Spinner />
+                                </div>
                             );
-                        }}
-                    </ResourcePreview>
-                </DialogContent>
-                <DialogActions>
-                    {capabilities[resourceCapabilities.EDIT] && (
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={editResource}
-                            startIcon={<EditIcon />}
-                        >
-                            {t('Rediger ressurs').toUpperCase()}
-                        </Button>
-                    )}
-                    {canReturnResources && (
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={insertResource}
-                            startIcon={<ArrowForward />}
-                        >
-                            {t('Bruk ressurs').toUpperCase()}
-                        </Button>
-                    )}
-                </DialogActions>
-            </CssReset>
-        </Dialog>
+                        }
+
+                        if (error) {
+                            return <div>Noe skjedde</div>;
+                        }
+
+                        return (
+                            <>
+                                <div>{frame}</div>
+                                <Footer>
+                                    <Meta>
+                                        <div>Publiseringsdato</div>
+                                        <div>
+                                            {moment(
+                                                resource.version.createdAt
+                                            ).format('D. MMMM YYYY')}
+                                        </div>
+                                    </Meta>
+                                    <Meta>
+                                        <div>Lisens</div>
+                                        <div>
+                                            <License
+                                                license={
+                                                    resource.version.license
+                                                }
+                                            />
+                                        </div>
+                                    </Meta>
+                                </Footer>
+                            </>
+                        );
+                    }}
+                </ResourcePreview>
+            </DialogContent>
+            <DialogActions>
+                {capabilities[resourceCapabilities.EDIT] && (
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={editResource}
+                        startIcon={<EditIcon />}
+                    >
+                        {t('Rediger ressurs').toUpperCase()}
+                    </Button>
+                )}
+                {canReturnResources && (
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={insertResource}
+                        startIcon={<ArrowForward />}
+                    >
+                        {t('Bruk ressurs').toUpperCase()}
+                    </Button>
+                )}
+            </DialogActions>
+        </ResetMuiDialog>
     );
 };
 

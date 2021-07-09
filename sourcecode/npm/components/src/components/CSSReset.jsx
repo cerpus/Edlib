@@ -28,9 +28,10 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const CssReset = ({ children }) => {
+const CssReset = ({ children, ...props }) => {
     return (
         <Box
+            {...props}
             fontFamily="fontFamily"
             className="edlib-components"
             style={{ height: '100%' }}
