@@ -2,22 +2,31 @@ import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import { logger, NotFoundException } from '@cerpus/edlib-node-utils';
 import moment from 'moment';
+import { getResumeData, updateJobInfo } from '../services/job.js';
 
 const pageSize = 1000;
+
 export default ({ pubSubConnection }) => async ({ jobId }) => {
     const context = buildRawContext({}, {}, { pubSubConnection });
 
     try {
+        let resumeData = await getResumeData(context, jobId);
+
         const { pagination } = await context.services.lti.getUsageViews();
+
         let totalCount = pagination.count;
-        let usageViewCount = 0;
+        let usageViewCount =
+            resumeData && resumeData.usageViewCount
+                ? resumeData.usageViewCount
+                : 0;
 
         {
             // save all resources to local elasticsearch instance
             let run = true;
-            let offset = 0;
+            let offset = resumeData ? resumeData.offset : 0;
+
             while (run) {
-                await context.db.job.update(jobId, {
+                await updateJobInfo(context, jobId, {
                     percentDone: Math.floor(
                         (usageViewCount / totalCount) * 100
                     ),
@@ -66,6 +75,13 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
 
                 offset = offset + pageSize;
                 usageViewCount = usageViewCount + usageViews.length;
+
+                await updateJobInfo(context, jobId, {
+                    resumeData: {
+                        offset,
+                        usageViewCount,
+                    },
+                });
             }
         }
 
