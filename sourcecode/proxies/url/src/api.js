@@ -5,8 +5,5 @@ import errorReportingConfig from './config/errorReporting.js';
 setupApi(router, {
     errorReportingConfig,
     trustProxy: true,
-    configureApp: (app) => {
-        app.set('views', './src/views');
-        app.set('view engine', 'pug');
-    },
+    extraViewDir: 'src/views',
 });
