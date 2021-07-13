@@ -6,7 +6,6 @@ import _ from 'lodash';
 import {
     UnauthorizedException,
     pubsub,
-    dbHelpers,
     NotFoundException,
 } from '@cerpus/edlib-node-utils';
 import appConfig from '../config/app.js';
@@ -58,7 +57,7 @@ export default {
                     })
                 );
             } catch (e) {
-                if (dbHelpers.isUniqueViolation(e)) {
+                if (e.code === 'ER_DUP_ENTRY') {
                     shouldUpdate = true;
                     dbUser = await req.context.db.user.getById(user.id);
 
