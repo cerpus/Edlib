@@ -3,7 +3,12 @@ import jwksProviderService from '../services/jwksProvider.js';
 import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 
 import _ from 'lodash';
-import { UnauthorizedException, pubsub } from '@cerpus/edlib-node-utils';
+import {
+    UnauthorizedException,
+    pubsub,
+    dbHelpers,
+    NotFoundException,
+} from '@cerpus/edlib-node-utils';
 import appConfig from '../config/app.js';
 import JsonWebToken from 'jsonwebtoken';
 
@@ -39,17 +44,34 @@ export default {
         user.isAdmin = user.isAdmin ? 1 : 0;
 
         let dbUser = await req.context.db.user.getById(user.id);
-        if (!dbUser) {
-            dbUser = await req.context.db.user.create(user);
+        let shouldUpdate = !!dbUser;
 
-            await pubsub.publish(
-                req.context.pubSubConnection,
-                'edlib_new_user',
-                JSON.stringify({
-                    user: dbUser,
-                })
-            );
-        } else {
+        if (!shouldUpdate) {
+            try {
+                dbUser = await req.context.db.user.create(user);
+
+                await pubsub.publish(
+                    req.context.pubSubConnection,
+                    'edlib_new_user',
+                    JSON.stringify({
+                        user: dbUser,
+                    })
+                );
+            } catch (e) {
+                if (dbHelpers.isUniqueViolation(e)) {
+                    shouldUpdate = true;
+                    dbUser = await req.context.db.user.getById(user.id);
+
+                    if (!dbUser) {
+                        throw new NotFoundException('user');
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+
+        if (shouldUpdate) {
             dbUser = await req.context.db.user.update(user.id, {
                 ...user,
                 lastSeen: new Date(),
