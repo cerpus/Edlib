@@ -2,8 +2,6 @@ import mysql from 'mysql';
 import dbConfig from '../envConfig/db.js';
 import appConfig from '../envConfig/app.js';
 import knex from 'knex';
-import logger from './logger.js';
-import chalk from 'chalk';
 import moment from 'moment-timezone';
 import path from 'path';
 
@@ -24,6 +22,13 @@ const queryBuilder = !appConfig.isTest
               database: dbConfig.database,
               password: dbConfig.password,
               port: dbConfig.port,
+              typeCast: function (field, next) {
+                  if (field.type === 'TINY' && field.length === 1) {
+                      return field.string() === '1'; // 1 = true, 0 = false
+                  }
+
+                  return next();
+              },
           },
           pool: { min: 1, max: 10 },
           ...commonConfig,

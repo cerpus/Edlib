@@ -1,6 +1,8 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { NotFoundException, validateJoi } from '@cerpus/edlib-node-utils';
 import resourceService from '../services/resource.js';
+import resourceAccessService from '../services/resourceAccess.js';
 import saveEdlibResourcesAPI from '../subscribers/saveEdlibResourcesAPI.js';
+import Joi from 'joi';
 
 export default {
     getResource: async (req, res, next) => {
@@ -33,6 +35,44 @@ export default {
 
         return { ...resource, version: resourceVersion };
     },
+    getResourceFromExternalReferences: async (req, res, next) => {
+        const { externalSystemReferences } = validateJoi(
+            req.body,
+            Joi.object().keys({
+                externalSystemReferences: Joi.array()
+                    .items(
+                        Joi.object().keys({
+                            externalSystemName: Joi.string().required(),
+                            externalSystemId: Joi.string().required(),
+                        })
+                    )
+                    .required(),
+            })
+        );
+
+        const resources = await Promise.all(
+            externalSystemReferences.map(async (externalSystemReference) => {
+                let resourceVersion = await req.context.db.resourceVersion.getByExternalId(
+                    externalSystemReference.externalSystemName,
+                    externalSystemReference.externalSystemId
+                );
+
+                if (!resourceVersion) {
+                    throw new NotFoundException('resource');
+                }
+
+                let resource = await req.context.db.resource.getById(
+                    resourceVersion.resourceId
+                );
+
+                return { ...resource, version: resourceVersion };
+            })
+        );
+
+        return {
+            resources,
+        };
+    },
     getPublicResources: async (req) => {
         return resourceService.getResourcesFromRequest(req, null);
     },
@@ -49,7 +89,7 @@ export default {
 
         if (
             !resource ||
-            !(await resourceService.hasResourceWriteAccess(
+            !(await resourceAccessService.hasResourceAccess(
                 req.context,
                 resource,
                 req.params.tenantId

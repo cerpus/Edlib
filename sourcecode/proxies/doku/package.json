@@ -1,20 +1,20 @@
 {
-  "name": "edlibapi-dokus",
+  "name": "proxy-doku",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/api.js",
     "start": "node src/api.js",
-    "migrate": "node src/runMigrations.js",
-    "test": "jest --config=./jest.config.json"
+    "migrate": "node src/runMigrations.js"
   },
   "engines": {
-    "node": ">= 14.0.0"
+    "node": ">= 16.0.0"
   },
   "dependencies": {
     "@babel/preset-env": "^7.12.13",
-    "@cerpus-private/edlib-node-utils": "git+http://npmgit.cerpus.net/edlib-node-utils#2.0.17",
+    "@cerpus/edlib-node-utils": "v0.0.0-b96977839998ac409926cb7ec18f989bbb163ccb",
     "@hapi/joi": "^17.1.1",
+    "amqplib": "^0.8.0",
     "axios": "^0.21.1",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^26.6.3",

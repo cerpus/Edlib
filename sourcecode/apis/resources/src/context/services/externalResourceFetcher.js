@@ -1,7 +1,11 @@
 import axios from 'axios';
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import {
+    NotFoundException,
+    AxiosException,
+    exceptionTranslator,
+    logger,
+} from '@cerpus/edlib-node-utils';
 import apiConfig from '../../config/apis.js';
-import { exceptionTranslator } from '@cerpus/edlib-node-utils/services/index.js';
 
 const getUrl = (externalSystemName) => {
     const externalApiConfig =
@@ -27,6 +31,36 @@ const createAxios = (req) => async (url, options = {}) => {
     }
 };
 
+const delay = (time) => new Promise((resolve) => setTimeout(resolve, time));
+
+const autoRetryOnTimeout = (
+    fnc,
+    options = {
+        coolDownTime: 5000,
+        numberOfRetries: 3,
+    },
+    iteration = 0
+) => async (...params) => {
+    try {
+        return await fnc(...params);
+    } catch (e) {
+        if (
+            iteration < options.numberOfRetries &&
+            e instanceof AxiosException
+        ) {
+            logger.info(
+                'Request timed out. Retrying after cooldown of ' +
+                    options.coolDownTime
+            );
+            await delay(options.coolDownTime);
+
+            return autoRetryOnTimeout(fnc, options, iteration + 1)(...params);
+        }
+
+        throw e;
+    }
+};
+
 export default (req) => {
     const request = createAxios(req);
 
@@ -36,16 +70,16 @@ export default (req) => {
         ).data;
     };
 
-    const getAll = async (externalSystemName, params) => {
+    const getAll = autoRetryOnTimeout(async (externalSystemName, params) => {
         return (
             await request(getUrl(externalSystemName), {
                 params,
             })
         ).data;
-    };
+    });
 
     return {
         getById,
-        getAll,
+        getAll: getAll,
     };
 };

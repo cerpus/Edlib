@@ -1,6 +1,7 @@
 import { ApiException } from '../exceptions/index.js';
 import appConfig from '../envConfig/app.js';
 import logger from '../services/logger.js';
+import { getReasonPhrase } from 'http-status-codes';
 
 export default (
     err,
@@ -22,12 +23,37 @@ export default (
             body = err.getBody();
         }
 
-        if (!appConfig.isProduction) {
-            logger.error(err.stack);
+        if (appConfig.displayDetailedErrors) {
             body.trace = err.stack;
+        } else {
+            body.message = null;
         }
 
-        res.status(status).json(body);
+        if (err.logDetails) {
+            err.logDetails();
+        } else {
+            logger.error(err.stack);
+        }
+
+        res.status(status);
+
+        if (req.accepts('html')) {
+            try {
+                return res.render('errorPage', {
+                    message: body.message,
+                    status,
+                    statusPhrase: getReasonPhrase(status),
+                    stack: body.trace,
+                });
+            } catch (e) {
+                logger.error('PUG npm package is not installed');
+            }
+        }
+
+        res.json({
+            ...body,
+            message: body.message || getReasonPhrase(status),
+        });
     };
 
     then();

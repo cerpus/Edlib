@@ -17,7 +17,11 @@ const Lti = ({ data, onResourceReturned }) => {
             url={data.url}
             params={data.params}
             onPostMessage={(event) => {
-                if (typeof event.data === 'string') {
+                if (
+                    event.data &&
+                    event.data.resourceId &&
+                    event.data.resourceVersionId
+                ) {
                     onResourceReturned(event.data);
                 }
             }}

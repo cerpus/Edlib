@@ -74,11 +74,10 @@ export default ({ onClose, viewportHeight }) => {
             link: '/resources/new/contentauthor?group=article',
             label: t('Tekst'),
         },
-
-        [resourceEditors.EMBED]: {
-            link: '/resources/new/contentauthor?group=link',
-            label: 'Link',
-        },
+        // [resourceEditors.EMBED]: {
+        //     link: '/resources/new/url',
+        //     label: 'Link',
+        // },
         [resourceEditors.DOKU]: {
             link: '/resources/new/doku',
             label: 'EdStep',

@@ -1,0 +1,602 @@
+version: "3.4"
+services:
+  redis:
+    image: "redis:alpine"
+
+  memcached:
+    image: memcached
+
+  postgres:
+    image: "postgres:11"
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+      - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: thepgpassword
+    ports:
+      - 5432:5432
+
+  mysql:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: mysqlpassword
+      MYSQL_INITDB_SKIP_TZINFO: 1
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 5673:5673
+      - 5672:5672
+      - 15672:15672
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+      - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
+    ports:
+      - 9200:9200
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
+
+  elasticsearch-curator:
+    image: "bitnami/elasticsearch-curator"
+    command: --config /etc/curator/config.yml /etc/curator/action.yml
+    environment:
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: elasticpassword
+      CURATOR_MAX_AGE_DAYS: 15
+    volumes:
+      - ./localSetup/projects/elasticsearch-curator/config.yml:/etc/curator/config.yml
+      - ./localSetup/projects/elasticsearch-curator/action.yml:/etc/curator/action.yml
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.1
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - logstash
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.1
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./localSetup/projects/kibana/logstash.d/:/usr/share/logstash/pipeline/:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      default:
+        aliases:
+          - logstash.elk
+
+  nginx:
+    build: ./localSetup/projects/nginx
+    command: ["nginx", "-g", "daemon off;"]
+    entrypoint: ["/docker-entrypoint.sh"]
+    volumes:
+      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
+      - ./localSetup/projects/nginx/entrypoint.sh:/docker-entrypoint.sh
+      - ./data/nginx/ca:/etc/ca
+      - ./data/nginx/certs:/etc/ssl/private
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - licenseapi
+      - contentauthor
+      - metadataservice
+      - versioningapi
+    networks:
+      default:
+        aliases:
+          - contentauthor.local
+          - api.edlib.local
+
+  configserver:
+    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
+    volumes:
+      - ./localSetup/projects/config-server/settings:/config
+      - ./storage/blank-git:/config/.git
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+    ports:
+      - 8888:8888
+
+  metadataservice:
+    image: dockerregistry.cerpus.net/cerpus/metadataservice:5a2adfc87daff6f606123bbfa1132f4e
+    environment:
+      HEAPSPACE_MAX: 128m
+      DEBUGGING_ENABLED: "yes"
+    depends_on:
+      - postgres
+    ports:
+      - 8091:8091
+      - 5503:5555
+    restart: on-failure
+
+  versioningapi:
+    build:
+      context: ./sourcecode/not_migrated/versionapi
+      target: app-dev
+    volumes:
+      - ./sourcecode/not_migrated/versionapi/target/versioning-1.0-SNAPSHOT.jar:/app.jar
+    environment:
+      HEAPSPACE_MAX: 128m
+      DEBUGGING_ENABLED: "yes"
+      SPRING_APPLICATION_JSON: '{"spring":{"datasource":{"url":"jdbc:postgresql://postgres/versionapi", "username":"postgres", "password":"thepgpassword"}}}'
+    depends_on:
+      - postgres
+    ports:
+      - 5504:5555
+    restart: on-failure
+
+  licenseapi:
+    build: ./sourcecode/not_migrated/licenseapi
+    command: /bin/bash -c "set -eux;chown -R www-data:www-data /app/storage; /start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;/run-app.sh"
+    volumes:
+      - ./sourcecode/not_migrated/licenseapi:/app
+      - ./localSetup/projects/licenseapi/.env:/app/.env
+      - ./localSetup/projects/licenseapi/apache.conf:/etc/apache2/sites-enabled/001-licenseapi.conf
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./data/licenseapi/storage:/app/storage
+    environment:
+      DB_CHARSET: utf8
+      DB_COLLATION: utf8_unicode_ci
+    ports:
+      - "8103:80"
+    depends_on:
+      - mysql
+      - memcached
+
+  contentauthor:
+    build:
+      context: ./sourcecode/not_migrated/h5pviewer
+      target: app
+    volumes:
+      - ./sourcecode/not_migrated/h5pviewer/public:/app/public
+      - ./sourcecode/not_migrated/h5pviewer/vendor:/app/vendor
+      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
+    environment:
+      PHP_FPM_HOST: "contentauthor-fpm:31004"
+    depends_on:
+      - contentauthor-fpm
+
+  contentauthor-fpm:
+    build:
+      context: ./sourcecode/not_migrated/h5pviewer
+      target: phpfpm
+    command: /bin/bash -c "set -eux;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;/start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;php-fpm -R -F -O"
+    volumes:
+      - ./localSetup/projects/content-author/startup.sh:/startup.sh
+      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./localSetup/projects/content-author/.env:/app/.env
+      - ./data/contentauthor/storage:/app/storage
+      - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
+      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+    depends_on:
+      - mysql
+      - memcached
+
+  contentauthor-cron:
+    build:
+      context: ./sourcecode/not_migrated/h5pviewer
+      dockerfile: Dockerfile
+      target: cron
+    volumes:
+      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./localSetup/projects/content-author/.env:/app/.env
+      - ./data/contentauthor/storage:/app/storage
+    depends_on:
+      - contentauthor-fpm
+
+  contentauthor-horizonqueue:
+    build:
+      context: ./sourcecode/not_migrated/h5pviewer
+      dockerfile: Dockerfile
+      target: horizonqueue
+    volumes:
+      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./localSetup/projects/content-author/.env:/app/.env
+      - ./data/contentauthor/storage:/app/storage
+    depends_on:
+      - contentauthor-fpm
+
+  contentauthor-edstepmessages:
+    build:
+      context: ./sourcecode/not_migrated/h5pviewer
+      dockerfile: Dockerfile
+      target: edstepmessages
+    volumes:
+      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./localSetup/projects/content-author/.env:/app/.env
+      - ./data/contentauthor/storage:/app/storage
+    depends_on:
+      - contentauthor-fpm
+
+  dokuapi:
+    build:
+      context: ./sourcecode/apis/doku
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      LICENSEAPI_URL: http://licenseapi
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    volumes:
+      - ./data/doku-api/node_modules:/var/www/app/node_modules
+      - ./sourcecode/apis/doku/src:/var/www/app/src
+      - ./sourcecode/apis/doku/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/doku/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/doku/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - mysql
+
+  resourceapi:
+    build:
+      context: ./sourcecode/apis/resources
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    volumes:
+      - ./data/edlib-resources/node_modules:/var/www/app/node_modules
+      - ./sourcecode/apis/resources/src:/var/www/app/src
+      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - mysql
+
+  ltiapi:
+    build:
+      context: ./sourcecode/apis/lti
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    volumes:
+      - ./data/edlib-lti/node_modules:/var/www/app/node_modules
+      - ./sourcecode/apis/lti/src:/var/www/app/src
+      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - mysql
+
+  authapi:
+    build:
+      context: ./sourcecode/apis/auth
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    volumes:
+      - ./data/edlib-auth/node_modules:/var/www/app/node_modules
+      - ./sourcecode/apis/auth/src:/var/www/app/src
+      - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - mysql
+
+  urlapi:
+    build:
+      context: ./sourcecode/apis/url
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    volumes:
+      - ./data/edlib-url/node_modules:/var/www/app/node_modules
+      - ./sourcecode/apis/url/src:/var/www/app/src
+      - ./sourcecode/apis/url/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/url/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/url/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - mysql
+
+  doku-lti-viewer:
+    tty: true
+    build:
+      context: ./sourcecode/not_migrated/doku-lti-viewer
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
+    volumes:
+      - ./data/doku-lti-viewer/node_modules:/var/www/app/node_modules
+      - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
+      - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
+      - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
+      - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
+
+  proxy-iframe:
+    tty: true
+    build:
+      context: ./sourcecode/proxies/iframe
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      WDS_SOCKET_PATH: /iframe/sockjs-node
+    volumes:
+      - ./data/proxy-iframe/node_modules:/app/node_modules
+      - ./sourcecode/proxies/iframe/src:/app/src
+      - ./sourcecode/proxies/iframe/public:/app/public
+      - ./sourcecode/proxies/iframe/package.json:/app/package.json
+      - ./sourcecode/proxies/iframe/yarn.lock:/app/yarn.lock
+
+  proxy-admin:
+    tty: true
+    build:
+      context: ./sourcecode/proxies/admin
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      WDS_SOCKET_PATH: /admin/sockjs-node
+    volumes:
+      - ./data/proxy-admin/node_modules:/app/node_modules
+      - ./sourcecode/proxies/admin/src:/app/src
+      - ./sourcecode/proxies/admin/public:/app/public
+      - ./sourcecode/proxies/admin/package.json:/app/package.json
+      - ./sourcecode/proxies/admin/yarn.lock:/app/yarn.lock
+
+  proxy-auth:
+    build:
+      context: ./sourcecode/proxies/auth
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    volumes:
+      - ./data/proxy-auth/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/auth/src:/var/www/app/src
+      - ./sourcecode/proxies/auth/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/auth/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/auth/yarn.lock:/var/www/app/yarn.lock
+  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+
+  proxy-lti:
+    build:
+      context: ./sourcecode/proxies/lti
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
+    volumes:
+      - ./data/proxy-lti/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/lti/src:/var/www/app/src
+      - ./sourcecode/proxies/lti/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/lti/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+
+  proxy-recommendation:
+    build:
+      context: ./sourcecode/proxies/recommendation
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    volumes:
+      - ./data/proxy-recommendation/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/recommendation/src:/var/www/app/src
+      - ./sourcecode/proxies/recommendation/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/recommendation/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/recommendation/yarn.lock:/var/www/app/yarn.lock
+
+  proxy-doku:
+    build:
+      context: ./sourcecode/proxies/doku
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    volumes:
+      - ./data/proxy-doku/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/doku/src:/var/www/app/src
+      - ./sourcecode/proxies/doku/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/doku/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/doku/yarn.lock:/var/www/app/yarn.lock
+
+  proxy-resource:
+    build:
+      context: ./sourcecode/proxies/resource
+      dockerfile: Dockerfile
+      target: dev
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672 authapi:80;update-ca-certificates; yarn; yarn dev'"
+    env_file:
+      - ./localSetup/.env
+    environment:
+      LICENSEAPI_URL: http://licenseapi
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    volumes:
+      - ./data/proxy-resource/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/resource/src:/var/www/app/src
+      - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/resource/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - authapi
+
+  edlibapi-url:
+    build:
+      context: ./sourcecode/proxies/url
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    volumes:
+      - ./data/edlibapi-url/node_modules:/var/www/app/node_modules
+      - ./sourcecode/proxies/url/src:/var/www/app/src
+      - ./sourcecode/proxies/url/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/proxies/url/package.json:/var/www/app/package.json
+      - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
+  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+
+  #  re-recommender:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-recommender
+  #      target: appdev
+  #    environment:
+  #      PHP_FPM_HOST: "re-recommender-fpm:31004"
+  #    volumes:
+  #      - ./sourcecode/not_migrated/re-recommender/docker/nginx-dev.conf:/etc/nginx/nginx.conf
+  #    depends_on:
+  #      - re-recommender-fpm
+  #
+  #  re-recommender-fpm:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-recommender
+  #      target: phpfpmdev
+  #    command: /dev-startup.sh
+  #    environment:
+  #      DB_HOST: mysql
+  #      DB_PORT: 3306
+  #      DB_DATABASE: re_recommender
+  #      DB_USERNAME: root
+  #      DB_PASSWORD: mysqlpassword
+  #    volumes:
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #      - ./sourcecode/not_migrated/re-recommender:/app
+  #      - ./localSetup/projects/re-recommender/.env:/app/.env
+  #      - ./localSetup/projects/re-recommender/startup.sh:/dev-startup.sh
+  #      - ./data/re-recommender/storage/logs:/app/storage/logs
+  #      - ./data/re-recommender/bootstrap/cache:/app/bootstrap/cache
+  #    depends_on:
+  #      - mysql
+  #      - elasticsearch
+
+  #  re-content-index:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-content-index
+  #      target: appdev
+  #    environment:
+  #      PHP_FPM_HOST: "re-content-index-fpm:31004"
+  #    volumes:
+  #      - ./sourcecode/not_migrated/re-content-index/docker/nginx-dev.conf:/etc/nginx/nginx.conf
+  #    depends_on:
+  #      - re-content-index-fpm
+  #
+  #  re-content-index-fpm:
+  #    build:
+  #      context: ./sourcecode/not_migrated/re-content-index
+  #      target: phpfpmdev
+  #    command: /dev-startup.sh
+  #    environment:
+  #      DB_HOST: mysql
+  #      DB_PORT: 3306
+  #      DB_DATABASE: re_content_index
+  #      DB_USERNAME: root
+  #      DB_PASSWORD: mysqlpassword
+  #    volumes:
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #      - ./sourcecode/not_migrated/re-content-index:/app
+  #      - ./localSetup/projects/re-content-index/.env:/app/.env
+  #      - ./localSetup/projects/re-content-index/startup.sh:/dev-startup.sh
+  #      - ./data/re-content-index/storage/logs:/app/storage/logs
+  #      - ./data/re-content-index/bootstrap/cache:/app/bootstrap/cache
+  #    depends_on:
+  #      - mysql
+
+  edlibfacade:
+    build:
+      context: ./localSetup/projects/edlibfacade
+    entrypoint: /before-start.sh
+    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888;/start-app.sh"
+    volumes:
+      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
+      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
+      - ./localSetup/helpers/start-scripts:/start-scripts
+    environment:
+      CONFIGSERVICE_URI: http://configserver:8888
+      EDLIB_API_URL: https://api.edlib.local
+      HEAPSPACE_MAX: 128m
+      DEBUGGING_ENABLED: "yes"
+    ports:
+      - 5505:5555
+
+  edlibfacade-test:
+    tty: true
+    build:
+      context: ./sourcecode/not_migrated/edlibfacade-test
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./data/edlibfacade-test/node_modules:/app/node_modules
+      - ./sourcecode/not_migrated/edlibfacade-test/src:/app/src
+      - ./sourcecode/not_migrated/edlibfacade-test/public:/app/public
+      - ./sourcecode/not_migrated/edlibfacade-test/package.json:/app/package.json
+      - ./sourcecode/not_migrated/edlibfacade-test/package-lock.json:/app/package-lock.json
+      - ./localSetup/projects/edlibfacade-test/config.json:/app/public/config.json
+
+  npm-components-storybook:
+    tty: true
+    build:
+      context: ./sourcecode/npm/components
+      dockerfile: Dockerfile
+    volumes:
+      - ./sourcecode/npm/components:/app
+      - ./data/npm-components-storybook/node_modules:/app/node_modules

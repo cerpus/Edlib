@@ -6,7 +6,7 @@ import dokus from './dokus.js';
 import resources from './resources.js';
 import readiness from '../readiness.js';
 import status from './status.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 

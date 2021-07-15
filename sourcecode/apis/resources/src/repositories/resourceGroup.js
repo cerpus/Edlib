@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, {
-    dbHelpers,
-} from '@cerpus/edlib-node-utils/services/db.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 
 const table = 'resourceGroups';
 
@@ -26,10 +24,13 @@ const update = (id, resourceGroup) =>
         updatedAt: new Date(),
     });
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
+const getById = async (id) => db(table).select('*').where('id', id).first();
+
+const remove = async (id) => db(table).where('id', id).del();
 
 export default () => ({
     create,
     update,
     getById,
+    remove,
 });

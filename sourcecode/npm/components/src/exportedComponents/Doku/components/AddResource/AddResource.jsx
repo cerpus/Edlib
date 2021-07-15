@@ -225,12 +225,12 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                         ) !== -1 && (
                             <ResourceEditor
                                 type={selectedResourceType}
-                                onResourceReturned={(edlibId) => {
+                                onResourceReturned={({ resourceId }) => {
                                     setSelectedResourceType(false);
                                     setShowResourceTypes(false);
                                     onAddResource(
                                         atomicTypes.EDLIB_RESOURCE,
-                                        edlibId,
+                                        resourceId,
                                         undefined,
                                         positionInfo.shouldMoveCursorToEndOnInsert
                                     );

@@ -1,21 +1,30 @@
-import resourceTypes, { h5pTypes } from '../config/resourceTypes';
+import {
+    externalSystemNames,
+    contentAuthorTypes,
+} from '../config/resourceTypes';
 
 export default (resource) => {
-    if (resource.resourceType === resourceTypes.URL) {
+    if (resource.version.externalSystemName === externalSystemNames.URL) {
         return 'Url';
     }
 
-    if (resource.resourceType === resourceTypes.H5P) {
-        switch (resource.h5pType) {
-            case h5pTypes.article:
-                return 'Artical';
-            case h5pTypes.game:
+    if (
+        resource.version.externalSystemName ===
+        externalSystemNames.CONTENT_AUTHOR
+    ) {
+        if (resource.version.contentType.startsWith(contentAuthorTypes.H5P)) {
+            return 'H5P';
+        }
+
+        switch (resource.version.contentType) {
+            case contentAuthorTypes.article:
+                return 'Article';
+            case contentAuthorTypes.game:
                 return 'Spill';
-            case h5pTypes.questionset:
+            case contentAuthorTypes.questionset:
                 return 'Question set';
-            case h5pTypes.H5P:
             default:
-                return 'H5P';
+                break;
         }
     }
 

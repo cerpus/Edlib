@@ -1,6 +1,6 @@
 import React from 'react';
-import { Col, Container, Row } from 'reactstrap';
 import SystemStatus from '../components/SystemStatus';
+import { Container, Grid } from '@material-ui/core';
 
 const statuses = [
     {
@@ -27,9 +27,9 @@ const statuses = [
 
 const SystemStatuses = () => {
     return (
-        <Container className="pt-3">
-            <Row>
-                <Col>
+        <Container>
+            <Grid container>
+                <Grid item>
                     {statuses.map((statusInfo, index) => (
                         <SystemStatus
                             key={index}
@@ -37,8 +37,8 @@ const SystemStatuses = () => {
                             endpoint={statusInfo.endpoint}
                         />
                     ))}
-                </Col>
-            </Row>
+                </Grid>
+            </Grid>
         </Container>
     );
 };

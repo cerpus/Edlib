@@ -22,7 +22,6 @@ export default ({ pubSubConnection }) => async (data) => {
         data.user.email
     );
 
-    console.log(dbCollaboratorsWithMissingId);
     await Promise.all(
         dbCollaboratorsWithMissingId.map(
             async (dbCollaboratorWithMissingId) => {

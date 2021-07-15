@@ -5,6 +5,18 @@ export const h5pTypes = {
     game: 'Game',
 };
 
+export const contentAuthorTypes = {
+    H5P: 'h5p',
+    article: 'article',
+    questionset: 'questionset',
+    game: 'game',
+};
+
+export const externalSystemNames = {
+    CONTENT_AUTHOR: 'contentauthor',
+    URL: 'url',
+};
+
 export default {
     provider: 'SELECTION_LAUNCH',
     H5P: 'H5P_RESOURCE',

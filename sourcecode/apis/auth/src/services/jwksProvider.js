@@ -51,7 +51,9 @@ export const encrypt = async (context, payload, expireHours = 72, subject) => {
         payload,
     });
 
-    return await jose.JWS.createSign(opt, key).update(actualPayload).final();
+    return await jose.JWS.createSign(opt, key)
+        .update(actualPayload, 'utf8')
+        .final();
 };
 
 export const verify = async (context, token, options) => {

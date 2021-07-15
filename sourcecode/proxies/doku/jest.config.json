@@ -1,12 +1,9 @@
 {
-    "name": "edlibapi-resources",
+    "name": "proxy-doku",
     "testResultsProcessor": "jest-bamboo-reporter",
     "collectCoverage": true,
     "coverageReporters": ["text"],
     "transformIgnorePatterns": [
-        "/node_modules/(?!@cerpus-private|uuid|colorette).+\\.js$"
-    ],
-    "moduleNameMapper": {
-        "^(@cerpus-private/edlib-node-utils)\\/(.+)(?<!package\\.json)$": "<rootDir>/node_modules/$1/src/$2"
-    }
+        "/node_modules/(?!@cerpus|uuid|colorette).+\\.js$"
+    ]
 }

@@ -1,17 +1,18 @@
 import React from 'react';
 import useFetchWithToken from '../../hooks/useFetchWithToken';
 import useConfig from '../../hooks/useConfig';
-import { Modal, Spinner, ThemeProvider, themes } from '@cerpus/ui';
+import { Modal, Spinner } from '@cerpus/ui';
 import ResourceEditor from '../../components/ResourceEditor';
 import { useEdlibResource } from '../../hooks/requests/useResource';
 import ModalHeader from '../../components/ModalHeader';
 import { MemoryRouter } from 'react-router-dom';
+import ExportWrapper from '../../components/ExportWrapper';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     const { edlib } = useConfig();
     const createResourceLink = useEdlibResource();
     const { response, error, loading } = useFetchWithToken(
-        edlib('/lti/v1/lti/convert-launch-url'),
+        edlib('/lti/v2/lti/convert-launch-url'),
         'GET',
         React.useMemo(
             () => ({
@@ -33,13 +34,16 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
 
     return (
         <ResourceEditor
-            edlibId={response.edlibId}
-            onResourceReturned={async (newEdlibId) => {
-                if (newEdlibId === response.edlibId) {
+            edlibId={response.id}
+            onResourceReturned={async ({ resourceId, resourceVersionId }) => {
+                if (
+                    resourceId === response.id &&
+                    resourceVersionId === response.version.id
+                ) {
                     return onUpdateDone(null);
                 }
 
-                const info = await createResourceLink(newEdlibId);
+                const info = await createResourceLink(resourceId);
 
                 onUpdateDone(info);
             }}
@@ -49,27 +53,31 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
 
 export default ({ removePadding = false, ...props }) => {
     return (
-        <ThemeProvider materialUITheme={themes.edlib}>
-        <Modal
-            isOpen={true}
-            width="100%"
-            onClose={props.onClose}
-            displayCloseButton={false}
-            removePadding={removePadding}
-        >
-            <div
-                style={{
-                    height: removePadding ? '100vh' : 'calc(100vh - 40px)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <ModalHeader onClose={props.onClose}>
-                    {props.header}
-                </ModalHeader>
-                <EditEdlibResourceModal {...props} />
-            </div>
-        </Modal>
-        </ThemeProvider>
+        <ExportWrapper>
+            <MemoryRouter>
+                <Modal
+                    isOpen={true}
+                    width="100%"
+                    onClose={props.onClose}
+                    displayCloseButton={false}
+                    removePadding={removePadding}
+                >
+                    <div
+                        style={{
+                            height: removePadding
+                                ? '100vh'
+                                : 'calc(100vh - 40px)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                        }}
+                    >
+                        <ModalHeader onClose={props.onClose}>
+                            {props.header}
+                        </ModalHeader>
+                        <EditEdlibResourceModal {...props} />
+                    </div>
+                </Modal>
+            </MemoryRouter>
+        </ExportWrapper>
     );
 };

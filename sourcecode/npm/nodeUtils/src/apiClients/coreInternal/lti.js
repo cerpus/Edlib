@@ -1,5 +1,7 @@
+import autoRetryRequest from '../../helpers/autoRetryRequest.js';
+
 export default (core) => {
-    const getAllUsages = async (limit = 100, offset = 0) => {
+    const getAllUsages = autoRetryRequest(async (limit = 100, offset = 0) => {
         const response = await core({
             url: `/v1/lti-usages`,
             method: 'GET',
@@ -10,7 +12,7 @@ export default (core) => {
         });
 
         return response.data;
-    };
+    });
 
     const getAllUsageViews = async (limit = 100, offset = 0) => {
         const response = await core({

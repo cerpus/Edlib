@@ -1,7 +1,12 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
 import Joi from 'joi';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
+import _ from 'lodash';
+import {
+    validateJoi,
+    NotFoundException,
+    ApiException,
+} from '@cerpus/edlib-node-utils';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
+import moment from 'moment';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
@@ -16,14 +21,87 @@ const getResourcesFromRequestValidation = (data) => {
                 .allow('created', 'usage')
                 .default('created')
                 .optional(),
+            searchString: Joi.string()
+                .min(1)
+                .optional()
+                .empty('')
+                .allow(null)
+                .default(null),
+            licenses: Joi.array().items(Joi.string()).default([]).optional(),
+            contentTypes: Joi.array()
+                .items(Joi.string())
+                .default([])
+                .optional(),
         })
     );
 };
 
 const getResourcesFromRequest = async (req, tenantId) => {
-    const { limit, offset, orderBy } = getResourcesFromRequestValidation(
-        req.query
-    );
+    // ensure licenses is always an array
+    if (req.query.licenses && !Array.isArray(req.query.licenses)) {
+        req.query.licenses = [req.query.licenses];
+    }
+
+    if (req.query.contentTypes && !Array.isArray(req.query.contentTypes)) {
+        req.query.contentTypes = [req.query.contentTypes];
+    }
+
+    const {
+        limit,
+        offset,
+        orderBy,
+        licenses,
+        searchString,
+        contentTypes,
+    } = getResourcesFromRequestValidation(req.query);
+
+    const field = !tenantId ? 'publicVersion' : 'protectedVersion';
+
+    let extraQuery = {};
+
+    if (licenses.length !== 0) {
+        _.set(extraQuery, 'bool.must', [
+            ..._.get(extraQuery, 'bool.must', []),
+            {
+                bool: {
+                    should: licenses.map((license) => ({
+                        match_phrase: {
+                            [`${field}.license.keyword`]: license.toLowerCase(),
+                        },
+                    })),
+                },
+            },
+        ]);
+    }
+
+    if (searchString) {
+        _.set(extraQuery, 'bool.must', [
+            ..._.get(extraQuery, 'bool.must', []),
+            {
+                match: {
+                    [`${field}.title`]: {
+                        query: searchString,
+                        fuzziness: 'AUTO',
+                    },
+                },
+            },
+        ]);
+    }
+
+    if (contentTypes) {
+        _.set(extraQuery, 'bool.must', [
+            ..._.get(extraQuery, 'bool.must', []),
+            {
+                bool: {
+                    should: contentTypes.map((contentType) => ({
+                        match_phrase: {
+                            [`${field}.contentType.keyword`]: contentType.toLowerCase(),
+                        },
+                    })),
+                },
+            },
+        ]);
+    }
 
     const { body } = await req.context.services.elasticsearch.search(
         tenantId,
@@ -32,11 +110,15 @@ const getResourcesFromRequest = async (req, tenantId) => {
             offset,
         },
         {
-            column: `${getElasticVersionFieldKey(tenantId === null)}.${
-                orderBy === 'usage' ? 'createdAt' : 'createdAt' //@todo use correct column
-            }`,
+            column:
+                orderBy === 'usage'
+                    ? 'views'
+                    : `${getElasticVersionFieldKey(
+                          tenantId === null
+                      )}.createdAt`,
             direction: 'DESC',
-        }
+        },
+        Object.keys(extraQuery).length === 0 ? null : extraQuery
     );
 
     return {
@@ -68,40 +150,92 @@ const transformElasticResources = async (
         )
     );
 
-    return elasticsearchResources.map((esr) => {
-        return {
-            ...resources.find((r) => r.id === esr._source.id),
-            version: resourceVersions.find(
-                (rv) =>
-                    rv.id ===
-                    esr._source[getElasticVersionFieldKey(isPublicResources)].id
-            ),
-            resourceCapabilities: [
-                resourceCapabilities.VIEW,
-                resourceCapabilities.EDIT, //@todo fix based on type
-            ],
-        };
-    });
+    return elasticsearchResources
+        .map((esr) => {
+            return {
+                ...resources.find((r) => r.id === esr._source.id),
+                version: resourceVersions.find(
+                    (rv) =>
+                        rv.id ===
+                        esr._source[
+                            getElasticVersionFieldKey(isPublicResources)
+                        ].id
+                ),
+                resourceCapabilities: [
+                    resourceCapabilities.VIEW,
+                    resourceCapabilities.EDIT, //@todo fix based on type
+                ],
+            };
+        })
+        .filter((esr) => esr.version);
 };
 
-const hasResourceWriteAccess = async (context, resource, tenantId) => {
-    const resourceVersion = await context.db.resourceVersion.getLatestPublishedResourceVersion(
-        resource.id
+const retrieveCoreInfo = async (context, resourceVersions) => {
+    try {
+        const coreInfos = await context.services.coreInternal.resource.multipleFromExternalIdInfo(
+            resourceVersions.map((rv) => ({
+                externalSystemName: rv.externalSystemName,
+                externalSystemId: rv.externalSystemId,
+            }))
+        );
+
+        for (let {
+            externalSystemName,
+            externalSystemId,
+            resourceInfo,
+        } of coreInfos) {
+            const resourceVersion = resourceVersions.find(
+                (rv) =>
+                    rv.externalSystemName === externalSystemName &&
+                    rv.externalSystemId === externalSystemId
+            );
+
+            if (!resourceVersion) {
+                throw new ApiException('Resource not found');
+            }
+
+            if (resourceInfo && resourceInfo.deletedAt) {
+                await context.db.resource.update(resourceVersion.resourceId, {
+                    deletedAt: moment(resourceInfo.deletedAt).toDate(),
+                });
+            }
+
+            if (resourceInfo && resourceInfo.uuid) {
+                await context.db.resourceVersion.update(resourceVersion.id, {
+                    id: resourceInfo.uuid,
+                });
+            }
+        }
+    } catch (e) {
+        if (!(e instanceof NotFoundException)) {
+            throw e;
+        }
+    }
+};
+
+const status = async (context, resourceId) => {
+    const resourceVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
+        resourceId
     );
 
-    if (!resourceVersion) {
-        return false;
-    }
+    const isPublished = resourceVersion && resourceVersion.isPublished;
 
-    if (resourceVersion.ownerId !== tenantId) {
-        return false;
-    }
+    return {
+        isListed: resourceVersion && isPublished && resourceVersion.isListed,
+        isPublished,
+    };
+};
 
-    return true;
+const isPublished = async (context, resourceId) => {
+    const resourceStatus = await status(context, resourceId);
+
+    return resourceStatus.isPublished;
 };
 
 export default {
     getResourcesFromRequest,
     transformElasticResources,
-    hasResourceWriteAccess,
+    retrieveCoreInfo,
+    isPublished,
+    status,
 };

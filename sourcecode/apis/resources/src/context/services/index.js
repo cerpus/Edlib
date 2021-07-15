@@ -1,18 +1,18 @@
 import apiConfig from '../../config/apis.js';
-import core from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
-import version from '@cerpus/edlib-node-utils/apiClients/version/index.js';
-import edlibAuth from '@cerpus/edlib-node-utils/apiClients/edlibAuth/index.js';
+import { apiClients } from '@cerpus/edlib-node-utils';
 import externalResourceFetcher from './externalResourceFetcher.js';
 import elasticsearch from './elasticsearch/index.js';
+import lti from './lti.js';
 
 export default (req) => {
-    const versionApi = version(req, apiConfig.version);
+    const versionApi = apiClients.version(req, apiConfig.version);
 
     return {
         version: versionApi,
         externalResourceFetcher: externalResourceFetcher(req),
         elasticsearch: elasticsearch(req),
-        coreInternal: core(req, apiConfig.coreInternal),
-        edlibAuth: edlibAuth(req, apiConfig.edlibAuth),
+        coreInternal: apiClients.coreInternal(req, apiConfig.coreInternal),
+        edlibAuth: apiClients.edlibAuth(req, apiConfig.edlibAuth),
+        lti: lti(),
     };
 };

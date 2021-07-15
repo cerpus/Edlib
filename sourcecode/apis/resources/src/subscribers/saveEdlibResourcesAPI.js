@@ -1,9 +1,8 @@
 import { buildRawContext } from '../context/index.js';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import Joi from 'joi';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
+import { logger, validateJoi } from '@cerpus/edlib-node-utils';
 import * as elasticSearchService from '../services/elasticSearch.js';
-import moment from 'moment';
+import externalSystemService from '../services/externalSystem.js';
 
 const findResourceFromParentVersions = async (context, version) => {
     if (!version) {
@@ -40,16 +39,29 @@ const findResourceFromParentVersions = async (context, version) => {
 };
 
 const saveResourceVersion = async (context, resourceVersionValidatedData) => {
-    const version = await context.services.version.getForResource(
-        resourceVersionValidatedData.externalSystemName,
-        resourceVersionValidatedData.externalSystemId
-    );
+    let versionPurpose = 'create';
+    let actualVersion = null;
 
-    if (!version) {
-        logger.error(
-            'Version was not found for resource. Make sure versions are saved into the versioningapi. It is required to build the resource data model'
+    if (
+        externalSystemService.isVersioningEnabled(
+            resourceVersionValidatedData.externalSystemName,
+            resourceVersionValidatedData.contentType
+        )
+    ) {
+        const version = await context.services.version.getForResource(
+            resourceVersionValidatedData.externalSystemName,
+            resourceVersionValidatedData.externalSystemId
         );
-        return;
+
+        if (!version) {
+            logger.error(
+                'Version was not found for resource. Make sure versions are saved into the versioningapi. It is required to build the resource data model'
+            );
+            return;
+        }
+
+        versionPurpose = version.versionPurpose.toLowerCase();
+        actualVersion = version;
     }
 
     const dbResourceVersion = await context.db.resourceVersion.getByExternalId(
@@ -68,45 +80,76 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         );
     }
 
+    let createdResourceGroup = null;
+    let createdResource = null;
+
     // Purpose is update. a version with purpose update should always have a parent version.
-    if (version.versionPurpose.toLowerCase() === 'update') {
-        const resource = await findResourceFromParentVersions(context, version);
+    if (['update', 'upgrade'].indexOf(versionPurpose) !== -1) {
+        const resource = await findResourceFromParentVersions(
+            context,
+            actualVersion
+        );
 
         if (!resource) {
             return;
         }
 
         dbResourceVersionData.resourceId = resource.id;
-    } else if (version.versionPurpose.toLowerCase() === 'translation') {
+    } else if (versionPurpose === 'translation') {
         const siblingResource = await findResourceFromParentVersions(
             context,
-            version.parent
+            actualVersion && actualVersion.parent
         );
 
         if (!siblingResource) {
             return;
         }
 
-        const resource = await context.db.resource.create({
+        createdResource = await context.db.resource.create({
             resourceGroupId: siblingResource.resourceGroupId,
         });
 
-        dbResourceVersionData.resourceId = resource.id;
+        dbResourceVersionData.resourceId = createdResource.id;
     } else if (
-        ['create', 'copy'].indexOf(version.versionPurpose.toLowerCase()) !== -1
+        ['create', 'copy', 'import', 'initial'].indexOf(versionPurpose) !== -1
     ) {
-        const resourceGroup = await context.db.resourceGroup.create({});
-        const resource = await context.db.resource.create({
-            resourceGroupId: resourceGroup.id,
+        createdResourceGroup = await context.db.resourceGroup.create({});
+        createdResource = await context.db.resource.create({
+            resourceGroupId: createdResourceGroup.id,
         });
 
-        dbResourceVersionData.resourceId = resource.id;
+        dbResourceVersionData.resourceId = createdResource.id;
     } else {
-        console.error(`Unknown version purpose ${version.versionPurpose}`);
+        console.error(`Unknown version purpose ${versionPurpose}`);
         return;
     }
 
-    return await context.db.resourceVersion.create(dbResourceVersionData);
+    try {
+        return await context.db.resourceVersion.create(dbResourceVersionData);
+    } catch (e) {
+        if (e.code === 'ER_DUP_ENTRY') {
+            const resourceVersion = await context.db.resourceVersion.getByExternalId(
+                resourceVersionValidatedData.externalSystemName,
+                resourceVersionValidatedData.externalSystemId
+            );
+
+            if (resourceVersion) {
+                if (createdResource) {
+                    await context.db.resource.remove(createdResource.id);
+                }
+
+                if (createdResourceGroup) {
+                    await context.db.resourceGroup.remove(
+                        createdResourceGroup.id
+                    );
+                }
+
+                return resourceVersion;
+            }
+        }
+
+        throw e;
+    }
 };
 
 const saveToDb = async (context, validatedData) => {
@@ -252,10 +295,19 @@ export default ({ pubSubConnection }) => async (
                 externalSystemName: Joi.string().min(1).required(),
                 externalSystemId: Joi.string().min(1).required(),
                 title: Joi.string().min(1).required(),
-                ownerId: Joi.string().min(1).required(),
+                ownerId: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .empty(null)
+                    .optional()
+                    .default(null),
                 isPublished: Joi.boolean().required(),
                 isListed: Joi.boolean().required(),
-                language: Joi.string().min(1).required(),
+                language: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .optional()
+                    .default(null),
                 contentType: Joi.string().min(1).optional(),
                 license: Joi.string().allow(null).optional().default(null),
                 maxScore: Joi.number()
@@ -268,12 +320,19 @@ export default ({ pubSubConnection }) => async (
                 createdAt: Joi.date().iso().required(),
                 collaborators: Joi.array()
                     .items(Joi.string().min(1))
-                    .optional(),
+                    .optional()
+                    .default([]),
                 emailCollaborators: Joi.array()
                     .items(Joi.string().email())
                     .min(0)
                     .optional()
                     .default([]),
+                authorOverwrite: Joi.string()
+                    .min(1)
+                    .optional()
+                    .allow(null)
+                    .empty(null)
+                    .default(null),
             })
         );
     } catch (e) {
@@ -281,6 +340,11 @@ export default ({ pubSubConnection }) => async (
         console.error(e);
         return;
     }
+
+    if (validatedData.license) {
+        validatedData.license = validatedData.license.toLowerCase();
+    }
+
     const context = buildRawContext({}, {}, { pubSubConnection });
 
     const resourceVersion = await saveToDb(context, validatedData);
@@ -288,27 +352,6 @@ export default ({ pubSubConnection }) => async (
     if (!resourceVersion) {
         console.error('Resource version was not created.');
         return;
-    }
-
-    try {
-        const info = await context.services.coreInternal.resource.fromExternalIdInfo(
-            resourceVersion.externalSystemName,
-            resourceVersion.externalSystemId
-        );
-
-        if (info.deletedAt) {
-            await context.db.resource.update(resourceVersion.resourceId, {
-                deletedAt: moment(info.deletedAt).toDate(),
-            });
-        }
-
-        if (info && info.uuid) {
-            await context.db.resourceVersion.update(resourceVersion.id, {
-                id: info.uuid,
-            });
-        }
-    } catch (e) {
-        console.error(e);
     }
 
     if (saveToSearchIndex) {

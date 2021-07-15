@@ -1,9 +1,9 @@
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 
 const table = 'resourceVersionCollaborators';
 
 const create = async (resourceVersionCollaborator) => {
-    const [id] = await knex(table).insert(resourceVersionCollaborator);
+    const [id] = await db(table).insert(resourceVersionCollaborator);
 
     return getById(id);
 };
@@ -11,19 +11,19 @@ const create = async (resourceVersionCollaborator) => {
 const update = (id, resourceVersionCollaborator) =>
     dbHelpers.updateId(table, id, resourceVersionCollaborator);
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
+const getById = async (id) => db(table).select('*').where('id', id).first();
 
 const getForResourceVersion = async (resourceVersionId) =>
-    knex(table).select('*').where('resourceVersionId', resourceVersionId);
+    db(table).select('*').where('resourceVersionId', resourceVersionId);
 
 const getWithTenantsForResourceVersion = async (resourceVersionId) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('resourceVersionId', resourceVersionId)
         .whereNotNull('tenantId');
 
 const getForEmailWithMissingTenantWithResourceId = async (email) =>
-    knex
+    db
         .from(`${table} as rvc`)
         .select('rvc.*')
         .select('r.id as resourceId')
@@ -37,7 +37,7 @@ const remove = async (ids) => {
         ids = [ids];
     }
 
-    return knex(table).whereIn('id', ids).del();
+    return db(table).whereIn('id', ids).del();
 };
 
 export default () => ({

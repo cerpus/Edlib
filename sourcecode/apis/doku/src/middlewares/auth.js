@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { UnauthorizedException } from '@cerpus/edlib-node-utils';
 
 export const authTypes = {
     CERPUS_ADMIN: 'cerpus_admin',

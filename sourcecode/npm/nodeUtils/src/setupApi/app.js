@@ -7,14 +7,15 @@ import logRequest from '../middlewares/logRequest.js';
 import endpointNotFoundHandler from '../middlewares/endpointNotFoundHandler.js';
 import exceptionHandler from '../middlewares/exceptionHandler.js';
 import * as errorReporting from '../services/errorReporting.js';
-import Sentry from '@sentry/node';
 import prepareTrace from '../middlewares/prepareTrace.js';
+import viewsDir from '../views/__dirname';
+import { logExpressError } from '../services/errorReporting.js';
 
 const app = express();
 
 export default async (
     buildRouter,
-    { errorReportingConfig, trustProxy, configureApp } = {
+    { errorReportingConfig, trustProxy, configureApp, extraViewDir } = {
         trustProxy: false,
         configureApp: () => {},
     }
@@ -36,6 +37,14 @@ export default async (
         app.set('trust proxy', true);
     }
 
+    const viewsDirs = [viewsDir];
+
+    if (extraViewDir) {
+        viewsDirs.push(extraViewDir);
+    }
+
+    app.set('view engine', 'pug');
+    app.set('views', viewsDirs);
     app.use(prepareTrace);
     app.use(helmet.hidePoweredBy());
     app.use(function (req, res, next) {
@@ -60,7 +69,7 @@ export default async (
     app.use(cookieParser());
     app.use(compiledRouter);
     app.use(endpointNotFoundHandler);
-    app.use(Sentry.Handlers.errorHandler());
+    app.use(logExpressError);
     app.use(exceptionHandler);
 
     return app;

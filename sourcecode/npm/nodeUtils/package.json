@@ -2,66 +2,55 @@
   "name": "@cerpus/edlib-node-utils",
   "version": "1.2.0",
   "private": false,
-  "type": "module",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "author": "Max Moeschinger <m.moeschinger@gmail.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "test": "ENABLE_LOGGING=0 jest --config=./jest.config.json"
+    "test": "jest",
+    "build": "babel src -d lib --copy-files",
+    "dev": "babel src -d lib --copy-files --watch",
+    "prepare": "npm run build"
   },
   "engines": {
-    "node": ">= 14.0.0"
-  },
-  "exports": {
-    "./": "./src/"
+    "node": ">= 16.0.0"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@sentry/node": "^5.27.6",
-    "@sentry/tracing": "^5.27.6",
+    "@sentry/node": "^6.7.1",
+    "@sentry/tracing": "^6.7.1",
     "await-lock": "^2.1.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.1",
     "cookie-parser": "^1.4.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
     "express": "^4.17.1",
-    "helmet": "^4.1.1",
+    "helmet": "^4.6.0",
+    "http-status-codes": "^2.1.4",
     "jsonwebtoken": "^8.5.1",
-    "jwks-rsa": "^1.10.1",
-    "knex": "^0.21.6",
-    "lodash": "^4.17.20",
-    "moment-timezone": "^0.5.31",
+    "jwks-rsa": "^2.0.3",
+    "knex": "^0.95.6",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
     "on-finished": "^2.3.0",
-    "redis": "^3.0.2",
-    "redis-mock": "^0.52.0",
-    "sqlite3": "^5.0.0",
+    "redis": "^3.1.2",
+    "redis-mock": "^0.56.3",
+    "sqlite3": "^5.0.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0",
-    "@babel/preset-env": "^7.12.0",
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/node": "^7.14.5",
+    "@babel/preset-env": "^7.14.5",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^26.5.3",
+    "jest": "^27.0.4",
     "jest-bamboo-reporter": "^1.2.1",
-    "prettier": "^2.1.2"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      "transform-default-import"
-    ]
+    "prettier": "^2.3.1"
   },
   "peerDependencies": {
     "amqplib": "^0.8.0"

@@ -1,7 +1,6 @@
 import express from 'express';
 import StatusController from '../controllers/status.js';
-import { isUserAdmin } from '@cerpus-private/edlib-node-utils/middlewares/index.js';
-import { runAsync } from '@cerpus-private/edlib-node-utils/services/index.js';
+import { middlewares, runAsync } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -10,7 +9,7 @@ export default async () => {
 
     router.get(
         '/dokuapi-system-status',
-        isUserAdmin,
+        middlewares.isUserAdmin,
         runAsync(StatusController.dokuApiSystemStatus)
     );
 

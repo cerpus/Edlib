@@ -53,6 +53,9 @@ export default (getJwt, edlibUrl) => {
                     `${edlibUrl}/auth/v3/jwt/refresh`,
                     'POST',
                     {
+                        headers: {
+                            Authorization: `Bearer ${jwt}`,
+                        },
                         body: {
                             token: jwt,
                         },
@@ -83,7 +86,7 @@ export default (getJwt, edlibUrl) => {
             .finally(() => {
                 setJwtLoading(false);
             });
-    }, [getJwt, setJwt, setJwtLoading, setJwtError]);
+    }, [getJwt, setJwt, setJwtLoading, setJwtError, jwt]);
 
     const updateTokenIfRequired = React.useCallback(() => {
         log('Check if token must be updated');

@@ -1,43 +1,38 @@
 import React from 'react';
 import cn from 'classnames';
-import {
-    Container,
-    Col,
-    Row,
-    Alert,
-    Spinner,
-    Card,
-    CardBody,
-    CardHeader,
-} from 'reactstrap';
-
 import styles from './login.module.scss';
+import {
+    Box,
+    CircularProgress,
+    Container,
+    Grid,
+    Paper,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
 const LoginCallback = ({ loading, error }) => {
     return (
-        <div className={cn('pt-5', styles.login)}>
+        <div className={cn(styles.login)}>
             <Container>
-                <Row className="justify-content-md-center">
-                    <Col md={6}>
-                        <Card>
-                            <CardHeader>Logg inn</CardHeader>
-                            <CardBody>
-                                {loading && (
-                                    <div className="d-flex justify-content-center align-content-center ml-3">
-                                        <Spinner />
-                                    </div>
-                                )}
-                                {error ? (
-                                    <Alert color="danger" className="mt-3">
-                                        {error.message}
-                                    </Alert>
-                                ) : (
-                                    ''
-                                )}
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                <Grid container justify="center">
+                    <Grid item md={6}>
+                        <Paper>
+                            <h2>Logg inn</h2>
+                            {loading && (
+                                <Box justifyContent="center" display="flex">
+                                    <CircularProgress />
+                                </Box>
+                            )}
+                            {error ? (
+                                <Alert color="danger" className="mt-3">
+                                    {error.message}
+                                </Alert>
+                            ) : (
+                                ''
+                            )}
+                        </Paper>
+                    </Grid>
+                </Grid>
             </Container>
         </div>
     );

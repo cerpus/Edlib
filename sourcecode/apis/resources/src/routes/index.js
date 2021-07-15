@@ -1,14 +1,14 @@
 import express from 'express';
 import addContextToRequest from '../middlewares/addContextToRequest.js';
-import { runAsync } from '@cerpus/edlib-node-utils/services/index.js';
+import { runAsync, logger } from '@cerpus/edlib-node-utils';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import resourceController from '../controllers/resource.js';
 import ltiController from '../controllers/lti.js';
 import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
-import { logger } from '@cerpus/edlib-node-utils/index.js';
-import syncController from '../controllers/sync.js';
+import jobController from '../controllers/job.js';
+import contentTypes from './contentTypes.js';
 
 const { Router } = express;
 
@@ -61,6 +61,9 @@ export default async ({ pubSubConnection }) => {
      *                schema:
      *                  type: string
      *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
      */
     apiRouter.get(
         '/v1/tenants/:tenantId/resources',
@@ -100,6 +103,28 @@ export default async ({ pubSubConnection }) => {
      *          description: Get public resources
      *          produces:
      *              - application/json
+     *          parameters:
+     *              - in: query
+     *                name: searchString
+     *                type: string
+     *                description: A string to search for. If nothing is provided, everything will match
+     *              - in: query
+     *                name: licenses
+     *                type: array
+     *                items:
+     *                   type: string
+     *                collectionFormat: multi
+     *                description: A list of licenses to match. If none provided all licenses will match
+     *              - in: query
+     *                name: contentTypes
+     *                type: array
+     *                items:
+     *                   type: string
+     *                collectionFormat: multi
+     *                description: A list of content types to match. If none provided all content types will match
+     *          responses:
+     *              200:
+     *                  description: Successful request
      */
     apiRouter.get(
         '/v1/resources',
@@ -137,9 +162,65 @@ export default async ({ pubSubConnection }) => {
         '/v1/resources-from-external/:externalSystemName/:externalSystemId',
         runAsync(resourceController.getResourceFromExternalId)
     );
+    apiRouter.post(
+        '/v1/resources/by-external-references',
+        runAsync(resourceController.getResourceFromExternalReferences)
+    );
+
+    /**
+     * @swagger
+     *
+     *  /v1/resources/{resourceId}/lti-info:
+     *      get:
+     *          description: Get resource info to launch a lti request
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: resourceId
+     *                type: string
+     *                required: true
+     *              - in: query
+     *                name: mustBeShared
+     *                type: string
+     *                enum:
+     *                    - "true"
+     *                    - "false"
+     *                default: "false"
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
     apiRouter.get(
         '/v1/resources/:resourceId/lti-info',
         runAsync(ltiController.getResourceLtiInfo)
+    );
+
+    /**
+     * @swagger
+     *
+     *  /v1/tenants/{tenantId}/resources/{resourceId}/lti-info:
+     *      get:
+     *          description: Get resource info to launch a lti request and verify user has access
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: tenantId
+     *                type: string
+     *                required: true
+     *              - in: path
+     *                name: resourceId
+     *                type: string
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.get(
+        '/v1/tenants/:tenantId/resources/:resourceId/lti-info',
+        runAsync(ltiController.getTenantResourceLtiInfo)
     );
     apiRouter.get(
         '/v1/create-lti-info/:externalSystemName',
@@ -149,14 +230,16 @@ export default async ({ pubSubConnection }) => {
         '/v1/external-systems/:externalSystemName/resources/:externalSystemId',
         runAsync(resourceController.ensureResourceExists)
     );
+    apiRouter.post('/v1/jobs/:jobName', runAsync(jobController.startJob));
     apiRouter.get(
-        '/v1/sync-resources/:jobId',
-        runAsync(syncController.getJobStatus)
+        '/v1/jobs/:jobName/resumable',
+        runAsync(jobController.getResumableJob)
     );
-    apiRouter.post(
-        '/v1/sync-resources',
-        runAsync(syncController.syncResources)
-    );
+    apiRouter.get('/v1/jobs/:jobId', runAsync(jobController.getJobStatus));
+    apiRouter.post('/v1/jobs/:jobId/resume', runAsync(jobController.resumeJob));
+    apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
+
+    apiRouter.use(await contentTypes());
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;

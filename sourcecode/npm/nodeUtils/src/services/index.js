@@ -5,4 +5,6 @@ export { default as runAsync } from './runAsync.js';
 export { default as exceptionTranslator } from './exceptionTranslator.js';
 export { default as env } from './env.js';
 export * as pubsub from './pubSub.js';
-export * as status from './status.js';
+export { default as status } from './status.js';
+export { default as redis } from './redis.js';
+export * as redisHelpers from './redis.js';

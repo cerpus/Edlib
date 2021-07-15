@@ -1,13 +1,12 @@
 import Joi from '@hapi/joi';
-import { validateJoi } from '@cerpus/edlib-node-utils/services/index.js';
 import {
+    validateJoi,
     NotFoundException,
     validationExceptionError,
     ValidationException,
     UnauthorizedException,
-} from '@cerpus/edlib-node-utils/exceptions/index.js';
-import versionPurposes from '@cerpus/edlib-node-utils/constants/versionPurposes.js';
-import externalSystemNames from '@cerpus/edlib-node-utils/constants/externalSystemNames.js';
+    constants,
+} from '@cerpus/edlib-node-utils';
 import moment from 'moment';
 
 const dokuValidationCreate = Joi.object().keys({
@@ -43,8 +42,10 @@ const create = async (context, doku, parentId = null) => {
     });
 
     await context.services.version.create(
-        parentId ? versionPurposes.UPDATE : versionPurposes.CREATE,
-        externalSystemNames.DOKU,
+        parentId
+            ? constants.versionPurposes.UPDATE
+            : constants.versionPurposes.CREATE,
+        constants.externalSystemNames.DOKU,
         dbDoku.id,
         parentId
     );
@@ -60,7 +61,7 @@ const withLicense = async (context, doku) => {
     let license = null;
     try {
         license = await context.services.license.getForResource(
-            externalSystemNames.DOKU,
+            constants.externalSystemNames.DOKU,
             doku.id
         );
     } catch (e) {
@@ -150,7 +151,7 @@ export default {
 
         if (license) {
             await req.context.services.license.set(
-                externalSystemNames.DOKU,
+                constants.externalSystemNames.DOKU,
                 doku.id,
                 license
             );
