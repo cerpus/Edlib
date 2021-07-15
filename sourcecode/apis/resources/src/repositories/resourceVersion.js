@@ -96,9 +96,12 @@ const getAllPaginated = async (offset, limit) =>
 const count = async () =>
     (await db(table).count('*', { as: 'count' }).first()).count;
 
+const remove = async (id) => db(table).where('id', id).del();
+
 export default () => ({
     create,
     update,
+    remove,
     getById,
     getByIds,
     getByExternalId,

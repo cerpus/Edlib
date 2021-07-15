@@ -26,8 +26,11 @@ const update = (id, resourceGroup) =>
 
 const getById = async (id) => db(table).select('*').where('id', id).first();
 
+const remove = async (id) => db(table).where('id', id).del();
+
 export default () => ({
     create,
     update,
     getById,
+    remove,
 });

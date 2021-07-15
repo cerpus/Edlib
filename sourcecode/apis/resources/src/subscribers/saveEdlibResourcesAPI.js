@@ -80,6 +80,9 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         );
     }
 
+    let createdResourceGroup = null;
+    let createdResource = null;
+
     // Purpose is update. a version with purpose update should always have a parent version.
     if (['update', 'upgrade'].indexOf(versionPurpose) !== -1) {
         const resource = await findResourceFromParentVersions(
@@ -102,26 +105,51 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
             return;
         }
 
-        const resource = await context.db.resource.create({
+        createdResource = await context.db.resource.create({
             resourceGroupId: siblingResource.resourceGroupId,
         });
 
-        dbResourceVersionData.resourceId = resource.id;
+        dbResourceVersionData.resourceId = createdResource.id;
     } else if (
         ['create', 'copy', 'import', 'initial'].indexOf(versionPurpose) !== -1
     ) {
-        const resourceGroup = await context.db.resourceGroup.create({});
-        const resource = await context.db.resource.create({
-            resourceGroupId: resourceGroup.id,
+        createdResourceGroup = await context.db.resourceGroup.create({});
+        createdResource = await context.db.resource.create({
+            resourceGroupId: createdResourceGroup.id,
         });
 
-        dbResourceVersionData.resourceId = resource.id;
+        dbResourceVersionData.resourceId = createdResource.id;
     } else {
         console.error(`Unknown version purpose ${versionPurpose}`);
         return;
     }
 
-    return await context.db.resourceVersion.create(dbResourceVersionData);
+    try {
+        return await context.db.resourceVersion.create(dbResourceVersionData);
+    } catch (e) {
+        if (e.code === 'ER_DUP_ENTRY') {
+            const resourceVersion = await context.db.resourceVersion.getByExternalId(
+                resourceVersionValidatedData.externalSystemName,
+                resourceVersionValidatedData.externalSystemId
+            );
+
+            if (resourceVersion) {
+                if (createdResource) {
+                    await context.db.resource.remove(createdResource.id);
+                }
+
+                if (createdResourceGroup) {
+                    await context.db.resourceGroup.remove(
+                        createdResourceGroup.id
+                    );
+                }
+
+                return resourceVersion;
+            }
+        }
+
+        throw e;
+    }
 };
 
 const saveToDb = async (context, validatedData) => {
