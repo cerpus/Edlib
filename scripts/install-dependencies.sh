@@ -12,11 +12,10 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 
 # update app-armor to make docker run
-sudo aa-status
-sudo systemctl disable apparmor.service --now
-sudo service apparmor teardown
-sudo aa-status
-#sudo aa-remove-unknown
+sudo mkdir -p /etc/default/grub.d
+echo 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT apparmor=0"' | sudo tee /etc/default/grub.d/apparmor.cfg
+sudo update-grub
+sudo reboot
 
 # Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash

@@ -1,4 +1,9 @@
-version: "3.4"
+version: "3.7"
+
+volumes:
+  elasticsearch: {}
+  mysql: {}
+
 services:
   redis:
     image: "redis:alpine"
@@ -24,7 +29,7 @@ services:
     command: --init-file /data/application/init.sql
     volumes:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
-      - ./data/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     ports:
       - 3306:3306
 
@@ -40,7 +45,7 @@ services:
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
     volumes:
-      - ./data/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch:/usr/share/elasticsearch/data
       - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
     ports:
       - 9200:9200
@@ -152,7 +157,6 @@ services:
     command: /bin/bash -c "set -eux;chown -R www-data:www-data /app/storage; /start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;/run-app.sh"
     volumes:
       - ./sourcecode/not_migrated/licenseapi:/app
-      - ./localSetup/projects/licenseapi/.env:/app/.env
       - ./localSetup/projects/licenseapi/apache.conf:/etc/apache2/sites-enabled/001-licenseapi.conf
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./data/licenseapi/storage:/app/storage
@@ -161,6 +165,8 @@ services:
       DB_COLLATION: utf8_unicode_ci
     ports:
       - "8103:80"
+    env_file:
+      - ./localSetup/projects/licenseapi/.env
     depends_on:
       - mysql
       - memcached
@@ -182,11 +188,12 @@ services:
     build:
       context: ./sourcecode/not_migrated/h5pviewer
       target: phpfpm
+    env_file:
+      - ./localSetup/projects/content-author/.env
     command: /bin/bash -c "set -eux;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;/start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;php-fpm -R -F -O"
     volumes:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/not_migrated/h5pviewer:/app
-      - ./localSetup/projects/content-author/.env:/app/.env
       - ./data/contentauthor/storage:/app/storage
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
       - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
@@ -201,9 +208,10 @@ services:
       context: ./sourcecode/not_migrated/h5pviewer
       dockerfile: Dockerfile
       target: cron
+    env_file:
+      - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/not_migrated/h5pviewer:/app
-      - ./localSetup/projects/content-author/.env:/app/.env
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
@@ -213,9 +221,10 @@ services:
       context: ./sourcecode/not_migrated/h5pviewer
       dockerfile: Dockerfile
       target: horizonqueue
+    env_file:
+      - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/not_migrated/h5pviewer:/app
-      - ./localSetup/projects/content-author/.env:/app/.env
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
@@ -225,9 +234,10 @@ services:
       context: ./sourcecode/not_migrated/h5pviewer
       dockerfile: Dockerfile
       target: edstepmessages
+    env_file:
+      - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/not_migrated/h5pviewer:/app
-      - ./localSetup/projects/content-author/.env:/app/.env
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm

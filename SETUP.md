@@ -15,7 +15,11 @@ We use multipass to setup the dev environment. Bellow are the optional steps if 
 You now have a running shell ready for the setup. You can proceed to the next step.
 
 ### Actual install
+All commands bellow must be run from the base directory of edlib.
 
-1. run `./scripts/first-time-setup.sh`
-2. While you wait for the script to finish, add the content of `host.example` to /etc/hosts.
-3. After the script is done, log out and in so that all changes take effect
+1. Run (VM)`ssh-keygen` and add the public keys to your bitbucket(only Cerpus employees) and github account 
+2. run (VM)`./scripts/first-time-setup.sh`. You can proceed to the next step while this runs
+3. run (HOST)`multipass exec edlib -- ip -br address show scope global` if you are using multipass to get the IP of the VM
+4. run (HOST)`./update-host-file.sh <VM-IP>` to create host file entries for edlib on your host
+5. After the script on step 1 is done, log out and in so that all changes take effect
+6. Run (VM)`dcu` to start docker-compose. `dcu` is an alias for `docker-compose up -d`

@@ -7,6 +7,7 @@ cd "$(dirname "$0")"
 ./initialize-data-folders.sh
 ./update-all.sh
 ./update-certs.sh
+./create-aliases.sh
 
 pushd ../localSetup
 if [ ! -f .env ];then
