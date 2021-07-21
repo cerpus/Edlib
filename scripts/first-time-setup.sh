@@ -2,9 +2,9 @@
 
 cd "$(dirname "$0")"
 
+./install-dependencies.sh
 ./git-clone-ssh.sh
 ./initialize-data-folders.sh
-./_tmp_checkout-beta-branches.sh
 ./update-all.sh
 ./update-certs.sh
 

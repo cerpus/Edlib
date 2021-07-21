@@ -33,8 +33,6 @@ declare -a javaRepos=(
 
 # php repos
 declare -a phpRepos=(
-  "not_migrated/re-recommender"
-  "not_migrated/re-content-index"
   "not_migrated/h5pviewer"
   "not_migrated/licenseapi"
 )
@@ -60,6 +58,7 @@ for i in "${phpRepos[@]}"
 do
   pushd $i
   git pull
+  nvm use 11
   php7.4 /usr/local/bin/composer install
   if test -f "package.json"; then
     npm i
