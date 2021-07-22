@@ -52,7 +52,7 @@ jobs:
 
       - name: Set should release to true if conditions are met
         id: release-after-check
-        if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/master') && github.ref == 'refs/heads/master')
+        if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/official') && github.ref == 'refs/heads/master')
         run: |
           echo "::set-output name=should-release::yes"
 
