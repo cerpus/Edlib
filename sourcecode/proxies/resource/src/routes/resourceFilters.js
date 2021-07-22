@@ -41,37 +41,10 @@ const { Router } = express;
 export default async () => {
     const router = Router();
 
-    /**
-     * @deprecated
-     */
-    router.get(
-        '/v1/filters/content-author-types',
-        hasJwt,
-        runAsync(resourceFilterController.getContentAuthorTypes)
-    );
-
     router.get(
         '/v1/content-types/:externalSystemName',
         hasJwt,
         runAsync(resourceFilterController.getContentTypesForExternalSystemName)
-    );
-
-    /**
-     * @deprecated
-     */
-    router.get(
-        '/v1/filters/sources',
-        hasJwt,
-        runAsync(resourceFilterController.getSources)
-    );
-
-    /**
-     * @deprecated
-     */
-    router.get(
-        '/v1/filters/tags',
-        hasJwt,
-        runAsync(resourceFilterController.getTags)
     );
 
     router.get(

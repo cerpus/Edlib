@@ -58,31 +58,12 @@ export const schema = gql`
 export const resolvers = {
     Query: {
         resources: async (parent, { filters, pagination, sortBy }, context) => {
-            const recommendations = await context.services.coreExternal.recommendations.get(
-                {
-                    limit: pagination.limit,
-                    skip: pagination.offset,
-                    contentFilter: filters.contentFilter,
-                    h5pTypes: filters.h5pTypes,
-                    keywords: filters.keywords,
-                    licenses: filters.licenses,
-                    search: filters.searchString,
-                    sortingOrder: sortBy,
-                    sources: filters.sources,
-                }
-            );
-
             return {
-                resources: recommendations.data.map((resource) => ({
-                    ...resource,
-                    id: resource.uuid,
-                    type: resource.resourceType,
-                    capabilities: getCapabilities(resource),
-                })),
+                resources: [],
                 pageInfo: {
-                    offset: recommendations.pagination.offset,
-                    limit: recommendations.pagination.limit,
-                    totalCount: recommendations.pagination.totalCount,
+                    offset: 0,
+                    limit: 0,
+                    totalCount: 0,
                 },
             };
         },

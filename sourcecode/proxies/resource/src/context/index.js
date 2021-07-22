@@ -4,7 +4,6 @@ import resource from './services/resource.js';
 
 export const buildRawContext = (req) => {
     const idApi = apiClients.id(req, apiConfig.id);
-    const coreExternalApi = apiClients.coreExternal(req, apiConfig.core);
     const coreInternalApi = apiClients.coreInternal(
         req,
         apiConfig.coreInternal
@@ -18,7 +17,6 @@ export const buildRawContext = (req) => {
     const statusService = services.status({
         authApi: authApi,
         licenseApi,
-        coreExternalApi,
         idApi,
     });
 
@@ -27,7 +25,6 @@ export const buildRawContext = (req) => {
             version: versionApi,
             id: idApi,
             auth: authApi,
-            coreExternal: coreExternalApi,
             coreInternal: coreInternalApi,
             license: licenseApi,
             resource: resource(req),

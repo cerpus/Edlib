@@ -12,33 +12,6 @@ export default async () => {
     const router = Router();
 
     /**
-     * @deprecated
-     * @swagger
-     *  /v1/lti/launch:
-     *      get:
-     *          description: Get URL and parameters for launching an LTI link
-     *          produces:
-     *              - application/json
-     *          responses:
-     *              200:
-     *                  description: Home
-     */
-    router.get(
-        '/v1/lti/launch',
-        middlewares.authorizationJwt,
-        runAsync(ltiController.launchLti)
-    );
-
-    /**
-     * @deprecated use v2
-     */
-    router.get(
-        '/v1/lti/convert-launch-url',
-        middlewares.authorizationJwt,
-        runAsync(ltiController.convertLaunchUrl)
-    );
-
-    /**
      * @swagger
      *  /v2/lti/convert-launch-url:
      *      get:
@@ -53,15 +26,6 @@ export default async () => {
         '/v2/lti/convert-launch-url',
         middlewares.addUserToRequest,
         runAsync(ltiController.convertLaunchUrlV2)
-    );
-
-    /**
-     * @deprecated use v2
-     */
-    router.get(
-        '/v1/resources/:resourceId/preview',
-        middlewares.isUserAuthenticated,
-        runAsync(ltiController.previewLti)
     );
 
     /**
