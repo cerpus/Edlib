@@ -14,6 +14,7 @@ import {
     ExpandMore,
     LocalOffer,
     Settings,
+    Assessment,
 } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,9 +35,8 @@ const Sidebar = () => {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [currentlyExpandedName, setCurrentlyExpandedName] = React.useState(
-        null
-    );
+    const [currentlyExpandedName, setCurrentlyExpandedName] =
+        React.useState(null);
 
     React.useEffect(() => {
         setCurrentlyExpandedName(null);
@@ -69,6 +69,12 @@ const Sidebar = () => {
                 { name: 'Migrate old core data', to: '/migrate-core' },
                 { name: 'Ressurser', to: '/resources' },
             ],
+        },
+        {
+            name: 'Analytics',
+            to: '/analytics',
+            icon: <Assessment />,
+            subLinks: [{ name: 'Dashboard', to: '/dashboard' }],
         },
     ];
 

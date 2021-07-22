@@ -109,5 +109,6 @@ export default () => {
         deleteResource,
         getResumableJob,
         resumeJob,
+        proxy: resourceAxios,
     };
 };

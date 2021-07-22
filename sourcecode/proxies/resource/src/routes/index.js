@@ -7,6 +7,7 @@ import resources from './resources.js';
 import resourceFilters from './resourceFilters.js';
 import status from './status.js';
 import job from './job.js';
+import directProxy from './directProxy.js';
 
 const { Router } = express;
 
@@ -50,6 +51,7 @@ export default async () => {
     apiRouter.use(await resourceFilters());
     apiRouter.use(await status());
     apiRouter.use(await job());
+    apiRouter.use(await directProxy());
     // apiRouter.use(await graphql()); // @todo uncomment when graphql is ready
 
     router.get('/resources/_ah/health', (req, res) => {

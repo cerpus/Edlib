@@ -9,6 +9,7 @@ import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
 import jobController from '../controllers/job.js';
 import contentTypes from './contentTypes.js';
+import stats from './stats.js';
 
 const { Router } = express;
 
@@ -240,6 +241,7 @@ export default async ({ pubSubConnection }) => {
     apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
 
     apiRouter.use(await contentTypes());
+    apiRouter.use(await stats());
 
     router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;

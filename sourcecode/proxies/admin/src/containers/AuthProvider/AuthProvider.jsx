@@ -9,9 +9,8 @@ import storageKeys from '../../constants/storageKeys.js';
 
 const AuthProviderContainer = ({ children }) => {
     const fetch = async () => {};
-    const { authUrl, authClientId, loginRedirectUrl } = React.useContext(
-        configContext
-    );
+    const { authUrl, authClientId, loginRedirectUrl } =
+        React.useContext(configContext);
     const { loading, response: user, setResponse } = useFetch('/auth/v1/me');
 
     const authPath = '/oauth/authorize';
