@@ -26,13 +26,12 @@ const update = (id, usage) => dbHelpers.updateId(table, id, usage);
 
 const getById = async (id) => db(table).select('*').where('id', id).first();
 const getPaginatedWithResourceInfo = async (offset, limit) =>
-    db(table)
+    db
         .select('usageViews.*')
         .select('u.resourceId')
         .select('u.resourceVersionId')
-        .join('usages as u', 'u.id', 'usageViews.usageId')
-        .offset(offset)
-        .limit(limit);
+        .from(db(table).offset(offset).limit(limit).as('usageViews'))
+        .join('usages as u', 'u.id', 'usageViews.usageId');
 
 const createOrUpdate = async (usageView) => {
     const existing = await getById(usageView.id);
