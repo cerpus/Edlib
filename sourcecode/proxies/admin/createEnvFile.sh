@@ -1,6 +1,6 @@
 #!/bin/bash
 
-envKeysForFrontend=("REACT_APP_API_URL")
+envKeysForFrontend=("REACT_APP_API_URL" "REACT_APP_SHOW_MOCK_LOGIN")
 
 folder=${1:-"./build"}
 filePath=$folder"/env-config.js"

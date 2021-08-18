@@ -1,15 +1,19 @@
-import db from '@cerpus/edlib-node-utils/services/db.js';
-import versionClient from '@cerpus/edlib-node-utils/apiClients/version/index.js';
-import licenseClient from '@cerpus/edlib-node-utils/apiClients/license/index.js';
-import coreInternalClient from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
+import { db, apiClients } from '@cerpus/edlib-node-utils';
 import request from '../../tests/request.js';
 import addContextToRequest from '../../middlewares/addContextToRequest.js';
 import { buildRawContext } from '../../context';
 
-jest.mock('@cerpus/edlib-node-utils/apiClients/version/index.js');
-jest.mock('@cerpus/edlib-node-utils/apiClients/license/index.js');
-jest.mock('@cerpus/edlib-node-utils/apiClients/coreInternal/index.js');
 jest.mock('../../middlewares/addContextToRequest.js');
+
+jest.mock('@cerpus/edlib-node-utils', () => ({
+    ...jest.requireActual('@cerpus/edlib-node-utils'),
+    apiClients: {
+        version: jest.fn(),
+        license: jest.fn(),
+        coreInternal: jest.fn(),
+        id: jest.fn(),
+    },
+}));
 
 describe('Test endpoints', () => {
     const dokuCountToCreate = 15;
@@ -47,12 +51,12 @@ describe('Test endpoints', () => {
             const userId = 'user-id';
 
             const createMock = jest.fn().mockResolvedValue(true);
-            versionClient.mockImplementation(() => ({
+            apiClients.version.mockImplementation(() => ({
                 create: createMock,
             }));
 
             const dokuRegisterMock = jest.fn().mockResolvedValue(true);
-            coreInternalClient.mockImplementation(() => ({
+            apiClients.coreInternal.mockImplementation(() => ({
                 doku: {
                     triggerIndexUpdate: dokuRegisterMock,
                 },
@@ -61,7 +65,7 @@ describe('Test endpoints', () => {
             const getResourceLicensesMock = jest
                 .fn()
                 .mockResolvedValue(license);
-            licenseClient.mockImplementation(() => ({
+            apiClients.license.mockImplementation(() => ({
                 getForResource: getResourceLicensesMock,
             }));
 

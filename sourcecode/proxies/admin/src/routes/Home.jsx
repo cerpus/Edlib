@@ -1,14 +1,14 @@
 import React from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Grid } from '@material-ui/core';
 
 const Home = () => {
     return (
         <Container className="pt-3">
-            <Row>
-                <Col>
+            <Grid container>
+                <Grid item>
                     <h2>Home</h2>
-                </Col>
-            </Row>
+                </Grid>
+            </Grid>
         </Container>
     );
 };

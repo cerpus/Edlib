@@ -1,40 +1,36 @@
 import React from 'react';
 import {
+    Box,
+    CircularProgress,
     Container,
-    Col,
-    Row,
-    Alert,
-    Spinner,
-    Card,
-    CardBody,
-    CardHeader,
-} from 'reactstrap';
+    Grid,
+    Paper,
+} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 
 const LogoutCallback = ({ loading, error }) => {
     return (
         <div className="pt-5">
             <Container>
-                <Row className="justify-content-md-center">
-                    <Col md={6}>
-                        <Card>
-                            <CardHeader>Logg ut</CardHeader>
-                            <CardBody>
-                                {loading && (
-                                    <div className="d-flex justify-content-center align-content-center ml-3">
-                                        <Spinner />
-                                    </div>
-                                )}
-                                {error ? (
-                                    <Alert color="danger" className="mt-3">
-                                        {error.message}
-                                    </Alert>
-                                ) : (
-                                    ''
-                                )}
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                <Grid container justify="center">
+                    <Grid item md={6}>
+                        <Paper>
+                            <h2>Logg ut</h2>
+                            {loading && (
+                                <Box display="flex" justifyContent="center">
+                                    <CircularProgress />
+                                </Box>
+                            )}
+                            {error ? (
+                                <Alert color="danger" className="mt-3">
+                                    {error.message}
+                                </Alert>
+                            ) : (
+                                ''
+                            )}
+                        </Paper>
+                    </Grid>
+                </Grid>
             </Container>
         </div>
     );

@@ -2,9 +2,7 @@ import React from 'react';
 import ResourcePageFilterGroup from './ResourcePage/components/ResourcePageFilterGroup';
 import BorderSeparated from './BorderSeparated';
 import Collapsable from './Collapsable';
-import { FormGroup } from '@cerpus/ui';
-import TagPicker from './TagPicker/TagPicker';
-import { H5PTypes, Licenses, Sources } from './Filters';
+import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 import resourceFilters from '../constants/resourceFilters';
@@ -17,26 +15,10 @@ const ResourceFilters = ({ filters }) => {
 
     const filterBlocks = [
         {
-            type: resourceFilters.TAGS,
-            title: t('Tags'),
-            count: filters.tags.value.length,
-            content: (
-                <FormGroup>
-                    <TagPicker tags={filters.tags} />
-                </FormGroup>
-            ),
-        },
-        {
-            type: resourceFilters.SOURCE,
-            title: t('Kilde'),
-            count: filters.sources.value.length,
-            content: <Sources sources={filters.sources} />,
-        },
-        {
             type: resourceFilters.H5P_TYPE,
             title: t('H5P Type'),
-            count: filters.h5pTypes.value.length,
-            content: <H5PTypes h5pTypes={filters.h5pTypes} />,
+            count: filters.contentTypes.value.length,
+            content: <H5PTypes contentTypes={filters.contentTypes} />,
         },
         {
             type: resourceFilters.LICENSE,

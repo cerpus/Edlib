@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { dbHelpers, db } from '@cerpus/edlib-node-utils';
 
 const table = 'usageViews';
 
@@ -18,9 +18,20 @@ const create = async (usage) => {
     return getById(usage.id);
 };
 
+const createManyOrIgnore = async (usages) => {
+    await db(table).insert(usages).onConflict('id').ignore();
+};
+
 const update = (id, usage) => dbHelpers.updateId(table, id, usage);
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
+const getById = async (id) => db(table).select('*').where('id', id).first();
+const getPaginatedWithResourceInfo = async (offset, limit) =>
+    db
+        .select('usageViews.*')
+        .select('u.resourceId')
+        .select('u.resourceVersionId')
+        .from(db(table).offset(offset).limit(limit).as('usageViews'))
+        .join('usages as u', 'u.id', 'usageViews.usageId');
 
 const createOrUpdate = async (usageView) => {
     const existing = await getById(usageView.id);
@@ -32,9 +43,15 @@ const createOrUpdate = async (usageView) => {
     return create(usageView);
 };
 
+const count = async () =>
+    (await db(table).count('*', { as: 'count' }).first()).count;
+
 export default () => ({
     create,
+    createManyOrIgnore,
     update,
     createOrUpdate,
     getById,
+    getPaginatedWithResourceInfo,
+    count,
 });

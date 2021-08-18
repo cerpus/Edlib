@@ -1,13 +1,13 @@
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { dbHelpers, db } from '@cerpus/edlib-node-utils';
 
 const table = 'users';
 
 const create = async (user) => dbHelpers.create(table, user);
 const update = (id, user) => dbHelpers.updateId(table, id, user);
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
+const getById = async (id) => db(table).select('*').where('id', id).first();
 const getByEmails = async (emails) =>
-    knex(table).select('*').whereIn('email', emails);
+    db(table).select('*').whereIn('email', emails);
 
 export default () => ({
     create,

@@ -1,12 +1,9 @@
 {
-    "name": "edlibapi-resources",
+    "name": "authapi",
     "testResultsProcessor": "jest-bamboo-reporter",
     "collectCoverage": true,
     "coverageReporters": ["text"],
     "transformIgnorePatterns": [
         "/node_modules/(?!@cerpus|uuid|colorette).+\\.js$"
-    ],
-    "moduleNameMapper": {
-        "^(@cerpus/edlib-node-utils)\\/(.+)(?<!package\\.json)$": "<rootDir>/node_modules/$1/src/$2"
-    }
+    ]
 }

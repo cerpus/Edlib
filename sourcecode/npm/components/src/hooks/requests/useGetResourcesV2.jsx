@@ -13,7 +13,7 @@ export default (requestBody, wait) => {
     );
 
     const { error, loading, response } = useFetchWithToken(
-        edlib('/recommendations/v1/recommendations'),
+        edlib('/recommendations/v2/recommendations'),
         'POST',
         options,
         wait

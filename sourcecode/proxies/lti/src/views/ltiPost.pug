@@ -1,0 +1,18 @@
+html
+    head
+        title='LTI Post'
+    body
+        form(method='POST', action=url)
+            each field in fields
+                input(type='hidden', name=field.name, value=field.value)
+            input(type='submit', id='submitbutton', value='Continue')
+
+        script(type='text/javascript').
+            (function () {
+                var submitbutton = document.getElementById("submitbutton");
+                var form = submitbutton.form;
+                var textElement = document.createTextNode("Please wait...");
+                submitbutton.parentNode.appendChild(textElement);
+                submitbutton.style.display = 'none';
+                form.submit();
+            })();

@@ -1,11 +1,9 @@
 import apiConfig from '../config/apis.js';
-import {
-    NotFoundException,
-    ApiException,
-} from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { NotFoundException, ApiException } from '@cerpus/edlib-node-utils';
 
 const getConfig = (externalSystemName) => {
-    const config = apiConfig.externalResourceAPIS[externalSystemName];
+    const config =
+        apiConfig.externalResourceAPIS[externalSystemName.toLowerCase()];
 
     if (!config) {
         throw new NotFoundException(externalSystemName);
@@ -16,6 +14,17 @@ const getConfig = (externalSystemName) => {
 
 export default {
     getConfig,
+    isVersioningEnabled: (externalSystemName, groupName) => {
+        const config = getConfig(externalSystemName);
+
+        return (
+            !config.disableVersioning &&
+            (!Array.isArray(config.disableVersioningGroups) ||
+                config.disableVersioningGroups.indexOf(
+                    groupName.toLowerCase()
+                ) === -1)
+        );
+    },
     getLtiResourceInfo: (resourceVersion) => {
         const config = getConfig(resourceVersion.externalSystemName);
 

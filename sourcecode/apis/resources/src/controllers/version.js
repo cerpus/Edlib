@@ -1,5 +1,4 @@
-import { NotFoundException } from '@cerpus/edlib-node-utils/exceptions/index.js';
-import resourceService from '../services/resource.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 export default {
     findCurrentResourceVersion: async (req, res, next) => {

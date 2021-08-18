@@ -9,7 +9,6 @@ export default () => {
             return await client.delete({
                 index: apiConfig.elasticsearch.resourceIndexPrefix,
                 id: resourceId,
-                retry_on_conflict: 5,
             });
         } catch (e) {
             if (e.meta && e.meta.statusCode === 404) {
@@ -34,6 +33,20 @@ export default () => {
         });
     };
 
+    const incrementView = async (resourceId) => {
+        return client.update({
+            index: apiConfig.elasticsearch.resourceIndexPrefix,
+            id: resourceId,
+            body: {
+                script: {
+                    lang: 'painless',
+                    source:
+                        'ctx._source.views = ctx._source.views != null ? ctx._source.views + 1 : 1',
+                },
+            },
+        });
+    };
+
     const createOrIgnoreIndex = async () => {
         const { body: exists } = await client.indices.exists({
             index: apiConfig.elasticsearch.resourceIndexPrefix,
@@ -42,19 +55,86 @@ export default () => {
         if (!exists) {
             const versionProperties = {
                 id: { type: 'text' },
-                externalSystemName: { type: 'text' },
+                externalSystemName: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 title: { type: 'text' },
                 description: { type: 'text' },
-                license: { type: 'text' },
-                language: { type: 'text' },
-                contentType: { type: 'text' },
+                license: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
+                language: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
+                contentType: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
+                owner: {
+                    properties: {
+                        id: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                        firstName: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                        lastName: {
+                            type: 'text',
+                            fields: {
+                                keyword: {
+                                    type: 'keyword',
+                                },
+                            },
+                        },
+                    },
+                },
+                authorOverwrite: {
+                    type: 'text',
+                    fields: {
+                        keyword: {
+                            type: 'keyword',
+                        },
+                    },
+                },
                 isListed: { type: 'boolean' },
+                createdAt: { type: 'date' },
+                updatedAt: { type: 'date' },
             };
 
             await client.indices.create({
                 index: apiConfig.elasticsearch.resourceIndexPrefix,
                 body: {
                     mappings: {
+                        dynamic: false,
                         properties: {
                             id: { type: 'text' },
                             publicVersion: {
@@ -66,6 +146,7 @@ export default () => {
                             protectedUserIds: {
                                 type: 'text',
                             },
+                            views: { type: 'integer' },
                         },
                     },
                 },
@@ -81,7 +162,8 @@ export default () => {
             limit: 20,
             offset: 0,
         },
-        orderBy
+        orderBy,
+        extraQuery
     ) => {
         const field = !tenantId ? 'publicVersion' : 'protectedVersion';
 
@@ -98,12 +180,14 @@ export default () => {
                             protectedUserIds: tenantId,
                         },
                     },
+                    extraQuery,
                 ].filter(Boolean),
             },
         };
 
         return client.search({
             index: apiConfig.elasticsearch.resourceIndexPrefix,
+            track_total_hits: true,
             body: {
                 from: pagination.offset,
                 size: pagination.limit,
@@ -123,5 +207,6 @@ export default () => {
         remove,
         createOrIgnoreIndex,
         search,
+        incrementView,
     };
 };

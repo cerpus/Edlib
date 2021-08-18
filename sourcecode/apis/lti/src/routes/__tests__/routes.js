@@ -1,7 +1,5 @@
-import db from '@cerpus/edlib-node-utils/services/db.js';
+import { db } from '@cerpus/edlib-node-utils';
 import request from '../../tests/request.js';
-
-jest.mock('@cerpus/edlib-node-utils/apiClients/coreInternal/index.js');
 
 describe('Test endpoints', () => {
     beforeEach(async () => {

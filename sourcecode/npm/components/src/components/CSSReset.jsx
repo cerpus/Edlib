@@ -1,6 +1,7 @@
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 import { Helmet } from 'react-helmet';
+import { Box } from '@material-ui/core';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -8,10 +9,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body .edlib-components {
-    font-family: 'Lato', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
     * {
       box-sizing: border-box;
     }
@@ -31,9 +28,14 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const CssReset = ({ children }) => {
+const CssReset = ({ children, ...props }) => {
     return (
-        <div className="edlib-components" style={{ height: '100%' }}>
+        <Box
+            {...props}
+            fontFamily="fontFamily"
+            className="edlib-components"
+            style={{ height: '100%' }}
+        >
             <Helmet>
                 <link
                     rel="stylesheet"
@@ -42,7 +44,7 @@ const CssReset = ({ children }) => {
             </Helmet>
             <GlobalStyle />
             {children}
-        </div>
+        </Box>
     );
 };
 

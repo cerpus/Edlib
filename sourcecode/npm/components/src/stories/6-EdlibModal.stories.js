@@ -20,7 +20,7 @@ export const EdlibModal = () => {
                         edlibUrl={edlibApiUrl}
                         getJwt={getJwt}
                         configuration={{
-                            canReturnResources: false,
+                            canReturnResources: true,
                         }}
                     >
                         <EdlibModalComponent
@@ -47,9 +47,9 @@ export const EdlibModalIframe = () => {
                         edlibUrl={edlibApiUrl}
                         getJwt={getJwt}
                     >
-                        <div style={{ height: '90vh' }}>
+                        <div style={{ height: '50vh' }}>
                             <EdlibModalComponent
-                                removePadding
+                                contentOnly
                                 enableDoku
                                 enableVersionInterface
                                 onClose={action('on close')}
@@ -76,7 +76,7 @@ export const EditResourceModal = () => {
                     >
                         <EditEdlibResourceModal
                             ltiLaunchUrl={
-                                'https://core-external.local/lti/launch/e482edb3-ab31-4d27-a801-dc79c0c2b711'
+                                'https://api.edlib.local/lti/v2/lti-links/15071fd6-af90-45e6-b499-3a49800c5336'
                             }
                             onUpdateDone={action('Resource update done')}
                         />
@@ -99,7 +99,7 @@ export const EditResourceModalFrame = () => {
                         <EditEdlibResourceModal
                             removePadding
                             ltiLaunchUrl={
-                                'https://core-external.local/lti/launch/e482edb3-ab31-4d27-a801-dc79c0c2b711'
+                                'https://api.edlib.local/lti/v2/lti-links/15071fd6-af90-45e6-b499-3a49800c5336'
                             }
                             onUpdateDone={action('Resource update done')}
                         />

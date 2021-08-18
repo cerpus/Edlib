@@ -7,7 +7,7 @@ export default (contentFilter = 'myContent') => {
 
     const tags = useArray();
     const sources = useArray();
-    const h5pTypes = useArray();
+    const contentTypes = useArray();
     const licenses = useArray();
 
     const debouncedSearchInput = useDebounce(searchInput, 500);
@@ -15,7 +15,7 @@ export default (contentFilter = 'myContent') => {
     const requestData = React.useMemo(
         () => ({
             contentFilter,
-            h5pTypes: h5pTypes.value,
+            contentTypes: contentTypes.value,
             licenses: licenses.value,
             sources: sources.value,
             keywords: tags.value.map((tag) => tag.value),
@@ -25,7 +25,7 @@ export default (contentFilter = 'myContent') => {
         [
             tags.value,
             sources.value,
-            h5pTypes.value,
+            contentTypes.value,
             licenses.value,
             debouncedSearchInput,
             contentFilter,
@@ -35,14 +35,14 @@ export default (contentFilter = 'myContent') => {
     const reset = React.useCallback(() => {
         tags.setValue([]);
         sources.setValue([]);
-        h5pTypes.setValue([]);
+        contentTypes.setValue([]);
         licenses.setValue([]);
         setSearchInput('');
     }, [
         setSearchInput,
         tags.setValue,
         sources.setValue,
-        h5pTypes.setValue,
+        contentTypes.setValue,
         licenses.setValue,
     ]);
 
@@ -52,7 +52,7 @@ export default (contentFilter = 'myContent') => {
         setSearchInput,
         tags,
         sources,
-        h5pTypes,
+        contentTypes,
         licenses,
         requestData,
         reset,

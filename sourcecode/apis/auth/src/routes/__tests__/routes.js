@@ -1,8 +1,12 @@
-import db from '@cerpus/edlib-node-utils/services/db.js';
-import coreInternal from '@cerpus/edlib-node-utils/apiClients/coreInternal/index.js';
+import { db, apiClients } from '@cerpus/edlib-node-utils';
 import request from '../../tests/request.js';
 
-jest.mock('@cerpus/edlib-node-utils/apiClients/coreInternal/index.js');
+jest.mock('@cerpus/edlib-node-utils', () => ({
+    ...jest.requireActual('@cerpus/edlib-node-utils'),
+    apiClients: {
+        coreInternal: jest.fn(),
+    },
+}));
 
 describe('Test endpoints', () => {
     beforeEach(async () => {
@@ -13,11 +17,11 @@ describe('Test endpoints', () => {
     });
     describe('Get mapping from EdLib ID', () => {
         afterEach(() => {
-            coreInternal.mockReset();
+            apiClients.coreInternal.mockReset();
         });
         test('Check if unknown id throws not found', async () => {
             const structureMock = jest.fn().mockResolvedValue(null);
-            coreInternal.mockImplementation(() => ({
+            apiClients.coreInternal.mockImplementation(() => ({
                 resource: {
                     structure: structureMock,
                 },
@@ -36,12 +40,12 @@ describe('Test endpoints', () => {
     });
     describe('Get mapping from external Id', () => {
         afterEach(() => {
-            coreInternal.mockReset();
+            apiClients.coreInternal.mockReset();
         });
         test('Check if unknown id throws not found', async () => {
             const fromExternalIdInfoMock = jest.fn().mockResolvedValue(null);
 
-            coreInternal.mockImplementation(() => ({
+            apiClients.coreInternal.mockImplementation(() => ({
                 resource: {
                     fromExternalIdInfo: fromExternalIdInfoMock,
                 },

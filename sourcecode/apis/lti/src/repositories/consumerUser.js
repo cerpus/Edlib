@@ -1,15 +1,15 @@
-import knex, { dbHelpers } from '@cerpus/edlib-node-utils/services/db.js';
+import { dbHelpers, db } from '@cerpus/edlib-node-utils';
 
 const table = 'consumerUsers';
 
 const create = async (consumerUser) => {
-    const [id] = await knex(table).insert(consumerUser);
+    const [id] = await db(table).insert(consumerUser);
     return getById(id);
 };
 
-const getById = async (id) => knex(table).select('*').where('id', id).first();
+const getById = async (id) => db(table).select('*').where('id', id).first();
 const getByConsumerAndUserId = async (consumerId, consumerUserId, userId) =>
-    knex(table)
+    db(table)
         .select('*')
         .where('consumerId', consumerId)
         .where('consumerUserId', consumerUserId)
@@ -20,7 +20,7 @@ const update = (id, consumerUser) =>
     dbHelpers.updateId(table, id, consumerUser);
 
 const getAllWithDeprecatedTenantId = async () =>
-    knex(table).select('*').whereNotNull('deprecatedTenantId');
+    db(table).select('*').whereNotNull('deprecatedTenantId');
 
 export default () => ({
     create,

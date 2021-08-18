@@ -1,8 +1,8 @@
-import knex from '@cerpus/edlib-node-utils/services/db.js';
-import { ApiException } from '@cerpus/edlib-node-utils/exceptions/index.js';
+import { db } from '@cerpus/edlib-node-utils';
+import { ApiException } from '@cerpus/edlib-node-utils';
 
 export default async () => {
-    const migrations = await knex.migrate.list();
+    const migrations = await db.migrate.list();
 
     if (migrations.length !== 2 || migrations[1].length !== 0) {
         throw new ApiException('Migrations are not up to date');

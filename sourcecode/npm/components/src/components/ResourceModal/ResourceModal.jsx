@@ -1,45 +1,37 @@
 import React from 'react';
+import { Spinner } from '@cerpus/ui';
 import {
-    Modal,
-    ModalBody,
-    ModalSplitter,
-    Spinner,
-    useIsDevice,
-} from '@cerpus/ui';
-import { ArrowForward, Edit as EditIcon } from '@material-ui/icons';
+    ArrowForward,
+    Edit as EditIcon,
+    Close as CloseIcon,
+} from '@material-ui/icons';
 import styled from 'styled-components';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import useResourceCapabilitiesFlags from '../../hooks/useResourceCapabilities';
 import ResourcePreview from '../../containers/ResourcePreview';
 import License from '../License';
-import ResourceEditCog from '../ResourceEditCog';
 import moment from 'moment';
 import useTranslation from '../../hooks/useTranslation';
 import { useHistory } from 'react-router-dom';
 import { resourceCapabilities } from '../../config/resource';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
-import { Button } from '@material-ui/core';
-
-const Header = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    & > div:first-child {
-        flex: 1;
-    }
-`;
-
-const ResourceType = styled.div`
-    font-size: 0.7em;
-`;
-
-const Title = styled.div`
-    font-weight: bold;
-    font-size: 1.3em;
-`;
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogContent,
+    DialogActions as MuiDialogActions,
+    DialogTitle as MuiDialogTitle,
+    IconButton,
+    makeStyles,
+    Typography,
+    withStyles,
+} from '@material-ui/core';
+import { ResourceIcon } from '../Resource';
+import ResetMuiDialog from '../ResetMuiDialog.jsx';
 
 const Footer = styled.div`
-    margin: 20px 0;
+    margin-top: 30px;
     display: flex;
 `;
 
@@ -54,7 +46,31 @@ const Meta = styled.div`
     }
 `;
 
+const useStyles = makeStyles((theme) => ({
+    dialogTitle: {
+        margin: 0,
+        padding: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    closeButton: {
+        color: theme.palette.grey[500],
+    },
+    dialog: {
+        // height: '100%',
+        // maxHeight: '70vh',
+    },
+}));
+
+const DialogActions = withStyles((theme) => ({
+    root: {
+        margin: 0,
+        padding: theme.spacing(1),
+    },
+}))(MuiDialogActions);
+
 const ResourceModal = ({ isOpen, onClose, resource }) => {
+    const classes = useStyles();
     const { t } = useTranslation();
     const history = useHistory();
     const { getUserConfig } = useEdlibComponentsContext();
@@ -64,9 +80,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
         loading: false,
         error: false,
     });
-    const [isCogOpen, setIsCogOpen] = React.useState(false);
     const { onInsert } = useResourceCapabilities();
-    const isMobile = useIsDevice('<', 'md');
 
     const insertResource = React.useCallback(async () => {
         setActionStatus({
@@ -74,7 +88,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
             error: false,
         });
 
-        await onInsert(resource.id);
+        await onInsert(resource.id, resource.version.id);
     }, [onInsert, setActionStatus, resource]);
 
     const editResource = React.useCallback(() => {
@@ -85,128 +99,126 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
     const capabilities = useResourceCapabilitiesFlags(resource);
 
     return (
-        <Modal width={900} onClose={onClose} isOpen={isOpen}>
-            <ResourcePreview resource={resource}>
-                {({ loading, error, frame, license, source }) => {
-                    if (loading) {
+        <ResetMuiDialog
+            maxWidth="md"
+            fullWidth
+            onClose={onClose}
+            open={isOpen}
+            classes={{
+                paperScrollPaper: classes.dialog,
+            }}
+        >
+            <MuiDialogTitle disableTypography className={classes.dialogTitle}>
+                <Box display="flex">
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                    >
+                        <ResourceIcon
+                            resourceVersion={resource.version}
+                            fontSizeRem={2}
+                        />
+                    </Box>
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        marginLeft={1}
+                    >
+                        <Typography variant="h6">
+                            {resource.version.title}
+                        </Typography>
+                    </Box>
+                </Box>
+                {onClose ? (
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                    >
+                        <IconButton
+                            aria-label="close"
+                            className={classes.closeButton}
+                            onClick={onClose}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                ) : null}
+            </MuiDialogTitle>
+            <DialogContent dividers>
+                <ResourcePreview resource={resource}>
+                    {({ loading, error, frame }) => {
+                        if (loading) {
+                            return (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        padding: '20px 0',
+                                    }}
+                                >
+                                    <Spinner />
+                                </div>
+                            );
+                        }
+
+                        if (error) {
+                            return <div>Noe skjedde</div>;
+                        }
+
                         return (
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    padding: '20px 0',
-                                }}
-                            >
-                                <Spinner />
-                            </div>
-                        );
-                    }
-
-                    if (error) {
-                        return <div>Noe skjedde</div>;
-                    }
-
-                    return (
-                        <>
-                            <ModalBody>
-                                <Header>
-                                    <div>
-                                        <ResourceType>{source}</ResourceType>
-                                        <Title>{resource.version.name}</Title>
-                                        <p>{resource.version.description}</p>
-                                    </div>
-                                    <div>
-                                        {isMobile && (
-                                            <ResourceEditCog
-                                                isOpen={isCogOpen}
-                                                onClose={() =>
-                                                    setIsCogOpen(false)
-                                                }
-                                                onOpen={() =>
-                                                    setIsCogOpen(true)
-                                                }
-                                                onUse={insertResource}
-                                                onEdit={editResource}
-                                                resource={resource}
-                                            />
-                                        )}
-                                        {!isMobile && (
-                                            <>
-                                                {canReturnResources && (
-                                                    <div>
-                                                        <Button
-                                                            color="primary"
-                                                            variant="contained"
-                                                            onClick={
-                                                                insertResource
-                                                            }
-                                                            endIcon={
-                                                                <ArrowForward />
-                                                            }
-                                                            fullWidth
-                                                        >
-                                                            {t(
-                                                                'Bruk ressurs'
-                                                            ).toUpperCase()}
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                                {capabilities[
-                                                    resourceCapabilities.EDIT
-                                                ] && (
-                                                    <div
-                                                        style={{ marginTop: 5 }}
-                                                    >
-                                                        <Button
-                                                            color="primary"
-                                                            variant="outlined"
-                                                            onClick={
-                                                                editResource
-                                                            }
-                                                            endIcon={
-                                                                <EditIcon />
-                                                            }
-                                                            fullWidth
-                                                        >
-                                                            {t(
-                                                                'Rediger ressurs'
-                                                            ).toUpperCase()}
-                                                        </Button>
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
-                                </Header>
-                            </ModalBody>
-                            <ModalSplitter />
-                            <ModalBody>
-                                <div style={{ marginTop: 20 }}>{frame}</div>
-                            </ModalBody>
-                            <ModalSplitter />
-                            <ModalBody>
+                            <>
+                                <div>{frame}</div>
                                 <Footer>
                                     <Meta>
                                         <div>Publiseringsdato</div>
                                         <div>
-                                            {moment(resource.created).format(
-                                                'D. MMMM YYYY'
-                                            )}
+                                            {moment(
+                                                resource.version.createdAt
+                                            ).format('D. MMMM YYYY')}
                                         </div>
                                     </Meta>
                                     <Meta>
                                         <div>Lisens</div>
                                         <div>
-                                            <License license={license} />
+                                            <License
+                                                license={
+                                                    resource.version.license
+                                                }
+                                            />
                                         </div>
                                     </Meta>
                                 </Footer>
-                            </ModalBody>
-                        </>
-                    );
-                }}
-            </ResourcePreview>
-        </Modal>
+                            </>
+                        );
+                    }}
+                </ResourcePreview>
+            </DialogContent>
+            <DialogActions>
+                {capabilities[resourceCapabilities.EDIT] && (
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={editResource}
+                        startIcon={<EditIcon />}
+                    >
+                        {t('Rediger ressurs').toUpperCase()}
+                    </Button>
+                )}
+                {canReturnResources && (
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={insertResource}
+                        startIcon={<ArrowForward />}
+                    >
+                        {t('Bruk ressurs').toUpperCase()}
+                    </Button>
+                )}
+            </DialogActions>
+        </ResetMuiDialog>
     );
 };
 

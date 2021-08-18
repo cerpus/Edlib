@@ -1,0 +1,6 @@
+html
+    head
+        title='Editor return'
+    body
+        script(type='text/javascript').
+            window.parent.postMessage({resourceId: "#{resourceId}", resourceVersionId: "#{resourceVersionId}"}, '*');

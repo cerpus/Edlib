@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { setupApp } from '@cerpus/edlib-node-utils/index.js';
+import { setupApp } from '@cerpus/edlib-node-utils';
 import router from '../routes/index.js';
 
 export default async (clb) => {

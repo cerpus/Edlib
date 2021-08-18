@@ -1,4 +1,14 @@
-export default (callback) => (req, res, next) =>
+import ApiException from '../exceptions/apiException.js';
+
+export default (callback, returnType = 'json') => (req, res, next) =>
     callback(req, res, next)
         .then((json) => json && res.json(json))
-        .catch(next);
+        .catch((err) => {
+            if (returnType === 'html') {
+                if (err instanceof ApiException) {
+                    res.sendStatus(err.getStatus());
+                    return;
+                }
+            }
+            next(err);
+        });

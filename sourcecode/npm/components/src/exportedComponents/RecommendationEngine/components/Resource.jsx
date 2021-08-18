@@ -38,7 +38,7 @@ const PreviewIcon = styled.a`
 const Resource = ({ resource, onPreview }) => {
     return (
         <StyledResource>
-            <div>{resource.name}</div>
+            <div>{resource.version.title}</div>
             <div>
                 <PreviewIcon
                     href=""
