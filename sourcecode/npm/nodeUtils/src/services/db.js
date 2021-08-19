@@ -29,6 +29,7 @@ const queryBuilder = !appConfig.isTest
 
                   return next();
               },
+              charset: dbConfig.charset,
           },
           pool: { min: 1, max: 10 },
           ...commonConfig,

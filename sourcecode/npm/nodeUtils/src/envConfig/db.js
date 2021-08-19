@@ -21,4 +21,5 @@ export default {
     ),
     database: getDatabase(),
     port: parseInt(env('DB_PORT', env('EDLIBCOMMON_DB_PORT', 3306))),
+    charset: env('DB_CHARSET', env('EDLIBCOMMON_DB_CHARSET', null)),
 };
