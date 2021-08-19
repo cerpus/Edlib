@@ -23,3 +23,4 @@ All commands bellow must be run from the base directory of edlib.
 4. run (HOST)`./update-host-file.sh <VM-IP>` to create host file entries for edlib on your host
 5. After the script on step 1 is done, log out and in so that all changes take effect
 6. Run (VM)`dcu` to start docker-compose. `dcu` is an alias for `docker-compose up -d`
+7. Run (VM)`./update-certs.sh` to install the newly generated certificates inside the VM.

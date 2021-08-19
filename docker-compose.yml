@@ -185,7 +185,7 @@ services:
       target: phpfpm
     env_file:
       - ./localSetup/projects/content-author/.env
-    command: /bin/bash -c "set -eux;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;/start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;php-fpm -R -F -O"
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
     volumes:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/not_migrated/h5pviewer:/app
@@ -197,6 +197,7 @@ services:
     depends_on:
       - mysql
       - memcached
+      - nginx
 
   contentauthor-cron:
     build:
@@ -569,7 +570,9 @@ services:
     build:
       context: ./localSetup/projects/edlibfacade
     entrypoint: /before-start.sh
-    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888;/start-app.sh"
+    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
+    depends_on:
+      - nginx
     volumes:
       - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
       - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
