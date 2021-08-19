@@ -24,6 +24,7 @@ describe('Env config', () => {
                     password: 'mysqlpassword',
                     database: 'asdf',
                     port: 3306,
+                    charset: null,
                 },
             },
             {
@@ -33,6 +34,7 @@ describe('Env config', () => {
                     DB_PASSWORD: 'password',
                     DB_DATABASE: 'asdf',
                     DB_PORT: '12',
+                    DB_CHARSET: 'noe',
                 },
                 output: {
                     host: 'hgost',
@@ -40,6 +42,7 @@ describe('Env config', () => {
                     password: 'password',
                     database: 'asdf',
                     port: 12,
+                    charset: 'noe',
                 },
             },
             {
@@ -49,11 +52,13 @@ describe('Env config', () => {
                     DB_PASSWORD: 'password',
                     DB_DATABASE: 'asdf',
                     DB_PORT: '12',
+                    DB_CHARSET: '12',
                     EDLIBCOMMON_DB_HOST: 'ed-hgost',
                     EDLIBCOMMON_DB_USER: 'eduser',
                     EDLIBCOMMON_DB_PASSWORD: 'edpassword',
                     EDLIBCOMMON_DB_DATABASE: 'edasdf',
                     EDLIBCOMMON_DB_PORT: '13',
+                    EDLIBCOMMON_DB_CHARSET: '13',
                 },
                 output: {
                     host: 'hgost',
@@ -61,6 +66,7 @@ describe('Env config', () => {
                     password: 'password',
                     database: 'asdf',
                     port: 12,
+                    charset: '12',
                 },
             },
             {
@@ -69,6 +75,7 @@ describe('Env config', () => {
                     EDLIBCOMMON_DB_USER: 'eduser',
                     EDLIBCOMMON_DB_PASSWORD: 'edpassword',
                     EDLIBCOMMON_DB_PORT: '13',
+                    EDLIBCOMMON_DB_CHARSET: '13',
                 },
                 output: {
                     host: 'ed-hgost',
@@ -76,6 +83,7 @@ describe('Env config', () => {
                     password: 'edpassword',
                     database: 'mydb',
                     port: 13,
+                    charset: '13',
                 },
             },
             {
@@ -89,6 +97,7 @@ describe('Env config', () => {
                     password: 'mysqlpassword',
                     database: 'prefixdbname',
                     port: 3306,
+                    charset: null,
                 },
             },
         ];
