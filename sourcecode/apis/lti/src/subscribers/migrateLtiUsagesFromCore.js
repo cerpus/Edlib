@@ -14,7 +14,6 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
     try {
         let resumeData = await getResumeData(context, jobId);
 
-        console.log(resumeData);
         const {
             pagination: usagePagination,
         } = await context.services.coreInternal.lti.getAllUsages(1, 0);
