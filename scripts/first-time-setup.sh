@@ -6,7 +6,6 @@ cd "$(dirname "$0")"
 ./git-clone-ssh.sh
 ./initialize-data-folders.sh
 ./update-all.sh
-./update-certs.sh
 ./create-aliases.sh
 
 pushd ../localSetup
