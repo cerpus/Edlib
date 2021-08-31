@@ -1,9 +1,15 @@
 import amqp from 'amqplib';
 import logger from './logger.js';
+import pubsubConfig from '../envConfig/pubsub.js';
 
-export const setup = (url = 'amqp://rabbitmq') =>
+export const setup = () =>
     new Promise((resolve, reject) => {
-        amqp.connect(url)
+        amqp.connect(pubsubConfig.url, {
+            connection: amqp.credentials.plain(
+                pubsubConfig.user,
+                pubsubConfig.password
+            ),
+        })
             .then(function (conn) {
                 process.once('SIGINT', function () {
                     conn.close();
