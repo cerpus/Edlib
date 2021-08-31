@@ -4,8 +4,10 @@ import pubsubConfig from '../envConfig/pubsub.js';
 
 export const setup = () =>
     new Promise((resolve, reject) => {
+        console.log(pubsubConfig);
+        console.log('v2');
         amqp.connect(pubsubConfig.url, {
-            connection: amqp.credentials.plain(
+            credentials: amqp.credentials.plain(
                 pubsubConfig.user,
                 pubsubConfig.password
             ),
