@@ -33,6 +33,9 @@ jobs:
       - name: Update kubeconfig with cluster info
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
+          CONFIG="$(cat ${HOME}/.kube/config)"
+          echo $CONFIG
+          echo "::set-output name=config::$CONFIG"
 
       - name: 'Deploy'
         uses: 'deliverybot/helm@v1'
@@ -43,3 +46,5 @@ jobs:
           values: |
             foo: bar
           value-files: "chart/values.yaml"
+        env:
+          KUBECONFIG_FILE: '${{ steps.deploy.outputs.config }}'
