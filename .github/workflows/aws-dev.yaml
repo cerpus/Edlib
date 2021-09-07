@@ -40,6 +40,10 @@ jobs:
           echo $CONFIG
           echo "::set-output name=config::$CONFIG"
 
+      - name: Test
+        run: |
+          echo ${{ steps.deploy.outputs.config }}
+
       - name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
