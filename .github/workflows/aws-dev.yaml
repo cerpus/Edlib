@@ -12,6 +12,10 @@ jobs:
     environment: "aws_cerpus_dev"
     runs-on: ubuntu-latest
     steps:
+      - name: Deploy name
+        run: |
+          echo "Version to deploy: ${{ github.event.inputs.version }}"
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -26,10 +30,6 @@ jobs:
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
 
-      - name: Deploy
-        run: |
-          echo "Version to deploy: ${{ github.event.inputs.version }}"
-
       - name: 'Deploy'
         uses: 'deliverybot/helm@v1'
         with:
@@ -37,5 +37,5 @@ jobs:
           namespace: 'edlib'
           chart: './chart'
           values: |
-            name: foobar
-          value-files: "values.yaml"
+            foo: bar
+          value-files: "chart/values.yaml"
