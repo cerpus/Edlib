@@ -38,6 +38,9 @@ jobs:
           CONFIG="${CONFIG//'%'/'%25'}"
           CONFIG="${CONFIG//$'\n'/'%0A'}"
           CONFIG="${CONFIG//$'\r'/'%0D'}"
+          CONFIG="${CONFIG//'%'/'%25'}"
+          CONFIG="${CONFIG//$'\n'/'%0A'}"
+          CONFIG="${CONFIG//$'\r'/'%0D'}"
           echo $CONFIG
           echo "::set-output name=config::$CONFIG"
 
