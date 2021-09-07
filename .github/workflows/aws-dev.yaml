@@ -31,6 +31,7 @@ jobs:
           role-session-name: GithubCerpusDevDeploy
 
       - name: Update kubeconfig with cluster info
+        id: kube
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
           CONFIG="$(cat ${HOME}/.kube/config)"
@@ -42,7 +43,7 @@ jobs:
 
       - name: Test
         run: |
-          echo ${{ steps.deploy.outputs.config }}
+          echo ${{ steps.kube.outputs.config }}
 
       - name: 'Deploy'
         uses: 'deliverybot/helm@v1'
@@ -54,4 +55,4 @@ jobs:
             foo: bar
           value-files: "chart/values.yaml"
         env:
-          KUBECONFIG_FILE: '${{ steps.deploy.outputs.config }}'
+          KUBECONFIG_FILE: '${{ steps.kube.outputs.config }}'
