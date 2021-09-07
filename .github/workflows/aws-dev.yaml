@@ -16,6 +16,10 @@ jobs:
         run: |
           echo "Version to deploy: ${{ github.event.inputs.version }}"
 
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
