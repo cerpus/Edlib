@@ -1,0 +1,3 @@
+{{- template "helpers.service" (dict "name" "proxy-auth") }}
+---
+{{- template "helpers.deployment" (dict "name" "proxy-auth" "image" "ghcr.io/cerpus/edlib/proxy-auth-app" "imageTag" .Chart.Version "replicaCount" 1 "healthUrl" "/resources/_ah/health?probe=readiness" ) }}
