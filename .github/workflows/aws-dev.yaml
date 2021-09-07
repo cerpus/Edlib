@@ -22,10 +22,23 @@ jobs:
           role-duration-seconds: 1200
           role-session-name: GithubCerpusDevDeploy
 
-      - name: Display caller identity
+      - name: Update kubeconfig with cluster info
         run: |
-          aws sts get-caller-identity
+          aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
 
       - name: Deploy
         run: |
           echo "Version to deploy: ${{ github.event.inputs.version }}"
+
+      - name: 'Deploy'
+        uses: 'deliverybot/helm@v1'
+        with:
+          release: 'edlib'
+          namespace: 'edlib'
+          chart: './chart'
+          values: |
+            name: foobar
+          value-files: >-
+          [
+              "values.yaml"
+          ]
