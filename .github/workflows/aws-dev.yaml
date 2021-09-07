@@ -6,10 +6,11 @@ on:
       version:
         description: 'Version to deploy'
         required: true
+        default: "aws_cerpus_dev"
 
 jobs:
   deploy:
-    environment: "aws_cerpus_dev"
+    environment: "${{ github.event.inputs.version }}"
     runs-on: ubuntu-latest
     steps:
       - name: Deploy name
@@ -35,7 +36,6 @@ jobs:
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
           CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
-          echo $CONFIG
           echo "::set-output name=config::$CONFIG"
 
       - name: helm deploy
