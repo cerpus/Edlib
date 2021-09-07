@@ -6,11 +6,14 @@ on:
       version:
         description: 'Version to deploy'
         required: true
+      environment:
+        description: 'Environment to deploy to'
+        required: true
         default: "aws_cerpus_dev"
 
 jobs:
   deploy:
-    environment: "${{ github.event.inputs.version }}"
+    environment: "${{ github.event.inputs.environment }}"
     runs-on: ubuntu-latest
     steps:
       - name: Deploy name
