@@ -38,5 +38,4 @@ jobs:
           chart: './chart'
           values: |
             name: foobar
-          value-files:
-            - "values.yaml"
+          value-files: "values.yaml"
