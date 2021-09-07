@@ -1,19 +1,17 @@
 name: "aws-cerpus_dev"
 
 on:
-  push:
-    paths:
-      - "versions/"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy'
+        required: true
 
 jobs:
   deploy:
     environment: "aws_cerpus_dev"
     runs-on: ubuntu-latest
     steps:
-      - name: Get release name
-        id: releaseName
-        uses: ./.github/actions/nodeJsApi
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -27,3 +25,7 @@ jobs:
       - name: Display caller identity
         run: |
           aws sts get-caller-identity
+
+      - name: Deploy
+        run: |
+          echo "Version to deploy: ${{ github.event.inputs.version }}"
