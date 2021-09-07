@@ -41,14 +41,9 @@ jobs:
           echo $CONFIG
           echo "::set-output name=config::$CONFIG"
 
-      - name: 'Deploy'
-        uses: 'deliverybot/helm@v1'
-        with:
-          release: 'edlib'
-          namespace: 'edlib'
-          chart: './chart'
-          values: |
-            foo: bar
-          value-files: "chart/values.yaml"
+      - name: helm deploy
+        uses: koslib/helm-eks-action@master
         env:
-          KUBECONFIG_FILE: '${{ steps.kube.outputs.config }}'
+          KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
+        with:
+          command: helm upgrade --install edlib --namespace edlib ./chart
