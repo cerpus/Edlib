@@ -1,0 +1,29 @@
+name: "aws-cerpus_dev"
+
+on:
+  push:
+    paths:
+      - "versions/"
+
+jobs:
+  deploy:
+    environment: "aws_cerpus_dev"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release name
+        id: releaseName
+        uses: ./.github/actions/nodeJsApi
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-duration-seconds: 1200
+          role-session-name: GithubCerpusDevDeploy
+
+      - name: Display caller identity
+        run: |
+          aws sts get-caller-identity
