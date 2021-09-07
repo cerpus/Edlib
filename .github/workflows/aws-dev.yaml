@@ -34,7 +34,7 @@ jobs:
         id: kube
         run: |
           aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
-          CONFIG="$(cat ${HOME}/.kube/config | base64)"
+          CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
           echo $CONFIG
           echo "::set-output name=config::$CONFIG"
 
