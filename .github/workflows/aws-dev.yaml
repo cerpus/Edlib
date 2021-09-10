@@ -1,4 +1,4 @@
-name: "aws-cerpus_dev"
+name: "AWS Deploy"
 
 on:
   workflow_dispatch:
