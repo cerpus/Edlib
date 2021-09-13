@@ -18,7 +18,6 @@ import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import {
     Box,
     Button,
-    Dialog,
     DialogContent,
     DialogActions as MuiDialogActions,
     DialogTitle as MuiDialogTitle,
@@ -28,7 +27,7 @@ import {
     withStyles,
 } from '@material-ui/core';
 import { ResourceIcon } from '../Resource';
-import ResetMuiDialog from '../ResetMuiDialog.jsx';
+import ResetMuiDialog from '../ResetMuiDialog';
 
 const Footer = styled.div`
     margin-top: 30px;
