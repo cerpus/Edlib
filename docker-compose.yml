@@ -613,3 +613,10 @@ services:
     volumes:
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
+
+  edlib-common:
+    build:
+      context: ./sourcecode/apis/common
+      target: dev
+    volumes:
+      - ./sourcecode/apis/common:/app

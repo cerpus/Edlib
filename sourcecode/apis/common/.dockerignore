@@ -1,0 +1,7 @@
+*.log
+*.iml
+/.*
+!/.env.example
+/vendor
+/bootstrap/cache
+/storage
