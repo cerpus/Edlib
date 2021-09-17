@@ -3,6 +3,7 @@ version: "3.7"
 volumes:
   elasticsearch: {}
   mysql: {}
+  "npm-components-storybook_nodemodules": {}
 
 services:
   redis:
@@ -607,4 +608,4 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./sourcecode/npm/components:/app
-      - ./data/npm-components-storybook/node_modules:/app/node_modules
+      - npm-components-storybook_nodemodules:/app/node_modules
