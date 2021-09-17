@@ -4,6 +4,10 @@ volumes:
   elasticsearch: {}
   mysql: {}
   "npm-components-storybook_nodemodules": {}
+  "proxy-auth_nodemodules": {}
+  "proxy-lti_nodemodules": {}
+  "proxy-resource_nodemodules": {}
+  "proxy-iframe_nodemodules": {}
 
 services:
   redis:
@@ -32,7 +36,7 @@ services:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
       - mysql:/var/lib/mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -49,7 +53,7 @@ services:
       - elasticsearch:/usr/share/elasticsearch/data
       - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
     ports:
-      - 9200:9200
+      - "9200:9200"
     environment:
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
@@ -374,7 +378,7 @@ services:
     environment:
       WDS_SOCKET_PATH: /iframe/sockjs-node
     volumes:
-      - ./data/proxy-iframe/node_modules:/app/node_modules
+      - proxy-iframe_nodemodules:/app/node_modules
       - ./sourcecode/proxies/iframe/src:/app/src
       - ./sourcecode/proxies/iframe/public:/app/public
       - ./sourcecode/proxies/iframe/package.json:/app/package.json
@@ -407,7 +411,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/proxy-auth/node_modules:/var/www/app/node_modules
+      - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
       - ./sourcecode/proxies/auth/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/auth/package.json:/var/www/app/package.json
@@ -425,7 +429,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     volumes:
-      - ./data/proxy-lti/node_modules:/var/www/app/node_modules
+      - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
       - ./sourcecode/proxies/lti/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/lti/package.json:/var/www/app/package.json
@@ -477,7 +481,7 @@ services:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/proxy-resource/node_modules:/var/www/app/node_modules
+      - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
       - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
