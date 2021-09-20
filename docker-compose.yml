@@ -114,6 +114,7 @@ services:
         aliases:
           - contentauthor.local
           - api.edlib.local
+          - edlibcommon
 
   configserver:
     image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
