@@ -28,7 +28,7 @@ final class AccessTokenController extends Controller
 
     public function delete(Application $application, AccessToken $accessToken): Response
     {
-        $application->accessTokens()->find($accessToken)->delete();
+        $application->accessTokens()->find($accessToken)->firstOrFail()->delete();
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }

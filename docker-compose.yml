@@ -105,6 +105,7 @@ services:
       - ./localSetup/projects/nginx/entrypoint.sh:/docker-entrypoint.sh
       - ./data/nginx/ca:/etc/ca
       - ./data/nginx/certs:/etc/ssl/private
+      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public
     ports:
       - "80:80"
       - "443:443"
@@ -614,9 +615,9 @@ services:
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
 
-  edlib-common:
+  edlib-common-fpm:
     build:
       context: ./sourcecode/apis/common
       target: dev
     volumes:
-      - ./sourcecode/apis/common:/app
+      - ./sourcecode/apis/common:/var/www/edlibcommon

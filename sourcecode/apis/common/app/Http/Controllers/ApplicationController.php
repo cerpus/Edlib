@@ -16,9 +16,7 @@ final class ApplicationController extends Controller
 
     public function create(ApplicationRequest $request): JsonResponse
     {
-        $application = new Application();
-        $application->fill($request->validated());
-        $application->save();
+        $application = Application::create($request->validated());
 
         return new JsonResponse($application->toArray(), Response::HTTP_CREATED);
     }
