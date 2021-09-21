@@ -2,6 +2,8 @@ import amqp from 'amqplib';
 import logger from './logger.js';
 import pubsubConfig from '../envConfig/pubsub.js';
 
+let running = false;
+
 export const setup = () =>
     new Promise((resolve, reject) => {
         amqp.connect(pubsubConfig.url, {
@@ -11,14 +13,22 @@ export const setup = () =>
             ),
         })
             .then(function (conn) {
+                running = true;
+
                 process.once('SIGINT', function () {
                     conn.close();
+                });
+
+                conn.on('close', () => {
+                    running = false;
                 });
 
                 resolve(conn);
             })
             .catch(reject);
     });
+
+export const isRunning = () => running;
 
 export const subscribe = async (
     connection,
