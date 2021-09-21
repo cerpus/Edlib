@@ -1,6 +1,13 @@
 import { db } from '@cerpus/edlib-node-utils';
 import request from '../../tests/request.js';
 
+jest.mock('@cerpus/edlib-node-utils', () => ({
+    ...jest.requireActual('@cerpus/edlib-node-utils'),
+    pubsub: {
+        isRunning: () => true,
+    },
+}));
+
 describe('Test endpoints', () => {
     beforeEach(async () => {
         await db.migrate.latest();

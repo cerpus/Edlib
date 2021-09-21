@@ -8,6 +8,9 @@ jest.mock('@cerpus/edlib-node-utils', () => ({
         version: jest.fn(),
         edlibAuth: jest.fn(),
     },
+    pubsub: {
+        isRunning: () => true,
+    },
 }));
 
 describe('Test endpoints', () => {
