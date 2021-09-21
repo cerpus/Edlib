@@ -5,8 +5,10 @@ const getDatabase = () => {
         return process.env.DB_DATABASE;
     }
 
-    if (process.env.EDLIBCOMMON_DB_PREFIX && process.env.DB_NAME) {
-        return `${process.env.EDLIBCOMMON_DB_PREFIX}${process.env.DB_NAME}`;
+    if (process.env.DB_NAME) {
+        return `${process.env.EDLIBCOMMON_DB_PREFIX || ''}${
+            process.env.DB_NAME
+        }`;
     }
 
     return 'mydb';
