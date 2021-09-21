@@ -19,16 +19,15 @@ export default {
             })
         );
 
-        const {
-            resourceVersion,
-        } = await req.context.services.resource.getLtiResourceInfo(
-            {
-                jwt: req.authorizationJwt,
-                userId: req.user && req.user.id,
-            },
-            resourceId,
-            resourceVersionId
-        );
+        const { resourceVersion } =
+            await req.context.services.resource.getLtiResourceInfo(
+                {
+                    jwt: req.authorizationJwt,
+                    userId: req.user && req.user.id,
+                },
+                resourceId,
+                resourceVersionId
+            );
 
         const ltiUsage = await req.context.services.lti.createUsage(
             resourceVersion.resourceId,
@@ -68,19 +67,17 @@ export default {
             req.params.usageId
         );
 
-        const {
-            launchRequest,
-            resourceVersion,
-        } = await ltiService.viewResourceRequest(
-            req.context,
-            ltiUsage.resourceId,
-            ltiUsage.resourceVersionId,
-            {
-                jwt: req.authorizationJwt,
-                userId: req.user && req.user.id,
-            },
-            params
-        );
+        const { launchRequest, resourceVersion } =
+            await ltiService.viewResourceRequest(
+                req.context,
+                ltiUsage.resourceId,
+                ltiUsage.resourceVersionId,
+                {
+                    jwt: req.authorizationJwt,
+                    userId: req.user && req.user.id,
+                },
+                params
+            );
 
         // Don't log views when in preview mode
         if (!params.ext_preview) {

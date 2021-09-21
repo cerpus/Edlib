@@ -1,10 +1,8 @@
 import Joi from '@hapi/joi';
-import { validateJoi, NotFoundException } from '@cerpus/edlib-node-utils';
-import moment from 'moment-timezone';
-import CryptoJS from 'crypto-js';
-import oauthSignature from 'oauth-signature';
-import { v4 as uuidv4 } from 'uuid';
-import apiConfig from '../config/apis.js';
+import {
+    validateJoi,
+    NotFoundException,
+} from '@cerpus/edlib-node-utils';
 import ltiService from '../services/lti.js';
 
 export default {
@@ -32,7 +30,8 @@ export default {
             })
         );
 
-        const re = /.*\/(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/;
+        const re =
+            /.*\/(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/;
         const found = re.exec(launchUrl);
 
         if (!found || !found[1]) {
@@ -47,16 +46,15 @@ export default {
             throw new NotFoundException('resource');
         }
 
-        const {
-            resourceVersion,
-        } = await req.context.services.resource.getLtiResourceInfo(
-            {
-                jwt: req.authorizationJwt,
-                userId: req.user && req.user.id,
-            },
-            ltiUsage.resourceId,
-            ltiUsage.resourceVersionId
-        );
+        const { resourceVersion } =
+            await req.context.services.resource.getLtiResourceInfo(
+                {
+                    jwt: req.authorizationJwt,
+                    userId: req.user && req.user.id,
+                },
+                ltiUsage.resourceId,
+                ltiUsage.resourceVersionId
+            );
 
         if (!resourceVersion) {
             throw new NotFoundException('resource');

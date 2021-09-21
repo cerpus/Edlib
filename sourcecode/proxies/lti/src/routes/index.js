@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import lti from './lti.js';
 import status from './status.js';
 import job from './job.js';
+import { runAsync, pubsub } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -47,17 +48,17 @@ export default async ({ pubSubConnection }) => {
     apiRouter.use(await status());
     apiRouter.use(await job());
 
-    router.get('/resources/_ah/health', (req, res) => {
-        const probe = req.query.probe;
+    router.get(
+        '/resources/_ah/health',
+        runAsync(async (req, res) => {
+            if (pubsub.isRunning()) {
+                res.send('ok');
+                return;
+            }
 
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
             res.status(503).send();
-        }
-    });
+        })
+    );
 
     router.use('/lti', addContextToRequest({ pubSubConnection }), apiRouter);
 
