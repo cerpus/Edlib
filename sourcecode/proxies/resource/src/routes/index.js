@@ -8,7 +8,7 @@ import resourceFilters from './resourceFilters.js';
 import status from './status.js';
 import job from './job.js';
 import directProxy from './directProxy.js';
-import { pubsub, runAsync } from '@cerpus/edlib-node-utils';
+import { runAsync } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -58,12 +58,7 @@ export default async () => {
     router.get(
         '/resources/_ah/health',
         runAsync(async (req, res) => {
-            if (pubsub.isRunning()) {
-                res.send('ok');
-                return;
-            }
-
-            res.status(503).send();
+            res.send('ok');
         })
     );
 

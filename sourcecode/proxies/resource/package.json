@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/api.js",
+    "dev": "nodemon -L src/api.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
     "test": "jest --config=./jest.config.json"
