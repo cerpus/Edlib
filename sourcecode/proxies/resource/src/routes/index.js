@@ -8,6 +8,7 @@ import resourceFilters from './resourceFilters.js';
 import status from './status.js';
 import job from './job.js';
 import directProxy from './directProxy.js';
+import { pubsub, runAsync } from '@cerpus/edlib-node-utils';
 
 const { Router } = express;
 
@@ -54,17 +55,17 @@ export default async () => {
     apiRouter.use(await directProxy());
     // apiRouter.use(await graphql()); // @todo uncomment when graphql is ready
 
-    router.get('/resources/_ah/health', (req, res) => {
-        const probe = req.query.probe;
+    router.get(
+        '/resources/_ah/health',
+        runAsync(async (req, res) => {
+            if (pubsub.isRunning()) {
+                res.send('ok');
+                return;
+            }
 
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
             res.status(503).send();
-        }
-    });
+        })
+    );
 
     router.use('/resources', addContextToRequest, apiRouter);
 

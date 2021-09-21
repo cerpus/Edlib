@@ -1,4 +1,4 @@
-import { db } from '@cerpus/edlib-node-utils';
+import { db, pubsub } from '@cerpus/edlib-node-utils';
 import { ApiException } from '@cerpus/edlib-node-utils';
 
 export default async () => {
@@ -6,6 +6,10 @@ export default async () => {
 
     if (migrations.length !== 2 || migrations[1].length !== 0) {
         throw new ApiException('Migrations are not up to date');
+    }
+
+    if (!pubsub.isRunning()) {
+        throw new ApiException('Rabbitmq connection is down');
     }
 
     return true;
