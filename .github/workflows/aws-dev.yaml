@@ -43,7 +43,8 @@ jobs:
 
       - name: Update Chart.yaml with correct app version
         run: |
-          echo "\nappVersion: \"${{ github.event.inputs.version }}\"" >> ./chart/Chart.yaml
+          echo "" >> ./chart/Chart.yaml
+          echo "appVersion: \"${{ github.event.inputs.version }}\"" >> ./chart/Chart.yaml
           cat ./chart/Chart.yaml
 
       - name: helm deploy
