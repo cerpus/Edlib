@@ -1,5 +1,5 @@
-{{- template "helpers.initJob" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-migration" "imageTag" .Chart.Version ) }}
+{{- template "helpers.initJob" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-migration" "imageTag" .Chart.AppVersion ) }}
 ---
 {{- template "helpers.service" (dict "name" "ltiapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-app" "imageTag" .Chart.Version "replicaCount" 1 ) }}
+{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-app" "imageTag" .Chart.AppVersion "replicaCount" 1 ) }}
