@@ -4,8 +4,8 @@ WORKDIR /var/www/edlibcommon
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin
-COPY docker/docker-entrypoint.sh /usr/local/bin
-COPY docker/zz-edlib.ini "$PHP_INI_DIR/"
+COPY docker/php/docker-entrypoint.sh /usr/local/bin
+COPY docker/php/zz-edlib.ini "$PHP_INI_DIR/"
 COPY . .
 COPY .env.example .
 
@@ -42,7 +42,7 @@ CMD ["php-fpm"]
 
 FROM base AS prod
 
-COPY docker/zz-edlib-prod.ini "$PHP_INI_DIR/"
+COPY docker/php/zz-edlib-prod.ini "$PHP_INI_DIR/"
 
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"; \
@@ -58,6 +58,11 @@ RUN set -eux; \
 ENV APP_ENV=production \
     APP_DEBUG=false \
     LOG_CHANNEL=stderr
+
+
+FROM nginx:1-alpine AS web
+
+COPY docker/nginx/common.conf /etc/nginx/conf.d/
 
 
 FROM base AS dev
