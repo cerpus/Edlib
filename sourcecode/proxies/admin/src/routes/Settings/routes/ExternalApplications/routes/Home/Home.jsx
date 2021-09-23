@@ -12,18 +12,18 @@ import {
     TableCell,
     TableBody,
     Button,
+    CircularProgress,
 } from '@material-ui/core';
 import Link from '../../../../../../components/Link.jsx';
 import CreateExternalApplication from './CreateExternalApplication.jsx';
 
-const Home = ({ onGoToDetails }) => {
+const Home = ({
+    onGoToDetails,
+    loading,
+    applications,
+    refetchApplications,
+}) => {
     const [createNew, setCreateNew] = React.useState(false);
-    const apps = [
-        {
-            id: 1,
-            name: 'Edstep',
-        },
-    ];
 
     return (
         <Container maxWidth={false}>
@@ -55,32 +55,41 @@ const Home = ({ onGoToDetails }) => {
                                 Lag ny
                             </Button>
                         </Box>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Id</TableCell>
-                                    <TableCell>Navn</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {apps.map(({ id, name }) => (
-                                    <TableRow
-                                        key={id}
-                                        hover
-                                        onClick={() => onGoToDetails(id)}
-                                    >
-                                        <TableCell>{id}</TableCell>
-                                        <TableCell>{name}</TableCell>
+                        {loading && <CircularProgress />}
+                        {!loading && (
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Id</TableCell>
+                                        <TableCell>Navn</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHead>
+                                <TableBody>
+                                    {applications.map(({ id, name }) => (
+                                        <TableRow
+                                            key={id}
+                                            hover
+                                            onClick={() => onGoToDetails(id)}
+                                        >
+                                            <TableCell width={260}>
+                                                {id}
+                                            </TableCell>
+                                            <TableCell>{name}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        )}
                     </Paper>
                 </Grid>
             </Grid>
             <CreateExternalApplication
                 isOpen={createNew}
                 onClose={() => setCreateNew(false)}
+                onAdded={() => {
+                    setCreateNew(false);
+                    refetchApplications();
+                }}
             />
         </Container>
     );

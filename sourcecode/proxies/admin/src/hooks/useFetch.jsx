@@ -5,6 +5,7 @@ export default (url, method, options, wait = false) => {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(false);
     const [response, setResponse] = React.useState(null);
+    const [inc, setInc] = React.useState(0);
 
     React.useEffect(() => {
         setLoading(true);
@@ -30,12 +31,13 @@ export default (url, method, options, wait = false) => {
         return () => {
             abortController.abort();
         };
-    }, [url, method, options, wait]);
+    }, [url, method, options, wait, inc]);
 
     return {
         loading,
         error,
         response,
         setResponse,
+        refetch: () => setInc(inc + 1),
     };
 };
