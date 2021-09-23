@@ -2,6 +2,9 @@
 
 cd "$(dirname "$0")"
 
+ZSHRC_LOCATION=~/.zshrc
+BASHRC_LOCATION=~/.bashrc
+
 read -r -d '' aliases << EOM
 alias dc="docker-compose"
 alias dcu="dc up -d"
@@ -12,6 +15,11 @@ EOM
 
 replaceStringWithoutNewline=${aliases//$'\n'/\\n}
 
-./manage-block-in-file.sh ~/.bashrc "$replaceStringWithoutNewline"
+./manage-block-in-file.sh $BASHRC_LOCATION "$replaceStringWithoutNewline"
+
+if test -f "$ZSHRC_LOCATION"; then
+  echo "Found .zshrc and we are therefore adding aliases there as well."
+  ./manage-block-in-file.sh $ZSHRC_LOCATION "$replaceStringWithoutNewline"
+fi
 
 source ~/.bashrc

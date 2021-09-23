@@ -8,22 +8,6 @@ cd "$(dirname "$0")"
 # Go to sourcecode folder
 pushd ../sourcecode
 
-# nvm and yarn repos
-declare -a nodeRepos=(
-  "apis/auth"
-  "apis/doku"
-  "apis/lti"
-  "apis/resources"
-  "apis/url"
-  "proxies/auth"
-  "proxies/recommendation"
-  "proxies/resource"
-  "proxies/lti"
-  "proxies/admin"
-  "proxies/doku"
-  "proxies/url"
-)
-
 # java repos
 declare -a javaRepos=(
   "not_migrated/metadataservice"
@@ -36,15 +20,6 @@ declare -a phpRepos=(
   "not_migrated/h5pviewer"
   "not_migrated/licenseapi"
 )
-
-for i in "${nodeRepos[@]}"
-do
-  pushd $i
-  nvm use
-  git pull
-  yarn
-  popd
-done
 
 for i in "${javaRepos[@]}"
 do

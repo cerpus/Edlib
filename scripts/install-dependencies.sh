@@ -2,24 +2,29 @@
 
 cd "$(dirname "$0")"
 
+# Fix permissions to docker deamon
+if ! command -v yarn &> /dev/null
+then
+  sudo snap install docker
+  sudo groupadd docker
+  sudo usermod -aG docker $USER
+fi
+
+if ! command -v python3 &> /dev/null
+then
+  sudo snap install python38
+fi
+
 # Install packages
-sudo snap install docker python38
 sudo apt update
 sudo apt install -y maven git wget curl php7.4-cli php7.4-pgsql php7.4-mysql php7.4-curl php7.4-mbstring php7.4-xml php7.4-zip php-memcached php-amqplib php-intl php-oauth php-bcmath php-gd php-xdebug docker-compose
 
-# Fix permissions to docker deamon
-sudo groupadd docker
-sudo usermod -aG docker $USER
-
-# update app-armor to make docker run
-sudo mkdir -p /etc/default/grub.d
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT apparmor=0"' | sudo tee /etc/default/grub.d/apparmor.cfg
-sudo update-grub
-sudo reboot
-
 # Install NVM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+if [ -z ${NVM_DIR+x} ]; then
+  echo "Can't find NVM. Automatically installing"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+  export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+fi
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # Install required node versions with nvm
