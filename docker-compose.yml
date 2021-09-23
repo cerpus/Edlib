@@ -1,13 +1,24 @@
 version: "3.7"
 
 volumes:
-  elasticsearch: {}
-  mysql: {}
-  "npm-components-storybook_nodemodules": {}
-  "proxy-auth_nodemodules": {}
-  "proxy-lti_nodemodules": {}
-  "proxy-resource_nodemodules": {}
-  "proxy-iframe_nodemodules": {}
+  doku-lti-viewer_nodemodules:
+  dokuapi_nodemodules:
+  edlib-auth_nodemodules:
+  edlib-lti_nodemodules:
+  edlib-resources_nodemodules:
+  edlib-url_nodemodules:
+  edlibapi-url_nodemodules:
+  edlibfacade-test_nodemodules:
+  elasticsearch:
+  mysql:
+  npm-components-storybook_nodemodules:
+  proxy-admin_nodemodules:
+  proxy-auth_nodemodules:
+  proxy-doku_nodemodules:
+  proxy-iframe_nodemodules:
+  proxy-lti_nodemodules:
+  proxy-recommendation_nodemodules:
+  proxy-resource_nodemodules:
 
 services:
   redis:
@@ -255,7 +266,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
-      - ./data/doku-api/node_modules:/var/www/app/node_modules
+      - dokuapi_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/doku/src:/var/www/app/src
       - ./sourcecode/apis/doku/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/doku/package.json:/var/www/app/package.json
@@ -276,7 +287,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
-      - ./data/edlib-resources/node_modules:/var/www/app/node_modules
+      - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources/src:/var/www/app/src
       - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
@@ -297,7 +308,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
-      - ./data/edlib-lti/node_modules:/var/www/app/node_modules
+      - edlib-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
       - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
@@ -319,7 +330,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
-      - ./data/edlib-auth/node_modules:/var/www/app/node_modules
+      - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth/src:/var/www/app/src
       - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
@@ -340,7 +351,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     volumes:
-      - ./data/edlib-url/node_modules:/var/www/app/node_modules
+      - edlib-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/url/src:/var/www/app/src
       - ./sourcecode/apis/url/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/url/package.json:/var/www/app/package.json
@@ -361,7 +372,7 @@ services:
     environment:
       WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
     volumes:
-      - ./data/doku-lti-viewer/node_modules:/var/www/app/node_modules
+      - doku-lti-viewer_nodemodules:/var/www/app/node_modules
       - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
       - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
       - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
@@ -395,7 +406,7 @@ services:
     environment:
       WDS_SOCKET_PATH: /admin/sockjs-node
     volumes:
-      - ./data/proxy-admin/node_modules:/app/node_modules
+      - proxy-admin_nodemodules:/app/node_modules
       - ./sourcecode/proxies/admin/src:/app/src
       - ./sourcecode/proxies/admin/public:/app/public
       - ./sourcecode/proxies/admin/package.json:/app/package.json
@@ -447,7 +458,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/proxy-recommendation/node_modules:/var/www/app/node_modules
+      - proxy-recommendation_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/recommendation/src:/var/www/app/src
       - ./sourcecode/proxies/recommendation/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/recommendation/package.json:/var/www/app/package.json
@@ -463,7 +474,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     volumes:
-      - ./data/proxy-doku/node_modules:/var/www/app/node_modules
+      - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
       - ./sourcecode/proxies/doku/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/doku/package.json:/var/www/app/package.json
@@ -499,7 +510,7 @@ services:
     env_file:
       - ./localSetup/.env
     volumes:
-      - ./data/edlibapi-url/node_modules:/var/www/app/node_modules
+      - edlibapi-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/url/src:/var/www/app/src
       - ./sourcecode/proxies/url/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/url/package.json:/var/www/app/package.json
@@ -598,7 +609,7 @@ services:
       dockerfile: Dockerfile
       target: dev
     volumes:
-      - ./data/edlibfacade-test/node_modules:/app/node_modules
+      - edlibfacade-test_nodemodules:/app/node_modules
       - ./sourcecode/not_migrated/edlibfacade-test/src:/app/src
       - ./sourcecode/not_migrated/edlibfacade-test/public:/app/public
       - ./sourcecode/not_migrated/edlibfacade-test/package.json:/app/package.json
