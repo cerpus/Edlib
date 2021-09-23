@@ -41,6 +41,12 @@ jobs:
           CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
           echo "::set-output name=config::$CONFIG"
 
+      - name: Update Chart.yaml with correct app version
+        run: |
+          echo "" >> ./chart/Chart.yaml
+          echo "appVersion: \"${{ github.event.inputs.version }}\"" >> ./chart/Chart.yaml
+          cat ./chart/Chart.yaml
+
       - name: helm deploy
         uses: koslib/helm-eks-action@master
         env:
