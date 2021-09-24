@@ -29,7 +29,7 @@ const LogoutCallbackContainer = ({ email, redirect = true, ...props }) => {
                     error,
                 });
             });
-    }, []);
+    }, [history, logout]);
 
     return <LogoutCallback {...props} loading={loading} error={error} />;
 };

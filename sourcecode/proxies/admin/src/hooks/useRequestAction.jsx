@@ -16,7 +16,7 @@ export default (actionFnc) => {
                 loading: true,
             });
             actionFnc(variables)
-                .then(({ response }) => {
+                .then((response) => {
                     setStatus({
                         error: false,
                         success: true,

@@ -1,7 +1,7 @@
 import React from 'react';
 import request from '../helpers/request';
 
-export default (url, method, options, wait = false) => {
+const useFetch = (url, method, options, wait = false) => {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(false);
     const [response, setResponse] = React.useState(null);
@@ -41,3 +41,5 @@ export default (url, method, options, wait = false) => {
         refetch: () => setInc(inc + 1),
     };
 };
+
+export default useFetch;

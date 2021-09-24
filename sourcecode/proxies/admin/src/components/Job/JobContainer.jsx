@@ -18,7 +18,7 @@ const JobContainer = ({
     });
     const [currentJobId, setCurrentJobId] = React.useState(null);
 
-    const { response, loading, error } = useFetch(
+    const { response } = useFetch(
         startUrl + '/resumable',
         'GET',
         React.useMemo(() => ({}), []),
