@@ -23,12 +23,18 @@ volumes:
 services:
   redis:
     image: "redis:alpine"
+    healthcheck:
+      test: [CMD, redis-cli, ping]
 
   memcached:
-    image: memcached
+    image: memcached:alpine
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '11211']
 
   postgres:
-    image: "postgres:11"
+    image: postgres:11-alpine
+    healthcheck:
+      test: [CMD, psql, -d, 'postgres://postgres:thepgpassword@localhost:5432', -c, 'select 1']
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
       - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
@@ -42,6 +48,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysqlpassword
       MYSQL_INITDB_SKIP_TZINFO: 1
+    healthcheck:
+      test: [CMD, mysql, -uroot, -pmysqlpassword, '-eSELECT 1']
     command: --init-file /data/application/init.sql
     volumes:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
@@ -51,6 +59,8 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
@@ -60,6 +70,8 @@ services:
 
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    healthcheck:
+      test: [CMD, sh, -c, 'curl -fs http://localhost:9200/_cat/health']
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
       - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
@@ -88,6 +100,8 @@ services:
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    healthcheck:
+      test: [CMD, curl, -fs, http://localhost:5601/api/status]
     ports:
       - 5601:5601
     depends_on:
@@ -96,6 +110,8 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.8.1
+    healthcheck:
+      test: [CMD, curl, -fs, http://localhost:9600]
     ports:
       - "5044:5044"
     volumes:
@@ -111,6 +127,8 @@ services:
     build: ./localSetup/projects/nginx
     command: ["nginx", "-g", "daemon off;"]
     entrypoint: ["/docker-entrypoint.sh"]
+    healthcheck:
+      test: [CMD, curl, -fks, https://localhost]
     volumes:
       - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
       - ./localSetup/projects/nginx/entrypoint.sh:/docker-entrypoint.sh
