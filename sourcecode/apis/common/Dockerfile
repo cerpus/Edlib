@@ -12,6 +12,7 @@ COPY .env.example .
 RUN set -eux; \
     apk add --no-cache zip; \
     install-php-extensions \
+        gmp \
         intl \
         opcache \
         pdo_mysql \
@@ -36,7 +37,6 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_MEMORY_LIMIT=-1
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-
 CMD ["php-fpm"]
 
 
@@ -61,11 +61,16 @@ ENV APP_ENV=production \
 
 
 FROM nginx:1-alpine AS web
-
-COPY docker/nginx/common.conf /etc/nginx/conf.d/
+ENV PHP_FPM_HOST "localhost:9000"
+COPY docker/nginx/common.conf.template /etc/nginx/templates/
 
 
 FROM base AS dev
+
+COPY docker/php/docker-entrypoint-dev.sh /usr/local/bin
+
+ENTRYPOINT ["docker-entrypoint-dev.sh"]
+CMD ["php-fpm"]
 
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \

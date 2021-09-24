@@ -33,7 +33,11 @@ export default async (url, method, options = {}) => {
         return response;
     }
 
-    return await response.json();
+    try {
+        return await response.json();
+    } catch (e) {
+        return null;
+    }
 };
 
 const getHeaders = (options) => {

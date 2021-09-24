@@ -5,6 +5,7 @@ use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/applications', [ApplicationController::class, 'list']);
+Route::get('/applications/{application}', [ApplicationController::class, 'get']);
 Route::post('/applications', [ApplicationController::class, 'create']);
 
 Route::get('/applications/{application}/access_tokens', [AccessTokenController::class, 'listByApplication']);

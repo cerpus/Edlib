@@ -627,9 +627,22 @@ services:
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
 
+  common:
+    build:
+      context: ./sourcecode/apis/common
+      target: web
+    environment:
+      PHP_FPM_HOST: "edlib-common-fpm:9000"
+    volumes:
+      - ./sourcecode/apis/common:/var/www/edlibcommon
+    depends_on:
+      - edlib-common-fpm
+
   edlib-common-fpm:
     build:
       context: ./sourcecode/apis/common
       target: dev
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
+    depends_on:
+      - mysql
