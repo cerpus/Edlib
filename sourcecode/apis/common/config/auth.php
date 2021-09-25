@@ -40,6 +40,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+        'application-api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+        ],
     ],
 
     /*
@@ -63,6 +67,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        'applications' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Application::class,
         ],
     ],
 

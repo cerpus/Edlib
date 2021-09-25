@@ -5,6 +5,7 @@ import resourceGroup from '../repositories/resourceGroup.js';
 import resourceVersionCollaborator from '../repositories/resourceVersionCollaborator.js';
 import job from '../repositories/job.js';
 import trackingResourceVersion from '../repositories/trackingResourceVersion.js';
+import resourceCollaborator from '../repositories/resourceCollaborator.js';
 
 export const buildRawContext = (req = {}, res = {}, { pubSubConnection }) => ({
     services: services(req, res),
@@ -15,6 +16,7 @@ export const buildRawContext = (req = {}, res = {}, { pubSubConnection }) => ({
         resourceGroup: resourceGroup(),
         job: job(),
         trackingResourceVersion: trackingResourceVersion(),
+        resourceCollaborator: resourceCollaborator(),
     },
     pubSubConnection,
 });

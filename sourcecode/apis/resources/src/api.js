@@ -10,6 +10,10 @@ import saveTrackingResourceVersion from './subscribers/saveTrackingResourceVersi
 import syncLtiUsageViews from './subscribers/syncLtiUsageViews.js';
 import syncCoreIds from './subscribers/syncCoreIds.js';
 import syncExternalResources from './subscribers/syncExternalResources.js';
+import updateElasticsearchForResource from './subscribers/updateElasticsearchForResource.js';
+import pubsubTopics from './constants/pubsubTopics.js';
+
+const internalJobsPrefix = '__internal_edlibResource_jobs_';
 
 const start = async () => {
     const pubSubConnection = await pubsub.setup();
@@ -22,25 +26,21 @@ const start = async () => {
             },
             {
                 exchangeName:
-                    '__internal_edlibResource_jobs_' +
-                    jobNames.REFRESH_ELASTICSEARCH_INDEX,
+                    internalJobsPrefix + jobNames.REFRESH_ELASTICSEARCH_INDEX,
                 handler: refreshElasticsearchIndex,
             },
             {
                 exchangeName:
-                    '__internal_edlibResource_jobs_' +
-                    jobNames.SYNC_LTI_USAGE_VIEWS,
+                    internalJobsPrefix + jobNames.SYNC_LTI_USAGE_VIEWS,
                 handler: syncLtiUsageViews,
             },
             {
-                exchangeName:
-                    '__internal_edlibResource_jobs_' + jobNames.SYNC_CORE_IDS,
+                exchangeName: internalJobsPrefix + jobNames.SYNC_CORE_IDS,
                 handler: syncCoreIds,
             },
             {
                 exchangeName:
-                    '__internal_edlibResource_jobs_' +
-                    jobNames.SYNC_EXTERNAL_RESOURCES,
+                    internalJobsPrefix + jobNames.SYNC_EXTERNAL_RESOURCES,
                 handler: syncExternalResources,
             },
             {
@@ -50,6 +50,10 @@ const start = async () => {
             {
                 exchangeName: 'edlib_trackingResourceVersion',
                 handler: saveTrackingResourceVersion,
+            },
+            {
+                exchangeName: pubsubTopics.UPDATE_ELASTICSEARCH_FOR_RESOURCE,
+                handler: updateElasticsearchForResource,
             },
         ].map((subscriber) => {
             const handler = subscriber.handler({ pubSubConnection });

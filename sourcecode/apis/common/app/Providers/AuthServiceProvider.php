@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\AppTokenAuthenticator;
 use App\Auth\IdentityServiceAuthenticator;
 use App\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -33,6 +34,12 @@ class AuthServiceProvider extends ServiceProvider
 
         Auth::viaRequest('jwt', function (Request $request) {
             $authenticator = $this->app->make(IdentityServiceAuthenticator::class);
+
+            return $authenticator($request);
+        });
+
+        Auth::viaRequest('token', function (Request $request) {
+            $authenticator = $this->app->make(AppTokenAuthenticator::class);
 
             return $authenticator($request);
         });
