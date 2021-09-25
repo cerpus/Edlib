@@ -35,8 +35,9 @@ const Sidebar = () => {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [currentlyExpandedName, setCurrentlyExpandedName] =
-        React.useState(null);
+    const [currentlyExpandedName, setCurrentlyExpandedName] = React.useState(
+        null
+    );
 
     React.useEffect(() => {
         setCurrentlyExpandedName(null);
@@ -45,29 +46,29 @@ const Sidebar = () => {
     const links = [
         { name: 'Dashboard', to: '/dashboard', icon: <Dashboard /> },
         {
-            name: 'Innstillinger',
+            name: 'Settings',
             to: '/settings',
             icon: <Settings />,
             subLinks: [
                 {
-                    name: 'Eksterne applikasjoner',
+                    name: 'External applications',
                     to: '/external-applications',
                 },
             ],
         },
         {
-            name: 'Overvåking',
+            name: 'Monitoring',
             to: '/monitoring',
             icon: <LocalOffer />,
-            subLinks: [{ name: 'Status på tjenestene', to: '/system-status' }],
+            subLinks: [{ name: 'Status of services', to: '/system-status' }],
         },
         {
-            name: 'Jobber',
+            name: 'Jobs',
             to: '/jobs',
             icon: <LocalOffer />,
             subLinks: [
                 { name: 'Migrate old core data', to: '/migrate-core' },
-                { name: 'Ressurser', to: '/resources' },
+                { name: 'Resources', to: '/resources' },
             ],
         },
         {

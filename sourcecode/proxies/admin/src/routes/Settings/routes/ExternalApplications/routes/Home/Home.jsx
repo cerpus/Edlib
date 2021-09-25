@@ -31,16 +31,16 @@ const Home = ({
                 <Grid item>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link to="/">Edlib admin</Link>
-                        <Link to="/settings">Innstillinger</Link>
+                        <Link to="/settings">Settings</Link>
                         <Typography color="textPrimary">
-                            Eksterne applikasjoner
+                            External applications
                         </Typography>
                     </Breadcrumbs>
                 </Grid>
             </Grid>
             <Grid container component={Box} paddingBottom={2}>
                 <Grid item md={12}>
-                    <Typography variant="h2">Eksterne applikasjoner</Typography>
+                    <Typography variant="h2">External applications</Typography>
                 </Grid>
             </Grid>
             <Grid container>
@@ -52,7 +52,7 @@ const Home = ({
                                 color="primary"
                                 onClick={() => setCreateNew(true)}
                             >
-                                Lag ny
+                                Create new
                             </Button>
                         </Box>
                         {loading && <CircularProgress />}
@@ -61,7 +61,7 @@ const Home = ({
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Id</TableCell>
-                                        <TableCell>Navn</TableCell>
+                                        <TableCell>Name</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
