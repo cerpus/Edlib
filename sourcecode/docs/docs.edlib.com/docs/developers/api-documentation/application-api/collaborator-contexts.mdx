@@ -1,0 +1,25 @@
+---
+sidebar_position: 2
+---
+
+# Collaborator contexts
+
+## Set collaborator context
+
+**Path:** /common/app/context-resource-collaborators<br/>
+**Method:** POST<br/>
+**Body**
+
+```json
+{
+	"context": "context name", // Context name (Required)
+	"resourceIds": ["resource id"], // A list of resource ids. (Optional)
+	"tenantIds": ["user id"], // A list of tenant ids. Most likely those are user ids. (Required)
+	"externalResources": [ // A external resource ids. This should be avoided but is there for now for compatibility reasons. (Optional)
+		{
+			"systemName": "contentAuthor",
+			"resourceId": "resource id"
+		}
+	]
+}
+```
