@@ -23,12 +23,18 @@ volumes:
 services:
   redis:
     image: "redis:alpine"
+    healthcheck:
+      test: [CMD, redis-cli, ping]
 
   memcached:
-    image: memcached
+    image: memcached:alpine
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '11211']
 
   postgres:
-    image: "postgres:11"
+    image: postgres:11-alpine
+    healthcheck:
+      test: [CMD, psql, -d, 'postgres://postgres:thepgpassword@localhost:5432', -c, 'select 1']
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
       - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
@@ -42,6 +48,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysqlpassword
       MYSQL_INITDB_SKIP_TZINFO: 1
+    healthcheck:
+      test: [CMD, mysql, -uroot, -pmysqlpassword, '-eSELECT 1']
     command: --init-file /data/application/init.sql
     volumes:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
@@ -51,6 +59,8 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
@@ -60,57 +70,37 @@ services:
 
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9200/_cat/health]
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
       - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
     ports:
       - "9200:9200"
     environment:
+      bootstrap.memory_lock: 'true'
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
-
-  elasticsearch-curator:
-    image: "bitnami/elasticsearch-curator"
-    command: --config /etc/curator/config.yml /etc/curator/action.yml
-    environment:
-      ELASTICSEARCH_USERNAME: elastic
-      ELASTICSEARCH_PASSWORD: elasticpassword
-      CURATOR_MAX_AGE_DAYS: 15
-    volumes:
-      - ./localSetup/projects/elasticsearch-curator/config.yml:/etc/curator/config.yml
-      - ./localSetup/projects/elasticsearch-curator/action.yml:/etc/curator/action.yml
-    depends_on:
-      - elasticsearch
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.8.1
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:5601/api/status]
     ports:
       - 5601:5601
     depends_on:
-      - logstash
       - elasticsearch
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.8.1
-    ports:
-      - "5044:5044"
-    volumes:
-      - ./localSetup/projects/kibana/logstash.d/:/usr/share/logstash/pipeline/:ro
-    depends_on:
-      - elasticsearch
-    networks:
-      default:
-        aliases:
-          - logstash.elk
 
   nginx:
     build: ./localSetup/projects/nginx
     command: ["nginx", "-g", "daemon off;"]
     entrypoint: ["/docker-entrypoint.sh"]
+    healthcheck:
+      test: [CMD, curl, -fk, https://localhost]
     volumes:
       - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
       - ./localSetup/projects/nginx/entrypoint.sh:/docker-entrypoint.sh
@@ -134,20 +124,10 @@ services:
       - ./storage/blank-git:/config/.git
     environment:
       SPRING_PROFILES_ACTIVE: native
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8888/health]
     ports:
       - 8888:8888
-
-  metadataservice:
-    image: dockerregistry.cerpus.net/cerpus/metadataservice:5a2adfc87daff6f606123bbfa1132f4e
-    environment:
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-    depends_on:
-      - postgres
-    ports:
-      - 8091:8091
-      - 5503:5555
-    restart: on-failure
 
   versioningapi:
     build:
@@ -161,6 +141,8 @@ services:
       SPRING_APPLICATION_JSON: '{"spring":{"datasource":{"url":"jdbc:postgresql://postgres/versionapi", "username":"postgres", "password":"thepgpassword"}}}'
     depends_on:
       - postgres
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/health]
     ports:
       - 5504:5555
     restart: on-failure
@@ -176,6 +158,8 @@ services:
     environment:
       DB_CHARSET: utf8
       DB_COLLATION: utf8_unicode_ci
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/health]
     ports:
       - "8103:80"
     env_file:
@@ -188,6 +172,8 @@ services:
     build:
       context: ./sourcecode/not_migrated/h5pviewer
       target: app
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost]
     volumes:
       - ./sourcecode/not_migrated/h5pviewer/public:/app/public
       - ./sourcecode/not_migrated/h5pviewer/vendor:/app/vendor
@@ -200,10 +186,12 @@ services:
   contentauthor-fpm:
     build:
       context: ./sourcecode/not_migrated/h5pviewer
-      target: phpfpm
+      target: phpfpm-dev
     env_file:
       - ./localSetup/projects/content-author/.env
     command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '31004']
     volumes:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/not_migrated/h5pviewer:/app
@@ -267,6 +255,8 @@ services:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/api/_ah/health?probe=readiness']
     volumes:
       - dokuapi_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/doku/src:/var/www/app/src
@@ -288,6 +278,8 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources/src:/var/www/app/src
@@ -309,6 +301,8 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
@@ -331,6 +325,8 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
     volumes:
       - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth/src:/var/www/app/src
@@ -352,6 +348,8 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
     volumes:
       - edlib-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/url/src:/var/www/app/src
@@ -373,6 +371,8 @@ services:
       - ./localSetup/.env
     environment:
       WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000]
     volumes:
       - doku-lti-viewer_nodemodules:/var/www/app/node_modules
       - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
@@ -390,6 +390,8 @@ services:
       - ./localSetup/.env
     environment:
       WDS_SOCKET_PATH: /iframe/sockjs-node
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000]
     volumes:
       - proxy-iframe_nodemodules:/app/node_modules
       - ./sourcecode/proxies/iframe/src:/app/src
@@ -407,6 +409,8 @@ services:
       - ./localSetup/.env
     environment:
       WDS_SOCKET_PATH: /admin/sockjs-node
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000]
     volumes:
       - proxy-admin_nodemodules:/app/node_modules
       - ./sourcecode/proxies/admin/src:/app/src
@@ -423,6 +427,8 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
     volumes:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
@@ -441,6 +447,8 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
     volumes:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
@@ -459,6 +467,8 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/recommendations/_ah/health?probe=readiness']
     volumes:
       - proxy-recommendation_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/recommendation/src:/var/www/app/src
@@ -475,6 +485,8 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
     volumes:
       - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
@@ -493,6 +505,8 @@ services:
     environment:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
     volumes:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
@@ -511,6 +525,8 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
+    healthcheck:
+      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
     volumes:
       - edlibapi-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/url/src:/var/www/app/src
@@ -601,6 +617,8 @@ services:
       EDLIB_API_URL: https://api.edlib.local
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:8080/health]
     ports:
       - 5505:5555
 
@@ -610,6 +628,8 @@ services:
       context: ./sourcecode/not_migrated/edlibfacade-test
       dockerfile: Dockerfile
       target: dev
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000]
     volumes:
       - edlibfacade-test_nodemodules:/app/node_modules
       - ./sourcecode/not_migrated/edlibfacade-test/src:/app/src
@@ -623,6 +643,8 @@ services:
     build:
       context: ./sourcecode/npm/components
       dockerfile: Dockerfile
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:9009]
     volumes:
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
@@ -633,6 +655,8 @@ services:
       target: web
     environment:
       PHP_FPM_HOST: "edlib-common-fpm:9000"
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost]
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
     depends_on:
@@ -642,6 +666,8 @@ services:
     build:
       context: ./sourcecode/apis/common
       target: dev
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '9000']
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
     depends_on:
