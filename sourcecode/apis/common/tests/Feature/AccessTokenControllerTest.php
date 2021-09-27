@@ -4,12 +4,15 @@ namespace Tests\Feature;
 
 use App\Models\AccessToken;
 use App\Models\Application;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 use function strlen;
 
 class AccessTokenControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testListByApplication(): void
     {
         /** @var Application $application */
@@ -21,7 +24,7 @@ class AccessTokenControllerTest extends TestCase
             ->count(3)
             ->create();
 
-        $this->getJson("/api/applications/{$application->id}/access_tokens")
+        $this->getJson("/common/applications/{$application->id}/access_tokens")
             ->assertOk()
             ->assertJsonCount(3)
             ->assertJsonMissingExact(['token' => $accessTokens->get(0)->token])
@@ -33,7 +36,7 @@ class AccessTokenControllerTest extends TestCase
         /** @var Application $application */
         $application = Application::factory()->create();
 
-        $accessToken = $this->postJson("/api/applications/{$application->id}/access_tokens", [
+        $accessToken = $this->postJson("/common/applications/{$application->id}/access_tokens", [
             'name' => 'My pretty token',
         ])
             ->assertCreated()
@@ -51,7 +54,7 @@ class AccessTokenControllerTest extends TestCase
         /** @var AccessToken $accessToken */
         $accessToken = AccessToken::factory()->create();
 
-        $this->deleteJson("/api/applications/{$accessToken->application_id}/access_tokens/{$accessToken->id}")
+        $this->deleteJson("/common/applications/{$accessToken->application_id}/access_tokens/{$accessToken->id}")
             ->assertNoContent();
 
         $this->assertNull($accessToken->fresh());
@@ -62,7 +65,7 @@ class AccessTokenControllerTest extends TestCase
         /** @var AccessToken $accessToken */
         $accessToken = AccessToken::factory()->create();
 
-        $this->delete("/api/applications/{$this->faker->uuid}/access_tokens/{$accessToken->id}")
+        $this->delete("/common/applications/{$this->faker->uuid}/access_tokens/{$accessToken->id}")
             ->assertNotFound();
 
         $this->assertNotNull($accessToken->fresh());

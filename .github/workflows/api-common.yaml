@@ -25,17 +25,18 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
 
       - name: Run composer install
-        run: composer install -n --prefer-dist
+        run: cd ${{ env.workingDirectory }}; composer install -n --prefer-dist
         env:
           APP_ENV: testing
 
       - name: Prepare Laravel Application
         run: |
+          cd ${{ env.workingDirectory }};
           cp .env.example .env
           php artisan key:generate
 
       - name: Run tests
-        run: ./vendor/bin/phpunit
+        run: cd ${{ env.workingDirectory }};./vendor/bin/phpunit
         env:
           APP_ENV: testing
 
@@ -122,4 +123,4 @@ jobs:
           push: true
           tags: ghcr.io/cerpus/edlib/api-common-migration:${{ steps.releaseName.outputs.release-name }}
           context: sourcecode/apis/common
-          target: migrations
+          target: deploy
