@@ -666,6 +666,8 @@ services:
     build:
       context: ./sourcecode/apis/common
       target: dev
+    env_file:
+      - ./localSetup/.env
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
     volumes:
