@@ -96,7 +96,7 @@ module.exports = {
             },
             {
               label: 'API documentation',
-              to: '/docs/developers/api-documentation',
+              to: '/docs/developers/api-documentation/introduction',
             },
             {
               label: 'Plugins',
