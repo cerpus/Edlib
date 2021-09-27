@@ -229,7 +229,7 @@ services:
   contentauthor-fpm:
     build:
       context: ./sourcecode/not_migrated/h5pviewer
-      target: phpfpm
+      target: phpfpm-dev
     env_file:
       - ./localSetup/projects/content-author/.env
     command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
