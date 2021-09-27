@@ -9,13 +9,9 @@ use Psr\Log\LoggerInterface;
 
 class AppTokenAuthenticator
 {
-    private LoggerInterface $logger;
-
     public function __construct(
-        LoggerInterface $logger
-    ) {
-        $this->logger = $logger;
-    }
+        private LoggerInterface $logger
+    ) {}
 
     public function __invoke(Request $request): ?Application
     {

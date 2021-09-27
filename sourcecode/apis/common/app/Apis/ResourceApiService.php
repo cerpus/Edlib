@@ -28,7 +28,7 @@ class ResourceApiService
             ->getAsync('/v1/resources/' . $resourceId)
             ->then(fn($response) => Util::decodeResponse($response))->wait();
 
-        return new Resource($resourceData);
+        return new Resource(...$resourceData);
     }
 
     /**
@@ -41,14 +41,15 @@ class ResourceApiService
             ->getAsync('/v1/resources/' . $resourceId . '/version')
             ->then(fn($response) => Util::decodeResponse($response))->wait();
 
-        return new ResourceVersion($resourceData);
+        return new ResourceVersion(...$resourceData);
     }
 
     /**
      * @param string $applicationId
      * @param string $context
-     * @param string[] $resourceIds
      * @param string[] $tenantIds
+     * @param string[] $resourceIds
+     * @param array|null $externalResources
      * @return bool
      */
     public function setResourceCollaborators(string $applicationId, string $context, array $tenantIds, ?array $resourceIds, ?array $externalResources): bool
@@ -60,7 +61,7 @@ class ResourceApiService
             'tenantIds' => $tenantIds
         ];
 
-        if ($externalResources != null) {
+        if ($externalResources !== null) {
             $data['externalResources'] = $externalResources;
         }
 
