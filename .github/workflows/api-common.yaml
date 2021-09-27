@@ -74,7 +74,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: check_if_should_release
-    if: needs.check_if_should_release.outputs.should-release == 'yes'
+#    if: needs.check_if_should_release.outputs.should-release == 'yes'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -103,7 +103,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-web:${{ steps.releaseName.outputs.release-name }}
+#          tags: ghcr.io/cerpus/edlib/api-common-web:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-web:${{ github.sha }}
           context: sourcecode/apis/common
           target: web
 
@@ -112,7 +113,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ steps.releaseName.outputs.release-name }}
+#          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ github.sha }}
           context: sourcecode/apis/common
           target: prod
 
@@ -121,6 +123,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ steps.releaseName.outputs.release-name }}
+#          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ github.sha }}
           context: sourcecode/apis/common
           target: migrations
