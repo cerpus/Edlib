@@ -1,0 +1,125 @@
+name: "API - Common"
+
+on:
+  push:
+    paths:
+      - "versions/**"
+      - "sourcecode/apis/common/**"
+      - ".github/workflows/api-common.yaml"
+
+env:
+  workingDirectory: sourcecode/apis/common
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+        env:
+          APP_ENV: testing
+
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests
+        run: ./vendor/bin/phpunit
+        env:
+          APP_ENV: testing
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: Logs
+          path: ./storage/logs
+
+  check_if_should_release:
+    runs-on: ubuntu-latest
+    needs: test
+    outputs:
+      should-release: ${{ steps.release-after-check.outputs.should-release || 'no' }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get specific changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v6.3
+        with:
+          files: |
+            versions/beta
+            versions/official
+
+      - name: Set should release to true if conditions are met
+        id: release-after-check
+        if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/official') && github.ref == 'refs/heads/master')
+        run: |
+          echo "::set-output name=should-release::yes"
+
+  release:
+    runs-on: ubuntu-latest
+    needs: check_if_should_release
+    if: needs.check_if_should_release.outputs.should-release == 'yes'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get release name
+        id: releaseName
+        uses: ./.github/actions/nodeJsApi
+
+      - name: Display release name
+        run: |
+          echo "Releasing ${{ steps.releaseName.outputs.release-name }}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub docker registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push web container
+        id: docker_build_web
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-common-web:${{ steps.releaseName.outputs.release-name }}
+          context: sourcecode/apis/common
+          target: web
+
+      - name: Build and push fpm container
+        id: docker_build_fpm
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ steps.releaseName.outputs.release-name }}
+          context: sourcecode/apis/common
+          target: prod
+
+      - name: Build and push migration container
+        id: docker_build_migration
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ steps.releaseName.outputs.release-name }}
+          context: sourcecode/apis/common
+          target: migrations
