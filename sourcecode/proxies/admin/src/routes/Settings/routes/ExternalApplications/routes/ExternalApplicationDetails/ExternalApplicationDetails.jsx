@@ -32,7 +32,7 @@ const ExternalApplicationDetails = ({
                 <Grid item>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link to="/">Edlib admin</Link>
-                        <Link to="/settings">Innstillinger</Link>
+                        <Link to="/settings">Settings</Link>
                         <Link to="/settings/external-applications">
                             External applications
                         </Link>
@@ -51,13 +51,16 @@ const ExternalApplicationDetails = ({
                 <Grid item md={6}>
                     <Paper>
                         <Box padding={2}>
+                            <strong>Application ID: </strong> {application.id}
+                        </Box>
+                        <Box padding={2}>
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={() => onCreate()}
                                 disabled={createStatus.loading}
                             >
-                                Lag ny
+                                Create new
                             </Button>
                         </Box>
                         {token && (

@@ -10,7 +10,26 @@ use function base64_encode;
 use function random_bytes;
 
 /**
+ * App\Models\AccessToken
+ *
  * @mixin IdeHelperAccessToken
+ * @property string $id
+ * @property string $name
+ * @property string $token
+ * @property string $application_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Application $application
+ * @method static \Database\Factories\AccessTokenFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereApplicationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereUpdatedAt($value)
  */
 class AccessToken extends Model
 {

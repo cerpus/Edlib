@@ -167,6 +167,10 @@ export default async ({ pubSubConnection }) => {
         '/v1/resources/by-external-references',
         runAsync(resourceController.getResourceFromExternalReferences)
     );
+    apiRouter.post(
+        '/v1/context-resource-collaborators',
+        runAsync(resourceController.setContextResourceCollaborators)
+    );
 
     /**
      * @swagger

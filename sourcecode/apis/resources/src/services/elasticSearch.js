@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import resourceService from './resource.js';
 
 export const syncResource = async (context, resource, waitForIndex) => {
@@ -32,6 +33,10 @@ export const syncResource = async (context, resource, waitForIndex) => {
         latestVersion.id
     );
 
+    const resourceCollaborators = await context.db.resourceCollaborator.getForResource(
+        resource.id
+    );
+
     const viewCount = await context.db.trackingResourceVersion.getCountForResource(
         latestVersion.resourceId
     );
@@ -56,10 +61,11 @@ export const syncResource = async (context, resource, waitForIndex) => {
             ? resourceVersionToElasticVersion(publicVersion)
             : null,
         protectedVersion: resourceVersionToElasticVersion(latestVersion),
-        protectedUserIds: [
+        protectedUserIds: _.uniq([
             latestVersion.ownerId,
             ...latestVersionCollaborators.map((c) => c.tenantId),
-        ],
+            ...resourceCollaborators.map((rc) => rc.tenantId),
+        ]),
         views: viewCount,
     };
 

@@ -30,7 +30,13 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+        'application-api' => [
+            'json.response',
+            'guardswitcher:application-api',
+            'auth',
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -53,5 +59,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'guardswitcher' => \App\Http\Middleware\GuardSwitcher::class,
+        'json.response' => \App\Http\Middleware\ForceJsonResponse::class
     ];
 }

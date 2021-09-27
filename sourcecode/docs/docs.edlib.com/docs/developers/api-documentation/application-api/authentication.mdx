@@ -1,0 +1,30 @@
+---
+sidebar_position: 1
+---
+
+# Authentication
+
+## Generate keys
+
+In order to make requests against this API you must create an application and token in the admin interface of edlib.
+
+You find the interface under settings > External applications.
+
+![External application list](/img/api-documentation-external-applications-1.png)
+
+If you don't have an external application you can create one by clicking "Create new" and giving it a name.
+You can now click on your application in the list to create a token. You can now press "Create new" and a new token will
+be generated for you.
+
+![External application](/img/api-documentation-external-applications-2.png)
+
+A green field will appear and you can now copy the token. You will not have the possibility to get it later so take good
+care of it. Above the "Create new" button you can also see the application id which you will also need to authenticate.
+
+## Make authenticated requests
+
+In order to make application requests you must set the following headers:
+1. `x-api-key` This is where you use the token.
+2. `x-api-client-id` This is where you use the application ID
+
+You are now all set to make requests to the API.
