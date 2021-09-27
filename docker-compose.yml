@@ -83,19 +83,6 @@ services:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
 
-  elasticsearch-curator:
-    image: "bitnami/elasticsearch-curator"
-    command: --config /etc/curator/config.yml /etc/curator/action.yml
-    environment:
-      ELASTICSEARCH_USERNAME: elastic
-      ELASTICSEARCH_PASSWORD: elasticpassword
-      CURATOR_MAX_AGE_DAYS: 15
-    volumes:
-      - ./localSetup/projects/elasticsearch-curator/config.yml:/etc/curator/config.yml
-      - ./localSetup/projects/elasticsearch-curator/action.yml:/etc/curator/action.yml
-    depends_on:
-      - elasticsearch
-
   kibana:
     image: docker.elastic.co/kibana/kibana:7.8.1
     environment:
@@ -106,23 +93,7 @@ services:
     ports:
       - 5601:5601
     depends_on:
-      - logstash
       - elasticsearch
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.8.1
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:9600]
-    ports:
-      - "5044:5044"
-    volumes:
-      - ./localSetup/projects/kibana/logstash.d/:/usr/share/logstash/pipeline/:ro
-    depends_on:
-      - elasticsearch
-    networks:
-      default:
-        aliases:
-          - logstash.elk
 
   nginx:
     build: ./localSetup/projects/nginx
@@ -157,20 +128,6 @@ services:
       test: [CMD, curl, -f, http://localhost:8888/health]
     ports:
       - 8888:8888
-
-  metadataservice:
-    image: dockerregistry.cerpus.net/cerpus/metadataservice:5a2adfc87daff6f606123bbfa1132f4e
-    environment:
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-    depends_on:
-      - postgres
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8080/health]
-    ports:
-      - 8091:8091
-      - 5503:5555
-    restart: on-failure
 
   versioningapi:
     build:
