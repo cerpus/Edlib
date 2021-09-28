@@ -11,12 +11,10 @@ server {
     try_files  $uri $uri/ /index.php?$query_string;
   }
 
-  set       $upstream ${PHP_FPM_HOST};
-
   location ~ \.php$ {
     try_files      $uri =404;
     include        fastcgi.conf;
-    fastcgi_pass   $upstream;
+    fastcgi_pass   ${PHP_FPM_HOST};
     fastcgi_index  index.php;
   }
 }

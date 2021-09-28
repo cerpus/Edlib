@@ -62,7 +62,7 @@ ENV APP_ENV=production \
 
 FROM nginx:1-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
-COPY docker/nginx/common.conf.template /etc/nginx/templates/
+COPY docker/nginx/common.conf.template /etc/nginx/templates/default.conf.template
 
 FROM prod AS deploy
 CMD [ "php", "artisan", "migrate", "--force" ]
