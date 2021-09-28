@@ -5,7 +5,7 @@ metadata:
   name: {{ .name }}-startup
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
 spec:
   template:
     spec:
