@@ -1,6 +1,9 @@
+upstream php {
+    server ${PHP_FPM_HOST};
+}
+
 server {
   listen  80;
-
   root         /var/www/edlibcommon/public;
   access_log   off;
 
@@ -12,9 +15,10 @@ server {
   }
 
   location ~ \.php$ {
-    try_files      $uri =404;
     include        fastcgi.conf;
-    fastcgi_pass   ${PHP_FPM_HOST};
+    try_files      $uri =404;
+    fastcgi_pass   php;
     fastcgi_index  index.php;
+    fastcgi_param  HTTPS 'on';
   }
 }
