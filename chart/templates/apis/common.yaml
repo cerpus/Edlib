@@ -2,4 +2,4 @@
 ---
 {{- template "helpers.service" (dict "name" "commonapi") }}
 ---
-{{- template "helpers.phpDeployment" (dict "name" "commonapi" "proxyImage" "ghcr.io/cerpus/edlib/api-common-web" "fpmImage" "ghcr.io/cerpus/edlib/api-common-fpm" "imageTag" .Chart.AppVersion "replicaCount" 1 ) }}
+{{- template "helpers.phpDeployment" (dict "name" "commonapi" "proxyImage" "ghcr.io/cerpus/edlib/api-common-web" "fpmImage" "ghcr.io/cerpus/edlib/api-common-fpm" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/internal/health" ) }}
