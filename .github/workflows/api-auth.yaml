@@ -1,4 +1,4 @@
-name: "api-auth"
+name: "API - Auth"
 
 on:
   push:
@@ -11,10 +11,6 @@ on:
         description: 'A version to release'
         required: true
         type: string
-    secrets:
-      githubToken:
-        description: 'A version to release'
-        required: true
 
 env:
   workingDirectory: sourcecode/apis/auth
@@ -41,21 +37,7 @@ jobs:
           run: cd ${{ env.workingDirectory }}; node node_modules/jest/bin/jest.js --runInBand --colors --verbose --forceExit --config=./jest.config.json
           shell: bash
 
-        - name: "echo"
-          run: |
-            echo "${{ github.event_name }}"
-            echo "${{ github.ref }}"
-            echo "${{ github.sha }}"
-            echo "${{ github.actor }}"
-            echo "${{ secrets.githubToken }}"
-            var="${{ secrets.githubToken }}"
-            echo ${#var}
-            echo "${{ secrets.GITHUB_TOKEN }}"
-            var2="${{ secrets.GITHUB_TOKEN }}"
-            echo ${#var2}
-          shell: bash
-
-  release:
+  create_release:
     runs-on: ubuntu-latest
     needs: test
     if: github.event_name == 'workflow_dispatch'
@@ -63,14 +45,6 @@ jobs:
         - uses: actions/checkout@v2
           with:
             fetch-depth: 0
-
-        - name: Get release name
-          id: releaseName
-          uses: ./.github/actions/nodeJsApi
-
-        - name: Display release name
-          run: |
-            echo "Releasing ${{ inputs.versionToRelease }}"
 
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v1
@@ -80,7 +54,7 @@ jobs:
           with:
             registry: ghcr.io
             username: ${{ github.actor }}
-            password: ${{ secrets.githubToken }}
+            password: ${{ github.token }}
 
         - name: Build and push app
           id: docker_build_app
@@ -99,6 +73,3 @@ jobs:
             tags: ghcr.io/cerpus/edlib/api-auth-migration:${{ inputs.versionToRelease }}
             context: sourcecode/apis/auth
             target: migrations
-
-        - name: Image digest
-          run: echo ${{ steps.docker_build.outputs.digest }}
