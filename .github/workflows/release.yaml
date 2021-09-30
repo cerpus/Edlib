@@ -25,7 +25,7 @@ jobs:
 
   release_api_auth:
     needs: get_ref
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@3f84fe73479f918989b957d2638b783221c0f0ca
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml
     with:
       versionToRelease: ${{ needs.get_ref.outputs.releaseRef }}
     secrets:
