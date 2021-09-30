@@ -25,7 +25,7 @@ jobs:
 
   release_api_auth:
     needs: get_ref
-    uses: ${{ github.repository }}/.github/workflows/api-auth.yaml@${{ needs.get_ref.outputs.releaseRef }}
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@939149ba9ad559c077bb4d0cc22b968dc8664c48
 
   create_release:
     name: Create Release
