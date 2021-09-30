@@ -11,6 +11,10 @@ on:
         description: 'A version to release'
         required: true
         type: string
+      GITHUB_TOKEN:
+        description: 'A version to release'
+        required: true
+        type: string
 
 env:
   workingDirectory: sourcecode/apis/auth
