@@ -114,7 +114,7 @@ jobs:
       - release_proxy_doku
       - release_proxy_iframe
       - release_proxy_lti
-      - release_proxy_recommedation
+      - release_proxy_recommendation
       - release_proxy_resource
       - release_proxy_url
     steps:
