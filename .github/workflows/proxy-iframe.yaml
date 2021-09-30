@@ -16,7 +16,7 @@ env:
   workingDirectory: sourcecode/proxies/iframe
 
 jobs:
-  release:
+  create_release:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
