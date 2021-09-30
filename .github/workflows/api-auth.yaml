@@ -11,10 +11,10 @@ on:
         description: 'A version to release'
         required: true
         type: string
-    secrets:
       githubToken:
-        description: 'A version to release'
+        description: 'GitHub token'
         required: true
+        type: string
 
 env:
   workingDirectory: sourcecode/apis/auth
@@ -47,8 +47,8 @@ jobs:
             echo "${{ github.ref }}"
             echo "${{ github.sha }}"
             echo "${{ github.actor }}"
-            echo "${{ secrets.githubToken }}"
-            var="${{ secrets.githubToken }}"
+            echo "${{ inputs.githubToken }}"
+            var="${{ inputs.githubToken }}"
             echo ${#var}
             echo "${{ secrets.GITHUB_TOKEN }}"
             var2="${{ secrets.GITHUB_TOKEN }}"
@@ -80,7 +80,7 @@ jobs:
           with:
             registry: ghcr.io
             username: ${{ github.actor }}
-            password: ${{ secrets.githubToken }}
+            password: ${{ inputs.githubToken }}
 
         - name: Build and push app
           id: docker_build_app

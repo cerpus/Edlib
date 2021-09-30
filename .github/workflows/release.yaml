@@ -21,9 +21,7 @@ jobs:
           if [ "${{ inputs.releaseName }}" != "" ]; then
             ref=${inputs.releaseName}
           fi
-          echo "${{ secrets.GITHUB_TOKEN }}"
-          var2="${{ secrets.GITHUB_TOKEN }}"
-          echo ${#var2}
+
           echo "::set-output name=releaseRef::$ref"
 
   release_api_auth:
@@ -31,8 +29,7 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
     with:
       versionToRelease: ${{ needs.get_ref.outputs.releaseRef }}
-    secrets:
-      githubToken: "dummydata"
+      githubToken: ${{ secrets.GITHUB_TOKEN }}
 
   create_release:
     name: Create Release
