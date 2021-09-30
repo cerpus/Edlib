@@ -3,9 +3,14 @@ name: "api-auth"
 on:
   push:
     paths:
-      - "versions/**"
       - "sourcecode/apis/auth/**"
       - ".github/workflows/api-auth.yaml"
+  workflow_call:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
 
 env:
   workingDirectory: sourcecode/apis/auth
@@ -32,34 +37,10 @@ jobs:
           run: cd ${{ env.workingDirectory }}; node node_modules/jest/bin/jest.js --runInBand --colors --verbose --forceExit --config=./jest.config.json
           shell: bash
 
-  check_if_should_release:
-    runs-on: ubuntu-latest
-    needs: test
-    outputs:
-      should-release: ${{ steps.release-after-check.outputs.should-release || 'no' }}
-    steps:
-        - uses: actions/checkout@v2
-          with:
-            fetch-depth: 0
-
-        - name: Get specific changed files
-          id: changed-files
-          uses: tj-actions/changed-files@v9.3
-          with:
-            files: |
-              versions/beta
-              versions/official
-
-        - name: Set should release to true if conditions are met
-          id: release-after-check
-          if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/official') && github.ref == 'refs/heads/master')
-          run: |
-            echo "::set-output name=should-release::yes"
-
   release:
     runs-on: ubuntu-latest
     needs: check_if_should_release
-    if: needs.check_if_should_release.outputs.should-release == 'yes'
+    if: github.event_name == 'workflow_call'
     steps:
         - uses: actions/checkout@v2
           with:
@@ -71,7 +52,7 @@ jobs:
 
         - name: Display release name
           run: |
-            echo "Releasing ${{ steps.releaseName.outputs.release-name }}"
+            echo "Releasing ${{ inputs.versionToRelease }}"
 
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v1
@@ -88,7 +69,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: ghcr.io/cerpus/edlib/api-auth-app:${{ steps.releaseName.outputs.release-name }}
+            tags: ghcr.io/cerpus/edlib/api-auth-app:${{ inputs.versionToRelease }}
             context: sourcecode/apis/auth
             target: prod
 
@@ -97,7 +78,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: ghcr.io/cerpus/edlib/api-auth-migration:${{ steps.releaseName.outputs.release-name }}
+            tags: ghcr.io/cerpus/edlib/api-auth-migration:${{ inputs.versionToRelease }}
             context: sourcecode/apis/auth
             target: migrations
 

@@ -5,12 +5,34 @@ on:
     inputs:
       releaseName:
         description: 'Name of release'
-        required: true
+        required: false
+        default: ''
 
 jobs:
-  createRelease:
+  get_ref:
+    runs-on: ubuntu-latest
+    outputs:
+      releaseRef: ${{ steps.get_ref.outputs.releaseRef }}
+    steps:
+      - name: Get the ref
+        id: get_ref
+        run: |
+          ref=$GITHUB_SHA
+          if [ "${{ inputs.releaseName }}" != "" ]; then
+            ref=${inputs.releaseName}
+          fi
+          echo "::set-output name=releaseRef::$ref"
+
+  release_api_auth:
+    needs: get_ref
+    uses: ${{ github.repository }}/.github/workflows/api-auth.yaml@${{ needs.get_ref.outputs.releaseRef }}
+
+  create_release:
     name: Create Release
     runs-on: ubuntu-latest
+    if: inputs.releaseName != ""
+    needs:
+      - release_api_auth
     steps:
       - name: Checkout code
         uses: actions/checkout@master
