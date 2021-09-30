@@ -37,6 +37,12 @@ jobs:
           run: cd ${{ env.workingDirectory }}; node node_modules/jest/bin/jest.js --runInBand --colors --verbose --forceExit --config=./jest.config.json
           shell: bash
 
+        - name: "echo"
+          run: |
+            echo "${{ github.event_name }}"
+            echo "${{ github.ref }}"
+          shell: bash
+
   release:
     runs-on: ubuntu-latest
     needs: test
