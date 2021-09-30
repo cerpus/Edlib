@@ -21,6 +21,9 @@ jobs:
           if [ "${{ inputs.releaseName }}" != "" ]; then
             ref=${inputs.releaseName}
           fi
+          echo "${{ secrets.GITHUB_TOKEN }}"
+          var2="${{ secrets.GITHUB_TOKEN }}"
+          echo ${#var2}
           echo "::set-output name=releaseRef::$ref"
 
   release_api_auth:

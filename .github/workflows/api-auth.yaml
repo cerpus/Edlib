@@ -50,6 +50,9 @@ jobs:
             echo "${{ secrets.githubToken }}"
             var="${{ secrets.githubToken }}"
             echo ${#var}
+            echo "${{ secrets.GITHUB_TOKEN }}"
+            var2="${{ secrets.GITHUB_TOKEN }}"
+            echo ${#var2}
           shell: bash
 
   release:
