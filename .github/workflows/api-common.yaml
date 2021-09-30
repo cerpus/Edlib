@@ -3,9 +3,14 @@ name: "API - Common"
 on:
   push:
     paths:
-      - "versions/**"
       - "sourcecode/apis/common/**"
       - ".github/workflows/api-common.yaml"
+  workflow_call:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
 
 env:
   workingDirectory: sourcecode/apis/common
@@ -47,46 +52,14 @@ jobs:
           name: Logs
           path: ./storage/logs
 
-  check_if_should_release:
+  create_release:
     runs-on: ubuntu-latest
     needs: test
-    outputs:
-      should-release: ${{ steps.release-after-check.outputs.should-release || 'no' }}
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      - name: Get specific changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v9.3
-        with:
-          files: |
-            versions/beta
-            versions/official
-
-      - name: Set should release to true if conditions are met
-        id: release-after-check
-        if: (contains(steps.changed-files.outputs.modified_files, 'versions/beta') && github.ref == 'refs/heads/beta') || (contains(steps.changed-files.outputs.modified_files, 'versions/official') && github.ref == 'refs/heads/master')
-        run: |
-          echo "::set-output name=should-release::yes"
-
-  release:
-    runs-on: ubuntu-latest
-    needs: check_if_should_release
-    if: needs.check_if_should_release.outputs.should-release == 'yes'
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Get release name
-        id: releaseName
-        uses: ./.github/actions/nodeJsApi
-
-      - name: Display release name
-        run: |
-          echo "Releasing ${{ steps.releaseName.outputs.release-name }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -96,14 +69,14 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build and push web container
         id: docker_build_web
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-web:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-web:${{ inputs.versionToRelease }}
           context: sourcecode/apis/common
           target: web
 
@@ -112,7 +85,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-fpm:${{ inputs.versionToRelease }}
           context: sourcecode/apis/common
           target: prod
 
@@ -121,6 +94,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ steps.releaseName.outputs.release-name }}
+          tags: ghcr.io/cerpus/edlib/api-common-migration:${{ inputs.versionToRelease }}
           context: sourcecode/apis/common
           target: deploy

@@ -29,6 +29,31 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_common:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-common.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_doku:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_lti:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_resources:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_url:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-url.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
   create_release:
     name: Create Release
