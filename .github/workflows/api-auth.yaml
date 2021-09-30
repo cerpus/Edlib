@@ -54,6 +54,9 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}"
             var2="${{ secrets.GITHUB_TOKEN }}"
             echo ${#var2}
+            echo "${{ github.token }}"
+            var3="${{ github.token }}"
+            echo ${#var3}
           shell: bash
 
   release:
@@ -81,7 +84,7 @@ jobs:
           with:
             registry: ghcr.io
             username: ${{ github.actor }}
-            password: ${{ inputs.githubToken }}
+            password: ${{ github.token }}
 
         - name: Build and push app
           id: docker_build_app

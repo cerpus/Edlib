@@ -19,8 +19,8 @@ jobs:
         id: get_ref
         run: |
           ref=$GITHUB_SHA
-          if [ "${{ inputs.releaseName }}" != "" ]; then
-            ref=${inputs.releaseName}
+          if [ -n "${{ inputs.releaseName }}" ]; then
+            ref="${{ inputs.releaseName }}"
           fi
 
           echo "::set-output name=releaseRef::$ref"
