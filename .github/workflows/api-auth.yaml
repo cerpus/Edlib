@@ -42,6 +42,8 @@ jobs:
             echo "${{ github.event_name }}"
             echo "${{ github.ref }}"
             echo "${{ github.sha }}"
+            echo "${{ github.actor }}"
+            echo "${{ secrets.GITHUB_TOKEN }}"
           shell: bash
 
   release:

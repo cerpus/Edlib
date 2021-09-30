@@ -28,6 +28,8 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/api-auth.yaml@3f84fe73479f918989b957d2638b783221c0f0ca
     with:
       versionToRelease: ${{ needs.get_ref.outputs.releaseRef }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create_release:
     name: Create Release
