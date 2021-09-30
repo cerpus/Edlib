@@ -9,10 +9,11 @@ on:
         default: ''
 
 jobs:
-  get_ref:
+  get_variables:
     runs-on: ubuntu-latest
     outputs:
       releaseRef: ${{ steps.get_ref.outputs.releaseRef }}
+      githubToken: ${{ steps.get_github_token.outputs.githubToken }}
     steps:
       - name: Get the ref
         id: get_ref
@@ -24,12 +25,17 @@ jobs:
 
           echo "::set-output name=releaseRef::$ref"
 
+      - name: Get the token
+        id: get_github_token
+        run: |
+          echo "::set-output name=githubToken::$GITHUB_TOKEN"
+
   release_api_auth:
-    needs: get_ref
+    needs: get_variables
     uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
     with:
-      versionToRelease: ${{ needs.get_ref.outputs.releaseRef }}
-      githubToken: ${{ secrets.GITHUB_TOKEN }}
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+      githubToken: ${{ needs.get_variables.outputs.githubToken }}
 
   create_release:
     name: Create Release
