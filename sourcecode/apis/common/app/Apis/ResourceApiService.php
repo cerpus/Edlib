@@ -73,4 +73,18 @@ class ResourceApiService
 
         return true;
     }
+
+    /**
+     * @param string $externalSystemName
+     * @param string $externalSystemId
+     * @return ResourceVersion
+     */
+    public function ensureResourceExists(string $externalSystemName, string $externalSystemId): ResourceVersion
+    {
+        $resourceVersionData = $this->client
+            ->postAsync("/v1/external-systems/$externalSystemName/resources/$externalSystemId")
+            ->then(fn($response) => Util::decodeResponse($response))->wait();
+
+        return new ResourceVersion(...$resourceVersionData);
+    }
 }

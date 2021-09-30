@@ -8,14 +8,16 @@ use App\Apis\ResourceApiService;
 class Resource
 {
     public function __construct(
-        public string  $id,
-        public string  $resourceGroupId,
-        public ?string $deletedReason,
-        public ?string $deletedAt,
-        public string  $updatedAt,
-        public string  $createdAt,
+        public string           $id,
+        public string           $resourceGroupId,
+        public ?string          $deletedReason,
+        public ?string          $deletedAt,
+        public string           $updatedAt,
+        public string           $createdAt,
+        public ?ResourceVersion $version = null,
     )
-    {}
+    {
+    }
 
     public static function getById(string $id): Resource
     {
@@ -25,5 +27,13 @@ class Resource
     public function getPublishedResourceVersion(): ?ResourceVersion
     {
         return App::call(fn(ResourceApiService $resourceApiService) => $resourceApiService->getPublishedResourceVersion($this->id));
+    }
+
+    /**
+     * @param ResourceVersion|null $version
+     */
+    public function setVersion(?ResourceVersion $version): void
+    {
+        $this->version = $version;
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App;
 use App\Apis\ResourceApiService;
 use App\Http\Requests\SetResourceCollaboratorsRequest;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
