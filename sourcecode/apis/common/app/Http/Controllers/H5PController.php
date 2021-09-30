@@ -31,7 +31,7 @@ final class H5PController extends Controller
         $resource = $this->resourceApiService->getResource($resourceVersion->resourceId);
         $ltiUsage = $this->ltiApiService->createUsage($resourceVersion->resourceId, $resourceVersion->id);
 
-        $resource->setVersion($resourceVersion);
+        $resource->version = $resourceVersion;
 
         return new JsonResponse([
             "resource" => $resource,

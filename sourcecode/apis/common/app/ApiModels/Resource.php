@@ -28,12 +28,4 @@ class Resource
     {
         return App::call(fn(ResourceApiService $resourceApiService) => $resourceApiService->getPublishedResourceVersion($this->id));
     }
-
-    /**
-     * @param ResourceVersion|null $version
-     */
-    public function setVersion(?ResourceVersion $version): void
-    {
-        $this->version = $version;
-    }
 }
