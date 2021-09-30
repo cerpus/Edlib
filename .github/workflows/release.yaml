@@ -28,11 +28,11 @@ jobs:
 
   release_api_auth:
     needs: get_ref
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
     with:
       versionToRelease: ${{ needs.get_ref.outputs.releaseRef }}
     secrets:
-      githubToken: ${{ secrets.GITHUB_TOKEN }}
+      githubToken: "dummydata"
 
   create_release:
     name: Create Release
