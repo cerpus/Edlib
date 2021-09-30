@@ -48,6 +48,7 @@ jobs:
             echo "${{ github.sha }}"
             echo "${{ github.actor }}"
             echo "${{ inputs.githubToken }}"
+            echo "${{ inputs.versionToRelease }}"
             var="${{ inputs.githubToken }}"
             echo ${#var}
             echo "${{ secrets.GITHUB_TOKEN }}"
