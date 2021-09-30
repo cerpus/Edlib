@@ -32,7 +32,7 @@ jobs:
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
-    if: inputs.releaseName != ""
+    if: inputs.releaseName != ''
     needs:
       - release_api_auth
     steps:
