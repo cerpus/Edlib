@@ -8,14 +8,16 @@ use App\Apis\ResourceApiService;
 class Resource
 {
     public function __construct(
-        public string  $id,
-        public string  $resourceGroupId,
-        public ?string $deletedReason,
-        public ?string $deletedAt,
-        public string  $updatedAt,
-        public string  $createdAt,
+        public string           $id,
+        public string           $resourceGroupId,
+        public ?string          $deletedReason,
+        public ?string          $deletedAt,
+        public string           $updatedAt,
+        public string           $createdAt,
+        public ?ResourceVersion $version = null,
     )
-    {}
+    {
+    }
 
     public static function getById(string $id): Resource
     {

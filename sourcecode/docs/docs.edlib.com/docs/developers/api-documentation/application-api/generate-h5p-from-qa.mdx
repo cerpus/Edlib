@@ -1,0 +1,71 @@
+---
+sidebar_position: 3
+---
+
+# Generate H5P From QA
+
+## Set collaborator context
+
+**Path:** /common/app/h5p/generate-from-qa<br/>
+**Method:** POST<br/>
+**Body**
+
+```json
+{
+	"title": "This is the title", // Required
+	"sharing": true, // Required
+	"published": true, // Required
+	"license": "by", // Required
+	"authId": "1", // Required
+	"questions": [ // Required at least one element
+		{
+			"type": "H5P.MultiChoice", // Required
+			"text": "test", // Required
+			"answers": [ // Required at least one element
+				{
+					"text": "w", // Required
+					"correct": false // Required
+				},
+				{
+					"text": "w2", // Required
+					"correct": true // Required
+				}
+			]
+		}
+	]
+}
+```
+
+***Resposne***
+```json
+{
+  "resource": {
+    "id": "7d9a225d-f155-45e4-9db7-01c6a0d643af",
+    "resourceGroupId": "3c9d9e2e-6023-4724-8abd-b5718ff04b90",
+    "deletedReason": null,
+    "deletedAt": null,
+    "updatedAt": "2021-09-30T07:47:29.000Z",
+    "createdAt": "2021-09-30T07:47:29.000Z",
+    "version": {
+      "id": "aef52273-dfa6-46f6-bf42-a5497339c667",
+      "resourceId": "7d9a225d-f155-45e4-9db7-01c6a0d643af",
+      "externalSystemName": "contentauthor",
+      "externalSystemId": "51",
+      "title": "This is the title",
+      "description": null,
+      "isPublished": true,
+      "isListed": true,
+      "isDraft": false,
+      "license": "by",
+      "language": true,
+      "contentType": "h5p.questionset",
+      "ownerId": "1",
+      "maxScore": null,
+      "authorOverwrite": null,
+      "updatedAt": "2021-09-30T07:47:29.000Z",
+      "createdAt": "2021-09-30T07:47:29.000Z"
+    }
+  },
+  "usageId": "f1c5174f-fc6e-44cd-a95d-a9f9ee862e95"
+}
+```

@@ -189,6 +189,7 @@ services:
       target: phpfpm-dev
     env_file:
       - ./localSetup/projects/content-author/.env
+      - ./localSetup/.env
     command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
     healthcheck:
       test: [CMD, nc, -z, localhost, '31004']
@@ -672,5 +673,6 @@ services:
       test: [CMD, nc, -z, localhost, '9000']
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
+      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
