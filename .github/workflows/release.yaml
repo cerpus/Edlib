@@ -27,74 +27,74 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_common:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-common.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-common.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_doku:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_resources:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_url:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-url.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/api-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
 # ---------- Proxies -----------------
   release_proxy_admin:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_doku:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_iframe:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_recommendation:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-recommendation.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-recommendation.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_resource:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_proxy_url:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@improve-release
+    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
