@@ -73,6 +73,3 @@ jobs:
           tags: ghcr.io/cerpus/edlib/api-url-migration:${{ inputs.versionToRelease }}
           context: sourcecode/apis/url
           target: migrations
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}

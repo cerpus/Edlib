@@ -24,6 +24,7 @@ jobs:
 
           echo "::set-output name=releaseRef::$ref"
 
+# ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
     uses: cerpus/Edlib/.github/workflows/api-auth.yaml@improve-release
@@ -55,12 +56,67 @@ jobs:
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
+# ---------- Proxies -----------------
+  release_proxy_admin:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_auth:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_doku:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_iframe:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_lti:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_recommendation:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-recommendation.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_resource:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_proxy_url:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@improve-release
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
     if: github.event.inputs.releaseName != ''
     needs:
       - release_api_auth
+      - release_api_common
+      - release_api_doku
+      - release_api_lti
+      - release_api_resources
+      - release_api_url
+      - release_proxy_admin
+      - release_proxy_auth
+      - release_proxy_doku
+      - release_proxy_iframe
+      - release_proxy_lti
+      - release_proxy_recommedation
+      - release_proxy_resource
+      - release_proxy_url
     steps:
       - name: Checkout code
         uses: actions/checkout@master
