@@ -48,7 +48,8 @@ jobs:
             echo "${{ github.sha }}"
             echo "${{ github.actor }}"
             echo "${{ secrets.githubToken }}"
-            echo ${#"${{ secrets.githubToken }}"}
+            var="${{ secrets.githubToken }}"
+            echo ${#var}
           shell: bash
 
   release:
