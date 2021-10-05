@@ -1,0 +1,26 @@
+.embedCard {
+  margin-top: 10px;
+  border: 1px solid gray;
+
+  .embedCardContent {
+    padding: 5px;
+  }
+
+  .embedCardImage {
+    max-width: 100%;
+  }
+
+  .embedCardTitle {
+    font-size: 1.2em;
+  }
+
+  .embedCardDescription {
+    margin-top: 5px;
+  }
+
+  .embedCardMeta {
+    font-style: italic;
+    font-size: 0.8em;
+    margin-top: 5px;
+  }
+}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Application Test Suite">
+            <directory suffix="Test.php">./tests/</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">app/</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_URL" value="http://localhost"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="DB_CONNECTION" value="sqlite-test"/>
+        <env name="ENABLE_LICENSING" value="true"/>
+        <env name="FEATURE_VERSIONING" value="true"/>
+        <env name="FEATURE_CONTENT_LOCKING" value="true"/>
+        <env name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
+        <env name="FEATURE_COLLABORATION" value="true"/>
+        <env name="UPLOAD_STORAGE_DRIVER" value="local"/>
+        <env name="UPLOAD_STORAGE_PATH_ARTICLE" value="/tmp/articletest"/>
+        <env name="UPLOAD_STORAGE_PATH_H5P" value="/tmp/h5pstoragetest"/>
+        <env name="LICENSE_SITE" value="ContentAuthorTest"/>
+        <env name="H5P_CONSUMER_KEY" value="h5p"/>
+        <env name="H5P_CONSUMER_SECRET" value="secret2"/>
+        <env name="TEST_FS_ROOT" value="/tmp"/>
+        <env name="MAIL_PRETEND" value="true"/>
+        <env name="MAIL_DRIVER" value="log"/>
+        <env name="CERPUS_AUTH_SERVER" value=""/>
+        <env name="CERPUS_CORE_SERVER" value=""/>
+        <env name="VERSION_API_SERVER" value="http://versionApiServer.local"/>
+        <env name="XAPI_ENDPOINT" value=""/>
+        <env name="OER_LICENSES_URL" value=""/>
+        <env name="LICENSE_SERVER" value=""/>
+        <env name="METADATA_SERVER" value=""/>
+        <env name="METADATA_PUBLISHED_FIELD" value="true"/>
+        <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
+        <env name="FEATURE_ENABLE_DRAFT_LOGIC" value="false"/>
+        <env name="ENABLE_CLOUD_STORAGE" value="false"/>
+        <env name="FEATURE_ENABLE_RECOMMENDATION_ENGINE" value="false"/>
+    </php>
+</phpunit>

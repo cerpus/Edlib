@@ -1,0 +1,81 @@
+{
+  "semantics":[
+    {
+      "label":"Slika"
+    },
+    {
+      "label":"Alternativni tekst",
+      "description":"Obavezno. U slučaju da se slika ne pokaže onda će se pokazati ovaj tekst ili biti elektronskm glasom pročitan."
+    },
+    {
+      "label":"Hover Tekst",
+      "description":"Opcionalno. Ovaj tekst će se pokazati kada mišom prelazimo preko slike."
+    },
+    {
+      "label":"Zaštita autorskih prava",
+      "fields":[
+        {
+          "label":"Naziv",
+          "placeholder":"La Gioconda"
+        },
+        {
+          "label":"Autor",
+          "placeholder":"Leonardo da Vinci"
+        },
+        {
+          "label":"Izvor",
+          "placeholder":"http://en.wikipedia.org/wiki/Mona_Lisa",
+          "regexp":{
+            
+          }
+        },
+        {
+          "label":"Licenca",
+          "default":"U",
+          "options":[
+            {
+              "label":"Neodređeno"
+            },
+            {
+              "label":"Imenovanje (CC BY)"
+            },
+            {
+              "label":"Imanovanje-Dijeli pod istim uvjetima (CC BY-SA)"
+            },
+            {
+              "label":"Imenovanje-Bez izmjene (CC BY-ND)"
+            },
+            {
+              "label":"Imenovanje-Nekomercionalno (CC BY-NC)"
+            },
+            {
+              "label":"Imenovanje-Nekomercionalno-Dijeli pod istim uvjetima (CC BY-NC-SA)"
+            },
+            {
+              "label":"Imenovanje-Nekomercionalno-Bez izmjene (CC BY-NC-ND)"
+            },
+            {
+              "label":"Opća javna licenca (General Public License)"
+            },
+            {
+              "label":"(Public Domain)"
+            },
+            {
+              "label":"Public Domain Dedication and Licence"
+            },
+            {
+              "label":"Public Domain Mark"
+            },
+            {
+              "label":"Prava zadržana"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label":"Naziv slike",
+      "default":"Image"
+    }
+  ]
+}

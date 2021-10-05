@@ -1,0 +1,52 @@
+.richeditor-container {
+  position: relative;
+}
+
+.richeditor-content {
+  overflow: hidden;
+
+  .richeditor-input {
+    margin-bottom: 1px;
+    min-height: 26px;
+    border: 1px solid transparent;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+
+    & > p:last-child {
+      margin-bottom: 0;
+    }
+
+  }
+
+  .richeditor-input.cke_focus {
+    outline: 0;
+    border: 1px solid #808080;
+    border-top-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+}
+
+.richeditor-placeholder {
+  position: relative;
+  font-style: italic;
+  min-height: 26px;
+  border: 1px solid transparent;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+  margin-bottom: 1px;
+}
+
+.richeditor-invisible {
+  display: none;
+}
+
+.richeditor-editable {
+  cursor: text;
+}
+
+.richeditor-readonly {
+  cursor: not-allowed;
+}

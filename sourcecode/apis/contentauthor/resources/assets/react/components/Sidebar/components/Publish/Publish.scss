@@ -1,0 +1,13 @@
+.publish-box {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+
+  :first-child {
+    margin-right: auto;
+  }
+
+  & > svg {
+    margin-right: 1rem;
+  }
+}

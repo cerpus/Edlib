@@ -1,0 +1,235 @@
+@import "_functions";
+
+$articleFontSize: 16;
+$articleFontSizeUnit: $articleFontSize + px;
+
+.edlib-article {
+  p,
+  div {
+    line-height: line-height(21, 31);
+  }
+
+  h1 {
+    font-weight: 600;
+    font-size: em(32, $articleFontSize);
+    line-height: line-height(32, 42);
+  }
+
+  h2 {
+    font-size: em(22, $articleFontSize);
+    line-height: line-height(22, 32);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: em(20, $articleFontSize);
+    line-height: line-height(20, 30);
+    font-weight: 700;
+  }
+
+  .ingress {
+    font-weight: 300;
+    font-size: em(26, $articleFontSize);
+    line-height: line-height(26, 36);
+    padding: 0 0.33rem;
+  }
+
+  ul, ol {
+    margin: em(20, $articleFontSize) 0;
+    @include respond-to('tabletAndUp') {
+      padding: 0 1.6rem 0 3.1rem;
+    }
+  }
+
+  ol {
+    counter-reset: item;
+  }
+
+  ul {
+    list-style-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='3' cy='5' r='3' fill='%23507aa4 ' /></svg>");
+  }
+
+  li {
+    line-height: line-height(20, 30);
+  }
+
+  ol > li {
+    position: relative;
+    display: block;
+    margin-left: 1rem;
+    margin-bottom: 1.6rem;
+  }
+
+  ol > li:before {
+    position: absolute;
+    content: counter(item);
+    counter-increment: item;
+    display: flex;
+    top: em(-3, $articleFontSize);
+    left: em(-45, $articleFontSize);
+    line-height: 26px;
+    height: em(30, $articleFontSize);
+    width: em(30, $articleFontSize);
+    border: 2px solid #777;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .infobox {
+    padding: 1.5rem;
+    border: 1px solid #a5bcd3;
+    clear: both;
+    display: block;
+    margin-top: 1rem;
+
+    ul, ol {
+      counter-reset: item;
+    }
+
+    ul + & {
+      float: left;
+      width: 100%;
+    }
+
+    & + p {
+      margin-top: em(20, $articleFontSize);
+    }
+  }
+
+  table {
+    width: 100% !important;
+
+    td, th {
+      padding: 5px;
+    }
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  clear: initial;
+}
+
+
+p.mediawrapper + ul {
+  clear: both;
+}
+
+.specialContainer {
+  padding: 5px 10px;
+  background: #eee;
+  border: 1px solid #ccc;
+}
+
+.hide {
+  visibility: visible;
+}
+
+.contentbrowser_link_text {
+  display: block;
+}
+
+img {
+  height: auto;
+
+  .image_normal {
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+
+  &.right {
+    @extend .image_normal;
+    float: right;
+    margin-left: 15px;
+  }
+
+  &.left {
+    @extend .image_normal;
+    float: left;
+    margin-right: 15px;
+  }
+
+  &.img_25 {
+    width: 100% !important;
+    @include respond-to('tabletAndUp') { width: 25% !important; }
+  }
+  &.img_50 {
+    width: 100% !important;
+    @include respond-to('tabletAndUp') { width: 50% !important; }
+  }
+  &.img_66 {
+    width: 100% !important;
+    @include respond-to('tabletAndUp') { width: 66% !important; }
+  }
+  &.img_100 {
+    width: 100% !important;
+  }
+}
+
+blockquote {
+    font-style: italic;
+    font-size: $articleFontSizeUnit;
+    margin: 20px 40px;
+}
+
+.edlib-article,
+.edlib_container,
+.edlib_resource {
+  width: 100%;
+}
+
+.edlib-article {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.edlib_resource {
+  margin: 0.6rem 0;
+}
+
+.edlib_container iframe {
+  width: 100%;
+}
+
+img[style*="float:right"],
+img[style*="float: right"] {
+  padding: 10px 0 10px 10px;
+  clear: right;
+}
+
+img[style*="float:left"],
+img[style*="float: left"] {
+  padding: 10px 10px 10px 0;
+  clear: left;
+}
+
+p img[style*="float:left"]:first-child,
+p img[style*="float: left"]:first-child,
+p img[style*="float:right"]:first-child,
+p img[style*="float: right"]:first-child {
+  padding-top: 0;
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+  height: auto !important;
+}
+
+article footer {
+  word-break: break-word;
+}
+
+.clearfix:after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+.clearfix {
+  display: inline-block;
+}
+.clearfix {
+  display: block;
+}

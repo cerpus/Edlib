@@ -1,0 +1,16 @@
+/bootstrap/
+/database/
+/ndladata/
+/config/
+/public/
+/app/
+/node_modules/
+/resources/assets/css/
+/resources/assets/js/
+/resources/assets/sass/
+/resources/assets/fonts/
+/resources/views/
+/resources/lang/
+/tests/
+/vendor/
+/storage/

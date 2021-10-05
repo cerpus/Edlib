@@ -1,0 +1,81 @@
+{
+  "semantics":[
+    {
+      "label":"Kuva"
+    },
+    {
+      "label":"Vaihtoehtoinen kuvaus",
+      "description":"Vaaditaan. Näytetään, jos selain ei saa ladattua kuvaa. Kuvausta käyttävät myös ruudunlukijasovellukset."
+    },
+    {
+      "label":"Hover",
+      "description":"Valinnainen. Näytetään, kun käyttäjä pitää kursosia kuvan päällä."
+    },
+    {
+      "label":"Tekijänoikeustiedot",
+      "fields":[
+        {
+          "label":"Nimi",
+          "placeholder":"Mona Lisa"
+        },
+        {
+          "label":"Tekijä",
+          "placeholder":"Leonardo da Vinci"
+        },
+        {
+          "label":"Lähde",
+          "placeholder":"http://en.wikipedia.org/wiki/Mona_Lisa",
+          "regexp":{
+            
+          }
+        },
+        {
+          "label":"Lisenssi",
+          "default":"U",
+          "options":[
+            {
+              "label":"Undisclosed"
+            },
+            {
+              "label":"Attribution"
+            },
+            {
+              "label":"Attribution-ShareAlike"
+            },
+            {
+              "label":"Attribution-NoDerivs"
+            },
+            {
+              "label":"Attribution-NonCommercial"
+            },
+            {
+              "label":"Attribution-NonCommercial-ShareAlike"
+            },
+            {
+              "label":"Attribution-NonCommercial-NoDerivs"
+            },
+            {
+              "label":"General Public License"
+            },
+            {
+              "label":"Public Domain"
+            },
+            {
+              "label":"Public Domain Dedication and Licence"
+            },
+            {
+              "label":"Public Domain Mark"
+            },
+            {
+              "label":"Copyright"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label":"Sisältötyypin nimi",
+      "default":"Kuva"
+    }
+  ]
+}

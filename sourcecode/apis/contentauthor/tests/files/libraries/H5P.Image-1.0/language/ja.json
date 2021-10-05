@@ -1,0 +1,81 @@
+{
+  "semantics":[
+    {
+      "label":"画像"
+    },
+    {
+      "label":"代替テキスト",
+      "description":"必須。ブラウザーが画像をロードできない場合は、このテキストが代わりに表示されます。また、  リードスピーカーによって使用されます。"
+    },
+    {
+      "label":"ホバーテキスト",
+      "description":"省略可能です。このテキストは、ユーザーが画像の上にポインティング デバイスを置いたときに表示されます。"
+    },
+    {
+      "label":"著作権情報",
+      "fields":[
+        {
+          "label":"タイトル",
+          "placeholder":"La Gioconda"
+        },
+        {
+          "label":"作者",
+          "placeholder":"Leonardo da Vinci"
+        },
+        {
+          "label":"ソース",
+          "placeholder":"http://en.wikipedia.org/wiki/Mona_Lisa",
+          "regexp":{
+            
+          }
+        },
+        {
+          "label":"ライセンス",
+          "default":"U",
+          "options":[
+            {
+              "label":"Undisclosed"
+            },
+            {
+              "label":"Attribution"
+            },
+            {
+              "label":"Attribution-ShareAlike"
+            },
+            {
+              "label":"Attribution-NoDerivs"
+            },
+            {
+              "label":"Attribution-NonCommercial"
+            },
+            {
+              "label":"Attribution-NonCommercial-ShareAlike"
+            },
+            {
+              "label":"Attribution-NonCommercial-NoDerivs"
+            },
+            {
+              "label":"General Public License"
+            },
+            {
+              "label":"Public Domain"
+            },
+            {
+              "label":"Public Domain Dedication and Licence"
+            },
+            {
+              "label":"Public Domain Mark"
+            },
+            {
+              "label":"Copyright"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label":"画像のコンテンツ名",
+      "default":"画像"
+    }
+  ]
+}

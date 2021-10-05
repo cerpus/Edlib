@@ -1,0 +1,42 @@
+@import 'resources/assets/sass/_admin_variables';
+
+.infobox {
+    background-color: $questionset-primary-color;
+    padding: 8px;
+    color: #FFF;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+
+    .infotext {
+        margin: 8px;
+        @include respond-to('tabletAndUp') {
+            flex: 6;
+        }
+    }
+
+    .infoactions {
+        width: 100%;
+        @include respond-to('tabletAndUp') {
+            flex: 4;
+            text-align: right;
+        }
+    }
+
+    .infoicon {
+        height: 60px;
+        margin: 0 -10px;
+    }
+
+    .goback {
+        border-color: #FFF;
+        text-transform: initial;
+        margin-top: 8px;
+    }
+
+    .generate {
+        color: $questionset-primary-color;
+        text-transform: initial;
+        background-color: $gray-lighter;
+    }
+}

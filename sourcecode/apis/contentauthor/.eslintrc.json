@@ -1,0 +1,274 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:node/recommended-module"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "plugins": [
+        "react",
+        "jsx-a11y",
+        "react-hooks"
+    ],
+    "rules": {
+
+        // ESLint rules: http://eslint.org/docs/rules
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "eqeqeq": "warn",
+        "no-eval": [
+            "error",
+            {
+                "allowIndirect": false
+            }
+        ],
+        "no-multi-spaces": "error",
+        "key-spacing": [
+            "error",
+            {
+                "beforeColon": false,
+                "afterColon": true,
+                "mode": "strict"
+            }
+        ],
+        "dot-notation": "error",
+        "no-trailing-spaces": "error",
+        "no-new-require": "error",
+        "no-path-concat": "error",
+        "no-sync": "error",
+        "camelcase": [
+            "error",
+            {
+                "properties": "never"
+            }
+        ],
+        "curly": "error",
+        "no-alert": "error",
+        "no-implicit-coercion": "error",
+        "no-new-wrappers": "error",
+        "no-new-object": "error",
+        "no-useless-call": "error",
+        "no-useless-concat": "error",
+        "no-useless-escape": "error",
+        "radix": "error",
+        "yoda": "error",
+        "strict": ["error", "global"],
+        "no-undefined": "error",
+        "comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "never"
+        }],
+        "eol-last": ["error", "always"],
+        "jsx-quotes": ["error", "prefer-double"],
+        "no-array-constructor": "error",
+        "no-param-reassign": "error",
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "named": "never"
+            }
+        ],
+        "space-before-blocks": "error",
+        "array-callback-return": "error",
+        "arrow-parens": "off",
+        "arrow-spacing": [
+            "error",
+            {
+                "before": true,
+                "after": true
+            }
+        ],
+        "no-const-assign": "error",
+        "no-var": "error",
+        "prefer-const": "error",
+        "prefer-spread": "off",
+        "prefer-rest-params": "error",
+        "valid-typeof": [
+            "error",
+            {
+                "requireStringLiterals": true
+            }
+        ],
+        "func-style": "off",
+        "func-names": "warn",
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 2,
+                "maxEOF": 1
+            }
+        ],
+        "no-ternary": "off",
+        "no-nested-ternary": "error",
+        "no-unneeded-ternary": [
+            2,
+            {
+                "defaultAssignment": false
+            }
+        ],
+        "comma-spacing": [
+            2,
+            {
+                "before": false,
+                "after": true
+            }
+        ],
+        "comma-style": ["error", "last"],
+        "no-new-symbol": "error",
+        "prefer-arrow-callback": "error",
+        "no-process-env": "error",
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "always",
+                "prev": "function",
+                "next": "function"
+            }
+        ],
+        "keyword-spacing": ["error", {
+            "before": true,
+            "after": true,
+            "overrides": {
+                "return": { "after": true },
+                "throw": { "after": true },
+                "case": { "after": true }
+            }
+        }],
+        "space-infix-ops": "error",
+        "padded-blocks": ["error", {
+            "blocks": "never",
+            "classes": "never",
+            "switches": "never"
+        }],
+        "no-spaced-func": "error",
+        "nonblock-statement-body-position": [
+            "error",
+            "beside", {
+                "overrides": {}
+            }
+        ],
+        "brace-style": [
+            "error",
+            "1tbs", {
+                "allowSingleLine": true
+            }
+        ],
+        "object-curly-spacing": ["error", "always"],
+        "no-empty-function": ["error", {
+            "allow": [
+                "arrowFunctions",
+                "functions",
+                "methods"
+            ]
+        }],
+
+        // React plugin rules: https://github.com/yannickcr/eslint-plugin-react
+        "react/no-string-refs": "error",
+        "react/no-danger": "error",
+        "react/no-unknown-property": "error",
+        "react/react-in-jsx-scope": "error",
+        "react/jsx-boolean-value": [
+            "error",
+            "always"
+        ],
+        "react/jsx-first-prop-new-line": [
+            "error",
+            "multiline"
+        ],
+        "react/jsx-handler-names": [
+            "error",
+            {
+                "eventHandlerPrefix": "handle",
+                "eventHandlerPropPrefix": "on"
+            }
+        ],
+        "react/jsx-indent": "error",
+        "react/jsx-key": "error",
+        "react/jsx-wrap-multilines": "error",
+        "react/self-closing-comp": [
+            "error",
+            {
+                "component": true,
+                "html": true
+            }
+        ],
+        "react/jsx-curly-spacing": "error",
+        "react/jsx-tag-spacing": "error",
+        "react/jsx-closing-bracket-location": "error",
+        "react/no-is-mounted": "error",
+        "react/no-multi-comp": [
+            "error",
+            {
+                "ignoreStateless": true
+            }
+        ],
+        "react/no-will-update-set-state": "error",
+        "react/no-deprecated": "error",
+        "react/jsx-no-target-blank": "error",
+        "react/prefer-es6-class": ["error", "always"],
+        "react/jsx-no-bind": ["error", {
+            "ignoreRefs": true,
+            "allowArrowFunctions": true,
+            "allowBind": false
+        }],
+        "react/jsx-no-duplicate-props": ["error", { "ignoreCase": true }],
+        "react/jsx-no-literals": ["off", { "noStrings": true }],
+        "react/jsx-pascal-case": ["error", {
+            "allowAllCaps": true,
+            "ignore": []
+        }],
+
+        // JSX accessibility rules: https://github.com/evcohen/eslint-plugin-jsx-a11y
+        "jsx-a11y/alt-text": ["error", {
+            "elements": ["img", "object", "area", "input[type=\"image\"]"],
+            "img": [],
+            "object": [],
+            "area": [],
+            "input[type=\"image\"]": []
+        }],
+        "jsx-a11y/img-redundant-alt": "error",
+        "jsx-a11y/label-has-for": ["error", { "components": ["label"] }],
+
+        // React Hooks
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
+    }
+}

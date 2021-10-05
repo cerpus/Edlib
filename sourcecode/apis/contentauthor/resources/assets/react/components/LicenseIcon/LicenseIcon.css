@@ -1,0 +1,26 @@
+.license-icon-container {
+    position: relative;
+    height: 16px;
+    line-height: initial;
+    margin: 0 10px;
+}
+
+.edll-1x {
+    height: 1.33em;
+}
+
+.edll-2x {
+    height: 3em;
+}
+
+.edll-3x {
+    height: 4em;
+}
+
+.edll-4x {
+    height: 5em;
+}
+
+.edll-5x {
+    height: 6em;
+}

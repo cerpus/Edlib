@@ -1,0 +1,45 @@
+@import 'resources/assets/sass/_admin_variables';
+
+.footerbox {
+    padding: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+
+    & > div {
+        margin: 10px;
+    }
+
+    button {
+        height: 40px;
+    }
+
+    .infoicon {
+        height: 60px;
+        margin: 0 -10px;
+    }
+
+    .goback {
+        text-transform: initial;
+    }
+
+    .generate {
+        background-color: $questionset-primary-color;
+        text-transform: initial;
+        color: #FFF;
+
+        &:disabled {
+            background-color: transparentize($questionset-primary-color, 0.2);
+            color: #FFF;
+        }
+
+        &:hover {
+            background-color: darken($questionset-primary-color, 10%);
+        }
+    }
+
+    .rightFooter {
+        text-align: center;
+    }
+}

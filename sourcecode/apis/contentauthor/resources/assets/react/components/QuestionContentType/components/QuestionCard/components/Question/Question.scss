@@ -1,0 +1,19 @@
+.questionContainer {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  padding: 8px;
+
+  .richeditor-container {
+    width: 100%;
+    border-bottom: 2px solid #e4e3e3;
+  }
+}
+
+.questionContainerDisplay {
+  margin-top: 10px;
+  width: 100%;
+  border-bottom: 1px solid #E0E0E0;
+  padding-bottom: 6px;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,18 @@
+.tagsmanager-container {
+    margin-bottom: 10px;
+
+    .tagmanager-new-wrapper {
+        background-color: #A4C2D7;
+        display: inline-block;
+        border-radius: 15px;
+        height: 48px;
+        min-width: 48px;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    .tagsmanager-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}

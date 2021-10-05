@@ -1,0 +1,23 @@
+@import "_functions";
+
+.linkContainer {
+  position: relative;
+
+  .linkTextContainer {
+    padding: 0;
+  }
+
+  a,
+  a:hover,
+  a:focus {
+    text-decoration: none;
+    color: $text-color;
+    font-size: inherit;
+  }
+
+  .provider {
+    text-align: right;
+    padding-right: 10px;
+    opacity: 0.5;
+  }
+}

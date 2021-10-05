@@ -1,0 +1,120 @@
+/**
+    Uses Creative commons icon font from https://creativecommons.org/about/downloads/
+ */
+
+@font-face {
+    font-family: 'cc-icons';
+    src: url('../fonts/cc-icons.ttf?hbvpu') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="cc-"], [class*=" cc-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'cc-icons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/*Share alike*/
+.cc-SA:before {
+    content: "a";
+}
+
+/*Attribution*/
+.cc-BY:before {
+    content: "b";
+}
+
+/*CC Circle*/
+.cc-CC:before {
+    content: "c";
+}
+
+/*No derivatives*/
+.cc-ND:before {
+    content: "d";
+}
+
+/*Sampling*/
+.cc-Sampling:before {
+    content: "m";
+}
+
+/*Non commercial*/
+.cc-NC:before {
+    content: "n";
+}
+
+/*Public domain*/
+.cc-PD:before {
+    content: "p";
+}
+
+/*Remix*/
+.cc-Remix:before {
+    content: "r";
+}
+
+/*Share*/
+.cc-Share:before {
+    content: "s";
+}
+
+/*CC full logo*/
+.cc-Logo:before {
+    content: "C";
+}
+
+.cerpus-Copyright:before {
+    font-family: FontAwesome !important;
+    content: '\f1f9';
+    font-style: normal;
+}
+
+.cc-1x {
+    font-size: 1.0em;
+}
+
+.cc-2x {
+    font-size: 1.2em;
+}
+
+.cc-3x {
+    font-size: 1.4em;
+}
+
+.cc-4x {
+    font-size: 1.6em;
+}
+
+.cc-5x {
+    font-size: 2.0em;
+}
+
+.facc-1x {
+    font-size: 0.8em;
+}
+
+.facc-2x {
+    font-size: 1.0em;
+}
+
+.facc-3x {
+    font-size: 1.2em;
+}
+
+.facc-4x {
+    font-size: 1.4em;
+}
+
+.facc-5x {
+    font-size: 1.8em;
+}

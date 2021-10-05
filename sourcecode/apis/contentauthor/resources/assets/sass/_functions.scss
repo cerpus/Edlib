@@ -1,0 +1,57 @@
+@import "_variables";
+
+// Functions
+@function em($pixels, $context: $font-size-base) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @if (unitless($context)) {
+    $context: $context * 1px;
+  }
+
+  @return $pixels / $context * 1em;
+}
+
+@mixin respond-to($media) {
+  @if $media == mobile {
+    @media only screen and (max-width: $screen-phone) { @content; }
+  }
+  @else if $media == tablet {
+    @media only screen and (min-width: $screen-phone + 1) and (max-width: $screen-desktop - 1) { @content; }
+  }
+  @else if $media == desktop {
+    @media only screen and (min-width: $screen-desktop) { @content; }
+  }
+  @else if $media == tabletAndUp {
+    @media only screen and (min-width: $screen-phone + 1) { @content; }
+  }
+}
+
+// unitless line height mixin
+@mixin line-height($font-size, $line-height: $font-size) {
+  line-height: $line-height/$font-size;
+}
+
+// unitless line height fuction
+@function line-height($font-size, $line-height: $font-size) {
+  @return $line-height/$font-size;
+}
+
+$z-index: (
+        modal              : 200,
+        navigation         : 100,
+        footer             : 90,
+        triangle           : 60,
+        navigation-rainbow : 50,
+        share-type         : 41,
+        share              : 40,
+);
+
+@function z-index($key) {
+  @return map-get($z-index, $key);
+}
+
+@mixin z-index($key) {
+  z-index: z-index($key);
+}

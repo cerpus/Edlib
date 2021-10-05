@@ -1,0 +1,195 @@
+{
+  "semantics": [
+    {
+      "label": "Medien",
+      "fields": [
+        {
+          "label": "Typ",
+          "description": "Optionale Medien, die über der Frage angezeigt werden können."
+        }
+      ]
+    },
+    {
+      "label": "Aufgabenbeschreibung",
+      "default": "Trage die fehlenden Wörter ein.",
+      "description": "Eine Anleitung, die dem Nutzer sagt, wie die Aufgabe beantwortet werden kann."
+    },
+    {
+      "label": "Textblöcke",
+      "entity": "textblock",
+      "field": {
+        "label": "Textzeile",
+        "placeholder": "Berlin ist die Hauptstadt von *Deutschland*.",
+        "description": "",
+        "important": {
+          "description": "<ul><li>Lücken werden mit einem Sternchen (*) vor und hinter dem richtigen Wort festgelegt.</li><li>Alternative Antworten können jeweils mit einem Schrägstrich (/) angefügt werden.</li><li>Du kannst einen Tipp mit einem Doppelpunkt (:) davor angeben.</li></ul>",
+          "example": "H5P-Inhalte können mit einem *Browser/Web-Browser:Etwas, das du jeden Tag nutzt* betrachtet werden."
+        }
+      }
+    },
+    {
+      "label": "Allgemeine Rückmeldung",
+      "fields": [
+        {
+          "widgets": [
+            {
+              "label": "Vorgabe"
+            }
+          ],
+          "label": "Lege Rückmeldungen für einzelne Punktebereiche fest",
+          "description": "Klicke auf den \"Bereich hinzufügen\"-Button, um so viele Bereiche hinzuzufügen, wie du brauchst. Beispiel: 0-20% Schlechte Punktzahl, 21-91% Durchschnittliche Punktzahl, 91-100% Großartige Punktzahl!",
+          "entity": "Bereich",
+          "field": {
+            "fields": [
+              {
+                "label": "Punktebereich"
+              },
+              {},
+              {
+                "label": "Rückmeldung für festgelegte Punktebereiche",
+                "placeholder": "Trage die Rückmeldung ein"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "label": "Beschriftung für den \"Lösung anzeigen\"-Button",
+      "default": "Lösung anzeigen"
+    },
+    {
+      "label": "Beschriftung für den \"Wiederholen\"-Button",
+      "default": "Wiederholen"
+    },
+    {
+      "label": "Beschriftung für den \"Überprüfen\"-Button",
+      "default": "Überprüfen"
+    },
+    {
+      "label": "Text für die \"Nicht ausgefüllt\"-Nachricht",
+      "default": "Bitte fülle alle Lücken aus, um die Lösung zu sehen"
+    },
+    {
+      "label": "Text für die \"':ans' ist korrekt\"-Nachricht",
+      "default": "':ans' ist korrekt"
+    },
+    {
+      "label": "Text für die \"':ans' ist falsch\"-Nachricht",
+      "default": "':ans' ist falsch"
+    },
+    {
+      "label": "Text für die \"Korrekt beantwortet\"-Nachricht",
+      "default": "Korrekt beantwortet"
+    },
+    {
+      "label": "Text für \"Falsch beantwortet\"-Nachricht",
+      "default": "Falsch beantwortet"
+    },
+    {
+      "label": "Text für technische Hilfsmittel für die Lösung",
+      "default": "Korrekte Antwort:"
+    },
+    {
+      "label": "Text für technische Hilfsmittel für das Eingabefeld",
+      "description": "Benutze @num und @total um die aktuelle Nummer der Lücke und die Gesamtzahl der Lücken einzufügen",
+      "default": "Lücke @num von @total"
+    },
+    {
+      "label": "Text für technische Hilfsmittel, der darauf hinweist, dass ein Tipp verfügbar ist",
+      "default": "Tipp verfügbar"
+    },
+    {
+      "label": "Beschriftung für das Tipp-Icon",
+      "default": "Tipp"
+    },
+    {
+      "label": "Verhaltenseinstellungen.",
+      "description": "Diese Optionen kontrollieren, wie sich die Aufgabe verhält.",
+      "fields": [
+        {
+          "label": "\"Wiederholen\" zulassen"
+        },
+        {
+          "label": "\"Lösung anzeigen\"-Button anzeigen"
+        },
+        {
+          "label": "Enable \"Check\" button"
+        },
+        {
+          "label": "Antworten nach Eingabe automatisch prüfen"
+        },
+        {
+          "label": "Auf Groß-/Kleinschreibung achten",
+          "description": "Stellt sicher, dass die Lösung exakt der Vorgabe entsprechen muss."
+        },
+        {
+          "label": "Alle Lücken müssen ausgefüllt sein, bevor die Lösung angesehen werden kann."
+        },
+        {
+          "label": "Setze die Lücken jeweils in eine eigene Zeile"
+        },
+        {
+          "label": "Bilderzoom für Bilder zu Fragen deaktivieren."
+        },
+        {
+          "label": "Bestätigungsdialog beim Klicken auf \"Überprüfen\" anzeigen",
+          "description": "Diese Option funktioniert nicht zusammen mit \"Antworten nach Eingabe automatisch prüfen\""
+        },
+        {
+          "label": "Bestätigungsdialog beim Klicken auf \"Wiederholen\" anzeigen"
+        },
+        {
+          "label": "Kleine Rechtschreibfehler akzeptieren",
+          "description": "Wenn gewählt, wird eine Antwort bei kleinen Rechtschreibfehlern noch als richtig gewertet (3-9 Zeichen: 1 Fehler, mehr als 9 Zeichen: 2 Fehler)."
+        }
+      ]
+    },
+    {
+      "label": "Bestätigungsdialog beim Prüfen",
+      "fields": [
+        {
+          "label": "Text der Titelzeile",
+          "default": "Beenden?"
+        },
+        {
+          "label": "Text des Hauptteils",
+          "default": "Ganz sicher beenden?"
+        },
+        {
+          "label": "Beschriftung des \"Abbrechen\"-Buttons",
+          "default": "Abbrechen"
+        },
+        {
+          "label": "Beschriftung des \"Beenden\"-Buttons",
+          "default": "Beenden"
+        }
+      ]
+    },
+    {
+      "label": "Bestätigungsdialog beim Wiederholen",
+      "fields": [
+        {
+          "label": "Text der Titelzeile",
+          "default": "Wiederholen?"
+        },
+        {
+          "label": "Text des Hauptteils",
+          "default": "Ganz sicher wiederholen?"
+        },
+        {
+          "label": "Beschriftung des \"Abbrechen\"-Buttons",
+          "default": "Abbrechen"
+        },
+        {
+          "label": "Beschriftung des \"Bestätigen\"-Buttons",
+          "default": "Bestätigen"
+        }
+      ]
+    },
+    {
+      "label": "Textliche Repräsentation der Punkteleiste für diejenigen, die Readspeaker benutzen",
+      "default": "Du hast :num von :total Punkten erreicht."
+    }
+  ]
+}
