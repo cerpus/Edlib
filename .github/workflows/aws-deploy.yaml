@@ -9,7 +9,7 @@ on:
       environment:
         description: 'Environment to deploy to'
         required: true
-        default: "aws_cerpus_dev"
+        default: "cerpus_test"
 
 jobs:
   deploy:
@@ -37,7 +37,7 @@ jobs:
       - name: Update kubeconfig with cluster info
         id: kube
         run: |
-          aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME}}
+          aws eks --region eu-west-1 update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME }}
           CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
           echo "::set-output name=config::$CONFIG"
 
