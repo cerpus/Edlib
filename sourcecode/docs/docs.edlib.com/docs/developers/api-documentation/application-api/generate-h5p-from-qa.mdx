@@ -4,39 +4,42 @@ sidebar_position: 3
 
 # Generate H5P From QA
 
-## Set collaborator context
+## Set Collaborator Context
 
-**Path:** /common/app/h5p/generate-from-qa<br/>
-**Method:** POST<br/>
+**Path:** `/common/app/h5p/generate-from-qa`<br/>
+**Method:** `POST`<br/>
 **Body**
 
 ```json
 {
-	"title": "This is the title", // Required
-	"sharing": true, // Required
-	"published": true, // Required
-	"license": "by", // Required
-	"authId": "1", // Required
-	"questions": [ // Required at least one element
-		{
-			"type": "H5P.MultiChoice", // Required
-			"text": "test", // Required
-			"answers": [ // Required at least one element
-				{
-					"text": "w", // Required
-					"correct": false // Required
-				},
-				{
-					"text": "w2", // Required
-					"correct": true // Required
-				}
-			]
-		}
-	]
+  "title": "This is the title", // Required
+  "sharing": true, // Required
+  "published": true, // Required
+  "license": "by", // Required
+  "authId": "1", // Required
+  "questions": [
+    // At least one element is required
+    {
+      "type": "H5P.MultiChoice", // Required
+      "text": "test", // Required
+      "answers": [
+        // At least one element is required
+        {
+          "text": "w", // Required
+          "correct": false // Required
+        },
+        {
+          "text": "w2", // Required
+          "correct": true // Required
+        }
+      ]
+    }
+  ]
 }
 ```
 
-***Resposne***
+**_Response_**
+
 ```json
 {
   "resource": {
