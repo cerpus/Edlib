@@ -1,0 +1,530 @@
+/* This file is included in div, iframe and editor. */
+
+body div.h5p-semi-fullscreen,
+body div.h5p-iframe-wrapper.h5p-semi-fullscreen {
+  z-index: 10100;
+}
+body .ndla-h5p-container iframe {
+  border: none;
+}
+
+body .h5peditor-dragquestion .h5p-button,
+body .boardgame .button,
+body .boardgame .qs-footer .button,
+body .boardgame .questionset-results .button,
+body .boardgame .button.skip,
+body .h5p-flashcards .h5p-button {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  color: #fff;
+  background: rgba(38,102,166,1);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+body .h5peditor-dragquestion .h5p-button {
+  background: rgba(38,102,166,0.8);
+}
+
+/* Hover */
+body .h5p-joubelui-button:hover,
+body .h5peditor-dragquestion .h5p-button:hover,
+body .boardgame .button:hover,
+body .boardgame .qs-footer .button:hover,
+body .boardgame .questionset-results .button:hover,
+body .boardgame .button.skip:hover,
+body .h5p-flashcards .h5p-button:hover {
+  color: #fff;
+  background: rgba(30,83,145,1);
+}
+body .h5peditor-dragquestion .h5p-button:hover {
+  background: rgba(38,102,166,1);
+}
+
+body .h5p-flashcards .h5p-button[disabled],
+body .h5p-flashcards .h5p-button[disabled]:hover {
+  background: #ccc;
+  color: #fff;
+  border: none;
+}
+
+/* Focus */
+body .h5p-joubelui-button:focus,
+body .h5peditor-dragquestion .h5p-button:focus,
+body .boardgame .button:focus,
+body .boardgame .qs-footer .button:focus,
+body .boardgame .questionset-results .button:focus,
+body .boardgame .button.skip:focus {
+  color: #fff;
+  background: rgba(30,83,145,1);
+}
+
+body .h5peditor-dragquestion .h5p-button:focus {
+  background: rgba(38,102,166,1);
+}
+
+body .progress-dot.current {
+  /* Reset color for progress dots */
+  background: rgba(38,102,166,1);
+}
+
+/* Course presentation */
+body .h5p-course-presentation .h5p-presentation-wrapper {
+  /* Reset style for slide container */
+  background: #f5faff;
+}
+
+/* Make sure old behviour for CP is used (order of elements)
+   This wil fix problem with goto-elements beeing placed behind other elements */
+body .h5p-course-presentation .h5p-element {
+  z-index: initial;
+}
+
+/* Reset style for slide container */
+body .h5p-course-presentation .h5p-box-wrapper {
+  box-shadow: none;
+  background: #eee;
+}
+
+/* Reset style for Keywords panel */
+body .h5p-course-presentation .h5p-keywords-wrapper {
+  background: #fbfbfb;
+  box-shadow: 0 0 0.15em 0 #d1d1d1;
+}
+
+/* Reset style for Progress bar default */
+body .h5p-course-presentation .h5p-progressbar {
+  background: #ededed;
+}
+
+/* Reset style for Progress bar completed */
+body .h5p-course-presentation .h5p-progressbar .h5p-completed {
+  background: #2666a6;
+}
+
+/* Reset style for Slide navigation bar */
+body .h5p-course-presentation .h5p-slideination {
+  border: 1px solid #d9d9d9;
+  border-radius: 0;
+}
+
+/* Reset style for Slide navigation bar slide numbers */
+body .h5p-course-presentation .h5p-slideination ol {
+  background: transparent;
+}
+
+/* Reset style for Slide navigation bar current slide number */
+body .h5p-course-presentation .h5p-slide-button.h5p-current a {
+  background: #2666a6;
+}
+
+/* Reset style for Slide navigation bar scroll buttons */
+body .h5p-course-presentation .h5p-slideination > a {
+  background: transparent;
+}
+
+/* Reset style for Slide navigation bar home button */
+body .h5p-course-presentation .h5p-slideination > .h5p-go-home {
+  border-right: none;
+  background: transparent;
+}
+
+body .h5p-course-presentation .h5p-slideination > a.h5p-scroll-enabled:hover,
+body .h5p-course-presentation .h5p-slideination > .h5p-go-home:hover {
+  /* Reset style for Slide navigation bar scroll buttons and home button on hover */
+  background: transparent;
+  color: #2666a6;
+}
+
+/* Reset style for Dropzone - colors are set in JavaScript and cannot be overridden in css */
+/* Reset style for Dropzone label - colors are set in JavaScript and cannot be overridden in css */
+body .h5p-dragquestion .h5p-dropzone.h5p-has-label > .h5p-inner,
+body .h5peditor-dragquestion .h5p-dropzone.h5p-has-label > .h5p-inner,
+body .h5p-dragquestion .h5p-label,
+body .h5peditor-dragquestion .h5p-label {
+  border-radius: 0em;
+}
+
+/* Reset style for Draggable  - colors and shadows are set in JavaScript and cannot be overridden in css */
+body .h5p-dragquestion .h5p-draggable,
+body .h5peditor-dragquestion .h5p-draggable {
+  border-radius: 0em;
+  padding: 0.15em 0.15em;
+}
+
+body .h5p-dragquestion .h5p-dropzone > .h5p-inner,
+body .h5peditor-dragquestion .h5p-dropzone > .h5p-inner {
+  border-radius: 0em;
+}
+
+body .h5p-dragquestion .h5p-dropped.h5p-wrong,
+body .h5p-dragquestion .h5p-dropped.h5p-correct {
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+/* Problems with tooltip alt-text for images not beeing displayed
+TODO: Remove when HFJ-1733 is released
+*/
+body .h5p-dragquestion .h5p-draggable > img {
+    pointer-events: initial;
+}
+
+/* Summary */
+
+body .summary-score {
+  /* Reset style for Summary score container */
+  -webkit-border-radius: 0.3em;
+  border-radius: 0.3em;
+  background: #e6ced1;
+}
+body .summary-score:before {
+  /* Reset style for Summary score container icon - FontAwesome  */
+  content: "\f00d";
+  color: #c33f62;
+}
+
+body .summary-progress {
+  /* Reset style for Summary progress container*/
+  -webkit-border-radius: 0.3em;
+  border-radius: 0.3em;
+  background: #d1e2ce;
+}
+
+body .summary-progress:before {
+  /* Reset style for Summary progress container icon - FontAwesome */
+  content: "\f00c";
+  color: #39692e;
+}
+
+body .summary-container {
+  background-color: #ffffff;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+}
+
+body .summary-content li {
+  /* Reset style for statement alternative containers */
+  -webkit-border-radius: 0.3em;
+  border-radius: 0.3em;
+}
+
+body .summary-container li:before {
+  /* Reset style for statement alternative correct icon - FontAwesome */
+  content: "\f00c";
+  color: #39692e;
+}
+
+body li.summary-failed:before {
+  /* Reset style for statement alternative failed icon - FontAwesome */
+  content: "\f00d";
+  color: #c33f62;
+}
+
+body .bgi-content > h1 {
+  /* Reset style for game title container */
+  color: #fff;
+  background: #2666a6;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+/* Only when in div */
+body .h5p-blanks .joubel-tip-container {
+  top: -0.25em;
+}
+
+/* Flashcards */
+body .h5p-flashcards .h5p-input .h5p-button:before {
+  display: none;
+}
+
+body .h5p-flashcards .h5p-cardholder {
+  /* Reset style for card container */
+  border-radius: 0;
+  border: 0.1em solid #ccc;
+  box-shadow: none;
+  background: #ededed;
+}
+
+body .h5p-flashcards .h5p-card .h5p-clue {
+  /* Reset style for clue container */
+  border-radius: 0;
+  border: 0.1em solid #ccc;
+  box-shadow: none;
+  background: #fff;
+}
+
+body .h5p-flashcards .h5p-textinput {
+  /* Reset style for text input container */
+  border-radius: 0.25em;
+  border: 0.0625em solid #a0a0a0;
+}
+
+body .h5p-flashcards .h5p-input.h5p-correct .h5p-textinput[disabled] {
+  /* Reset style for text input correct answer container */
+  background-color: #d1e2ce;
+  border: 0.0625em solid #afcdaa;
+  color: #39692e;
+  font-weight: bold;
+}
+
+body .h5p-flashcards .h5p-input.h5p-wrong .h5p-textinput[disabled] {
+  /* Reset style for text input wrong answer container */
+  background-color: #e6ced1;
+  border: 0.0625em solid #ce9b9b;
+  color: #c33f62;
+  font-weight: bold;
+}
+
+body .h5p-flashcards .h5p-inner .h5p-answer .h5p-input.h5p-correct:after {
+  /* Reset style for text input correct answer icon - FontAwesome */
+  content: "\f00c";
+  color: #39692e;
+}
+
+body .h5p-flashcards .h5p-inner .h5p-answer .h5p-input.h5p-wrong:after {
+  /* Reset style for text input wrong answer icon - FontAwesome */
+  content: "\f00d";
+  color: #c33f62;
+}
+
+/* Mark the words */
+body .h5p-word .h5p-word-selectable {
+  border-radius: 0.2em;
+}
+
+body .summary-content li {
+  padding: 0.1em 0.4em;
+}
+
+body .h5p-drag .h5p-drag-dropzone,
+body .h5p-drag .h5p-drag-draggable {
+  border-radius: 0.2em;
+}
+
+/* Minimal audio */
+/* Makes it approx 20x20px */
+/*body .h5p-audio-inner .h5p-audio-minimal-button {
+  font-size: 1em;
+}*/
+
+/* Making large text inside intro beeing shown */
+body .h5p-course-presentation .h5p-question-introduction,
+body .h5p-course-presentation .h5p-question-introduction p {
+  line-height: 1;
+}
+
+/* Removing too much spacing in lists */
+body .h5p-advanced-text ul,
+body .h5p-advanced-text ol {
+  margin: 0.5em 0;
+}
+body .h5p-advanced-text ul li,
+body .h5p-advanced-text ol li {
+  margin-bottom: 0;
+  line-height: 175%;
+}
+/* Making less space after p */
+body .h5p-course-presentation p {
+  margin: 0 0 .7em;
+}
+
+/* Removing question intro text on D&D */
+body .h5p-dragquestion .h5p-question-introduction {
+  display: none;
+}
+
+body .h5p-course-presentation .h5p-question-feedback {
+  margin: 0;
+}
+
+/* Never scroll for Drag Question in CP */
+body .h5p-course-presentation .h5p-element-inner.h5p-dragquestion {
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+}
+
+body .h5p-dragquestion .h5p-content-controls {
+  /* Remove fullscreen button for drag question */
+  display: none;
+}
+
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-feedback {
+  position: absolute;
+  bottom: 0;
+  background: white;
+  padding: 0 1em;
+  padding-top: 1em;
+  left: -100%;
+  z-index: 5;
+}
+
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-feedback.h5p-question-visible {
+  transition: left 0.3s ease;
+  left: 0;
+}
+
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-content.h5p-dragquestion-has-no-background {
+  border-bottom: none;
+}
+
+body .h5p-course-presentation .h5p-draggable.h5p-advanced-text {
+  font-size: 0.75em;
+}
+
+/* Drag and drop buttons panel fix */
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-buttons {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  width: 100%;
+  padding-right: 1em;
+  box-sizing: border-box;
+}
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-buttons .h5p-joubelui-button {
+  float: right;
+  margin-right: 0.2em;
+}
+body .h5p-course-presentation .h5p-dragquestion .h5p-question-content {
+  margin: 0;
+}
+body .h5p-dragquestion .h5p-question-content {
+  margin-top: 0;
+}
+
+/* Remove scrollbars for IE */
+body .h5p-course-presentation .h5p-eta-input {
+  overflow: auto;
+}
+
+/* Remove icons on Joubel UI buttons & flashcards*/
+body .h5p-joubelui-button:before,
+body .h5p-flashcards .h5p-input .h5p-button:before {
+  display: none;
+}
+/* Exception in question set (navigation buttons) */
+body .questionset .h5p-joubelui-button.h5p-question-next:before,
+body .questionset .h5p-joubelui-button.h5p-question-prev:before,
+body .h5p-joubelui-button.truncated:before,
+body .h5p-joubelui-button.h5p-sc-close-solution-view:before {
+  display: inline;
+}
+body .h5p-joubelui-button,
+body .h5p-joubelui-button.truncated,
+body .h5peditor .h5p-joubelui-button {
+  padding: 0.3em 0.5em;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  color: #fff;
+  background: rgba(38,102,166,1);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Image-bug in flashcards. Image overflows the height in chrome */
+body .h5p-flashcards .h5p-imageholder {
+  -webkit-flex-direction: inherit;
+  flex-direction: inherit;
+}
+
+/* Advanced text - no scrollbar and add old padding */
+body .h5p-course-presentation .h5p-element .h5p-element-inner.h5p-advanced-text {
+  overflow-y: hidden !important;
+  padding: 0.375em 0.5em !important;
+}
+
+/* Removing scorebar from course presentation */
+body .h5p-course-presentation .h5p-joubelui-score-bar {
+  display: none;
+}
+
+/* Remove scrollbars for exportable text area inside CP */
+body .h5p-course-presentation .h5p-element-inner.h5p-eta {
+    overflow: hidden !important;
+}
+
+/* Titles */
+body .h5p-course-presentation .h5p-question-introduction {
+  font-size: 1em;
+}
+
+/* Making blanks in CP reappear with 1em padding
+   Can not add padding or margin to any of the containers,
+   then we'll get scrollbars
+*/
+body .h5p-course-presentation .h5p-element-inner.h5p-question.h5p-blanks > * {
+  position: relative;
+  top: 1em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+/* Forced fullscreen mode */
+/*.h5p-ndla-fullscreen-overlay {
+  position: absolute;
+  background-color: rgba(0,0,0,0.2);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: #333;
+  cursor: pointer;
+  z-index: 10;
+}
+.h5p-ndla-fullscreen-overlay:hover {
+  color: #666;
+}
+.h5p-ndla-fullscreen-overlay-text {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: .6em;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.h5p-ndla-fullscreen-overlay .h5p-ndla-fullscreen-overlay-icon {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  margin: 0 auto;
+  text-align: center;
+  vertical-align: baseline;
+  display: inline-block;
+}
+.h5p-ndla-fullscreen-overlay .h5p-ndla-fullscreen-overlay-icon:after {
+  font-family: 'H5P';
+  content: "\e88c";
+  font-size: 8em;
+  background: #fff;
+  border-radius: 2px;
+  line-height: 1;
+  box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
+  display: inline-block;
+  height: 1.2em;
+}
+.h5p-fullscreen .h5p-ndla-fullscreen-overlay,
+.h5p-semi-fullscreen .h5p-ndla-fullscreen-overlay {
+  display: none;
+}*/
+
+.h5p-summary .summary-content .summary-evaluation li,
+.h5p-summary .summary-content li li {
+  background: initial;
+  -webkit-border-radius: initial;
+  -moz-border-radius: initial;
+  border-radius: initial;
+  list-style: initial;
+  border: initial;
+  color: initial;
+  font-size: initial;
+  padding: initial;
+  text-decoration: initial;
+  margin: initial;
+  -webkit-box-shadow: initial;
+  -moz-box-shadow: initial;
+  box-shadow: initial;
+}

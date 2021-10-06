@@ -1,0 +1,40 @@
+.h5p-editor-container {
+  .picker {
+    margin: 40px 0 20px 0;
+    display: flex;
+    width: 100%;
+
+    > * {
+      padding: 10px 20px;
+
+      &.filler {
+        flex: 1;
+      }
+
+      &:not(.selected) {
+        border-bottom: 1px solid gray;
+      }
+
+      &:not(.filler) {
+        cursor: pointer;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+
+        &:hover{
+          background-color: rgba(0,0,0,0.05);
+        }
+      }
+
+      &.selected {
+        border-right: 1px solid gray;
+        border-top: 1px solid gray;
+        border-left: 1px solid gray;
+      }
+    }
+  }
+}
+
+.h5p-container .sidebar {
+  margin-top: 31px;
+}
+

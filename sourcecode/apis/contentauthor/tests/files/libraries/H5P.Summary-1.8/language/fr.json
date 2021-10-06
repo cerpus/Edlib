@@ -1,0 +1,109 @@
+{
+  "semantics": [
+    {
+      "label": "Texte d'introduction",
+      "default": "Choisissez l'affirmation exacte.",
+      "description": "Il sera affiché au-dessus de la consigne."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Par défaut"
+        },
+        {
+          "label": "Texte"
+        }
+      ],
+      "label": "Résumé",
+      "entity": "Affirmations",
+      "field": {
+        "label": "Affirmations",
+        "fields": [
+          {
+            "label": "Liste des affirmations pour le résumé - la première affirmation de la liste est correcte.",
+            "entity": "affirmation",
+            "field": {
+              "label": "affirmation"
+            }
+          },
+          {
+            "label": "Indice",
+            "fields": [
+              {
+                "label": "Indice"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "Opacité des étiquettes",
+      "fields": [
+        {
+          "widgets": [
+            {
+              "label": "Par défaut"
+            }
+          ],
+          "label": "Define custom feedback for any score range",
+          "description": "Click the \"Add range\" button to add as many ranges as you need. Example: 0-20% Bad score, 21-91% Average Score, 91-100% Great Score!",
+          "entity": "range",
+          "field": {
+            "fields": [
+              {
+                "label": "Score Range"
+              },
+              {},
+              {
+                "label": "Feedback for defined score range",
+                "placeholder": "Fill in the feedback"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "label": "Texte affiché avant le nombre d'affirmations correctement sélectionnées dans le résumé.",
+      "default": "Progression :",
+      "description": "Ce sera affiché au-dessus des affirmations. Exemple: 'Progression : 2/5'"
+    },
+    {
+      "label": "Texte affiché au-dessus du nombre d'affirmations sélectionnées par erreur dans le résumé.",
+      "default": "Erreurs :",
+      "description": "Ce sera affiché au-dessus des affirmations. Exemple: 'Erreurs : 4'"
+    },
+    {
+      "label": "Titre de l'appréciation à la fin du résumé",
+      "default": "Votre résultat :",
+      "description": "Ce sera affiché au-dessus de l'appréciation."
+    },
+    {
+      "label": "Texte exprimé par la synthèse vocale en cas de réponse correcte",
+      "default": "Correct."
+    },
+    {
+      "label": "Texte exprimé par la synthèse vocale en cas de réponse incorrecte",
+      "default": "Incorrect! Please try again."
+    },
+    {
+      "label": "Label list of correct answers",
+      "default": "Correct answers."
+    },
+    {
+      "label": "Label for the show tip button",
+      "default": "Show tip"
+    },
+    {
+      "label": "Textual representation of the score bar for those using a readspeaker",
+      "description": ":num and :total are special keywords which are programmatically updated",
+      "default": "You got :num out of :total points"
+    },
+    {
+      "label": "Text used for readspeakers to communicate progress",
+      "description": ":num and :total are special keywords which are programmatically updated",
+      "default": "Progress :num of :total"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+.questionSetSurface {
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+        flex: 1;
+
+        &:first-child {
+            flex: 3;
+        }
+    }
+}

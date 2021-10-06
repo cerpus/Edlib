@@ -1,0 +1,16 @@
+bootstrap/cache/*
+node_modules/
+public/h5p-editor-php-library
+public/h5p-php-library
+public/h5pstorage/*
+storage/
+public/storage/*
+vendor/
+.env
+buildandtest.sh
+buildid
+.phpunit.result.cache
+test-storage-volume
+ndladata/
+bamboo-specs/
+test-storage-volume/

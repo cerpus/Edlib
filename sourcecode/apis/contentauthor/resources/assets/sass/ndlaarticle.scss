@@ -1,0 +1,76 @@
+.ndla-article {
+  /* Your project's main .scss import file */
+  @import '~@ndla/core/scss/core', '~@ndla/core/scss/utilities', '~@ndla/ui/src/main'; // with webpack and sass-loader
+
+  margin: 0 auto;
+  color: #444444;
+  max-width: 735px;
+
+  .u-float-right,
+  .u-float-small-right {
+    @include mq('desktop') { margin: 0 0 36px 36px; }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    clear: initial;
+  }
+
+  & > footer {
+    font-size: 0.7rem;
+  }
+
+  .ndla-introduction {
+    margin: 25px 0;
+    font-weight: 300;
+    font-size: 1.44444rem;
+    line-height: 36px;
+  }
+
+  ul, ol {
+    margin: 52px 0;
+    padding: 0 1rem 0 2rem;
+  }
+
+  script[type="math/mml"] + .ndla-strong {
+    margin-left: 5px;
+  }
+
+  .ndla-caption-container {
+    display: flex;
+    flex-flow: column;
+    clear: both;
+
+    .ndla-caption {
+      background-color: #f8f8f8;
+      padding: 5px;
+    }
+  }
+
+  .ndla-aside {
+    margin: 0 0 35px 36px;
+    float: right;
+    clear: right;
+    max-width: 350px;
+    position: relative;
+    line-height: 1.625;
+    z-index: 1;
+    border-left: 4px #e6e6e6 solid;
+
+    .ndla-ul {
+      padding: 0 0.666rem 0 0;
+      margin: 0 0 !important;
+    }
+
+    .ndla-li {
+      line-height: 1.7rem;
+    }
+  }
+
+  .c-bodybox {
+    padding: 39px;
+    margin-top: 52px;
+    margin-bottom: 52px;
+    border: 1px solid #a5bcd3;
+    overflow: hidden;
+  }
+}

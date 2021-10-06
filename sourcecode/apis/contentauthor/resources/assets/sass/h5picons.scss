@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'h5picons';
+    src:    url('../fonts/h5picons.eot?hbvpu');
+    src:    url('../fonts/h5picons.eot?hbvpu#iefix') format('embedded-opentype'),
+        url('../fonts/h5picons.ttf?hbvpu') format('truetype'),
+        url('../fonts/h5picons.woff?hbvpu') format('woff'),
+        url('../fonts/h5picons.svg?hbvpu#h5picons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="h5p-icon-"], [class*=" h5p-icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'h5picons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.h5p-icon-Accordion:before {
+    content: "\e900";
+}
+.h5p-icon-AppearIn:before {
+    content: "\e901";
+}
+.h5p-icon-ArithmeticQuiz:before {
+    content: "\e902";
+}
+.h5p-icon-BoardGame:before {
+    content: "\e903";
+}
+.h5p-icon-Chart:before {
+    content: "\e904";
+}
+.h5p-icon-Collage:before {
+    content: "\e905";
+}
+.h5p-icon-CoursePresentation:before {
+    content: "\e906";
+}
+.h5p-icon-DialogueCards:before {
+    content: "\e907";
+}
+.h5p-icon-DocumentationTool:before {
+    content: "\e908";
+}
+.h5p-icon-DragandDrop:before {
+    content: "\e909";
+}
+.h5p-icon-DragtheWords:before {
+    content: "\e90a";
+}
+.h5p-icon-FacebookFeed:before {
+    content: "\e90b";
+}
+.h5p-icon-FillintheBlanks:before {
+    content: "\e90c";
+}
+.h5p-icon-FindtheHotspot:before {
+    content: "\e90d";
+}
+.h5p-icon-ImpressivePresentation:before {
+    content: "\e91b";
+}
+.h5p-icon-Flashcards:before {
+    content: "\e90e";
+}
+.h5p-icon-GuesstheAnswer:before {
+    content: "\e90f";
+}
+.h5p-icon-IframeEmbedder:before {
+    content: "\e910";
+}
+.h5p-icon-ImageHotspots:before {
+    content: "\e911";
+}
+.h5p-icon-InteractiveVideo:before {
+    content: "\e912";
+}
+.h5p-icon-MarktheWords:before {
+    content: "\e913";
+}
+.h5p-icon-MemoryGame:before {
+    content: "\e914";
+}
+.h5p-icon-MultipleChoice:before {
+    content: "\e915";
+}
+.h5p-icon-Quiz:before {
+    content: "\e916";
+}
+.h5p-icon-SingleChoice:before {
+    content: "\e917";
+}
+.h5p-icon-Summary:before {
+    content: "\e918";
+}
+.h5p-icon-Timeline:before {
+    content: "\e919";
+}
+.h5p-icon-TwitterUserFeed:before {
+    content: "\e91a";
+}

@@ -1,0 +1,23 @@
+/* This file is included in iframes only! */
+
+* {
+  /* Set default font */
+  font-family: Arial,"Helvetica Neue",Helvetica,STKaiti,华文楷体,KaiTi,SimKai,楷体,KaiU,DFKai-SB,標楷體,sans-serif;
+}
+body .h5p-course-presentation,
+body .h5p-course-presentation h1,
+body .h5p-course-presentation h2,
+body .h5p-course-presentation h3,
+body .h5p-course-presentation h4,
+body .h5p-course-presentation h5,
+body .h5p-course-presentation h6,
+body .h5p-course-presentation p {
+  /* Set CP font */
+  font-family: H5PDroidSans,sans-serif,STKaiti,华文楷体,KaiTi,SimKai,楷体,KaiU,DFKai-SB,標楷體;
+}
+
+.h5p-icon-shadow,
+.h5p-icon-speech-bubble,
+.h5p-icon-info {
+  font-family: 'H5PFontIcons' !important;
+}

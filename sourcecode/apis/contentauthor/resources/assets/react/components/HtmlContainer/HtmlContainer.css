@@ -1,0 +1,7 @@
+.htmlcontainer-firstparagraph-fix > p:first-child {
+    display: inline-block;
+}
+
+.htmlcontainer-paragraph-margin p {
+    margin: 0;
+}

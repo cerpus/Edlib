@@ -170,13 +170,13 @@ services:
 
   contentauthor:
     build:
-      context: ./sourcecode/not_migrated/h5pviewer
+      context: ./sourcecode/apis/contentauthor
       target: app
     healthcheck:
       test: [CMD, curl, -f, http://localhost]
     volumes:
-      - ./sourcecode/not_migrated/h5pviewer/public:/app/public
-      - ./sourcecode/not_migrated/h5pviewer/vendor:/app/vendor
+      - ./sourcecode/apis/contentauthor/public:/app/public
+      - ./sourcecode/apis/contentauthor/vendor:/app/vendor
       - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:31004"
@@ -185,7 +185,7 @@ services:
 
   contentauthor-fpm:
     build:
-      context: ./sourcecode/not_migrated/h5pviewer
+      context: ./sourcecode/apis/contentauthor
       target: phpfpm-dev
     env_file:
       - ./localSetup/projects/content-author/.env
@@ -195,7 +195,7 @@ services:
       test: [CMD, nc, -z, localhost, '31004']
     volumes:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
-      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./sourcecode/apis/contentauthor:/app
       - ./data/contentauthor/storage:/app/storage
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
       - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
@@ -208,39 +208,39 @@ services:
 
   contentauthor-cron:
     build:
-      context: ./sourcecode/not_migrated/h5pviewer
+      context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: cron
     env_file:
       - ./localSetup/projects/content-author/.env
     volumes:
-      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./sourcecode/apis/contentauthor:/app
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
   contentauthor-horizonqueue:
     build:
-      context: ./sourcecode/not_migrated/h5pviewer
+      context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: horizonqueue
     env_file:
       - ./localSetup/projects/content-author/.env
     volumes:
-      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./sourcecode/apis/contentauthor:/app
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
   contentauthor-edstepmessages:
     build:
-      context: ./sourcecode/not_migrated/h5pviewer
+      context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: edstepmessages
     env_file:
       - ./localSetup/projects/content-author/.env
     volumes:
-      - ./sourcecode/not_migrated/h5pviewer:/app
+      - ./sourcecode/apis/contentauthor:/app
       - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm

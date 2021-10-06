@@ -1,0 +1,11 @@
+.licenseindicator-button-choose-icon {
+    margin-right: 5px;
+}
+
+.btn {
+    border-radius: 0;
+    transition-property: all;
+    transition-duration: 0.1s;
+    transition-timing-function: ease;
+    transition-delay: initial;
+}

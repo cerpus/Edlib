@@ -1,0 +1,59 @@
+.h5p-editor-list {
+  max-width: 1000px;
+
+  .h5p-editor-list-filters {
+    display: flex;
+
+    & > *:not(:first-child) {
+      margin-left: 15px;
+    }
+  }
+
+  .h5p-editor-list-item {
+    padding: 10px 0;
+
+    &.indent {
+      padding-left: 30px;
+    }
+
+    .start-value {
+      padding: 10px 0;
+    }
+
+    .richTextEditorToolbar {
+      border: 0;
+    }
+  }
+
+  .path {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+  }
+
+  .translation-input {
+    .translation-textarea {
+      width: 100%;
+      padding: 10px;
+    }
+  }
+
+  .info-text {
+    padding-bottom: 20px;
+  }
+
+  .splitter {
+    border-bottom: 1px solid gray;
+    margin: 10px 0;
+  }
+
+  .listitem-original-text {
+      border: 1px solid gray;
+      background-color: #fdf5e6;
+      padding: 10px;
+
+      p {
+          margin: 1em;
+      }
+  }
+}

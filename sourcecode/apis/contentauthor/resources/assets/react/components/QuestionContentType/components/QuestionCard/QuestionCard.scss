@@ -1,0 +1,209 @@
+@import 'resources/assets/sass/_functions';
+
+.questionCard,
+.addCard {
+  background-color: $gray-lighter;
+  display: flex;
+  align-items: start;
+  position: relative;
+  margin-bottom: 15px;
+
+  > div {
+    width: 100%;
+    margin: 10px;
+  }
+}
+
+.questionCard:hover {
+  cursor: move;
+}
+
+.addAnswerContainer {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  > button {
+    font-weight: bold;
+    text-transform: inherit;
+  }
+}
+
+.addCard {
+  align-items: center;
+}
+
+.cardNumber {
+  width: 40px;
+  padding: 15px;
+  font-size: large;
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+.togglerSwitch > div {
+  width: auto !important;
+  padding: 0 10px;
+  margin-right: 8px;
+  transform: rotate(180deg);
+}
+
+.deleteCard,
+.deleteAnswer {
+  transform: rotate(45deg);
+}
+
+.answerList {
+  padding-right: 12px;
+
+  > div {
+    margin-bottom: 8px;
+  }
+}
+
+.deleteAnswer {
+  width: 30px;
+  height: 30px;
+  float: right;
+  padding: 0;
+}
+
+.selectPresentationContainer {
+  text-align: center;
+}
+
+.presentationList {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.presentationButton {
+  width: 150px;
+  padding: 15px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  img {
+    width: 100%;
+  }
+
+  &:hover {
+    background-color: $gray-lighter;
+  }
+}
+
+.presentationLabel {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.selectQuestionButton {
+  margin-top: -15px;
+  padding: 15px 10px;
+  background-color: #465D6D;
+  border-radius: 5px;
+  color: #FFFFFF;
+  vertical-align: middle;
+  width: 100%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > span {
+    margin-left: 6px;
+  }
+
+  &.addedToList {
+    background-color: #AFDF94;
+  }
+
+  i {
+    vertical-align: inherit;
+    margin-right: 5px;
+  }
+}
+
+.imagePopover {
+  border-radius: 5px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.imageContainer {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 4px;
+  opacity: .5;
+
+  &.withImage {
+    opacity: 1;
+    padding: 8px;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    min-height: 1px;
+    border-radius: 4px;
+  }
+
+  .uploadProgress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 15%;
+  }
+}
+
+.popoverContainer {
+  max-width: 200px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+
+  img {
+    width: 100%;
+    height: auto;
+    min-height: 1px;
+  }
+
+  div {
+    background-color: red;
+    padding: 10px;
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.deleteButton {
+  @include z-index('navigation');
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: rotate(45deg);
+  opacity: .5;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.addCardContainer {
+  display: flex;
+  justify-content: center;
+
+  > button {
+    font-weight: bold;
+  }
+}

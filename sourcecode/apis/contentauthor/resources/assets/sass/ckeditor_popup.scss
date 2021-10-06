@@ -1,0 +1,28 @@
+.cke_editor_content_dialog {
+
+  .cke_single_page.edlib-dialog {
+
+    .cke_dialog_contents {
+      padding: 0;
+      margin: 0;
+    }
+    
+    .cke_dialog_title {
+      text-align: center;
+    }
+
+    .cke_dialog_contents_body {
+      padding: 0;
+      margin: 0;
+      overflow: visible;
+    }
+
+    .cke_dialog_ui_vbox_child {
+      padding: 0;
+    }
+    
+    .cke_dialog_footer {
+      display: none;
+    }
+  }
+}

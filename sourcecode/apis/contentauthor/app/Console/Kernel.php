@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Console;
+
+use App\Console\Commands\EnsureVersionExists;
+use App\Console\Commands\Inspire;
+use App\Console\Commands\CerpusSetup;
+use App\Console\Commands\PublishPresave;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\RemoveOldContentLocks;
+use App\Console\Commands\VersionAllUnversionedContent;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+
+class Kernel extends ConsoleKernel
+{
+    /**
+     * The Artisan commands provided by your application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        Inspire::class,
+        CerpusSetup::class,
+        RemoveOldContentLocks::class,
+        VersionAllUnversionedContent::class,
+        EnsureVersionExists::class,
+        PublishPresave::class,
+    ];
+
+    /**
+     * Define the application's command schedule.
+     *
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        // PS! Always use '->onOneServer()'. In production CA is running on several servers...
+        $schedule->command('cerpus:remove-content-locks')
+            ->everyMinute()
+            ->withoutOverlapping()
+            ->onOneServer();
+
+        $schedule->command('horizon:snapshot')
+            ->everyFiveMinutes()
+            ->withoutOverlapping()
+            ->onOneServer();
+    }
+
+    protected function commands()
+    {
+        $this->load(__DIR__ . '/Commands');
+
+        require base_path('routes/console.php');
+    }
+
+}

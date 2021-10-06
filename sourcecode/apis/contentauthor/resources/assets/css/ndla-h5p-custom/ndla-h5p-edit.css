@@ -1,0 +1,261 @@
+/* This file is included in the editor only. */
+
+
+/* Language selected ? Warning-message */
+.h5peditor:before {
+  content: "NB! Rett språk må være valgt før du velger H5P-type";
+  border: 1px solid #CCC;
+  padding: 0.5em;
+  background: #FFFFF2;
+  font-size: 14px;
+  display: table;
+}
+.h5p-more-libraries {
+  display: none;
+}
+
+/* General */
+
+.h5peditor-form .field.video .thumbnail,
+.h5peditor-form .field.video .add {
+  /* Reset style for file action buttons */
+  display: none;
+}
+
+.h5peditor-contentbrowser {
+  /* Reset style for Content browser */
+  display: block;
+  margin: 0.25em 0;
+  clear: both;
+}
+
+/* Course presentation */
+
+.h5peditor.h5p-coursepresentation-editor .h5p-course-presentation .h5p-presentation-wrapper {
+  /* Reset style for slide container */
+  box-sizing: border-box;
+  border: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols,
+.h5peditor.h5p-coursepresentation-editor .h5p-keywordcontrols
+{
+  /* Reset style for slide control buttons and remove keyword button container */
+  border-radius: 0;
+  border: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button:first-child,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button:last-child
+{
+  /* Reset style for slide control buttons, first and last button */
+  border-radius: 0;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-keywordcontrols-button,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button
+{
+  /* Reset style for slide control buttons */
+  color: #525252;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  text-shadow: none;
+  border-left: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-keywordcontrols-button:hover,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button:hover
+{
+  /* Reset style for slide control buttons and remove keywords button on hover */
+  color: #2666a6;
+  background: transparent;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-keywordcontrols-button:after {
+  /* Reset style for remove keyword button icon */
+  color: #525252;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-keywordcontrols-button:hover:after {
+  /* Reset style for remove keyword button icon on hover */
+  color: #2666a6;
+  text-shadow: none;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-sort-left:before,
+.h5peditor.h5p-coursepresentation-editor.h5p-slidecontrols-button.h5p-slidecontrols-button-sort-right:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-delete:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-clone:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-add:before
+{
+  /* Reset style for slide control button icons */
+  color: #525252;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-sort-left:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-sort-right:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-delete:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-clone:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-slidecontrols-button.h5p-slidecontrols-button-add:hover:before
+{
+  /* Reset style for slide control button icons on hover */
+  color: #2666a6;
+  text-shadow: none;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-box-wrapper {
+  /* Reset style for slide container */
+  box-shadow: none;
+  background: #eee;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-progressbar {
+  /* Reset style for progress bar default */
+  background: #ededed;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-progressbar .h5p-completed {
+  /* Reset style for progress bar completed */
+  background: #2666a6;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination {
+  /* Reset style for slide navigation bar */
+  border: 1px solid #d9d9d9;
+  border-radius: 0;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination ol {
+  /* Reset style for slide navigation bar slide numbers */
+  background: transparent;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slide-button.h5p-current a {
+  /* Reset style for slide navigation bar current slide number */
+  background: #2666a6;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination > a {
+  /* Reset style for slide navigation bar scroll buttons */
+  background: transparent;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination > .h5p-go-home {
+  /* Reset style for slide navigation bar home button */
+  border-right: none;
+  background: transparent;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination > a.h5p-scroll-enabled:hover,
+.h5peditor.h5p-coursepresentation-editor .h5p-slideination > .h5p-go-home:hover
+{
+  /* Reset style for slide navigation bar scroll buttons and home button on hover */
+  background: transparent;
+  color: #2666a6;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-li {
+  /* Reset style for slide main keyword and sub keyword buttons */
+  color: #525252;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-right: none;
+  border-radius: 0;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-left > .h5p-dragnbar-li:first-child {
+  /* Reset style for slide main keyword button */
+  border-radius: 0;
+  border-right: none;
+  border-left: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-left > .h5p-dragnbar-li:last-child {
+  /* Reset style for slide sub keyword button */
+  border-radius: 0;
+  border-right: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-li:last-child {
+  /* Reset style for slide toolbar last button */
+  border-right: 1px solid #d9d9d9;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-course-presentation .h5p-slide-button a:hover {
+  /* Reset style for slide navigation bar numbers on hover */
+  color: #2666a6;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-slide-button.h5p-current a:hover {
+  /* Reset style for slide navigation bar current slide number on hover */
+  color: #fff;
+}
+
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-mainkeyword-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-subkeyword-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-text-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-continuoustext-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-exportabletextarea-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-table-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-link-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-image-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-video-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-audio-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-blanks-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-multichoice-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-dragquestion-button:hover:before,
+.h5peditor.h5p-coursepresentation-editor .h5p-dragnbar-summary-button:hover:before
+{
+  /* Reset style for slide toolbar icon on hover */
+  color: #2666a6;
+}
+
+
+/* Make sure elements in drag-n-bar are not hidden in editor */
+.h5p-dragquestion-editor .h5p-dragnbar-element {
+  min-width: 1.5em;
+  min-height: 1.5em;
+}
+
+/* Drag and drop */
+/* TODO - remove this when DnD editor dimensions are fixed */
+.h5p-dragquestion-editor .h5p-transform-panel .h5p-dragnbar-dimensions {
+  display: none;
+}
+
+/* Interactive video */
+
+.h5peditor.h5p-interactivevideo-editor .h5peditor-dragnbar .h5p-dragnbar-ul,
+.h5peditor.h5p-interactivevideo-editor .h5peditor-dragnbar .h5p-dragnbar-ul .h5p-dragnbar-li
+{
+  /* Reset style for toolbar button list items */
+  background: none;
+}
+
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a,
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a:visited,
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a:link
+{
+  /* Reset style for toolbar buttons */
+  color: #525252;
+  background: transparent;
+  border: 1px solid #d9d9d9;
+  list-style-type: none;
+}
+
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a:hover,
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a:visited:hover,
+.h5peditor.h5p-interactivevideo-editor .h5p-dragnbar-a:link:hover
+{
+  /* Reset style for toolbar buttons on hover */
+  background: transparent;
+  color: #2666a6;
+}
+
+
+.h5peditor .h5p-video-editor > .field.image,
+/* Hide poster from video editor UI - NDLA gets it from Istribute */
+.h5peditor.h5p-interactivevideo-editor .h5peditor-form > .tree > .field.wizard > .h5peditor-panes > .field.group:first-child .field.image {
+  display: none;
+}

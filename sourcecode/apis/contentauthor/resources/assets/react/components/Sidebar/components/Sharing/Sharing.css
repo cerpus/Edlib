@@ -1,0 +1,12 @@
+.sharinglayout-container input.sharinglayout-input {
+    margin-right: 5px;
+}
+
+.sharinglayout-container {
+    display: flex;
+    align-items: center;
+}
+
+.sharinglayout-container > div {
+    margin-left: auto;
+}
