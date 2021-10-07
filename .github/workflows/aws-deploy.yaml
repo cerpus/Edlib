@@ -53,3 +53,8 @@ jobs:
           KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
         with:
           command: helm upgrade --wait --cleanup-on-fail --install edlib --namespace edlib ./chart
+
+      - name: Post message to slack
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"*<https:\/\/github.com\/cerpus\/Edlib|Edlib>*"}},{"type":"section","text":{"type":"mrkdwn","text":"Versjon *<https:\/\/github.com\/cerpus\/Edlib\/tree\/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* er lagt ut i *${{ github.event.inputs.environment }}* av ${{ github.actor }}\nDu finner release note <https:\/\/github.com\/cerpus\/Edlib\/releases\/tag\/${{ github.event.inputs.version }}|her>."}}]}' ${{ secrets.SLACK_HOOK_URL }}
+
