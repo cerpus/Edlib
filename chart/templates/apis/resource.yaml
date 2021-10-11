@@ -3,3 +3,5 @@
 {{- template "helpers.service" (dict "name" "resourceapi") }}
 ---
 {{- template "helpers.deployment" (dict "name" "resourceapi" "image" "ghcr.io/cerpus/edlib/api-resources-app" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/_ah/health?probe=readiness" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "resourceapi" ) }}

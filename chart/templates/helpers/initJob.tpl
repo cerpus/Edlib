@@ -12,7 +12,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: startup
-          image: {{ .image }}:{{ .imageTag }}
+          image: "{{ .image }}:{{ .imageTag }}"
           envFrom:
             - configMapRef:
                 name: common-config
