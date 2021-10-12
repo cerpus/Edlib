@@ -103,16 +103,6 @@
     "secure-http": false,
     "sort-packages": true
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.cerpus.net/"
-    },
-    {
-      "type": "composer",
-      "url": "https://composer-3rdparty.cerpus.net/"
-    }
-  ],
   "minimum-stability": "dev",
   "prefer-stable": true
 }

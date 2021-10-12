@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b93298647d4e5576fd3ce54edda96bce",
+    "content-hash": "276fde7ff3744a1602824611f13214df",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -306,14 +306,14 @@
             "version": "0.0.24",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/authnd/php-authlib-core.git",
+                "url": "https://github.com/cerpus/php-cerpusauthlib-core.git",
                 "reference": "8b5a7919c3d8b2c98f793090005e23993ee6ca52"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/185.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-cerpusauthlib-core/zipball/8b5a7919c3d8b2c98f793090005e23993ee6ca52",
                 "reference": "8b5a7919c3d8b2c98f793090005e23993ee6ca52",
-                "shasum": "b3d4536f758ab7bc93648362e7b6e2b1f5e86a90"
+                "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.1"
@@ -327,11 +327,7 @@
                     "Cerpus\\AuthCore\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\AuthCore\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Jan-Espen Oversand",
@@ -343,21 +339,26 @@
                 "Cerpus JWT support library",
                 "laravel",
                 "lumen"
-            ]
+            ],
+            "support": {
+                "issues": "https://github.com/cerpus/php-cerpusauthlib-core/issues",
+                "source": "https://github.com/cerpus/php-cerpusauthlib-core/tree/0.0.24"
+            },
+            "time": "2019-01-18T08:52:27+00:00"
         },
         {
             "name": "cerpus/cerpushelper",
             "version": "1.4.4",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/cerpushelper.git",
+                "url": "https://github.com/cerpus/php-cerpushelper.git",
                 "reference": "70ddd869ae35ec5737796ecf82cdcd2d0c51b243"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/411.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/70ddd869ae35ec5737796ecf82cdcd2d0c51b243",
                 "reference": "70ddd869ae35ec5737796ecf82cdcd2d0c51b243",
-                "shasum": "c2fbf97b8d0046bafdc9ca0013115fb85a8c1652"
+                "shasum": ""
             },
             "require": {
                 "auth0/auth0-php": "^5.3",
@@ -383,11 +384,7 @@
                     "src/Helpers/Profile.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\HelperTests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -398,21 +395,26 @@
                     "email": "odd-arne.johansen@cerpus.com"
                 }
             ],
-            "description": "Base package for common components"
+            "description": "Base package for common components",
+            "support": {
+                "issues": "https://github.com/cerpus/php-cerpushelper/issues",
+                "source": "https://github.com/cerpus/php-cerpushelper/tree/1.4.4"
+            },
+            "time": "2021-06-15T07:24:26+00:00"
         },
         {
             "name": "cerpus/coreclient",
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/coreclient.git",
+                "url": "https://github.com/cerpus/php-coreclient.git",
                 "reference": "772c43fc1d4549e5b1246ee2e90bb1bc26c3089b"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/366.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-coreclient/zipball/772c43fc1d4549e5b1246ee2e90bb1bc26c3089b",
                 "reference": "772c43fc1d4549e5b1246ee2e90bb1bc26c3089b",
-                "shasum": "c42562277a57f6766c3e3b1f931b34770d013f2b"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpushelper": "^1.4",
@@ -442,11 +444,7 @@
                     "Cerpus\\CoreClient\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\CoreClientTests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -458,21 +456,26 @@
                 "Cerpus Core API Client",
                 "laravel",
                 "lumen"
-            ]
+            ],
+            "support": {
+                "issues": "https://github.com/cerpus/php-coreclient/issues",
+                "source": "https://github.com/cerpus/php-coreclient/tree/1.2.0"
+            },
+            "time": "2021-01-13T07:25:47+00:00"
         },
         {
             "name": "cerpus/gdpr",
             "version": "0.5.2",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/gdpr.git",
+                "url": "https://github.com/cerpus/php-gdpr.git",
                 "reference": "1d85e4062ea24f75b0f14e204a7cd48686d121f9"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/343.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-gdpr/zipball/1d85e4062ea24f75b0f14e204a7cd48686d121f9",
                 "reference": "1d85e4062ea24f75b0f14e204a7cd48686d121f9",
-                "shasum": "d8bba593b1554fdd810d31c34032900fb5dabb8e"
+                "shasum": ""
             },
             "require": {
                 "cerpus/laravel-auth": "*",
@@ -508,11 +511,7 @@
                     "Cerpus\\Gdpr\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\Gdpr\\Test\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "proprietary"
             ],
@@ -522,21 +521,26 @@
                     "email": "odd-arne.johansen@cerpus.com"
                 }
             ],
-            "description": "A package that helps with implementing GDPR compliance in the EdLib ecosystem"
+            "description": "A package that helps with implementing GDPR compliance in the EdLib ecosystem",
+            "support": {
+                "issues": "https://github.com/cerpus/php-gdpr/issues",
+                "source": "https://github.com/cerpus/php-gdpr/tree/0.5.2"
+            },
+            "time": "2020-11-24T09:38:06+00:00"
         },
         {
             "name": "cerpus/imageservice-client",
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/imageservice-client.git",
+                "url": "https://github.com/cerpus/php-imageservice-client.git",
                 "reference": "c6472478cb1932aa2740faaa46b1521f4291e453"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/408.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-imageservice-client/zipball/c6472478cb1932aa2740faaa46b1521f4291e453",
                 "reference": "c6472478cb1932aa2740faaa46b1521f4291e453",
-                "shasum": "db3fdb0455afec92994d8a9952de9d9fa7d6e49e"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpushelper": "^1.4",
@@ -556,11 +560,7 @@
                     "Cerpus\\ImageServiceClient\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\ImageServiceClientTests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -571,21 +571,26 @@
                     "email": "odd-arne@gamilab.com"
                 }
             ],
-            "description": "Client to handle communication with the Cerpus ImageService"
+            "description": "Client to handle communication with the Cerpus ImageService",
+            "support": {
+                "issues": "https://github.com/cerpus/php-imageservice-client/issues",
+                "source": "https://github.com/cerpus/php-imageservice-client/tree/1.2.0"
+            },
+            "time": "2021-06-14T06:59:36+00:00"
         },
         {
             "name": "cerpus/jwtsupportlib",
             "version": "0.3.2",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/php-jwtsupportlib.git",
+                "url": "https://github.com/cerpus/php-jwtsupportlib.git",
                 "reference": "4d578c13bd6fcb5029f3918a6f0248625abe2bff"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/167.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-jwtsupportlib/zipball/4d578c13bd6fcb5029f3918a6f0248625abe2bff",
                 "reference": "4d578c13bd6fcb5029f3918a6f0248625abe2bff",
-                "shasum": "692244529bba36af912bd70106908088868a4f67"
+                "shasum": ""
             },
             "require": {
                 "firebase/php-jwt": "^5.0",
@@ -600,14 +605,10 @@
                     "Cerpus\\JWTSupport\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\JWTSupportTest\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
-                    "name": "Jan-Espen Oversand ",
+                    "name": "Jan-Espen Oversand",
                     "email": "jan.espen.oversand@cerpus.com"
                 }
             ],
@@ -616,21 +617,26 @@
                 "Cerpus JWT support library",
                 "laravel",
                 "lumen"
-            ]
+            ],
+            "support": {
+                "issues": "https://github.com/cerpus/php-jwtsupportlib/issues",
+                "source": "https://github.com/cerpus/php-jwtsupportlib/tree/0.3.2"
+            },
+            "time": "2018-10-18T12:30:46+00:00"
         },
         {
             "name": "cerpus/laravel-auth",
             "version": "0.24.5",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/authnd/laravel-auth.git",
+                "url": "https://github.com/cerpus/php-laravel-auth.git",
                 "reference": "8fe9345134f5e912c285ea58d2c02905d3bb0f96"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/246.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-laravel-auth/zipball/8fe9345134f5e912c285ea58d2c02905d3bb0f96",
                 "reference": "8fe9345134f5e912c285ea58d2c02905d3bb0f96",
-                "shasum": "77bd678073e709a47b54bd353229757791e9fcd0"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpusauthlib-core": "0.0.24",
@@ -648,32 +654,33 @@
                     "Cerpus\\LaravelAuth\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\LaravelAuth\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Jan-Espen Oversand",
                     "email": "jan.espen.oversand@cerpus.com"
                 }
             ],
-            "description": "Authentication plugin for Laravel"
+            "description": "Authentication plugin for Laravel",
+            "support": {
+                "issues": "https://github.com/cerpus/php-laravel-auth/issues",
+                "source": "https://github.com/cerpus/php-laravel-auth/tree/0.24.5"
+            },
+            "time": "2019-10-31T07:35:35+00:00"
         },
         {
             "name": "cerpus/license-client",
             "version": "1.3.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.vpn.cerpus.net:7999/brain/licenseclient.git",
+                "url": "https://github.com/cerpus/php-license-client.git",
                 "reference": "281c7219b97398cc9f5b8b649a49c0868b84dd52"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/402.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-license-client/zipball/281c7219b97398cc9f5b8b649a49c0868b84dd52",
                 "reference": "281c7219b97398cc9f5b8b649a49c0868b84dd52",
-                "shasum": "439a047b2f063724582d7c5f0eacc68f0027c264"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpushelper": "^1.4",
@@ -699,6 +706,7 @@
                     "Cerpus\\LicenseClient\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Closed"
             ],
@@ -716,21 +724,26 @@
             "keywords": [
                 "Cerpus License-Server Client",
                 "laravel"
-            ]
+            ],
+            "support": {
+                "issues": "https://github.com/cerpus/php-license-client/issues",
+                "source": "https://github.com/cerpus/php-license-client/tree/1.3.0"
+            },
+            "time": "2021-06-04T09:20:00+00:00"
         },
         {
             "name": "cerpus/metadataservice-client",
             "version": "1.3.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/metadataserviceclient.git",
+                "url": "https://github.com/cerpus/php-metadataservice-client.git",
                 "reference": "a3bad09fdca9bc092f6727d234589715c2963457"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/383.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-metadataservice-client/zipball/a3bad09fdca9bc092f6727d234589715c2963457",
                 "reference": "a3bad09fdca9bc092f6727d234589715c2963457",
-                "shasum": "b9bfa9c321788d0eb4dfa0de011a1c1329a6011f"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpushelper": "^1.2",
@@ -751,32 +764,33 @@
                     "Cerpus\\MetadataServiceClient\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\MetadataServiceClientTests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
                     "email": "thomass@cerpus.com"
                 }
             ],
-            "description": "Client to handle communication with the Cerpus MetadataService"
+            "description": "Client to handle communication with the Cerpus MetadataService",
+            "support": {
+                "issues": "https://github.com/cerpus/php-metadataservice-client/issues",
+                "source": "https://github.com/cerpus/php-metadataservice-client/tree/1.3.0"
+            },
+            "time": "2021-02-24T11:56:13+00:00"
         },
         {
             "name": "cerpus/questionbank-client",
             "version": "0.2.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/brain/questionbank-client.git",
+                "url": "https://github.com/cerpus/php-questionbank-client.git",
                 "reference": "205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/238.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a",
                 "reference": "205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a",
-                "shasum": "db42438db2d31553654cc76a9d0fdf7ada5dd690"
+                "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.2",
@@ -796,32 +810,33 @@
                     "Cerpus\\QuestionBankClient\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\QuestionBankClientTests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
                     "email": "thomass@cerpus.com"
                 }
             ],
-            "description": "Client to talk do the Cerpus Questionset Service"
+            "description": "Client to talk do the Cerpus Questionset Service",
+            "support": {
+                "issues": "https://github.com/cerpus/php-questionbank-client/issues",
+                "source": "https://github.com/cerpus/php-questionbank-client/tree/0.2.0"
+            },
+            "time": "2019-10-25T05:22:59+00:00"
         },
         {
             "name": "cerpus/re-content-client",
             "version": "0.0.5",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.cerpus.net:7999/rs/re-content-client.git",
+                "url": "https://github.com/cerpus/php-re-content-client.git",
                 "reference": "9ad1525e7dbe26add3e5ec668f78946ba0ed3fd2"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/310.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-re-content-client/zipball/9ad1525e7dbe26add3e5ec668f78946ba0ed3fd2",
                 "reference": "9ad1525e7dbe26add3e5ec668f78946ba0ed3fd2",
-                "shasum": "d919deb93abd6c206eddbd435f97905a3f6fcee7"
+                "shasum": ""
             },
             "require": {
                 "cerpus/cerpushelper": "^1.4",
@@ -842,11 +857,7 @@
                     "Cerpus\\REContentClient\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Cerpus\\REContentClient\\Test\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "proprietary"
             ],
@@ -856,21 +867,26 @@
                     "email": "odd-arne.johansen@cerpus.com"
                 }
             ],
-            "description": "A Laravel client to make working with the Recommendation Engine Content Index a breeze"
+            "description": "A Laravel client to make working with the Recommendation Engine Content Index a breeze",
+            "support": {
+                "issues": "https://github.com/cerpus/php-re-content-client/issues",
+                "source": "https://github.com/cerpus/php-re-content-client/tree/0.0.5"
+            },
+            "time": "2020-10-14T06:23:44+00:00"
         },
         {
             "name": "cerpus/version-client",
             "version": "1.2.0",
             "source": {
                 "type": "git",
-                "url": "ssh://git@app-cerpus-stash.vpn.cerpus.net:7999/brain/versionclient.git",
+                "url": "https://github.com/cerpus/php-version-client.git",
                 "reference": "9b6be7bfc6db30d4f01342df287d2a73d649532b"
             },
             "dist": {
-                "type": "tar",
-                "url": "https://composer.cerpus.net/archives/download/354.tar.gz",
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-version-client/zipball/9b6be7bfc6db30d4f01342df287d2a73d649532b",
                 "reference": "9b6be7bfc6db30d4f01342df287d2a73d649532b",
-                "shasum": "73193cb5e4fa2077db67223eb49bb1b76c707cba"
+                "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.2",
@@ -886,6 +902,7 @@
                     "Cerpus\\VersionClient\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -896,7 +913,12 @@
             "keywords": [
                 "Cerpus Versioning API Client",
                 "laravel"
-            ]
+            ],
+            "support": {
+                "issues": "https://github.com/cerpus/php-version-client/issues",
+                "source": "https://github.com/cerpus/php-version-client/tree/1.2.0"
+            },
+            "time": "2020-11-02T14:10:57+00:00"
         },
         {
             "name": "ckeditor/ckeditor",
@@ -11003,5 +11025,5 @@
         "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }
