@@ -34,7 +34,7 @@ spec:
                 topologyKey: 'kubernetes.io/hostname'
       containers:
         - name: proxy
-          image: {{ .proxyImage }}:{{ .imageTag }}
+          image: "{{ .proxyImage }}:{{ .imageTag }}"
           ports:
             - name: http
               containerPort: {{ .port | default "80" }}
@@ -71,7 +71,7 @@ spec:
                 name: common-secret
                 optional: true
         - name: fpm
-          image: {{ .fpmImage }}:{{ .imageTag }}
+          image: "{{ .fpmImage }}:{{ .imageTag }}"
           resources:
             requests:
               memory: '256Mi'

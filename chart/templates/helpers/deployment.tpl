@@ -34,18 +34,18 @@ spec:
                 topologyKey: 'kubernetes.io/hostname'
       containers:
         - name: {{ .name }}
-          image: {{ .image }}:{{ .imageTag }}
+          image: "{{ .image }}:{{ .imageTag }}"
           ports:
             - name: http
               containerPort: {{ .port | default "80" }}
               protocol: TCP
           resources:
             requests:
-              memory: '256Mi'
-              cpu: '20m'
+              memory: '128Mi'
+              cpu: '100m'
             limits:
-              memory: '1024Mi'
-              cpu: '1000m'
+              memory: '256Mi'
+              cpu: '150m'
           livenessProbe:
             httpGet:
               path: {{ .healthUrl }}

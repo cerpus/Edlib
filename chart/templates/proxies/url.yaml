@@ -1,3 +1,5 @@
 {{- template "helpers.service" (dict "name" "proxy-url") }}
 ---
 {{- template "helpers.deployment" (dict "name" "proxy-url" "image" "ghcr.io/cerpus/edlib/proxy-url-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/_ah/health?probe=readiness" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-url" ) }}
