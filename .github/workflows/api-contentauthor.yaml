@@ -23,40 +23,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup PHP with PECL extension
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.2'
-          extensions: oauth
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2.1.6
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-
-      - name: Run composer install
-        run: cd ${{ env.workingDirectory }}; composer install -n --prefer-dist
-        env:
-          APP_ENV: testing
-
-      - name: Prepare Laravel Application
+      - name: Build test image
         run: |
-          cd ${{ env.workingDirectory }};
-          cp .env.example .env
-          php artisan key:generate
+          cd ${{ env.workingDirectory }}
+          docker build -t contentauthor-test
 
       - name: Run tests
-        run: cd ${{ env.workingDirectory }};./vendor/bin/phpunit
-        env:
-          APP_ENV: testing
+        run: |
+          cd ${{ env.workingDirectory }}
+          mkdir -p test-storage-volume
+          docker run --volume "./test-storage-volume:/storage" contentauthor-test
 
       - name: Upload artifacts
         uses: actions/upload-artifact@master
         if: failure()
         with:
           name: Logs
-          path: ./storage/logs
+          path: ${{ env.workingDirectory }}/test-storage-volume
 #
 #  create_release:
 #    runs-on: ubuntu-latest
