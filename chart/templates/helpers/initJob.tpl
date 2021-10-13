@@ -20,6 +20,20 @@ spec:
             - secretRef:
                 name: common-secret
                 optional: true
+{{ if .envFromConfig }}
+{{- range .envFromConfig }}
+            - configMapRef:
+                name: {{ . | quote }}
+                optional: true
+{{- end }}
+{{ end }}
+{{ if .envFromSecret }}
+{{- range .envFromSecret }}
+            - secretRef:
+                name: {{ . | quote }}
+                optional: true
+{{- end }}
+{{ end }}
       imagePullSecrets:
         - name: dockerconfigjson-github-com
 {{- end }}

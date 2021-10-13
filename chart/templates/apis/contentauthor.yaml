@@ -1,4 +1,4 @@
-{{- template "helpers.initJob" (dict "name" "contentauthor" "image" "ghcr.io/cerpus/edlib/api-contentauthor-migration" "imageTag" .Chart.AppVersion ) }}
+{{- template "helpers.initJob" (dict "name" "contentauthor" "image" "ghcr.io/cerpus/edlib/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
 ---
 {{- template "helpers.service" (dict "name" "contentauthor" "port" 8081) }}
 ---
