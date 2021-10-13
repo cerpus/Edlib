@@ -35,6 +35,11 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/api-common.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_contentauthor:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@master
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
   release_api_doku:
     needs: get_variables
     uses: cerpus/Edlib/.github/workflows/api-doku.yaml@master
@@ -105,6 +110,7 @@ jobs:
     needs:
       - release_api_auth
       - release_api_common
+      - release_api_contentauthor
       - release_api_doku
       - release_api_lti
       - release_api_resources
