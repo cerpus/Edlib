@@ -10,7 +10,6 @@ TRANSPORT=ssh://git@app-cerpus-stash.cerpus.net:7999/
 git clone ${TRANSPORT}edlib/doku-lti-viewer.git
 git clone ${TRANSPORT}brain/edlibfacade.git
 git clone ${TRANSPORT}edlib/edlibapi-proxy.git
-git clone ${TRANSPORT}brain/h5pviewer.git
 git clone ${TRANSPORT}brain/licenseapi.git
 git clone ${TRANSPORT}rs/re-recommender.git
 git clone ${TRANSPORT}rs/re-content-index.git

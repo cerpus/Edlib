@@ -12,7 +12,7 @@ mkdir -p elasticsearch
 
 mkdir -p contentauthor
 mkdir -p contentauthor/h5pstorage
-cp -R ../sourcecode/not_migrated/h5pviewer/storage contentauthor
+cp -R ../sourcecode/apis/contentauthor/storage contentauthor
 
 mkdir -p licenseapi
 cp -R ../sourcecode/not_migrated/licenseapi/storage licenseapi

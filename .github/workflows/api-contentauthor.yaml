@@ -32,7 +32,23 @@ jobs:
         run: |
           cd ${{ env.workingDirectory }}
           mkdir -p test-storage-volume
-          docker run contentauthor-test
+          docker run --volume `pwd`"/test-storage-volume:/storage" contentauthor-test
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: Logs
+          path: ${{ env.workingDirectory }}/test-storage-volume
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -44,7 +60,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push web container
+      - name: Build and push app container
         id: docker_build_web
         uses: docker/build-push-action@v2
         with:
@@ -53,7 +69,7 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: app
 
-      - name: Build and push fpm container
+      - name: Build and push init container
         id: docker_build_fpm
         uses: docker/build-push-action@v2
         with:
@@ -62,7 +78,7 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: init
 
-      - name: Build and push migration container
+      - name: Build and push phpfpm container
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -70,7 +86,7 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: phpfpm
 
-      - name: Build and push migration container
+      - name: Build and push cron container
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -78,7 +94,7 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: cron
 
-      - name: Build and push migration container
+      - name: Build and push deploy container
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -86,7 +102,7 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: deploy
 
-      - name: Build and push migration container
+      - name: Build and push edstepmessages container
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -94,27 +110,10 @@ jobs:
           context: sourcecode/apis/contentauthor
           target: edstepmessages
 
-      - name: Build and push migration container
+      - name: Build and push horizonqueue container
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: ghcr.io/cerpus/edlib/api-contentauthor-horizonqueue:${{ github.sha }}
           context: sourcecode/apis/contentauthor
           target: horizonqueue
-
-#      - name: Upload artifacts
-#        uses: actions/upload-artifact@master
-#        if: failure()
-#        with:
-#          name: Logs
-#          path: ${{ env.workingDirectory }}/test-storage-volume
-#
-#  create_release:
-#    runs-on: ubuntu-latest
-#    needs: test
-#    if: github.event_name == 'workflow_dispatch'
-#    steps:
-#      - uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0
-#
