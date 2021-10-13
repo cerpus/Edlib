@@ -63,7 +63,6 @@ jobs:
           target: init
 
       - name: Build and push migration container
-        id: docker_build_migration
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -72,7 +71,6 @@ jobs:
           target: phpfpm
 
       - name: Build and push migration container
-        id: docker_build_migration
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -81,7 +79,6 @@ jobs:
           target: cron
 
       - name: Build and push migration container
-        id: docker_build_migration
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -90,7 +87,6 @@ jobs:
           target: deploy
 
       - name: Build and push migration container
-        id: docker_build_migration
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -99,7 +95,6 @@ jobs:
           target: edstepmessages
 
       - name: Build and push migration container
-        id: docker_build_migration
         uses: docker/build-push-action@v2
         with:
           push: true
