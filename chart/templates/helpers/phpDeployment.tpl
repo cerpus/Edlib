@@ -32,60 +32,13 @@ spec:
                       values:
                         - {{ .name }}
                 topologyKey: 'kubernetes.io/hostname'
+{{ if .initImage }}
+      initContainers:
+{{ include "helpers.container" (dict "name" "init" "image" .initImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret ) | indent 8 }}
+{{ end }}
       containers:
-        - name: proxy
-          image: "{{ .proxyImage }}:{{ .imageTag }}"
-          ports:
-            - name: http
-              containerPort: {{ .port | default "80" }}
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: {{ .healthUrl }}
-              port: {{ .port | default "80" }}
-            timeoutSeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 10
-          readinessProbe:
-            httpGet:
-              path: {{ .healthUrl }}
-              port: {{ .port | default "80" }}
-            timeoutSeconds: 5
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 2
-          startupProbe:
-            httpGet:
-              path: {{ .healthUrl }}
-              port: {{ .port | default "80" }}
-            initialDelaySeconds: 10
-            timeoutSeconds: 5
-            periodSeconds: 10
-            failureThreshold: 100
-          envFrom:
-            - configMapRef:
-                name: common-config
-                optional: true
-            - secretRef:
-                name: common-secret
-                optional: true
-        - name: fpm
-          image: "{{ .fpmImage }}:{{ .imageTag }}"
-          resources:
-            requests:
-              memory: '256Mi'
-              cpu: '20m'
-            limits:
-              memory: '1024Mi'
-              cpu: '1000m'
-          envFrom:
-            - configMapRef:
-                name: common-config
-                optional: true
-            - secretRef:
-                name: common-secret
-                optional: true
+{{ include "helpers.container" (dict "name" "proxy" "image" .proxyImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret "healthUrl" .healthUrl "port" (.port | default "80") ) | indent 8 }}
+{{ include "helpers.container" (dict "name" "fpm" "image" .fpmImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret ) | indent 8 }}
       imagePullSecrets:
         - name: dockerconfigjson-github-com
 {{- end }}
