@@ -26,7 +26,7 @@ jobs:
       - name: Build test image
         run: |
           cd ${{ env.workingDirectory }}
-          docker build -t contentauthor-test
+          docker build -t contentauthor-test .
 
       - name: Run tests
         run: |
