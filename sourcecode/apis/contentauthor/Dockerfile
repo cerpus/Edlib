@@ -54,6 +54,7 @@ FROM node:11-alpine AS jsbuild
 RUN apk add --no-cache alpine-sdk python make g++ bash
 COPY --from=php_base /app/ /app/
 WORKDIR /app/
+RUN npm config set unsafe-perm true
 RUN set -eux; \
     npm install -g node-gyp; \
     npm install; \
