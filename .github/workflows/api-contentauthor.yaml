@@ -65,7 +65,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-app:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-app:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: app
 
@@ -74,7 +74,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-init:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-init:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: init
 
@@ -82,7 +82,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-phpfpm:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-phpfpm:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: phpfpm
 
@@ -90,7 +90,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-cron:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-cron:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: cron
 
@@ -98,7 +98,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-deploy:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-deploy:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: deploy
 
@@ -106,7 +106,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-edstepmessages:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-edstepmessages:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: edstepmessages
 
@@ -114,6 +114,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/cerpus/edlib/api-contentauthor-horizonqueue:${{ github.sha }}
+          tags: ghcr.io/cerpus/edlib/api-contentauthor-horizonqueue:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: horizonqueue
