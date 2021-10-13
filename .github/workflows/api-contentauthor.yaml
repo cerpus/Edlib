@@ -32,14 +32,14 @@ jobs:
         run: |
           cd ${{ env.workingDirectory }}
           mkdir -p test-storage-volume
-          docker run --volume "./test-storage-volume:/storage" contentauthor-test
+          docker run contentauthor-test
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        if: failure()
-        with:
-          name: Logs
-          path: ${{ env.workingDirectory }}/test-storage-volume
+#      - name: Upload artifacts
+#        uses: actions/upload-artifact@master
+#        if: failure()
+#        with:
+#          name: Logs
+#          path: ${{ env.workingDirectory }}/test-storage-volume
 #
 #  create_release:
 #    runs-on: ubuntu-latest
