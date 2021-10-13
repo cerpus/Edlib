@@ -27,6 +27,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.2'
+          extensions: oauth
 
       - name: Cache composer dependencies
         uses: actions/cache@v2.1.6
