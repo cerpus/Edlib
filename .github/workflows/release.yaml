@@ -144,4 +144,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          options: '--override --draft'
+          options: '--override --tags=${{ github.event.inputs.releaseName }}'
