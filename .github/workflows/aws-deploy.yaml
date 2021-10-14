@@ -52,7 +52,7 @@ jobs:
         env:
           KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
         with:
-          command: helm upgrade --wait --timeout 20m --cleanup-on-fail --install edlib --namespace edlib ./chart
+          command: helm upgrade --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
 
       - name: Post message to slack
         run: |
