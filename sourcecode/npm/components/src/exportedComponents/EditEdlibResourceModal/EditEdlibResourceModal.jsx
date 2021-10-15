@@ -7,11 +7,13 @@ import { useEdlibResource } from '../../hooks/requests/useResource';
 import ModalHeader from '../../components/ModalHeader';
 import { MemoryRouter } from 'react-router-dom';
 import ExportWrapper from '../../components/ExportWrapper';
+import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
+import useTranslation from '../../hooks/useTranslation';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     const { edlib } = useConfig();
     const createResourceLink = useEdlibResource();
-    const { response, error, loading } = useFetchWithToken(
+    const { response, ltiError, ltiLoading } = useFetchWithToken(
         edlib('/lti/v2/lti/convert-launch-url'),
         'GET',
         React.useMemo(
@@ -23,13 +25,23 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
             [ltiLaunchUrl]
         )
     );
+    const {
+        enabled: inMaintenanceMode,
+        error: mmError,
+        loading: mmLoading,
+    } = useMaintenanceMode();
+    const { t } = useTranslation();
 
-    if (loading || !response) {
+    if (ltiLoading || mmLoading || !response) {
         return <Spinner />;
     }
 
-    if (error) {
+    if (ltiError || mmError) {
         return <div>Noe skjedde</div>;
+    }
+
+    if (inMaintenanceMode) {
+        return <p style={{ padding: '1em' }}>⚠️ {t('maintenance')}</p>;
     }
 
     return (
