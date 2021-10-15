@@ -170,7 +170,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getEditorSettings(): array
     {
         return [
-            'wirisPath' => 'https://www.wiris.net/demo/plugins/ckeditor/plugin.js',
+            'wirisPath' => 'https://www.wiris.net/client/plugins/ckeditor/plugin.js',
         ];
     }
 
