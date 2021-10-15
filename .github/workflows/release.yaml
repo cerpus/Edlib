@@ -126,6 +126,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+        with:
+          fetch-depth: 0
 
       - name: Create tag
         uses: actions/github-script@v5
