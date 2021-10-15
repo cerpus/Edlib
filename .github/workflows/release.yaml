@@ -141,9 +141,14 @@ jobs:
               sha: context.sha
             })
 
-      - name: Create nice release
-        uses: lakto/gren-action@v2.0.0
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
+      - name: Install Gren
+        run: npm install github-release-notes -g
+
+
+      - name: Create a release
+        run: gren release --override --tags=${{ github.event.inputs.releaseName }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          options: '--override --tags=${{ github.event.inputs.releaseName }}'
+          GREN_GITHUB_TOKEN: '${{ github.token }}'
