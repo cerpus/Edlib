@@ -44,7 +44,7 @@ services:
       - 5432:5432
 
   mysql:
-    image: mariadb:10.3
+    image: mariadb:10.5.12
     environment:
       MYSQL_ROOT_PASSWORD: mysqlpassword
       MYSQL_INITDB_SKIP_TZINFO: 1
