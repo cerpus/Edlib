@@ -34,7 +34,11 @@ class Util
             return self::decodeResponse($response);
         } catch (RequestException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
-            $data = Util::decodeResponse($e->getResponse());
+            try {
+                $data = Util::decodeResponse($e->getResponse());
+            } catch (\JsonException $jsonException) {
+                throw $e;
+            }
 
             if ($statusCode == 404) {
                 $field = $data["error"]["parameter"] ?? null;
