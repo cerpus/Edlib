@@ -159,6 +159,16 @@ export default {
             context
         );
 
+        const actualResources = await Promise.all(
+            resourceIds.map((resourceId) =>
+                req.context.db.resource.getById(resourceId)
+            )
+        );
+
+        if (actualResources.some((resource) => !resource)) {
+            throw new NotFoundException('resource');
+        }
+
         if (externalResources) {
             const resourceVersions = (
                 await Promise.all(
