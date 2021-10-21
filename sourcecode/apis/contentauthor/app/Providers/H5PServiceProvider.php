@@ -157,7 +157,7 @@ class H5PServiceProvider extends ServiceProvider
             switch ($storageDisk) {
                 case 'cloud':
                     $uploadDisk = Storage::disk(config('h5p.H5PStorageDisk'));
-                    $instance = new H5PCerpusStorage(Storage::cloud(), Storage::getDefaultCloudDriver(), $uploadDisk);
+                    $instance = new H5PCerpusStorage(Storage::cloud(), Storage::getDefaultCloudDriver(), $uploadDisk, config('app.cdnPrefix'));
                     break;
                 case 'default':
                     $path = config("h5p.storage.path");
