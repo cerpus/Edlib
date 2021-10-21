@@ -46,21 +46,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
     private function getUrl(string $url)
     {
-        var_dump($this->cdnPrefix);die;
-        if (empty($this->cdnPrefix)) {
-            return $url;
-        }
-
-        $separator = '';
-
-        $startsWithSlash = substr_compare($url, '/', 0, strlen('/')) == 0;
-        $endsWithSlash = substr_compare($this->cdnPrefix, '/', -strlen('/')) == 0;
-
-        if (!$startsWithSlash && !$endsWithSlash) {
-            $separator = '/';
-        }
-
-        return "$this->cdnPrefix$separator$url";
+        return rtrim($this->cdnPrefix, '/') . '/' . ltrim($url, '/');
     }
 
     private function triggerVideoConvert($fromId, $toId, $file)
