@@ -27,7 +27,6 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     );
     const {
         enabled: inMaintenanceMode,
-        error: mmError,
         loading: mmLoading,
     } = useMaintenanceMode();
     const { t } = useTranslation();
@@ -36,7 +35,7 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
         return <Spinner />;
     }
 
-    if (ltiError || mmError) {
+    if (ltiError) {
         return <div>Noe skjedde</div>;
     }
 

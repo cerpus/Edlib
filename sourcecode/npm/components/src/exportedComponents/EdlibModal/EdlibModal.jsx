@@ -36,7 +36,7 @@ const EdlibModal = ({
     const createResourceLink = useEdlibResource();
     const { getUserConfig } = useEdlibComponentsContext();
     const startPage = getStartPage(getUserConfig('landingContentExplorerPage'));
-    const { enabled: inMaintenanceMode, error, loading } = useMaintenanceMode();
+    const { enabled: inMaintenanceMode, loading } = useMaintenanceMode();
     const { t } = useTranslation();
 
     const {
@@ -48,10 +48,6 @@ const EdlibModal = ({
 
     if (loading) {
         return <Spinner />;
-    }
-
-    if (error) {
-        return <div>Noe skjedde</div>;
     }
 
     if (inMaintenanceMode) {
