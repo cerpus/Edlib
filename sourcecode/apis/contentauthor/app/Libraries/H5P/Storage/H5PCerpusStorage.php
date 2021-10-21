@@ -34,12 +34,33 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     private $uploadDisk;
 
     private $diskName;
+    private $cdnPrefix;
 
-    public function __construct(Filesystem $filesystemAdapter, string $diskName, Filesystem $uploadDisk)
+    public function __construct(Filesystem $filesystemAdapter, string $diskName, Filesystem $uploadDisk, string $cdnPrefix = '')
     {
         $this->filesystem = $filesystemAdapter;
         $this->diskName = $diskName;
         $this->uploadDisk = $uploadDisk;
+        $this->cdnPrefix = $cdnPrefix . '/';
+    }
+
+    private function getUrl(string $url)
+    {
+        var_dump($this->cdnPrefix);die;
+        if (empty($this->cdnPrefix)) {
+            return $url;
+        }
+
+        $separator = '';
+
+        $startsWithSlash = substr_compare($url, '/', 0, strlen('/')) == 0;
+        $endsWithSlash = substr_compare($this->cdnPrefix, '/', -strlen('/')) == 0;
+
+        if (!$startsWithSlash && !$endsWithSlash) {
+            $separator = '/';
+        }
+
+        return "$this->cdnPrefix$separator$url";
     }
 
     private function triggerVideoConvert($fromId, $toId, $file)
@@ -421,7 +442,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             $file = sprintf($path, $key);
             if ($this->filesystem->has($file)) {
                 $files[$type] = array((object)array(
-                    'path' => $file,
+                    'path' => $this->getUrl($file),
                     'version' => ''
                 ));
             }
