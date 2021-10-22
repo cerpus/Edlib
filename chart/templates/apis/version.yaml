@@ -1,0 +1,7 @@
+{{- template "helpers.initJob" (dict "name" "versionapi" "image" "ghcr.io/cerpus/edlib/api-version-migration" "imageTag" .Chart.AppVersion ) }}
+---
+{{- template "helpers.service" (dict "name" "versionapi" "port" 8080) }}
+---
+{{- template "helpers.deployment" (dict "name" "versionapi" "image" "ghcr.io/cerpus/edlib/api-version-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/health" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "versionapi" ) }}

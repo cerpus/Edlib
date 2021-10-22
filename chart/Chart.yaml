@@ -1,4 +1,4 @@
 apiVersion: v2
 name: edlib
-description: A Helm chart for Kubernetes
-version: "1.0.0"
+description: Edlib chart
+version: "1.1.0"
