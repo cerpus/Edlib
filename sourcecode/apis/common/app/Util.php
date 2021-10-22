@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\NotFoundException;
+use App\Exceptions\UnauthorizedException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -26,6 +27,7 @@ class Util
     /**
      * @throws NotFoundException
      * @throws \JsonException
+     * @throws UnauthorizedException
      */
     public static function handleEdlibNodeApiRequest(callable $wrapper)
     {
@@ -43,6 +45,10 @@ class Util
             if ($statusCode == 404) {
                 $field = $data["error"]["parameter"] ?? null;
                 throw new NotFoundException($field);
+            }
+
+            if ($statusCode == 401) {
+                throw new UnauthorizedException();
             }
 
             throw $e;

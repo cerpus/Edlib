@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Apis\AuthApiService;
+use App\Exceptions\UnauthorizedException;
 use App\User;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Http\Request;
@@ -34,16 +35,12 @@ class IdentityServiceAuthenticator
         $this->logger = $logger;
     }
 
-    public function __invoke(Request $request): ?User
+    /**
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws \JsonException
+     */
+    private function retrieveFromInternalAuth(string $token): ?User
     {
-        $token = $request->bearerToken();
-
-        if ($token === null) {
-            $this->logger->debug('No bearer token in request');
-
-            return null;
-        }
-
         $serializer = new CompactSerializer();
 
         try {
@@ -115,5 +112,48 @@ class IdentityServiceAuthenticator
             'email' => $userPayload['email'],
             'isAdmin' => $userPayload['isAdmin'] == 1,
         ]);
+    }
+
+    /**
+     * @throws \App\Exceptions\NotFoundException
+     * @throws \JsonException
+     */
+    private function retrieveFromExternalAuth(Request $request, string $externalToken): ?User
+    {
+        try {
+            $externalInfo = $this->authApiService->convertToken($externalToken);
+            $request->merge([
+                'internalToken' => $externalInfo['token']
+            ]);
+
+            return $externalInfo['user'];
+        } catch (UnauthorizedException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @throws \JsonException|\Psr\SimpleCache\InvalidArgumentException|\App\Exceptions\NotFoundException
+     */
+    public function __invoke(Request $request): ?User
+    {
+        $token = $request->bearerToken();
+
+        if ($token === null) {
+            $this->logger->debug('No bearer token in request');
+
+            return null;
+        }
+
+        $userFromInternalAuth = $this->retrieveFromInternalAuth($token);
+
+        if ($userFromInternalAuth) {
+            $request->merge([
+                'internalToken' => $token
+            ]);
+            return $userFromInternalAuth;
+        }
+
+        return $this->retrieveFromExternalAuth($request, $token);
     }
 }
