@@ -76,20 +76,6 @@ describe('Test endpoints', () => {
 
             expect(response.statusCode).toBe(503);
         });
-
-        test('Check if returned http code is 503 when wrong probe is passed', async () => {
-            const response = await request((c) =>
-                c.get(`/_ah/health?probe=liveness`)
-            );
-
-            expect(response.statusCode).toBe(503);
-        });
-
-        test('Check if returned http code is 503 when no probe is passed', async () => {
-            const response = await request((c) => c.get(`/_ah/health`));
-
-            expect(response.statusCode).toBe(503);
-        });
     });
     describe('Home', () => {
         test('Home returns http 200', async () => {

@@ -49,7 +49,7 @@ export default async ({ pubSubConnection }) => {
     apiRouter.use(await job());
 
     router.get(
-        '/resources/_ah/health',
+        '/_ah/health',
         runAsync(async (req, res) => {
             if (pubsub.isRunning()) {
                 res.send('ok');

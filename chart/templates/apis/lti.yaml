@@ -2,6 +2,6 @@
 ---
 {{- template "helpers.service" (dict "name" "ltiapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-app" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/_ah/health?probe=readiness" ) }}
+{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-app" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/_ah/health" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "ltiapi" ) }}

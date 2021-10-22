@@ -265,7 +265,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/api/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - dokuapi_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/doku/src:/var/www/app/src
@@ -288,7 +288,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources/src:/var/www/app/src
@@ -311,7 +311,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
@@ -335,7 +335,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth/src:/var/www/app/src
@@ -358,7 +358,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/url/src:/var/www/app/src
@@ -438,7 +438,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test:
-        [CMD, curl, -f, "http://localhost/resources/_ah/health?probe=readiness"]
+        [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
@@ -459,7 +459,7 @@ services:
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     healthcheck:
       test:
-        [CMD, curl, -f, "http://localhost/resources/_ah/health?probe=readiness"]
+        [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
@@ -484,7 +484,7 @@ services:
           CMD,
           curl,
           -f,
-          "http://localhost/recommendations/_ah/health?probe=readiness",
+          "http://localhost/_ah/health",
         ]
     volumes:
       - proxy-recommendation_nodemodules:/var/www/app/node_modules
@@ -504,7 +504,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test:
-        [CMD, curl, -f, "http://localhost/resources/_ah/health?probe=readiness"]
+        [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
@@ -525,7 +525,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test:
-        [CMD, curl, -f, "http://localhost/resources/_ah/health?probe=readiness"]
+        [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
@@ -545,7 +545,7 @@ services:
     env_file:
       - ./localSetup/.env
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health?probe=readiness"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlibapi-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/url/src:/var/www/app/src

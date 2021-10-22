@@ -112,18 +112,12 @@ export default async ({ pubSubConnection }) => {
     );
 
     router.get('/_ah/health', (req, res) => {
-        const probe = req.query.probe;
-
-        if (probe === 'readiness') {
-            readiness()
-                .then(() => res.send('ok'))
-                .catch((error) => {
-                    logger.error(error);
-                    res.status(503).send();
-                });
-        } else {
-            res.status(503).send();
-        }
+        readiness()
+            .then(() => res.send('ok'))
+            .catch((error) => {
+                logger.error(error);
+                res.status(503).send();
+            });
     });
 
     router.use(addContextToRequest({ pubSubConnection }), apiRouter);
