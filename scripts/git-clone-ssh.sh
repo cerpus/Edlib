@@ -13,7 +13,6 @@ git clone ${TRANSPORT}edlib/edlibapi-proxy.git
 git clone ${TRANSPORT}brain/licenseapi.git
 git clone ${TRANSPORT}rs/re-recommender.git
 git clone ${TRANSPORT}rs/re-content-index.git
-git clone ${TRANSPORT}brain/versionapi.git
 git clone ${TRANSPORT}brain/versionclient.git
 git clone ${TRANSPORT}brain/edlibfacade-test.git
 
