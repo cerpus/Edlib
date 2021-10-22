@@ -1,0 +1,13 @@
+spring:
+  application.name: versioningapi
+  profiles.active: unittest
+  datasource.url: jdbc:h2:mem:versioningdbTest
+  jpa.hibernate.ddl-auto: none
+  liquibase.change-log: classpath:/db/changelog/db.changelog-master.xml
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+
+oauth2.service.uri: https://auth.cerpus-course.com
+
+cerpus.shutdown.delay_seconds: 1

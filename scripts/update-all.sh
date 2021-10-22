@@ -10,7 +10,7 @@ pushd ../sourcecode
 
 # java repos
 declare -a javaRepos=(
-  "not_migrated/versionapi"
+  "apis/version"
   "not_migrated/edlibfacade"
 )
 
