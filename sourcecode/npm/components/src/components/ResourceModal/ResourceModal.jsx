@@ -28,6 +28,7 @@ import {
 } from '@material-ui/core';
 import { ResourceIcon } from '../Resource';
 import ResetMuiDialog from '../ResetMuiDialog';
+import useConfig from '../../hooks/useConfig.js';
 
 const Footer = styled.div`
     margin-top: 30px;
@@ -74,6 +75,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
     const history = useHistory();
     const { getUserConfig } = useEdlibComponentsContext();
     const canReturnResources = getUserConfig('canReturnResources');
+    const { edlibFrontend } = useConfig();
 
     const [actionStatus, setActionStatus] = React.useState({
         loading: false,
@@ -119,15 +121,31 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                             fontSizeRem={2}
                         />
                     </Box>
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        justifyContent="center"
-                        marginLeft={1}
-                    >
-                        <Typography variant="h6">
-                            {resource.version.title}
-                        </Typography>
+                    <Box>
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            justifyContent="center"
+                            marginLeft={1}
+                        >
+                            <Typography variant="h6">
+                                {resource.version.title}
+                            </Typography>
+                        </Box>
+                        <Box display="flex" marginLeft={1}>
+                            <Typography>
+                                <a
+                                    href={edlibFrontend(
+                                        `/c/resources/${resource.id}`
+                                    )}
+                                    target="_blank"
+                                >
+                                    {edlibFrontend(
+                                        `/c/resources/${resource.id}`
+                                    )}
+                                </a>
+                            </Typography>
+                        </Box>
                     </Box>
                 </Box>
                 {onClose ? (
