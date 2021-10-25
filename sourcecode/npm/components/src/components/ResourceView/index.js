@@ -1,1 +1,1 @@
-export { default } from './ResourceViewContainer.jsx';
+export { default } from './ResourceViewContainer';

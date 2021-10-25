@@ -1,8 +1,8 @@
 import React from 'react';
-import ResourceView from './ResourceView.jsx';
+import ResourceView from './ResourceView';
 import useConfig from '../../hooks/useConfig.js';
-import useFetch from '../../hooks/useFetch.jsx';
-import DefaultFetcher from '../../containers/DefaultFetcher.jsx';
+import useFetch from '../../hooks/useFetch';
+import DefaultFetcher from '../../containers/DefaultFetcher';
 
 const ResourceViewContainer = ({ resourceId }) => {
     const { edlib } = useConfig();

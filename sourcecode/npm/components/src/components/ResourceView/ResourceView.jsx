@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import FrameWithResize from '../FrameWithResize.jsx';
-import PostingFrame from '../PostingFrame.jsx';
+import FrameWithResize from '../FrameWithResize';
+import PostingFrame from '../PostingFrame';
 
 const DangerousContent = styled.div`
     display: flex;
