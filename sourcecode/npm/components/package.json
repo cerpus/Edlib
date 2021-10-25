@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "license": "AGPL-3.0-or-later",
   "engines": {
-    "node": "14.x"
+    "node": "14.x || 16.x"
   },
   "peerDependencies": {
     "react": "^16.8.0",
