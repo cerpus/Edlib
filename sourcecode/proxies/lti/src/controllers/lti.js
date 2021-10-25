@@ -19,6 +19,25 @@ export default {
 
         return launchRequest;
     },
+    viewLti: async (req, res, next) => {
+        const extras = {};
+        if (req.query.preview) {
+            extras.ext_preview = 'true';
+        }
+
+        const { launchRequest } = await ltiService.viewResourceRequest(
+            req.context,
+            req.params.resourceId,
+            req.query.resourceVersionId,
+            req.authorizationJwt && {
+                jwt: req.authorizationJwt,
+                userId: req.user.id,
+            },
+            extras
+        );
+
+        return launchRequest;
+    },
     convertLaunchUrlV2: async (req, res, next) => {
         const uuidRegex = /^(.*\/)?(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/;
         const { launchUrl } = validateJoi(
