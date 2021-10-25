@@ -41,8 +41,7 @@
     "react-i18next": "^11.12.0",
     "react-mathquill": "^1.0.1",
     "react-popper": "^2.2.5",
-    "store": "^2.0.12",
-    "treply-scripts": "^1.10.0"
+    "store": "^2.0.12"
   },
   "scripts": {
     "dev": "babel src -d dist --copy-files -w",
