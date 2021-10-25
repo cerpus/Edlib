@@ -19,6 +19,7 @@ volumes:
   proxy-lti_nodemodules:
   proxy-recommendation_nodemodules:
   proxy-resource_nodemodules:
+  www_nodemodules:
 
 services:
   redis:
@@ -389,6 +390,22 @@ services:
       - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
       - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
 
+  www:
+    build:
+      context: ./sourcecode/www
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:3000]
+    volumes:
+      - www_nodemodules:/app/node_modules
+      - ./sourcecode/www/src:/app/src
+      - ./sourcecode/www/public:/app/public
+      - ./sourcecode/www/package.json:/app/package.json
+      - ./sourcecode/www/yarn.lock:/app/yarn.lock
+
   proxy-iframe:
     tty: true
     build:
@@ -437,8 +454,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
@@ -458,8 +474,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
@@ -479,13 +494,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [
-          CMD,
-          curl,
-          -f,
-          "http://localhost/_ah/health",
-        ]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-recommendation_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/recommendation/src:/var/www/app/src
@@ -503,8 +512,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
@@ -524,8 +532,7 @@ services:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
