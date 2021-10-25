@@ -136,12 +136,12 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                             <Typography>
                                 <a
                                     href={edlibFrontend(
-                                        `/c/resources/${resource.id}`
+                                        `/s/resources/${resource.id}`
                                     )}
                                     target="_blank"
                                 >
                                     {edlibFrontend(
-                                        `/c/resources/${resource.id}`
+                                        `/s/resources/${resource.id}`
                                     )}
                                 </a>
                             </Typography>
