@@ -60,6 +60,11 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/api-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+  release_api_version:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-version.yaml@master
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
 # ---------- Proxies -----------------
   release_proxy_admin:
@@ -102,6 +107,12 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+# ------------ www ---------------
+  release_www:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/www.yaml@master
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
 
   create_release:
     name: Create Release
@@ -115,6 +126,7 @@ jobs:
       - release_api_lti
       - release_api_resources
       - release_api_url
+      - release_api_version
       - release_proxy_admin
       - release_proxy_auth
       - release_proxy_doku
@@ -123,6 +135,7 @@ jobs:
       - release_proxy_recommendation
       - release_proxy_resource
       - release_proxy_url
+      - release_www
     steps:
       - name: Checkout code
         uses: actions/checkout@master
