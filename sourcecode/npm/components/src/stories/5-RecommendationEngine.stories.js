@@ -1,7 +1,7 @@
 import React from 'react';
 import RecommendationEngineComponent from '../exportedComponents/RecommendationEngine';
 import { EdlibComponentsProvider } from '..';
-import AuthWrapper from '../components/AuthWrapper.jsx';
+import AuthWrapper from '../components/AuthWrapper';
 
 export default {
     title: 'RecommendationEngine',

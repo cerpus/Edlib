@@ -11,7 +11,6 @@ use Ramsey\Uuid\Uuid;
 /**
  * App\Models\Application
  *
- * @mixin IdeHelperApplication
  * @property string $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -26,6 +25,7 @@ use Ramsey\Uuid\Uuid;
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereUpdatedAt($value)
+ * @mixin IdeHelperApplication
  */
 class Application extends Model
 {
