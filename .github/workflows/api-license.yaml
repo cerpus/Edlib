@@ -72,7 +72,7 @@ jobs:
           password: ${{ github.token }}
 
       - name: Build and push init container
-        id: docker_build_web
+        id: docker_build_init
         uses: docker/build-push-action@v2
         with:
           push: true
