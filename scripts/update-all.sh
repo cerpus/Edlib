@@ -16,8 +16,8 @@ declare -a javaRepos=(
 
 # php repos
 declare -a phpRepos=(
-  "not_migrated/h5pviewer"
-  "not_migrated/licenseapi"
+  "apis/contentauthor"
+  "apis/license"
 )
 
 for i in "${javaRepos[@]}"

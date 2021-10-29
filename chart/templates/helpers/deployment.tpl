@@ -32,6 +32,10 @@ spec:
                       values:
                         - {{ .name }}
                 topologyKey: 'kubernetes.io/hostname'
+{{ if .initImage }}
+      initContainers:
+{{ include "helpers.container" (dict "name" "init" "image" .initImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret ) | indent 8 }}
+{{ end }}
       containers:
 {{ include "helpers.container" (dict "name" .name "image" .image "tag" .imageTag "resources" .resources "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret "healthUrl" .healthUrl "port" (.port | default "80") ) | indent 8 }}
       imagePullSecrets:

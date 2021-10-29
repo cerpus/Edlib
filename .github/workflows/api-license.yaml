@@ -1,0 +1,103 @@
+name: "API - License"
+
+on:
+  push:
+    paths:
+      - "sourcecode/apis/license/**"
+      - ".github/workflows/api-license.yaml"
+  workflow_call:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
+
+env:
+  workingDirectory: sourcecode/apis/license
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - name: Run composer install
+        run: cd ${{ env.workingDirectory }}; composer install -n --prefer-dist
+        env:
+          APP_ENV: testing
+
+      - name: Prepare Laravel Application
+        run: |
+          cd ${{ env.workingDirectory }};
+          cp .env.example .env
+
+      - name: Run tests
+        run: cd ${{ env.workingDirectory }};./vendor/bin/phpunit
+        env:
+          APP_ENV: testing
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: Logs
+          path: ./storage/logs
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub docker registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build and push init container
+        id: docker_build_init
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-license-init:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/license
+          target: init
+
+      - name: Build and push web container
+        id: docker_build_web
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-license-web:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/license
+          target: app_prod
+
+      - name: Build and push migration container
+        id: docker_build_migration
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/cerpus/edlib/api-license-migration:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/license
+          target: deploy

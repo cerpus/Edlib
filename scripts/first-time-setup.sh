@@ -3,7 +3,6 @@
 cd "$(dirname "$0")"
 
 ./install-dependencies.sh
-./git-clone-ssh.sh
 ./initialize-data-folders.sh
 ./update-all.sh
 ./create-aliases.sh
