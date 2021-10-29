@@ -8,8 +8,13 @@ import ResourceEditDone from './routes/ResourceEditDone';
 import EditResource from './routes/EditResource';
 import NewResource from './routes/NewResource';
 import CssReset from '../../components/CSSReset';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
+import useTranslation from '../../hooks/useTranslation.js';
 
 const EdlibModalContent = ({ onClose, loading, height = '100%' }) => {
+    const { t } = useTranslation();
+    const { inMaintenanceMode } = useConfigurationContext();
+
     return (
         <CssReset>
             {!loading && (
@@ -32,33 +37,46 @@ const EdlibModalContent = ({ onClose, loading, height = '100%' }) => {
                             minHeight: 0,
                         }}
                     >
-                        <Switch>
-                            <Route
-                                path="/resources/new/:type"
-                                component={NewResource}
-                            />
-                            <Route
-                                exact
-                                path="/resources/:edlibId"
-                                component={EditResource}
-                            />
-                            <Route
-                                exact
-                                path="/resources/:edlibId/edit-done"
-                                component={ResourceEditDone}
-                            />
-                            <Route
-                                exact
-                                path="/resources/:edlibId/:translateToLanguage"
-                                component={EditResource}
-                            />
-                            <Route path="/link-author" component={LinkAuthor} />
-                            <Route path="/my-content" component={MyContent} />
-                            <Route
-                                path="/shared-content"
-                                component={SharedContent}
-                            />
-                        </Switch>
+                        {inMaintenanceMode && (
+                            <p style={{ padding: '1em' }}>
+                                ⚠️ {t('maintenance')}
+                            </p>
+                        )}
+                        {!inMaintenanceMode && (
+                            <Switch>
+                                <Route
+                                    path="/resources/new/:type"
+                                    component={NewResource}
+                                />
+                                <Route
+                                    exact
+                                    path="/resources/:edlibId"
+                                    component={EditResource}
+                                />
+                                <Route
+                                    exact
+                                    path="/resources/:edlibId/edit-done"
+                                    component={ResourceEditDone}
+                                />
+                                <Route
+                                    exact
+                                    path="/resources/:edlibId/:translateToLanguage"
+                                    component={EditResource}
+                                />
+                                <Route
+                                    path="/link-author"
+                                    component={LinkAuthor}
+                                />
+                                <Route
+                                    path="/my-content"
+                                    component={MyContent}
+                                />
+                                <Route
+                                    path="/shared-content"
+                                    component={SharedContent}
+                                />
+                            </Switch>
+                        )}
                     </div>
                 </div>
             )}

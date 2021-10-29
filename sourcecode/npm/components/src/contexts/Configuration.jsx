@@ -15,6 +15,7 @@ ConfigurationProvider.defaultProps = {
     enableTranslationButton: false,
     enableDoku: false,
     enableCollections: false,
+    inMaintenanceMode: false,
 };
 
 export const useConfigurationContext = () =>

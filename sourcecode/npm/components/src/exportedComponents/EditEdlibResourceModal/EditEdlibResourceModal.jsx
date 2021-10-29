@@ -9,6 +9,10 @@ import { MemoryRouter } from 'react-router-dom';
 import ExportWrapper from '../../components/ExportWrapper';
 import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
 import useTranslation from '../../hooks/useTranslation';
+import {
+    ConfigurationProvider,
+    useConfigurationContext,
+} from '../../contexts/Configuration.jsx';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     const { edlib } = useConfig();
@@ -25,22 +29,19 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
             [ltiLaunchUrl]
         )
     );
-    const {
-        enabled: inMaintenanceMode,
-        loading: mmLoading,
-    } = useMaintenanceMode();
     const { t } = useTranslation();
+    const { inMaintenanceMode } = useConfigurationContext();
 
-    if (ltiLoading || mmLoading || !response) {
+    if (ltiLoading || !response) {
         return <Spinner />;
-    }
-
-    if (ltiError) {
-        return <div>Noe skjedde</div>;
     }
 
     if (inMaintenanceMode) {
         return <p style={{ padding: '1em' }}>⚠️ {t('maintenance')}</p>;
+    }
+
+    if (ltiError) {
+        return <div>Noe skjedde</div>;
     }
 
     return (
@@ -63,31 +64,35 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
 };
 
 export default ({ removePadding = false, ...props }) => {
+    const { enabled: inMaintenanceMode } = useMaintenanceMode();
+
     return (
         <ExportWrapper>
             <MemoryRouter>
-                <Modal
-                    isOpen={true}
-                    width="100%"
-                    onClose={props.onClose}
-                    displayCloseButton={false}
-                    removePadding={removePadding}
-                >
-                    <div
-                        style={{
-                            height: removePadding
-                                ? '100vh'
-                                : 'calc(100vh - 40px)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}
+                <ConfigurationProvider inMaintenanceMode={inMaintenanceMode}>
+                    <Modal
+                        isOpen={true}
+                        width="100%"
+                        onClose={props.onClose}
+                        displayCloseButton={false}
+                        removePadding={removePadding}
                     >
-                        <ModalHeader onClose={props.onClose}>
-                            {props.header}
-                        </ModalHeader>
-                        <EditEdlibResourceModal {...props} />
-                    </div>
-                </Modal>
+                        <div
+                            style={{
+                                height: removePadding
+                                    ? '100vh'
+                                    : 'calc(100vh - 40px)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <ModalHeader onClose={props.onClose}>
+                                {props.header}
+                            </ModalHeader>
+                            <EditEdlibResourceModal {...props} />
+                        </div>
+                    </Modal>
+                </ConfigurationProvider>
             </MemoryRouter>
         </ExportWrapper>
     );

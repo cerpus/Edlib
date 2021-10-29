@@ -6,7 +6,6 @@ import { ConfigurationProvider } from '../../contexts/Configuration';
 import useFetch from '../../hooks/useFetch';
 import useConfig from '../../hooks/useConfig';
 import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
-import useTranslation from '../../hooks/useTranslation';
 import useRequestWithToken from '../../hooks/useRequestWithToken';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
@@ -36,8 +35,7 @@ const EdlibModal = ({
     const createResourceLink = useEdlibResource();
     const { getUserConfig } = useEdlibComponentsContext();
     const startPage = getStartPage(getUserConfig('landingContentExplorerPage'));
-    const { enabled: inMaintenanceMode, loading } = useMaintenanceMode();
-    const { t } = useTranslation();
+    const { enabled: inMaintenanceMode } = useMaintenanceMode();
 
     const {
         error: errorLoadingConfig,
@@ -45,14 +43,6 @@ const EdlibModal = ({
         response: dokuFeatures,
     } = useFetch(edlib(`/dokus/features`), 'GET');
     const request = useRequestWithToken();
-
-    if (loading) {
-        return <Spinner />;
-    }
-
-    if (inMaintenanceMode) {
-        return <p style={{ padding: '1em' }}>⚠️ {t('maintenance')}</p>;
-    }
 
     return (
         <ExportWrapper>
@@ -64,6 +54,7 @@ const EdlibModal = ({
                         dokuFeatures.enableDoku
                     }
                     enableVersionInterface={enableVersionInterface}
+                    inMaintenanceMode={inMaintenanceMode}
                 >
                     <ResourceCapabilitiesProvider
                         value={{
