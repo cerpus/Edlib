@@ -46,15 +46,8 @@ export default async () => {
     apiRouter.use(await recommendations());
     apiRouter.use(await status());
 
-    router.get('/recommendations/_ah/health', (req, res) => {
-        const probe = req.query.probe;
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
-            res.status(503).send();
-        }
+    router.get('/_ah/health', (req, res) => {
+        res.send('ok');
     });
 
     router.use('/recommendations', addContextToRequest, apiRouter);

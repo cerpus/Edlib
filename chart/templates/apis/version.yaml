@@ -1,0 +1,7 @@
+{{- template "helpers.initJob" (dict "name" "versionapi" "image" "ghcr.io/cerpus/edlib/api-version-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "versioningapi-config") "envFromSecret" (list "versioningapi-secret") ) }}
+---
+{{- template "helpers.service" (dict "name" "versionapi" "port" 8080) }}
+---
+{{- template "helpers.deployment" (dict "name" "versionapi" "image" "ghcr.io/cerpus/edlib/api-version-app" "imageTag" .Chart.AppVersion "envFromConfig" (list "versioningapi-config") "envFromSecret" (list "versioningapi-secret") "replicaCount" 1 "healthUrl" "/health" "port" 8080 "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "versionapi" ) }}

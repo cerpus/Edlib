@@ -31,14 +31,6 @@
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 2
-  startupProbe:
-    httpGet:
-      path: {{ .healthUrl }}
-      port: {{ .port | default "80" }}
-    initialDelaySeconds: 10
-    timeoutSeconds: 5
-    periodSeconds: 10
-    failureThreshold: 100
 {{ end }}
   envFrom:
     - configMapRef:

@@ -53,15 +53,7 @@ export default async () => {
     });
 
     router.get('/_ah/health', (req, res) => {
-        const probe = req.query.probe;
-
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
-            res.status(503).send();
-        }
+        res.send('ok');
     });
 
     router.use('/url', addContextToRequest, apiRouter);

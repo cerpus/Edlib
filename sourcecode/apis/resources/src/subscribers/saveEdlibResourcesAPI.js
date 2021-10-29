@@ -21,13 +21,12 @@ const findResourceFromParentVersions = async (context, version) => {
         return;
     }
 
-    const resourceVersion =
-        await context.db.resourceVersion.getFirstFromExternalSytemReference(
-            versionParents.map((vp) => ({
-                externalSystemName: vp.externalSystem,
-                externalSystemId: vp.externalReference,
-            }))
-        );
+    const resourceVersion = await context.db.resourceVersion.getFirstFromExternalSytemReference(
+        versionParents.map((vp) => ({
+            externalSystemName: vp.externalSystem,
+            externalSystemId: vp.externalReference,
+        }))
+    );
 
     if (!resourceVersion) {
         logger.error(
@@ -99,7 +98,7 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
     } else if (versionPurpose === 'translation') {
         const siblingResource = await findResourceFromParentVersions(
             context,
-            actualVersion && actualVersion.parent
+            actualVersion
         );
 
         if (!siblingResource) {
@@ -129,11 +128,10 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         return await context.db.resourceVersion.create(dbResourceVersionData);
     } catch (e) {
         if (e.code === 'ER_DUP_ENTRY') {
-            const resourceVersion =
-                await context.db.resourceVersion.getByExternalId(
-                    resourceVersionValidatedData.externalSystemName,
-                    resourceVersionValidatedData.externalSystemId
-                );
+            const resourceVersion = await context.db.resourceVersion.getByExternalId(
+                resourceVersionValidatedData.externalSystemName,
+                resourceVersionValidatedData.externalSystemId
+            );
 
             if (resourceVersion) {
                 if (createdResource) {
@@ -208,10 +206,9 @@ const saveToDb = async (context, validatedData) => {
         ...emailWithoutUsers.map((email) => ({ email })),
     ];
 
-    const resourceVersionCollaborators =
-        await context.db.resourceVersionCollaborator.getForResourceVersion(
-            resourceVersion.id
-        );
+    const resourceVersionCollaborators = await context.db.resourceVersionCollaborator.getForResourceVersion(
+        resourceVersion.id
+    );
 
     const toDelete = resourceVersionCollaborators.filter(
         (resourceVersionCollaborator) => {
@@ -285,84 +282,87 @@ const saveToDb = async (context, validatedData) => {
     return resourceVersion;
 };
 
-export default ({ pubSubConnection }) =>
-    async (data, saveToSearchIndex = true, waitForIndex) => {
-        let validatedData;
-        try {
-            validatedData = validateJoi(
-                data,
-                Joi.object({
-                    externalSystemName: Joi.string().min(1).required(),
-                    externalSystemId: Joi.string().min(1).required(),
-                    title: Joi.string().min(1).required(),
-                    ownerId: Joi.string()
-                        .min(1)
-                        .allow(null)
-                        .empty(null)
-                        .optional()
-                        .default(null),
-                    isPublished: Joi.boolean().required(),
-                    isListed: Joi.boolean().required(),
-                    language: Joi.string()
-                        .min(1)
-                        .allow(null)
-                        .optional()
-                        .default(null),
-                    contentType: Joi.string().min(1).optional(),
-                    license: Joi.string().allow(null).optional().default(null),
-                    maxScore: Joi.number()
-                        .min(1)
-                        .allow(null)
-                        .empty(0)
-                        .optional()
-                        .default(null),
-                    updatedAt: Joi.date().iso().required(),
-                    createdAt: Joi.date().iso().required(),
-                    collaborators: Joi.array()
-                        .items(Joi.string().min(1))
-                        .optional()
-                        .default([]),
-                    emailCollaborators: Joi.array()
-                        .items(Joi.string().email())
-                        .min(0)
-                        .optional()
-                        .default([]),
-                    authorOverwrite: Joi.string()
-                        .min(1)
-                        .optional()
-                        .allow(null)
-                        .empty(null)
-                        .default(null),
-                })
-            );
-        } catch (e) {
-            // @todo log this somewhere
-            console.error(e);
-            return;
-        }
+export default ({ pubSubConnection }) => async (
+    data,
+    saveToSearchIndex = true,
+    waitForIndex
+) => {
+    let validatedData;
+    try {
+        validatedData = validateJoi(
+            data,
+            Joi.object({
+                externalSystemName: Joi.string().min(1).required(),
+                externalSystemId: Joi.string().min(1).required(),
+                title: Joi.string().min(1).required(),
+                ownerId: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .empty(null)
+                    .optional()
+                    .default(null),
+                isPublished: Joi.boolean().required(),
+                isListed: Joi.boolean().required(),
+                language: Joi.string()
+                    .min(1)
+                    .allow(null)
+                    .optional()
+                    .default(null),
+                contentType: Joi.string().min(1).optional(),
+                license: Joi.string().allow(null).optional().default(null),
+                maxScore: Joi.number()
+                    .min(1)
+                    .allow(null)
+                    .empty(0)
+                    .optional()
+                    .default(null),
+                updatedAt: Joi.date().iso().required(),
+                createdAt: Joi.date().iso().required(),
+                collaborators: Joi.array()
+                    .items(Joi.string().min(1))
+                    .optional()
+                    .default([]),
+                emailCollaborators: Joi.array()
+                    .items(Joi.string().email())
+                    .min(0)
+                    .optional()
+                    .default([]),
+                authorOverwrite: Joi.string()
+                    .min(1)
+                    .optional()
+                    .allow(null)
+                    .empty(null)
+                    .default(null),
+            })
+        );
+    } catch (e) {
+        // @todo log this somewhere
+        console.error(e);
+        return;
+    }
 
-        if (validatedData.license) {
-            validatedData.license = validatedData.license.toLowerCase();
-        }
+    if (validatedData.license) {
+        validatedData.license = validatedData.license.toLowerCase();
+    }
 
-        const context = buildRawContext({}, {}, { pubSubConnection });
+    const context = buildRawContext({}, {}, { pubSubConnection });
 
-        const resourceVersion = await saveToDb(context, validatedData);
+    const resourceVersion = await saveToDb(context, validatedData);
 
-        if (!resourceVersion) {
-            console.error('Resource version was not created.');
-            return;
-        }
+    if (!resourceVersion) {
+        console.error('Resource version was not created.');
+        return;
+    }
 
-        if (saveToSearchIndex) {
-            const resource = await context.db.resource.getById(
-                resourceVersion.resourceId
-            );
+    if (saveToSearchIndex) {
+        const resource = await context.db.resource.getById(
+            resourceVersion.resourceId
+        );
 
-            await elasticSearchService.syncResource(
-                context,
-                resource,
-                waitForIndex
-            );
-        }
-    };
+        await elasticSearchService.syncResource(
+            context,
+            resource,
+            waitForIndex
+        );
+    }
+};
