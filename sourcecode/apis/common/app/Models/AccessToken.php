@@ -12,7 +12,6 @@ use function random_bytes;
 /**
  * App\Models\AccessToken
  *
- * @mixin IdeHelperAccessToken
  * @property string $id
  * @property string $name
  * @property string $token
@@ -30,6 +29,7 @@ use function random_bytes;
  * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AccessToken whereUpdatedAt($value)
+ * @mixin IdeHelperAccessToken
  */
 class AccessToken extends Model
 {

@@ -38,7 +38,7 @@ export default ({ onClose, viewportHeight }) => {
     const { t } = useTranslation();
     const [isExpanded, setExpanded] = React.useState(false);
     const location = useLocation();
-    const { enableDoku } = useConfigurationContext();
+    const { enableDoku, inMaintenanceMode } = useConfigurationContext();
     const { getUserConfig } = useEdlibComponentsContext();
 
     const isActive = (path) => {
@@ -99,56 +99,61 @@ export default ({ onClose, viewportHeight }) => {
         <Header viewportHeight={viewportHeight}>
             <HeaderToggler onToggle={() => setExpanded(!isExpanded)} />
             <HeaderLogo />
-            <HeaderLinkGroup
-                isExpanded={isExpanded}
-                onClose={() => setExpanded(false)}
-            >
-                {activatedEditorsList.length > 1 && (
-                    <HeaderDropDownLink
-                        link={
-                            <HeaderLink
-                                LogoComponent={AddCircleRounded}
-                                active={isActive([
-                                    '/resources/new',
-                                    '/link-author',
-                                    '/doku-author',
-                                ])}
-                            >
-                                {t('Opprett innhold')}
-                            </HeaderLink>
-                        }
-                    >
-                        {activatedEditorsList.map(([type, { link, label }]) => (
-                            <HeaderLink to={link} key={type}>
-                                {label}
-                            </HeaderLink>
-                        ))}
-                    </HeaderDropDownLink>
-                )}
-                {activatedEditorsList.length === 1 && (
+            {!inMaintenanceMode && (
+                <HeaderLinkGroup
+                    isExpanded={isExpanded}
+                    onClose={() => setExpanded(false)}
+                >
+                    {activatedEditorsList.length > 1 && (
+                        <HeaderDropDownLink
+                            link={
+                                <HeaderLink
+                                    LogoComponent={AddCircleRounded}
+                                    active={isActive([
+                                        '/resources/new',
+                                        '/link-author',
+                                        '/doku-author',
+                                    ])}
+                                >
+                                    {t('Opprett innhold')}
+                                </HeaderLink>
+                            }
+                        >
+                            {activatedEditorsList.map(
+                                ([type, { link, label }]) => (
+                                    <HeaderLink to={link} key={type}>
+                                        {label}
+                                    </HeaderLink>
+                                )
+                            )}
+                        </HeaderDropDownLink>
+                    )}
+                    {activatedEditorsList.length === 1 && (
+                        <HeaderLink
+                            LogoComponent={AddCircleRounded}
+                            to={activatedEditorsList[0][1].link}
+                            active={isActive(activatedEditorsList[0][1].link)}
+                        >
+                            {t('Opprett innhold')}
+                        </HeaderLink>
+                    )}
                     <HeaderLink
-                        LogoComponent={AddCircleRounded}
-                        to={activatedEditorsList[0][1].link}
-                        active={isActive(activatedEditorsList[0][1].link)}
+                        LogoComponent={ShoppingCart}
+                        to="/shared-content"
+                        active={isActive('/shared-content')}
                     >
-                        {t('Opprett innhold')}
+                        {t('Delt innhold')}
                     </HeaderLink>
-                )}
-                <HeaderLink
-                    LogoComponent={ShoppingCart}
-                    to="/shared-content"
-                    active={isActive('/shared-content')}
-                >
-                    {t('Delt innhold')}
-                </HeaderLink>
-                <HeaderLink
-                    LogoComponent={Home}
-                    to="/my-content"
-                    active={isActive('/my-content')}
-                >
-                    {t('Mitt innhold')}
-                </HeaderLink>
-            </HeaderLinkGroup>
+                    <HeaderLink
+                        LogoComponent={Home}
+                        to="/my-content"
+                        active={isActive('/my-content')}
+                    >
+                        {t('Mitt innhold')}
+                    </HeaderLink>
+                </HeaderLinkGroup>
+            )}
+
             {onClose ? (
                 <StyledClose>
                     <Close onClick={onClose} />
