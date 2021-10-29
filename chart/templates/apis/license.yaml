@@ -1,0 +1,7 @@
+{{- template "helpers.initJob" (dict "name" "licenseapi" "image" "ghcr.io/cerpus/edlib/api-license-migration" "imageTag" .Chart.AppVersion ) }}
+---
+{{- template "helpers.service" (dict "name" "licenseapi") }}
+---
+{{- template "helpers.deployment" (dict "name" "licenseapi" "image" "ghcr.io/cerpus/edlib/api-license-web" "initImage" "ghcr.io/cerpus/edlib/api-license-init" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/_ah/health" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "licenseapi" ) }}
