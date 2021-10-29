@@ -8,13 +8,20 @@ const useMaintenanceMode = () => {
     const [loading, setLoading] = useState(false);
     const { edlib } = useConfig();
 
-    useEffect(async () => {
-        try {
-            setEnabled(await request(edlib('/common/maintenance_mode'), 'GET'));
-            setLoading(false);
-        } catch (e) {
-            setError(true);
-        }
+    useEffect(() => {
+        (async () => {
+            try {
+                const { enabled } = await request(
+                    edlib('/common/maintenance_mode'),
+                    'GET'
+                );
+
+                setEnabled(enabled);
+                setLoading(false);
+            } catch (e) {
+                setError(true);
+            }
+        })();
     }, []);
 
     return {
