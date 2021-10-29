@@ -31,7 +31,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-duration-seconds: 1200
+          role-duration-seconds: 3600
           role-session-name: GithubCerpusDevDeploy
 
       - name: Update kubeconfig with cluster info
