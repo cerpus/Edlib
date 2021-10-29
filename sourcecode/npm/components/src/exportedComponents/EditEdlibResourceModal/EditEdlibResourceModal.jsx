@@ -12,7 +12,7 @@ import useTranslation from '../../hooks/useTranslation';
 import {
     ConfigurationProvider,
     useConfigurationContext,
-} from '../../contexts/Configuration.jsx';
+} from '../../contexts/Configuration';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     const { edlib } = useConfig();

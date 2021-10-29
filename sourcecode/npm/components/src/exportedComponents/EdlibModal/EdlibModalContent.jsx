@@ -8,8 +8,8 @@ import ResourceEditDone from './routes/ResourceEditDone';
 import EditResource from './routes/EditResource';
 import NewResource from './routes/NewResource';
 import CssReset from '../../components/CSSReset';
-import { useConfigurationContext } from '../../contexts/Configuration.jsx';
-import useTranslation from '../../hooks/useTranslation.js';
+import { useConfigurationContext } from '../../contexts/Configuration';
+import useTranslation from '../../hooks/useTranslation';
 
 const EdlibModalContent = ({ onClose, loading, height = '100%' }) => {
     const { t } = useTranslation();
