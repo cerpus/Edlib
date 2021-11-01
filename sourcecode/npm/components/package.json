@@ -1,6 +1,6 @@
 {
   "name": "@cerpus/edlib-components",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "private": false,
   "main": "dist/index.js",
   "license": "AGPL-3.0-or-later",
@@ -29,7 +29,8 @@
     "i18next": "^20.6.1",
     "immutable": "^4.0.0-rc.15",
     "joi": "^17.4.2",
-    "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
+    "jwt-encode": "^1.0.1",
     "load-script": "^1.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.28.0",
