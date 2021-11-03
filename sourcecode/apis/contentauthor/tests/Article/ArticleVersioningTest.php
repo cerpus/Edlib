@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\ArticleCollaborator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockUserService;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
@@ -18,7 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockMQ, MockVersioningTrait;
+    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockMQ, MockVersioningTrait, MockResourceApi;
 
     public function setUp(): void
     {
@@ -144,6 +145,7 @@ class ArticleVersioningTest extends TestCase
 
     public function testVersioning()
     {
+        $this->setUpResourceApi();
         $this->setupVersion();
         $this->setUpLicensing('BY', true);
         $this->setupMetadataService([
