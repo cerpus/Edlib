@@ -2,7 +2,9 @@
 ---
 {{- template "helpers.service" (dict "name" "contentauthor" "port" 8081) }}
 ---
-{{- template "helpers.horizontalPodAutoscaler" (dict "name" "contentauthor" ) }}
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "contentauthor" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "contentauthor" ) }}
 ---
 apiVersion: apps/v1
 kind: Deployment
