@@ -6,6 +6,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockUserService;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
@@ -15,7 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockVersioningTrait;
+    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockVersioningTrait, MockResourceApi;
 
     public function setUp(): void
     {
@@ -25,6 +26,7 @@ class ArticleTest extends TestCase
 
     public function testEditArticleAccessDenied()
     {
+        $this->setUpResourceApi();
         $this->setUpLicensing();
         $authId = Str::uuid();
         $someOtherId = Str::uuid();

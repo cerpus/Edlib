@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Apis\ResourceApiService;
 use App\Exceptions\UserServiceException;
 use App\Http\Libraries\License;
 use App\Http\Libraries\UserService;
@@ -143,7 +144,22 @@ abstract class Content extends Model implements RecommendableInterface
      */
     public function isExternalCollaborator($currentUserId)
     {
-        return CollaboratorContext::isUserCollaborator($currentUserId, $this->id);
+        if (CollaboratorContext::isUserCollaborator($currentUserId, $this->id)) {
+            return true;
+        }
+
+        $resourceApi = app(ResourceApiService::class);
+        $collaborators = $resourceApi->getCollaborators("contentauthor", $this->id);
+
+        $isCollaborator = false;
+
+        foreach ($collaborators as $collaborator) {
+            if ($collaborator->getTenantId() == $currentUserId) {
+                $isCollaborator = true;
+            }
+        }
+
+        return $isCollaborator;
     }
 
     public function shouldCreateFork($userId)

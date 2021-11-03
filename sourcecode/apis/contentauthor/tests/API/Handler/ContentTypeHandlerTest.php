@@ -6,6 +6,7 @@ namespace Tests\API\Handler;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Tests\TestCase;
 use Tests\db\TestH5PSeeder;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\WithFaker;
 use Tests\Traits\ResetH5PStatics;
 use Tests\Traits\MockLicensingTrait;
@@ -21,7 +22,7 @@ use App\Http\Controllers\API\Handler\ContentTypeHandler;
 class ContentTypeHandlerTest extends TestCase
 {
 
-    use RefreshDatabase, MockMetadataService, MockLicensingTrait, MockVersioningTrait, WithFaker, ResetH5PStatics;
+    use RefreshDatabase, MockMetadataService, MockLicensingTrait, MockVersioningTrait, WithFaker, ResetH5PStatics, MockResourceApi;
 
     public function setUp(): void
     {
@@ -38,7 +39,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArray_validData_thenSuccess()
     {
-
+        $this->setUpResourceApi();
         $this->setupMetadataService([
             'getData' => true,
             'createData' => true
@@ -110,7 +111,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArrayWithDraftLogic_validData_thenSuccess()
     {
-
+        $this->setUpResourceApi();
         $this->setupMetadataService([
             'getData' => true,
             'createData' => true
@@ -190,7 +191,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromClient_validData_thenSuccess()
     {
-
+        $this->setUpResourceApi();
         $this->setupMetadataService([
             'getData' => true,
             'createData' => true

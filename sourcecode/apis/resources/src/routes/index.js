@@ -163,6 +163,10 @@ export default async ({ pubSubConnection }) => {
         '/v1/resources-from-external/:externalSystemName/:externalSystemId',
         runAsync(resourceController.getResourceFromExternalId)
     );
+    apiRouter.get(
+        '/v1/resources-from-external/:externalSystemName/:externalSystemId/collaborators',
+        runAsync(resourceController.getResourceCollaboratorsFromExternalId)
+    );
     apiRouter.post(
         '/v1/resources/by-external-references',
         runAsync(resourceController.getResourceFromExternalReferences)

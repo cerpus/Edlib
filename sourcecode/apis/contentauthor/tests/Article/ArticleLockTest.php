@@ -10,6 +10,7 @@ use Tests\Traits\MockMQ;
 use Illuminate\Support\Str;
 use App\ArticleCollaborator;
 use Illuminate\Http\Response;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockUserService;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
@@ -18,7 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleLockTest extends TestCase
 {
-    use RefreshDatabase, MockMetadataService, MockUserService, MockMQ, MockLicensingTrait, MockVersioningTrait;
+    use RefreshDatabase, MockMetadataService, MockUserService, MockMQ, MockLicensingTrait, MockVersioningTrait, MockResourceApi;
 
     public function testArticleHasLockWhenUserEdits()
     {
@@ -150,6 +151,7 @@ class ArticleLockTest extends TestCase
     /** @test */
     public function forkArticle_thenFail()
     {
+        $this->setUpResourceApi();
         $this->setUpLicensing('PRIVATE', false);
         $this->setUpVersion();
 
@@ -171,6 +173,7 @@ class ArticleLockTest extends TestCase
     /** @test */
     public function forkArticle_thenSuccess()
     {
+        $this->setUpResourceApi();
         $this->setupMetadataService([
             'getData' => true,
             'createData' => true
