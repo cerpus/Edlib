@@ -19,13 +19,11 @@ class ResourceApiService
     }
 
     /**
-     * @param string $externalSystemName
-     * @param string $externalSystemId
-     * @return array|ResourceCollaborator[]
+     * @return ResourceCollaborator[]
      * @throws NotFoundException
      * @throws \JsonException
      */
-    public function getCollaborators(string $externalSystemName, string $externalSystemId)
+    public function getCollaborators(string $externalSystemName, string $externalSystemId): array
     {
         $data = Util::handleEdlibNodeApiRequest(function () use ($externalSystemName, $externalSystemId) {
             return $this->client

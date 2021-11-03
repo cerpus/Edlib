@@ -8,16 +8,11 @@ class ResourceCollaborator
 {
     private $tenantId;
 
-    public function __construct(
-        $tenantId
-    )
+    public function __construct(string $tenantId)
     {
         $this->tenantId = $tenantId;
     }
 
-    /**
-     * @return string
-     */
     public function getTenantId(): string
     {
         return $this->tenantId;

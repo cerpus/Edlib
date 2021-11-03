@@ -154,7 +154,7 @@ abstract class Content extends Model implements RecommendableInterface
         $isCollaborator = false;
 
         foreach ($collaborators as $collaborator) {
-            if ($collaborator->getTenantId() == $currentUserId) {
+            if ($collaborator->getTenantId() === $currentUserId) {
                 $isCollaborator = true;
             }
         }

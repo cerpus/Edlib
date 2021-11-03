@@ -14,9 +14,7 @@ class Util
     /**
      * @throws \JsonException
      */
-    public static function decodeResponse(
-        ResponseInterface $response
-    )
+    public static function decodeResponse(ResponseInterface $response)
     {
         $body = $response->getBody()->getContents();
 
