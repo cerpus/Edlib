@@ -51,9 +51,9 @@ jobs:
         run: |
           HELM_VALUES="-f ./chart/values.yaml "
           if [ -f "./chart/values/${{ github.event.inputs.environment }}.yaml" ]; then
-            $HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ github.event.inputs.environment }}.yaml "
+            HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ github.event.inputs.environment }}.yaml "
           fi
-          cat $HELM_VALUES
+          echo $HELM_VALUES
 
       - name: helm deploy
         uses: koslib/helm-eks-action@master
