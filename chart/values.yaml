@@ -1,1 +1,1 @@
-replicaCount: 2
+minReplicaCount: 1

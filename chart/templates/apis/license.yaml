@@ -2,6 +2,8 @@
 ---
 {{- template "helpers.service" (dict "name" "licenseapi" "port" 8081 ) }}
 ---
-{{- template "helpers.deployment" (dict "name" "licenseapi" "port" 8081 "image" "ghcr.io/cerpus/edlib/api-license-web" "initImage" "ghcr.io/cerpus/edlib/api-license-init" "imageTag" .Chart.AppVersion "envFromConfig" (list "licenseapi-config") "envFromSecret" (list "licenseapi-secret") "replicaCount" 1  "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "licenseapi" "port" 8081 "image" "ghcr.io/cerpus/edlib/api-license-web" "initImage" "ghcr.io/cerpus/edlib/api-license-init" "imageTag" .Chart.AppVersion "envFromConfig" (list "licenseapi-config") "envFromSecret" (list "licenseapi-secret") "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" ) }}
 ---
-{{- template "helpers.horizontalPodAutoscaler" (dict "name" "licenseapi" ) }}
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "licenseapi" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "licenseapi" ) }}
