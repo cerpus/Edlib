@@ -1,3 +1,4 @@
+{{ if not .Values.disableLicenseApi }}
 {{- template "helpers.initJob" (dict "name" "licenseapi" "image" "ghcr.io/cerpus/edlib/api-license-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "licenseapi-config") "envFromSecret" (list "licenseapi-secret") ) }}
 ---
 {{- template "helpers.service" (dict "name" "licenseapi" "port" 8081 ) }}
@@ -7,3 +8,4 @@
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "licenseapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
 {{- template "helpers.podDisruptionBudget" (dict "name" "licenseapi" ) }}
+{{ end }}
