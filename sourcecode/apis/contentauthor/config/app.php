@@ -232,5 +232,5 @@ return [
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
     'useContentCloudStorage' => env("ENABLE_CLOUD_STORAGE", true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
-    'cdnPrefix' => env('CDN_WITH_PREFIX')
+    'cdnPrefix' => env('CDN_WITH_PREFIX', '')
 ];
