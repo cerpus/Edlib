@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\LtiUrlFunctions;
 use Illuminate\Http\Request;
 use Session;
 use App\SessionKeys;
@@ -10,6 +11,7 @@ use App\Libraries\BasicLTI;
 
 class ContentExplorerController extends Controller
 {
+    use LtiUrlFunctions;
     /**
      * @return string
      * @throws \Exception
@@ -47,7 +49,7 @@ class ContentExplorerController extends Controller
     public function launch(Request $request)
     {
         $lti = new BasicLTI(config('core.key'), config('core.secret'));
-        $launchUrl = $request->get('url');
+        $launchUrl = $this->launchUrl($this->launchId($request->get('url')));
 
         $behaviorSettings = Session::get(SessionKeys::EXT_BEHAVIOR_SETTINGS);
         if( !empty($behaviorSettings)) {
