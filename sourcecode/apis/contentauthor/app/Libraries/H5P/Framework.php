@@ -11,6 +11,7 @@ use App\H5PLibraryLibrary;
 use App\H5POption;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Helper\H5POptionsCache;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\Result;
 use GuzzleHttp;
@@ -1426,16 +1427,15 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
-        $disk = Storage::disk('h5p-uploads');
+        $storageInterface = app(CerpusStorageInterface::class);
+
         $path = implode("/", [
             'libraries',
             $libraryFolderName,
             $fileName
         ]);
-        if ($disk->exists($path)) {
-            return url($disk->url($path));
-        }
-        return '';
+
+        return $storageInterface->getFileUrl($path);
     }
 
     /**
