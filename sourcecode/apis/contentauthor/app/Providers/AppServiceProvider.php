@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\Events\ContentCreated;
 use App\H5POption;
 use App\Http\Requests\LTIRequest;
 use App\Libraries\H5P\Helper\H5POptionsCache;
@@ -72,6 +72,13 @@ class AppServiceProvider extends ServiceProvider
             ResourceApiService::class,
             function ($app) {
                 return new ResourceApiService();
+            }
+        );
+
+        $this->app->bind(
+            AuthApiService::class,
+            function ($app) {
+                return new AuthApiService();
             }
         );
     }

@@ -111,6 +111,25 @@ export default async ({ pubSubConnection }) => {
         runAsync(userController.getUsersByEmail)
     );
 
+    /**
+     * @swagger
+     *
+     *  /v1/users/{id}:
+     *      post:
+     *          description: Get user by ID
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: id
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     *              404:
+     *                  User not found
+     */
+    apiRouter.get('/v1/users/:id', runAsync(userController.getUserById));
+
     router.get('/_ah/health', (req, res) => {
         readiness()
             .then(() => res.send('ok'))

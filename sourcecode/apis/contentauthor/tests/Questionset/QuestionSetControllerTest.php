@@ -2,13 +2,14 @@
 
 namespace Tests\Questionset;
 
+use App\ApiModels\User;
 use App\H5pLti;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 use App\QuestionSet;
-use Tests\Traits\MockUserService;
+use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockVersioningTrait;
 use Tests\Traits\WithFaker;
 use App\QuestionSetQuestion;
@@ -23,7 +24,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class QuestionSetControllerTest extends TestCase
 {
 
-    use RefreshDatabase, WithFaker, MockLicensingTrait, MockMetadataService, MockVersioningTrait, MockUserService;
+    use RefreshDatabase, WithFaker, MockLicensingTrait, MockMetadataService, MockVersioningTrait, MockAuthApi;
 
     protected function setUp(): void
     {
@@ -389,15 +390,8 @@ class QuestionSetControllerTest extends TestCase
             'getData' => true,
             'createData' => true,
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
         $this->mockH5pLti();
@@ -472,15 +466,8 @@ class QuestionSetControllerTest extends TestCase
             'getData' => true,
             'createData' => true,
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
         $this->mockH5pLti();

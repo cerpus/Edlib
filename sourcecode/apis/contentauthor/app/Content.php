@@ -2,10 +2,9 @@
 
 namespace App;
 
+use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\Exceptions\UserServiceException;
 use App\Http\Libraries\License;
-use App\Http\Libraries\UserService;
 use App\Libraries\DataObjects\EdlibResourceDataObject;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -119,21 +118,16 @@ abstract class Content extends Model implements RecommendableInterface
     {
         $ownerName = null;
         try {
-            /** @var UserService $userService */
-            $userService = resolve(UserService::class);
-            if ($userService) {
-                try {
-                    $ownerData = $userService->getUser($ownerId);
-                    if ($ownerData) {
-                        $ownerName = trim(implode([$ownerData->identity->firstName, $ownerData->identity->lastName], " "));
-                    }
-                } catch (UserServiceException $e) {
-                    Log::warning('[' . app('requestId') . '] ' . "Unable to get owner data (UserServiceException): " . $e->getMessage());
-                }
+            /** @var AuthApiService $authApi */
+            $authApi = app(AuthApiService::class);
+            $user = $authApi->getUser($ownerId);
+            if ($user) {
+                $ownerName = trim(implode([$user->getFirstName(), $user->getLastName()], " "));
             }
 
         } catch (Exception $e) {
         }
+
         return $ownerName;
     }
 
@@ -286,23 +280,25 @@ abstract class Content extends Model implements RecommendableInterface
         return $query->where('version_id', null);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getOwnerData(): ResourceUserDataObject
     {
         $user = ResourceUserDataObject::create();
         $user->id = $this->getAttribute($this->userColumn);
-        $userService = app(UserService::class);
-        if ($userService) {
-            try {
-                $ownerData = $userService->getUser($user->id);
-                if ($ownerData) {
-                    $user->firstname = $ownerData->identity->firstName;
-                    $user->lastName = $ownerData->identity->lastName;
-                    $user->email = $ownerData->identity->email;
-                }
-            } catch (UserServiceException $e) {
-                Log::warning("Unable to get owner data (UserServiceException): " . $e->getMessage());
-            }
+
+        /** @var AuthApiService $authApiService */
+        $authApiService = app(AuthApiService::class);
+
+        $ownerData = $authApiService->getUser($user->id);
+
+        if ($ownerData) {
+            $user->firstname = $ownerData->getFirstName();
+            $user->lastName = $ownerData->getLastName();
+            $user->email = $ownerData->getEmail();
         }
+
         return $user;
     }
 
