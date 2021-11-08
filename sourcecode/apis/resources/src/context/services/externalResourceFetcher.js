@@ -33,7 +33,7 @@ const createAxios = () => async (
             },
         });
     } catch (e) {
-        console.error(e.response);
+        logger.error(e.response);
         exceptionTranslator(e, externalApiConfig.urls[urlKey] + path + ' API');
     }
 };
@@ -68,8 +68,8 @@ const autoRetryOnTimeout = (
     }
 };
 
-export default (req) => {
-    const request = createAxios(req);
+export default (cache = true) => {
+    const request = createAxios();
 
     const getById = async (externalSystemName, externalSystemId) => {
         return (
@@ -85,31 +85,35 @@ export default (req) => {
         ).data;
     });
 
-    const getContentTypeInfo = redisHelpers.cacheWrapper(
-        (...args) =>
-            `externalResourceFetcher-getContentTypeInfo-${crypto
-                .createHash('md5')
-                .update(args.join(','))
-                .digest('hex')}`,
-        autoRetryOnTimeout(async (externalSystemName, contentType) => {
-            let path = '';
+    const _getContentTypeInfo = async (externalSystemName, contentType) => {
+        let path = '';
 
-            if (contentType) {
-                path += `/${contentType}`;
+        if (contentType) {
+            path += `/${contentType}`;
+        }
+
+        try {
+            return (await request(externalSystemName, 'contentType', path)).data
+                .contentType;
+        } catch (e) {
+            if (!(e instanceof NotFoundException)) {
+                throw e;
             }
+        }
 
-            try {
-                return (await request(externalSystemName, 'contentType', path))
-                    .data.contentType;
-            } catch (e) {
-                if (!(e instanceof NotFoundException)) {
-                    throw e;
-                }
-            }
+        return null;
+    };
 
-            return null;
-        })
-    );
+    const getContentTypeInfo = cache
+        ? redisHelpers.cacheWrapper(
+              (...args) =>
+                  `externalResourceFetcher-getContentTypeInfo-${crypto
+                      .createHash('md5')
+                      .update(args.join(','))
+                      .digest('hex')}`,
+              _getContentTypeInfo
+          )
+        : _getContentTypeInfo;
 
     return {
         getById,
