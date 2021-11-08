@@ -134,6 +134,7 @@ const ResourceTable = ({
                     >
                         <ImageCell vc>
                             <ResourceIcon
+                                contentTypeInfo={resource.contentTypeInfo}
                                 resourceVersion={resource.version}
                                 fontSizeRem={2}
                             />

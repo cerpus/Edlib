@@ -48,6 +48,14 @@ export default async () => {
     );
 
     router.get(
+        '/v2/content-types/:externalSystemName',
+        hasJwt,
+        runAsync(
+            resourceFilterController.getContentTypesForExternalSystemNameV2
+        )
+    );
+
+    router.get(
         '/v1/filters/licenses',
         hasJwt,
         runAsync(licenseController.getAll)

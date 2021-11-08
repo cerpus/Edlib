@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
@@ -125,5 +126,10 @@ class Game extends Content implements VersionableObject
     function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return new ContentTypeDataObject('Game', $contentType, 'Game', "mui:VideogameAsset");
     }
 }

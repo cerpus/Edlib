@@ -67,7 +67,7 @@ class H5PLibrary extends Model
 
     public function scopeFromLibraryName($query, $value)
     {
-        return $query->where('name', $value);
+        return $query->where('name', 'LIKE', '%' . strtolower($value) . '%');
     }
 
     public function scopeLatestVersion($query)

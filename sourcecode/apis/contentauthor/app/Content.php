@@ -5,6 +5,7 @@ namespace App;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\Http\Libraries\License;
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\EdlibResourceDataObject;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -453,5 +454,10 @@ abstract class Content extends Model implements RecommendableInterface
                 ->all(),
             $this->getAuthorOverwrite()
         );
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return null;
     }
 }
