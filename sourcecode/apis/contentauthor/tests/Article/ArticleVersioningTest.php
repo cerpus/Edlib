@@ -5,13 +5,13 @@ namespace Tests\Article;
 use App\User;
 use App\Article;
 use Tests\TestCase;
+use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
 use Illuminate\Support\Str;
 use App\ArticleCollaborator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
-use Tests\Traits\MockUserService;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
@@ -19,7 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockMQ, MockVersioningTrait, MockResourceApi;
+    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function setUp(): void
     {
@@ -36,15 +36,8 @@ class ArticleVersioningTest extends TestCase
             'createData' => true,
             'fetchAllCustomFields' => [],
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
         $authId = Str::uuid();
         $article = factory(Article::class)->create(['owner_id' => $authId]);
@@ -153,15 +146,8 @@ class ArticleVersioningTest extends TestCase
             'createData' => true,
             'fetchAllCustomFields' => [],
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
         $owner = factory(User::class)->make();
         $collaborator = factory(User::class)->make();

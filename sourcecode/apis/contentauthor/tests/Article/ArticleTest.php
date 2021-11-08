@@ -1,13 +1,14 @@
 <?php
 
+use App\ApiModels\User;
 use App\Article;
 use App\H5pLti;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
+use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockResourceApi;
-use Tests\Traits\MockUserService;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
@@ -16,7 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockUserService, MockVersioningTrait, MockResourceApi;
+    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function setUp(): void
     {
@@ -149,15 +150,8 @@ class ArticleTest extends TestCase
             'getData' => true,
             'createData' => true,
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
         Event::fake();
         $authId = Str::uuid();
@@ -193,15 +187,8 @@ class ArticleTest extends TestCase
             'getData' => true,
             'createData' => true,
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'this',
-                        'lastName' => 'that',
-                        'email' => 'this@that.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
         $this->mockH5pLti();
