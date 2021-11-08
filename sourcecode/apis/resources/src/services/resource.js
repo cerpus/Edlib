@@ -150,7 +150,7 @@ const transformElasticResources = async (
         )
     );
 
-    return elasticsearchResources
+    let results = elasticsearchResources
         .map((esr) => {
             return {
                 ...resources.find((r) => r.id === esr._source.id),
@@ -168,6 +168,46 @@ const transformElasticResources = async (
             };
         })
         .filter((esr) => esr.version);
+
+    let contentTypeInfoToFetch = results.reduce(
+        (contentTypeInfoToFetch, result) => {
+            if (
+                !contentTypeInfoToFetch.some(
+                    ({ externalSystemName, contentType }) =>
+                        result.version.externalSystemName ===
+                            externalSystemName &&
+                        result.version.contentType === contentType
+                )
+            ) {
+                contentTypeInfoToFetch.push({
+                    externalSystemName: result.version.externalSystemName,
+                    contentType: result.version.contentType,
+                });
+            }
+            return contentTypeInfoToFetch;
+        },
+        []
+    );
+
+    const contentTypeInfo = (
+        await Promise.all(
+            contentTypeInfoToFetch.map((ctitf) =>
+                context.services.externalResourceFetcher.getContentTypeInfo(
+                    ctitf.externalSystemName,
+                    ctitf.contentType
+                )
+            )
+        )
+    ).filter(Boolean);
+
+    return results.map((result) => ({
+        ...result,
+        contentTypeInfo: contentTypeInfo.find(
+            (cti) =>
+                cti.externalSystemName === result.version.externalSystemName &&
+                cti.contentType === result.version.contentType
+        ),
+    }));
 };
 
 const retrieveCoreInfo = async (context, resourceVersions) => {

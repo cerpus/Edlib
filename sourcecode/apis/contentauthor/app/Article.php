@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use Log;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ResourceDataObject;
@@ -231,5 +232,10 @@ class Article extends Content implements VersionableObject
     public function convertToCloudPaths()
     {
         $this->content = str_replace(config('app.article-public-path'), route('content.asset', ['path' => ContentStorageSettings::ARTICLE_DIR], false), $this->content);
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return new ContentTypeDataObject('Article', $contentType, 'Article', "fa:newspaper-o");
     }
 }

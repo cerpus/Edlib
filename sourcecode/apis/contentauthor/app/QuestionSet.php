@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Traits\UuidForKey;
 use Illuminate\Http\Request;
@@ -58,5 +59,10 @@ class QuestionSet extends Content
     function getId(): string
     {
         return $this->id;
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return new ContentTypeDataObject('QuestionSet', $contentType, 'Question set', "mui:DoneAll");
     }
 }

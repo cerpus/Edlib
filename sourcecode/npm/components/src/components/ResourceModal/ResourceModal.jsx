@@ -117,7 +117,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         justifyContent="center"
                     >
                         <ResourceIcon
-                            resourceVersion={resource.version}
+                            contentTypeInfo={resource.contentTypeInfo}
                             fontSizeRem={2}
                         />
                     </Box>

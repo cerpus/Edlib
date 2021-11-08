@@ -44,6 +44,25 @@ class ContentInfoController extends Controller
         }
     }
 
+    private function getModelFromContentType($contentType): string
+    {
+        if (starts_with(strtolower($contentType), 'h5p.')) {
+            return H5PContent::class;
+        }
+
+        switch (strtolower($contentType)) {
+            case "article":
+                return Article::class;
+            case "game":
+                return Game::class;
+            case "questionset":
+                return QuestionSet::class;
+            case "h5p":
+            default:
+                return H5PContent::class;
+        }
+    }
+
     public function list(Request $request)
     {
         $offset = $request->get("offset", 0);
@@ -113,5 +132,22 @@ class ContentInfoController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function getContentTypeInfo(string $contentType)
+    {
+        $model = $this->getModelFromContentType($contentType);
+
+        $library = $model::getContentTypeInfo($contentType);
+
+        if (!$library) {
+            return response()->json([
+                "message" => "Content type info not found"
+            ], 404);
+        }
+
+        return response()->json([
+            'contentType' => $library
+        ]);
     }
 }
