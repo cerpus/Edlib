@@ -2,7 +2,7 @@ import { env } from '@cerpus/edlib-node-utils';
 
 export default {
     licenseApi: {
-        url: env('LICENSEAPI_URL', 'http://licenseapi:8081'),
+        url: env('LICENSEAPI_URL', 'http://licenseapi'),
     },
     auth: {
         url: env('AUTHAPI_URL', 'https://auth.local'),

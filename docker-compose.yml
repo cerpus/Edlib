@@ -261,7 +261,6 @@ services:
     env_file:
       - ./localSetup/.env
     environment:
-      LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
@@ -528,7 +527,6 @@ services:
     env_file:
       - ./localSetup/.env
     environment:
-      LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
