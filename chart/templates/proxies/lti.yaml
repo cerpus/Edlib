@@ -1,6 +1,6 @@
 {{- template "helpers.service" (dict "name" "proxy-lti") }}
 ---
-{{- template "helpers.deployment" (dict "name" "proxy-lti" "image" "ghcr.io/cerpus/edlib/proxy-lti-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "proxy-lti" "image" "public.ecr.aws/f0t8l9h1/proxy-lti-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-lti" "minReplicaCount" .Values.minReplicaCount ) }}
 ---

@@ -1,8 +1,8 @@
-{{- template "helpers.initJob" (dict "name" "resourceapi" "image" "ghcr.io/cerpus/edlib/api-resources-migration" "imageTag" .Chart.AppVersion ) }}
+{{- template "helpers.initJob" (dict "name" "resourceapi" "image" "public.ecr.aws/f0t8l9h1/api-resources-migration" "imageTag" .Chart.AppVersion ) }}
 ---
 {{- template "helpers.service" (dict "name" "resourceapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "resourceapi" "image" "ghcr.io/cerpus/edlib/api-resources-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "resourceapi" "image" "public.ecr.aws/f0t8l9h1/api-resources-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "resourceapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
