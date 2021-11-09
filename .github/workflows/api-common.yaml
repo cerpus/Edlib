@@ -16,11 +16,6 @@ on:
         required: true
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY:
         required: true
-    secrets:
-      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID:
-        required: true
-      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY:
-        required: true
 
 env:
   workingDirectory: sourcecode/apis/common
