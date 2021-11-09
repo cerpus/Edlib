@@ -297,6 +297,9 @@ class H5PContent extends Content implements VersionableObject
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
     {
         $library = H5PLibrary::fromLibraryName($contentType)
+            ->orderBy('major_version', 'desc')
+            ->orderBy('minor_version', 'desc')
+            ->orderBy('patch_version', 'desc')
             ->first();
 
         if (!$library) {
