@@ -15,6 +15,7 @@ Route::post('/applications/{application}/access_tokens', [AccessTokenController:
 Route::delete('/applications/{application}/access_tokens/{accessToken}', [AccessTokenController::class, 'delete']);
 
 Route::post('/oembed/select', [OembedController::class, 'preStartContentExplorer'])->middleware('auth');
+Route::get('/oembed/select/return', [OembedController::class, 'selectReturn'])->name('oembed.selectReturn');
 Route::get('/oembed/select/{oembedContext}', [OembedController::class, 'startContentExplorer']);
 
 Route::get('/maintenance_mode', [MaintenanceModeController::class, 'status']);

@@ -26,7 +26,7 @@
 
         switch(message.data.messageType) {
             case "resourceSelected":
-                var returnUrl = "[[${returnUrl}]]";
+                var returnUrl = "{{ $returnUrl }}";
                 window.location.replace(returnUrl.replace("--placeholder--", message.data.launch));
                 break;
             case "closeEdlibModal":

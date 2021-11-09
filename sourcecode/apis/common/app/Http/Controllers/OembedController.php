@@ -8,9 +8,6 @@ use Illuminate\View\View;
 
 final class OembedController extends Controller
 {
-    /**
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
     public function preStartContentExplorer(Request $request): \Illuminate\Http\RedirectResponse
     {
         $oembedContext = OembedContext::create([
@@ -22,8 +19,29 @@ final class OembedController extends Controller
         );
     }
 
-    public function startContentExplorer(Request $request, OembedContext $oembedContext): View
+    public function startContentExplorer(OembedContext $oembedContext): View
     {
-        return view('oembed.startContentExplorer', ['edlibContentExplorerIframeUrl' => $request->getSchemeAndHttpHost() . '/iframe/content-explorer']);
+        $url = url('/iframe/content-explorer') . '?' . http_build_query(
+                [
+                    'jwt' => $oembedContext->jwt
+                ]
+            );
+
+        return view('oembed.startContentExplorer', [
+            'edlibContentExplorerIframeUrl' => $url,
+            'returnUrl' => route('oembed.selectReturn')
+        ]);
+    }
+
+    public function selectReturn(Request $request): View
+    {
+        $url = $request->get("url");
+
+        return view('oembed.selectReturn', [
+            'contentType' => $url,
+            'h5pId' => $url,
+            'embedId' => $url,
+            'oembedUrl' => $url,
+        ]);
     }
 }
