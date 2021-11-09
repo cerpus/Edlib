@@ -111,7 +111,8 @@ export default (cache = true) => {
                       .createHash('md5')
                       .update(args.join(','))
                       .digest('hex')}`,
-              _getContentTypeInfo
+              _getContentTypeInfo,
+              60 * 60 * 24
           )
         : _getContentTypeInfo;
 
