@@ -23,14 +23,20 @@ const createAxios = () => async (
     }
 
     try {
+        let headers = options.headers || {};
+
+        if (externalApiConfig.httpAuthKey) {
+            headers = {
+                ...headers,
+                'x-api-key': externalApiConfig.httpAuthKey,
+            };
+        }
+
         return await axios({
             ...options,
             url: externalApiConfig.urls[urlKey] + path,
             maxRedirects: 0,
-            headers: {
-                ...options.headers,
-                'x-api-key': externalApiConfig.httpAuthKey,
-            },
+            headers,
         });
     } catch (e) {
         logger.error(e.response);
