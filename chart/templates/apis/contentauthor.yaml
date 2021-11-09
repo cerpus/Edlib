@@ -1,4 +1,4 @@
-{{- template "helpers.initJob" (dict "name" "contentauthor" "image" "ghcr.io/cerpus/edlib/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
+{{- template "helpers.initJob" (dict "name" "contentauthor" "image" "public.ecr.aws/f0t8l9h1/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
 ---
 {{- template "helpers.service" (dict "name" "contentauthor" "port" 8081) }}
 ---
@@ -40,7 +40,7 @@ spec:
               weight: 1
       containers:
         - name: main
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-app:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-app:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "1"
@@ -104,7 +104,7 @@ spec:
             - mountPath: /storage
               name: storage-ca
         - name: cron
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-cron:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-cron:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "1"
@@ -133,7 +133,7 @@ spec:
             - mountPath: /storage
               name: storage-ca
         - name: edstepmessages
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-edstepmessages:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-edstepmessages:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "1"
@@ -162,7 +162,7 @@ spec:
             - mountPath: /storage
               name: storage-ca
         - name: horizonqueue
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-horizonqueue:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "1"
@@ -191,7 +191,7 @@ spec:
             - mountPath: /storage
               name: storage-ca
         - name: phpfpm
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "1"
@@ -220,7 +220,7 @@ spec:
               name: storage-ca
       initContainers:
         - name: init
-          image: "ghcr.io/cerpus/edlib/api-contentauthor-init:{{ .Chart.AppVersion }}"
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-init:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
               value: "0"

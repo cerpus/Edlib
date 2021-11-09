@@ -1,8 +1,8 @@
-{{- template "helpers.initJob" (dict "name" "commonapi" "image" "ghcr.io/cerpus/edlib/api-common-migration" "imageTag" .Chart.AppVersion ) }}
+{{- template "helpers.initJob" (dict "name" "commonapi" "image" "public.ecr.aws/f0t8l9h1/api-common-migration" "imageTag" .Chart.AppVersion ) }}
 ---
 {{- template "helpers.service" (dict "name" "commonapi") }}
 ---
-{{- template "helpers.phpDeployment" (dict "name" "commonapi" "proxyImage" "ghcr.io/cerpus/edlib/api-common-web" "fpmImage" "ghcr.io/cerpus/edlib/api-common-fpm" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/internal/health" ) }}
+{{- template "helpers.phpDeployment" (dict "name" "commonapi" "proxyImage" "public.ecr.aws/f0t8l9h1/api-common-web" "fpmImage" "public.ecr.aws/f0t8l9h1/api-common-fpm" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/internal/health" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "commonapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
