@@ -1,14 +1,13 @@
 version: "3.7"
 
 volumes:
-  doku-lti-viewer_nodemodules:
+  #  doku-lti-viewer_nodemodules:
   dokuapi_nodemodules:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
   edlib-url_nodemodules:
   edlibapi-url_nodemodules:
-  edlibfacade-test_nodemodules:
   elasticsearch:
   mysql:
   npm-components-storybook_nodemodules:
@@ -19,6 +18,7 @@ volumes:
   proxy-lti_nodemodules:
   proxy-recommendation_nodemodules:
   proxy-resource_nodemodules:
+  www_nodemodules:
 
 services:
   redis:
@@ -156,10 +156,10 @@ services:
     restart: on-failure
 
   licenseapi:
-    build: ./sourcecode/not_migrated/licenseapi
+    build: ./sourcecode/apis/license
     command: /bin/bash -c "set -eux;chown -R www-data:www-data /app/storage; /start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;/run-app.sh"
     volumes:
-      - ./sourcecode/not_migrated/licenseapi:/app
+      - ./sourcecode/apis/license:/app
       - ./localSetup/projects/licenseapi/apache.conf:/etc/apache2/sites-enabled/001-licenseapi.conf
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./data/licenseapi/storage:/app/storage
@@ -370,24 +370,40 @@ services:
     depends_on:
       - mysql
 
-  doku-lti-viewer:
-    tty: true
+  #  doku-lti-viewer:
+  #    tty: true
+  #    build:
+  #      context: ./sourcecode/not_migrated/doku-lti-viewer
+  #      dockerfile: Dockerfile
+  #      target: dev
+  #    env_file:
+  #      - ./localSetup/.env
+  #    environment:
+  #      WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:3000]
+  #    volumes:
+  #      - doku-lti-viewer_nodemodules:/var/www/app/node_modules
+  #      - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
+  #      - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
+  #      - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
+  #      - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
+
+  www:
     build:
-      context: ./sourcecode/not_migrated/doku-lti-viewer
+      context: ./sourcecode/www
       dockerfile: Dockerfile
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
-      - doku-lti-viewer_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
-      - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
-      - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
+      - www_nodemodules:/app/node_modules
+      - ./sourcecode/www/src:/app/src
+      - ./sourcecode/www/public:/app/public
+      - ./sourcecode/www/package.json:/app/package.json
+      - ./sourcecode/www/yarn.lock:/app/yarn.lock
 
   proxy-iframe:
     tty: true
@@ -437,8 +453,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
@@ -458,8 +473,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
@@ -479,13 +493,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [
-          CMD,
-          curl,
-          -f,
-          "http://localhost/_ah/health",
-        ]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-recommendation_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/recommendation/src:/var/www/app/src
@@ -503,8 +511,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
@@ -524,8 +531,7 @@ services:
       LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test:
-        [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
@@ -554,108 +560,27 @@ services:
       - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-  #  re-recommender:
+  #  edlibfacade:
   #    build:
-  #      context: ./sourcecode/not_migrated/re-recommender
-  #      target: appdev
-  #    environment:
-  #      PHP_FPM_HOST: "re-recommender-fpm:31004"
-  #    volumes:
-  #      - ./sourcecode/not_migrated/re-recommender/docker/nginx-dev.conf:/etc/nginx/nginx.conf
+  #      context: ./localSetup/projects/edlibfacade
+  #    entrypoint: /before-start.sh
+  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
   #    depends_on:
-  #      - re-recommender-fpm
-  #
-  #  re-recommender-fpm:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-recommender
-  #      target: phpfpmdev
-  #    command: /dev-startup.sh
-  #    environment:
-  #      DB_HOST: mysql
-  #      DB_PORT: 3306
-  #      DB_DATABASE: re_recommender
-  #      DB_USERNAME: root
-  #      DB_PASSWORD: mysqlpassword
+  #      - nginx
   #    volumes:
+  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
+  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
   #      - ./localSetup/helpers/start-scripts:/start-scripts
-  #      - ./sourcecode/not_migrated/re-recommender:/app
-  #      - ./localSetup/projects/re-recommender/.env:/app/.env
-  #      - ./localSetup/projects/re-recommender/startup.sh:/dev-startup.sh
-  #      - ./data/re-recommender/storage/logs:/app/storage/logs
-  #      - ./data/re-recommender/bootstrap/cache:/app/bootstrap/cache
-  #    depends_on:
-  #      - mysql
-  #      - elasticsearch
-
-  #  re-content-index:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-content-index
-  #      target: appdev
   #    environment:
-  #      PHP_FPM_HOST: "re-content-index-fpm:31004"
-  #    volumes:
-  #      - ./sourcecode/not_migrated/re-content-index/docker/nginx-dev.conf:/etc/nginx/nginx.conf
-  #    depends_on:
-  #      - re-content-index-fpm
-  #
-  #  re-content-index-fpm:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-content-index
-  #      target: phpfpmdev
-  #    command: /dev-startup.sh
-  #    environment:
-  #      DB_HOST: mysql
-  #      DB_PORT: 3306
-  #      DB_DATABASE: re_content_index
-  #      DB_USERNAME: root
-  #      DB_PASSWORD: mysqlpassword
-  #    volumes:
-  #      - ./localSetup/helpers/start-scripts:/start-scripts
-  #      - ./sourcecode/not_migrated/re-content-index:/app
-  #      - ./localSetup/projects/re-content-index/.env:/app/.env
-  #      - ./localSetup/projects/re-content-index/startup.sh:/dev-startup.sh
-  #      - ./data/re-content-index/storage/logs:/app/storage/logs
-  #      - ./data/re-content-index/bootstrap/cache:/app/bootstrap/cache
-  #    depends_on:
-  #      - mysql
-
-  edlibfacade:
-    build:
-      context: ./localSetup/projects/edlibfacade
-    entrypoint: /before-start.sh
-    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
-    depends_on:
-      - nginx
-    volumes:
-      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
-      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-      - ./localSetup/helpers/start-scripts:/start-scripts
-    environment:
-      CONFIGSERVICE_URI: http://configserver:8888
-      EDLIB_API_URL: https://api.edlib.local
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8080/health]
-    ports:
-      - 5505:5555
-
-  edlibfacade-test:
-    tty: true
-    build:
-      context: ./sourcecode/not_migrated/edlibfacade-test
-      dockerfile: Dockerfile
-      target: dev
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:3000]
-    volumes:
-      - edlibfacade-test_nodemodules:/app/node_modules
-      - ./sourcecode/not_migrated/edlibfacade-test/src:/app/src
-      - ./sourcecode/not_migrated/edlibfacade-test/public:/app/public
-      - ./sourcecode/not_migrated/edlibfacade-test/package.json:/app/package.json
-      - ./sourcecode/not_migrated/edlibfacade-test/package-lock.json:/app/package-lock.json
-      - ./localSetup/projects/edlibfacade-test/config.json:/app/public/config.json
+  #      CONFIGSERVICE_URI: http://configserver:8888
+  #      EDLIB_API_URL: https://api.edlib.local
+  #      HEAPSPACE_MAX: 128m
+  #      DEBUGGING_ENABLED: "yes"
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:8080/health]
+  #    ports:
+  #      - 5505:5555
 
   npm-components-storybook:
     tty: true

@@ -17,6 +17,7 @@ $ip\ttest.edlibfacade.local
 $ip\tlocalhost
 $ip\tcontentauthor.local
 $ip\tapi.edlib.local
+$ip\twww.edlib.local
 $ip\tnpm.components.edlib.local
 $ip\tkibana.edlib.local
 EOM

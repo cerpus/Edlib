@@ -1,8 +1,8 @@
 import moment from 'moment';
-import jwt from 'jsonwebtoken';
+import decode from 'jwt-decode';
 
 export const isTokenExpired = (token, marginSec = 0) => {
-    const payload = jwt.decode(token);
+    const payload = decode(token);
 
     if (!payload) {
         return true;

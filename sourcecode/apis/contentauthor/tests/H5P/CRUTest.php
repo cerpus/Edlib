@@ -13,6 +13,7 @@ use Tests\TestHelpers;
 use Tests\Traits\MockH5PAdapterInterface;
 use Tests\Traits\MockMQ;
 use Tests\db\TestH5PSeeder;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\WithFaker;
 use Illuminate\Http\Response;
 use App\Events\ResourceSaved;
@@ -26,7 +27,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockMetadataService, MockH5PAdapterInterface;
+    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockMetadataService, MockH5PAdapterInterface, MockResourceApi;
 
     const testDirectory = "h5pstorage";
     const testContentDirectory = "content";
@@ -537,6 +538,7 @@ class CRUTest extends TestCase
         $me = factory(User::class)->make();
         $this->createUnitTestDirectories();
         $this->setUpLicensing();
+        $this->setUpResourceApi();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),

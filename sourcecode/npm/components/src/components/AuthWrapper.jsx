@@ -1,6 +1,6 @@
 import React from 'react';
 import store from 'store';
-import jwt from 'jsonwebtoken';
+import sign from 'jwt-encode';
 import { isTokenExpired } from '../helpers/token.js';
 import { Button, TextField } from '@material-ui/core';
 
@@ -70,7 +70,7 @@ const AuthWrapper = ({ children }) => {
                     onClick={() => {
                         console.log('create token');
                         setJwtToken(
-                            jwt.sign(
+                            sign(
                                 {
                                     exp:
                                         Math.floor(Date.now() / 1000) + 60 * 60,

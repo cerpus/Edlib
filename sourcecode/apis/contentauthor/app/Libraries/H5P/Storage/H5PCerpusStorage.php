@@ -678,4 +678,13 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     {
         return $this->filesystem->putStream($filePath, $resource);
     }
+
+    public function getFileUrl(string $path)
+    {
+        if ($this->filesystem->exists($path)) {
+            return $this->getUrl($path);
+        }
+
+        return '';
+    }
 }

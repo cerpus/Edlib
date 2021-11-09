@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use App\Events\ContentCreated;
+use App\Apis\AuthApiService;
+use App\Apis\ResourceApiService;
 use App\H5POption;
 use App\Http\Requests\LTIRequest;
 use App\Libraries\H5P\Helper\H5POptionsCache;
@@ -66,5 +67,19 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(H5POptionsCache::class, function () {
             return new H5POptionsCache();
         });
+
+        $this->app->bind(
+            ResourceApiService::class,
+            function ($app) {
+                return new ResourceApiService();
+            }
+        );
+
+        $this->app->bind(
+            AuthApiService::class,
+            function ($app) {
+                return new AuthApiService();
+            }
+        );
     }
 }

@@ -2,15 +2,17 @@
 
 namespace Tests\Article;
 
+use App\ApiModels\User;
 use App\Article;
 use Faker\Factory;
 use Tests\TestCase;
 use App\ContentLock;
+use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
 use Illuminate\Support\Str;
 use App\ArticleCollaborator;
 use Illuminate\Http\Response;
-use Tests\Traits\MockUserService;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
@@ -18,7 +20,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleLockTest extends TestCase
 {
-    use RefreshDatabase, MockMetadataService, MockUserService, MockMQ, MockLicensingTrait, MockVersioningTrait;
+    use RefreshDatabase, MockMetadataService, MockMQ, MockLicensingTrait, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function testArticleHasLockWhenUserEdits()
     {
@@ -28,15 +30,8 @@ class ArticleLockTest extends TestCase
         $this->setupMetadataService([
             'getData' => null
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'aren',
-                        'lastName' => 'aren',
-                        'email' => 'none@none.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
         $faker = Factory::create();
@@ -62,15 +57,8 @@ class ArticleLockTest extends TestCase
             'getData' => true,
             'createData' => true
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'aren',
-                        'lastName' => 'aren',
-                        'email' => 'none@none.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
         $faker = Factory::create();
@@ -116,15 +104,8 @@ class ArticleLockTest extends TestCase
 
         $article = factory(Article::class)->create(['owner_id' => $authId]);
 
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => $authName,
-                        'lastName' => $authName,
-                        'email' => $authEmail,
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", $authName, $authName, $authEmail)
         ]);
 
         $authId2 = Str::uuid();
@@ -150,6 +131,7 @@ class ArticleLockTest extends TestCase
     /** @test */
     public function forkArticle_thenFail()
     {
+        $this->setUpResourceApi();
         $this->setUpLicensing('PRIVATE', false);
         $this->setUpVersion();
 
@@ -171,19 +153,13 @@ class ArticleLockTest extends TestCase
     /** @test */
     public function forkArticle_thenSuccess()
     {
+        $this->setUpResourceApi();
         $this->setupMetadataService([
             'getData' => true,
             'createData' => true
         ]);
-        $this->setupUserService([
-            'getUser' => (object)[
-                'identity' =>
-                    (object)[
-                        'firstName' => 'aren',
-                        'lastName' => 'aren',
-                        'email' => 'none@none.com',
-                    ]
-            ]
+        $this->setupAuthApi([
+            'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
         $this->setUpLicensing('PRIVATE', true);

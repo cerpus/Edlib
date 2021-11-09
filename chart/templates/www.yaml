@@ -1,0 +1,5 @@
+{{- template "helpers.service" (dict "name" "www") }}
+---
+{{- template "helpers.deployment" (dict "name" "www" "image" "ghcr.io/cerpus/edlib/www-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "www" ) }}

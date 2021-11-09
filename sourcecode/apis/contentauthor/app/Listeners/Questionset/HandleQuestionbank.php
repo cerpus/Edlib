@@ -19,6 +19,10 @@ class HandleQuestionbank
 
     public function handle(QuestionsetWasSaved $event)
     {
+        if (!config("questionbank-client.enabled")) {
+            return;
+        }
+
         $request = $event->request;
         if ($request->filled('selectedPresentation') !== true) {
             return;

@@ -2,14 +2,14 @@ import React from 'react';
 import { Spinner, Alert } from '@cerpus/ui';
 
 const DefaultFetcher = ({ useFetchData, children }) => {
-    const { error, loading, data } = useFetchData;
+    const { error, loading, response } = useFetchData;
 
     return (
-        <div>
-            {loading && <Spinner />}
+        <>
+            {loading && !error && <Spinner />}
             {error && <Alert>Noe skjedde</Alert>}
-            {data && children({ data })}
-        </div>
+            {response && children({ response })}
+        </>
     );
 };
 

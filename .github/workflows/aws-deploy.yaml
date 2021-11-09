@@ -31,7 +31,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-duration-seconds: 1200
+          role-duration-seconds: 3600
           role-session-name: GithubCerpusDevDeploy
 
       - name: Update kubeconfig with cluster info
@@ -47,14 +47,28 @@ jobs:
           echo "appVersion: \"${{ github.event.inputs.version }}\"" >> ./chart/Chart.yaml
           cat ./chart/Chart.yaml
 
+      - name: Create values string for helm command
+        id: helm-values
+        run: |
+          HELM_VALUES="-f ./chart/values.yaml "
+          if [ -f "./chart/values/${{ github.event.inputs.environment }}.yaml" ]; then
+            HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ github.event.inputs.environment }}.yaml "
+          fi
+          echo $HELM_VALUES
+          echo "::set-output name=helm-values::$HELM_VALUES"
+
       - name: helm deploy
         uses: koslib/helm-eks-action@master
         env:
           KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
         with:
-          command: helm upgrade --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
+          command: helm upgrade ${{ steps.helm-values.outputs.helm-values }} --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
 
       - name: Post message to slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"*<https:\/\/github.com\/cerpus\/Edlib|Edlib>*"}},{"type":"section","text":{"type":"mrkdwn","text":"Versjon *<https:\/\/github.com\/cerpus\/Edlib\/tree\/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* er lagt ut i *${{ github.event.inputs.environment }}* av ${{ github.actor }}\nDu finner release note <https:\/\/github.com\/cerpus\/Edlib\/releases\/tag\/${{ github.event.inputs.version }}|her>."}}]}' ${{ secrets.SLACK_HOOK_URL }}
+          DATA='{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"*<https:\/\/github.com\/cerpus\/Edlib|Edlib>*"}},{"type":"section","text":{"type":"mrkdwn","text":"Versjon *<https:\/\/github.com\/cerpus\/Edlib\/tree\/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* er lagt ut i *${{ github.event.inputs.environment }}* av ${{ github.actor }}\nDu finner release note <https:\/\/github.com\/cerpus\/Edlib\/releases\/tag\/${{ github.event.inputs.version }}|her>."}}]}'
+          curl -X POST -H 'Content-type: application/json' --data "$DATA" ${{ secrets.SLACK_HOOK_URL }}
 
+          if [ -n "${{ secrets.EXTRA_SLACK_HOOK_URL }}" ]; then
+            curl -X POST -H 'Content-type: application/json' --data "$DATA" ${{ secrets.EXTRA_SLACK_HOOK_URL }}
+          fi

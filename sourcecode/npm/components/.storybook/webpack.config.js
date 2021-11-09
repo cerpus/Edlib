@@ -1,5 +1,4 @@
 const path = require('path');
-const buildCssRules = require('treply-scripts/config/buildCssRules');
 
 module.exports = async ({ config }) => {
     return {
@@ -24,7 +23,7 @@ module.exports = async ({ config }) => {
         },
         module: {
             ...config.module,
-            rules: [...config.module.rules, ...buildCssRules(false)],
+            rules: [...config.module.rules],
         },
     };
 };

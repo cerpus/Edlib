@@ -1,5 +1,7 @@
 {{- template "helpers.service" (dict "name" "proxy-resource") }}
 ---
-{{- template "helpers.deployment" (dict "name" "proxy-resource" "image" "ghcr.io/cerpus/edlib/proxy-resource-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "proxy-resource" "image" "ghcr.io/cerpus/edlib/proxy-resource-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" ) }}
 ---
-{{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-resource" ) }}
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-resource" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "proxy-resource" ) }}

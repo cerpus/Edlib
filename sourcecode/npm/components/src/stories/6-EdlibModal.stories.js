@@ -76,7 +76,7 @@ export const EditResourceModal = () => {
                     >
                         <EditEdlibResourceModal
                             ltiLaunchUrl={
-                                'https://api.edlib.local/lti/v2/lti-links/15071fd6-af90-45e6-b499-3a49800c5336'
+                                'https://api.edlib.local/lti/v2/lti-links/3e65c56c-2558-43f2-a587-4ff7a358fb92'
                             }
                             onUpdateDone={action('Resource update done')}
                         />

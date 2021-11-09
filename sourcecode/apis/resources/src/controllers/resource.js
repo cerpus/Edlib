@@ -41,6 +41,29 @@ export default {
 
         return { ...resource, version: resourceVersion };
     },
+    getResourceCollaboratorsFromExternalId: async (req, res, next) => {
+        const externalSystemName = req.params.externalSystemName;
+        const externalSystemId = req.params.externalSystemId;
+
+        let resourceVersion = await req.context.db.resourceVersion.getByExternalId(
+            externalSystemName,
+            externalSystemId
+        );
+
+        if (!resourceVersion) {
+            throw new NotFoundException('resource');
+        }
+
+        const collaborators = await req.context.db.resourceCollaborator.getForResource(
+            resourceVersion.resourceId
+        );
+
+        return {
+            collaborators: collaborators.map((collaborator) => ({
+                tenantId: collaborator.tenantId,
+            })),
+        };
+    },
     getResourceFromExternalReferences: async (req, res, next) => {
         const { externalSystemReferences } = validateJoi(
             req.body,

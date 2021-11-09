@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\MaintenanceModeController;
 use App\Http\Controllers\OembedController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,6 @@ Route::delete('/applications/{application}/access_tokens/{accessToken}', [Access
 
 Route::post('/oembed/select', [OembedController::class, 'preStartContentExplorer'])->middleware('auth');
 Route::get('/oembed/select/{oembedContext}', [OembedController::class, 'startContentExplorer']);
+
+Route::get('/maintenance_mode', [MaintenanceModeController::class, 'status']);
+Route::put('/maintenance_mode', [MaintenanceModeController::class, 'toggle']);

@@ -12,6 +12,7 @@ server {
 
   location / {
     try_files  $uri $uri/ /index.php?$query_string;
+    log_by_lua_file lua/request_logger.lua;
   }
 
   location ~ \.php$ {
@@ -20,5 +21,6 @@ server {
     fastcgi_pass   php;
     fastcgi_index  index.php;
     fastcgi_param  HTTPS 'on';
+    log_by_lua_file lua/request_logger.lua;
   }
 }

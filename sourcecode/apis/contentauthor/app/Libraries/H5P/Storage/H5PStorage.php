@@ -11,6 +11,7 @@ use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Cerpus\VersionClient\VersionClient;
+use Illuminate\Support\Facades\Storage;
 
 class H5PStorage extends \H5PDefaultStorage implements H5PDownloadInterface, CerpusStorageInterface
 {
@@ -112,5 +113,16 @@ class H5PStorage extends \H5PDefaultStorage implements H5PDownloadInterface, Cer
     {
         $fileInfo = pathinfo($this->getPath() . "/" . $filePath);
         return $this->saveFileFromZip($fileInfo['dirname'],  $fileInfo['basename'], $resource);
+    }
+
+    public function getFileUrl(string $path)
+    {
+        $disk = Storage::disk('h5p-uploads');
+
+        if ($disk->exists($path)) {
+            return url($disk->url($path));
+        }
+
+        return '';
     }
 }

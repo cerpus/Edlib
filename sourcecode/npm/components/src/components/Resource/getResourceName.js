@@ -2,6 +2,10 @@ import _ from 'lodash';
 import resourceTypes from '../../config/resourceTypes';
 
 const getResourceName = (resource) => {
+    if (resource.contentTypeInfo) {
+        return resource.contentTypeInfo.title;
+    }
+
     if (resource.version.externalSystemName === 'contentauthor') {
         const formatedType = resource.version.contentType.toLowerCase();
 

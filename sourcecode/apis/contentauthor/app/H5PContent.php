@@ -3,12 +3,14 @@
 namespace App;
 
 use App\Http\Libraries\H5PFileVersioner;
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Libraries\Versioning\VersionableObject;
 use H5PCore;
+use H5PFrameworkInterface;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -290,5 +292,36 @@ class H5PContent extends Content implements VersionableObject
         }
 
         return $authors[0]->name;
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        $library = H5PLibrary::fromLibraryName($contentType)
+            ->first();
+
+        if (!$library) {
+            return null;
+        }
+
+        $icon = null;
+
+        if ($library->has_icon) {
+            $h5pFramework = app(H5PFrameworkInterface::class);
+
+            $library_folder = H5PCore::libraryToString(array(
+                'machineName' => $library->machine_name,
+                'majorVersion' => $library->major_version,
+                'minorVersion' => $library->minor_version
+            ), true);
+
+
+            $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
+
+            if (!empty($icon_path)) {
+                $icon = $icon_path;
+            }
+        }
+
+        return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
     }
 }
