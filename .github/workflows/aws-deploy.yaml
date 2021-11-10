@@ -67,8 +67,8 @@ jobs:
       - name: Post message to slack
         run: |
           DATA='{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"*<https:\/\/github.com\/cerpus\/Edlib|Edlib>*"}},{"type":"section","text":{"type":"mrkdwn","text":"Versjon *<https:\/\/github.com\/cerpus\/Edlib\/tree\/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* er lagt ut i *${{ github.event.inputs.environment }}* av ${{ github.actor }}\nDu finner release note <https:\/\/github.com\/cerpus\/Edlib\/releases\/tag\/${{ github.event.inputs.version }}|her>."}}]}'
-          curl -X POST -H 'Content-type: application/json' --data "$DATA" ${{ secrets.SLACK_HOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ secrets.SLACK_HOOK_URL }}"
 
           if [ -n "${{ secrets.EXTRA_SLACK_HOOK_URL }}" ]; then
-            curl -X POST -H 'Content-type: application/json' --data "$DATA" ${{ secrets.EXTRA_SLACK_HOOK_URL }}
+            curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ secrets.EXTRA_SLACK_HOOK_URL }}"
           fi
