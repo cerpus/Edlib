@@ -8,8 +8,10 @@ WORKDIR /var/www/app
 # appbase container, contains app and dependencies
 #
 FROM base AS appbase
-COPY . .
+COPY package.json yarn.lock ./
+ENV NODE_ENV=production
 RUN yarn install
+COPY . .
 
 #
 # Run migrations
