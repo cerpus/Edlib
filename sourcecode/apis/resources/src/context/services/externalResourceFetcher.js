@@ -22,6 +22,10 @@ const createAxios = () => async (
         throw new NotFoundException('externalSystemName');
     }
 
+    if (!externalApiConfig.urls[urlKey]) {
+        throw new NotFoundException('urlForExternalSystemName');
+    }
+
     try {
         let headers = options.headers || {};
 
