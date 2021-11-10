@@ -20,7 +20,7 @@ describe('Context - Services - External Resource Fetcher', () => {
             const externalResourceFetcher = _externalResourceFetcher(false);
 
             const response = await externalResourceFetcher.getContentTypeInfo(
-                'unkown',
+                'unknown',
                 'h5p.test'
             );
 
@@ -56,7 +56,17 @@ describe('Context - Services - External Resource Fetcher', () => {
 
             expect(response).toEqual(contentType);
         });
-        test('throws on anything other than 404 and 200', async () => {
+        test('returns null on missing configuration', async () => {
+            const externalResourceFetcher = _externalResourceFetcher(false);
+
+            const response = await externalResourceFetcher.getContentTypeInfo(
+                'url',
+                'h5p.test'
+            );
+
+            expect(response).toEqual(null);
+        });
+        test('throws on http 400', async () => {
             const externalResourceFetcher = _externalResourceFetcher(false);
 
             mock.onAny().reply(400, {});
@@ -68,7 +78,7 @@ describe('Context - Services - External Resource Fetcher', () => {
                 )
             ).rejects.toBeInstanceOf(ClientException);
         });
-        test('throws on anything other than 404 and 200', async () => {
+        test('throws on http 500', async () => {
             const externalResourceFetcher = _externalResourceFetcher(false);
 
             mock.onAny().reply(500, {});
