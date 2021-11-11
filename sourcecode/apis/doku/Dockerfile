@@ -17,7 +17,7 @@ COPY . .
 # Test runner container
 #
 FROM appbase as test
-CMD [ "yarn", "test" ]
+CMD [ "bash", "-c", "node node_modules/jest/bin/jest.js --runInBand --colors --verbose --forceExit --config=./jest.config.json" ]
 
 #
 # Run migrations

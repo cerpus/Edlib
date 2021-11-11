@@ -6,8 +6,7 @@
     "dev": "nodemon src/api.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
-    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js",
-    "test": "NODE_ENV=test jest --runInBand --colors --verbose --forceExit --config=./jest.config.json"
+    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js"
   },
   "engines": {
     "node": ">= 16.0.0"
