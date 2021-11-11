@@ -74,7 +74,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: public.ecr.aws/f0t8l9h1/api-auth-app:${{ inputs.versionToRelease }}
+            tags: public.ecr.aws/f0t8l9h1/api-auth-app:${{ github.sha }}
             context: sourcecode/apis/auth
             target: prod
             cache-from: type=local,src=/tmp/.buildx-cache-new
@@ -85,7 +85,7 @@ jobs:
           uses: docker/build-push-action@v2
           with:
             push: true
-            tags: public.ecr.aws/f0t8l9h1/api-auth-migration:${{ inputs.versionToRelease }}
+            tags: public.ecr.aws/f0t8l9h1/api-auth-migration:${{ github.sha }}
             context: sourcecode/apis/auth
             target: migrations
             cache-from: type=local,src=/tmp/.buildx-cache-new
