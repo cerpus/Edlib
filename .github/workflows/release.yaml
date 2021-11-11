@@ -30,7 +30,7 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@release_on_master_push
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -203,7 +203,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
         with:
-          ref: ${{ needs.get_variables.outputs.releaseRef }}
           fetch-depth: 0
 
 #      - name: Create tag
