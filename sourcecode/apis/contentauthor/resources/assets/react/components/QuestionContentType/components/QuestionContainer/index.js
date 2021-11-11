@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 import QuestionContainerLayout from './QuestionContainerLayout';
 import { H5PQuizContainer } from '../H5PQuiz';
-import { QuestionsetContainer, QuestionSetContainer } from '../QuestionSet';
+import { QuestionsetContainer } from '../QuestionSet';
 import { Card, uniqueId } from '../utils';
 import { MillionaireContainer } from '../Millionaire';
 
@@ -65,7 +65,7 @@ class QuestionContainer extends Component {
     handleCollectAnswersAndQuestions(data, id) {
         const cards = this.props.questions.map(card => {
             if (card.id === id) {
-                card = Object.assign(new Card(), card, data);
+                return Object.assign(new Card(), card, data);
             }
             return card;
         });
@@ -172,13 +172,11 @@ class QuestionContainer extends Component {
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
 
-        const orderedQuestions = result.map((question, index) => {
+        return result.map((question, index) => {
             question.order = index;
 
             return question;
         });
-
-        return orderedQuestions;
     }
 
     handleDragEnd(result) {

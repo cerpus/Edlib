@@ -34,6 +34,7 @@ AnswerListLayout.propTypes = {
     deleteAnswer: PropTypes.func,
     answers: PropTypes.array,
     readonly: PropTypes.bool,
+    addAnswer: PropTypes.func,
 };
 
 AnswerListLayout.defaultProps = {
@@ -44,6 +45,7 @@ AnswerListLayout.defaultProps = {
     deleteAnswer: null,
     answers: [],
     readonly: false,
+    addAnswer: null,
 };
 
 export default AnswerListLayout;

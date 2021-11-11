@@ -72,8 +72,11 @@ class QuestionContentType extends React.Component {
             const cards = [];
             for (let i = 0; i < numberOfStartCards; i++) {
                 const card = new Card();
+                const answer = new Answer();
+                answer.showToggle = true;
+
                 card.question = new Question();
-                card.answers = [new Answer()];
+                card.answers = [answer];
                 card.order = i;
                 card.canDelete = true;
                 cards.push(card);
@@ -134,7 +137,7 @@ class QuestionContentType extends React.Component {
                     answerElement.answerText = answer.text;
                     answerElement.order = answer.order;
                     answerElement.isCorrect = answer.correct;
-                    answerElement.showToggle = index > 0;
+                    answerElement.showToggle = true;
                     answerElement.canDelete = index > 0;
                     if (answer.hasOwnProperty('imageObject')) {
                         const image = new Image();
