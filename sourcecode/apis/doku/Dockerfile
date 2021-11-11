@@ -1,7 +1,7 @@
 #
 # base container, creates environment
 #
-FROM node:16 AS base
+FROM node:16-alpine AS base
 WORKDIR /var/www/app
 
 #
