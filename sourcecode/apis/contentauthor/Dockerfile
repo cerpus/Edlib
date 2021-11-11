@@ -29,9 +29,9 @@ RUN pecl install redis; docker-php-ext-enable redis;
 # copy the composer PHAR from the Composer image into the PHP image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader
+RUN composer install --prefer-dist --no-scripts --no-autoloader
 COPY . /app
-RUN composer dump-autoload --no-scripts --no-dev --optimize
+RUN composer dump-autoload --no-scripts --optimize
 
 RUN set -eux; \
     mkdir -v -p storage/app/public; \
@@ -65,7 +65,6 @@ COPY webpack.config.js webpack.mix.js .babelrc ./
 COPY --from=php_base /app/vendor ./vendor
 COPY --from=php_base /app/resources ./resources
 COPY --from=php_base /app/public ./public
-RUN ls -l
 RUN npm run production
 RUN rm -rf node_modules
 
@@ -86,6 +85,7 @@ RUN set -eux; \
 FROM buildresult as test
 COPY docker/run-phpunit.sh /run-phpunit.sh
 RUN chmod +x /run-phpunit.sh
+RUN ls -l /app
 CMD /run-phpunit.sh
 
 
