@@ -1,9 +1,6 @@
 name: "Create release"
 
 on:
-  push:
-    branches:
-      - release_on_master_push
   workflow_dispatch:
     inputs:
       releaseName:
