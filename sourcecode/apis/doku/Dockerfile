@@ -14,7 +14,7 @@ RUN yarn install
 COPY . .
 
 #
-# Test runner container
+# Test container
 #
 FROM appbase as test
 ENV NODE_ENV=test
