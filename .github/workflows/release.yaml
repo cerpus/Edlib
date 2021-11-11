@@ -28,6 +28,7 @@ jobs:
           echo "::set-output name=releaseRef::$ref"
   print_ref:
     runs-on: ubuntu-latest
+    needs: get_variables
     steps:
       - name: Print the ref
         run: |
