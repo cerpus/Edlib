@@ -59,7 +59,7 @@ jobs:
           shell: bash
 
         - name: Configure AWS Credentials
-          if: github.event.inputs.versionToRelease != ''
+          if: github.event.inputs.versionToRelease
           uses: aws-actions/configure-aws-credentials@v1
           with:
             aws-access-key-id: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
