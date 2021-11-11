@@ -41,6 +41,7 @@ const QuestionContentTypeLayout = props => {
 QuestionContentTypeLayout.propTypes = {
     links: PropTypes.object,
     onChange: PropTypes.func,
+    title: PropTypes.string,
     questions: PropTypes.array,
     tags: PropTypes.array,
     currentContainer: PropTypes.string,
