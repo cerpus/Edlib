@@ -1,4 +1,5 @@
 FROM php:7.2-fpm-alpine AS php_base
+WORKDIR /app
 # Install common deps
 RUN apk add --no-cache --update --virtual .common-deps bash sudo rclone git
 # Install phpize deps
@@ -27,8 +28,11 @@ RUN apk add pcre-dev; pecl install oauth; docker-php-ext-enable oauth;
 RUN pecl install redis; docker-php-ext-enable redis;
 # copy the composer PHAR from the Composer image into the PHP image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
+RUN composer install --prefer-dist --no-scripts --no-autoloader
 COPY . /app
-WORKDIR /app
+RUN composer dump-autoload --no-scripts --optimize
+
 RUN set -eux; \
     mkdir -v -p storage/app/public; \
     mkdir -v -p storage/app/storage; \
@@ -38,7 +42,6 @@ RUN set -eux; \
     mkdir -v -p storage/framework/views; \
     mkdir -v -p storage/logs; \
     touch storage/logs/laravel.log; \
-    composer install; \
     php artisan vendor:publish --tag=public --no-ansi; \
     php artisan cerpus:install; \
     php artisan route:clear;
@@ -46,24 +49,29 @@ RUN set -eux; \
 RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
+
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 COPY docker/phpfpm-pool-www.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
 
 FROM node:11-alpine AS jsbuild
-RUN apk add --no-cache alpine-sdk python make g++ bash
-COPY --from=php_base /app/ /app/
-WORKDIR /app/
+WORKDIR /app
 RUN npm config set unsafe-perm true
-RUN set -eux; \
-    npm install -g node-gyp; \
-    npm install; \
-    npm run production; \
-    rm -rf node_modules
+RUN apk add --no-cache alpine-sdk python make g++ bash
+RUN npm i -g node-gyp
+COPY package.json npm-shrinkwrap.json ./
+RUN npm i
+COPY webpack.config.js webpack.mix.js .babelrc ./
+COPY --from=php_base /app/vendor ./vendor
+COPY --from=php_base /app/resources ./resources
+COPY --from=php_base /app/public ./public
+RUN npm run production
+RUN rm -rf node_modules
 
 
 FROM php_base AS buildresult
-COPY --from=jsbuild /app/ /app/
+COPY --from=php_base /app/ /app/
+COPY --from=jsbuild /app/public /app/public
 # Set correct file permission for app
 RUN chown -R www-data:www-data /app
 # Create symlink from app to shared storage
@@ -94,10 +102,6 @@ FROM buildresult AS init
 COPY docker/run-init.sh /init.sh
 RUN chmod +x /init.sh
 CMD /init.sh
-
-
-FROM buildresult AS edstepmessages
-CMD [ "php", "/app/artisan", "bowler:consume", "ca-EdStep-CollaborationUpdates" ]
 
 
 FROM buildresult AS horizonqueue

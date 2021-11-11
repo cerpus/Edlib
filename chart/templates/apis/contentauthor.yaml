@@ -132,35 +132,6 @@ spec:
           volumeMounts:
             - mountPath: /storage
               name: storage-ca
-        - name: edstepmessages
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-edstepmessages:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "1"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
-          imagePullPolicy: IfNotPresent
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
         - name: horizonqueue
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:{{ .Chart.AppVersion }}"
           env:
