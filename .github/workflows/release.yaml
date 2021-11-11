@@ -27,7 +27,7 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@release_on_master_push
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -202,14 +202,14 @@ jobs:
         with:
           fetch-depth: 0
 
-#      - name: Create tag
-#        uses: actions/github-script@v5
-#        with:
-#          github-token: ${{ github.token }}
-#          script: |
-#            github.rest.git.createRef({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              ref: "refs/tags/${{ github.event.inputs.releaseName }}",
-#              sha: context.sha
-#            })
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ github.event.inputs.releaseName }}",
+              sha: context.sha
+            })
