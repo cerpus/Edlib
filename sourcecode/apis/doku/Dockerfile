@@ -17,7 +17,8 @@ COPY . .
 # Test runner container
 #
 FROM appbase as test
-CMD [ "bash", "-c", "yarn test" ]
+#ENV NODE_ENV=test
+CMD [ "yarn", "test" ]
 
 #
 # Run migrations
