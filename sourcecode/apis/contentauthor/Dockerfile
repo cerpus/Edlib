@@ -29,8 +29,9 @@ RUN pecl install redis; docker-php-ext-enable redis;
 # copy the composer PHAR from the Composer image into the PHP image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
-RUN composer install
+RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader
 COPY . /app
+RUN composer dump-autoload --no-scripts --no-dev --optimize
 
 RUN set -eux; \
     mkdir -v -p storage/app/public; \
@@ -47,7 +48,7 @@ RUN set -eux; \
 # Copy h5p-editor files from vendor folder to public folder
 RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
-    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
+    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
 
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 COPY docker/phpfpm-pool-www.conf /usr/local/etc/php-fpm.d/zz-docker.conf
@@ -60,13 +61,18 @@ RUN apk add --no-cache alpine-sdk python make g++ bash
 RUN npm i -g node-gyp
 COPY package.json npm-shrinkwrap.json ./
 RUN npm i
-COPY --from=php_base /app/ /app/
+COPY webpack.config.js webpack.mix.js .babelrc ./
+COPY --from=php_base /app/vendor ./vendor
+COPY --from=php_base /app/resources ./resources
+COPY --from=php_base /app/public ./public
+RUN ls -l
 RUN npm run production
 RUN rm -rf node_modules
 
 
 FROM php_base AS buildresult
-COPY --from=jsbuild /app/ /app/
+COPY --from=php_base /app/ /app/
+COPY --from=jsbuild /app/public /app/public
 # Set correct file permission for app
 RUN chown -R www-data:www-data /app
 # Create symlink from app to shared storage
