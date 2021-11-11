@@ -29,28 +29,27 @@ order to rename it.)
 Now you can start translating. Open each .php file in the text editor, and you
 should see something like this:
 
-~~~php
+```php
 <?php
 
 return [
     'dialog.cancel' => 'Are you sure you want to cancel?',
 ];
-~~~
+```
 
-Here, `dialog.cancel` on the left is the *key*, and `Are you sure you want to
-cancel?` on the right is the *value*. In reality there can be dozens of
+Here, `dialog.cancel` on the left is the _key_, and `Are you sure you want to cancel?` on the right is the _value_. In reality there can be dozens of
 key/value pairs in a translation file, separated by commas. The goal is to
 translate all the right-hand values, in every file, while leaving the left-hand
 keys untouched. As an example, when the above is translated to Norwegian, it
 looks like this:
 
-~~~php
+```php
 <?php
 
 return [
     'dialog.cancel' => 'Er du sikker på at du vil avbryte?',
 ];
-~~~
+```
 
 ## Translating Edlib Components
 
@@ -60,26 +59,25 @@ are different.
 
 Before:
 
-~~~json
+```json
 {
-    "dialog.cancel": "Are you sure you want to cancel?"
+  "dialog.cancel": "Are you sure you want to cancel?"
 }
-~~~
+```
 
 After:
 
-~~~json
+```json
 {
-    "dialog.cancel": "Er du sikker på at du vil avbryte?"
+  "dialog.cancel": "Er du sikker på at du vil avbryte?"
 }
-~~~
+```
 
 ## Submitting new translations
 
 If you are familiar with the workflows of Git and GitHub, you may submit your
 translation by opening a pull request. Otherwise, please [contact us][4] so we
 can help you.
-
 
 [1]: https://notepad-plus-plus.org/downloads/
 [2]: https://code.visualstudio.com/
