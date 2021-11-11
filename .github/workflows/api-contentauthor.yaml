@@ -55,7 +55,7 @@ jobs:
           docker run contentauthor-test
 
       - name: Configure AWS Credentials
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
@@ -65,71 +65,71 @@ jobs:
           role-session-name: GithubCerpusPushImage
 
       - name: Login to AWS docker registry
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         shell: bash
         run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
       - name: Build and push app container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-app:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-app:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: app
           cache-from: type=local,src=/tmp/.buildx-cache-new
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push init container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-init:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-init:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: init
           cache-from: type=local,src=/tmp/.buildx-cache-new
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push phpfpm container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: phpfpm
           cache-from: type=local,src=/tmp/.buildx-cache-new
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push cron container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-cron:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-cron:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: cron
           cache-from: type=local,src=/tmp/.buildx-cache-new
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push deploy container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: deploy
           cache-from: type=local,src=/tmp/.buildx-cache-new
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push horizonqueue container
-#        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:${{ github.sha }}
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: horizonqueue
           cache-from: type=local,src=/tmp/.buildx-cache-new
