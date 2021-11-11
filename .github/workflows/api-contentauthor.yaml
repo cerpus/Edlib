@@ -21,7 +21,7 @@ env:
   workingDirectory: sourcecode/apis/contentauthor
 
 jobs:
-  test:
+  test_and_release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
