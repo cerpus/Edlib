@@ -26,11 +26,17 @@ jobs:
           fi
 
           echo "::set-output name=releaseRef::$ref"
+  print_ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print the ref
+        run: |
+          echo "${{ needs.get_variables.outputs.releaseRef }}"
 
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@release_on_master_push
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
