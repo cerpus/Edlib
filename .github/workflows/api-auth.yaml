@@ -24,6 +24,10 @@ jobs:
   test_and_release:
     runs-on: ubuntu-latest
     steps:
+        - name: "Print event name"
+          run: echo "${{ github.event_name }}"
+          shell: bash
+
         - uses: actions/checkout@v2
           with:
             fetch-depth: 0
