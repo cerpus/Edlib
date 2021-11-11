@@ -34,7 +34,7 @@ EXPOSE 80
 CMD [ "yarn", "start" ]
 
 #
-# Dev container for running dev with mounted app volume
+# Dev container for running in dev with mounted app volume
 #
 FROM base as dev
 RUN yarn global add nodemon
