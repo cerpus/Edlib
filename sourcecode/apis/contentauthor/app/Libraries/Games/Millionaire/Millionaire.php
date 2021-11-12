@@ -130,7 +130,14 @@ class Millionaire extends GameBase
             } else {
                 $question->image = "";
             }
-            shuffle($question->answers);
+            $question->questionText = html_entity_decode(strip_tags($question->questionText));
+            $question->answers = collect($question->answers)
+                ->map(function ($answer) {
+                    $answer->answer = html_entity_decode(strip_tags($answer->answer));
+                    return $answer;
+                })
+                ->shuffle()
+                ->all();
             return $question;
         });
         $gameSettings->questionSet->questions = $questions;
