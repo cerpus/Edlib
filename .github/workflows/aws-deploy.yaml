@@ -16,9 +16,23 @@ jobs:
     environment: "${{ github.event.inputs.environment }}"
     runs-on: ubuntu-latest
     steps:
+      - name: Create slack message
+        uses: actions/github-script@v5
+        id: slack-message
+        with:
+          script: |
+            const slackMessage = {
+              "test": true
+            };
+
+            return JSON.stringify(slackMessage);
+          result-encoding: string
+
       - name: Deploy name
         run: |
+          echo "${{ steps.slack-message.outputs.result }}"
           echo "Version to deploy: ${{ github.event.inputs.version }}"
+          exit 1
 
       - uses: actions/checkout@v2
         with:
