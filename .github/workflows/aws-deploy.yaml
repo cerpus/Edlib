@@ -21,9 +21,15 @@ jobs:
         id: slack-message
         with:
           script: |
+            const isSemver = /^([0-9]+)\.([0-9]+)\.([0-9]+)$/.test(
+              "${{ github.event.inputs.version }}"
+            );
+
+            const versionOrRef = isSemver ? "Version" : "Ref";
+
             const fields = [
               {
-                title: "Version",
+                title: versionOrRef,
                 value:
                   "<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
                 short: true,
@@ -35,9 +41,7 @@ jobs:
               },
             ];
 
-            if (
-              /^([0-9]+)\.([0-9]+)\.([0-9]+)$/.test("${{ github.event.inputs.version }}")
-            ) {
+            if (isSemver) {
               fields.push({
                 title: "Release note",
                 value:
@@ -50,12 +54,14 @@ jobs:
               attachments: [
                 {
                   fallback:
-                    "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                    versionOrRef +
+                    " *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
                   color: "#36a64f",
                   title: "Edlib",
                   title_link: "https://github.com/cerpus/Edlib",
                   text:
-                    "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                    versionOrRef +
+                    "*<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
                   fields: fields,
                   footer: "Edlib deploy bot",
                   ts: 1234567899,
