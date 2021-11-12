@@ -65,11 +65,66 @@ jobs:
         with:
           command: helm upgrade ${{ steps.helm-values.outputs.helm-values }} --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
 
+      - name: Create slack message
+        uses: actions/github-script@v5
+        id: slack-message
+        with:
+          script: |
+            const isSemver = /^([0-9]+)\.([0-9]+)\.([0-9]+)$/.test(
+              "${{ github.event.inputs.version }}"
+            );
+
+            const versionOrRef = isSemver ? "Version" : "Ref";
+
+            const fields = [
+              {
+                title: versionOrRef,
+                value:
+                  "<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
+                short: true,
+              },
+              {
+                title: "Environment",
+                value: "${{ github.event.inputs.environment }}",
+                short: true,
+              },
+            ];
+
+            if (isSemver) {
+              fields.push({
+                title: "Release note",
+                value:
+                  "<https://github.com/cerpus/Edlib/releases/tag/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
+                short: true,
+              });
+            }
+
+            const slackMessage = {
+              attachments: [
+                {
+                  fallback:
+                    versionOrRef +
+                    " *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                  color: "#36a64f",
+                  title: "Edlib",
+                  title_link: "https://github.com/cerpus/Edlib",
+                  text:
+                    versionOrRef +
+                    "*<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                  fields: fields,
+                  footer: "Edlib deploy bot",
+                  ts: 1234567899,
+                },
+              ],
+            };
+
+            return JSON.stringify(slackMessage);
+          result-encoding: string
+
       - name: Post message to slack
         run: |
-          DATA='{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"*<https:\/\/github.com\/cerpus\/Edlib|Edlib>*"}},{"type":"section","text":{"type":"mrkdwn","text":"Versjon *<https:\/\/github.com\/cerpus\/Edlib\/tree\/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* er lagt ut i *${{ github.event.inputs.environment }}* av ${{ github.actor }}\nDu finner release note <https:\/\/github.com\/cerpus\/Edlib\/releases\/tag\/${{ github.event.inputs.version }}|her>."}}]}'
-          curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ secrets.SLACK_HOOK_URL }}"
+          curl -X POST -H 'Content-type: application/json' --data "${{ steps.slack-message.outputs.result }}" "${{ secrets.SLACK_HOOK_URL }}"
 
           if [ -n "${{ secrets.EXTRA_SLACK_HOOK_URL }}" ]; then
-            curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ secrets.EXTRA_SLACK_HOOK_URL }}"
+            curl -X POST -H 'Content-type: application/json' --data "${{ steps.slack-message.outputs.result }}" "${{ secrets.EXTRA_SLACK_HOOK_URL }}"
           fi
