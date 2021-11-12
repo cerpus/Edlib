@@ -110,7 +110,7 @@ jobs:
                   title_link: "https://github.com/cerpus/Edlib",
                   text:
                     versionOrRef +
-                    "*<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                    " *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
                   fields: fields,
                   footer: "Edlib deploy bot",
                   ts: 1234567899,
