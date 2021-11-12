@@ -1,6 +1,6 @@
 <?php
 return [
-    'versioning' => env('FEATURE_VERSIONING', false),
+    'versioning' => true,
     'linear-versioning' => env('FEATURE_LINEAR_VERSIONING', false),
     'licensing' => env('ENABLE_LICENSING', false),
     'content-locking' => env('FEATURE_CONTENT_LOCKING', true),
