@@ -1,7 +1,6 @@
 <?php
 return [
     'feature' => [
-        'versioning' => env('NDLA_FEATURE_VERSIONING', false),
         'licensing' => env('NDLA_FEATURE_LICENSING', false),
         'content-locking' => env('NDLA_FEATURE_CONTENT_LOCKING', true),
         'context-collaboration' => env('NDLA_FEATURE_CONTEXT_COLLABORATION', false),
@@ -15,7 +14,6 @@ return [
         'enable_licensing' => env('NDLA_ENABLE_LICENSING', false),
         'enable_ndla_import' => env('NDLA_ENABLE_NDLA_IMPORT', false),
         'displayPropertiesBox' => env('NDLA_H5P_DISPLAY_PROPERTIES_BOX', true),
-        'useContentCloudStorage' => env("NDLA_ENABLE_CLOUD_STORAGE", true),
     ],
     'ndla' => [
         'oeruser' => env('NDLA_OERUSER', 'ndla'),
