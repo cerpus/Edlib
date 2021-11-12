@@ -21,36 +21,47 @@ jobs:
         id: slack-message
         with:
           script: |
+            const fields = [
+              {
+                title: "Version",
+                value:
+                  "<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
+                short: true,
+              },
+              {
+                title: "Environment",
+                value: "${{ github.event.inputs.environment }}",
+                short: true,
+              },
+            ];
+
+            if (
+              /^([0-9]+)\.([0-9]+)\.([0-9]+)$/.test("${{ github.event.inputs.version }}")
+            ) {
+              fields.push({
+                title: "Release note",
+                value:
+                  "<https://github.com/cerpus/Edlib/releases/tag/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
+                short: true,
+              });
+            }
+
             const slackMessage = {
-              "attachments": [
-                 {
-                   "fallback": "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
-                   "color": "#36a64f",
-                   "title": "Edlib",
-                   "title_link": "https://github.com/cerpus/Edlib",
-                   "text": "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
-                   "fields": [
-                     {
-                       "title": "Version",
-                       "value": "<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
-                       "short": true
-                     },
-                     {
-                       "title": "Environment",
-                       "value": "${{ github.event.inputs.environment }}",
-                       "short": true
-                     },
-                     {
-                       "title": "Release note",
-                       "value": "<https://github.com/cerpus/Edlib/releases/tag/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>",
-                       "short": true
-                     }
-                   ],
-                   "footer": "Edlib deploy bot",
-                   "ts": 1234567899
-                 }
-                ]
-              };
+              attachments: [
+                {
+                  fallback:
+                    "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                  color: "#36a64f",
+                  title: "Edlib",
+                  title_link: "https://github.com/cerpus/Edlib",
+                  text:
+                    "Version *<https://github.com/cerpus/Edlib/tree/${{ github.event.inputs.version }}|${{ github.event.inputs.version }}>* has been deployed to *${{ github.event.inputs.environment }}* by ${{ github.actor }}.",
+                  fields: fields,
+                  footer: "Edlib deploy bot",
+                  ts: 1234567899,
+                },
+              ],
+            };
 
             return JSON.stringify(slackMessage);
           result-encoding: string
