@@ -141,7 +141,6 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
 
-        Cerpus\MetadataServiceClient\Providers\MetadataServiceClientServiceProvider::class,
         Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
         Cerpus\Gdpr\GdprServiceProvider::class,
 

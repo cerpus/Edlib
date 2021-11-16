@@ -25,14 +25,13 @@ use stdClass;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockMQ;
 use Tests\Traits\ResetH5PStatics;
 
 
 class h5pControllerFunctionalTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, ResetH5PStatics, MockMetadataService, MockMQ;
+    use RefreshDatabase, MockLicensingTrait, ResetH5PStatics, MockMQ;
 
     protected $fakedEvents = [
         ContentCreating::class,
@@ -121,14 +120,6 @@ class h5pControllerFunctionalTest extends TestCase
             });
         app()->instance(VersionClient::class, $versionClient);
 
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-        ]);
-
         $this->withSession(["authId" => "user_1"]);
 
         /** @var H5pLti $h5pLti */
@@ -199,14 +190,6 @@ class h5pControllerFunctionalTest extends TestCase
                 return $versionData;
             });
         app()->instance(VersionClient::class, $versionClient);
-
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-        ]);
 
         $this->withSession(["authId" => "user_1"]);
 

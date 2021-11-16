@@ -162,7 +162,6 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSet $questionset */
         $questionset = QuestionSet::findOrFail($id);
-        $questionset->tags = $questionset->getMetaTagsAsString();
 
         $jwtTokenInfo = $request->session()->get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;

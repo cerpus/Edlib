@@ -175,7 +175,6 @@ class Millionaire extends GameBase
 
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
-        $gameData['tags'] = $game->getMetaTagsAsArray();
 
         $ownerName = $game->getOwnerName($game->owner);
 

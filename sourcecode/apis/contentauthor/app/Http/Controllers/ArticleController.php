@@ -23,7 +23,6 @@ use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\SessionKeys;
-use App\Traits\CopiesCustomMetadataFields;
 use App\Traits\ReturnToCore;
 use Carbon\Carbon;
 use Cerpus\LicenseClient\Contracts\LicenseContract;
@@ -43,7 +42,6 @@ class ArticleController extends Controller
     use ArticleAccess;
     use LtiTrait;
     use ReturnToCore;
-    use CopiesCustomMetadataFields;
 
     protected $lti;
     protected $licenseClient;
@@ -358,8 +356,6 @@ class ArticleController extends Controller
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();
         $oldArticle->unlock();
-
-        $this->copyCustomFieldsMetadata($oldArticle->id, $article->id);
 
         $collaborators = $this->handleCollaborators($request, $oldArticle, $article, $reason);
 

@@ -22,12 +22,11 @@ use Illuminate\Support\Facades\DB;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
 use Cerpus\VersionClient\VersionData;
-use Tests\Traits\MockMetadataService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockMetadataService, MockH5PAdapterInterface, MockResourceApi;
+    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockH5PAdapterInterface, MockResourceApi;
 
     const testDirectory = "h5pstorage";
     const testContentDirectory = "content";
@@ -77,22 +76,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-            'getCustomFieldDefinition' => function ($name) {
-                $this->assertEquals('published', $name);
-                return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-            },
-            'setCustomFieldValue' => function ($name, $value) {
-                $this->assertEquals('published', $name);
-                $this->assertFalse($value);
-                return ['value' => false];
-            },
         ]);
         $this->setupH5PAdapter([
             'enableDraftLogic' => false,
@@ -279,14 +262,6 @@ class CRUTest extends TestCase
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
 
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-        ]);
-
 
         $this->assertCount(1, H5PContent::all());
         $this->withSession([
@@ -337,14 +312,6 @@ class CRUTest extends TestCase
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
 
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-        ]);
-
         $this->assertCount(1, H5PContent::all());
         $this->withSession([
             'authId' => $owner->auth_id,
@@ -393,13 +360,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
         ]);
 
         $this->mockH5pLti();
@@ -542,22 +502,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-            'getCustomFieldDefinition' => function ($name) {
-                $this->assertEquals('published', $name);
-                return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-            },
-            'setCustomFieldValue' => function ($name, $value) {
-                $this->assertEquals('published', $name);
-                $this->assertFalse($value);
-                return ['value' => false];
-            },
         ]);
 
         $this->mockH5pLti();
