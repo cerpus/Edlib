@@ -7,7 +7,7 @@ return [
         'useRichText' => env("H5P_DC_USE_RICH_TEXT", false),
     ],
     'storage' => [
-        'publicPath' => env('CDN_WITH_PREFIX', '/h5pstorage'),
+        'publicPath' => env('CDN_WITH_PREFIX') ? '' : '/h5pstorage',
         'path' => env("UPLOAD_STORAGE_PATH_H5P", public_path() . '/h5pstorage'),
     ],
     'video' => [
