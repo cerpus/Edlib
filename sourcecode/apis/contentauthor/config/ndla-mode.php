@@ -4,7 +4,6 @@ return [
         'licensing' => env('NDLA_FEATURE_LICENSING', false),
         'content-locking' => env('NDLA_FEATURE_CONTENT_LOCKING', true),
         'context-collaboration' => env('NDLA_FEATURE_CONTEXT_COLLABORATION', false),
-        'no-rabbitmq' => env('NDLA_FEATURE_NO_RABBITMQ', false),
         'collaboration' => env('NDLA_FEATURE_COLLABORATION', false),
         'enableDraftLogic' => env('NDLA_FEATURE_ENABLE_DRAFT_LOGIC', false),
         'export_h5p_on_save' => env('NDLA_FEATURE_EXPORT_H5P_ON_SAVE', false),

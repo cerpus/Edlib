@@ -6,7 +6,7 @@ return [
     'content-locking' => env('FEATURE_CONTENT_LOCKING', true),
     'context-collaboration' => env('FEATURE_CONTEXT_COLLABORATION', false),
     'add-ext-question-set-to-request' => env('FEATURE_EXT_QUESTION_SET_TO_REQUEST', false),
-    'no-rabbitmq' => env('FEATURE_NO_RABBITMQ', false),
+    'no-rabbitmq' => false,
     'collaboration' => env('FEATURE_COLLABORATION', false),
     'allow-mode-switch' => env('FEATURE_MODE_SWITCH', false),
     'use-add-link-resource' => env('FEATURE_USE_ADD_LINK_RESOURCE', true),
