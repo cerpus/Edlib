@@ -9,7 +9,7 @@ use App\Libraries\DataObjects\ContentStorageSettings;
 use Exception;
 use Illuminate\Support\Str;
 use RuntimeException;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class RClone
 {

@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Event;
 use App\H5PContent;
 use App\H5PContentsVideo;

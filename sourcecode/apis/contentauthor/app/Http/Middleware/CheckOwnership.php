@@ -6,9 +6,9 @@ namespace App\Http\Middleware;
 use App\Content;
 use App\Game;
 use App\H5PContent;
-use DB;
-use Log;
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Closure;
 
 class CheckOwnership

@@ -9,7 +9,7 @@ use App\H5PLibrary;
 use App\Http\Controllers\H5P_Plugin_Admin;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\H5P\Packages\QuestionSet;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 /**

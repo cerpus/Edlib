@@ -2,8 +2,8 @@
 
 namespace App\Libraries\NDLA\API;
 
-use Log;
-use Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;

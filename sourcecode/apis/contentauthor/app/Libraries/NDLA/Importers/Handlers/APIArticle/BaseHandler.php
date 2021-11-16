@@ -2,7 +2,7 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\APIArticle;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use DOMElement;
 use App\Article;
 use Masterminds\HTML5;

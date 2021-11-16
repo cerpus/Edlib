@@ -9,7 +9,7 @@
 namespace App\Libraries\NDLA\Importers\Handlers\Article;
 
 use App\Libraries\NDLA\Importers\Handlers\Helpers\NdlaUrlHelper;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Article;
 use App\NdlaIdMapper;
 use App\Libraries\NDLA\Importers\Handlers\Helpers\HTMLHelper;

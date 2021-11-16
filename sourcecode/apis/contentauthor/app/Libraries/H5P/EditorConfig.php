@@ -7,7 +7,7 @@ use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\H5PBehaviorSettings;
 use H5peditor;
-use Session;
+use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
 

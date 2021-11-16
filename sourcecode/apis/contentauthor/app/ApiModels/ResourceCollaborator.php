@@ -2,8 +2,6 @@
 
 namespace App\ApiModels;
 
-use App;
-
 class ResourceCollaborator
 {
     private $tenantId;

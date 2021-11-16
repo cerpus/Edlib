@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\H5PFile;
 use Exception;
 use Illuminate\Bus\Queueable;

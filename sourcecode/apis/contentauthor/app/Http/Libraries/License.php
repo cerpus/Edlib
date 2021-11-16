@@ -9,7 +9,7 @@
 namespace App\Http\Libraries;
 
 use Cerpus\LicenseClient\Contracts\LicenseContract;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Libraries\NDLA\Importers\Handlers\Helpers\LicenseHelper;
 use stdClass;

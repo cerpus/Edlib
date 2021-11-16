@@ -8,7 +8,7 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\H5P;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class DownloadFiles
 {

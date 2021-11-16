@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Traits;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use App\File;
 use App\Article;
 use Ramsey\Uuid\Uuid;

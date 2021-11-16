@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Traits\LtiUrlFunctions;
 use Illuminate\Http\Request;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\SessionKeys;
 use Ramsey\Uuid\Uuid;
 use App\Libraries\BasicLTI;

@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Libraries\DataObjects\SyncRemoteLibrariesDataObject;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

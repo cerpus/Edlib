@@ -6,12 +6,12 @@ use App\Content;
 use App\Rules\canPublishContent;
 use App\Rules\LicenseContent;
 use App\Rules\shareContent;
-use DB;
+use Illuminate\Support\Facades\DB;
 use App\H5PContent;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Validator;
 
 class h5p
 {
@@ -145,7 +145,6 @@ class h5p
     {
         $inputFields = $request->all();
         $this->setIsValidated(false);
-        /** @var \Illuminate\Validation\Validator $validator */
         $validator = Validator::make($inputFields, [
             'title' => 'required|string|min:1|max:255',
             'libraryid' => 'nullable|sometimes|exists:h5p_libraries,id',

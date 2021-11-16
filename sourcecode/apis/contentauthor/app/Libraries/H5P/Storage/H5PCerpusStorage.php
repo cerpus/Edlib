@@ -7,7 +7,7 @@ use App\H5PLibrary;
 use App\Jobs\H5PFileUpload;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\H5PFileInterface;
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use App\H5PContentsVideo;
 use App\H5PFile;
 use App\Jobs\PingVideoApi;
@@ -23,7 +23,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use League\Flysystem\FileNotFoundException;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {

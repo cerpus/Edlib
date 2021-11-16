@@ -3,7 +3,7 @@
 
 namespace App\Libraries;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Cerpus\LaravelAuth\Service\CerpusAuthService;
 

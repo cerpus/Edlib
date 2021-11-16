@@ -4,7 +4,7 @@
 namespace App\Libraries\H5P\Traits;
 
 use Illuminate\Filesystem\Filesystem;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Exception;
 use App\H5PFile;
 use App\Libraries\H5P\Interfaces\H5PFileInterface;

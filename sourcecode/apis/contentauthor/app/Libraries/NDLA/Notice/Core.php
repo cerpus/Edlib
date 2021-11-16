@@ -3,7 +3,7 @@ namespace App\Libraries\NDLA\Notice;
 
 use App\Libraries\OAuthAdapter\OAuthHeaderFactory;
 use GuzzleHttp\Client;
-use Log;
+use Illuminate\Support\Facades\Log;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Http\Uri\Uri;
 use OAuth\OAuth1\Signature\Signature;
