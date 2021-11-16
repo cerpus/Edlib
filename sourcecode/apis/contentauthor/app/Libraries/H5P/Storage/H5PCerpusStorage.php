@@ -41,7 +41,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         $this->filesystem = $filesystemAdapter;
         $this->diskName = $diskName;
         $this->uploadDisk = $uploadDisk;
-        $this->cdnPrefix = $cdnPrefix . '/';
+        $this->cdnPrefix = $cdnPrefix;
     }
 
     private function getUrl(string $url)
@@ -428,7 +428,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             $file = sprintf($path, $key);
             if ($this->filesystem->has($file)) {
                 $files[$type] = array((object)array(
-                    'path' => $this->getUrl($file),
+                    'path' => $file,
                     'version' => ''
                 ));
             }
