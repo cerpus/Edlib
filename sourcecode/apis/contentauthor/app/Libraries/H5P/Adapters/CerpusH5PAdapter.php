@@ -88,7 +88,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         }
 
         if (config('h5p.include-mathjax') === true) {
-            $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+            $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML';
         }
         return $scripts;
     }
