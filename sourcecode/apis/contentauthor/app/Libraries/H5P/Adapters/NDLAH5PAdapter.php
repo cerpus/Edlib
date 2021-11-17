@@ -201,7 +201,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomViewScripts(): array
     {
         $scripts = [
-            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML',
+            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
             '/js/h5p/wiris/view.js',
             elixir('/js/h5p/h5peditor-custom.js'),
         ];
