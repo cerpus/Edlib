@@ -32,8 +32,10 @@ export class QuestionsetContainer extends Component {
 
     handleAddCard() {
         const card = new Card();
+        const answer = new Answer();
+        answer.showToggle = true;
         card.question = new Question();
-        card.answers = [new Answer()];
+        card.answers = [answer];
         card.order = this.props.cards.length;
         const cards = [].concat(this.props.cards, [card]);
         this.props.onAddCard({
