@@ -279,7 +279,7 @@ class QuestionSetController extends Controller
 
     public function doShow($id, $context, $preview = false)
     {
-        return "Nothing to see. Moooooove along!";
+        return trans("questions.preview");
     }
 
     public function setQuestionImage(Request $request)
