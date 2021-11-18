@@ -12,7 +12,6 @@ import contentExplorerLandingPages from '../../constants/contentExplorerLandingP
 import ExportWrapper from '../../components/ExportWrapper';
 import { Modal } from '@material-ui/core';
 import EdlibModalContent from './EdlibModalContent';
-import Spinner from '@cerpus/ui';
 
 const getStartPage = (userConfiguredStartPage) => {
     if (
@@ -58,13 +57,40 @@ const EdlibModal = ({
                 >
                     <ResourceCapabilitiesProvider
                         value={{
-                            onInsert: async (resourceId, resourceVersionId) => {
-                                const info = await createResourceLink(
-                                    resourceId,
-                                    resourceVersionId
-                                );
+                            onInsert: async (
+                                resourceId,
+                                resourceVersionId,
+                                title
+                            ) => {
+                                if (getUserConfig('returnLtiLinks')) {
+                                    const info = await createResourceLink(
+                                        resourceId,
+                                        resourceVersionId
+                                    );
 
-                                onResourceSelected(info);
+                                    onResourceSelected(info);
+                                } else {
+                                    let url = new URL(
+                                        'https://spec.edlib.com/resource-reference'
+                                    );
+
+                                    url.searchParams.append(
+                                        'resourceId',
+                                        resourceId
+                                    );
+
+                                    if (resourceVersionId) {
+                                        url.searchParams.append(
+                                            'resourceVersionId',
+                                            resourceVersionId
+                                        );
+                                    }
+
+                                    onResourceSelected({
+                                        url,
+                                        title,
+                                    });
+                                }
                             },
                             onRemove: async (edlibId) => {
                                 await request(
