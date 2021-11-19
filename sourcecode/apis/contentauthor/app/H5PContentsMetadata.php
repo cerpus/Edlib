@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class H5PContentsMetadata extends Model
 {
+    use HasFactory;
 
     protected $guarded = [
         'id',

@@ -22,9 +22,9 @@ class ContentTest extends TestCase
     /** @test */
     public function test_ArticleIsCollaborator()
     {
-        $user = factory(User::class)->make();
-        $article = factory(Article::class)->create(['owner_id' => $user->auth_id]);
-        $collaborators = factory(ArticleCollaborator::class, 3)->make();
+        $user = User::factory()->make();
+        $article = Article::factory()->create(['owner_id' => $user->auth_id]);
+        $collaborators =ArticleCollaborator::factory()->count(3)->make();
         $article->collaborators()->saveMany($collaborators);
         $article = $article->fresh();
         $this->assertCount(3, $article->collaborators);
@@ -37,9 +37,9 @@ class ContentTest extends TestCase
 
     public function test_H5PIsCollaborator()
     {
-        $user = factory(User::class)->make();
-        $h5p = factory(H5PContent::class)->create(['user_id' => $user->auth_id]);
-        $collaborators = factory(H5PCollaborator::class, 3)->make();
+        $user = User::factory()->make();
+        $h5p = H5PContent::factory()->create(['user_id' => $user->auth_id]);
+        $collaborators = H5PCollaborator::factory()->count(3)->make();
         $h5p->collaborators()->saveMany($collaborators);
         $h5p = $h5p->fresh();
         $this->assertCount(3, $h5p->collaborators);

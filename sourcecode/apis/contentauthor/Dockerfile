@@ -1,58 +1,46 @@
-FROM php:7.2-fpm-alpine AS php_base
-WORKDIR /app
-# Install common deps
-RUN apk add --no-cache --update --virtual .common-deps bash sudo rclone git
-# Install phpize deps
-RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS
-# Install php extensions available through docker-php-ext-install
-RUN apk add icu-dev libxml2-dev libzip-dev gettext-dev
-RUN docker-php-ext-install \
-        pdo_mysql \
-        opcache \
-        intl \
-        xmlrpc \
-        bcmath \
-        zip \
-        mysqli \
-        sockets \
-        gettext \
-        pcntl
-# Install memcached
-RUN apk add --no-cache --update --virtual .memcached-deps zlib-dev libmemcached-dev cyrus-sasl-dev;
-RUN pecl install memcached;docker-php-ext-enable memcached;
-# Install igbinary
-RUN pecl install igbinary; docker-php-ext-enable igbinary;
-# Install oauth
-RUN apk add pcre-dev; pecl install oauth; docker-php-ext-enable oauth;
-# Install redis
-RUN pecl install redis; docker-php-ext-enable redis;
-# copy the composer PHAR from the Composer image into the PHP image
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-scripts --no-autoloader
-COPY . /app
-RUN composer dump-autoload --no-scripts --optimize
+FROM php:7.4-fpm-alpine AS php_base
 
-RUN set -eux; \
-    mkdir -v -p storage/app/public; \
-    mkdir -v -p storage/app/storage; \
-    mkdir -v -p storage/framework/cache/data; \
-    mkdir -v -p storage/framework/sessions; \
-    mkdir -v -p storage/framework/testing; \
-    mkdir -v -p storage/framework/views; \
-    mkdir -v -p storage/logs; \
-    touch storage/logs/laravel.log; \
-    php artisan vendor:publish --tag=public --no-ansi; \
-    php artisan cerpus:install; \
-    php artisan route:clear;
-# Copy h5p-editor files from vendor folder to public folder
-RUN set -eux; \
-    cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
-    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
+WORKDIR /app
 
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 COPY docker/phpfpm-pool-www.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+COPY . .
+COPY --from=composer:2 /usr/bin/composer /usr/bin/
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
+RUN set -eux; \
+    apk add --no-cache bash sudo rclone git unzip; \
+    install-php-extensions \
+        bcmath \
+        gettext \
+        igbinary \
+        intl \
+        memcached \
+        mysqli \
+        oauth \
+        opcache \
+        pcntl \
+        pdo_mysql \
+        redis \
+        sockets \
+        xmlrpc \
+        zip \
+    ; \
+    mkdir -v -p \
+        storage/app/public \
+        storage/app/storage \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/testing \
+        storage/framework/views \
+        storage/logs \
+    ; \
+    composer install \
+        --no-dev \
+        --prefer-dist \
+    ; \
+    cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
+    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
 
 FROM node:11-alpine AS jsbuild
 WORKDIR /app

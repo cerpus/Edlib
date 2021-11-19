@@ -8,15 +8,15 @@
         <meta name="jwt" content="{{ $jwtToken }}"/>
     @endif
     <title>@yield('title')</title>
-    <link rel="stylesheet" href="{{ elixir('content_explorer_bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ elixir('font-awesome.css') }}">
-    <link rel="stylesheet" href="{{ elixir('react-components.css') }}">
-    <link rel="stylesheet" href="{{ elixir('admin.css') }}">
+    <link rel="stylesheet" href="{{ mix('content_explorer_bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ mix('font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ mix('react-components.css') }}">
+    <link rel="stylesheet" href="{{ mix('admin.css') }}">
     <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-    <script src="{{ elixir('bootstrap.js') }}"></script>
-    <script src="{{ elixir('react-vendor.js') }}"></script>
-    <script src="{{ elixir('react-components.js') }}"></script>
-    <script src="{{ elixir('jwtclient.js') }}"></script>
+    <script src="{{ mix('bootstrap.js') }}"></script>
+    <script src="{{ mix('react-vendor.js') }}"></script>
+    <script src="{{ mix('react-components.js') }}"></script>
+    <script src="{{ mix('jwtclient.js') }}"></script>
     @stack("css")
 </head>
 <body id="theBody" onunload="unlock();" data-locale="{{ Session::get('locale', config('app.fallback_locale'))}}">

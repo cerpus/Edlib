@@ -24,7 +24,7 @@ trait VersionedArticleTrait
 '
         ], $params);
 
-        $this->originalArticle = factory(Article::class)->create($createParams);
+        $this->originalArticle = Article::factory()->create($createParams);
         $originalFile = DIRECTORY_SEPARATOR . $this->originalArticle->id . DIRECTORY_SEPARATOR . 'tree.jpg';
         $fromFile = base_path() . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'tree.jpg';
 

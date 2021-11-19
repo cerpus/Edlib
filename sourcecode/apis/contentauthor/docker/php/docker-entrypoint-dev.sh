@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e
 
-composer install
-chmod -R o+w bootstrap/cache storage
+if [ "$1" = "php-fpm" ]; then
+    composer install
+    chmod -R o+w bootstrap/cache storage
+fi
 
 exec "$@"

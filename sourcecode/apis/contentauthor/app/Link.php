@@ -5,6 +5,7 @@ namespace App;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 use Iso639p3;
 
@@ -23,6 +24,7 @@ use Iso639p3;
  */
 class Link extends Content implements VersionableObject
 {
+    use HasFactory;
     use UuidForKey;
 
     private $parentId;

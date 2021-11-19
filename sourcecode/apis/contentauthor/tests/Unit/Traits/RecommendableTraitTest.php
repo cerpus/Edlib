@@ -25,7 +25,7 @@ class RecommendableTraitTest extends TestCase
         $this->setUpLicensing("BY", true);
 
         /** @var Article $article */
-        $publishedListedArticle = factory(Article::class)->states(["newly-created", "listed"])->create();
+        $publishedListedArticle = Article::factory()->newlyCreated()->listed()->create();
         $this->assertEquals(Content::RE_ACTION_UPDATE_OR_CREATE, $publishedListedArticle->determineREAction());
 
         // Not listed
@@ -50,8 +50,8 @@ class RecommendableTraitTest extends TestCase
 
     public function testDeterminesTheCorrectActionPublicChildren()
     {
-        $article = factory(Article::class)->states(["newly-created", "listed"])->create(["id" => 1]);
-        $childArticle = factory(Article::class)->states(["listed"])->create([
+        $article = Article::factory()->newlyCreated()->listed()->create(["id" => 1]);
+        $childArticle = Article::factory()->listed()->create([
             "id" => 2,
             "parent_id" => $article->id,
             "original_id" => $article->id,
