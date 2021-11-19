@@ -13,13 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockLicensingTrait, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function setUp(): void
     {
@@ -31,11 +30,6 @@ class ArticleVersioningTest extends TestCase
     {
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-            'fetchAllCustomFields' => [],
-        ]);
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
@@ -141,11 +135,6 @@ class ArticleVersioningTest extends TestCase
         $this->setUpResourceApi();
         $this->setupVersion();
         $this->setUpLicensing('BY', true);
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-            'fetchAllCustomFields' => [],
-        ]);
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);

@@ -170,17 +170,6 @@ trait Recommendable
             $reContent->setPreviousVersion($prevPublicId);
         }
 
-        $tags = $this->getMetaTagsAsArray();
-        if (empty($tags)) {
-            /** @var VersionData $parentVersion */
-            if ($parentVersion = $this->getParent()) {
-                if ($parent = Content::findContentById($parentVersion->getExternalReference())) {
-                    $tags = $parent->getMetaTagsAsArray();
-                }
-            }
-        }
-        $reContent->setTags($tags);
-
         if ($this instanceof Article) {
             $reContent->setContent($this->content);
         }

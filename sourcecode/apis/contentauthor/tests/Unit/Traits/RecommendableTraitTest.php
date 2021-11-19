@@ -8,12 +8,11 @@ use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 
 class RecommendableTraitTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockVersioningTrait;
+    use RefreshDatabase, MockLicensingTrait, MockVersioningTrait;
 
     public function testDeterminesTheCorrectActionBasedOnVisibilityAndLicensing()
     {

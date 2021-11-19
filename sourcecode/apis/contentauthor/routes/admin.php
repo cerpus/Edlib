@@ -114,11 +114,7 @@ Route::middleware('auth')->namespace('Admin')->prefix('admin')->group(
         Route::get("locks", [LocksController::class, 'index'])->name("admin.locks");
         Route::delete("locks", [LocksController::class, 'destroy'])->name("admin.locks.delete");
 
-        // Metadata
-        Route::get("metadata/sync", "MetadataController@sync")->name("admin.metadataservice.sync");
-        Route::get("metadata/doSync", "MetadataController@doSync")->name("admin.metadataservice.doSync");
-
-        // Metadata
+        // Refs
         Route::get("video/ndla/replace", "NDLAReplaceRefController@index")->name("admin.video.ndla.replaceref");
         Route::get("video/ndla/doreplaceref", "NDLAReplaceRefController@doReplaceRef")->name("admin.video.ndla.doreplaceref");
         Route::get("video/ndla/populatetargets", "NDLAReplaceRefController@populateTable")->name("admin.video.ndla.populatetargets");

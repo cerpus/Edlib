@@ -37,9 +37,6 @@
                                 <i class="glyphicon glyphicon-film"></i> Norgesvideo Admin
                             </a>
                         @endif
-                        <a class="col-md-6 well well-lg text-center" href="{{ route('admin.metadata.index') }}">
-                            <i class="glyphicon glyphicon-edit"></i> Import metadata
-                        </a>
                     </div>
 
                 </div>

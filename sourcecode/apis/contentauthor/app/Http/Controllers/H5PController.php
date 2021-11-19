@@ -48,7 +48,6 @@ use Illuminate\Support\Facades\Mail;
 use Cerpus\VersionClient\VersionData;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use Illuminate\Support\Facades\Session;
-use App\Traits\CopiesCustomMetadataFields;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
@@ -62,7 +61,6 @@ class H5PController extends Controller
 {
     use LtiTrait;
     use ReturnToCore;
-    use CopiesCustomMetadataFields;
 
     private $viewDataCacheName = 'viewData-';
     private $errorMessage;
@@ -969,8 +967,6 @@ class H5PController extends Controller
 
         /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
-
-        $this->copyCustomFieldsMetadata($oldContent["id"], $newH5pContent->id);
 
         event(new H5PWasSaved($newH5pContent, $request, $versionPurpose, $h5pContent));
 

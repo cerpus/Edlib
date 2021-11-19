@@ -16,7 +16,6 @@ use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
 use App\Events\QuestionsetWasSaved;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Http\Controllers\QuestionSetController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +23,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class QuestionSetControllerTest extends TestCase
 {
 
-    use RefreshDatabase, WithFaker, MockLicensingTrait, MockMetadataService, MockVersioningTrait, MockAuthApi;
+    use RefreshDatabase, WithFaker, MockLicensingTrait, MockVersioningTrait, MockAuthApi;
 
     protected function setUp(): void
     {
@@ -83,13 +82,6 @@ class QuestionSetControllerTest extends TestCase
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $this->setupMetadataService([
-            'setEntityType' => '',
-            'setEntityId' => '',
-            'createDataFromArray' => '',
-            'getData' => [],
-            'deleteData' => '',
-        ]);
         $questionsetController = new QuestionSetController($h5pLti);
         $questionsetController->update($request, $questionset);
 
@@ -252,13 +244,6 @@ class QuestionSetControllerTest extends TestCase
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $this->setupMetadataService([
-            'setEntityType' => '',
-            'setEntityId' => '',
-            'createDataFromArray' => '',
-            'getData' => [],
-            'deleteData' => '',
-        ]);
         $questionsetController = new QuestionSetController($h5pLti);
         $questionsetController->update($request, $questionset);
 
@@ -386,10 +371,6 @@ class QuestionSetControllerTest extends TestCase
 
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -462,10 +443,6 @@ class QuestionSetControllerTest extends TestCase
 
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);

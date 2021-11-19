@@ -62,7 +62,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\QuestionsetWasSaved' => [
             'App\Listeners\Questionset\HandleLicensing',
             'App\Listeners\Questionset\HandlePrivacy',
-            'App\Listeners\Questionset\HandleTags',
             'App\Listeners\Questionset\HandleQuestionbank',
             'App\Listeners\ResourceEventSubscriber@onQuestionsetSaved',
         ],
@@ -70,7 +69,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\GameWasSaved' => [
             'App\Listeners\Game\HandleLicensing',
             'App\Listeners\Game\HandlePrivacy',
-            'App\Listeners\Game\HandleTags',
             'App\Listeners\Game\HandleVersioning',
 //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],

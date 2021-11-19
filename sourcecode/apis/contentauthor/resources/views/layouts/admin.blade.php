@@ -67,9 +67,6 @@
                                 </li>
                             @endif
                             <li>
-                                <a href="{{ route('admin.metadataservice.sync') }}">Sync resources with metadataservice</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
                             </li>
                         </ul>
@@ -98,9 +95,6 @@
                                     <a href="{{ route('admin.norgesfilm.index') }}">Norgesfilm Admin</a>
                                 </li>
                             @endif
-                            <li>
-                                <a href="{{ route('admin.metadata.index') }}">Import metadata</a>
-                            </li>
                         </ul>
                     </li>
                     @if( config('h5p.isHubEnabled') !== true )

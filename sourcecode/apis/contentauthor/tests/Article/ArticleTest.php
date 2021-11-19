@@ -10,14 +10,13 @@ use Illuminate\Http\Response;
 use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockLicensingTrait, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function setUp(): void
     {
@@ -43,10 +42,6 @@ class ArticleTest extends TestCase
     {
         $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->setUpLicensing('PRIVATE', false);
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -68,10 +63,6 @@ class ArticleTest extends TestCase
     {
         $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->setUpLicensing('PRIVATE', false);
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -100,10 +91,6 @@ class ArticleTest extends TestCase
     {
         $this->setupVersion();
         $this->setUpLicensing('PRIVATE', false);
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -146,10 +133,6 @@ class ArticleTest extends TestCase
     {
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -183,10 +166,6 @@ class ArticleTest extends TestCase
     {
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);

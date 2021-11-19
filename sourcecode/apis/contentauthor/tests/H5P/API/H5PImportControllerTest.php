@@ -31,7 +31,6 @@ namespace Tests\H5P\API {
     use Illuminate\Http\Response;
     use Illuminate\Http\Testing\File;
     use Tests\TestCase;
-    use Tests\Traits\MockMetadataService;
     use Tests\Traits\MockVersioningTrait;
     use Tests\Traits\ResetH5PStatics;
     use Tests\Traits\WithFaker;
@@ -42,7 +41,7 @@ namespace Tests\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, ResetH5PStatics, MockMetadataService, MockVersioningTrait, WithFaker;
+        use RefreshDatabase, ResetH5PStatics, MockVersioningTrait, WithFaker;
 
         private function _setUp(): void
         {
@@ -52,23 +51,6 @@ namespace Tests\H5P\API {
             $versionData = new VersionData();
             $this->setupVersion([
                 'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-            ]);
-
-            $this->setupMetadataService([
-                'createData' => function () {
-                    $responseData = new \stdClass();
-                    $responseData->is_public = false;
-                    return $responseData;
-                },
-                'getCustomFieldDefinition' => function ($name) {
-                    $this->assertEquals('published', $name);
-                    return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-                },
-                'setCustomFieldValue' => function ($name, $value) {
-                    $this->assertEquals('published', $name);
-                    $this->assertFalse($value);
-                    return ['value' => false];
-                },
             ]);
         }
 

@@ -14,7 +14,6 @@ use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Recommendable;
-use App\Traits\Taggable;
 use App\Traits\Versionable;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
@@ -40,7 +39,7 @@ use Session;
  */
 abstract class Content extends Model implements RecommendableInterface
 {
-    use Taggable, HasLanguage, HasTranslations, Attributable, Versionable, Recommendable;
+    use HasLanguage, HasTranslations, Attributable, Versionable, Recommendable;
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable
