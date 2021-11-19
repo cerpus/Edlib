@@ -6,8 +6,9 @@ use App\ApiModels\LtiUser;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\Exceptions\NotFoundException;
-use App\Services\Lti\LtiDatabase;
-use App\Services\Lti\LtiDeepLink;
+use App\Models\LtiRegistration;
+use App\Services\Lti\LtiMessageLaunch;
+use App\Services\Lti\LtiOIDCLogin;
 use Exception;
 use Firebase\JWT\JWT;
 use Illuminate\Contracts\View\View;
@@ -15,9 +16,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use IMSGlobal\LTI\JWKS_Endpoint;
 use IMSGlobal\LTI\LTI_Deep_Link_Resource;
-use IMSGlobal\LTI\LTI_Message_Launch;
-use IMSGlobal\LTI\LTI_OIDC_Login;
-use IMSGlobal\LTI\OIDC_Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -33,71 +31,71 @@ final class Lti13Controller extends Controller
     /**
      * @throws Throwable
      */
-    public function oidcLogin(Request $request): Response
+    public function oidcLogin(Request $request, LtiRegistration $registration): Response
     {
-        $login = LTI_OIDC_Login::new(new LtiDatabase());
-
         try {
-            $redirect = $login->do_oidc_login_redirect(route('lti.launch'), $request->all());
-        } catch (OIDC_Exception $e) {
+            return LtiOIDCLogin::doLogin($registration, route('lti.launch'), $request->all());
+        } catch (NotFoundException $e) {
             return response()->json([
                 'errors' => $e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        return redirect($redirect->get_redirect_url());
     }
 
     /**
      * @throws Throwable
      */
-    public function getJwksKeys(Request $request): JsonResponse
+    public function getJwksKeys(LtiRegistration $registration): JsonResponse
     {
-        return new JsonResponse(JWKS_Endpoint::from_issuer(new LtiDatabase(), 'http://example.com')->get_public_jwks());
+        $keys = $registration->ltiKeySet->ltiKeys;
+        $jwksKeys = [];
+
+        foreach ($keys as $key) {
+            $jwksKeys["$key->id"] = $key->private_key;
+        }
+
+        return new JsonResponse(JWKS_Endpoint::new($jwksKeys)->get_public_jwks());
     }
 
     /**
      * @throws Throwable
      */
-    public function launch(Request $request): \Illuminate\Contracts\View\Factory|View|JsonResponse|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
+    public function launch(Request $request): View|\Illuminate\Contracts\View\Factory|JsonResponse|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
     {
-        $launch = LTI_Message_Launch::new(new LtiDatabase());
-
         try {
-            $launch->validate($request->all());
+            $launch = LtiMessageLaunch::fromRequest($request->all());
         } catch (Exception $e) {
             return response()->json([
                 'errors' => $e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $clientId = $launch->get_launch_data()['aud'];
-        $deploymentId = $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/deployment_id'];
-        $externalId = $launch->get_launch_data()['sub'];
+        $deploymentId = $launch->getLaunchData()['https://purl.imsglobal.org/spec/lti/claim/deployment_id'];
+        $externalId = $launch->getLaunchData()['sub'];
 
         $response = $this->authApiService->createTokenForLtiUser(new LtiUser(
-            $clientId,
+            $launch->registration->id,
             $deploymentId,
             $externalId,
-            $launch->get_launch_data()["email"] ?? null,
-            $launch->get_launch_data()["given_name"] ?? null,
-            $launch->get_launch_data()["family_name"] ?? null,
+            $launch->getLaunchData()["email"] ?? null,
+            $launch->getLaunchData()["given_name"] ?? null,
+            $launch->getLaunchData()["family_name"] ?? null,
         ));
 
         $token = $response['token'];
         $userId = $response['userId'];
 
-        if ($launch->is_deep_link_launch()) {
+        if ($launch->isDeepLinkLaunch()) {
             return view('lti.deepLinkingLaunch', [
                 'iframeUrl' => 'https://www.edlib.local/s/lti/browser?jwt=' . $token,
                 'returnUrl' => route('lti.deepLinkingReturn', [
-                    'launchId' => $launch->get_launch_id()
+                    'launchId' => $launch->getLaunchId()
                 ])
             ]);
         }
 
-        if ($launch->is_resource_launch()) {
-            $launchUrlData = parse_url($launch->get_launch_data()['https://purl.imsglobal.org/spec/lti/claim/target_link_uri']);
+        if ($launch->isResourceLaunch()) {
+            $launchUrlData = parse_url($launch->getLaunchData()['https://purl.imsglobal.org/spec/lti/claim/target_link_uri']);
 
             if ($launchUrlData['host'] !== 'spec.edlib.com' || $launchUrlData['path'] !== '/resource-reference') {
                 return response()->json([
@@ -139,7 +137,7 @@ final class Lti13Controller extends Controller
      */
     public function deepLinkingReturn(Request $request)
     {
-        $launch = LTI_Message_Launch::from_cache($request->get('launchId'), new LtiDatabase());
+        $launch = LtiMessageLaunch::fromCache($request->get('launchId'));
 
         $resourcesRaw = json_decode($request->get('resources'), true);
 
@@ -152,11 +150,9 @@ final class Lti13Controller extends Controller
                 ->set_title($resource['title'] ?? null);
         }
 
-        $deepLink = LtiDeepLink::fromLtiLaunch($launch);
-
         return view('lti.deepLinkingReturn', [
-            'returnUrl' => $launch->get_launch_data()['https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings']['deep_link_return_url'],
-            'jwt' => $deepLink->get_response_jwt($resources)
+            'returnUrl' => $launch->getLaunchData()['https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings']['deep_link_return_url'],
+            'jwt' => $launch->getDeepLink()->getResponseJwt($resources)
         ]);
     }
 }

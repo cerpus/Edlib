@@ -5,7 +5,7 @@ namespace App\ApiModels;
 class LtiUser
 {
     public function __construct(
-        public string  $clientId,
+        public string  $registrationId,
         public string  $deploymentId,
         public string  $externalId,
         public ?string $email = null,

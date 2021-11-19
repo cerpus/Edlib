@@ -1,7 +1,7 @@
 exports.up = function (knex) {
     return knex.schema.createTable('ltiUsers', function (table) {
         table.uuid('id').notNullable().primary();
-        table.string('clientId', 255).notNullable();
+        table.string('registrationId', 255).notNullable();
         table.string('deploymentId', 255).notNullable();
         table.string('externalId', 255).notNullable();
         table.string('email', 255);
@@ -19,7 +19,7 @@ exports.up = function (knex) {
             .timestamp('createdAt', { useTz: true })
             .notNullable()
             .defaultTo(knex.fn.now());
-        table.unique(['clientId', 'deploymentId', 'externalId']);
+        table.unique(['registrationId', 'deploymentId', 'externalId']);
     });
 };
 

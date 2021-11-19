@@ -117,7 +117,7 @@ export default {
         const validatedData = validateJoi(
             req.body,
             Joi.object({
-                clientId: Joi.string().min(1).required(),
+                registrationId: Joi.string().min(1).required(),
                 deploymentId: Joi.string().min(1).required(),
                 externalId: Joi.string().min(1).required(),
                 email: Joi.string()
@@ -142,7 +142,7 @@ export default {
         );
 
         const existing = await req.context.db.ltiUser.getByLtiReference(
-            validatedData.clientId,
+            validatedData.registrationId,
             validatedData.deploymentId,
             validatedData.externalId
         );

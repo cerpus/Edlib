@@ -11,10 +11,10 @@ const create = async (user) =>
 
 const update = (id, user) => dbHelpers.updateId(table, id, user);
 const getById = async (id) => db(table).select('*').where('id', id).first();
-const getByLtiReference = async (clientId, deploymentId, externalId) =>
+const getByLtiReference = async (registrationId, deploymentId, externalId) =>
     db(table)
         .select('*')
-        .where('clientId', clientId)
+        .where('registrationId', registrationId)
         .where('deploymentId', deploymentId)
         .where('externalId', externalId)
         .first();
