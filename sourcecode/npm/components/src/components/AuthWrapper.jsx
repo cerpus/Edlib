@@ -124,7 +124,6 @@ const AuthWrapper = ({ children }) => {
             return jwtToken;
         },
         getLanguage: () => {
-            console.log(language);
             return language;
         },
     });
