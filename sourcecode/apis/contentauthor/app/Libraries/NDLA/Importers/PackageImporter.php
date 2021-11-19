@@ -2,7 +2,7 @@
 
 namespace App\Libraries\NDLA\Importers;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\NdlaIdMapper;
 use GuzzleHttp\Client;
 

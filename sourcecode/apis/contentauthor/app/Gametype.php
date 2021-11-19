@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;

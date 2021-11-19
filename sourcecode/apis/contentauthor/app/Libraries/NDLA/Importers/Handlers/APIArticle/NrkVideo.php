@@ -2,7 +2,7 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\APIArticle;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use App\Article;
 use Illuminate\Support\Str;
 

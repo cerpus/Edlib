@@ -2,8 +2,8 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\APIArticle;
 
-use Cache;
-use Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use App\File;
 use DOMElement;
 use App\Article;

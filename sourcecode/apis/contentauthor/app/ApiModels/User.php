@@ -2,8 +2,6 @@
 
 namespace App\ApiModels;
 
-use App;
-
 class User
 {
     private $id;

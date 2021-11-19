@@ -21,7 +21,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\RuntimeException;
 
 class Framework implements \H5PFrameworkInterface, Result

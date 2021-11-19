@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LTIRequest;
 use App\SessionKeys;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\ACL\ArticleAccess;
 use App\Game;
 use App\H5pLti;

@@ -3,7 +3,7 @@
 
 namespace App\Libraries\NDLA\API;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Throwable;
 use Carbon\Carbon;
 use GuzzleHttp\Client;

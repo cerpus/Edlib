@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;

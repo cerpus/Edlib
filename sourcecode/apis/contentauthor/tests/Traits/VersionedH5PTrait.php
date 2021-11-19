@@ -4,7 +4,7 @@ namespace Tests\Traits;
 
 use App\H5PContent;
 use App\H5PContentLibrary;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 trait VersionedH5PTrait
 {

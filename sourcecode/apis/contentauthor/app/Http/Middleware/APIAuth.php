@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use Closure;
 use Illuminate\Http\Response;
 

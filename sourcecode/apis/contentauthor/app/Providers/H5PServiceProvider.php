@@ -28,7 +28,7 @@ use App\Libraries\NDLA\Importers\ImporterInterface;
 use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
-use DB;
+use Illuminate\Support\Facades\DB;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -39,10 +39,10 @@ use H5PExport;
 use H5PFileStorage;
 use H5PFrameworkInterface;
 use H5PValidator;
-use Session;
+use Illuminate\Support\Facades\Session;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class H5PServiceProvider extends ServiceProvider
 {

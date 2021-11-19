@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 

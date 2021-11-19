@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Session;
+use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller

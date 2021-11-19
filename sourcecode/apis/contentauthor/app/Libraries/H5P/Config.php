@@ -10,7 +10,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Exception;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
-use Session;
+use Illuminate\Support\Facades\Session;
 use stdClass;
 
 trait Config

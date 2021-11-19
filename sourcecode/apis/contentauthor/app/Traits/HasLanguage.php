@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\ContentLanguage;
 
 /**

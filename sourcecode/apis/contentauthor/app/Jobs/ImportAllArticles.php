@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use DB;
-use App;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Bus\Queueable;
 use App\NdlaArticleImportStatus;
 use Illuminate\Queue\SerializesModels;

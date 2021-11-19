@@ -4,7 +4,7 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use Illuminate\Support\Collection;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Artisan;
 use App\H5PContent;
 use App\Libraries\H5P\Interfaces\ConfigInterface;

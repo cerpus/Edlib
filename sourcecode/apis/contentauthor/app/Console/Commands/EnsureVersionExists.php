@@ -6,7 +6,7 @@ use App\Article;
 use App\H5PContent;
 use Illuminate\Console\Command;
 use Cerpus\VersionClient\VersionClient;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class EnsureVersionExists extends Command
 {

@@ -2,8 +2,8 @@
 
 namespace App\Listeners\Article;
 
-use Log;
-use App;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Event;
 use App\Events\ArticleWasSaved;
 use Illuminate\Queue\InteractsWithQueue;

@@ -3,7 +3,7 @@
 namespace App\Libraries\NDLA\Importers\Handlers\H5P;
 
 use App\Libraries\H5P\H5Plugin;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 
