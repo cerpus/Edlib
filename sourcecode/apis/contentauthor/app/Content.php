@@ -39,7 +39,8 @@ use Illuminate\Support\Facades\Session;
  */
 abstract class Content extends Model implements RecommendableInterface
 {
-    use HasLanguage, HasTranslations, Attributable, Versionable, Recommendable;
+    use HasLanguage, HasTranslations, Attributable, Versionable;
+    //use Recommendable;
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable
