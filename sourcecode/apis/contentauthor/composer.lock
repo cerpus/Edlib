@@ -425,16 +425,16 @@
         },
         {
             "name": "cerpus/cerpushelper",
-            "version": "1.5.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-cerpushelper.git",
-                "reference": "453edcb57356e4e3b3b002c9c6e336be833932d6"
+                "reference": "289707ed00b6c9cfc6a323e0a30245cbac90e0f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/453edcb57356e4e3b3b002c9c6e336be833932d6",
-                "reference": "453edcb57356e4e3b3b002c9c6e336be833932d6",
+                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/289707ed00b6c9cfc6a323e0a30245cbac90e0f9",
+                "reference": "289707ed00b6c9cfc6a323e0a30245cbac90e0f9",
                 "shasum": ""
             },
             "require": {
@@ -462,6 +462,9 @@
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -475,9 +478,9 @@
             "description": "Base package for common components",
             "support": {
                 "issues": "https://github.com/cerpus/php-cerpushelper/issues",
-                "source": "https://github.com/cerpus/php-cerpushelper/tree/1.5.0"
+                "source": "https://github.com/cerpus/php-cerpushelper/tree/v1.5.1"
             },
-            "time": "2021-06-15T10:20:28+00:00"
+            "time": "2021-11-19T10:38:05+00:00"
         },
         {
             "name": "cerpus/coreclient",
