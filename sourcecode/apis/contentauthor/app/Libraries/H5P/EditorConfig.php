@@ -84,8 +84,9 @@ class EditorConfig implements ConfigInterface
         $editorConfig->copyrightSemantics = $this->contentValidator->getCopyrightSemantics();
         $editorConfig->metadataSemantics = $this->contentValidator->getMetadataSemantics();
         $content = $this->getContent();
-        $editorConfig->ajaxPath = sprintf("/ajax?redirectToken=%s&h5p_id=%s&action=", $this->redirectToken, $content['id']);
+        $editorConfig->ajaxPath = sprintf("/ajax?redirectToken=%s&action=", $this->redirectToken);
         if (!empty($content['id'])) {
+            $editorConfig->ajaxPath .= sprintf('&h5p_id=%s', $content['id']);
             $editorConfig->nodeVersionId = $content['id'];
             $this->setLibrary(H5PLibrary::find($content['library']['id']));
         }

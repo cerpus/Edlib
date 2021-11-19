@@ -5,23 +5,12 @@ namespace App\Libraries\H5P\Adapters;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Artisan;
-use App\H5PContent;
-use App\Libraries\H5P\Interfaces\ConfigInterface;
+use Illuminate\Support\Facades\Artisan;
 use Cerpus\QuestionBankClient\QuestionBankClient;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\NDLA\Importers\ImportAdapters\CerpusH5PImporter;
 
-/**
- * Class CerpusH5PAdapter
- * @package App\Libraries\H5P\Adapters
- *
- * @method string|null getAdapterName()
- * @method static array getAllAdapters()
- * @method static array getCoreExtraTags()
- * @method void setConfig(ConfigInterface $config)
- */
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;

@@ -9,9 +9,7 @@ use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Illuminate\Support\Collection;
-use App\H5PContent;
 use App\H5POption;
-use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\NDLA\Importers\ImportAdapters\NdlaH5PImporter;
@@ -20,15 +18,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
-/**
- * Class NDLAH5PAdapter
- * @package App\Libraries\H5P\Adapters
- *
- * @method string|null getAdapterName()
- * @method static array getAllAdapters()
- * @method static array getCoreExtraTags() : array()
- * @method void setConfig(ConfigInterface $config)
- */
 class NDLAH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;

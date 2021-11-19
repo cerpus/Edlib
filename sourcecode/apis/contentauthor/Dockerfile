@@ -103,6 +103,10 @@ CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 FROM buildresult AS phpfpm-dev
 EXPOSE 31004
+RUN set -eux; \
+    install-php-extensions \
+        xdebug \
+    ;
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 CMD [ "php-fpm", "-R", "-F", "-O" ]
