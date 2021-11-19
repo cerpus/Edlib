@@ -122,7 +122,7 @@ abstract class Content extends Model implements RecommendableInterface
             $authApi = app(AuthApiService::class);
             $user = $authApi->getUser($ownerId);
             if ($user) {
-                $ownerName = trim(implode([$user->getFirstName(), $user->getLastName()], " "));
+                $ownerName = trim(implode(' ', [$user->getFirstName(), $user->getLastName()]));
             }
 
         } catch (Exception $e) {
