@@ -3,6 +3,7 @@
 namespace App\Apis;
 
 use App\ApiModels\Resource;
+use App\ApiModels\ResourceLaunchInfo;
 use App\ApiModels\ResourceVersion;
 use App\Exceptions\NotFoundException;
 use App\Util;
@@ -91,5 +92,23 @@ class ResourceApiService
         );
 
         return new ResourceVersion(...$resourceVersionData);
+    }
+
+    /**
+     * @throws NotFoundException
+     * @throws \JsonException
+     */
+    public function getResourceLaunchInfoForTenant(string $userId, string $resourceId, ?string $resourceVersionId = null): ResourceLaunchInfo
+    {
+        $resourceLaunchInfo = Util::handleEdlibNodeApiRequest(fn() => $this->client
+            ->getAsync("/v1/tenants/$userId/resources/$resourceId/launch-info", [
+                'query' => [
+                    'resourceVersionId' => $resourceVersionId
+                ]
+            ])
+            ->wait()
+        );
+
+        return new ResourceLaunchInfo(...$resourceLaunchInfo);
     }
 }
