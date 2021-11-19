@@ -85,6 +85,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
+        // Internal middleware
+        'internal.handle-jwt' => \App\Http\Middleware\InternalHandleJwt::class,
+
         // App middleware
         'core.return' => \App\Http\Middleware\CoreReturnUrl::class,
         'core.auth' => \App\Http\Middleware\CerpusAuth::class,
