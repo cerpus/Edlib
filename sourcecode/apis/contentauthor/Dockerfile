@@ -72,7 +72,7 @@ RUN set -eux; \
 
 FROM buildresult as test
 COPY docker/run-phpunit.sh /run-phpunit.sh
-RUN chmod +x /run-phpunit.sh
+RUN composer install
 CMD /run-phpunit.sh
 
 
