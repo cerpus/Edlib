@@ -41,6 +41,24 @@ export default {
             resourceVersion,
         };
     },
+    getViewResourceInfo: (resourceVersion) => {
+        const config = getConfig(resourceVersion.externalSystemName);
+
+        if (!config.urls.view) {
+            throw new ApiException(
+                `Missing ltiUrl in configuration of external system ${resourceVersion.externalSystemName}`
+            );
+        }
+
+        return {
+            url: config.urls.view,
+            params: {
+                resourceVersionId: resourceVersion.id,
+                externalSystemId: resourceVersion.externalSystemId,
+                externalSystemName: resourceVersion.externalSystemName,
+            },
+        };
+    },
     getLtiCreateInfo: (externalSystemName, group) => {
         const config = getConfig(externalSystemName);
 

@@ -21,6 +21,7 @@ export default {
                 content: `${contentAuthorUrl}/v1/content`,
                 contentType: `${contentAuthorUrl}/internal/v1/content-types`,
                 lti: `${contentAuthorUrl}/lti-content`,
+                view: `${contentAuthorUrl}/view`,
             },
             httpAuthKey: env(
                 'EDLIBCOMMON_CONTENTAUTHOR_INTERNAL_KEY',
