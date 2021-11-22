@@ -179,6 +179,7 @@ module.exports = (env) => {
         output: {
             filename: 'build/js/[name]-[chunkhash].js',
             path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         optimization: {
             ...defaultConfig.optimization,
@@ -355,6 +356,7 @@ module.exports = (env) => {
         output: {
             filename: 'build/js/[name]-[chunkhash].js',
             path: path.resolve(__dirname, 'public'),
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -540,6 +542,7 @@ module.exports = (env) => {
         output: {
             filename: 'build/css/[name]-[chunkhash].css',
             path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -586,6 +589,7 @@ module.exports = (env) => {
         output: {
             filename: 'build/css/[name].css',
             path: path.resolve(__dirname, 'public'),
+            publicPath: '/',
         },
         module: {
             rules: cssRules,
@@ -638,6 +642,7 @@ module.exports = (env) => {
         output: {
             filename: 'build/js/[name].js',
             path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         module: {
             rules: cssRules,
