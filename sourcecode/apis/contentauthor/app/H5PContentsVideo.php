@@ -2,10 +2,13 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class H5PContentsVideo extends Model
 {
+    use HasFactory;
+
     protected $table = 'h5p_contents_video';
 
     protected $fillable = [

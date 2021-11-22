@@ -22,7 +22,7 @@ class HandlePrivacyTest extends TestCase
     public function testHandlePrivacyOnSave()
     {
         $authId = Str::uuid();
-        $article = factory(\App\Article::class)->create(['owner_id' => $authId]);
+        $article = \App\Article::factory()->create(['owner_id' => $authId]);
         $this->assertNotEquals(1, $article->is_private);
 
         $request = new Request();

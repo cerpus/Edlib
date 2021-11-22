@@ -45,8 +45,8 @@ namespace Tests\H5P\API {
 
         private function _setUp(): void
         {
-            factory(H5PContent::class)->create();
-            factory(H5PLibrary::class)->create();
+            H5PContent::factory()->create();
+            H5PLibrary::factory()->create();
 
             $versionData = new VersionData();
             $this->setupVersion([
@@ -97,7 +97,7 @@ namespace Tests\H5P\API {
                 ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) use ($fakeDisk) {
                     $machineName = "H5P.Blanks";
                     $file = new File('sample.h5p', fopen(base_path($path), 'r'));
-                    $user = factory(User::class)->make();
+                    $user = User::factory()->make();
                     $parameters = [
                         'h5p' => $file,
                         'userId' => $user->auth_id,
@@ -152,7 +152,7 @@ namespace Tests\H5P\API {
             $title = "Phpunit is awesome!";
             $machineName = "H5P.MultiChoice";
             $file = new File('sample-with-image.h5p', fopen(base_path('tests/files/sample-with-image.h5p'), 'r'));
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
@@ -211,7 +211,7 @@ namespace Tests\H5P\API {
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
             $file = new File('sample-with-license-and-authors.h5p', fopen(base_path('tests/files/sample-with-license-and-authors.h5p'), 'r'));
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
@@ -280,7 +280,7 @@ namespace Tests\H5P\API {
                 ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                 ->assertJson(['message' => 'The given data was invalid.']);
 
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,

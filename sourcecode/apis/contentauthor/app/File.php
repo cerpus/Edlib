@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class File extends Model
 {
+    use HasFactory;
+
     public function article()
     {
         return $this->belongsTo(Article::class);

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <base href="@yield('basePath', "/")">
-    <link rel="stylesheet" type="text/css" href="{{elixir('front.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{mix('front.css')}}">
     @foreach($styles as $style)
         <link rel="stylesheet" type="text/css" href="{{$style}}">
     @endforeach

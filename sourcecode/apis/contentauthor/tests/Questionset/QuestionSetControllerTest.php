@@ -39,15 +39,15 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        $questionsets = factory(QuestionSet::class, 3)
+        $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
                 $questionset->questions()
-                    ->save(factory(QuestionSetQuestion::class)->make(['order' => $index]))
+                    ->save(QuestionSetQuestion::factory()->make(['order' => $index]))
                     ->each(function (QuestionSetQuestion $question, $index) {
                         $question
                             ->answers()
-                            ->save(factory(QuestionSetQuestionAnswer::class)->make(['order' => $index]));
+                            ->save(QuestionSetQuestionAnswer::factory()->make(['order' => $index]));
                     });
             });
 
@@ -201,15 +201,15 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        $questionsets = factory(QuestionSet::class, 3)
+        $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
                 $questionset->questions()
-                    ->save(factory(QuestionSetQuestion::class)->make(['order' => $index]))
+                    ->save(QuestionSetQuestion::factory()->make(['order' => $index]))
                     ->each(function (QuestionSetQuestion $question, $index) {
                         $question
                             ->answers()
-                            ->save(factory(QuestionSetQuestionAnswer::class)->make(['order' => $index]));
+                            ->save(QuestionSetQuestionAnswer::factory()->make(['order' => $index]));
                     });
             });
 

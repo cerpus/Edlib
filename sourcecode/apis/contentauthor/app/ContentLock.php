@@ -2,12 +2,14 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class ContentLock extends Model
 {
+    use HasFactory;
 
     const EXPIRES = 90; // seconds
     public $incrementing = false;

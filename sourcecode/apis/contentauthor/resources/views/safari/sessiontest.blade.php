@@ -4,7 +4,7 @@
     <title>Safari session test</title>
 </head>
 <body>
-<script src="{{ elixir('bootstrap.js') }}"></script>
+<script src="{{ mix('bootstrap.js') }}"></script>
 <script>
     (function () {
     	var id = "K" + Math.round(Math.random() * 1000000000);

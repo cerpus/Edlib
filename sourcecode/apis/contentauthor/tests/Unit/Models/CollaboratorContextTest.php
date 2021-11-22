@@ -15,7 +15,7 @@ class CollaboratorContextTest extends TestCase
     public function testContextShouldUpdatePopulatedTable()
     {
         $ts = Carbon::now()->timestamp;
-        factory(CollaboratorContext::class)->create([
+        CollaboratorContext::factory()->create([
             'timestamp' => Carbon::createFromTimestamp($ts - 10),
             'system_id' => 'mysystem',
             'context_id' => 'mycontext'
@@ -33,8 +33,8 @@ class CollaboratorContextTest extends TestCase
 
     public function testCanDeleteContext()
     {
-        factory(CollaboratorContext::class)->create(['context_id' => 'mycontext']);
-        factory(CollaboratorContext::class, 10)->create(['system_id' => 'mysystem', 'context_id' => 'mycontext']);
+        CollaboratorContext::factory()->create(['context_id' => 'mycontext']);
+        CollaboratorContext::factory()->count(10)->create(['system_id' => 'mysystem', 'context_id' => 'mycontext']);
         $this->assertCount(11, CollaboratorContext::all());
         CollaboratorContext::deleteContext('mysystem', 'mycontext');
         $this->assertCount(1, CollaboratorContext::all());
@@ -42,7 +42,7 @@ class CollaboratorContextTest extends TestCase
 
     public function testUpdateContext()
     {
-        factory(CollaboratorContext::class)->create(['system_id' => 'mysystem', 'context_id' => 'mycontext', 'timestamp' => Carbon::now()->timestamp - 2]);
+        CollaboratorContext::factory()->create(['system_id' => 'mysystem', 'context_id' => 'mycontext', 'timestamp' => Carbon::now()->timestamp - 2]);
         $collaborators = json_decode(json_encode([
             [
                 'type' => 'user',
@@ -75,11 +75,11 @@ class CollaboratorContextTest extends TestCase
     public function testUserHasAccess()
     {
         $userId = '1234';
-        $article = factory(Article::class)->create();
+        $article = Article::factory()->create();
         $this->assertFalse(CollaboratorContext::isUserCollaborator($userId, $article->id));
         $this->assertFalse(CollaboratorContext::isUserCollaborator('just', 'kidding'));
 
-        factory(CollaboratorContext::class)->create(
+        CollaboratorContext::factory()->create(
             [
                 'content_id' => $article->id,
                 'collaborator_id' => $userId

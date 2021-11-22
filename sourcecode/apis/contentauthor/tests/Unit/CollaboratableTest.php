@@ -16,11 +16,11 @@ class CollaboratableTest extends TestCase
 
     public function test_collaboratable_model_setup_for_question_set()
     {
-        $questionSet = factory(QuestionSet::class)->create();
+        $questionSet = QuestionSet::factory()->create();
 
         $this->assertCount(0, $questionSet->collaborators);
 
-        $collaborator = factory(Collaborator::class)->make();
+        $collaborator = Collaborator::factory()->make();
 
         $questionSet->collaborators()->save($collaborator);
 
@@ -28,7 +28,7 @@ class CollaboratableTest extends TestCase
 
         $this->assertCount(1, $questionSet->collaborators);
 
-        $collaborator = factory(Collaborator::class)->make();
+        $collaborator = Collaborator::factory()->make();
         $questionSet->collaborators()->save($collaborator);
         $questionSet = $questionSet->fresh();
 
@@ -43,11 +43,11 @@ class CollaboratableTest extends TestCase
 
     public function test_collaboratable_model_setup_for_game()
     {
-        $game = factory(Game::class)->create();
+        $game = Game::factory()->create();
 
         $this->assertCount(0, $game->collaborators);
 
-        $collaborator = factory(Collaborator::class)->make();
+        $collaborator = Collaborator::factory()->make();
 
         $game->collaborators()->save($collaborator);
 
@@ -55,7 +55,7 @@ class CollaboratableTest extends TestCase
 
         $this->assertCount(1, $game->collaborators);
 
-        $collaborator = factory(Collaborator::class)->make();
+        $collaborator = Collaborator::factory()->make();
         $game->collaborators()->save($collaborator);
         $game = $game->fresh();
 
@@ -69,14 +69,14 @@ class CollaboratableTest extends TestCase
 
     public function test_you_can_set_collaborators_from_an_array_of_email_addresses()
     {
-        $questionSet = factory(QuestionSet::class)->create();
+        $questionSet = QuestionSet::factory()->create();
         $this->assertCount(0, $questionSet->collaborators);
-        $collaborator = factory(Collaborator::class)->make(['email' => 'collaborator1@example.com']);
+        $collaborator = Collaborator::factory()->make(['email' => 'collaborator1@example.com']);
         $questionSet->collaborators()->save($collaborator);
         $questionSet = $questionSet->fresh();
         $this->assertCount(1, $questionSet->collaborators);
-        $questionSet2 = factory(QuestionSet::class)->create();
-        $collaborator2 = factory(Collaborator::class)->make(['email' => 'collaborator1@example.com']);
+        $questionSet2 = QuestionSet::factory()->create();
+        $collaborator2 = Collaborator::factory()->make(['email' => 'collaborator1@example.com']);
         $questionSet2->collaborators()->save($collaborator2);
 
 
@@ -95,8 +95,8 @@ class CollaboratableTest extends TestCase
 
     public function test_you_can_get_a_list_of_new_collaborators()
     {
-        $questionSet = factory(QuestionSet::class)->create();
-        $collaborator = factory(Collaborator::class)->make(['email' => 'a@b.com']);
+        $questionSet = QuestionSet::factory()->create();
+        $collaborator = Collaborator::factory()->make(['email' => 'a@b.com']);
         $questionSet->collaborators()->save($collaborator);
         $this->assertCount(0, $questionSet->newCollaborators());
         $this->assertFalse(in_array('a@b.com', $questionSet->newCollaborators()));
@@ -111,8 +111,8 @@ class CollaboratableTest extends TestCase
 
     public function test_only_valid_emails_are_added()
     {
-        $questionSet = factory(QuestionSet::class)->create();
-        $collaborator = factory(Collaborator::class)->make(['email' => 'a@b.com']);
+        $questionSet = QuestionSet::factory()->create();
+        $collaborator = Collaborator::factory()->make(['email' => 'a@b.com']);
         $questionSet->collaborators()->save($collaborator);
 
         $questionSet->setCollaborators(['a@b.com', 'c(at)d.com']);
@@ -133,8 +133,8 @@ class CollaboratableTest extends TestCase
             'email' => 'sender@example.com',
             'originalSystem' => 'EdStep'
         ]);
-        $questionSet = factory(QuestionSet::class)->create();
-        $collaborator = factory(Collaborator::class)->make(['email' => 'a@b.com']);
+        $questionSet = QuestionSet::factory()->create();
+        $collaborator = Collaborator::factory()->make(['email' => 'a@b.com']);
         $questionSet->collaborators()->save($collaborator);
 
         $questionSet->setCollaborators(['a@b.com', 'c@d.com'])->notifyNewCollaborators();
@@ -155,10 +155,10 @@ class CollaboratableTest extends TestCase
             'email' => 'sender@example.com',
             'originalSystem' => 'EdStep'
         ]);
-        $questionSet = factory(QuestionSet::class)->create();
-        $collaborator = factory(Collaborator::class)->make(['email' => 'a@b.com']);
+        $questionSet = QuestionSet::factory()->create();
+        $collaborator = Collaborator::factory()->make(['email' => 'a@b.com']);
         $questionSet->collaborators()->save($collaborator);
-        $collaborator = factory(Collaborator::class)->make(['email' => 'c@d.com']);
+        $collaborator = Collaborator::factory()->make(['email' => 'c@d.com']);
         $questionSet->collaborators()->save($collaborator);
 
         $questionSet->setCollaborators(['a@b.com', 'c@d.com'])->notifyNewCollaborators();
@@ -168,14 +168,14 @@ class CollaboratableTest extends TestCase
 
     public function test_can_get_a_list_of_collaborators_emails()
     {
-        $questionSet = factory(QuestionSet::class)->create();
-        $collaborator = factory(Collaborator::class)->make(['email' => 'a@b.com']);
+        $questionSet = QuestionSet::factory()->create();
+        $collaborator = Collaborator::factory()->make(['email' => 'a@b.com']);
         $questionSet->collaborators()->save($collaborator);
 
         $questionSet = $questionSet->fresh();
         $this->assertEquals('a@b.com', $questionSet->getCollaboratorEmails());
 
-        $collaborator = factory(Collaborator::class)->make(['email' => 'c@d.com']);
+        $collaborator = Collaborator::factory()->make(['email' => 'c@d.com']);
         $questionSet->collaborators()->save($collaborator);
 
         $questionSet = $questionSet->fresh();
@@ -191,7 +191,7 @@ class CollaboratableTest extends TestCase
     {
         Mail::fake();
         config(['feature.collaboration' => false]);
-        $questionSet = factory(QuestionSet::class)->create();
+        $questionSet = QuestionSet::factory()->create();
         $questionSet->setCollaborators(['a@b.com'])->notifyNewCollaborators(); // Typical invocation of this feature
 
         // No emails are added and no mail is sent.
@@ -203,7 +203,7 @@ class CollaboratableTest extends TestCase
     {
         Mail::fake();
         config(['feature.collaboration' => true]);
-        $questionSet2 = factory(QuestionSet::class)->create();
+        $questionSet2 = QuestionSet::factory()->create();
         $questionSet2->setCollaborators(['a@b.com'])->notifyNewCollaborators(); // Typical invocation of this feature
 
         // Email added and mail is sent

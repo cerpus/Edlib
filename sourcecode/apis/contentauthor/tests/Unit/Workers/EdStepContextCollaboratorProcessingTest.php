@@ -61,7 +61,7 @@ class EdStepContextCollaboratorProcessingTest extends TestCase
 
     public function testWillUpdateOldContext()
     {
-        factory(CollaboratorContext::class)->create([
+        CollaboratorContext::factory()->create([
             'system_id' => 'EdStep',
             'context_id' => 'EdStep|3',
             'timestamp' => 1494847400

@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class H5PContentsUserData extends Model
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $table = "h5p_contents_user_data";
 

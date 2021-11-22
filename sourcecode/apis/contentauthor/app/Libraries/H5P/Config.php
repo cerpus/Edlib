@@ -205,9 +205,9 @@ trait Config
         return $this->preview !== true ? '/api/progress?action=h5p_setFinished' : '/api/progress?action=h5p_preview&f=1';
     }
 
-    public function canGiveScore()
+    public function canGiveScore(): bool
     {
-        return !!$this->content['max_score'] ?? false;
+        return $this->content['max_score'] ?? false;
     }
 
     private function getDisplayName()

@@ -26,7 +26,7 @@ class HandleLicensingTest extends TestCase
         $this->markTestSkipped("This test does not test anything!");
         $this->setUpLicensing();
         $authId = Str::uuid();
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $request = new Request();
         $request->request->set('license', 'BY');

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CollaboratorContext extends Model
 {
+    use HasFactory;
+
     public $incrementing = false;
     public $timestamps = false;
 
