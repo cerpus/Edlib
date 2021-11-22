@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4ac2f2d45812cb46c16450e656d5879",
+    "content-hash": "08feb8017e7684b720c2e4484b4049c4",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -185,16 +185,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.203.1",
+            "version": "3.204.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "63be45bbf3d2a325017f92fcad6764ebd98bb266"
+                "reference": "181ca8aaeb0a6efdbeb665af9b02de610719b1bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/63be45bbf3d2a325017f92fcad6764ebd98bb266",
-                "reference": "63be45bbf3d2a325017f92fcad6764ebd98bb266",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/181ca8aaeb0a6efdbeb665af9b02de610719b1bb",
+                "reference": "181ca8aaeb0a6efdbeb665af9b02de610719b1bb",
                 "shasum": ""
             },
             "require": {
@@ -270,9 +270,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.203.1"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.204.2"
             },
-            "time": "2021-11-16T19:23:28+00:00"
+            "time": "2021-11-19T19:21:39+00:00"
         },
         {
             "name": "biigle/laravel-cached-openstack",
@@ -908,16 +908,16 @@
         },
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.16.2",
+            "version": "4.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ckeditor/ckeditor4-releases.git",
-                "reference": "b2758d4603322b1fc12b4e6208240f1e785e1cfa"
+                "reference": "b71b8bf724174f2feaf53f64ee424bf1f5ba61fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/b2758d4603322b1fc12b4e6208240f1e785e1cfa",
-                "reference": "b2758d4603322b1fc12b4e6208240f1e785e1cfa",
+                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/b71b8bf724174f2feaf53f64ee424bf1f5ba61fa",
+                "reference": "b71b8bf724174f2feaf53f64ee424bf1f5ba61fa",
                 "shasum": ""
             },
             "type": "library",
@@ -952,7 +952,7 @@
                 "source": "https://github.com/ckeditor/ckeditor4",
                 "wiki": "https://ckeditor.com/docs/ckeditor4/latest/"
             },
-            "time": "2021-08-12T12:19:19+00:00"
+            "time": "2021-11-17T16:15:01+00:00"
         },
         {
             "name": "components/font-awesome",
@@ -2392,16 +2392,16 @@
         },
         {
             "name": "graham-campbell/result-type",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Result-Type.git",
-                "reference": "296c015dc30ec4322168c5ad3ee5cc11dae827ac"
+                "reference": "0690bde05318336c7221785f2a932467f98b64ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/296c015dc30ec4322168c5ad3ee5cc11dae827ac",
-                "reference": "296c015dc30ec4322168c5ad3ee5cc11dae827ac",
+                "url": "https://api.github.com/repos/GrahamCampbell/Result-Type/zipball/0690bde05318336c7221785f2a932467f98b64ca",
+                "reference": "0690bde05318336c7221785f2a932467f98b64ca",
                 "shasum": ""
             },
             "require": {
@@ -2424,7 +2424,8 @@
             "authors": [
                 {
                     "name": "Graham Campbell",
-                    "email": "hello@gjcampbell.co.uk"
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
                 }
             ],
             "description": "An Implementation Of The Result Type",
@@ -2437,7 +2438,7 @@
             ],
             "support": {
                 "issues": "https://github.com/GrahamCampbell/Result-Type/issues",
-                "source": "https://github.com/GrahamCampbell/Result-Type/tree/v1.0.3"
+                "source": "https://github.com/GrahamCampbell/Result-Type/tree/v1.0.4"
             },
             "funding": [
                 {
@@ -2449,7 +2450,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-17T19:48:54+00:00"
+            "time": "2021-11-21T21:41:47+00:00"
         },
         {
             "name": "gree/jose",
@@ -2833,16 +2834,16 @@
         },
         {
             "name": "h5p/h5p-core",
-            "version": "1.24.0",
+            "version": "1.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/h5p/h5p-php-library.git",
-                "reference": "55b04018d7def8d2288b768adbcb3cc152fdbd53"
+                "reference": "db3da7a1441ae6c9ffacbb8110f41758c85beaa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/55b04018d7def8d2288b768adbcb3cc152fdbd53",
-                "reference": "55b04018d7def8d2288b768adbcb3cc152fdbd53",
+                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/db3da7a1441ae6c9ffacbb8110f41758c85beaa0",
+                "reference": "db3da7a1441ae6c9ffacbb8110f41758c85beaa0",
                 "shasum": ""
             },
             "require": {
@@ -2888,22 +2889,22 @@
             ],
             "support": {
                 "issues": "https://github.com/h5p/h5p-php-library/issues",
-                "source": "https://github.com/h5p/h5p-php-library/tree/release"
+                "source": "https://github.com/h5p/h5p-php-library/tree/wp-1.15.3"
             },
-            "time": "2019-10-30T10:42:15+00:00"
+            "time": "2021-04-22T09:30:45+00:00"
         },
         {
             "name": "h5p/h5p-editor",
-            "version": "1.24.1",
+            "version": "1.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/h5p/h5p-editor-php-library.git",
-                "reference": "9361892a22ac6ab91e010e0b8a0a0e836f45a16a"
+                "reference": "338ae5bad572fe3d7c0a355d8ba8e24f360bb698"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/h5p/h5p-editor-php-library/zipball/9361892a22ac6ab91e010e0b8a0a0e836f45a16a",
-                "reference": "9361892a22ac6ab91e010e0b8a0a0e836f45a16a",
+                "url": "https://api.github.com/repos/h5p/h5p-editor-php-library/zipball/338ae5bad572fe3d7c0a355d8ba8e24f360bb698",
+                "reference": "338ae5bad572fe3d7c0a355d8ba8e24f360bb698",
                 "shasum": ""
             },
             "require": {
@@ -2949,9 +2950,9 @@
             ],
             "support": {
                 "issues": "https://github.com/h5p/h5p-editor-php-library/issues",
-                "source": "https://github.com/h5p/h5p-editor-php-library/tree/1.24.1"
+                "source": "https://github.com/h5p/h5p-editor-php-library/tree/1.24.3"
             },
-            "time": "2019-10-30T14:56:53+00:00"
+            "time": "2021-06-13T17:44:27+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3070,16 +3071,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.71.0",
+            "version": "v8.73.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "d822426d75ecf8e8ccd3ccd404db7202d1a9875e"
+                "reference": "36dfae9d9ef7f88e8f9489c484a0a0609592bc21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/d822426d75ecf8e8ccd3ccd404db7202d1a9875e",
-                "reference": "d822426d75ecf8e8ccd3ccd404db7202d1a9875e",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/36dfae9d9ef7f88e8f9489c484a0a0609592bc21",
+                "reference": "36dfae9d9ef7f88e8f9489c484a0a0609592bc21",
                 "shasum": ""
             },
             "require": {
@@ -3238,7 +3239,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-11-16T15:00:50+00:00"
+            "time": "2021-11-20T19:20:02+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -3502,23 +3503,23 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v3.3.2",
+            "version": "v3.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "28f3d190fe270b6dcd6fdab4a77a392e693ceca5"
+                "reference": "08ea313a35dfc89ff0cd9916ca0bcef9715d0ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/28f3d190fe270b6dcd6fdab4a77a392e693ceca5",
-                "reference": "28f3d190fe270b6dcd6fdab4a77a392e693ceca5",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/08ea313a35dfc89ff0cd9916ca0bcef9715d0ed6",
+                "reference": "08ea313a35dfc89ff0cd9916ca0bcef9715d0ed6",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "^8.42",
-                "illuminate/filesystem": "^8.42",
-                "illuminate/support": "^8.42",
-                "illuminate/validation": "^8.42",
+                "illuminate/console": "^8.42|^9.0",
+                "illuminate/filesystem": "^8.42|^9.0",
+                "illuminate/support": "^8.42|^9.0",
+                "illuminate/validation": "^8.42|^9.0",
                 "php": "^7.3|^8.0"
             },
             "type": "library",
@@ -3554,9 +3555,9 @@
                 "ui"
             ],
             "support": {
-                "source": "https://github.com/laravel/ui/tree/v3.3.2"
+                "source": "https://github.com/laravel/ui/tree/v3.3.3"
             },
-            "time": "2021-11-05T08:25:44+00:00"
+            "time": "2021-11-21T22:20:05+00:00"
         },
         {
             "name": "laravelcollective/html",
@@ -3825,16 +3826,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.1.5",
+            "version": "1.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "18634df356bfd4119fe3d6156bdb990c414c14ea"
+                "reference": "627be7fcde84c71aa0f15097fcf48fd5f2be5287"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/18634df356bfd4119fe3d6156bdb990c414c14ea",
-                "reference": "18634df356bfd4119fe3d6156bdb990c414c14ea",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/627be7fcde84c71aa0f15097fcf48fd5f2be5287",
+                "reference": "627be7fcde84c71aa0f15097fcf48fd5f2be5287",
                 "shasum": ""
             },
             "require": {
@@ -3907,7 +3908,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/1.1.5"
+                "source": "https://github.com/thephpleague/flysystem/tree/1.1.6"
             },
             "funding": [
                 {
@@ -3915,7 +3916,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2021-08-17T13:49:42+00:00"
+            "time": "2021-11-21T11:04:36+00:00"
         },
         {
             "name": "league/flysystem-aws-s3-v3",
@@ -4089,16 +4090,16 @@
         },
         {
             "name": "league/mime-type-detection",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/mime-type-detection.git",
-                "reference": "b38b25d7b372e9fddb00335400467b223349fd7e"
+                "reference": "aa70e813a6ad3d1558fc927863d47309b4c23e69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/b38b25d7b372e9fddb00335400467b223349fd7e",
-                "reference": "b38b25d7b372e9fddb00335400467b223349fd7e",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/aa70e813a6ad3d1558fc927863d47309b4c23e69",
+                "reference": "aa70e813a6ad3d1558fc927863d47309b4c23e69",
                 "shasum": ""
             },
             "require": {
@@ -4106,7 +4107,7 @@
                 "php": "^7.2 || ^8.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.18",
+                "friendsofphp/php-cs-fixer": "^3.2",
                 "phpstan/phpstan": "^0.12.68",
                 "phpunit/phpunit": "^8.5.8 || ^9.3"
             },
@@ -4129,7 +4130,7 @@
             "description": "Mime-type detection for Flysystem",
             "support": {
                 "issues": "https://github.com/thephpleague/mime-type-detection/issues",
-                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.8.0"
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.9.0"
             },
             "funding": [
                 {
@@ -4141,7 +4142,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-25T08:23:19+00:00"
+            "time": "2021-11-21T11:48:40+00:00"
         },
         {
             "name": "lusitanian/oauth",
@@ -5264,16 +5265,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.0",
+            "version": "2.0.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "a74aa9efbe61430fcb60157c8e025a48ec8ff604"
+                "reference": "98a6fe587f3481aea319eef7e656d02cfe1675ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/a74aa9efbe61430fcb60157c8e025a48ec8ff604",
-                "reference": "a74aa9efbe61430fcb60157c8e025a48ec8ff604",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/98a6fe587f3481aea319eef7e656d02cfe1675ec",
+                "reference": "98a6fe587f3481aea319eef7e656d02cfe1675ec",
                 "shasum": ""
             },
             "require": {
@@ -5281,27 +5282,25 @@
             },
             "require-dev": {
                 "phing/phing": "~2.7",
-                "phpunit/phpunit": "~4.0",
-                "sami/sami": "~2.0",
+                "phpunit/phpunit": "^4.8.35|^5.7|^6.0|^9.4",
                 "squizlabs/php_codesniffer": "~2.0"
             },
             "suggest": {
                 "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
                 "ext-libsodium": "SSH2/SFTP can make use of some algorithms provided by the libsodium-php extension.",
                 "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
-                "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations.",
-                "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP < 5.0.0."
+                "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "phpseclib/bootstrap.php"
+                ],
                 "psr-4": {
                     "phpseclib\\": "phpseclib/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "phpseclib/"
-            ],
             "license": [
                 "MIT"
             ],
@@ -5324,6 +5323,11 @@
                 {
                     "name": "Hans-Jürgen Petrich",
                     "email": "petrich@tronic-media.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Graham Campbell",
+                    "email": "graham@alt-three.com",
                     "role": "Developer"
                 }
             ],
@@ -5350,9 +5354,23 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/2.0"
+                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.34"
             },
-            "time": "2015-08-04T04:48:03+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/terrafrost",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpseclib",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpseclib/phpseclib",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-27T02:46:30+00:00"
         },
         {
             "name": "predis/predis",
@@ -5790,50 +5808,6 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
-        },
-        {
-            "name": "ralouphie/mimey",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ralouphie/mimey.git",
-                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ralouphie/mimey/zipball/8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
-                "reference": "8f74e6da73f9df7bd965e4e123f3d8fb9acb89ba",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^5.4|^7.0"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^1.1",
-                "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Mimey\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                    "email": "ralph.khattar@gmail.com"
-                }
-            ],
-            "description": "PHP package for converting file extensions to MIME types and vice versa.",
-            "support": {
-                "issues": "https://github.com/ralouphie/mimey/issues",
-                "source": "https://github.com/ralouphie/mimey/tree/develop"
-            },
-            "time": "2019-03-08T08:49:03+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -9376,23 +9350,24 @@
         },
         {
             "name": "composer/spdx-licenses",
-            "version": "1.5.5",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/spdx-licenses.git",
-                "reference": "de30328a7af8680efdc03e396aad24befd513200"
+                "reference": "a30d487169d799745ca7280bc90fdfa693536901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/de30328a7af8680efdc03e396aad24befd513200",
-                "reference": "de30328a7af8680efdc03e396aad24befd513200",
+                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/a30d487169d799745ca7280bc90fdfa693536901",
+                "reference": "a30d487169d799745ca7280bc90fdfa693536901",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.3.2 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 7"
+                "phpstan/phpstan": "^0.12.55",
+                "symfony/phpunit-bridge": "^4.2 || ^5"
             },
             "type": "library",
             "extra": {
@@ -9435,7 +9410,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/spdx-licenses/issues",
-                "source": "https://github.com/composer/spdx-licenses/tree/1.5.5"
+                "source": "https://github.com/composer/spdx-licenses/tree/1.5.6"
             },
             "funding": [
                 {
@@ -9451,7 +9426,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-03T16:04:16+00:00"
+            "time": "2021-11-18T10:14:14+00:00"
         },
         {
             "name": "composer/xdebug-handler",
