@@ -54,7 +54,7 @@ class NDLAArticleImportController extends Controller
         $articleApiCount = $articleApiClient->getTotalArticleCount();
 
         return view('admin.ndla-article-import.index')
-            ->with(compact('articles', 'articleCount', 'articleApiCount', 'owner'));
+            ->with(compact('articles', 'articleApiCount', 'owner'));
     }
 
     public function store(Request $request)
