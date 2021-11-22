@@ -163,6 +163,10 @@ trait Config
 
     protected function addCoreAssets()
     {
+        if (!isset($this->config)) {
+            $this->config = (object) [];
+        }
+
         $core = $this->h5pCore;
         $coreAssets = array_merge($core::$scripts, ["js/h5p-display-options.js"]);
         foreach ($coreAssets as $script) {
