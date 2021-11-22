@@ -2,7 +2,7 @@ import React from 'react';
 import store from 'store';
 import sign from 'jwt-encode';
 import { isTokenExpired } from '../helpers/token.js';
-import { Button, TextField } from '@material-ui/core';
+import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
 
 const AuthWrapper = ({ children }) => {
     const [jwtToken, setJwtToken] = React.useState(null);
@@ -23,13 +23,18 @@ const AuthWrapper = ({ children }) => {
         const stored = store.get('userId');
         return stored ? stored : '';
     });
+    const [language, setLanguage] = React.useState(() => {
+        const stored = store.get('language');
+        return stored ? stored : 'nb';
+    });
 
     React.useEffect(() => {
         store.set('firstName', firstName);
         store.set('lastName', lastName);
         store.set('email', email);
         store.set('userId', id);
-    }, [firstName, lastName, email, id]);
+        store.set('language', language)
+    }, [firstName, lastName, email, id, language]);
 
     if (!jwtToken) {
         return (
@@ -63,6 +68,19 @@ const AuthWrapper = ({ children }) => {
                         margin="normal"
                         fullWidth
                     />
+                </div>
+                <div>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Language</FormLabel>
+                        <RadioGroup
+                            name="language"
+                            value={language}
+                            onChange={e => setLanguage(e.target.value)}
+                        >
+                            <FormControlLabel value="nb" control={<Radio />} label="Norsk" />
+                            <FormControlLabel value="en" control={<Radio />} label="English" />
+                        </RadioGroup>
+                    </FormControl>
                 </div>
                 <Button
                     color="primary"
@@ -104,6 +122,9 @@ const AuthWrapper = ({ children }) => {
             }
 
             return jwtToken;
+        },
+        getLanguage: () => {
+            return language;
         },
     });
 };
