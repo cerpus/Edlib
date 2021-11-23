@@ -91,18 +91,6 @@ services:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.8.1
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:5601/api/status]
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
-
   nginx:
     build: ./localSetup/projects/nginx
     command: ["nginx", "-g", "daemon off;"]
