@@ -1,7 +1,6 @@
 version: "3.7"
 
 volumes:
-  #  doku-lti-viewer_nodemodules:
   dokuapi_nodemodules:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
@@ -113,18 +112,6 @@ services:
           - api.edlib.local
           - edlibcommon
 
-  configserver:
-    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
-    volumes:
-      - ./localSetup/projects/config-server/settings:/config
-      - ./storage/blank-git:/config/.git
-    environment:
-      SPRING_PROFILES_ACTIVE: native
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8888/health]
-    ports:
-      - 8888:8888
-
   versioningapi:
     build:
       context: ./sourcecode/apis/version
@@ -186,7 +173,7 @@ services:
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
+    command: /startup.sh
     healthcheck:
       test: [CMD, nc, -z, localhost, "31004"]
     volumes:
@@ -356,25 +343,6 @@ services:
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - mysql
-
-  #  doku-lti-viewer:
-  #    tty: true
-  #    build:
-  #      context: ./sourcecode/not_migrated/doku-lti-viewer
-  #      dockerfile: Dockerfile
-  #      target: dev
-  #    env_file:
-  #      - ./localSetup/.env
-  #    environment:
-  #      WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:3000]
-  #    volumes:
-  #      - doku-lti-viewer_nodemodules:/var/www/app/node_modules
-  #      - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
-  #      - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
-  #      - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
-  #      - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
 
   www:
     build:
@@ -546,28 +514,6 @@ services:
       - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-  #  edlibfacade:
-  #    build:
-  #      context: ./localSetup/projects/edlibfacade
-  #    entrypoint: /before-start.sh
-  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
-  #    depends_on:
-  #      - nginx
-  #    volumes:
-  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
-  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-  #      - ./localSetup/helpers/start-scripts:/start-scripts
-  #    environment:
-  #      CONFIGSERVICE_URI: http://configserver:8888
-  #      EDLIB_API_URL: https://api.edlib.local
-  #      HEAPSPACE_MAX: 128m
-  #      DEBUGGING_ENABLED: "yes"
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:8080/health]
-  #    ports:
-  #      - 5505:5555
-
   npm-components-storybook:
     tty: true
     build:
@@ -605,3 +551,38 @@ services:
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
+
+  # --------------------------------------------
+  # ----- Services needed for edlib facade -----
+  # --------------------------------------------
+  #  configserver:
+  #    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
+  #    volumes:
+  #      - ./localSetup/projects/config-server/settings:/config
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: native
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:8888/health]
+  #    ports:
+  #      - 8888:8888
+  #  edlibfacade:
+  #    build:
+  #      context: ./localSetup/projects/edlibfacade
+  #    entrypoint: /before-start.sh
+  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
+  #    depends_on:
+  #      - nginx
+  #    volumes:
+  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
+  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #    environment:
+  #      CONFIGSERVICE_URI: http://configserver:8888
+  #      EDLIB_API_URL: https://api.edlib.local
+  #      HEAPSPACE_MAX: 128m
+  #      DEBUGGING_ENABLED: "yes"
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:8080/health]
+  #    ports:
+  #      - 5505:5555
