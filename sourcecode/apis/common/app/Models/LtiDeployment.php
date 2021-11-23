@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\LtiDeployment
@@ -22,4 +24,14 @@ use Illuminate\Database\Eloquent\Model;
  */
 class LtiDeployment extends Model
 {
+    use HasFactory;
+
+    protected $fillable = [
+        'deployment_id',
+    ];
+
+    public function ltiRegistration(): BelongsTo
+    {
+        return $this->belongsTo(LtiRegistration::class);
+    }
 }

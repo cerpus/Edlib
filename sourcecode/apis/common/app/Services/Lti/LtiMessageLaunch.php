@@ -8,40 +8,31 @@ use App\Services\Lti\Validators\DeepLinkMessageValidator;
 use App\Services\Lti\Validators\ResourceMessageValidator;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
-use IMSGlobal\LTI\Cache;
-use IMSGlobal\LTI\Cookie;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use IMSGlobal\LTI\LTI_Exception;
 
 class LtiMessageLaunch
 {
+    private Request $request;
+    private array $jwt;
+    public ?LtiRegistration $registration;
+    private string $launch_id;
 
-    private Cache $cache;
-    private $request;
-    private $cookie;
-    private $jwt;
-    public LtiRegistration $registration;
-    private $launch_id;
-
-    /**
-     * Constructor
-     *
-     */
-    function __construct()
+    public function __construct(string $launchId = null)
     {
-        $this->launch_id = uniqid("lti1p3_launch_", true);
-
-        $this->cache = new Cache();
-        $this->cookie = new Cookie();
+        $this->launch_id = $launchId ?? uniqid("lti1p3_launch_", true);
     }
 
     /**
      * Load an LTI_Message_Launch from a Cache using a launch id.
+     * @throws NotFoundException
      */
-    public static function fromCache(string $launch_id)
+    public static function fromCache(string $launch_id): LtiMessageLaunch
     {
-        $new = new LtiMessageLaunch();
-        $new->launch_id = $launch_id;
-        $new->jwt = ['body' => $new->cache->get_launch_data($launch_id)];
+        $new = new LtiMessageLaunch($launch_id);
+        $new->jwt = ['body' => Cache::get($launch_id)];
         return $new->validateRegistration();
     }
 
@@ -49,7 +40,7 @@ class LtiMessageLaunch
      * Load an LTI_Message_Launch from a Cache using a launch id.
      * @throws LTI_Exception
      */
-    public static function fromRequest(array $request = null): LtiMessageLaunch
+    public static function fromRequest(Request $request = null): LtiMessageLaunch
     {
         $new = new LtiMessageLaunch();
         return $new->validate($request);
@@ -62,7 +53,7 @@ class LtiMessageLaunch
      * @throws LTI_Exception Will throw an LTI_Exception if validation fails.
      * @throws NotFoundException
      */
-    public function validate(array $request = null): LtiMessageLaunch
+    public function validate(Request $request = null): LtiMessageLaunch
     {
         $this->request = $request;
 
@@ -116,8 +107,7 @@ class LtiMessageLaunch
     {
         $key_set_url = $this->registration->platform_key_set_endpoint;
 
-        // Download key set
-        $public_key_set = json_decode(file_get_contents($key_set_url), true);
+        $public_key_set = Http::get($key_set_url)->json();
 
         if (empty($public_key_set)) {
             // Failed to fetch public keyset from URL.
@@ -141,23 +131,27 @@ class LtiMessageLaunch
 
     private function cacheLaunchData(): LtiMessageLaunch
     {
-        $this->cache->cache_launch_data($this->launch_id, $this->jwt['body']);
+        Cache::set($this->launch_id, $this->jwt['body']);
+
         return $this;
     }
 
+    /**
+     * @throws LTI_Exception
+     */
     private function validateState(): LtiMessageLaunch
     {
         // Check State for OIDC.
-        if ($this->cookie->get_cookie('lti1p3_' . $this->request['state']) !== $this->request['state']) {
+        if (!$this->request->get('state') || $this->request->cookie('lti1p3_' . $this->request->get('state')) !== $this->request->get('state')) {
             // Error if state doesn't match
-            throw new LTI_Exception("State not found", 1);
+            throw new LTI_Exception("State not found");
         }
         return $this;
     }
 
     private function validateJwtFormat(): LtiMessageLaunch
     {
-        $jwt = $this->request['id_token'];
+        $jwt = $this->request->get('id_token');
 
         if (empty($jwt)) {
             throw new LTI_Exception("Missing id_token", 1);
@@ -181,9 +175,12 @@ class LtiMessageLaunch
 
     private function validateNonce(): LtiMessageLaunch
     {
-        if (!$this->cache->check_nonce($this->jwt['body']['nonce'])) {
-            //throw new LTI_Exception("Invalid Nonce");
+        $nonce = Cache::get('nonce_' . $this->jwt['body']['nonce']);
+
+        if (empty($nonce)) {
+            throw new LTI_Exception("Invalid Nonce");
         }
+
         return $this;
     }
 
@@ -208,9 +205,8 @@ class LtiMessageLaunch
 
         // Validate JWT signature
         try {
-            JWT::decode($this->request['id_token'], $public_key['key'], array('RS256'));
+            JWT::decode($this->request->get('id_token'), $public_key['key'], array('RS256'));
         } catch (\Exception $e) {
-            var_dump($e);
             // Error validating signature.
             throw new LTI_Exception("Invalid signature on id_token", 1);
         }

@@ -6,16 +6,24 @@ use App\ApiModels\LtiUser;
 use App\Util;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Support\Facades\Http;
+use JetBrains\PhpStorm\ArrayShape;
 
 class AuthApiService
 {
     private Client $client;
+    private string $baseUrl = "http://authapi";
 
     public function __construct()
     {
         $this->client = new Client([
-            "base_uri" => "http://authapi"
+            "base_uri" => $this->baseUrl
         ]);
+    }
+
+    private function getUrl(string $path): string
+    {
+        return $this->baseUrl . $path;
     }
 
     /**
@@ -28,14 +36,9 @@ class AuthApiService
             ->then(fn($response) => Util::decodeResponse($response));
     }
 
-    public function createTokenForLtiUser(LtiUser $ltiUser): array
+    #[ArrayShape(['token' => "string", 'userId' => "string"])] public function createTokenForLtiUser(LtiUser $ltiUser): array
     {
-        $response = $this->client
-            ->postAsync('/v1/lti-users/token', [
-                'json' => $ltiUser
-            ])
-            ->then(fn($response) => Util::decodeResponse($response))
-            ->wait();
+        $response = Http::post($this->getUrl('/v1/lti-users/token'), (array) $ltiUser);
 
         return [
             'token' => $response['token'],

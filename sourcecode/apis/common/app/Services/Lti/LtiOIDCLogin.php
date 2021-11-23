@@ -5,15 +5,12 @@ namespace App\Services\Lti;
 
 use App\Exceptions\NotFoundException;
 use App\Models\LtiRegistration;
-use IMSGlobal\LTI\Cache;
+use Illuminate\Support\Facades\Cache;
 
 class LtiOIDCLogin
 {
-    private Cache $cache;
-
     public function __construct(private LtiRegistration $registration)
     {
-        $this->cache = new Cache();
     }
 
     /**
@@ -45,8 +42,8 @@ class LtiOIDCLogin
         $state = str_replace('.', '_', uniqid('state-', true));
 
         // Generate Nonce.
-        $nonce = uniqid('nonce-', true);
-        $this->cache->cache_nonce($nonce);
+        $nonce = uniqid('', true);
+        $nonce = Cache::set('nonce_' . $nonce, $nonce);
 
         // Build Response.
         $auth_params = [

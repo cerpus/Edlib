@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\NotFoundException;
+use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -37,6 +38,31 @@ class Util
             try {
                 $data = Util::decodeResponse($e->getResponse());
             } catch (\JsonException $jsonException) {
+                throw $e;
+            }
+
+            if ($statusCode == 404) {
+                $field = $data["error"]["parameter"] ?? null;
+                throw new NotFoundException($field);
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @throws NotFoundException
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public static function handleEdlibNodeApiLaravelRequest(callable $wrapper)
+    {
+        try {
+            return $wrapper()->throw()->json();
+        } catch (\Illuminate\Http\Client\RequestException $e) {
+            $statusCode = $e->response->status();
+            try {
+                $data = $e->response->json();
+            } catch (Exception $nested) {
                 throw $e;
             }
 

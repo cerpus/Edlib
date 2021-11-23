@@ -8,16 +8,23 @@ use App\ApiModels\ResourceVersion;
 use App\Exceptions\NotFoundException;
 use App\Util;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class ResourceApiService
 {
     private Client $client;
+    private string $baseUrl = "http://resourceapi";
 
     public function __construct()
     {
         $this->client = new Client([
-            "base_uri" => "http://resourceapi"
+            "base_uri" => $this->baseUrl
         ]);
+    }
+
+    private function getUrl(string $path): string
+    {
+        return $this->baseUrl . $path;
     }
 
     /**
@@ -100,14 +107,9 @@ class ResourceApiService
      */
     public function getResourceLaunchInfoForTenant(string $userId, string $resourceId, ?string $resourceVersionId = null): ResourceLaunchInfo
     {
-        $resourceLaunchInfo = Util::handleEdlibNodeApiRequest(fn() => $this->client
-            ->getAsync("/v1/tenants/$userId/resources/$resourceId/launch-info", [
-                'query' => [
-                    'resourceVersionId' => $resourceVersionId
-                ]
-            ])
-            ->wait()
-        );
+        $resourceLaunchInfo = Util::handleEdlibNodeApiLaravelRequest(fn() => Http::get($this->getUrl("/v1/tenants/$userId/resources/$resourceId/launch-info"), [
+            'resourceVersionId' => $resourceVersionId
+        ]));
 
         return new ResourceLaunchInfo(...$resourceLaunchInfo);
     }

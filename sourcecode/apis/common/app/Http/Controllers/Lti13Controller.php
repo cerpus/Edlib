@@ -63,7 +63,7 @@ final class Lti13Controller extends Controller
     public function launch(Request $request): View|\Illuminate\Contracts\View\Factory|JsonResponse|\Illuminate\View\View|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
     {
         try {
-            $launch = LtiMessageLaunch::fromRequest($request->all());
+            $launch = LtiMessageLaunch::fromRequest($request);
         } catch (Exception $e) {
             return response()->json([
                 'errors' => $e->getMessage(),
