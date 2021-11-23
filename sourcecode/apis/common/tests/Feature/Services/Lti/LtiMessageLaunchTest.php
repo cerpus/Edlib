@@ -178,7 +178,20 @@ class LtiMessageLaunchTest extends TestCase
             ->withCredentials()
             ->disableCookieEncryption()
             ->postJson("/lti-13/launch", $jsonData)
-            ->assertStatus(422)
-            ->dump();
+            ->assertStatus(422);
+    }
+
+    public function testValidLaunchRequests(): void
+    {
+        $data = $this->buildLaunchRequest();
+        $data['setup']();
+
+        Cache::setMultiple($data['cache']);
+
+        $this->withCookies($data['cookies'])
+            ->withCredentials()
+            ->disableCookieEncryption()
+            ->postJson("/lti-13/launch", $data['jsonData'])
+            ->assertStatus(200);
     }
 }
