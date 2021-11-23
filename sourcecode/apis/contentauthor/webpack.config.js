@@ -436,7 +436,7 @@ module.exports = (env) => {
                 {
                     context: './vendor/ckeditor',
                     from: '**',
-                    to: 'build/js',
+                    to: 'js',
                     ignore: [
                         'config.js',
                     ],
@@ -444,79 +444,79 @@ module.exports = (env) => {
                 {
                     context: './resources/assets/js/ckeditor',
                     from: '**',
-                    to: 'build/js/ckeditor',
+                    to: 'js/ckeditor',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'cerpus.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'resource_common.js',
-                    to: 'build/js/resource-common.js',
+                    to: 'js/resource-common.js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'article-xapi.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'h5p-editor.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './resources/assets/js/',
                     from: 'listener.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './resources/assets/js/',
                     from: 'jwtclient.js',
-                    to: 'build/js',
+                    to: 'js',
 
                 },
                 {
                     context: './resources/assets/js/videos',
                     from: '**',
-                    to: 'build/js/videos',
+                    to: 'js/videos',
 
                 },
                 {
                     context: './resources/assets/js/h5p',
                     from: '**',
-                    to: 'build/js/h5p',
+                    to: 'js/h5p',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'editor-setup.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'question-editor.js',
-                    to: 'build/js',
+                    to: 'js',
                 },
                 {
                     context: './node_modules/@brightcove/player-loader/dist',
                     from: 'brightcove-player-loader.min.js',
-                    to: 'build/js/videos',
+                    to: 'js/videos',
                 },
                 {
                     context: './node_modules/cropperjs/dist',
                     from: '**',
-                    to: 'build/js/cropperjs',
+                    to: 'js/cropperjs',
                 },
                 {
                     context: './resources/assets/js/mathquillEditor/lib',
                     from: '**',
-                    to: 'build/js/mathquillEditor',
+                    to: 'js/mathquillEditor',
                 },
                 {
                     context: './resources/assets/graphical',
                     from: '**',
-                    to: 'build/graphical',
+                    to: 'graphical',
                 },
             ]),
             miniCssExtract,
