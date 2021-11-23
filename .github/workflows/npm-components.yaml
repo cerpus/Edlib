@@ -5,6 +5,7 @@ on:
     paths:
       - "sourcecode/npm/components/**"
       - ".github/workflows/npm-components.yaml"
+  workflow_dispatch:
 
 env:
   workingDirectory: sourcecode/npm/components
@@ -23,12 +24,13 @@ jobs:
           with:
             working-directory: ${{ env.workingDirectory }}
         - uses: JS-DevTools/npm-publish@v1
+          if: github.event_name != 'workflow_dispatch'
           with:
             package: sourcecode/npm/components/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
             access: public
         - name: "Deploy beta components package to npm"
-          if: github.ref == 'refs/heads/beta'
+          if: github.event_name == 'workflow_dispatch'
           run: cd ${{ env.workingDirectory }}; npm version 0.0.0-${{ github.sha }}; npm publish --tag beta
           env:
             INPUT_TOKEN: ${{ secrets.NPM_CERPUS_SECRET }}

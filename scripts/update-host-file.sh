@@ -19,7 +19,6 @@ $ip\tcontentauthor.local
 $ip\tapi.edlib.local
 $ip\twww.edlib.local
 $ip\tnpm.components.edlib.local
-$ip\tkibana.edlib.local
 EOM
 
 replaceStringWithoutNewline=${hosts//$'\n'/\\n}
