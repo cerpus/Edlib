@@ -16,8 +16,7 @@ DNS:localhost, \
 DNS:contentauthor.local, \
 DNS:api.edlib.local, \
 DNS:www.edlib.local, \
-DNS:npm.components.edlib.local, \
-DNS:kibana.edlib.local \
+DNS:npm.components.edlib.local \
 "
 
 if [ ! -f "$CA_DIR/ca.key" ]; then
