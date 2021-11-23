@@ -15,6 +15,16 @@ const resourceAxios = async (options) => {
     }
 };
 
+const adminGetAllResources = async (params) => {
+    return (
+        await resourceAxios({
+            url: `/v1/admin/resources`,
+            method: 'GET',
+            params,
+        })
+    ).data;
+};
+
 const getPublicResources = async (params) => {
     return (
         await resourceAxios({
@@ -100,6 +110,7 @@ const deleteResource = async (tenantId, resourceId) => {
 
 export default () => {
     return {
+        adminGetAllResources,
         getPublicResources,
         getTenantResources,
         getContentTypesForExternalSystemName,

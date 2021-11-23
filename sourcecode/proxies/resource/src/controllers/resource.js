@@ -9,4 +9,9 @@ export default {
             success: true,
         };
     },
+    getAllAdmin: async (req, res, next) => {
+        return {
+            resources: await req.context.services.resource.adminGetAllResources(),
+        };
+    },
 };

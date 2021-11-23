@@ -50,5 +50,11 @@ export default async () => {
         runAsync(recommendationController.getV2)
     );
 
+    router.get(
+        '/admin/resources',
+        middlewares.isUserAdmin,
+        runAsync(resourceController.getAllAdmin)
+    );
+
     return router;
 };

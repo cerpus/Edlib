@@ -132,6 +132,11 @@ export default async ({ pubSubConnection }) => {
         runAsync(resourceController.getPublicResources)
     );
 
+    apiRouter.get(
+        '/v1/admin/resources',
+        runAsync(resourceController.adminGetAllResources)
+    );
+
     /**
      * @swagger
      *
