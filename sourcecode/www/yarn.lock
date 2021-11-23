@@ -1254,10 +1254,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cerpus/edlib-components@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@cerpus/edlib-components/-/edlib-components-3.3.2.tgz#7268979b4bdc94f6209c80a84fb337f54944e1cf"
-  integrity sha512-nFBWX6Zuyy4z5Z4qC1TGUFStwkois72B3aIp/Qy9xruuqdOMTKtKsO5YXMYXxTFJ5dgAJCcp1Inf6QoBpMS38A==
+"@cerpus/edlib-components@v0.0.0-780c84365266202a2111198801459e9ceffaadf4":
+  version "0.0.0-780c84365266202a2111198801459e9ceffaadf4"
+  resolved "https://registry.yarnpkg.com/@cerpus/edlib-components/-/edlib-components-0.0.0-780c84365266202a2111198801459e9ceffaadf4.tgz#9b5eaf61f0574cc723b926e03892d99baedc5dc3"
+  integrity sha512-+uNiYkQ9t13CNvWtWREXH2kIELVApGfhPz+IhH9XHC2qlJgnmv3ukp0Kr3aki9yuDFiXTyLunftZ8A0L+c5Tgg==
   dependencies:
     "@cerpus/ui" "^2.0.3"
     "@material-ui/core" "^4.12.3"
