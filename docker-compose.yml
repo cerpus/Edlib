@@ -160,7 +160,6 @@ services:
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
-      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:31004"
     depends_on:
@@ -177,12 +176,10 @@ services:
     healthcheck:
       test: [CMD, nc, -z, localhost, "31004"]
     volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
@@ -198,7 +195,6 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
@@ -211,7 +207,6 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
@@ -224,7 +219,6 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
@@ -361,7 +355,6 @@ services:
       - ./sourcecode/www/yarn.lock:/app/yarn.lock
 
   proxy-iframe:
-    tty: true
     build:
       context: ./sourcecode/proxies/iframe
       dockerfile: Dockerfile
@@ -380,7 +373,6 @@ services:
       - ./sourcecode/proxies/iframe/yarn.lock:/app/yarn.lock
 
   proxy-admin:
-    tty: true
     build:
       context: ./sourcecode/proxies/admin
       dockerfile: Dockerfile
@@ -515,7 +507,6 @@ services:
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   npm-components-storybook:
-    tty: true
     build:
       context: ./sourcecode/npm/components
       dockerfile: Dockerfile
