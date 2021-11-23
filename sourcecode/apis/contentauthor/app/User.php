@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -14,7 +15,10 @@ class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable;
+    use Authorizable;
+    use CanResetPassword;
+    use HasFactory;
 
     /**
      * The database table used by the model.

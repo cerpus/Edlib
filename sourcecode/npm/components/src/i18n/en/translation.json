@@ -11,7 +11,7 @@
     "Fant ingen ressurser": "Didn't find any resources",
     "source": {
         "h5p": "H5P",
-        "article": "EdLib Article",
+        "article": "Edlib Article",
         "questionSet": "Question Set",
         "game": "Game"
     },
@@ -27,7 +27,7 @@
         "ND": "No derivatives",
         "NC": "Non commercial",
         "PDM": "Public Domain Mark",
-        "EDLL": "EdLib License",
+        "EDLL": "Edlib License",
         "PRIVATE": "Private"
     },
     "Bruk ressurs": "Use resource",
@@ -94,5 +94,8 @@
     "Versjoner": "Versions",
     "H5P Type": "H5P type",
     "Mest brukte": "Most used",
-    "maintenance": "Edlib is currently under maintenance. You cannot create or modify resources right now. Please try again later."
+    "maintenance": "Edlib is currently under maintenance. You cannot create or modify resources right now. Please try again later.",
+    "Reset": "Reset",
+    "Sortering": "Sorting",
+    "Denne ressursen er nå publisert": "This resource is now published"
 }

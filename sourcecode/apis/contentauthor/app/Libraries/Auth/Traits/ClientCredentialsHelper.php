@@ -3,8 +3,8 @@
 
 namespace App\Libraries\Auth\Traits;
 
-use Log;
-use Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 
 trait ClientCredentialsHelper

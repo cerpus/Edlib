@@ -6,7 +6,6 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ConcatPlugin = require('webpack-concat-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -111,21 +110,21 @@ module.exports = (env) => {
     // Builds the manifest file (mapping between filename and versioned filename)
     const manifestCache = {};
     const manifestConfig = {
-        fileName: 'rev-manifest.json',
+        publicPath: '/',
+        fileName: 'mix-manifest.json',
+        basePath: '/',
         seed: manifestCache,
-        filter: (file) => {
-            return !file.name.startsWith('../');
-        },
+        filter: (file) => !file.name.startsWith('/build/'),
     };
 
     const miniCssExtract = new MiniCssExtractPlugin({
-        filename: 'css/[name]-[chunkhash].css',
+        filename: 'build/css/[name]-[chunkhash].css',
         allChunks: true,
         ignoreOrder: true,
     });
 
     const unversionedCss = new MiniCssExtractPlugin({
-        filename: 'css/[name].css',
+        filename: 'build/css/[name].css',
         allChunks: true,
         ignoreOrder: true,
     });
@@ -136,8 +135,7 @@ module.exports = (env) => {
             {
                 loader: 'file-loader',
                 options: {
-                    name: 'fonts/[name].[ext]',
-                    publicPath: '../',
+                    name: 'build/fonts/[name].[ext]',
                     esModule: false,
                 },
             },
@@ -179,8 +177,9 @@ module.exports = (env) => {
             ],
         },
         output: {
-            filename: 'js/[name]-[chunkhash].js',
-            path: path.resolve(process.cwd(), 'public/build'),
+            filename: 'build/js/[name]-[chunkhash].js',
+            path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         optimization: {
             ...defaultConfig.optimization,
@@ -236,10 +235,10 @@ module.exports = (env) => {
                 cleanStaleWebpackAssets: false,
                 verbose: !inProduction,
                 cleanOnceBeforeBuildPatterns: [
-                    '{js,css}/react-components-*.{js,css,map}',
-                    '{js,css}/react-vendor-*.{js,css,map}',
-                    '{js,css}/react-{h5p,article,questionset,embed}-*.{js,css,map}',
-                    '{js,css}/react-contentbrowser-*.{js,css,map}',
+                    'build/{js,css}/react-components-*.{js,css,map}',
+                    'build/{js,css}/react-vendor-*.{js,css,map}',
+                    'build/{js,css}/react-{h5p,article,questionset,embed}-*.{js,css,map}',
+                    'build/{js,css}/react-contentbrowser-*.{js,css,map}',
                 ],
             }),
             // Removes old builds when using watch
@@ -298,6 +297,17 @@ module.exports = (env) => {
                 './resources/assets/js/article-view.js',
                 './resources/assets/js/article-xapi.js',
             ],
+            'h5p-core-bundle': [
+                './vendor/h5p/h5p-core/js/jquery.js',
+                './vendor/h5p/h5p-core/js/h5p.js',
+                './vendor/h5p/h5p-core/js/h5p-event-dispatcher.js',
+                './vendor/h5p/h5p-core/js/h5p-x-api-event.js',
+                './vendor/h5p/h5p-core/js/h5p-x-api.js',
+                './vendor/h5p/h5p-core/js/h5p-content-type.js',
+                './vendor/h5p/h5p-core/js/h5p-confirmation-dialog.js',
+                './resources/assets/js/h5p/request-queue.js', //TODO Change to vanilla H5P when they fix
+                './vendor/h5p/h5p-core/js/h5p-action-bar.js',
+            ],
             'link': [
                 './resources/assets/sass/front.scss',
                 './resources/assets/sass/link.scss',
@@ -344,8 +354,9 @@ module.exports = (env) => {
             ],
         },
         output: {
-            filename: 'js/[name]-[chunkhash].js',
-            path: path.resolve(__dirname, 'public/build'),
+            filename: 'build/js/[name]-[chunkhash].js',
+            path: path.resolve(__dirname, 'public'),
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -368,7 +379,7 @@ module.exports = (env) => {
                         {
                             loader: 'file-loader',
                             options: {
-                                name: 'css/images/[name].[ext]',
+                                name: 'build/css/images/[name].[ext]',
                                 publicPath: '../',
                                 esModule: false,
                             },
@@ -384,34 +395,34 @@ module.exports = (env) => {
                 cleanStaleWebpackAssets: false,
                 verbose: !inProduction,
                 cleanOnceBeforeBuildPatterns: [
-                    '{js,css}/admin-*.{js,css,map}',
-                    '{js,css}/admin/metadata-*.{js,css,map}',
-                    '{js,css}/bulk-maxscore-*.{js,css,map}',
-                    '{js,css}/bootstrap-*.{js,css,map}',
-                    '{js,css}/font-awesome-*.{js,css,map}',
-                    '{js,css}/content_explorer_bootstrap-*.{js,css,map}',
-                    '{js,css}/ckeditor_popup-*.{js,css,map}',
-                    '{js,css}/article-*.{js,css,map}',
-                    '!{js,css}/article-plugin.{js,css,map}',
-                    '{js,css}/h5pcss-*.{js,css,map}',
-                    '{js,css}/h5p/h5peditor-*.{js,css,map}',
-                    '{js,css}/ndla-contentbrowser-*.{js,css,map}',
-                    '{js,css}/h5p-editor-*.{js,css,map}',
-                    '{js,css}/link-editor-*.{js,css,map}',
-                    '{js,css}/link-*.{js,css,map}',
-                    '{js,css}/question-editor-*.{js,css,map}',
-                    '{js,css}/jwtclient-*.{js,css,map}',
-                    '{js,css}/mathquill.min-*.{js,css,map}',
-                    '{js,css}/h5p-core-*.{js,css,map}',
-                    '{js,css}/h5p-admin-*.{js,css,map}',
-                    '{js,css}/h5picons-*.{js,css,map}',
-                    '{js,css}/game-*.{js,css,map}',
-                    '{js,css}/metadata-*.{js,css,map}',
-                    '{js,css}/h5pmetadata-*.{js,css,map}',
-                    '{js,css}/maxscore-*.{js,css,map}',
-                    '{js,css}/h5peditor-custom-*.{js,css,map}',
-                    '{js,css}/h5p/*.{js,css,map}',
-                    '{js,css}/front-*.{js,css,map}',
+                    'build/{js,css}/admin-*.{js,css,map}',
+                    'build/{js,css}/admin/metadata-*.{js,css,map}',
+                    'build/{js,css}/bulk-maxscore-*.{js,css,map}',
+                    'build/{js,css}/bootstrap-*.{js,css,map}',
+                    'build/{js,css}/font-awesome-*.{js,css,map}',
+                    'build/{js,css}/content_explorer_bootstrap-*.{js,css,map}',
+                    'build/{js,css}/ckeditor_popup-*.{js,css,map}',
+                    'build/{js,css}/article-*.{js,css,map}',
+                    '!build/{js,css}/article-plugin.{js,css,map}',
+                    'build/{js,css}/h5pcss-*.{js,css,map}',
+                    'build/{js,css}/h5p/h5peditor-*.{js,css,map}',
+                    'build/{js,css}/ndla-contentbrowser-*.{js,css,map}',
+                    'build/{js,css}/h5p-editor-*.{js,css,map}',
+                    'build/{js,css}/link-editor-*.{js,css,map}',
+                    'build/{js,css}/link-*.{js,css,map}',
+                    'build/{js,css}/question-editor-*.{js,css,map}',
+                    'build/{js,css}/jwtclient-*.{js,css,map}',
+                    'build/{js,css}/mathquill.min-*.{js,css,map}',
+                    'build/{js,css}/h5p-core-*.{js,css,map}',
+                    'build/{js,css}/h5p-admin-*.{js,css,map}',
+                    'build/{js,css}/h5picons-*.{js,css,map}',
+                    'build/{js,css}/game-*.{js,css,map}',
+                    'build/{js,css}/metadata-*.{js,css,map}',
+                    'build/{js,css}/h5pmetadata-*.{js,css,map}',
+                    'build/{js,css}/maxscore-*.{js,css,map}',
+                    'build/{js,css}/h5peditor-custom-*.{js,css,map}',
+                    'build/{js,css}/h5p/*.{js,css,map}',
+                    'build/{js,css}/front-*.{js,css,map}',
                 ],
             }),
             // Removes old builds when using watch
@@ -421,26 +432,11 @@ module.exports = (env) => {
                     'NODE_ENV': (inProduction ? JSON.stringify('production') : JSON.stringify('develop')),
                 },
             }),
-            new ConcatPlugin({
-                name: 'h5p-core-bundle',
-                fileName: 'js/[name]-[hash].js',
-                filesToConcat: [
-                    './vendor/h5p/h5p-core/js/jquery.js',
-                    './vendor/h5p/h5p-core/js/h5p.js',
-                    './vendor/h5p/h5p-core/js/h5p-event-dispatcher.js',
-                    './vendor/h5p/h5p-core/js/h5p-x-api-event.js',
-                    './vendor/h5p/h5p-core/js/h5p-x-api.js',
-                    './vendor/h5p/h5p-core/js/h5p-content-type.js',
-                    './vendor/h5p/h5p-core/js/h5p-confirmation-dialog.js',
-                    './resources/assets/js/h5p/request-queue.js', //TODO Change to vanilla H5P when they fix
-                    './vendor/h5p/h5p-core/js/h5p-action-bar.js',
-                ],
-            }),
             new CopyWebpackPlugin([
                 {
                     context: './vendor/ckeditor',
                     from: '**',
-                    to: '../js',
+                    to: 'build/js',
                     ignore: [
                         'config.js',
                     ],
@@ -448,79 +444,79 @@ module.exports = (env) => {
                 {
                     context: './resources/assets/js/ckeditor',
                     from: '**',
-                    to: '../js/ckeditor',
+                    to: 'build/js/ckeditor',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'cerpus.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'resource_common.js',
-                    to: '../js/resource-common.js',
+                    to: 'build/js/resource-common.js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'article-xapi.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'h5p-editor.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './resources/assets/js/',
                     from: 'listener.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './resources/assets/js/',
                     from: 'jwtclient.js',
-                    to: '../js',
+                    to: 'build/js',
 
                 },
                 {
                     context: './resources/assets/js/videos',
                     from: '**',
-                    to: '../js/videos',
+                    to: 'build/js/videos',
 
                 },
                 {
                     context: './resources/assets/js/h5p',
                     from: '**',
-                    to: '../js/h5p',
+                    to: 'build/js/h5p',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'editor-setup.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './resources/assets/js',
                     from: 'question-editor.js',
-                    to: '../js',
+                    to: 'build/js',
                 },
                 {
                     context: './node_modules/@brightcove/player-loader/dist',
                     from: 'brightcove-player-loader.min.js',
-                    to: '../js/videos',
+                    to: 'build/js/videos',
                 },
                 {
                     context: './node_modules/cropperjs/dist',
                     from: '**',
-                    to: '../js/cropperjs',
+                    to: 'build/js/cropperjs',
                 },
                 {
                     context: './resources/assets/js/mathquillEditor/lib',
                     from: '**',
-                    to: '../js/mathquillEditor',
+                    to: 'build/js/mathquillEditor',
                 },
                 {
                     context: './resources/assets/graphical',
                     from: '**',
-                    to: '../graphical',
+                    to: 'build/graphical',
                 },
             ]),
             miniCssExtract,
@@ -544,8 +540,9 @@ module.exports = (env) => {
             ],
         },
         output: {
-            filename: 'css/[name]-[chunkhash].css',
-            path: path.resolve(process.cwd(), 'public/build'),
+            filename: 'build/css/[name]-[chunkhash].css',
+            path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         module: {
             rules: [
@@ -559,8 +556,8 @@ module.exports = (env) => {
                 cleanStaleWebpackAssets: false,
                 verbose: !inProduction,
                 cleanOnceBeforeBuildPatterns: [
-                    '{js,css}/article-plugin.{js,css}',
-                    '{js,css}/article-plugin-*.{js,css}',
+                    'build/{js,css}/article-plugin.{js,css}',
+                    'build/{js,css}/article-plugin-*.{js,css}',
                 ],
             }),
             // Removes old builds when using watch
@@ -590,8 +587,9 @@ module.exports = (env) => {
             ],
         },
         output: {
-            filename: 'css/[name].css',
-            path: path.resolve(__dirname, 'public/build'),
+            filename: 'build/css/[name].css',
+            path: path.resolve(__dirname, 'public'),
+            publicPath: '/',
         },
         module: {
             rules: cssRules,
@@ -603,7 +601,7 @@ module.exports = (env) => {
                 cleanStaleWebpackAssets: false,
                 verbose: !inProduction,
                 cleanOnceBeforeBuildPatterns: [
-                    '{js,css}/Admin-*.{js,css}',
+                    'build/{js,css}/Admin-*.{js,css}',
                 ],
             }),
             // Removes old builds when using watch
@@ -642,8 +640,9 @@ module.exports = (env) => {
             ],
         },
         output: {
-            filename: 'js/[name].js',
-            path: path.resolve(process.cwd(), 'public/build'),
+            filename: 'build/js/[name].js',
+            path: path.resolve(process.cwd(), 'public'),
+            publicPath: '/',
         },
         module: {
             rules: cssRules,
@@ -655,8 +654,8 @@ module.exports = (env) => {
                 cleanStaleWebpackAssets: false,
                 verbose: !inProduction,
                 cleanOnceBeforeBuildPatterns: [
-                    '{js,css}/ndlah5p-iframe*.{js,css,map}',
-                    '{js,css}/ndlah5p-edit*.{js,css,map}',
+                    'build/{js,css}/ndlah5p-iframe*.{js,css,map}',
+                    'build/{js,css}/ndlah5p-edit*.{js,css,map}',
                 ],
             }),
             // Removes old builds when using watch

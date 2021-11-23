@@ -30,8 +30,8 @@ class InteractiveVideo extends H5PBase
                 } catch (UnknownH5PPackageException $exception) {
                 }
             })->reject(function ($items) {
-                /** @var PackageInterface $item */
-                $item = $items['package'];
+                /** @var PackageInterface|null $item */
+                $item = $items['package'] ?? null;
                 return is_null($item) || $item->canExtractAnswers() === false || $item->validate() !== true;
             })->map(function ($items) {
                 /** @var PackageInterface $item */

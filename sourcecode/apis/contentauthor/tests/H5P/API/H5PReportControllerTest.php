@@ -121,14 +121,14 @@ class H5PReportControllerTest extends TestCase
         $userId = $this->faker->unique()->uuid;
         $answers = json_decode('{"questions":["Bar"],"progress":0,"finished":true,"version":1}');
 
-        $content = factory(H5PContent::class)->create([
+        $content = H5PContent::factory()->create([
             'user_id' => $userId,
             'parameters' => '{"questionnaireElements":[{"library":{"params":{"placeholderText":"Start writing...","inputRows":"1","question":"Foo"},"library":"H5P.OpenEndedQuestion 1.0","subContentId":"e9fc6a28-3d63-4f3c-91b0-6a5e93ea440a"},"requiredField":false}],"successScreenOptions":{"enableSuccessScreen":true,"successScreenImage":{"params":{"contentName":"Image"},"library":"H5P.Image 1.0","subContentId":"6b3a6665-fa9d-43fb-82d7-30ba29ca5363"},"successMessage":"You have completed the questionnaire."},"uiElements":{"buttonLabels":{"prevLabel":"Back","continueLabel":"Continue","nextLabel":"Next","submitLabel":"Submit"},"accessibility":{"requiredTextExitLabel":"Close error message","progressBarText":"Question %current of %max"},"requiredMessage":"This question requires an answer","requiredText":"required","submitScreenTitle":"You successfully answered all of the questions","submitScreenSubtitle":"Click below to submit your answers"}}',
             'filtered' => '{"questionnaireElements":[{"library":{"params":{"placeholderText":"Start writing...","inputRows":"1","question":"Foo"},"library":"H5P.OpenEndedQuestion 1.0","subContentId":"e9fc6a28-3d63-4f3c-91b0-6a5e93ea440a"},"requiredField":false}],"successScreenOptions":{"enableSuccessScreen":true,"successScreenImage":{"params":{"contentName":"Image"},"library":"H5P.Image 1.0","subContentId":"6b3a6665-fa9d-43fb-82d7-30ba29ca5363"},"successMessage":"You have completed the questionnaire."},"uiElements":{"buttonLabels":{"prevLabel":"Back","continueLabel":"Continue","nextLabel":"Next","submitLabel":"Submit"},"accessibility":{"requiredTextExitLabel":"Close error message","progressBarText":"Question %current of %max"},"requiredMessage":"This question requires an answer","requiredText":"required","submitScreenTitle":"You successfully answered all of the questions","submitScreenSubtitle":"Click below to submit your answers"}}',
             'library_id' => 207
         ]);
 
-        factory(H5PContentsUserData::class)->create([
+        H5PContentsUserData::factory()->create([
             'data' => json_encode($answers),
             'context' => $context,
             'user_id' => $userId,

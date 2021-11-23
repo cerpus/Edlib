@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\File;
 use App\Article;
 use App\Http\Requests\FileUploadToArticle;

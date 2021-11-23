@@ -43,3 +43,5 @@ test-storage-volume/
 /storage/framework/testing/
 
 /resources/assets/js/h5p/ckeditor_wiris
+
+mix-manifest.json

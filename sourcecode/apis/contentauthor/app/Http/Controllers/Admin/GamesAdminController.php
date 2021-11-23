@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Libraries\DataObjects\ContentStorageSettings;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 use App\Gametype;
 use League\Flysystem\Filesystem;

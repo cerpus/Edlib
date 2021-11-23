@@ -64,12 +64,6 @@ class QuestionSetConvert
         $contentTypeHandler = app(ContentTypeHandler::class);
         $content = $contentTypeHandler->storeQuestionset($h5pQuiz->toArray());
 
-        // Add the tags from the original QuestionSet to the new content
-        /** @var H5PContent $newContent */
-        if ($newContent = H5PContent::find($content['id'])) {
-            $newContent->updateMetaTags($metaData->tags ?? []);
-        }
-
         return [
             $content['id'],
             $content['title'],

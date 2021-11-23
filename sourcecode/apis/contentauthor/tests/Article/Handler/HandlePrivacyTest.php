@@ -5,14 +5,13 @@ use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\ArticleWasSaved;
-use Tests\Traits\MockMetadataService;
 use App\Listeners\Article\HandlePrivacy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 class HandlePrivacyTest extends TestCase
 {
-    use RefreshDatabase, WithoutMiddleware, MockMetadataService;
+    use RefreshDatabase, WithoutMiddleware;
 
     public function setUp(): void
     {
@@ -22,13 +21,8 @@ class HandlePrivacyTest extends TestCase
 
     public function testHandlePrivacyOnSave()
     {
-
-        $this->setupMetadataService([
-            'createData' => true
-        ]);
-
         $authId = Str::uuid();
-        $article = factory(\App\Article::class)->create(['owner_id' => $authId]);
+        $article = \App\Article::factory()->create(['owner_id' => $authId]);
         $this->assertNotEquals(1, $article->is_private);
 
         $request = new Request();

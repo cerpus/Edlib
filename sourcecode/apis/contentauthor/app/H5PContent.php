@@ -13,6 +13,7 @@ use H5PCore;
 use H5PFrameworkInterface;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Iso639p3;
@@ -42,6 +43,8 @@ use stdClass;
  */
 class H5PContent extends Content implements VersionableObject
 {
+    use HasFactory;
+
     protected $table = 'h5p_contents';
     public $editRouteName = 'h5p.edit';
 

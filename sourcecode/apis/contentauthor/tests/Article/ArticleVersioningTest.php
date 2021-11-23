@@ -13,13 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMetadataService, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockLicensingTrait, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function setUp(): void
     {
@@ -31,16 +30,11 @@ class ArticleVersioningTest extends TestCase
     {
         $this->setUpLicensing('BY', true);
         $this->setupVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-            'fetchAllCustomFields' => [],
-        ]);
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
         $authId = Str::uuid();
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
         $startCount = Article::all()->count();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
@@ -64,9 +58,9 @@ class ArticleVersioningTest extends TestCase
         $this->setUpLicensing('BY', true);
         $request = new Request();
         $authId = Str::uuid();
-        $originalArticle = factory(Article::class)->create(['owner_id' => $authId]);
-        $c1 = factory(ArticleCollaborator::class)->make(['email' => 'A@B.COM']);
-        $c2 = factory(ArticleCollaborator::class)->make(['email' => 'c@d.com']);
+        $originalArticle = Article::factory()->create(['owner_id' => $authId]);
+        $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
+        $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);
         $originalArticle->collaborators()->save($c1);
         $originalArticle->collaborators()->save($c2);
 
@@ -141,21 +135,16 @@ class ArticleVersioningTest extends TestCase
         $this->setUpResourceApi();
         $this->setupVersion();
         $this->setUpLicensing('BY', true);
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true,
-            'fetchAllCustomFields' => [],
-        ]);
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
-        $owner = factory(User::class)->make();
-        $collaborator = factory(User::class)->make();
-        $copyist = factory(User::class)->make();
-        $eve = factory(User::class)->make();
+        $owner = User::factory()->make();
+        $collaborator = User::factory()->make();
+        $copyist = User::factory()->make();
+        $eve = User::factory()->make();
 
-        $article = factory(Article::class)->create(['owner_id' => $owner->auth_id]);
-        $article->collaborators()->save(factory(ArticleCollaborator::class)->create(['email' => $collaborator->email]));
+        $article = Article::factory()->create(['owner_id' => $owner->auth_id]);
+        $article->collaborators()->save(ArticleCollaborator::factory()->create(['email' => $collaborator->email]));
 
         $article->fresh();
 

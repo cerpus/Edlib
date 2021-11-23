@@ -14,7 +14,7 @@ const edlibApiUrl = 'https://api.edlib.local';
 export const EdlibModal = () => {
     return (
         <AuthWrapper edlibApiUrl={edlibApiUrl}>
-            {({ getJwt }) => {
+            {({ getJwt, getLanguage }) => {
                 return (
                     <EdlibComponentsProvider
                         edlibUrl={edlibApiUrl}
@@ -25,6 +25,7 @@ export const EdlibModal = () => {
                         configuration={{
                             canReturnResources: true,
                         }}
+                        language={getLanguage()}
                     >
                         <EdlibModalComponent
                             enableDoku={true}

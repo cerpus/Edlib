@@ -1254,10 +1254,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cerpus/edlib-components@^3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@cerpus/edlib-components/-/edlib-components-3.3.1.tgz#3f0c46ffce1f7dbcd2f81c835462b4f3df6b660b"
-  integrity sha512-6kjzuxLD9W/Lr8nYk2Ndqvrkh31+yOqajJG6QAQjbvlHlefvdRIDm+Z2bAX/91bWVHwI/kuDgVKq1KWySG7G4Q==
+"@cerpus/edlib-components@^3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@cerpus/edlib-components/-/edlib-components-3.3.2.tgz#7268979b4bdc94f6209c80a84fb337f54944e1cf"
+  integrity sha512-nFBWX6Zuyy4z5Z4qC1TGUFStwkois72B3aIp/Qy9xruuqdOMTKtKsO5YXMYXxTFJ5dgAJCcp1Inf6QoBpMS38A==
   dependencies:
     "@cerpus/ui" "^2.0.3"
     "@material-ui/core" "^4.12.3"
@@ -2842,13 +2842,6 @@ axe-core@^4.0.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.1.2.tgz#7cf783331320098bfbef620df3b3c770147bc224"
   integrity sha512-V+Nq70NxKhYt89ArVcaNL9FDryB3vQOd+BFXZIfO3RP6rwtj+2yqqqdHEkacutglPaZLkJeuXKCjCJDMGPtPqg==
-
-axios@^0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
-  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
-  dependencies:
-    follow-redirects "^1.14.4"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -5506,11 +5499,6 @@ follow-redirects@^1.0.0:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.2.tgz#dd73c8effc12728ba5cf4259d760ea5fb83e3147"
   integrity sha512-6mPTgLxYm3r6Bkkg0vNM0HTjfGrOEtsfbhagQvbxDEsEkpNhw582upBaoRZylzen6krEmxXJgt9Ju6HiI4O7BA==
-
-follow-redirects@^1.14.4:
-  version "1.14.5"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.5.tgz#f09a5848981d3c772b5392309778523f8d85c381"
-  integrity sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==
 
 for-in@^1.0.2:
   version "1.0.2"

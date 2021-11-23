@@ -1,39 +1,63 @@
 <?php
 
-use App\Article;
+namespace Database\Factories;
 
-$factory->define(Article::class, function (Faker\Generator $faker) {
-    return [
-        'id' => $faker->uuid,
-        'title' => $faker->text,
-        'owner_id' => $faker->uuid,
-        'content' => $faker->text,
-        'original_id' => $faker->uuid,
-        'parent_id' => null,
-        'parent_version_id' => null,
-        'version_id' => $faker->uuid
-    ];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->state(Article::class, "newly-created", function($faker){
-    $id = $faker->uuid;
-    return [
-        "id" => $id,
-        "original_id" => $id ,
-        "version_id" => 1,
-    ];
-});
+class ArticleFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'id' => $this->faker->uuid,
+            'title' => $this->faker->text,
+            'owner_id' => $this->faker->uuid,
+            'content' => $this->faker->text,
+            'original_id' => $this->faker->uuid,
+            'parent_id' => null,
+            'parent_version_id' => null,
+            'version_id' => $this->faker->uuid
+        ];
+    }
 
-$factory->state(Article::class, "published", [
-   "is_published" => true,
-]);
-$factory->state(Article::class, "unpublished", [
-    "is_published" => false,
-]);
+    public function newlyCreated(): self
+    {
+        return $this->state(function () {
+            $id = $this->faker->uuid;
 
-$factory->state(Article::class, "listed", [
-    "is_private" => false,
-]);
-$factory->state(Article::class, "unlisted", [
-    "is_private" => true,
-]);
+            return [
+                'id' => $id,
+                'original_id' => $id,
+                'version_id' => 1,
+            ];
+        });
+    }
+
+    public function published(): self
+    {
+        return $this->state(fn() => [
+            'is_published' => true,
+        ]);
+    }
+
+    public function unpublished(): self
+    {
+        return $this->state(fn() => [
+            'is_published' => false,
+        ]);
+    }
+
+    public function listed(): self
+    {
+        return $this->state(fn() => [
+            'is_private' => false,
+        ]);
+    }
+
+    public function unlisted(): self
+    {
+        return $this->state(fn() => [
+            'is_private' => true,
+        ]);
+    }
+}

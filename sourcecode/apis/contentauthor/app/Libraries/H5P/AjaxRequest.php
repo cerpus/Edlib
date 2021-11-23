@@ -4,13 +4,13 @@ namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\SessionKeys;
-use DB;
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 
 class AjaxRequest extends \H5PEditorEndpoints

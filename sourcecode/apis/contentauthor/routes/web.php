@@ -132,11 +132,6 @@ Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], fu
 
 Route::post('v1/copy', 'API\ContentCopyController@index')->name('content.copy')->middleware('signed.oauth10-request');
 
-Route::get('h5p/{h5p}/tags', 'ContentTagController@fetchH5PTags')->name('h5p.tags');
-Route::get('article/{article}/tags', 'ContentTagController@fetchArticleTags')->name('article.tags');
-Route::get('game/{game}/tags', 'ContentTagController@fetchGameTags')->name('game.tags');
-Route::get('link/{link}/tags', 'ContentTagController@fetchLinkTags')->name('link.tags');
-
 Route::get('article/{article}/copyright', 'ArticleCopyrightController@copyright')->name('article.copyright');
 
 Route::get('/health', 'HealthController@index');

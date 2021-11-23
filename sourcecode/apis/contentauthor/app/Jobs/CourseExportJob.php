@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\CourseExport;
 use GuzzleHttp\Client;
 use Illuminate\Bus\Queueable;

@@ -16,8 +16,8 @@ class ContentLockProcessorTest extends TestCase
     public function testRemovesContentLocksBasedOnAuthId()
     {
         $authId = $this->faker->uuid;
-        factory(ContentLock::class, 2)->create();
-        factory(ContentLock::class)->create(['auth_id' => $authId]);
+        ContentLock::factory()->count(2)->create();
+        ContentLock::factory()->create(['auth_id' => $authId]);
 
         $this->assertCount(3, ContentLock::all());
         $this->assertDatabaseHas('content_locks', ['auth_id' => $authId]);
@@ -43,8 +43,8 @@ class ContentLockProcessorTest extends TestCase
     {
         $email = 'test@example.com';
 
-        factory(ContentLock::class, 2)->create();
-        factory(ContentLock::class)->create(['email' => $email]);
+        ContentLock::factory()->count(2)->create();
+        ContentLock::factory()->create(['email' => $email]);
 
         $this->assertCount(3, ContentLock::all());
         $this->assertDatabaseHas('content_locks', ['email' => $email]);

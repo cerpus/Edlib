@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use H5PCore;
 use H5peditor;

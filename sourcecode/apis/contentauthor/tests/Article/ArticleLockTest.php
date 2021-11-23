@@ -14,22 +14,18 @@ use App\ArticleCollaborator;
 use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ArticleLockTest extends TestCase
 {
-    use RefreshDatabase, MockMetadataService, MockMQ, MockLicensingTrait, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockMQ, MockLicensingTrait, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
     public function testArticleHasLockWhenUserEdits()
     {
         $this->withoutMiddleware();
         $this->setUpLicensing();
         $this->setUpVersion();
-        $this->setupMetadataService([
-            'getData' => null
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
@@ -38,7 +34,7 @@ class ArticleLockTest extends TestCase
         $authId = Str::uuid();
         $authName = $faker->name;
         $authEmail = $faker->email;
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->withSession(['authId' => $authId, 'email' => $authEmail, 'name' => $authName, 'verifiedEmails' => [$authEmail]])
             ->get(route('article.edit', $article->id));
@@ -53,10 +49,6 @@ class ArticleLockTest extends TestCase
     {
         $this->setUpLicensing();
         $this->setUpVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
@@ -65,7 +57,7 @@ class ArticleLockTest extends TestCase
         $authId = Str::uuid();
         $authName = $faker->name;
         $authEmail = $faker->email;
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->withSession([
             'authId' => $authId,
@@ -92,17 +84,13 @@ class ArticleLockTest extends TestCase
     {
         $this->setUpLicensing();
         $this->setUpVersion();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
 
         $faker = Factory::create();
         $authId = Str::uuid();
         $authName = "John Doe";
         $authEmail = $faker->email;
 
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->setupAuthApi([
             'getUser' => new User("1", $authName, $authName, $authEmail)
@@ -112,7 +100,7 @@ class ArticleLockTest extends TestCase
         $authName2 = $faker->name;
         $authEmail2 = $faker->email;
 
-        $articleCollaborator = factory(ArticleCollaborator::class)->make(['email' => $authEmail2]);
+        $articleCollaborator = ArticleCollaborator::factory()->make(['email' => $authEmail2]);
         $article->collaborators()->save($articleCollaborator);
 
         $this->withSession(['authId' => $authId, 'email' => $authEmail, 'name' => $authName, 'verifiedEmails' => [$authEmail]])
@@ -138,7 +126,7 @@ class ArticleLockTest extends TestCase
         $faker = Factory::create();
         $authId = Str::uuid();
 
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $authId2 = Str::uuid();
         $authName2 = $faker->name;
@@ -154,10 +142,6 @@ class ArticleLockTest extends TestCase
     public function forkArticle_thenSuccess()
     {
         $this->setUpResourceApi();
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
@@ -168,7 +152,7 @@ class ArticleLockTest extends TestCase
         $faker = Factory::create();
         $authId = Str::uuid();
 
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $authId2 = Str::uuid();
         $authName2 = $faker->name;

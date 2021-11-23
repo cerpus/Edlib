@@ -22,12 +22,11 @@ use Illuminate\Support\Facades\DB;
 use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
 use Cerpus\VersionClient\VersionData;
-use Tests\Traits\MockMetadataService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockMetadataService, MockH5PAdapterInterface, MockResourceApi;
+    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockH5PAdapterInterface, MockResourceApi;
 
     const testDirectory = "h5pstorage";
     const testContentDirectory = "content";
@@ -67,9 +66,9 @@ class CRUTest extends TestCase
     /** @test */
     public function create_and_update_h5p_using_web_request()
     {
-        $owner = factory(User::class)->make();
-        $collaborator = factory(User::class)->make(['email' => 'a@b.com']);
-        $copyist = factory(User::class)->make();
+        $owner = User::factory()->make();
+        $collaborator = User::factory()->make(['email' => 'a@b.com']);
+        $copyist = User::factory()->make();
 
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
@@ -77,22 +76,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-            'getCustomFieldDefinition' => function ($name) {
-                $this->assertEquals('published', $name);
-                return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-            },
-            'setCustomFieldValue' => function ($name, $value) {
-                $this->assertEquals('published', $name);
-                $this->assertFalse($value);
-                return ['value' => false];
-            },
         ]);
         $this->setupH5PAdapter([
             'enableDraftLogic' => false,
@@ -265,8 +248,8 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(TestH5PSeeder::class);
-        $owner = factory(User::class)->make();
-        $content = factory(H5PContent::class)->create([
+        $owner = User::factory()->make();
+        $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
             'parameters' => '{"simpleTest":"SimpleTest","original":true}',
             'library_id' => 39,
@@ -277,14 +260,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
         ]);
 
 
@@ -323,8 +298,8 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(\tests\db\TestH5PSeeder::class);
-        $owner = factory(User::class)->make();
-        $content = factory(H5PContent::class)->create([
+        $owner = User::factory()->make();
+        $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
             'parameters' => '{"simpleTest":"SimpleTest","original":true}',
             'library_id' => 39,
@@ -335,14 +310,6 @@ class CRUTest extends TestCase
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
         ]);
 
         $this->assertCount(1, H5PContent::all());
@@ -386,20 +353,13 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
         $this->seed(TestH5PSeeder::class);
 
-        $owner = factory(User::class)->make();
+        $owner = User::factory()->make();
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
         $this->setUpLicensing();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
         ]);
 
         $this->mockH5pLti();
@@ -464,7 +424,7 @@ class CRUTest extends TestCase
      */
     public function enabledDraftActionAndLTISupport_invalidPublishFlag_thenFails()
     {
-        $owner = factory(User::class)->make();
+        $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
         $this->setUpLicensing();
@@ -499,7 +459,7 @@ class CRUTest extends TestCase
      */
     public function disabledDraftAction_invalidPublishFlag_thenFails()
     {
-        $owner = factory(User::class)->make();
+        $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
         $this->setUpLicensing();
@@ -534,8 +494,8 @@ class CRUTest extends TestCase
      */
     public function enabledDraftAction_NotOwner()
     {
-        $owner = factory(User::class)->make();
-        $me = factory(User::class)->make();
+        $owner = User::factory()->make();
+        $me = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->setUpLicensing();
         $this->setUpResourceApi();
@@ -543,37 +503,14 @@ class CRUTest extends TestCase
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
-        $this->setupMetadataService([
-            'createData' => function () {
-                $responseData = new \stdClass();
-                $responseData->is_public = false;
-                return $responseData;
-            },
-            'getCustomFieldDefinition' => function ($name) {
-                $this->assertEquals('published', $name);
-                return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-            },
-            'setCustomFieldValue' => function ($name, $value) {
-                $this->assertEquals('published', $name);
-                $this->assertFalse($value);
-                return ['value' => false];
-            },
-        ]);
 
         $this->mockH5pLti();
 
-        $contents = factory(H5PContent::class, 1)
-            ->create([
-                'user_id' => $owner->auth_id,
-                'is_published' => 0,
-            ])
-            ->each(function ($content) {
-                $lib = factory(H5PLibrary::class)->create();
-                $content
-                    ->library()
-                    ->associate($lib);
-                $content->save();
-            });
+        $contents = H5PContent::factory()->create([
+            'library_id' => H5PLibrary::factory()->create(),
+            'user_id' => $owner->auth_id,
+            'is_published' => 0,
+        ]);
 
         /** @var H5PContent $newContent */
         $newContent = $contents->first();

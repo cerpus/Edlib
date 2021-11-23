@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use DB;
-use Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use stdClass;
 use Illuminate\Http\Request;
 use App\Libraries\H5P\H5PProgress;

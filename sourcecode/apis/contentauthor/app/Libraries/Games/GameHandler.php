@@ -3,8 +3,8 @@
 namespace App\Libraries\Games;
 
 
-use App;
-use Session;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 use App\Game;
 use App\Gametype;
 use App\Events\GameWasSaved;

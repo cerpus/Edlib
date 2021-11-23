@@ -7,10 +7,10 @@
     <meta name="article-title" content="{{ strip_tags($article->title) }}">
     <meta name="article-url" content="{{ route('article.show', $article) }}">
     <title>@yield('title', 'Article')</title>
-    <link rel="stylesheet" href="{{ elixir('content_explorer_bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ elixir('h5picons.css') }}">
-    <link rel="stylesheet" href="{{ elixir('react-article.css') }}">
-    <link rel="stylesheet" href="{{ elixir('article.css') }}">
+    <link rel="stylesheet" href="{{ mix('content_explorer_bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ mix('h5picons.css') }}">
+    <link rel="stylesheet" href="{{ mix('react-article.css') }}">
+    <link rel="stylesheet" href="{{ mix('article.css') }}">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700">
     @yield('customCSS')
     <script type="text/x-mathjax-config">
@@ -25,8 +25,8 @@
 <article class="{{$ndlaArticle === true ? 'ndla-article' : 'edlib-article'}}">
     @yield('content')
 </article>
-<script src="{{ elixir('bootstrap.js') }}"></script>
-<script src="{{ elixir('article.js') }}"></script>
+<script src="{{ mix('bootstrap.js') }}"></script>
+<script src="{{ mix('article.js') }}"></script>
 @stack('js')
 </body>
 </html>

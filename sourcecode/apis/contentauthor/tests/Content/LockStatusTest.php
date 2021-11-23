@@ -21,12 +21,12 @@ class LockStatusTest extends TestCase
     public function testLockStatus()
     {
         $this->setUpVersioningClient();
-        $h5p = factory(H5PContent::class)->create();
-        $lockStatus = factory(ContentLock::class)->create([
+        $h5p = H5PContent::factory()->create();
+        $lockStatus = ContentLock::factory()->create([
             'content_id' => $h5p->id,
             'updated_at' => Carbon::now()->subSeconds(30)
         ]);
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
 
         $this->withSession(['authId' => $user->auth_id])
             ->get(route('lock.status', $lockStatus->content_id))
@@ -40,22 +40,22 @@ class LockStatusTest extends TestCase
     public function testLockStatusExpired()
     {
         $this->setUpVersioningClient();
-        $user = factory(User::class)->make();
-        $originalArticle = factory(Article::class)->create(
+        $user = User::factory()->make();
+        $originalArticle = Article::factory()->create(
             [
                 'id' => '0800e3f5-d7a7-4add-a12a-16df86462837',
                 'owner_id' => $user->auth_id,
                 'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f'
             ]);
 
-        $newArticle = factory(Article::class)->create([
+        $newArticle = Article::factory()->create([
             'id' => '9655b7b5-0f2a-4664-a191-09d874a50cab',
             'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f',
             'owner_id' => $user->auth_id,
             'parent_id' => $originalArticle->id
         ]);
 
-        $lockStatus = factory(ContentLock::class)->create([
+        $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
             'updated_at' => Carbon::now()->subSeconds(91)
         ]);
@@ -76,15 +76,15 @@ class LockStatusTest extends TestCase
             'feature.lock-max-hours' => 20,
         ]);
         $this->setUpVersioningClient();
-        $user = factory(User::class)->make();
-        $originalArticle = factory(Article::class)->create(
+        $user = User::factory()->make();
+        $originalArticle = Article::factory()->create(
             [
                 'id' => '0800e3f5-d7a7-4add-a12a-16df86462837',
                 'owner_id' => $user->auth_id,
                 'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f'
             ]);
 
-        $lockStatus = factory(ContentLock::class)->create([
+        $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
             'auth_id' => $user->auth_id,
             'created_at' => Carbon::now()->subSeconds(30),
@@ -119,10 +119,10 @@ class LockStatusTest extends TestCase
     public function testYouNeedToBeLoggedIn()
     {
         $this->setUpVersioningClient();
-        $user = factory(User::class)->make();
-        $originalArticle = factory(Article::class)->create(['owner_id' => $user->auth_id]);
+        $user = User::factory()->make();
+        $originalArticle = Article::factory()->create(['owner_id' => $user->auth_id]);
 
-        $lockStatus = factory(ContentLock::class)->create([
+        $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
             'updated_at' => Carbon::now()->subMinutes(40)
         ]);

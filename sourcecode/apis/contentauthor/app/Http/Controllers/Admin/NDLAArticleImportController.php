@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App;
-use File;
-use Cache;
-use Storage;
+use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Illuminate\Support\Facades\App;
+use App\NdlaArticleId;
+use Illuminate\Support\Facades\File;
 use App\Article;
 use App\NdlaIdMapper;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class NDLAArticleImportController extends Controller
             return view('admin.ndla-article-import.configure');
         }
 
-        $articles = App\NdlaArticleId::paginate($this->articlesPerPage);
+        $articles = NdlaArticleId::paginate($this->articlesPerPage);
 
         $articles->each(function ($article) {
             $article->ca_id = null;
@@ -54,7 +54,7 @@ class NDLAArticleImportController extends Controller
         $articleApiCount = $articleApiClient->getTotalArticleCount();
 
         return view('admin.ndla-article-import.index')
-            ->with(compact('articles', 'articleCount', 'articleApiCount', 'owner'));
+            ->with(compact('articles', 'articleApiCount', 'owner'));
     }
 
     public function store(Request $request)
@@ -80,7 +80,7 @@ class NDLAArticleImportController extends Controller
 
     public function show($id)
     {
-        $storedArticle = App\NdlaArticleId::findOrFail($id);
+        $storedArticle = NdlaArticleId::findOrFail($id);
 
         $article = $storedArticle->json;
 
@@ -92,7 +92,7 @@ class NDLAArticleImportController extends Controller
 
     public function import(Request $request, $id)
     {
-        if (resolve(App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->adapterIs('cerpus')) {
+        if (resolve(H5PAdapterInterface::class)->adapterIs('cerpus')) {
             /** @var ArticleApiClient $articleApi */
             $articleApi = resolve(ArticleApiClient::class);
 
@@ -137,18 +137,18 @@ class NDLAArticleImportController extends Controller
         set_time_limit(0);
         $startTime = microtime(true);
         /** @var ArticleApiClient $articleApiClient */
-        $articleApiClient = app()->makeWith(\App\Libraries\NDLA\API\ArticleApiClient::class, ['client' => null, 'pageSize' => 10]);
+        $articleApiClient = app()->makeWith(ArticleApiClient::class, ['client' => null, 'pageSize' => 10]);
 
         $articleApiClient->setPage(1)->getArticles();
 
-        $articleId = \App\NdlaArticleId::max('id') + 1;
+        $articleId = NdlaArticleId::max('id') + 1;
         if (!$articleId) {
             $articleId = 1;
         } else {
             $articleId++;
         }
 
-        $importedArticles = \App\NdlaArticleId::count();
+        $importedArticles = NdlaArticleId::count();
         if (!$importedArticles) {
             $importedArticles = 0;
         }
@@ -157,7 +157,7 @@ class NDLAArticleImportController extends Controller
         do {
             try {
                 $article = $articleApiClient->getArticle($articleId);
-                \App\NdlaArticleId::updateOrCreate(
+                NdlaArticleId::updateOrCreate(
                     [
                         'id' => $article->id,
                     ],
@@ -193,7 +193,7 @@ class NDLAArticleImportController extends Controller
 
         $isId = !!filter_var($searchFor, FILTER_VALIDATE_INT);
 
-        $articles = App\NdlaArticleId::when(!$isId, function ($q) use ($searchFor) {
+        $articles = NdlaArticleId::when(!$isId, function ($q) use ($searchFor) {
             return $q->where('title', 'LIKE', $searchFor . '%');
         })
             ->when($isId, function ($q) use ($searchFor) {
@@ -228,7 +228,7 @@ class NDLAArticleImportController extends Controller
 
     public function all(Request $request)
     {
-        // $this->dispatch(new App\Jobs\ImportAllArticles());
+        // $this->dispatch(new \App\Jobs\ImportAllArticles());
 
         //echo "Peak memory use: " . sprintf("%0.3f", memory_get_peak_usage()/(1024*1024)) . "MB<br>";
         //echo "PHP memory use: " . sprintf("%0.3f", memory_get_usage()/(1024*1024)) . "MB<br>";

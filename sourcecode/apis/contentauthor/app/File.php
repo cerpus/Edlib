@@ -2,8 +2,9 @@
 
 namespace App;
 
-use Log;
-use Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class File extends Model
 {
+    use HasFactory;
+
     public function article()
     {
         return $this->belongsTo(Article::class);

@@ -16,8 +16,8 @@ class ContextShareProcessorTest extends TestCase
     public function testContextSharesAreRemoved()
     {
         $authId = $this->faker->uuid;
-        factory(CollaboratorContext::class)->create(['collaborator_id' => $authId, 'content_id' => 1]);
-        factory(CollaboratorContext::class, 2)->create();
+        CollaboratorContext::factory()->create(['collaborator_id' => $authId, 'content_id' => 1]);
+        CollaboratorContext::factory()->count(2)->create();
 
         $this->assertCount(3, CollaboratorContext::all());
         $this->assertDatabaseHas('collaborator_contexts', ['collaborator_id' => $authId, 'content_id' => 1]);

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App;
 use Closure;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\SessionKeys;
 
 class AddExtQuestionSetToRequestMiddleware

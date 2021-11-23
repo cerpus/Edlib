@@ -14,7 +14,6 @@ use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Recommendable;
-use App\Traits\Taggable;
 use App\Traits\Versionable;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
@@ -22,8 +21,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Log;
-use Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Class Content
@@ -40,7 +39,8 @@ use Session;
  */
 abstract class Content extends Model implements RecommendableInterface
 {
-    use Taggable, HasLanguage, HasTranslations, Attributable, Versionable, Recommendable;
+    use HasLanguage, HasTranslations, Attributable, Versionable;
+    //use Recommendable;
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable
@@ -123,7 +123,7 @@ abstract class Content extends Model implements RecommendableInterface
             $authApi = app(AuthApiService::class);
             $user = $authApi->getUser($ownerId);
             if ($user) {
-                $ownerName = trim(implode([$user->getFirstName(), $user->getLastName()], " "));
+                $ownerName = trim(implode(' ', [$user->getFirstName(), $user->getLastName()]));
             }
 
         } catch (Exception $e) {

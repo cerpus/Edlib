@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Article')</title>
-    <link rel="stylesheet" href="{{ elixir('content_explorer_bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ elixir('h5picons.css') }}">
-    <link rel="stylesheet" href="{{ elixir('react-app.css') }}">
-    <link rel="stylesheet" href="{{ elixir('link.css') }}">
+    <link rel="stylesheet" href="{{ mix('content_explorer_bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ mix('h5picons.css') }}">
+    <link rel="stylesheet" href="{{ mix('react-app.css') }}">
+    <link rel="stylesheet" href="{{ mix('link.css') }}">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700">
     @yield('customCSS')
 </head>

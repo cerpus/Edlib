@@ -2,7 +2,7 @@
 namespace App\Libraries\NDLA\Importers;
 
 use Cerpus\LicenseClient\Contracts\LicenseContract;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Article;
 use App\NdlaIdMapper;
 use Ramsey\Uuid\Uuid;

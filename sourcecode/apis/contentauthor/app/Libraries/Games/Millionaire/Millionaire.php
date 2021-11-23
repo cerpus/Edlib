@@ -17,7 +17,7 @@ use App\Transformers\QuestionSetsTransformer;
 use Cerpus\ImageServiceClient\DataObjects\ImageParamsObject;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class Millionaire extends GameBase
 {
@@ -175,7 +175,6 @@ class Millionaire extends GameBase
 
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
-        $gameData['tags'] = $game->getMetaTagsAsArray();
 
         $ownerName = $game->getOwnerName($game->owner);
 

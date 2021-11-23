@@ -2,7 +2,7 @@
 namespace App\ACL;
 
 use App\ArticleCollaborator;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\Article;
 
 trait ArticleAccess

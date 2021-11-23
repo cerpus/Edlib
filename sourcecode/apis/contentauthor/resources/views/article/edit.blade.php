@@ -8,11 +8,11 @@
     </script>
 @endpush
 @push('js')
-    <script src="{{ elixir('react-article.js') }}"></script>
+    <script src="{{ mix('react-article.js') }}"></script>
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ elixir('react-article.css') }}">
-    <link rel="stylesheet" href="{{ elixir('ckeditor_popup.css') }}">
-    <link rel="stylesheet" href="{{ elixir('article.css') }}">
+    <link rel="stylesheet" href="{{ mix('react-article.css') }}">
+    <link rel="stylesheet" href="{{ mix('ckeditor_popup.css') }}">
+    <link rel="stylesheet" href="{{ mix('article.css') }}">
 @endpush

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\ContentLock;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;

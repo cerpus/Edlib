@@ -10,7 +10,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Exception;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
-use Session;
+use Illuminate\Support\Facades\Session;
 use stdClass;
 
 trait Config
@@ -163,6 +163,10 @@ trait Config
 
     protected function addCoreAssets()
     {
+        if (!isset($this->config)) {
+            $this->config = (object) [];
+        }
+
         $core = $this->h5pCore;
         $coreAssets = array_merge($core::$scripts, ["js/h5p-display-options.js"]);
         foreach ($coreAssets as $script) {
@@ -205,9 +209,9 @@ trait Config
         return $this->preview !== true ? '/api/progress?action=h5p_setFinished' : '/api/progress?action=h5p_preview&f=1';
     }
 
-    public function canGiveScore()
+    public function canGiveScore(): bool
     {
-        return !!$this->content['max_score'] ?? false;
+        return $this->content['max_score'] ?? false;
     }
 
     private function getDisplayName()

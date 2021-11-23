@@ -33,10 +33,10 @@
 @endsection
 
 @push("js")
-    <script src="{{ elixir("js/link-editor.js") }}"></script>
+    <script src="{{ mix("js/link-editor.js") }}"></script>
     @include('fragments.js.edit-unlock', ['content' => $link])
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ elixir('link.css') }}">
+    <link rel="stylesheet" href="{{ mix('link.css') }}">
 @endpush

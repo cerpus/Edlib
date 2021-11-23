@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class H5PAccessApi extends Controller
 {

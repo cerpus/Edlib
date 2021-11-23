@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Article;
 use App\H5PContent;
 use App\Events\H5PWasCopied;

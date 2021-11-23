@@ -3,7 +3,8 @@
 namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use Log;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
@@ -34,6 +35,8 @@ use App\Http\Libraries\ArticleFileVersioner;
  */
 class Article extends Content implements VersionableObject
 {
+    use HasFactory;
+
     const TMP_UPLOAD_SESSION_KEY = 'articleTmpFiles';
 
     public $incrementing = false;

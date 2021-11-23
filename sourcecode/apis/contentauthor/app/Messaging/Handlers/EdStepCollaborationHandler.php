@@ -2,7 +2,7 @@
 
 namespace App\Messaging\Handlers;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Libraries\Workers\EdStepContextCollaboratorProcessor;
 
 class EdStepCollaborationHandler
