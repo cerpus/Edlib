@@ -10,6 +10,8 @@ Homestead.json
 !/public/index.php
 !/public/robots.txt
 !/public/.htaccess
+!/public/js
+!/public/graphical
 app/Libraries/oauth-php/example/server/cache/
 ca1.sql
 cerpus_export_log*
