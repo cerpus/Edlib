@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|LtiDeployment whereLtiRegistrationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LtiDeployment whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @mixin IdeHelperLtiDeployment
  */
 class LtiDeployment extends Model
 {

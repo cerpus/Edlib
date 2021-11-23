@@ -6,6 +6,7 @@ namespace App\Services\Lti;
 use App\Exceptions\NotFoundException;
 use App\Models\LtiRegistration;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class LtiOIDCLogin
 {
@@ -42,8 +43,8 @@ class LtiOIDCLogin
         $state = str_replace('.', '_', uniqid('state-', true));
 
         // Generate Nonce.
-        $nonce = uniqid('', true);
-        $nonce = Cache::set('nonce_' . $nonce, $nonce);
+        $nonce = Str::uuid()->toString();
+        Cache::put('nonce_' . $nonce, $nonce, $seconds = 60 * 60);
 
         // Build Response.
         $auth_params = [

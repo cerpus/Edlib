@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LtiRegistration[] $ltiRegistrations
  * @property-read int|null $lti_registrations_count
  * @property-read \App\Models\LtiKey|null $newestKey
+ * @mixin IdeHelperLtiKeySet
  */
 class LtiKeySet extends Model
 {

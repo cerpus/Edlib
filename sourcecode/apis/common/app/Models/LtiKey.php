@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|LtiKey wherePublicKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LtiKey whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @mixin IdeHelperLtiKey
  */
 class LtiKey extends Model
 {

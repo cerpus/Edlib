@@ -35,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LtiDeployment[] $ltiDeployments
  * @property-read int|null $lti_deployments_count
+ * @mixin IdeHelperLtiRegistration
  */
 class LtiRegistration extends Model
 {

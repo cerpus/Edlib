@@ -17,6 +17,7 @@ RUN set -eux; \
         opcache \
         pdo_mysql \
         zip \
+        redis \
     ; \
     mkdir -p \
         bootstrap/cache \
