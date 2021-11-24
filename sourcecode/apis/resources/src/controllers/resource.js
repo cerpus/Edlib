@@ -105,6 +105,9 @@ export default {
     getPublicResources: async (req) => {
         return resourceService.getResourcesFromRequest(req, null);
     },
+    adminGetAllResources: async (req) => {
+        return req.context.db.resource.getAllNotRemoved();
+    },
     getTenantResources: async (req) => {
         return resourceService.getResourcesFromRequest(
             req,
