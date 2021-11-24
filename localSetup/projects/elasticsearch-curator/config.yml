@@ -1,8 +1,0 @@
-client:
-  hosts:
-    - elasticsearch
-  port: 9200
-  username: ${ELASTICSEARCH_USERNAME}
-  password: ${ELASTICSEARCH_PASSWORD}
-logging:
-  loglevel: DEBUG
