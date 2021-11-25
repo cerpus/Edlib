@@ -4444,6 +4444,11 @@ lodash.isstring@^4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.isstring/-/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
   integrity sha1-1SfftUVuynzJu5XV2ur4i6VKVFE=
 
+lodash.mergewith@^4.6.2:
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/lodash.mergewith/-/lodash.mergewith-4.6.2.tgz#617121f89ac55f59047c7aec1ccd6654c6590f55"
+  integrity sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==
+
 lodash.once@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
@@ -5915,14 +5920,15 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-swagger-jsdoc@^6.0.2:
-  version "6.0.2"
-  resolved "https://registry.yarnpkg.com/swagger-jsdoc/-/swagger-jsdoc-6.0.2.tgz#145cde1973eb66fdd74e129042b1a5010dbe0596"
-  integrity sha512-2BxDpcL2t440xym1Y2lKxjI6OPe7DOggNBkA9zW1rE+f0G6CFkp4TMSwizaN22USLlw8WYzx0XgS2UAzq/qZzg==
+swagger-jsdoc@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/swagger-jsdoc/-/swagger-jsdoc-6.1.0.tgz#c2b86321f2c4dde8947b418fe8a4bc94431d5522"
+  integrity sha512-xgep5M8Gq31MxpCbQLvJZpNqHfGPfI+sILCzujZbEXIQp2COtkZgoGASs0gacRs4xHmLDH+GuMGdorPITSG4tA==
   dependencies:
     commander "6.2.0"
     doctrine "3.0.0"
     glob "7.1.6"
+    lodash.mergewith "^4.6.2"
     swagger-parser "10.0.2"
     yaml "2.0.0-1"
 
