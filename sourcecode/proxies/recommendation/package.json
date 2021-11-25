@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "jest-bamboo-reporter": "^1.2.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.15"
   },
   "babel": {
     "presets": [
