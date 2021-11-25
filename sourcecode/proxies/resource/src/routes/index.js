@@ -53,7 +53,6 @@ export default async () => {
     apiRouter.use(await status());
     apiRouter.use(await job());
     apiRouter.use(await directProxy());
-    // apiRouter.use(await graphql()); // @todo uncomment when graphql is ready
 
     router.get(
         '/_ah/health',
