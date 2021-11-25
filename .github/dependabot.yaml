@@ -3,4 +3,96 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+
+# -----------------------------------------------------
+# ------------ sourcecode/apis repos ------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/auth"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/common"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/contentauthor"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/doku"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/license"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/lti"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/resources"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/url"
+    schedule:
+      interval: "weekly"
+
+# -----------------------------------------------------
+# ---------- sourcecode/npm repos ---------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/npm/components"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/npm/nodeUtils"
+    schedule:
+      interval: "weekly"
+
+# -----------------------------------------------------
+# ---------- sourcecode/proxies repos -----------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/admin"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/auth"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/doku"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/iframe"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/lti"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/recommendation"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/resource"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/url"
+    schedule:
+      interval: "weekly"
+
+# -----------------------------------------------------
+# ----------------- www repos -------------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/www"
+    schedule:
+      interval: "weekly"
