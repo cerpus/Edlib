@@ -6800,17 +6800,10 @@ i18next-scanner@^3.0.0:
     vinyl "^2.2.0"
     vinyl-fs "^3.0.1"
 
-i18next@*:
-  version "19.8.3"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.8.3.tgz#10df7222db8c23389b13bceb9ba67a5e20a0241e"
-  integrity sha512-eVrqAw2gGGYYJaJMYw4VM1FNFawLD4b84IsoTZMVXeWHaxAM2gyTa34j2Sip15UkBz/LrSxdFJj0Jhlrz7EvHA==
-  dependencies:
-    "@babel/runtime" "^7.12.0"
-
-i18next@^20.6.1:
-  version "20.6.1"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-20.6.1.tgz#535e5f6e5baeb685c7d25df70db63bf3cc0aa345"
-  integrity sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==
+i18next@*, i18next@^21.5.3:
+  version "21.5.3"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.5.3.tgz#b2d4fd24bef7ea4ec4eba2ed3cadc0c28c0e3b4c"
+  integrity sha512-9R8127a0/N5okiD7eeo6XBPQsHgHsLr1GdQEa35Pcw305ArC9KZDLs9kbgdn3xuVUNYlVu8+gWzz73eVkna0gA==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
