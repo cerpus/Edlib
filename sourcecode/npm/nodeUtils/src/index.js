@@ -9,7 +9,6 @@ export { default as db, dbHelpers } from './services/db.js';
 export { default as env } from './services/env.js';
 export { default as exceptionTranslator } from './services/exceptionTranslator.js';
 export * as pubsub from './services/pubSub.js';
-export { default as redis } from './services/redis.js';
 export * as redisHelpers from './services/redis.js';
 export * as errorReporting from './services/errorReporting.js';
 
