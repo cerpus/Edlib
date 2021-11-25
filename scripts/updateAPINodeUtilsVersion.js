@@ -22,6 +22,11 @@ folders.forEach((folder) => {
       const projectFolder = path.resolve(folder, projectName);
       const packagePath = path.resolve(projectFolder, "package.json");
       const re = new RegExp(/"@cerpus\/edlib-node-utils": "\^?(.*)"/);
+      if (!fs.existsSync(packagePath)) {
+        console.info(`${packagePath} does not exists`);
+        return;
+      }
+
       const packageJson = fs.readFileSync(packagePath).toString();
 
       if (packageJson.includes("@cerpus/edlib-node-utils")) {
