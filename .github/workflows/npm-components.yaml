@@ -24,7 +24,9 @@ jobs:
           with:
             working-directory: ${{ env.workingDirectory }}
         - uses: JS-DevTools/npm-publish@v1
-          if: github.event_name != 'workflow_dispatch'
+          if: github.event_name != 'workflow_dispatch' && env.NPM_CERPUS_SECRET != ''
+          env:
+            NPM_CERPUS_SECRET: ${{ secrets.NPM_CERPUS_SECRET }}
           with:
             package: sourcecode/npm/components/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
