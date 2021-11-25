@@ -24,7 +24,7 @@ jobs:
           with:
             working-directory: ${{ env.workingDirectory }}
         - uses: JS-DevTools/npm-publish@v1
-          if: github.event_name != 'workflow_dispatch'
+          if: github.event_name == 'push'
           with:
             package: sourcecode/npm/components/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
