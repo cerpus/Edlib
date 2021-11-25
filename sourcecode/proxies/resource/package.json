@@ -12,7 +12,7 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@apollo/federation": "^0.25.1",
+    "@apollo/federation": "^0.29.1",
     "@babel/preset-env": "^7.12.13",
     "@cerpus/edlib-node-utils": "1.6.0",
     "@graphql-toolkit/schema-merging": "^0.10.7",
