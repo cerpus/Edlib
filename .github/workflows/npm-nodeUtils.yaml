@@ -26,6 +26,7 @@ jobs:
           run: cd ${{ env.workingDirectory }}; yarn test
           shell: bash
         - uses: JS-DevTools/npm-publish@v1
+          if: secrets.NPM_CERPUS_SECRET
           with:
             package: sourcecode/npm/nodeUtils/package.json
             token: ${{ secrets.NPM_CERPUS_SECRET }}
