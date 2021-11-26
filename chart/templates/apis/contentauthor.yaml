@@ -1,6 +1,6 @@
 {{- template "helpers.initJob" (dict "name" "contentauthor" "image" "public.ecr.aws/f0t8l9h1/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
 ---
-{{- template "helpers.service" (dict "name" "contentauthor" "port" 80) }}
+{{- template "helpers.service" (dict "name" "contentauthor") }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "contentauthor" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
