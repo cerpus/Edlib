@@ -1,6 +1,6 @@
 {{- template "helpers.initJob" (dict "name" "contentauthor" "image" "public.ecr.aws/f0t8l9h1/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
 ---
-{{- template "helpers.service" (dict "name" "contentauthor" "port" 8081) }}
+{{- template "helpers.service" (dict "name" "contentauthor" "port" 80) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "contentauthor" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
@@ -67,7 +67,7 @@ spec:
             failureThreshold: 10
             httpGet:
               path: /health
-              port: 8081
+              port: 80
               scheme: HTTP
             periodSeconds: 10
             successThreshold: 1
@@ -76,7 +76,7 @@ spec:
             failureThreshold: 2
             httpGet:
               path: /health
-              port: 8081
+              port: 80
               scheme: HTTP
             periodSeconds: 10
             successThreshold: 1
@@ -92,7 +92,7 @@ spec:
             failureThreshold: 100
             httpGet:
               path: /health
-              port: 8081
+              port: 80
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
