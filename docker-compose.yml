@@ -161,7 +161,7 @@ services:
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
     environment:
-      PHP_FPM_HOST: "contentauthor-fpm:31004"
+      PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
       - contentauthor-fpm
 
@@ -174,7 +174,7 @@ services:
       - ./localSetup/.env
     command: /startup.sh
     healthcheck:
-      test: [CMD, nc, -z, localhost, "31004"]
+      test: [CMD, nc, -z, localhost, "9000"]
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh

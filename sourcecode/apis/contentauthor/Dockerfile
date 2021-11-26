@@ -3,7 +3,6 @@ FROM php:7.4-fpm-alpine AS php_base
 WORKDIR /app
 
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-COPY docker/phpfpm-pool-www.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY . .
 COPY --from=composer:2 /usr/bin/composer /usr/bin/
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
@@ -97,12 +96,10 @@ CMD [ "php", "/app/artisan", "horizon" ]
 
 
 FROM buildresult AS phpfpm
-EXPOSE 31004
 CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
 FROM buildresult AS phpfpm-dev
-EXPOSE 31004
 RUN set -eux; \
     install-php-extensions \
         xdebug \
@@ -113,9 +110,8 @@ CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
 FROM nginx:1.19-alpine AS app
-ENV PHP_FPM_HOST "localhost:31004"
+ENV PHP_FPM_HOST "localhost:9000"
 COPY --from=buildresult /app/public /app/public
-EXPOSE 8081
 RUN apk add --no-cache bash
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
