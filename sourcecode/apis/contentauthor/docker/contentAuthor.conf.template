@@ -3,7 +3,7 @@ upstream php {
 }
 
 server {
-    listen 8081;
+    listen 80;
     index index.php;
     root /app/public;
     charset utf-8;
