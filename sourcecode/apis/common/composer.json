@@ -1,8 +1,12 @@
 {
     "type": "project",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "require": {
         "php": "^8.0",
+        "anik/laravel-amqp": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.54",

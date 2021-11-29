@@ -142,7 +142,6 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
-        Cerpus\Gdpr\GdprServiceProvider::class,
 
         Vinelab\Bowler\BowlerServiceProvider::class,
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,

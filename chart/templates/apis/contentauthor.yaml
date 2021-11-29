@@ -218,12 +218,94 @@ spec:
           volumeMounts:
             - mountPath: /storage
               name: storage-ca
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
       serviceAccount: contentauthor
-      serviceAccountName: contentauthor
       terminationGracePeriodSeconds: 30
+      volumes:
+        - emptyDir: {}
+          name: storage-ca
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contentauthor-rabbitmq-subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contentauthor-rabbitmq-subscriber
+  template:
+    metadata:
+      labels:
+        app: contentauthor-rabbitmq-subscriber
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    spec:
+      containers:
+        - name: main
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
+          command: "php artisan bowler:consume edlib_gdpr_delete_request-contentauthor"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          envFrom:
+            - secretRef:
+                name: ca-secret
+                optional: true
+            - configMapRef:
+                name: ca-config
+                optional: true
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1500Mi
+            requests:
+              cpu: 20m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /storage
+              name: storage-ca
+      initContainers:
+        - name: init
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-init:{{ .Chart.AppVersion }}"
+          env:
+            - name: STARTUP_CONTAINER_ENABLED
+              value: "0"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          envFrom:
+            - secretRef:
+                name: ca-secret
+                optional: true
+            - configMapRef:
+                name: ca-config
+                optional: true
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /storage
+              name: storage-ca
+      serviceAccount: contentauthor
       volumes:
         - emptyDir: {}
           name: storage-ca

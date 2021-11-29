@@ -1,13 +1,5 @@
 <?php
 
-Registrator::queue('ca-EdStep-CollaborationUpdates', 'App\Messaging\Handlers\EdStepCollaborationHandler', [
-    'exchangeName' => 'edstep_messages',
-    'exchangeType'=> 'topic',
-    'bindingKeys' => [
-        'edstep.context-shares.update'
-    ],
-    'pasive' => false,
-    'durable' => true,
-    'autoDelete' => false,
-    'messageTTL' => null
-]);
+use Vinelab\Bowler\Facades\Registrator;
+
+Registrator::subscriber('edlib_gdpr_delete_request-contentauthor', 'App\Messaging\Handlers\EdlibGdprDeleteRequest', ['*'], 'edlib_gdpr_delete_request', 'fanout');

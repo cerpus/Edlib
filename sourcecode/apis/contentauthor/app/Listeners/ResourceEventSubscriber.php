@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\ResourceSaved;
 use App\Libraries\DataObjects\ResourceDataObject;
-use Vinelab\Bowler\Producer;
 
 class ResourceEventSubscriber
 {
@@ -53,23 +52,11 @@ class ResourceEventSubscriber
 
     public function onResourceSaved(ResourceSaved $event)
     {
-        if (!config("feature.no-rabbitmq")) {
-            if( empty(self::$producer)){
-                self::$producer = app(Producer::class);
-            }
-            // @todo remove when core is gone
-            self::$producer->setup(config('queue.connections.rabbitmq.exchange_params.name'), config('queue.connections.rabbitmq.exchange_params.type'));
-            ob_start();
-            self::$producer->send(json_encode($event->resourceData), "ca.resource.saved");
-            ob_get_clean();
+        $connection = new Vinelab\Bowler\Connection();
+        $bowlerProducer = new Vinelab\Bowler\Producer($connection);
+        $bowlerProducer->setup('edlibResourceUpdate', 'fanout');
+        $bowlerProducer->send(json_encode($event->edlibResourceDataObject), '');
 
-            // new queue for edlib cleanup
-            self::$producer->setup(config('queue.connections.rabbitmq.edlibResourceUpdate.name'), config('queue.connections.rabbitmq.edlibResourceUpdate.type'));
-            ob_start();
-            self::$producer->send(json_encode($event->edlibResourceDataObject));
-            ob_get_clean();
-
-            return true;
-        }
+        return true;
     }
 }
