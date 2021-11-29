@@ -19,7 +19,7 @@
     "jest": "^27.4.0",
     "joi": "^17.4.2",
     "lodash": "^4.17.21",
-    "prettier": "^2.4.1",
+    "prettier": "^2.5.0",
     "supertest": "^6.1.6",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
