@@ -36,6 +36,9 @@ updates:
     directory: "/sourcecode/apis/resources"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "@elastic/elasticsearch"
+
   - package-ecosystem: "npm"
     directory: "/sourcecode/apis/url"
     schedule:
