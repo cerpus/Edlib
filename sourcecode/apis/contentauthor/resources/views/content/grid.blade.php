@@ -8,7 +8,6 @@
         <meta name="jwt" content="{{ $jwtToken }}"/>
     @endif
     <link href="{{ mix('css/content_explorer_bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ mix('css/react-app.css') }}" rel="stylesheet">
     <link href="{{ mix('css/font-awesome.css') }}" rel="stylesheet">
     <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 </head>

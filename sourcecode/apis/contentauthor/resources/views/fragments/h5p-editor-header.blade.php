@@ -13,7 +13,6 @@
             {!! HTML::style($css) !!}
         @endforeach
     @endif
-    <link rel="stylesheet" href="{{ mix('css/react-app.css') }}">
     {!! HTML::script('https://code.jquery.com/jquery-1.11.3.min.js') !!}
 </head>
 <body id="theBody" onunload="unlock()">

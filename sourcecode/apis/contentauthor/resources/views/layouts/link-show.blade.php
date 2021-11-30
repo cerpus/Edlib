@@ -7,7 +7,6 @@
     <title>@yield('title', 'Article')</title>
     <link rel="stylesheet" href="{{ mix('css/content_explorer_bootstrap.css') }}">
     <link rel="stylesheet" href="{{ mix('css/h5picons.css') }}">
-    <link rel="stylesheet" href="{{ mix('css/react-app.css') }}">
     <link rel="stylesheet" href="{{ mix('css/link.css') }}">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700">
     @yield('customCSS')
