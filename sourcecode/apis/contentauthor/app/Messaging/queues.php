@@ -1,5 +1,7 @@
 <?php
 
+use Vinelab\Bowler\Facades\Registrator;
+
 Registrator::queue('ca-EdStep-CollaborationUpdates', 'App\Messaging\Handlers\EdStepCollaborationHandler', [
     'exchangeName' => 'edstep_messages',
     'exchangeType'=> 'topic',
