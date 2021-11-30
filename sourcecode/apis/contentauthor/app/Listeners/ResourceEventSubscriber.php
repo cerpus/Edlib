@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ResourceSaved;
 use App\Libraries\DataObjects\ResourceDataObject;
+use Cerpus\LaravelRabbitMQPubSub\Facades\RabbitMQPubSub;
 
 class ResourceEventSubscriber
 {
@@ -52,10 +53,7 @@ class ResourceEventSubscriber
 
     public function onResourceSaved(ResourceSaved $event)
     {
-        $connection = new Vinelab\Bowler\Connection();
-        $bowlerProducer = new Vinelab\Bowler\Producer($connection);
-        $bowlerProducer->setup('edlibResourceUpdate', 'fanout');
-        $bowlerProducer->send(json_encode($event->edlibResourceDataObject), '');
+        RabbitMQPubSub::publish('edlibResourceUpdate', json_encode($event->edlibResourceDataObject));
 
         return true;
     }

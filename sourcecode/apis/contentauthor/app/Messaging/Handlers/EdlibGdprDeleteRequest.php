@@ -8,9 +8,10 @@ use App\Gdpr\Handlers\H5PResultProcessor;
 use App\Gdpr\Handlers\Processor;
 use App\Gdpr\Handlers\ShareProcessor;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
+use Cerpus\LaravelRabbitMQPubSub\RabbitMQPubSubConsumerHandler;
 use Illuminate\Support\Facades\Log;
 
-class EdlibGdprDeleteRequest
+class EdlibGdprDeleteRequest implements RabbitMQPubSubConsumerHandler
 {
     protected $processors = [
         ShareProcessor::class,
@@ -19,14 +20,16 @@ class EdlibGdprDeleteRequest
         ContentLockProcessor::class,
     ];
 
-    /**
-     * Handle message.
-     *
-     * @param PhpAmqpLib\Message\AMQPMessage $msg
-     */
-    public function handle($msg): void
+    public function handleError(\Exception $e, $broker): void
     {
-        $edlibGdprDeleteMessage = new EdlibGdprDeleteMessage(json_decode($msg->body, true));
+        $broker->ackMessage();
+        Log::error($e);
+    }
+
+    public function consume(string $data)
+    {
+        var_dump($data);
+        $edlibGdprDeleteMessage = new EdlibGdprDeleteMessage(json_decode($data, true));
 
         foreach ($this->processors as $processor) {
             $worker = new $processor;
@@ -37,11 +40,5 @@ class EdlibGdprDeleteRequest
             }
             unset($worker);
         }
-    }
-
-    public function handleError(\Exception $e, $broker): void
-    {
-        $broker->ackMessage();
-        Log::error($e);
     }
 }
