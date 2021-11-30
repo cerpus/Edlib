@@ -194,7 +194,7 @@ services:
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672;php artisan bowler:consume edlib_gdpr_delete_request-contentauthor"
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
@@ -560,6 +560,20 @@ services:
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
+
+  common-subscribers:
+    build:
+      context: ./sourcecode/apis/common
+      target: dev
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    env_file:
+      - ./localSetup/.env
+    volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/common:/var/www/edlibcommon
+      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+    depends_on:
+      - edlib-common-fpm
 
   # --------------------------------------------
   # ----- Services needed for edlib facade -----

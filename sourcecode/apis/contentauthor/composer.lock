@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "183c7e30b1f01e617174f63ec905da2a",
+    "content-hash": "d98936739b826d154c5749a198483869",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -688,16 +688,16 @@
         },
         {
             "name": "cerpus/laravel-rabbitmq-pubsub",
-            "version": "dev-setup",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub.git",
-                "reference": "27005911fa0c73726be1d08f8144a9d532460c5b"
+                "reference": "6e52d74512539301e841c0a3266d58e409d3ecbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/27005911fa0c73726be1d08f8144a9d532460c5b",
-                "reference": "27005911fa0c73726be1d08f8144a9d532460c5b",
+                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/6e52d74512539301e841c0a3266d58e409d3ecbb",
+                "reference": "6e52d74512539301e841c0a3266d58e409d3ecbb",
                 "shasum": ""
             },
             "require": {
@@ -710,8 +710,10 @@
                 "php-amqplib/php-amqplib": "3.0.*"
             },
             "require-dev": {
+                "orchestra/testbench": "^6.23",
                 "phpunit/phpunit": "9.5.10"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -741,9 +743,9 @@
             "description": "Client for RabbitMQ pubsub in a laravel project",
             "support": {
                 "issues": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/issues",
-                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/setup"
+                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/master"
             },
-            "time": "2021-11-29T14:56:38+00:00"
+            "time": "2021-11-30T13:55:43+00:00"
         },
         {
             "name": "cerpus/license-client",
@@ -8877,16 +8879,16 @@
         },
         {
             "name": "composer/composer",
-            "version": "2.1.12",
+            "version": "2.1.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "6e3c2b122e0ec41a7e885fcaf19fa15e2e0819a0"
+                "reference": "cd28fc05b0c9d3beaf58b57018725c4dc15a6446"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/6e3c2b122e0ec41a7e885fcaf19fa15e2e0819a0",
-                "reference": "6e3c2b122e0ec41a7e885fcaf19fa15e2e0819a0",
+                "url": "https://api.github.com/repos/composer/composer/zipball/cd28fc05b0c9d3beaf58b57018725c4dc15a6446",
+                "reference": "cd28fc05b0c9d3beaf58b57018725c4dc15a6446",
                 "shasum": ""
             },
             "require": {
@@ -8901,7 +8903,7 @@
                 "react/promise": "^1.2 || ^2.7",
                 "seld/jsonlint": "^1.4",
                 "seld/phar-utils": "^1.0",
-                "symfony/console": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0",
+                "symfony/console": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0",
                 "symfony/filesystem": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0",
                 "symfony/finder": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0",
                 "symfony/process": "^2.8.52 || ^3.4.35 || ^4.4 || ^5.0 || ^6.0"
@@ -8955,7 +8957,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/composer/issues",
-                "source": "https://github.com/composer/composer/tree/2.1.12"
+                "source": "https://github.com/composer/composer/tree/2.1.14"
             },
             "funding": [
                 {
@@ -8971,7 +8973,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-09T15:02:04+00:00"
+            "time": "2021-11-30T09:51:43+00:00"
         },
         {
             "name": "composer/metadata-minifier",
