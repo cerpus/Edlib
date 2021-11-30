@@ -16,7 +16,7 @@
     "@cerpus/edlib-node-utils": "1.6.0",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.4.0",
+    "jest": "^27.4.1",
     "joi": "^17.4.2",
     "js-yaml": "^4.1.0",
     "prettier": "^2.5.0",
