@@ -37,7 +37,7 @@ updates:
     schedule:
       interval: "weekly"
     ignore:
-      - dependency-name: "@elastic/elasticsearch"
+      - dependency-name: "@elastic/elasticsearch" # newer versions of this client doesn't support elasticsearch in AWS
 
   - package-ecosystem: "npm"
     directory: "/sourcecode/apis/url"
