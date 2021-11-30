@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../utils/axiosSetup';
 import { injectIntl, intlShape } from 'react-intl';
 import VideoBrowserLayout from './VideoBrowserLayout';
 import { getLicenseByNBTitle } from '@ndla/licenses';

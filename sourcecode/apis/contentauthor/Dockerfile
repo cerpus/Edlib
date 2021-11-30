@@ -41,14 +41,13 @@ RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
 
-FROM node:11-alpine AS jsbuild
+FROM node:16-alpine AS jsbuild
 WORKDIR /app
-RUN npm config set unsafe-perm true
-RUN apk add --no-cache alpine-sdk python make g++ bash
-RUN npm i -g node-gyp
-COPY package.json npm-shrinkwrap.json ./
+RUN apk add --no-cache build-base python2
+RUN npm i -g npm node-gyp
+COPY package.json package-lock.json ./
 RUN npm i
-COPY webpack.config.js webpack.mix.js .babelrc ./
+COPY webpack.mix.js ./
 COPY --from=php_base /app/vendor ./vendor
 COPY --from=php_base /app/resources ./resources
 COPY --from=php_base /app/public ./public

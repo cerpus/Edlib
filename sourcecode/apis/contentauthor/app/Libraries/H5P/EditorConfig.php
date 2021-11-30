@@ -119,13 +119,12 @@ class EditorConfig implements ConfigInterface
     private function getEditorStyles()
     {
         $editor = $this->editor;
-        $editorStyles[] = (string) mix('h5p-core.css');
-        $editorStyles[] = (string) mix('h5p-admin.css');
+        $editorStyles[] = (string) mix('css/h5p-core.css');
+        $editorStyles[] = (string) mix('css/h5p-admin.css');
         foreach ($editor::$styles as $style) {
             $editorStyles[] = $this->getAssetUrl("editor", $style);
         }
         $editorStyles[] = '//fonts.googleapis.com/css?family=Lato:400,700';
-        $editorStyles[] = (string) mix('react-h5p.css');
         return array_merge($editorStyles, $this->adapter->getEditorCss());
     }
 
@@ -158,7 +157,7 @@ class EditorConfig implements ConfigInterface
         }
 
         foreach ([
-                     (string) mix("h5pmetadata.js"),
+                     (string) mix("js/h5pmetadata.js"),
                      '/js/editor-setup.js',
                  ] as $script) {
             $scriptPath = $this->getAssetUrl(null, $script);

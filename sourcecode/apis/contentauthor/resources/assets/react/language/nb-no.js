@@ -1,16 +1,16 @@
-import { messagesNbNo as AudioBrowser } from 'AudioBrowser/language';
-import { messagesNbNo as LicenseChooser } from 'LicenseChooser';
-import { messagesNbNo as LicenseIcon } from 'LicenseIcon';
-import { messagesNbNo as LicenseText } from 'LicenseText';
-import { messagesNbNo as Owner } from 'Owner';
-import { messagesNbNo as QuestionContentType } from 'QuestionContentType';
-import { messagesNbNo as TagsManager } from 'TagsManager';
-import { messagesNbNo as VideoBrowser } from 'VideoBrowser/language';
-import { messagesNbNo as EmbedContentType } from 'EmbedContentType';
-import { messagesNbNo as H5pEditor } from 'H5pEditor';
-import { messagesNbNo as FileUploadProgress } from 'FileUploadProgress';
-import { messagesNbNo as Sidebar } from 'Sidebar';
-import { messagesNbNo as Article } from 'Article';
+import { messagesNbNo as AudioBrowser } from '../components/AudioBrowser/language';
+import { messagesNbNo as LicenseChooser } from '../components/LicenseChooser';
+import { messagesNbNo as LicenseIcon } from '../components/LicenseIcon';
+import { messagesNbNo as LicenseText } from '../components/LicenseText';
+import { messagesNbNo as Owner } from '../components/Owner';
+import { messagesNbNo as QuestionContentType } from '../components/QuestionContentType';
+import { messagesNbNo as TagsManager } from '../components/TagsManager';
+import { messagesNbNo as VideoBrowser } from '../components/VideoBrowser/language';
+import { messagesNbNo as EmbedContentType } from '../components/EmbedContentType';
+import { messagesNbNo as H5pEditor } from '../components/H5pEditor';
+import { messagesNbNo as FileUploadProgress } from '../components/FileUploadProgress';
+import { messagesNbNo as Sidebar } from '../components/Sidebar';
+import { messagesNbNo as Article } from '../components/Article';
 
 export default {
     locale: 'nb-NO',

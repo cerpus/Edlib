@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Answer, Card, Question, rerenderMathJax } from '../utils';
 import { injectIntl, intlShape } from 'react-intl';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../../../utils/axiosSetup';
 import H5PQuizLayout from './H5PQuizLayout';
 
 class H5PQuizContainer extends Component {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Alert, Button } from '@cerpus/ui';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../../../utils/axiosSetup';
 import { Lock as LockIcon } from '@material-ui/icons';
 
 const Lock = ({ intl, pollUrl, editor, lockReleased, editUrl: currentEditUrl }) => {

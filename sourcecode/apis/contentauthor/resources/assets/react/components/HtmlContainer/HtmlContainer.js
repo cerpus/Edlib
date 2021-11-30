@@ -3,7 +3,7 @@ import './HtmlContainer.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { stripHTML } from 'utils/Helper.js';
+import { stripHTML } from '../../utils/Helper.js';
 
 /**
  * Output a text string as HTML, or optionally strip HTML tags from the string before displaying.

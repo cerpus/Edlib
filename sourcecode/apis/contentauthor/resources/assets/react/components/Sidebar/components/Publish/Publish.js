@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import WarningIcon from '@material-ui/icons/Warning';
 import { Fade } from '@material-ui/core';
 import { Switch } from '@cerpus/ui';
-import { useForm, FormActions } from 'contexts/FormContext';
+import { useForm, FormActions } from '../../../../contexts/FormContext';
 
 const Publish = ({ label, initialPublish = false }) => {
     const { dispatch, state: { isPublished = initialPublish } } = useForm();
