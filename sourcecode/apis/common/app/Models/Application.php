@@ -25,9 +25,9 @@ use Ramsey\Uuid\Uuid;
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereUpdatedAt($value)
- * @mixin IdeHelperApplication
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GdprRequest[] $gdprRequests
  * @property-read int|null $gdpr_requests_count
+ * @mixin IdeHelperApplication
  */
 class Application extends Model
 {

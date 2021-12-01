@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * App\Models\MaintenanceMode
  *
- * @mixin IdeHelperMaintenanceMode
  * @property int $id
  * @property bool $enabled
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -20,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|MaintenanceMode whereEnabled($value)
  * @method static Builder|MaintenanceMode whereId($value)
  * @method static Builder|MaintenanceMode whereUpdatedAt($value)
+ * @mixin IdeHelperMaintenanceMode
  */
 class MaintenanceMode extends Model
 {

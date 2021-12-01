@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|GdprRequestCompletedStep whereStepName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|GdprRequestCompletedStep whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @mixin IdeHelperGdprRequestCompletedStep
  */
 class GdprRequestCompletedStep extends Model
 {

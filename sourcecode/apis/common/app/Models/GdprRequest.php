@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @mixin \Eloquent
  * @property string|null $request_id
  * @property string $user_id
+ * @mixin IdeHelperGdprRequest
  */
 class GdprRequest extends Model
 {
