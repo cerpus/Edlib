@@ -10,15 +10,21 @@ use Tests\TestCase;
 use App\QuestionSet;
 use App\Collaborator;
 use App\H5PCollaborator;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\ArticleCollaborator;
 use App\Gdpr\Handlers\ShareProcessor;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ShareProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testRemovesSharesFromArticles()
     {

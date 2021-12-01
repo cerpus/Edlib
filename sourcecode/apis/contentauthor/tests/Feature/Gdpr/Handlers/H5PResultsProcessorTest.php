@@ -5,14 +5,20 @@ namespace Tests\Feature\Gdpr\Handlers;
 use App\H5PResult;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\H5PResultProcessor;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class H5PResultsProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testResultsAreDeleted()
     {

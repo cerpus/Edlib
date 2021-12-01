@@ -5,6 +5,7 @@ namespace Tests\Feature\Gdpr\Handlers;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
 use App\ContentLock;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\ContentLockProcessor;
 use Cerpus\Gdpr\Models\GdprDeletionRequest;
@@ -12,7 +13,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ContentLockProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testRemovesContentLocksBasedOnAuthId()
     {
