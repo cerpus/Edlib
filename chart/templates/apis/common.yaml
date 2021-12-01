@@ -25,7 +25,10 @@ spec:
       containers:
         - name: main
           image: "public.ecr.aws/f0t8l9h1/api-common-fpm:{{ .Chart.AppVersion }}"
-          command: "php artisan laravel-rabbitmq-pubsub:consumer"
+          command:
+            - php
+            - artisan
+            - laravel-rabbitmq-pubsub:consumer
           envFrom:
             - configMapRef:
                 name: common-config
