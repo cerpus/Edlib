@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Middleware;
+
 use Tests\TestCase;
 
 class Oauth10VerificationTest extends TestCase
