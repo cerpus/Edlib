@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../../../utils/axiosSetup';
 import { FormControl, NativeSelect } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 

@@ -38,5 +38,5 @@
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ mix('link.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/link.css') }}">
 @endpush

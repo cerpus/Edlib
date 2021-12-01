@@ -7,12 +7,12 @@
         const uploadUrl = '{{ route('article-upload.existing', $article->id) }}';
     </script>
 @endpush
+
 @push('js')
-    <script src="{{ mix('react-article.js') }}"></script>
+    <script src="{{ mix('js/react-article.js') }}"></script>
+    <link rel="stylesheet" href="{{ mix('js/article.js') }}">
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ mix('react-article.css') }}">
-    <link rel="stylesheet" href="{{ mix('ckeditor_popup.css') }}">
-    <link rel="stylesheet" href="{{ mix('article.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/ckeditor_popup.css') }}">
 @endpush

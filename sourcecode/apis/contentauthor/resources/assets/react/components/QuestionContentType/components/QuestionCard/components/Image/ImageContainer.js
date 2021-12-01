@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImageLayout from './ImageLayout';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../../../../../utils/axiosSetup';
 import { Image } from '../../../utils';
 
 export default class ImageContainer extends Component {

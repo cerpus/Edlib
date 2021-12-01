@@ -58,7 +58,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
      */
     public function getCustomEditorScripts(): array
     {
-        return ['/js/videos/streamps.js', '/js/videos/brightcove.js'];
+        return ['/js/videos/streamps.js', asset('js/videos/brightcove.js')];
     }
 
     /**

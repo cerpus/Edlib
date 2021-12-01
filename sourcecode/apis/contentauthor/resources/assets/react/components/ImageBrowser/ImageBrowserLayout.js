@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NDLAImage from '@ndla/image-search';
-import Dialog from 'Dialog';
+import Dialog from '../Dialog';
 
 function ImageBrowserLayout({
     onCancel,

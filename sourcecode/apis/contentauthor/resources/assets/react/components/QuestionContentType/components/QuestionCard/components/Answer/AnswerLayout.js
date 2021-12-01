@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import Toggle from '../Toggle';
 import { ImageContainer } from '../Image';
-import RichEditor from 'RichEditor/RichEditor';
+import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
 
 const AnswerLayout = props => {

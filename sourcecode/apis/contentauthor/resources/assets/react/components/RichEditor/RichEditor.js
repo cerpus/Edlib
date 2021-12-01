@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { rerenderMathJax } from 'QuestionContentType/components/utils';
+import { rerenderMathJax } from '../QuestionContentType/components/utils';
 import { intlShape, injectIntl } from 'react-intl';
 
 class RichEditor extends React.Component {

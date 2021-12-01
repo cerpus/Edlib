@@ -1,4 +1,4 @@
-<script src="{{ mix('h5p-core-bundle.js') }}"></script>
+<script src="{{ mix('js/h5p-core-bundle.js') }}"></script>
 @foreach( $jsScripts as $js)
     {!! HTML::script($js) !!}
 @endforeach
