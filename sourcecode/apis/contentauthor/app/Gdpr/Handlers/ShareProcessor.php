@@ -9,31 +9,34 @@ use App\Messaging\Messages\EdlibGdprDeleteMessage;
 
 class ShareProcessor implements Processor
 {
-    // Remove all shares to any email in $deletionRequest->payload->emails
-    //
     public function handle(EdlibGdprDeleteMessage $edlibGdprDeleteMessage)
     {
-        $emails = $this->deletionRequest->payload->emails ?? false;
+        $emails = $edlibGdprDeleteMessage->emails ?? false;
+        $articleShareDeleted = 0;
+        $h5pSharesDeleted = 0;
+        $collaborateTypeDeleted = 0;
 
         if ($emails) {
-            $this->handleArticleShares($emails);
-            $this->handleH5PShares($emails);
-            $this->handleCollaboratableTypes($emails);
+            $articleShareDeleted = $this->handleArticleShares($emails);
+            $h5pSharesDeleted = $this->handleH5PShares($emails);
+            $collaborateTypeDeleted = $this->handleCollaboratableTypes($emails);
         }
+
+        $edlibGdprDeleteMessage->stepCompleted('ShareProcessor', "Removed $articleShareDeleted emails from Article shares. Removed $h5pSharesDeleted emails from H5P shares. Removed $collaborateTypeDeleted emails from other shareable content.");
     }
 
-    protected function handleArticleShares($emails)
+    protected function handleArticleShares($emails): int
     {
-        ArticleCollaborator::whereIn('email', $emails)->delete();
+        return ArticleCollaborator::whereIn('email', $emails)->delete();
     }
 
-    protected function handleH5PShares($emails)
+    protected function handleH5PShares($emails): int
     {
-        H5PCollaborator::whereIn('email', $emails)->delete();
+        return H5PCollaborator::whereIn('email', $emails)->delete();
     }
 
-    protected function handleCollaboratableTypes($emails)
+    protected function handleCollaboratableTypes($emails): int
     {
-        Collaborator::whereIn('email', $emails)->delete();
+        return Collaborator::whereIn('email', $emails)->delete();
     }
 }

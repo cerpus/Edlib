@@ -10,7 +10,9 @@ class ContextShareProcessor implements Processor
 {
     public function handle(EdlibGdprDeleteMessage $edlibGdprDeleteMessage)
     {
-        CollaboratorContext::where('collaborator_id', $edlibGdprDeleteMessage->userId)->delete();
-        CollaboratorContext::where('collaborator_id', $edlibGdprDeleteMessage->userId)->count();
+        $deleteCount = CollaboratorContext::where('collaborator_id', $edlibGdprDeleteMessage->userId)->delete();
+        $contextShareCount = CollaboratorContext::where('collaborator_id', $edlibGdprDeleteMessage->userId)->count();
+
+        $edlibGdprDeleteMessage->stepCompleted('ContextShareProcessor', "Removed $deleteCount Context Shares. $contextShareCount context shares left.");
     }
 }

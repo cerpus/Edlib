@@ -28,7 +28,6 @@ class EdlibGdprDeleteRequest implements RabbitMQPubSubConsumerHandler
 
     public function consume(string $data)
     {
-        var_dump($data);
         $edlibGdprDeleteMessage = new EdlibGdprDeleteMessage(json_decode($data, true));
 
         foreach ($this->processors as $processor) {

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Gdpr\Handlers;
 
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
 use Tests\Traits\WithFaker;
 use App\CollaboratorContext;
@@ -25,15 +26,11 @@ class ContextShareProcessorTest extends TestCase
 
         $handler = new ContextShareProcessor();
 
-        $payLoad = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $authId,
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payLoad->deletionRequestId;
-        $deletionRequest->payload = $payLoad;
-        $deletionRequest->save();
+            'emails' => []
+        ]);
 
         $handler->handle($deletionRequest);
 

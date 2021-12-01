@@ -14,11 +14,12 @@ class ContentLockProcessor implements Processor
         $emails = $edlibGdprDeleteMessage->emails;
 
         $deletedCount = ContentLock::where('auth_id', $authId)->delete();
-        $contentLockCount = ContentLock::where('auth_id', $authId)->count();
+        $emailDeletedCount = 0;
 
         if ($emails) {
-            $deletedCount = ContentLock::whereIn('email', $emails)->delete();
-            $contentLockCount = ContentLock::whereIn('email', $emails)->count();
+            $emailDeletedCount = ContentLock::whereIn('email', $emails)->delete();
         }
+
+        $edlibGdprDeleteMessage->stepCompleted('ContentLockProcessor', "Deleted $deletedCount content locks by AuthId and $emailDeletedCount by email");
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Gdpr\Handlers;
 use App\Game;
 use App\Article;
 use App\H5PContent;
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
 use App\QuestionSet;
 use App\Collaborator;
@@ -29,16 +30,11 @@ class ShareProcessorTest extends TestCase
         $this->assertCount(2, $article->fresh()->collaborators);
         $this->assertDatabaseHas('article_collaborators', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 
@@ -59,16 +55,11 @@ class ShareProcessorTest extends TestCase
         $this->assertCount(2, $h5p->fresh()->collaborators);
         $this->assertDatabaseHas('cerpus_contents_shares', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 
@@ -96,16 +87,12 @@ class ShareProcessorTest extends TestCase
         $this->assertCount(1, $anotherGame->fresh()->collaborators);
         $this->assertDatabaseHas('collaborators', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 

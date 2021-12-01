@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Gdpr\Handlers;
 
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
 use App\ContentLock;
 use Tests\Traits\WithFaker;
@@ -23,15 +24,12 @@ class ContentLockProcessorTest extends TestCase
         $this->assertDatabaseHas('content_locks', ['auth_id' => $authId]);
 
         $handler = new ContentLockProcessor();
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
-            'userId' => $authId
-        ];
 
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
+            'userId' => $authId,
+            'emails' => []
+        ]);
 
         $handler->handle($deletionRequest);
 
@@ -51,16 +49,11 @@ class ContentLockProcessorTest extends TestCase
 
         $handler = new ContentLockProcessor();
 
-        $payLoad = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => ['test@example.com']
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payLoad->deletionRequestId;
-        $deletionRequest->payload = $payLoad;
-        $deletionRequest->save();
+        ]);
 
         $handler->handle($deletionRequest);
 
