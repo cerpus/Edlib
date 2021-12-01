@@ -1,8 +1,12 @@
 {
     "type": "project",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "require": {
         "php": "^8.0",
+        "cerpus/laravel-rabbitmq-pubsub": "1.x",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.54",

@@ -7,3 +7,36 @@
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "commonapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
 {{- template "helpers.podDisruptionBudget" (dict "name" "commonapi" ) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: common-rabbitmq-subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: common-rabbitmq-subscriber
+  template:
+    metadata:
+      labels:
+        app: common-rabbitmq-subscriber
+    spec:
+      containers:
+        - name: main
+          image: "public.ecr.aws/f0t8l9h1/api-common-fpm:{{ .Chart.AppVersion }}"
+          command: "php artisan laravel-rabbitmq-pubsub:consumer"
+          envFrom:
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1500Mi
+            requests:
+              cpu: 20m
+              memory: 200Mi

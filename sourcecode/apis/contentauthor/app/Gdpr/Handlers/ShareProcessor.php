@@ -5,48 +5,38 @@ namespace App\Gdpr\Handlers;
 use App\Collaborator;
 use App\H5PCollaborator;
 use App\ArticleCollaborator;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 
 class ShareProcessor implements Processor
 {
-    protected $deletionRequest;
-
-    // Remove all shares to any email in $deletionRequest->payload->emails
-    //
-    public function handle(GdprDeletionRequest $deletionRequest)
+    public function handle(EdlibGdprDeleteMessage $edlibGdprDeleteMessage)
     {
-        $this->deletionRequest = $deletionRequest;
-        $deletionRequest->log('processing', "Handling Shares.");
-
-        $emails = $this->deletionRequest->payload->emails ?? false;
+        $emails = $edlibGdprDeleteMessage->emails ?? false;
+        $articleShareDeleted = 0;
+        $h5pSharesDeleted = 0;
+        $collaborateTypeDeleted = 0;
 
         if ($emails) {
-            $this->handleArticleShares($emails);
-            $this->handleH5PShares($emails);
-            $this->handleCollaboratableTypes($emails);
+            $articleShareDeleted = $this->handleArticleShares($emails);
+            $h5pSharesDeleted = $this->handleH5PShares($emails);
+            $collaborateTypeDeleted = $this->handleCollaboratableTypes($emails);
         }
 
-        $deletionRequest->log('processing', "Handled Shares.");
+        $edlibGdprDeleteMessage->stepCompleted('ShareProcessor', "Removed $articleShareDeleted emails from Article shares. Removed $h5pSharesDeleted emails from H5P shares. Removed $collaborateTypeDeleted emails from other shareable content.");
     }
 
-    protected function handleArticleShares($emails)
+    protected function handleArticleShares($emails): int
     {
-        $deletedCount = ArticleCollaborator::whereIn('email', $emails)->delete();
-        $articleSharesCount = ArticleCollaborator::whereIn('email', $emails)->count();
-        $this->deletionRequest->log('processing', "Removed emails from $deletedCount Article Shares. $articleSharesCount Article Shares left.");
+        return ArticleCollaborator::whereIn('email', $emails)->delete();
     }
 
-    protected function handleH5PShares($emails)
+    protected function handleH5PShares($emails): int
     {
-        $deletedCount = H5PCollaborator::whereIn('email', $emails)->delete();
-        $h5pSharesCount = H5PCollaborator::whereIn('email', $emails)->count();
-        $this->deletionRequest->log('processing', "Removed emails from $deletedCount H5P Shares. $h5pSharesCount H5P Shares left.");
+        return H5PCollaborator::whereIn('email', $emails)->delete();
     }
 
-    protected function handleCollaboratableTypes($emails)
+    protected function handleCollaboratableTypes($emails): int
     {
-        $deletedCount = Collaborator::whereIn('email', $emails)->delete();
-        $theRestSharesCount = Collaborator::whereIn('email', $emails)->count();
-        $this->deletionRequest->log('processing', "Removed email from $deletedCount other shareable content. $theRestSharesCount shares left.");
+        return Collaborator::whereIn('email', $emails)->delete();
     }
 }

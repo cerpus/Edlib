@@ -6,6 +6,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * App\Models\MaintenanceMode
+ *
+ * @property int $id
+ * @property bool $enabled
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static Builder|MaintenanceMode newModelQuery()
+ * @method static Builder|MaintenanceMode newQuery()
+ * @method static Builder|MaintenanceMode query()
+ * @method static Builder|MaintenanceMode whereCreatedAt($value)
+ * @method static Builder|MaintenanceMode whereEnabled($value)
+ * @method static Builder|MaintenanceMode whereId($value)
+ * @method static Builder|MaintenanceMode whereUpdatedAt($value)
  * @mixin IdeHelperMaintenanceMode
  */
 class MaintenanceMode extends Model
