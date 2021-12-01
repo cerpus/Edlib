@@ -243,7 +243,7 @@ spec:
       containers:
         - name: main
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
-          command: "php artisan bowler:consume edlib_gdpr_delete_request-contentauthor"
+          command: "php artisan laravel-rabbitmq-pubsub:consumer"
           env:
             - name: POD_NAMESPACE
               valueFrom:
