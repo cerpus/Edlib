@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { Paper, ExpandableBox, ExpandableBoxList } from '@cerpus/ui';
 import { AlertBox, SaveBox, Publish, Lock } from './components';
 import SidebarCommonComponents from './SidebarCommonComponents';
-import { useForm } from 'contexts/FormContext';
+import { useForm } from '../../contexts/FormContext';
 import { injectIntl, intlShape } from 'react-intl';
 import { PropTypes } from 'prop-types';
-import { compare } from 'utils/utils';
+import { compare } from '../../utils/utils';
 
 const Sidebar = ({ customSetup, customComponents, onSave, intl, onSaveCallback, componentsOrder }) => {
     // eslint-disable-next-line no-undef

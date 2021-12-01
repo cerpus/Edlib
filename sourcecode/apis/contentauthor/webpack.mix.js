@@ -1,87 +1,44 @@
-const {mix} = require('laravel-mix');
-mix.disableNotifications();
-/*
- mix.webpackConfig({
- entry: ["babel-polyfill", "resources/assets/js/app.js"]
- });
- */
-let publicCss = 'public/css';
-let publicJs = 'public/js';
-let publicFonts = 'public/fonts';
+const mix = require('laravel-mix');
 
-//**********************
-// Javascript
-//**********************
-mix.copy('vendor/ckeditor/ckeditor/ckeditor.js', publicJs + '/article-edit.js')
-    .copy('vendor/ckeditor/ckeditor', publicJs + '/ckeditor', false)
-    .copy('resources/assets/js', publicJs, false)
-    .js([
-        './vendor/components/jquery/jquery.min.js',
-        './node_modules/bootstrap-sass/assets/javascripts/bootstrap.min.js'
-    ], publicJs + '/bootstrap.js')
-    .combine([
-        'vendor/h5p/h5p-core/js/jquery.js',
-        'vendor/h5p/h5p-core/js/h5p.js',
-        'vendor/h5p/h5p-core/js/h5p-event-dispatcher.js',
-        'vendor/h5p/h5p-core/js/h5p-x-api-event.js',
-        'vendor/h5p/h5p-core/js/h5p-x-api.js',
-        'vendor/h5p/h5p-core/js/h5p-content-type.js',
-        'vendor/h5p/h5p-core/js/h5p-confirmation-dialog.js',
-        'vendor/h5p/h5p-core/js/h5p-action-bar.js'
-    ], publicJs + '/h5p-core.js')
-    .js('resources/assets/js/react-vendor.js', publicJs + '/react-vendor.js')
-    .js('resources/assets/js/react-components.js', publicJs + '/react-components.js')
-    .js('resources/assets/js/app.js', publicJs + '/app.js')
-    .js('resources/assets/js/admin.js', publicJs + '/admin.js')
-    .version();
-
-//**********************
-// FONTS
-//**********************
-mix.copy(
-    [
-        'resources/assets/fonts',
-        'node_modules/bootstrap-sass/assets/fonts/bootstrap',
-        'node_modules/font-awesome/fonts',
-        'vendor/h5p/h5p-core/fonts'
-    ], publicFonts, false);
-
-
-//**********************
-// CSS
-//**********************
-mix.copy(
-    [
-        'node_modules/font-awesome/css/font-awesome.min.css',
-        'resources/assets/css/cc-icons.css',
-        'resources/assets/css/react-components.css'
-    ],
-    publicCss);
-
-mix.sass('resources/assets/sass/bootstrap.scss', publicCss)
-    .sass('resources/assets/sass/fake.scss', publicCss)
-    .sass('resources/assets/sass/ckeditor_popup.scss', publicCss)
-    .sass('resources/assets/sass/app.scss', publicCss)
-    .sass('resources/assets/sass/admin.scss', publicCss)
-    .sass('resources/assets/sass/article.scss', publicCss)
-    .sass('resources/assets/sass/h5picons.scss', publicCss)
-    .combine([
-        'vendor/h5p/h5p-core/styles/h5p.css',
-        'vendor/h5p/h5p-core/styles/h5p-admin.css',
-        'vendor/h5p/h5p-core/styles/h5p-confirmation-dialog.css',
-        'vendor/h5p/h5p-core/styles/h5p-core-button.css'
-    ], publicCss + '/h5p-core.css')
+mix
+    .setPublicPath('public')
     .version()
+    .react()
+    .copyDirectory('vendor/ckeditor/ckeditor', 'public/js/ckeditor')
+    .copyDirectory('resources/assets/ckeditor/plugins', 'public/js/ckeditor/plugins')
+    .copy('resources/assets/ckeditor/*.js', 'public/js/ckeditor')
+    .copy('node_modules/@brightcove/player-loader/dist/brightcove-player-loader.min.js', 'public/js/videos')
+    .copyDirectory('node_modules/cropperjs/dist', 'public/js/cropperjs')
+    .sass('resources/assets/entrypoints/admin.scss', 'css/admin.css')
+    .js('resources/assets/entrypoints/admin.js', 'js/admin.js')
+    .js('resources/assets/entrypoints/article.js', 'js/article.js')
+    .sass('resources/assets/entrypoints/article.scss', 'css/article.css')
+    .sass('resources/assets/entrypoints/article-plugin.scss', 'css/article-plugin.css')
+    .js('resources/assets/entrypoints/bootstrap.js', 'js/bootstrap.js')
+    .sass('resources/assets/entrypoints/ckeditor_popup.scss', 'css/ckeditor_popup.css')
+    .sass('resources/assets/entrypoints/content_explorer_bootstrap.scss', 'css/content_explorer_bootstrap.css')
+    .sass('resources/assets/entrypoints/font-awesome.scss', 'css/font-awesome.css')
+    .sass('resources/assets/entrypoints/front.scss', 'css/front.css')
+    .sass('resources/assets/entrypoints/game.scss', 'css/game.css')
+    .sass('resources/assets/entrypoints/h5p-admin.scss', 'css/h5p-admin.css')
+    .sass('resources/assets/entrypoints/h5p-core.scss', 'css/h5p-core.css')
+    .js('resources/assets/entrypoints/h5p-core-bundle.js', 'js/h5p-core-bundle.js')
+    .sass('resources/assets/entrypoints/h5pcss.scss', 'css/h5pcss.css')
+    .js('resources/assets/entrypoints/h5peditor-custom.js', 'js/h5peditor-custom.js')
+    .js('resources/assets/entrypoints/h5peditor-image-popup.js', 'js/h5peditor-image-popup.js')
+    .sass('resources/assets/entrypoints/h5picons.scss', 'css/h5picons.css')
+    .js('resources/assets/entrypoints/h5pmetadata.js', 'js/h5pmetadata.js')
+    .sass('resources/assets/entrypoints/link.scss', 'css/link.css')
+    .js('resources/assets/entrypoints/maxscore.js', 'js/maxscore.js')
+    .js('resources/assets/entrypoints/metadata.js', 'js/metadata.js')
+    .js('resources/assets/entrypoints/ndla-contentbrowser.js', 'js/ndla-contentbrowser.js')
+    .sass('resources/assets/entrypoints/ndlah5p-edit.scss', 'css/ndlah5p-edit.css')
+    .sass('resources/assets/entrypoints/ndlah5p-editor.scss', 'css/ndlah5p-editor.css')
+    .sass('resources/assets/entrypoints/ndlah5p-iframe.scss', 'css/ndlah5p-iframe.css')
+    .sass('resources/assets/entrypoints/ndlah5p-iframe-legacy.scss', 'css/ndlah5p-iframe-legacy.css')
+    .js('resources/assets/entrypoints/react-article.js', 'js/react-article.js')
+    .js('resources/assets/entrypoints/react-contentbrowser.js', 'js/react-contentbrowser.js')
+    .js('resources/assets/entrypoints/react-embed.js', 'js/react-embed.js')
+    .js('resources/assets/entrypoints/react-h5p.js', 'js/react-h5p.js')
+    .js('resources/assets/entrypoints/react-questionset.js', 'js/react-questionset.js')
 ;
-/*
- mix.version(
- [
- 'public/css/react-components.css',
- 'public/css/font-awesome.min.css',
- 'public/css/cc-icons.css'
- ]
- )
- ;
- */
-
-

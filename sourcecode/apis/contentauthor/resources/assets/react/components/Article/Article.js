@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { FormGroup, Label, Input } from '@cerpus/ui';
 import Sidebar from '../Sidebar';
 import EditorContainer from '../EditorContainer/EditorContainer';
-import { FormActions, useForm } from 'contexts/FormContext';
+import { FormActions, useForm } from '../../contexts/FormContext';
 import CKEditor from 'ckeditor4-react';
 import { injectIntl, intlShape } from 'react-intl';
 

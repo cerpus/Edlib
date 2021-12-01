@@ -8,15 +8,14 @@
         <meta name="jwt" content="{{ $jwtToken }}"/>
     @endif
     <title>@yield('title')</title>
-    <link rel="stylesheet" href="{{ mix('content_explorer_bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ mix('font-awesome.css') }}">
-    <link rel="stylesheet" href="{{ mix('react-components.css') }}">
-    <link rel="stylesheet" href="{{ mix('admin.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/content_explorer_bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/font-awesome.css') }}">
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{ mix('css/admin.css') }}">
     <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
-    <script src="{{ mix('bootstrap.js') }}"></script>
-    <script src="{{ mix('react-vendor.js') }}"></script>
-    <script src="{{ mix('react-components.js') }}"></script>
-    <script src="{{ mix('jwtclient.js') }}"></script>
+    <script src="{{ mix('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/jwtclient.js') }}"></script>
+    <script src="{{ asset('js/jsrequestintercept.js') }}"></script>
     @stack("css")
 </head>
 <body id="theBody" onunload="unlock();" data-locale="{{ Session::get('locale', config('app.fallback_locale'))}}">

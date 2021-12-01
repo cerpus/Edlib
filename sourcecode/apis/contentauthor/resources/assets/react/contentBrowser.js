@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { IntlProvider } from 'react-intl';
-import i18nDefault, { addLanguage } from 'languageSetup';
-import { ImageBrowserContainer } from 'ImageBrowser';
-import { VideoBrowserContainer } from 'VideoBrowser';
-import { AudioBrowserContainer } from 'AudioBrowser';
+import i18nDefault, { addLanguage } from './components/languageSetup';
+import { ImageBrowserContainer } from './components/ImageBrowser';
+import { VideoBrowserContainer } from './components/VideoBrowser';
+import { AudioBrowserContainer } from './components/AudioBrowser';
 
 if (!window.Intl) {
     require('intl');

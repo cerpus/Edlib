@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { nextTick } from 'utils/utils';
+import { nextTick } from '../../utils/utils';
 
 export default (onParameterChange) => {
     const [h5pEditor, setH5pEditor] = React.useState(null);
