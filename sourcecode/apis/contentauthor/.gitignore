@@ -10,6 +10,22 @@ Homestead.json
 !/public/index.php
 !/public/robots.txt
 !/public/.htaccess
+!/public/graphical
+/public/js/*
+!/public/js/article-xapi.js
+!/public/js/cerpus.js
+!/public/js/editor-setup.js
+!/public/js/h5p
+!/public/js/h5p-editor.js
+!/public/js/jsrequestintercept.js
+!/public/js/jwtclient.js
+!/public/js/listener.js
+!/public/js/mathquillEditor
+!/public/js/question-editor.js
+!/public/js/resource-common.js
+!/public/js/videos/brightcove.js
+!/public/js/videos/streamps.js
+mix-manifest.json
 app/Libraries/oauth-php/example/server/cache/
 ca1.sql
 cerpus_export_log*
@@ -22,11 +38,6 @@ lti
 !/resources/views/lti
 ndladata/cerpus_export_log_package.sql
 ndladata/example-package-import-request.xml
-resources/assets/js/react-dom.min.js
-resources/assets/js/react.min.js
-resources/assets/js/react-dom.js
-resources/assets/js/react.js
-resources/assets/css/font-awesome.min.css
 
 /.phpstorm.meta.php
 /_ide_helper.php
@@ -41,7 +52,3 @@ buildid
 
 test-storage-volume/
 /storage/framework/testing/
-
-/resources/assets/js/h5p/ckeditor_wiris
-
-mix-manifest.json

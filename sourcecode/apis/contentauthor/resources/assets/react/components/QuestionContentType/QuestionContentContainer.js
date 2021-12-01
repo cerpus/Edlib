@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { QuestionContentType } from './index';
-import { FormActions, useForm } from 'contexts/FormContext';
+import { FormActions, useForm } from '../../contexts/FormContext';
 import Sidebar from '../Sidebar';
 
 const QuestionContentContainer = () => {

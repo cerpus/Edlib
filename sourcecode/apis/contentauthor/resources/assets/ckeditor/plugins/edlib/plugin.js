@@ -94,7 +94,7 @@
                 toolbar: 'insert,1'
             });
 
-            editor.config.contentsCss = ['/build/css/article-plugin.css'];
+            editor.config.contentsCss = ['/css/article-plugin.css'];
 
             CKEDITOR.dialog.add('edlibDialog', this.path + 'dialogs/edlib.js');
         },

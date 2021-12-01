@@ -2,8 +2,8 @@ import React from 'react';
 import LanguagePicker from './LanguagePicker';
 import getTextFields from '../List/getTextFields';
 import Axios from 'axios';
-import { deepCopy, set } from 'utils/utils';
-import { FormActions, useForm } from 'contexts/FormContext';
+import { deepCopy, set } from '../../../utils/utils';
+import { FormActions, useForm } from '../../../contexts/FormContext';
 import PropTypes from 'prop-types';
 
 const getTranslations = async fields => {

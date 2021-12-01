@@ -106,7 +106,7 @@ class ArticleImporter extends ImporterBase implements ImporterInterface
         return false;
     }
 
-    private function createInCore()
+    protected function createInCore($json)
     {
         if ($this->isResourceInCore() !== true) {
             $coreReporter = app(Core::class);
@@ -122,7 +122,7 @@ class ArticleImporter extends ImporterBase implements ImporterInterface
         }
     }
 
-    private function generateChecksumHash($json)
+    protected function generateChecksumHash($json)
     {
         try {
             $hashElements = [

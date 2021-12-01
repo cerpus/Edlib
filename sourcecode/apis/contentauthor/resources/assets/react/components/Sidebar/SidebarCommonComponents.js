@@ -1,4 +1,4 @@
-import { FormActions } from 'contexts/FormContext';
+import { FormActions } from '../../contexts/FormContext';
 import { ContentPropertiesContainer, LicenseIndicator, Sharing } from './components';
 import React from 'react';
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../utils/axiosSetup';
 import ImageBrowserLayout from './ImageBrowserLayout';
 
 class ImageBrowserContainer extends Component {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NDLAAudio from '@ndla/audio-search';
-import Dialog from 'Dialog';
+import Dialog from '../Dialog';
 
 function AudioBrowserLayout({
     onCancel,

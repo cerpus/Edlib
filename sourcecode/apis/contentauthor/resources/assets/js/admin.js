@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./admin_bootstrap');
+import './bootstrap';
 
 $(function () {
     $.ajaxSetup({

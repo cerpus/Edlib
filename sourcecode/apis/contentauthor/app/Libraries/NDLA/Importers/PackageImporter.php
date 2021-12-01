@@ -15,7 +15,7 @@ class PackageImporter extends ImporterBase implements ImporterInterface
         parent::__construct(app(NdlaIdMapper::class), app(ImportStatus::class));
     }
 
-    private function verify($json)
+    protected function verify($json)
     {
         $requiredProps = ['content_type', 'pages', 'package_title'];
         foreach ($requiredProps as $prop) {
@@ -132,7 +132,7 @@ class PackageImporter extends ImporterBase implements ImporterInterface
         return $nodeMap->launch_url;
     }
 
-    private function generateChecksumHash($json)
+    protected function generateChecksumHash($json)
     {
         try {
             $hashElements = [

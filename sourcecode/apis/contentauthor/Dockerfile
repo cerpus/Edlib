@@ -3,7 +3,6 @@ FROM php:7.4-fpm-alpine AS php_base
 WORKDIR /app
 
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-COPY docker/phpfpm-pool-www.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY . .
 COPY --from=composer:2 /usr/bin/composer /usr/bin/
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
@@ -42,14 +41,13 @@ RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
 
-FROM node:11-alpine AS jsbuild
+FROM node:16-alpine AS jsbuild
 WORKDIR /app
-RUN npm config set unsafe-perm true
-RUN apk add --no-cache alpine-sdk python make g++ bash
-RUN npm i -g node-gyp
-COPY package.json npm-shrinkwrap.json ./
+RUN apk add --no-cache build-base python2
+RUN npm i -g npm node-gyp
+COPY package.json package-lock.json ./
 RUN npm i
-COPY webpack.config.js webpack.mix.js .babelrc ./
+COPY webpack.mix.js ./
 COPY --from=php_base /app/vendor ./vendor
 COPY --from=php_base /app/resources ./resources
 COPY --from=php_base /app/public ./public
@@ -97,12 +95,10 @@ CMD [ "php", "/app/artisan", "horizon" ]
 
 
 FROM buildresult AS phpfpm
-EXPOSE 31004
 CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
 FROM buildresult AS phpfpm-dev
-EXPOSE 31004
 RUN set -eux; \
     install-php-extensions \
         xdebug \
@@ -113,9 +109,8 @@ CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
 FROM nginx:1.19-alpine AS app
-ENV PHP_FPM_HOST "localhost:31004"
+ENV PHP_FPM_HOST "localhost:9000"
 COPY --from=buildresult /app/public /app/public
-EXPOSE 8081
 RUN apk add --no-cache bash
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template

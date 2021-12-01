@@ -10,7 +10,7 @@ interface ContentTypeInterface
      * @param $redirectToken
      * @return ContentType
      */
-    public function getContentTypes($redirectToken): ContentType;
+    public function getContentTypes($redirectToken);
 
     //public function store();
 }

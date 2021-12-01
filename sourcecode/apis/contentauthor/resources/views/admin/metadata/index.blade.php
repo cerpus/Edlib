@@ -41,7 +41,7 @@
 @endsection
 
 @push('js')
-    <script src="{{mix('metadata.js')}}"></script>
+    <script src="{{mix('js/metadata.js')}}"></script>
     <script type="text/javascript">
         (function(){
             $("#processSwitch").on('click', () => {

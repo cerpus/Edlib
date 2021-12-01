@@ -11,8 +11,8 @@
     <title>{{ config('app.site-name', 'Laravel') }} </title>
 
     <!-- Styles -->
-    <link href="{{ mix('admin.css') }}" rel="stylesheet">
-    <link href="{{ mix('font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/admin.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/font-awesome.css') }}" rel="stylesheet">
 @stack('styles')
 
 <!-- Scripts -->
@@ -171,7 +171,7 @@
 @yield('content')
 
 <!-- Scripts -->
-<script src="{{ mix('admin.js') }}"></script>
+<script src="{{ mix('js/admin.js') }}"></script>
 @stack('js')
 </body>
 </html>

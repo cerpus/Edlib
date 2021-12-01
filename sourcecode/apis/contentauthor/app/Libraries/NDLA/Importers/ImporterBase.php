@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\NDLAMetadataImportController;
 use App\Libraries\NDLA\Importers\Handlers\Helpers\LicenseHelper;
 use App\Libraries\NDLA\Importers\Handlers\Helpers\NdlaUrlHelper;
 
-abstract class ImporterBase
+abstract class ImporterBase implements ImporterInterface
 {
     use LicenseHelper;
 
@@ -47,9 +47,10 @@ abstract class ImporterBase
         $this->adapter = resolve(H5PAdapterInterface::class);
     }
 
-    public function setImportId($importId)
+    public function setImportId($importId): ImporterInterface
     {
         $this->importId = $importId;
+        return $this;
     }
 
     public function setDuplicateAction($action)
