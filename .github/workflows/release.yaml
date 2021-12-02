@@ -144,14 +144,6 @@ jobs:
     secrets:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
-  release_proxy_recommendation:
-    needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-recommendation.yaml@master
-    with:
-      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
-    secrets:
-      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
-      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_resource:
     needs: get_variables
     uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@master
@@ -197,7 +189,6 @@ jobs:
       - release_proxy_doku
       - release_proxy_iframe
       - release_proxy_lti
-      - release_proxy_recommendation
       - release_proxy_resource
       - release_proxy_url
       - release_www
