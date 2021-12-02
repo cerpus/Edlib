@@ -195,7 +195,8 @@ const ResourceTable = ({
                                         setCurrentEditContextId(null);
                                         await onInsert(
                                             resource.id,
-                                            resource.version.id
+                                            resource.version.id,
+                                            resource.version.title
                                         );
                                     }}
                                     onShowVersions={() =>

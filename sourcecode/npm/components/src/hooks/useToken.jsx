@@ -33,21 +33,34 @@ export default (getJwt, edlibUrl) => {
 
         setJwtLoading(true);
         const _update = async () => {
-            let newInternalToken = null;
+            let newInternalToken;
+
             if (!jwt) {
                 const externalToken = await getJwt();
+                let getJwtTokenData = externalToken;
 
-                const { token: internalToken } = await request(
-                    `${edlibUrl}/auth/v1/jwt/convert`,
-                    'POST',
-                    {
-                        body: {
-                            externalToken,
-                        },
-                    }
-                );
+                if (typeof externalToken === 'string') {
+                    getJwtTokenData = {
+                        type: 'external',
+                        token: externalToken,
+                    };
+                }
 
-                newInternalToken = internalToken;
+                if (getJwtTokenData.type === 'internal') {
+                    newInternalToken = getJwtTokenData.token;
+                } else {
+                    const { token: internalToken } = await request(
+                        `${edlibUrl}/auth/v1/jwt/convert`,
+                        'POST',
+                        {
+                            body: {
+                                externalToken: getJwtTokenData.token,
+                            },
+                        }
+                    );
+
+                    newInternalToken = internalToken;
+                }
             } else {
                 const { token: internalToken } = await request(
                     `${edlibUrl}/auth/v3/jwt/refresh`,

@@ -18,7 +18,10 @@ export const EdlibModal = () => {
                 return (
                     <EdlibComponentsProvider
                         edlibUrl={edlibApiUrl}
-                        getJwt={getJwt}
+                        getJwt={async () => ({
+                            type: 'external',
+                            token: await getJwt(),
+                        })}
                         configuration={{
                             canReturnResources: true,
                         }}

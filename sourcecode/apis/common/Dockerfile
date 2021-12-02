@@ -18,6 +18,7 @@ RUN set -eux; \
         pdo_mysql \
         sockets \
         zip \
+        redis \
     ; \
     mkdir -p \
         bootstrap/cache \

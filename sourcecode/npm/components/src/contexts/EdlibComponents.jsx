@@ -45,6 +45,7 @@ const configurationValidationSchema = Joi.object({
                 .insensitive()
         )
         .default([]),
+    returnLtiLinks: Joi.boolean().default(true),
 });
 
 export const EdlibComponentsProvider = ({

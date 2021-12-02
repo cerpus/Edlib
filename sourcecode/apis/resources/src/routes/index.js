@@ -8,6 +8,7 @@ import ltiController from '../controllers/lti.js';
 import versionController from '../controllers/version.js';
 import readiness from '../readiness.js';
 import jobController from '../controllers/job.js';
+import internalViewController from '../controllers/internalView.js';
 import contentTypes from './contentTypes.js';
 import stats from './stats.js';
 
@@ -236,6 +237,33 @@ export default async ({ pubSubConnection }) => {
         '/v1/tenants/:tenantId/resources/:resourceId/lti-info',
         runAsync(ltiController.getTenantResourceLtiInfo)
     );
+
+    /**
+     * @swagger
+     *
+     *  /v1/tenants/{tenantId}/resources/{resourceId}/launch-info:
+     *      get:
+     *          description: Get launch resource info and verify user has access
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: tenantId
+     *                type: string
+     *                required: true
+     *              - in: path
+     *                name: resourceId
+     *                type: string
+     *                required: true
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.get(
+        '/v1/tenants/:tenantId/resources/:resourceId/launch-info',
+        runAsync(internalViewController.viewTenantResourceInfo)
+    );
+
     apiRouter.get(
         '/v1/create-lti-info/:externalSystemName',
         runAsync(ltiController.getLtiCreateInfo)

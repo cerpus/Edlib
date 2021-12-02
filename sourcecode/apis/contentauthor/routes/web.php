@@ -17,6 +17,10 @@ Route::get('audios/browse/{audioId}', 'H5PController@getAudio');
 Route::get('h5p/{h5p}/download', 'H5PController@downloadContent')->name('content-download')->middleware(['adaptermode']);
 Route::get('content/upgrade/library', 'H5PController@contentUpgradeLibrary')->name('content-upgrade-library');
 
+Route::group(['middleware' => ['internal.handle-jwt']], function () {
+    Route::get('/view', 'InternalController@view');
+});
+
 Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'adaptermode']], function () {
     Route::post('lti-content/create', 'LtiContentController@create');
     Route::post('lti-content/create/{type}', 'LtiContentController@create');

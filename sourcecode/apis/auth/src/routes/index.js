@@ -85,6 +85,22 @@ export default async ({ pubSubConnection }) => {
     /**
      * @swagger
      *
+     *  /v1/lti-users/token:
+     *      post:
+     *          description: Create an auth token for lti users
+     *          produces:
+     *              - application/json
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.post(
+        '/v1/lti-users/token',
+        runAsync(tokenController.createForLtiUser)
+    );
+    /**
+     * @swagger
+     *
      *  /v1/users-by-email:
      *      post:
      *          description: Convert external token to internal token

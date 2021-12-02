@@ -228,18 +228,6 @@ services:
     depends_on:
       - contentauthor-fpm
 
-  contentauthor-edstepmessages:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      dockerfile: Dockerfile
-      target: edstepmessages
-    env_file:
-      - ./localSetup/projects/content-author/.env
-    volumes:
-      - ./sourcecode/apis/contentauthor:/app
-    depends_on:
-      - contentauthor-fpm
-
   dokuapi:
     build:
       context: ./sourcecode/apis/doku

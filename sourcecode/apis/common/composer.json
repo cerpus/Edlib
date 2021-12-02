@@ -4,14 +4,22 @@
         "framework",
         "laravel"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/IMSGlobal/lti-1-3-php-library"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "cerpus/laravel-rabbitmq-pubsub": "1.x",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "imsglobal/lti-1p3-tool": "dev-master",
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "predis/predis": "^1.1",
         "web-token/jwt-checker": "^2.1",
         "web-token/jwt-core": "^2.1",
         "web-token/jwt-signature-algorithm-rsa": "^2.1"
