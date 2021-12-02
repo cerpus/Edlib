@@ -26,7 +26,7 @@ To expose the permanent file storage
 
 # Configuration
 
-Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
+Take a look in the `.env.defaults` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
 For develop environments the cloud storage can be switched off. To disable it put the following configuration in the `.env` file:
 

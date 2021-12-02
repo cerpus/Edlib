@@ -3,6 +3,8 @@ node_modules/
 Homestead.yaml
 Homestead.json
 .env
+.env.*
+!.env.defaults
 .idea/
 /public/*
 !/public/vendor

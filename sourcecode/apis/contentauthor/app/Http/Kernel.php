@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Bootstrap\LoadDefaultEnvVariables;
 use App\Http\Middleware\DraftAction;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
@@ -9,7 +10,9 @@ use App\Http\Middleware\AddRequestId;
 use App\Http\Middleware\APIAuth;
 use App\Http\Middleware\GameAccess;
 use App\Http\Middleware\QuestionSetAccess;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
@@ -121,4 +124,14 @@ class Kernel extends HttpKernel
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];
+
+    public function __construct(Application $app, Router $router)
+    {
+        $this->bootstrappers = [
+            LoadDefaultEnvVariables::class,
+            ...$this->bootstrappers,
+        ];
+
+        parent::__construct($app, $router);
+    }
 }

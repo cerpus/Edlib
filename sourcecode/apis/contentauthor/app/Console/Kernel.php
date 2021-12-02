@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Bootstrap\LoadDefaultEnvVariables;
 use App\Console\Commands\EnsureVersionExists;
 use App\Console\Commands\Inspire;
 use App\Console\Commands\CerpusSetup;
@@ -10,6 +11,8 @@ use App\Console\Commands\PublishPresave;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\RemoveOldContentLocks;
 use App\Console\Commands\VersionAllUnversionedContent;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -28,6 +31,16 @@ class Kernel extends ConsoleKernel
         RemoveOldContentLocks::class,
         VersionAllUnversionedContent::class,
     ];
+
+    public function __construct(Application $app, Dispatcher $events)
+    {
+        $this->bootstrappers = [
+            LoadDefaultEnvVariables::class,
+            ...$this->bootstrappers,
+        ];
+
+        parent::__construct($app, $events);
+    }
 
     /**
      * Define the application's command schedule.

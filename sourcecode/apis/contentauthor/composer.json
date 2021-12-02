@@ -84,7 +84,7 @@
   },
   "scripts": {
     "post-root-package-install": [
-      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+      "@php -r \"file_exists('.env') || file_put_contents('.env', '# Your overrides go here'.PHP_EOL);\""
     ],
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
