@@ -25,11 +25,6 @@ services:
     healthcheck:
       test: [CMD, redis-cli, ping]
 
-  memcached:
-    image: memcached:alpine
-    healthcheck:
-      test: [CMD, nc, -z, localhost, "11211"]
-
   postgres:
     image: postgres:11-alpine
     healthcheck:
@@ -149,7 +144,6 @@ services:
       - ./localSetup/projects/licenseapi/.env
     depends_on:
       - mysql
-      - memcached
 
   contentauthor:
     build:
@@ -183,7 +177,7 @@ services:
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
-      - memcached
+      - redis
       - nginx
       - rabbitmq
 
