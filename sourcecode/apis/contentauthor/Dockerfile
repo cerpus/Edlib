@@ -39,7 +39,13 @@ RUN set -eux; \
         --prefer-dist \
     ; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
-    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library;
+    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
+    chown -R www-data:www-data .
+
+FROM php_base as test
+COPY docker/run-phpunit.sh /run-phpunit.sh
+RUN composer install
+CMD /run-phpunit.sh
 
 FROM node:16-alpine AS jsbuild
 WORKDIR /app
@@ -58,20 +64,13 @@ RUN rm -rf node_modules
 FROM php_base AS buildresult
 COPY --from=php_base /app/ /app/
 COPY --from=jsbuild /app/public /app/public
-# Set correct file permission for app
-RUN chown -R www-data:www-data /app
+RUN chown -R www-data:www-data /app/public
 # Create symlink from app to shared storage
 RUN set -eux; \
     ln -s /storage/h5plibs public/h5pstorage; \
     ln -s /storage/storage/app storage/app; \
     ln -s /storage/storage/logs storage/logs; \
     ln -s /storage/storage/framework storage/framework;
-
-
-FROM buildresult as test
-COPY docker/run-phpunit.sh /run-phpunit.sh
-RUN composer install
-CMD /run-phpunit.sh
 
 
 FROM buildresult AS cron
