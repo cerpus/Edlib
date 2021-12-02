@@ -149,8 +149,6 @@ return [
         App\Providers\AuthenticationHandlerProvider::class,
 
         App\Providers\HTMLPurifierServiceProvider::class,
-        App\Providers\OpenStackServiceProvider::class,
-
     ],
 
     /*
@@ -165,7 +163,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
