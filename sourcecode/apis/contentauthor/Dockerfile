@@ -9,6 +9,8 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN set -eux; \
     apk add --no-cache bash sudo rclone git unzip; \
+    # don't run dev-only stuff in post-install scripts
+    export APP_DEBUG=false APP_ENV=production; \
     install-php-extensions \
         bcmath \
         gettext \
@@ -74,26 +76,41 @@ RUN set -eux; \
 
 
 FROM buildresult AS cron
+ENV LOG_CHANNEL=stderr \
+    APP_ENV=production \
+    APP_DEBUG=false
 COPY docker/laravel.schedule /laravel.schedule
 RUN set -eux; crontab /laravel.schedule; rm /laravel.schedule; crontab -l
 CMD [ "bash", "-c", "set -eux; crond -f" ]
 
 
 FROM buildresult AS deploy
+ENV LOG_CHANNEL=stderr \
+    APP_ENV=production \
+    APP_DEBUG=false
 CMD [ "php", "/app/artisan", "migrate", "--force" ]
 
 
 FROM buildresult AS init
+ENV LOG_CHANNEL=stderr \
+    APP_ENV=production \
+    APP_DEBUG=false
 COPY docker/run-init.sh /init.sh
 RUN chmod +x /init.sh
 CMD /init.sh
 
 
 FROM buildresult AS horizonqueue
+ENV LOG_CHANNEL=stderr \
+    APP_ENV=production \
+    APP_DEBUG=false
 CMD [ "php", "/app/artisan", "horizon" ]
 
 
 FROM buildresult AS phpfpm
+ENV LOG_CHANNEL=stderr \
+    APP_ENV=production \
+    APP_DEBUG=false
 CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
