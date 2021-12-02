@@ -2,7 +2,7 @@
 
 namespace App\Http\Libraries;
 
-class AuthJwtParser
+abstract class AuthJwtParser
 {
     protected function hasNonEmpty($object, $property)
     {
