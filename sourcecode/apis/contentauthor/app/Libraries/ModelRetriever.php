@@ -5,6 +5,11 @@ namespace App\Libraries;
 use App\Article;
 use App\Game;
 use App\H5PContent;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\H5PController;
+use App\Http\Controllers\LinkController;
+use App\Http\Controllers\QuestionSetController;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\QuestionSet;
 
@@ -48,15 +53,15 @@ class ModelRetriever
     {
         switch ($groupName) {
             case ResourceDataObject::H5P:
-                return app('App\Http\Controllers\H5PController');
+                return app(H5PController::class);
             case ResourceDataObject::ARTICLE:
-                return app('App\Http\Controllers\ArticleController');
+                return app(ArticleController::class);
             case ResourceDataObject::LINK:
-                return app('App\Http\Controllers\LinkController');
+                return app(LinkController::class);
             case ResourceDataObject::GAME:
-                return app('App\Http\Controllers\GameController');
+                return app(GameController::class);
             case ResourceDataObject::QUESTIONSET:
-                return app('App\Http\Controllers\QuestionSetController');
+                return app(QuestionSetController::class);
             default:
                 return null;
         }
