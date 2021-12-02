@@ -1,6 +1,7 @@
 (async function () {
     if (!window.jQuery) {
-        window.jQuery = window.$ = await import('jquery');
+        const { default: jQuery } = await import('jquery');
+        window.jQuery = window.$ = jQuery;
     }
 
     await import('bootstrap-sass/assets/javascripts/bootstrap');

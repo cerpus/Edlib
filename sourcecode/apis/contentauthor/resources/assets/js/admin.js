@@ -5,6 +5,7 @@
  */
 
 import './bootstrap';
+import $ from 'jquery';
 
 $(function () {
     $.ajaxSetup({
