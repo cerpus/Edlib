@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ApiModels\LtiUser;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
+use App\Exceptions\LtiException;
 use App\Exceptions\NotFoundException;
 use App\Models\LtiRegistration;
 use App\Services\Lti\LtiMessageLaunch;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use IMSGlobal\LTI\JWKS_Endpoint;
 use IMSGlobal\LTI\LTI_Deep_Link_Resource;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Throwable;
 
 final class Lti13Controller extends Controller
@@ -35,10 +37,8 @@ final class Lti13Controller extends Controller
     {
         try {
             return LtiOIDCLogin::doLogin($registration, route('lti.launch'), $request->all());
-        } catch (NotFoundException $e) {
-            return response()->json([
-                'errors' => $e->getMessage(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (LtiException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage(), $e);
         }
     }
 

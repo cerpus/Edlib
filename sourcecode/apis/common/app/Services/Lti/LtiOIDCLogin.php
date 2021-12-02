@@ -3,8 +3,9 @@
 
 namespace App\Services\Lti;
 
-use App\Exceptions\NotFoundException;
+use App\Exceptions\LtiException;
 use App\Models\LtiRegistration;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -15,9 +16,9 @@ class LtiOIDCLogin
     }
 
     /**
-     * @throws NotFoundException
+     * @throws LtiException
      */
-    public static function doLogin(LtiRegistration $registration, string $launch_url, array $request = null)
+    public static function doLogin(LtiRegistration $registration, string $launch_url, array $request = null): RedirectResponse
     {
         $oidcLogin = new LtiOIDCLogin($registration);
 
@@ -27,12 +28,12 @@ class LtiOIDCLogin
     /**
      * Calculate the redirect location to return to based on an OIDC third party initiated login request.
      *
-     * @throws NotFoundException
+     * @throws LtiException
      */
-    public function doOIDCLoginRedirect(string $launch_url, array $request = null)
+    public function doOIDCLoginRedirect(string $launch_url, array $request = null): RedirectResponse
     {
         if (empty($launch_url) || empty($request)) {
-            throw new NotFoundException("No launch URL configured", 1);
+            throw new LtiException('No launch URL configured');
         }
 
         // Validate Request Data.
@@ -79,20 +80,20 @@ class LtiOIDCLogin
     }
 
     /**
-     * @throws NotFoundException
+     * @throws LtiException
      */
     protected function validateLogin($request): void
     {
         if (empty($request['iss'])) {
-            throw new NotFoundException("Could not find issuer");
+            throw new LtiException("Could not find issuer");
         }
 
         if (empty($request['login_hint'])) {
-            throw new NotFoundException("Could not find login hint");
+            throw new LtiException("Could not find login hint");
         }
 
         if (empty($this->registration) || $this->registration->issuer !== $request['iss']) {
-            throw new NotFoundException("Could not find registration details");
+            throw new LtiException("Could not find registration details");
         }
     }
 }
