@@ -32,14 +32,12 @@ return [
         'sync' => [
             'driver' => 'sync',
         ],
-
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
             'expire' => 60,
         ],
-
         'databaseLongRunning' => [
             'driver' => 'database',
             'table' => 'jobs',
@@ -47,14 +45,12 @@ return [
             'expire' => 3650,
             'retry_after' => 3700
         ],
-
         'beanstalkd' => [
             'driver' => 'beanstalkd',
             'host'   => 'localhost',
             'queue'  => 'default',
             'ttr'    => 60,
         ],
-
         'sqs' => [
             'driver' => 'sqs',
             'key' => env('SQS_KEY', 'your-public-key'),
@@ -63,7 +59,6 @@ return [
             'queue' => env('SQS_QUEUE', 'your-queue-name'),
             'region' => env('SQS_REGION', 'us-east-1'),
         ],
-
         'iron' => [
             'driver'  => 'iron',
             'host'    => 'mq-aws-us-east-1.iron.io',
@@ -72,44 +67,18 @@ return [
             'queue'   => 'your-queue-name',
             'encrypt' => true,
         ],
-
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
             'queue'  => 'default',
             'expire' => 60,
         ],
-
         'redisLongRunning' => [
             'driver' => 'redis',
             'connection' => 'default',
             'queue'  => 'default',
             'expire' => 3650,
             'retry_after' => 3700
-        ],
-
-        'rabbitmq' => [
-            'host' => env('RABBITMQ_HOST', 'localhost'),
-            'port' => env('RABBITMQ_PORT', 5672),
-            'username' => env('RABBITMQ_USERNAME', 'guest'),
-            'password' => env('RABBITMQ_PASSWORD', 'guest'),
-
-            'exchange_params' => [
-                'name' => env('RABBITMQ_EXCHANGE_NAME', 'contentAuthorExchange'),
-                'type' => env('RABBITMQ_EXCHANGE_TYPE', 'topic'),
-                // more info at http://www.rabbitmq.com/tutorials/amqp-concepts.html
-                'passive' => env('RABBITMQ_EXCHANGE_PASSIVE', false),
-                'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
-                // the exchange will survive server restarts
-                'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
-            ],
-            'edlibResourceUpdate' => [
-                'name' => env('RABBITMQ_EXCHANGE_NAME', 'edlibResourceUpdate'),
-                'type' => env('RABBITMQ_EXCHANGE_TYPE', 'fanout'),
-                'passive' => env('RABBITMQ_EXCHANGE_PASSIVE', false),
-                'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
-                'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
-            ],
         ],
     ],
 

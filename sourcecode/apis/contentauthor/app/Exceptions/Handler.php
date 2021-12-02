@@ -3,14 +3,11 @@
 namespace App\Exceptions;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Vinelab\Bowler\Contracts\BowlerExceptionHandler;
 
-class Handler extends ExceptionHandler implements BowlerExceptionHandler
+class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that should not be reported.
@@ -73,20 +70,5 @@ class Handler extends ExceptionHandler implements BowlerExceptionHandler
         }
 
         return redirect()->guest('login');
-    }
-
-    public function reportQueue(\Exception $e, AMQPMessage $msg)
-    {
-        $logMsg = 'Queue processing failed! ';
-
-        if (method_exists($e, 'getCode')) {
-            $logMsg .= ' (' . $e->getCode() . ')';
-        }
-
-        if (method_exists($e, 'getMessage')) {
-            $logMsg .= ' : ' . $e->getMessage();
-        }
-
-        Log::error($logMsg);
     }
 }

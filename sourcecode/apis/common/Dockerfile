@@ -10,12 +10,13 @@ COPY . .
 COPY .env.example .
 
 RUN set -eux; \
-    apk add --no-cache zip; \
+    apk add --no-cache zip bash; \
     install-php-extensions \
         gmp \
         intl \
         opcache \
         pdo_mysql \
+        sockets \
         zip \
         redis \
     ; \

@@ -136,15 +136,12 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\H5PServiceProvider::class,
         App\Providers\NdlaApiClientProvider::class,
-        App\Providers\RabbitmqServiceProvider::class,
 
 
         Collective\Html\HtmlServiceProvider::class,
 
         Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
-        Cerpus\Gdpr\GdprServiceProvider::class,
 
-        Vinelab\Bowler\BowlerServiceProvider::class,
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 

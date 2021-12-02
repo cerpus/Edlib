@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": "^8.0",
+        "cerpus/laravel-rabbitmq-pubsub": "1.x",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "imsglobal/lti-1p3-tool": "dev-master",

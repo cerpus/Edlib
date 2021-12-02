@@ -3,7 +3,7 @@
 set -eux
 
 update-ca-certificates
-/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80
+/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672
 cd /app
 mkdir -p storage/framework/cache storage/framework/views storage/framework/sessions
 composer install

@@ -16,10 +16,10 @@
     "biigle/laravel-cached-openstack": "^1.2",
     "cerpus/cerpushelper": "^1.5",
     "cerpus/coreclient": "^1.3",
-    "cerpus/gdpr": "^0.5",
     "cerpus/imageservice-client": "^1.1",
     "cerpus/jwtsupportlib": "^0.3.2",
     "cerpus/laravel-auth": "^1.0",
+    "cerpus/laravel-rabbitmq-pubsub": "1.x",
     "cerpus/license-client": "^1.3",
     "cerpus/questionbank-client": "^0.2.0",
     "cerpus/version-client": "^1.2",
@@ -54,7 +54,6 @@
     "ramsey/uuid": "^4.2",
     "respect/validation": "^1.1",
     "stolz/assets": "^0.1.3",
-    "vinelab/bowler": "^0.8.1",
     "xemlock/htmlpurifier-html5": "^0.1.8"
   },
   "require-dev": {
