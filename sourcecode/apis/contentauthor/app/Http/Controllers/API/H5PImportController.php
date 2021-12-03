@@ -36,7 +36,6 @@ class H5PImportController extends Controller
         $h5pContent = H5PContent::find($response->h5pId);
         if( $request->input('disablePublishMetadata', true) === true ){
             config([
-                'metadata.published-field' => false,
                 'feature.enableDraftLogic' => false,
             ]);
         }

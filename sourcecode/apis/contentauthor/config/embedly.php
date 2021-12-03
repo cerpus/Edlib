@@ -1,4 +1,4 @@
 <?php
 return [
-    'key' => env('EMBEDLY_KEY'),
+    'key' => env('EDLIBCOMMON_EMBEDLY_KEY'),
 ];
