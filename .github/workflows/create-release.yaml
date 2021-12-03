@@ -18,6 +18,9 @@ jobs:
     outputs:
       releaseRef: ${{ steps.get_ref.outputs.releaseRef }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Get the ref
         id: get_ref
         run: |
@@ -231,6 +234,9 @@ jobs:
     needs:
       - building_done
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Deploy
         uses: ./.github/actions/awsDeploy@auto_deploy_to_test
         with:
