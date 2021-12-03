@@ -52,7 +52,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: "Run tests"
-        run: docker run test; echo ${{ env.shouldPublishImage }}
+        run: docker run test
         shell: bash
 
       - name: Configure AWS Credentials

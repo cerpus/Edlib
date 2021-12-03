@@ -7,10 +7,6 @@ on:
         description: 'Name of release'
         required: false
         default: ''
-  push:
-    branches:
-      - master
-      - auto_deploy_to_test
 
 jobs:
   get_variables:
@@ -42,11 +38,158 @@ jobs:
     secrets:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_common:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-common.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_contentauthor:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_doku:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_license:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-license.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_lti:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_resources:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_url:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-url.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_api_version:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/api-version.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+
+  # ---------- Proxies -----------------
+  release_proxy_admin:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_auth:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_doku:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_iframe:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_lti:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_resource:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  release_proxy_url:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  # ------------ www ---------------
+  release_www:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/www.yaml@auto_deploy_to_test
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
 
   building_done:
     runs-on: ubuntu-latest
     needs:
       - release_api_auth
+      - release_api_common
+      - release_api_contentauthor
+      - release_api_doku
+      - release_api_license
+      - release_api_lti
+      - release_api_resources
+      - release_api_url
+      - release_api_version
+      - release_proxy_admin
+      - release_proxy_auth
+      - release_proxy_doku
+      - release_proxy_iframe
+      - release_proxy_lti
+      - release_proxy_resource
+      - release_proxy_url
+      - release_www
     steps:
       - name: "Done building images"
         run: |
@@ -77,12 +220,20 @@ jobs:
             })
 
   deploy:
-    name: Deploy
     runs-on: ubuntu-latest
+    environment: test
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
     needs:
       - building_done
     steps:
       - name: Deploy
-        run: |
-          echo "deploying"
+        uses: ./.github/actions/awsDeploy
+        with:
+          version: ${{ github.event.inputs.version }}
+          environment: test
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+          SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
+          EXTRA_SLACK_HOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}

@@ -1,0 +1,29 @@
+name: "AWS Deploy"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy'
+        required: true
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: "cerpus_test"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: "${{ github.event.inputs.environment }}"
+    steps:
+      - name: Deploy
+        uses: ./.github/actions/awsDeploy
+        with:
+          version: ${{ github.event.inputs.version }}
+          environment: ${{ github.event.inputs.environment }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+          SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
+          EXTRA_SLACK_HOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}

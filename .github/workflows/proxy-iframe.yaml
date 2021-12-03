@@ -19,11 +19,12 @@ on:
 
 env:
   workingDirectory: sourcecode/proxies/iframe
+  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
   create_release:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: env.shouldPublishImage == '1'
     steps:
       - uses: actions/checkout@v2
         with:

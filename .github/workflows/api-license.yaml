@@ -19,6 +19,7 @@ on:
 
 env:
   workingDirectory: sourcecode/apis/license
+  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
   test:
@@ -64,7 +65,7 @@ jobs:
   create_release:
     runs-on: ubuntu-latest
     needs: test
-    if: github.event_name == 'workflow_dispatch'
+    if: env.shouldPublishImage == '1'
     steps:
       - uses: actions/checkout@v2
         with:

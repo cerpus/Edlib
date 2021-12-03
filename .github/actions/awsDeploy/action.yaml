@@ -1,0 +1,144 @@
+name: 'Deploy to AWS'
+description: 'Deploys a version to AWS'
+inputs:
+  version:
+    required: true
+    description: "Version to deploy"
+  environment:
+    required: true
+    description: "Environment to deploy to"
+  AWS_ACCESS_KEY_ID:
+    required: true
+    description: "AWS_ACCESS_KEY_ID"
+  AWS_SECRET_ACCESS_KEY:
+    required: true
+    description: "AWS_SECRET_ACCESS_KEY"
+  AWS_ROLE_TO_ASSUME:
+    required: true
+    description: "AWS_ROLE_TO_ASSUME"
+  AWS_EKS_CLUSTER_NAME:
+    required: true
+    description: "AWS_EKS_CLUSTER_NAME"
+  SLACK_HOOK_URL:
+    required: true
+    description: "SLACK_HOOK_URL"
+  EXTRA_SLACK_HOOK_URL:
+    required: true
+    description: "EXTRA_SLACK_HOOK_URL"
+
+runs:
+  using: composite
+  steps:
+    - name: Deploy name
+      run: |
+        echo "Version to deploy: ${{ inputs.version }}"
+
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.version }}
+        fetch-depth: 0
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-west-1
+        role-to-assume: ${{ inputs.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 3600
+        role-session-name: GithubCerpusDevDeploy
+
+    - name: Update kubeconfig with cluster info
+      id: kube
+      run: |
+        aws eks --region eu-west-1 update-kubeconfig --name ${{ inputs.AWS_EKS_CLUSTER_NAME }}
+        CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
+        echo "::set-output name=config::$CONFIG"
+
+    - name: Update Chart.yaml with correct app version
+      run: |
+        echo "" >> ./chart/Chart.yaml
+        echo "appVersion: \"${{ inputs.version }}\"" >> ./chart/Chart.yaml
+        cat ./chart/Chart.yaml
+
+    - name: Create values string for helm command
+      id: helm-values
+      run: |
+        HELM_VALUES="-f ./chart/values.yaml "
+        if [ -f "./chart/values/${{ inputs.environment }}.yaml" ]; then
+          HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ inputs.environment }}.yaml "
+        fi
+        echo $HELM_VALUES
+        echo "::set-output name=helm-values::$HELM_VALUES"
+
+    - name: helm deploy
+      uses: koslib/helm-eks-action@master
+      env:
+        KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
+      with:
+        command: helm upgrade ${{ steps.helm-values.outputs.helm-values }} --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
+
+    - name: Create slack message
+      uses: actions/github-script@v5
+      id: slack-message
+      with:
+        script: |
+          const isSemver = /^([0-9]+)\.([0-9]+)\.([0-9]+)$/.test(
+            "${{ inputs.version }}"
+          );
+
+          const versionOrRef = isSemver ? "Version" : "Ref";
+
+          const fields = [
+            {
+              title: versionOrRef,
+              value:
+                "<https://github.com/cerpus/Edlib/tree/${{ inputs.version }}|${{ inputs.version }}>",
+              short: true,
+            },
+            {
+              title: "Environment",
+              value: "${{ inputs.environment }}",
+              short: true,
+            },
+          ];
+
+          if (isSemver) {
+            fields.push({
+              title: "Release note",
+              value:
+                "<https://github.com/cerpus/Edlib/releases/tag/${{ inputs.version }}|${{ inputs.version }}>",
+              short: true,
+            });
+          }
+
+          const slackMessage = {
+            attachments: [
+              {
+                fallback:
+                  versionOrRef +
+                  " *<https://github.com/cerpus/Edlib/tree/${{ inputs.version }}|${{ inputs.version }}>* has been deployed to *${{ inputs.environment }}* by ${{ github.actor }}.",
+                color: "#36a64f",
+                title: "Edlib",
+                title_link: "https://github.com/cerpus/Edlib",
+                text:
+                  versionOrRef +
+                  " *<https://github.com/cerpus/Edlib/tree/${{ inputs.version }}|${{ inputs.version }}>* has been deployed to *${{ inputs.environment }}* by ${{ github.actor }}.",
+                fields: fields,
+                footer: "Edlib deploy bot",
+                ts: 1234567899,
+              },
+            ],
+          };
+
+          return JSON.stringify(slackMessage);
+        result-encoding: string
+
+    - name: Post message to slack
+      run: |
+        DATA='${{ steps.slack-message.outputs.result }}'
+        curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ inputs.SLACK_HOOK_URL }}"
+
+        if [ -n "${{ inputs.EXTRA_SLACK_HOOK_URL }}" ]; then
+          curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ inputs.EXTRA_SLACK_HOOK_URL }}"
+        fi
