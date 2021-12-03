@@ -19,12 +19,10 @@ jobs:
       releaseRef: ${{ steps.get_ref.outputs.releaseRef }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+
       - name: Get the ref
         id: get_ref
         run: |
-          ls -l ./.github/actions
           ref="${{ github.sha }}"
           if [ -n "${{ github.event.inputs.releaseName }}" ]; then
             if ! [[ "${{ github.event.inputs.releaseName }}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
