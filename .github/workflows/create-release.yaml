@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
     needs:
-      - create_release
+      - release_api_auth
     steps:
       - name: Deploy
         run: |
