@@ -36,7 +36,7 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@auto_deploy_to_test
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
