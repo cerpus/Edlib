@@ -24,7 +24,7 @@ env:
 jobs:
   create_release:
     runs-on: ubuntu-latest
-    if: $shouldPublishImage == '1'
+    if: ${{ inputs.versionToRelease && '1' || '0' }}
     steps:
       - uses: actions/checkout@v2
         with:
