@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e836828401815feb7777944c4b42c883",
+    "content-hash": "fde293584a4d44506b5a6c8774b3d728",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -185,16 +185,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.207.0",
+            "version": "3.207.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "c5252787784bf41b678b03cb3292d413fe281319"
+                "reference": "3120e8adc7b2b060a7eb4c3c5e2a8c25c0f95a94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/c5252787784bf41b678b03cb3292d413fe281319",
-                "reference": "c5252787784bf41b678b03cb3292d413fe281319",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3120e8adc7b2b060a7eb4c3c5e2a8c25c0f95a94",
+                "reference": "3120e8adc7b2b060a7eb4c3c5e2a8c25c0f95a94",
                 "shasum": ""
             },
             "require": {
@@ -270,53 +270,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.207.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.207.1"
             },
-            "time": "2021-11-30T23:44:55+00:00"
-        },
-        {
-            "name": "biigle/laravel-cached-openstack",
-            "version": "v1.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/biigle/laravel-cached-openstack.git",
-                "reference": "c4b53be040e79553f472ab6e7bc7ec918b4364c6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/biigle/laravel-cached-openstack/zipball/c4b53be040e79553f472ab6e7bc7ec918b4364c6",
-                "reference": "c4b53be040e79553f472ab6e7bc7ec918b4364c6",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/cache": "^5.1|^6.0|^7.0|^8.0",
-                "php-opencloud/openstack": "^3.0"
-            },
-            "require-dev": {
-                "vimeo/psalm": "^4.12"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Biigle\\CachedOpenStack\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Martin Zurowietz",
-                    "email": "martin@cebitec.uni-bielefeld.de"
-                }
-            ],
-            "description": "A wrapper for the OpenStack SDK that caches and renews the authentication token",
-            "support": {
-                "issues": "https://github.com/biigle/laravel-cached-openstack/issues",
-                "source": "https://github.com/biigle/laravel-cached-openstack/tree/v1.4.3"
-            },
-            "time": "2021-11-11T08:10:45+00:00"
+            "time": "2021-12-01T23:44:02+00:00"
         },
         {
             "name": "brick/math",
@@ -2951,76 +2907,6 @@
             "time": "2019-10-30T14:56:53+00:00"
         },
         {
-            "name": "justinrainbow/json-schema",
-            "version": "5.2.11",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "2ab6744b7296ded80f8cc4f9509abbff393399aa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/2ab6744b7296ded80f8cc4f9509abbff393399aa",
-                "reference": "2ab6744b7296ded80f8cc4f9509abbff393399aa",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.2.20||~2.15.1",
-                "json-schema/json-schema-test-suite": "1.2.0",
-                "phpunit/phpunit": "^4.8.35"
-            },
-            "bin": [
-                "bin/validate-json"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "JsonSchema\\": "src/JsonSchema/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bruno Prieto Reis",
-                    "email": "bruno.p.reis@gmail.com"
-                },
-                {
-                    "name": "Justin Rainbow",
-                    "email": "justin.rainbow@gmail.com"
-                },
-                {
-                    "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch"
-                },
-                {
-                    "name": "Robert Schönthal",
-                    "email": "seroscho@googlemail.com"
-                }
-            ],
-            "description": "A library to validate a json schema.",
-            "homepage": "https://github.com/justinrainbow/json-schema",
-            "keywords": [
-                "json",
-                "schema"
-            ],
-            "support": {
-                "issues": "https://github.com/justinrainbow/json-schema/issues",
-                "source": "https://github.com/justinrainbow/json-schema/tree/5.2.11"
-            },
-            "time": "2021-07-22T09:24:00+00:00"
-        },
-        {
             "name": "kamermans/guzzle-oauth2-subscriber",
             "version": "v1.0.11",
             "source": {
@@ -4924,63 +4810,6 @@
             "time": "2021-11-30T19:35:32+00:00"
         },
         {
-            "name": "nimbusoft/flysystem-openstack-swift",
-            "version": "0.3.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/chrisnharvey/flysystem-openstack-swift.git",
-                "reference": "41e3ea004b8366d9168ea3a4c0763d76ab55de64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/chrisnharvey/flysystem-openstack-swift/zipball/41e3ea004b8366d9168ea3a4c0763d76ab55de64",
-                "reference": "41e3ea004b8366d9168ea3a4c0763d76ab55de64",
-                "shasum": ""
-            },
-            "require": {
-                "league/flysystem": "^1.0",
-                "php-opencloud/openstack": "^3.0"
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "^1.6.4",
-                "mockery/mockery": "^1.3.1",
-                "phpunit/phpunit": "^5.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Nimbusoft\\Flysystem\\OpenStack\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Chris Harvey",
-                    "email": "chris@chrisnharvey.com"
-                }
-            ],
-            "description": "Flysystem adapter for OpenStack Swift",
-            "keywords": [
-                "Flysystem",
-                "Openstack",
-                "chrisnharvey",
-                "files",
-                "filesystem",
-                "filesystems",
-                "opencloud",
-                "storage",
-                "swift"
-            ],
-            "support": {
-                "issues": "https://github.com/chrisnharvey/flysystem-openstack-swift/issues",
-                "source": "https://github.com/chrisnharvey/flysystem-openstack-swift/tree/0.3.4"
-            },
-            "time": "2020-12-06T13:45:57+00:00"
-        },
-        {
             "name": "opis/closure",
             "version": "3.6.2",
             "source": {
@@ -5125,73 +4954,6 @@
                 "source": "https://github.com/php-amqplib/php-amqplib/tree/v3.0.0"
             },
             "time": "2021-03-16T15:00:23+00:00"
-        },
-        {
-            "name": "php-opencloud/openstack",
-            "version": "v3.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-opencloud/openstack.git",
-                "reference": "5d73ff577731fc473448c489acfca9730aa39c88"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-opencloud/openstack/zipball/5d73ff577731fc473448c489acfca9730aa39c88",
-                "reference": "5d73ff577731fc473448c489acfca9730aa39c88",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.1",
-                "justinrainbow/json-schema": "^5.2",
-                "php": "~7.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.13",
-                "jakub-onderka/php-parallel-lint": "^1.0",
-                "php-coveralls/php-coveralls": "^2.0",
-                "phpunit/phpunit": "^6.5",
-                "psr/log": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "OpenStack\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Jamie Hannaford",
-                    "email": "jamie.hannaford@rackspace.com",
-                    "homepage": "https://github.com/jamiehannaford"
-                },
-                {
-                    "name": "Ha Phan",
-                    "email": "thanhha.work@gmail.com",
-                    "homepage": "https://github.com/haphan"
-                }
-            ],
-            "description": "PHP SDK for OpenStack APIs. Supports BlockStorage, Compute, Identity, Images, Networking and Metric Gnocchi",
-            "homepage": "https://github.com/php-opencloud/openstack",
-            "keywords": [
-                "Openstack",
-                "api",
-                "php",
-                "sdk"
-            ],
-            "support": {
-                "issues": "https://github.com/php-opencloud/openstack/issues",
-                "source": "https://github.com/php-opencloud/openstack/tree/master"
-            },
-            "time": "2020-01-07T08:46:53+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -9457,6 +9219,76 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+            "name": "justinrainbow/json-schema",
+            "version": "5.2.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/justinrainbow/json-schema.git",
+                "reference": "2ab6744b7296ded80f8cc4f9509abbff393399aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/2ab6744b7296ded80f8cc4f9509abbff393399aa",
+                "reference": "2ab6744b7296ded80f8cc4f9509abbff393399aa",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.2.20||~2.15.1",
+                "json-schema/json-schema-test-suite": "1.2.0",
+                "phpunit/phpunit": "^4.8.35"
+            },
+            "bin": [
+                "bin/validate-json"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JsonSchema\\": "src/JsonSchema/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bruno Prieto Reis",
+                    "email": "bruno.p.reis@gmail.com"
+                },
+                {
+                    "name": "Justin Rainbow",
+                    "email": "justin.rainbow@gmail.com"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
+                    "name": "Robert Schönthal",
+                    "email": "seroscho@googlemail.com"
+                }
+            ],
+            "description": "A library to validate a json schema.",
+            "homepage": "https://github.com/justinrainbow/json-schema",
+            "keywords": [
+                "json",
+                "schema"
+            ],
+            "support": {
+                "issues": "https://github.com/justinrainbow/json-schema/issues",
+                "source": "https://github.com/justinrainbow/json-schema/tree/5.2.11"
+            },
+            "time": "2021-07-22T09:24:00+00:00"
+        },
+        {
             "name": "mockery/mockery",
             "version": "1.4.4",
             "source": {
@@ -9999,16 +9831,16 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "2.0.4",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "28af674ff175d0768a5a978e6de83f697d4a7f05"
+                "reference": "42c5ba5220e6904cbfe8b1a1bda7c0cfdc8c12f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/28af674ff175d0768a5a978e6de83f697d4a7f05",
-                "reference": "28af674ff175d0768a5a978e6de83f697d4a7f05",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/42c5ba5220e6904cbfe8b1a1bda7c0cfdc8c12f5",
+                "reference": "42c5ba5220e6904cbfe8b1a1bda7c0cfdc8c12f5",
                 "shasum": ""
             },
             "require": {
@@ -10047,7 +9879,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-file-iterator/issues",
-                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/2.0.4"
+                "source": "https://github.com/sebastianbergmann/php-file-iterator/tree/2.0.5"
             },
             "funding": [
                 {
@@ -10055,7 +9887,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-07-19T06:46:01+00:00"
+            "time": "2021-12-02T12:42:26+00:00"
         },
         {
             "name": "phpunit/php-text-template",

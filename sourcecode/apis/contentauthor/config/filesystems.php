@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'cloud' => env('FILESYSTEM_CLOUD', 'openstack'),
+    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,40 +42,33 @@ return [
     */
 
     'disks' => [
-
         'testDisk' => [
             'driver' => 'local',
             'root'   => base_path('tests'),
         ],
-
         'storageLogs' => [
             'driver' => 'local',
             'root'   => storage_path('logs'),
         ],
-
         'h5p-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_H5P', public_path() . '/h5pstorage'),
             'url' => env('UPLOAD_BASE_URL_H5P', '/h5pstorage'),
         ],
-
         'h5p' => [
             'driver' => env('LIBRARIES_H5P_STORAGE_DRIVER', 'local'),
             'root' => env('LIBRARIES_H5P_PATH', app_path() . '/Libraries/H5P')
         ],
-
         'article-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
             'url' => '/h5pstorage/article-uploads',
         ],
-
         'game-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_GAME', public_path() . '/h5pstorage/games'),
             'url' => env('UPLOAD_BASE_URL_GAME', '/h5pstorage/games'),
         ],
-
         'game-uploads-s3' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 's3'),
             'key' => env('S3_GAME_KEY', 's3-game-key'),
@@ -83,17 +76,14 @@ return [
             'region' => env('S3_GAME_REGION', 'eu-central-1'),
             'bucket' => env('S3_GAME_BUCKET', 'cerpus-ca-game-uploads'),
         ],
-
         'tmp' => [
             'driver' => 'local',
             'root' => '/tmp'
         ],
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-
         'ftp' => [
             'driver' => 'ftp',
             'host' => 'ftp.example.com',
@@ -107,7 +97,6 @@ return [
             // 'ssl'      => true,
             // 'timeout'  => 30,
         ],
-
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -115,7 +104,6 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-
         'rackspace' => [
             'driver' => 'rackspace',
             'username' => 'your-username',
@@ -124,11 +112,6 @@ return [
             'endpoint' => 'https://identity.api.rackspacecloud.com/v2.0/',
             'region' => 'IAD',
             'url_type' => 'publicURL',
-        ],
-
-        'openstack' => [
-            'driver' => 'openstack',
-            'container' => env('OPENSTACK_CONTAINER_NAME', 'ca_h5p'),
         ],
     ],
 

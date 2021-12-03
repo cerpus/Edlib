@@ -6,7 +6,3 @@ mkdir -p /storage/storage /storage/h5plibs /storage/storage/app /storage/storage
 chown www-data:www-data /storage/storage /storage/h5plibs /storage/storage/app /storage/storage/logs /storage/storage/framework /storage/storage/framework/cache /storage/storage/framework/sessions /storage/storage/framework/views
 chown -R www-data:www-data /app/bootstrap
 cd /app
-
-if [ ${IGNORE_COPY_FROM_OPENSTACK:-0} = "0" ]; then
-  sudo -E -u www-data php artisan cerpus:copy-remote-libraries
-fi
