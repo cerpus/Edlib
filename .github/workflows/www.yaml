@@ -19,7 +19,6 @@ on:
 
 env:
   workingDirectory: sourcecode/www
-  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
   create_release:

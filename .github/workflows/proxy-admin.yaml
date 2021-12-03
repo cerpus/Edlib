@@ -19,12 +19,11 @@ on:
 
 env:
   workingDirectory: sourcecode/proxies/admin
-  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
   create_release:
     runs-on: ubuntu-latest
-    if: ${{ env.shouldPublishImage == '1' }}
+    if: ${{ inputs.versionToRelease && '1' || '0' }}
     steps:
       - uses: actions/checkout@v2
         with:
