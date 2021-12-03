@@ -20,7 +20,6 @@ return [
         'baseUrl' => env('NDLA_BASEURL', 'http://ndla.no'),
         'linkBaseUrl' => env('NDLA_LINK_BASE_URL', 'Please set the NDLA_LINK_BASE_URL env variable'),
         'userId'  => env('NDLA_IMPORT_USERID', 'fake-import-id'),
-        'notifyCore' => env('NDLA_NOTIFY_CORE', false),
     ],
     'h5p' => [
         'H5P_DragQuestion' => [
@@ -55,8 +54,5 @@ return [
             'url' => env("NDLA_H5P_IMAGE_URL"),
         ],
         'saveFrequency' => env('NDLA_H5P_SAVE_FREQUENCY', false),
-    ],
-    'metadata' => [
-        'published-field' => env('NDLA_METADATA_PUBLISHED_FIELD', false)
     ]
 ];

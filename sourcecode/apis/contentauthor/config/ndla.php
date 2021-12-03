@@ -5,7 +5,7 @@ return [
     'baseUrl' => env('NDLA_BASEURL', 'http://ndla.no'),
     'linkBaseUrl' => env('NDLA_LINK_BASE_URL', 'Please set the NDLA_LINK_BASE_URL env variable'),
     'userId' => env('IMPORT_USERID', env('NDLA_IMPORT_USERID', 'fake-import-id')),
-    'notifyCore' => env('NOTIFY_CORE', false),
+    'notifyCore' => env('NOTIFY_CORE', true),
     'edStepUrl' => env('EDSTEP_URL', false),
     'api' => [
         'uri' => env('NDLA_API_URI', 'https://api.ndla.no'),
