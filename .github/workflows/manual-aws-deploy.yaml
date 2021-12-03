@@ -17,7 +17,7 @@ jobs:
     environment: "${{ github.event.inputs.environment }}"
     steps:
       - name: Deploy
-        uses: ./.github/actions/awsDeploy
+        uses: ../.github/actions/awsDeploy
         with:
           version: ${{ github.event.inputs.version }}
           environment: ${{ github.event.inputs.environment }}
