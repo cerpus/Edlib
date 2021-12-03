@@ -23,7 +23,7 @@ env:
 jobs:
   create_release:
     runs-on: ubuntu-latest
-    if: ${{ inputs.versionToRelease && inputs.versionToRelease != '' && '1' || '0' }}
+    if: ${{ inputs.versionToRelease }}
     steps:
       - uses: actions/checkout@v2
         with:
