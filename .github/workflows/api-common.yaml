@@ -60,7 +60,7 @@ jobs:
   create_release:
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ inputs.versionToRelease && '1' || '0' }}
+    if: ${{ inputs.versionToRelease }}
     steps:
       - uses: actions/checkout@v2
         with:
