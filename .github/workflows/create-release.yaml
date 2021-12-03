@@ -231,7 +231,7 @@ jobs:
       - building_done
     steps:
       - name: Deploy
-        uses: ../.github/actions/awsDeploy
+        uses: ./.github/actions/awsDeploy@auto_deploy_to_test
         with:
           version: ${{ github.event.inputs.version }}
           environment: test
