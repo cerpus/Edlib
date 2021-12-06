@@ -227,14 +227,14 @@ jobs:
     needs:
       - building_done
       - get_variables
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' && github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
         environment:
           - cerpus_test
-    environment: ${{ matrix.workspace }}
-    concurrency: deploy-${{ matrix.workspace }}
+    environment: ${{ matrix.environment }}
+    concurrency: deploy-${{ matrix.environment }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -242,7 +242,7 @@ jobs:
         uses: ./.github/actions/awsDeploy
         with:
           version: ${{ needs.get_variables.outputs.releaseRef }}
-          environment: cerpus_test
+          environment: ${{ matrix.environment }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
