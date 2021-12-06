@@ -30,6 +30,7 @@ runs:
   using: composite
   steps:
     - name: Deploy name
+      shell: bash
       run: |
         echo "Version to deploy: ${{ inputs.version }}"
 
@@ -50,12 +51,14 @@ runs:
 
     - name: Update kubeconfig with cluster info
       id: kube
+      shell: bash
       run: |
         aws eks --region eu-west-1 update-kubeconfig --name ${{ inputs.AWS_EKS_CLUSTER_NAME }}
         CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
         echo "::set-output name=config::$CONFIG"
 
     - name: Update Chart.yaml with correct app version
+      shell: bash
       run: |
         echo "" >> ./chart/Chart.yaml
         echo "appVersion: \"${{ inputs.version }}\"" >> ./chart/Chart.yaml
@@ -63,6 +66,7 @@ runs:
 
     - name: Create values string for helm command
       id: helm-values
+      shell: bash
       run: |
         HELM_VALUES="-f ./chart/values.yaml "
         if [ -f "./chart/values/${{ inputs.environment }}.yaml" ]; then
@@ -135,6 +139,7 @@ runs:
         result-encoding: string
 
     - name: Post message to slack
+      shell: bash
       run: |
         DATA='${{ steps.slack-message.outputs.result }}'
         curl -X POST -H 'Content-type: application/json' --data "$DATA" "${{ inputs.SLACK_HOOK_URL }}"
