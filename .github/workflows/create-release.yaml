@@ -223,12 +223,18 @@ jobs:
               sha: context.sha
             })
 
-  deploy:
-    runs-on: ubuntu-latest
-    environment: cerpus_test
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
+  auto_deploy:
     needs:
       - building_done
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - cerpus_test
+    environment: ${{ matrix.workspace }}
+    concurrency: deploy-${{ matrix.workspace }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Deploy

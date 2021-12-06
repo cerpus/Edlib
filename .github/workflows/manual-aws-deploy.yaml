@@ -1,4 +1,4 @@
-name: "AWS Deploy"
+name: "AWS manual deploy"
 
 on:
   workflow_dispatch:
@@ -15,6 +15,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: "${{ github.event.inputs.environment }}"
+    concurrency: deploy-${{ github.event.inputs.environment }}
     steps:
       - name: Deploy
         uses: ./.github/actions/awsDeploy@auto_deploy_to_test
