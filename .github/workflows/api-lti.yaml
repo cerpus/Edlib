@@ -75,6 +75,8 @@ jobs:
           tags: public.ecr.aws/f0t8l9h1/api-lti-app:${{ inputs.versionToRelease }}
           context: sourcecode/apis/lti
           target: prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push migration container
         id: docker_build_migration
@@ -84,3 +86,5 @@ jobs:
           tags: public.ecr.aws/f0t8l9h1/api-lti-migration:${{ inputs.versionToRelease }}
           context: sourcecode/apis/lti
           target: migrations
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
