@@ -232,7 +232,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Deploy
-        uses: ./.github/actions/awsDeploy@auto_deploy_to_test
+        uses: ./.github/actions/awsDeploy
         with:
           version: ${{ github.event.inputs.version }}
           environment: test
