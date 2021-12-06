@@ -53,3 +53,5 @@ jobs:
           tags: public.ecr.aws/f0t8l9h1/www-app:${{ inputs.versionToRelease }}
           context: sourcecode/www
           target: prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
