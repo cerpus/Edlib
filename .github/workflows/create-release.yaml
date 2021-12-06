@@ -226,6 +226,7 @@ jobs:
   auto_deploy:
     needs:
       - building_done
+      - get_variables
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' }}
     strategy:
       fail-fast: false
