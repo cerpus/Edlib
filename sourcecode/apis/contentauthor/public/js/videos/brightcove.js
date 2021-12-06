@@ -9,7 +9,7 @@ H5P.VideoBrightcove = (function ($) {
         var videoId = getId(sources[0].path);
 
         const accountId = '4806596774001';
-        const playerId = 'BkLm8fT';
+        const playerId = 'oB5bDFv99';
 
         var $wrapper = $('<div/>');
 
