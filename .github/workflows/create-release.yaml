@@ -7,6 +7,9 @@ on:
         description: 'Name of release'
         required: false
         default: ''
+  push:
+    branches:
+      - master
 
 jobs:
   get_variables:
@@ -103,7 +106,7 @@ jobs:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
 
-# ---------- Proxies -----------------
+  # ---------- Proxies -----------------
   release_proxy_admin:
     needs: get_variables
     uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@master
@@ -160,7 +163,7 @@ jobs:
     secrets:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
-# ------------ www ---------------
+  # ------------ www ---------------
   release_www:
     needs: get_variables
     uses: cerpus/Edlib/.github/workflows/www.yaml@master
@@ -170,10 +173,8 @@ jobs:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
 
-  create_release:
-    name: Create Release
+  building_done:
     runs-on: ubuntu-latest
-    if: github.event.inputs.releaseName != ''
     needs:
       - release_api_auth
       - release_api_common
@@ -193,6 +194,17 @@ jobs:
       - release_proxy_url
       - release_www
     steps:
+      - name: "Done building images"
+        run: |
+          echo "Done building images"
+
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.event.inputs.releaseName != ''
+    needs:
+      - building_done
+    steps:
       - name: Checkout code
         uses: actions/checkout@master
         with:
@@ -209,3 +221,30 @@ jobs:
               ref: "refs/tags/${{ github.event.inputs.releaseName }}",
               sha: context.sha
             })
+
+  auto_deploy:
+    needs:
+      - building_done
+      - get_variables
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - cerpus_test
+    environment: ${{ matrix.environment }}
+    concurrency: deploy-${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy
+        uses: ./.github/actions/awsDeploy
+        with:
+          version: ${{ needs.get_variables.outputs.releaseRef }}
+          environment: ${{ matrix.environment }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+          SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
+          EXTRA_SLACK_HOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}
