@@ -10,7 +10,6 @@ on:
   push:
     branches:
       - master
-      - auto_deploy_to_test
 
 jobs:
   get_variables:
@@ -36,7 +35,7 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -44,7 +43,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_common:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-common.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-common.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -52,7 +51,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_contentauthor:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -60,7 +59,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_doku:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-doku.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -68,7 +67,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_license:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-license.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-license.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -76,7 +75,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -84,7 +83,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_resources:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -92,7 +91,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_url:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-url.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -100,7 +99,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_version:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-version.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/api-version.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -110,7 +109,7 @@ jobs:
   # ---------- Proxies -----------------
   release_proxy_admin:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -118,7 +117,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -126,7 +125,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_doku:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-doku.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -134,7 +133,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_iframe:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-iframe.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -142,7 +141,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -150,7 +149,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_resource:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -158,7 +157,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_url:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/proxy-url.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -167,7 +166,7 @@ jobs:
   # ------------ www ---------------
   release_www:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/www.yaml@auto_deploy_to_test
+    uses: cerpus/Edlib/.github/workflows/www.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -227,7 +226,7 @@ jobs:
     needs:
       - building_done
       - get_variables
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/auto_deploy_to_test' && github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
