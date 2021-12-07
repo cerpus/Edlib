@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine AS php_platform
+FROM php:7.4-fpm-alpine AS php_base
 
 WORKDIR /app
 
@@ -23,9 +23,6 @@ RUN set -eux; \
         xmlrpc \
         zip \
     ;
-
-
-FROM php_platform AS php_base
 
 COPY . .
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
@@ -70,7 +67,6 @@ RUN rm -rf node_modules
 
 FROM php_base AS buildresult
 
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 COPY --from=jsbuild /app/public /app/public
 
 RUN chown -R www-data:www-data /app/public
