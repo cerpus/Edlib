@@ -71,7 +71,6 @@ RUN rm -rf node_modules
 FROM php_base AS buildresult
 
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-COPY . .
 COPY --from=jsbuild /app/public /app/public
 
 RUN chown -R www-data:www-data /app/public
