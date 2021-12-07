@@ -34,7 +34,7 @@ jobs:
           php-version: '7.4'
 
       - name: Cache composer dependencies
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: vendor
           key: composer-${{ hashFiles('composer.lock') }}
