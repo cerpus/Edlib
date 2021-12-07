@@ -24,6 +24,13 @@ RUN set -eux; \
         zip \
     ;
 
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-autoloader \
+    --no-dev \
+    --no-scripts
+
 COPY . .
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 
@@ -39,7 +46,6 @@ RUN set -eux; \
     ; \
     composer install \
         --no-dev \
-        --prefer-dist \
     ; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
@@ -58,7 +64,8 @@ RUN npm i -g npm node-gyp
 COPY package.json package-lock.json ./
 RUN npm i
 COPY webpack.mix.js ./
-COPY --from=php_base /app/vendor ./vendor
+COPY --from=php_base /app/vendor/ckeditor/ckeditor ./vendor/ckeditor/ckeditor
+COPY --from=php_base /app/vendor/h5p ./vendor/h5p
 COPY --from=php_base /app/resources ./resources
 COPY --from=php_base /app/public ./public
 RUN npm run production
