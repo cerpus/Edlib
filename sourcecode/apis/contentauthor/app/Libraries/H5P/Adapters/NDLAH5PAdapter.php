@@ -341,9 +341,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function useEmbedLink(): int
     {
-        return Session::has(SessionKeys::EXT_CONTEXT_EMBED)
-            ? \H5PDisplayOptionBehaviour::ALWAYS_SHOW
-            : \H5PDisplayOptionBehaviour::NEVER_SHOW;
+        return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
     public function enableDraftLogic(): bool

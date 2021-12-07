@@ -95,7 +95,6 @@ class Kernel extends HttpKernel
         'core.ltiauth' => \App\Http\Middleware\LtiRequestAuth::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
-        'core.embed-url' => \App\Http\Middleware\LtiEmbedUrl::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
         'oauth' => \App\Http\Middleware\Oauth2Authentication::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,

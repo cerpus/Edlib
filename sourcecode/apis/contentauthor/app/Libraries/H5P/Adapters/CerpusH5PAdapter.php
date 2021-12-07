@@ -170,7 +170,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function useEmbedLink(): int
     {
-        return \H5PDisplayOptionBehaviour::NEVER_SHOW;
+        return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
     public function enableDraftLogic(): bool

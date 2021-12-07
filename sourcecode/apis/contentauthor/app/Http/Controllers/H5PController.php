@@ -86,7 +86,6 @@ class H5PController extends Controller
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
-        $this->middleware('core.embed-url', ['only' => ['show', 'ltiShow']]);
         $this->lti = $h5pLti;
     }
 

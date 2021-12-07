@@ -39,7 +39,8 @@ export default {
         return launchRequest;
     },
     convertLaunchUrlV2: async (req, res, next) => {
-        const uuidRegex = /^(.*\/)?(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/;
+        const uuidRegex =
+            /^(.*\/)?(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/;
         const { launchUrl } = validateJoi(
             req.query,
             Joi.object().keys({
@@ -61,16 +62,15 @@ export default {
             throw new NotFoundException('resource');
         }
 
-        const {
-            resourceVersion,
-        } = await req.context.services.resource.getLtiResourceInfo(
-            {
-                jwt: req.authorizationJwt,
-                userId: req.user && req.user.id,
-            },
-            ltiUsage.resourceId,
-            ltiUsage.resourceVersionId
-        );
+        const { resourceVersion } =
+            await req.context.services.resource.getLtiResourceInfo(
+                {
+                    jwt: req.authorizationJwt,
+                    userId: req.user && req.user.id,
+                },
+                ltiUsage.resourceId,
+                ltiUsage.resourceVersionId
+            );
 
         if (!resourceVersion) {
             throw new NotFoundException('resource');
