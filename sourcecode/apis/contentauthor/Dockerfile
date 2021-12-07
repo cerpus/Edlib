@@ -2,8 +2,6 @@ FROM php:7.4-fpm-alpine AS php_base
 
 WORKDIR /app
 
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-COPY . .
 COPY --from=composer:2 /usr/bin/composer /usr/bin/
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
@@ -24,7 +22,12 @@ RUN set -eux; \
         sockets \
         xmlrpc \
         zip \
-    ; \
+    ;
+
+COPY . .
+COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+
+RUN set -eux; \
     mkdir -v -p \
         storage/app/public \
         storage/app/storage \
@@ -41,6 +44,7 @@ RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
     chown -R www-data:www-data .
+
 
 FROM php_base as test
 COPY docker/run-phpunit.sh /run-phpunit.sh
@@ -62,8 +66,9 @@ RUN rm -rf node_modules
 
 
 FROM php_base AS buildresult
-COPY --from=php_base /app/ /app/
+
 COPY --from=jsbuild /app/public /app/public
+
 RUN chown -R www-data:www-data /app/public
 # Create symlink from app to shared storage
 RUN set -eux; \
