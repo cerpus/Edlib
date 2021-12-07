@@ -74,7 +74,7 @@
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
     "@storybook/addon-actions": "^6.4.8",
-    "@storybook/addon-links": "^6.4.5",
+    "@storybook/addon-links": "^6.4.8",
     "@storybook/addons": "^6.4.1",
     "@storybook/react": "^6.4.8",
     "babel-loader": "^8.2.3",
