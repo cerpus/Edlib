@@ -37,6 +37,6 @@
 
     <script src="{{ mix('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/jwtclient.js') }}"></script>
-    <script src="{{ mix('js/resource-common.js') }}"></script>
+    <script src="{{ asset('js/resource-common.js') }}"></script>
 </body>
 </html>
