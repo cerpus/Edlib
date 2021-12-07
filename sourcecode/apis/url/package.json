@@ -22,7 +22,7 @@
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
     "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.2.0"
   },
   "devDependencies": {
     "jest-bamboo-reporter": "^1.2.1",
