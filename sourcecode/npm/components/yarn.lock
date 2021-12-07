@@ -8615,10 +8615,10 @@ react-is@^17.0.2:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-mathquill@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/react-mathquill/-/react-mathquill-1.0.1.tgz#3fed290d43a796d4eeac0d6f8cc7f4912689a7eb"
-  integrity sha512-r49RWfHPSyEgGDHdq6khOO5MWtqFhDxtrhGNdHxmuwgpx+pB9+NiIF+QolvIyea0FMkVmyzsC6R3jjK8oK6skQ==
+react-mathquill@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-mathquill/-/react-mathquill-1.0.2.tgz#c249c43f5eb7e886680a8f3543bd0a32f3c9b67f"
+  integrity sha512-1r7obwMmkIYp/RDdmm8kWUvifs65E3J3iSoqFRff4r4GpdRzMeY+VvYeirVkuZEPTFrqR5JPLT824lILasau6w==
 
 react-popper-tooltip@^3.1.1:
   version "3.1.1"
