@@ -2,6 +2,7 @@
 
 namespace App\Apis;
 
+use App\ApiModels\Resource;
 use App\ApiModels\ResourceCollaborator;
 use App\Exceptions\NotFoundException;
 use App\Util;
@@ -35,5 +36,27 @@ class ResourceApiService
         return array_map(function ($collaborator) {
             return new ResourceCollaborator($collaborator['tenantId']);
         }, $data["collaborators"]);
+    }
+
+    /**
+     * @throws NotFoundException
+     * @throws \JsonException
+     */
+    public function getResourceFromExternalReference(string $externalSystemName, string $externalSystemId): Resource
+    {
+        $data = Util::handleEdlibNodeApiRequest(function () use ($externalSystemName, $externalSystemId) {
+            return $this->client
+                ->getAsync("/v1/resources-from-external/$externalSystemName/$externalSystemId")
+                ->wait();
+        });
+
+        return new Resource(
+            $data['id'],
+            $data['resourceGroupId'],
+            $data['deletedReason'],
+            $data['deletedAt'],
+            $data['updatedAt'],
+            $data['createdAt']
+        );
     }
 }

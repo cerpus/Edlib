@@ -100,11 +100,6 @@ class LTIRequest extends Oauth10Request
         return $this->param("context_id");
     }
 
-    public function getExtContextOembed()
-    {
-        return $this->param("ext_context_oembed");
-    }
-
     public function isPreview()
     {
         return $this->param("ext_preview") === "true";
