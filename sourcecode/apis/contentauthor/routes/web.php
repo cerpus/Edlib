@@ -119,11 +119,6 @@ Route::match(['GET', 'POST'], '/ajax', 'H5PController@ajaxLoading')->middleware(
 Route::post('v1/sessiontest/{id}', 'API\SessionTestController@setValue');
 Route::get('v1/sessiontest/{id}', 'API\SessionTestController@getValue');
 
-Route::group(['prefix' => 'api', 'middleware' => ['oauth']], function () {
-    Route::post('v1/questionsandanswers', 'API\H5PReportController@questionAndAnswer');
-    Route::get('v1/resourcelicense/{id}', 'API\H5PReportController@resourceLicense');
-});
-
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', 'API\ContentTypeController@storeH5PQuestionset');
     Route::put('v1/resources/{resourceId}/publish', 'API\PublishResourceController@publishResource')->name('api.resource.publish');
