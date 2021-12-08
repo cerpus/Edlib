@@ -107,31 +107,6 @@ class H5PController extends Controller
         return view('h5p.index', ['title' => $title, 'message' => trans('h5p-editor.need-id')]);
     }
 
-    /**
-     * Compare 2 hashes.
-     *
-     * @param mixed $a
-     * @param mixed $b
-     * @return bool
-     */
-    private function hash_compare($a, $b): bool
-    {
-        if (!is_string($a) || !is_string($b)) {
-            return false;
-        }
-
-        $len = strlen($a);
-        if ($len !== strlen($b)) {
-            return false;
-        }
-
-        $status = 0;
-        for ($i = 0; $i < $len; $i++) {
-            $status |= ord($a[$i]) ^ ord($b[$i]);
-        }
-        return $status === 0;
-    }
-
     public function doShow($id, $context, $preview = false)
     {
         try {
@@ -194,29 +169,8 @@ class H5PController extends Controller
      * @return View
      * @throws Exception
      */
-    public function show($id, Request $request): View
+    public function show($id): View
     {
-        Log::info('[' . app('requestId') . '] ' . "Show H5P: $id, user: " . Session::get('userId', 'not-logged-in-user'));
-        if ($request->get('hash') != null) {
-            $url = $request->url();
-            $hash = $request->except('hash');
-            $url = $url . '?' . http_build_query($hash, '', '&');
-            $hash_expected = hash_hmac('sha256', $url, 'secret2');
-            $hash_recieved = $request->get('hash');
-            if (!$this->hash_compare($hash_recieved, $hash_expected)) {
-                Log::error('[' . app('requestId') . '] ' . 'Access denied. Invalid hash when showing: ' . $id . " Expected: $hash_expected, actual: $hash_recieved.");
-                throw new Exception("Access denied. Invalid hash", 403);
-            }
-        } else {
-            Log::error('[' . app('requestId') . '] ' . __METHOD__ . "Invalid or no hash showing H5P $id.", [
-                'user' => Session::get('userId', 'not-logged-in-user'),
-                'url' => request()->url(),
-                'request' => request()->all()
-            ]);
-            if (!config("app.debug")) {
-                abort(403, "Access denied. No hash");
-            }
-        }
         return $this->doShow($id, null);
     }
 
