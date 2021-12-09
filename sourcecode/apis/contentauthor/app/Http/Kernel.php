@@ -96,7 +96,6 @@ class Kernel extends HttpKernel
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
-        'oauth' => \App\Http\Middleware\Oauth2Authentication::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
         'game-access' => GameAccess::class,

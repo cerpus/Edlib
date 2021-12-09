@@ -30,7 +30,6 @@ class VerifyCsrfToken extends Middleware
         'questionset/*',
         'admin/capabilities/*/*',
         'v1/copy',
-        'api/v1/questionsandanswers',
         'api/v1/contenttypes/*',
         'api/v1/resources/*/publish',
         'api/v1/h5p/import',
