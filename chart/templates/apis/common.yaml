@@ -21,6 +21,7 @@ spec:
     metadata:
       labels:
         app: common-rabbitmq-subscriber
+        flutentd-parser: laravel-json
     spec:
       containers:
         - name: main

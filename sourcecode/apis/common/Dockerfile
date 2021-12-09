@@ -6,6 +6,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/local/bin
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin
 COPY docker/php/docker-entrypoint.sh /usr/local/bin
 COPY docker/php/zz-edlib.ini "$PHP_INI_DIR/"
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 COPY . .
 COPY .env.example .
 
@@ -58,15 +59,13 @@ RUN set -eux; \
     composer clear-cache;
 
 ENV APP_ENV=production \
-    APP_DEBUG=false \
-    LOG_CHANNEL=stderr
+    APP_DEBUG=false
 
 
-FROM fabiocicerchia/nginx-lua AS web
+FROM nginx:1.19-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 COPY --from=base /var/www/edlibcommon/public /var/www/edlibcommon/public
 COPY docker/nginx/common.conf.template /etc/nginx/templates/default.conf.template
-COPY docker/nginx/request_logger.lua /etc/nginx/lua/request_logger.lua
 
 FROM prod AS deploy
 CMD [ "php", "artisan", "migrate", "--force" ]
