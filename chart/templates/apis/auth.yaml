@@ -2,7 +2,7 @@
 ---
 {{- template "helpers.service" (dict "name" "authapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "authapi" "image" "public.ecr.aws/f0t8l9h1/api-auth-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "authapi" "image" "public.ecr.aws/f0t8l9h1/api-auth-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" "fluentdParser" "node-json" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "authapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
