@@ -19,6 +19,9 @@ spec:
     metadata:
       labels:
         app: {{ .name }}
+{{ if .fluentdParser }}
+        fluentd-parser: {{ .fluentdParser }}
+{{ end }}
     spec:
       affinity:
         podAntiAffinity:
