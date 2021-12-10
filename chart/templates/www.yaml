@@ -1,5 +1,5 @@
 {{- template "helpers.service" (dict "name" "www") }}
 ---
-{{- template "helpers.deployment" (dict "name" "www" "image" "public.ecr.aws/f0t8l9h1/www-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/" ) }}
+{{- template "helpers.deployment" (dict "name" "www" "image" "public.ecr.aws/f0t8l9h1/www-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/" "fluentdParser" "nginx" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "www" ) }}

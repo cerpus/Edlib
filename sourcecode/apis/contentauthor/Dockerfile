@@ -33,6 +33,7 @@ RUN composer install \
 
 COPY . .
 COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 
 RUN set -eux; \
     mkdir -v -p \

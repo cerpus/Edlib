@@ -23,6 +23,7 @@ spec:
     metadata:
       labels:
         app: contentauthor
+        fluentd-parser: laravel-json
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
@@ -39,7 +40,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
               weight: 1
       containers:
-        - name: main
+        - name: nginx
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-app:{{ .Chart.AppVersion }}"
           env:
             - name: STARTUP_CONTAINER_ENABLED
@@ -237,6 +238,7 @@ spec:
     metadata:
       labels:
         app: contentauthor-rabbitmq-subscriber
+        fluentd-parser: laravel-json
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
