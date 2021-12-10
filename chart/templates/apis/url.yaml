@@ -2,7 +2,7 @@
 ---
 {{- template "helpers.service" (dict "name" "urlapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "urlapi" "image" "public.ecr.aws/f0t8l9h1/api-url-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "urlapi" "image" "public.ecr.aws/f0t8l9h1/api-url-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" "fluentdParser" "node-json" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "urlapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---

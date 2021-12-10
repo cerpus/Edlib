@@ -1,6 +1,6 @@
 {{- template "helpers.service" (dict "name" "proxy-url") }}
 ---
-{{- template "helpers.deployment" (dict "name" "proxy-url" "image" "public.ecr.aws/f0t8l9h1/proxy-url-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" ) }}
+{{- template "helpers.deployment" (dict "name" "proxy-url" "image" "public.ecr.aws/f0t8l9h1/proxy-url-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/_ah/health" "fluentdParser" "node-json" ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-url" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
