@@ -12,7 +12,9 @@ let client = appConfig.isTest
           legacyMode: true,
       });
 
-client.connect();
+if (!appConfig.isTest) {
+    client.connect();
+}
 
 client.on('error', function (err) {
     logger.error('Error ' + err);
