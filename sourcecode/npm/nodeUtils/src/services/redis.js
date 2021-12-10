@@ -1,4 +1,4 @@
-import redis from 'redis';
+import * as redis from 'redis';
 import redisMock from 'redis-mock';
 import { promisify } from 'util';
 import chalk from 'chalk';
