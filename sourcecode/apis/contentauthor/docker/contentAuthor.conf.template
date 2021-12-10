@@ -8,7 +8,6 @@ server {
     root /app/public;
     charset utf-8;
     client_max_body_size 2G;
-    access_log   off;
 
     location / {
             try_files $uri $uri/ /index.php$is_args$args;
