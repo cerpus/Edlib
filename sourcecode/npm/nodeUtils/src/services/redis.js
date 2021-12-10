@@ -14,6 +14,8 @@ let client = appConfig.isTest
 
 if (!appConfig.isTest) {
     client.connect();
+} else {
+    client.isOpen = true;
 }
 
 client.on('error', function (err) {
