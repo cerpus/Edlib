@@ -1,6 +1,6 @@
 {
   "name": "@cerpus/edlib-node-utils",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": false,
   "main": "lib/index.js",
   "module": "lib/index.js",
