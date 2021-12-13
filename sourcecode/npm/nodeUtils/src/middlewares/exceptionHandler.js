@@ -17,10 +17,12 @@ export default (
         };
 
         let status = 500;
+        let report = true;
 
         if (err instanceof ApiException) {
             status = err.getStatus();
             body = err.getBody();
+            report = err.report;
         }
 
         if (appConfig.displayDetailedErrors) {
@@ -29,10 +31,12 @@ export default (
             body.message = null;
         }
 
-        if (err.logDetails) {
-            err.logDetails();
-        } else {
-            logger.error(err.stack);
+        if (report) {
+            if (err.logDetails) {
+                err.logDetails();
+            } else {
+                logger.error(err.stack);
+            }
         }
 
         res.status(status);
@@ -45,9 +49,7 @@ export default (
                     statusPhrase: getReasonPhrase(status),
                     stack: body.trace,
                 });
-            } catch (e) {
-                logger.error('PUG npm package is not installed');
-            }
+            } catch (e) {}
         }
 
         res.json({
