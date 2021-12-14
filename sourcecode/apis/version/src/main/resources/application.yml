@@ -1,5 +1,5 @@
 spring:
-  application.name: versioningapi
+  application.name: versionapi
   datasource:
     url: jdbc:postgresql://localhost/versioningdb
     username: versionuser
@@ -22,3 +22,10 @@ management:
     health.enabled: true
 
 server.use-forward-headers: true
+
+server:
+  port: 80
+
+logging:
+  pattern:
+    console: "{\"time\": \"%d\", \"level\": \"%p\", \"source\": \"%logger{63}:%L\", \"message\": \"%replace(%m%wEx{6}){'[\r\n]+', '\\n'}%nopex\"}%n"

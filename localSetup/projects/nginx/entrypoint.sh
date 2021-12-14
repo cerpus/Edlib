@@ -10,6 +10,7 @@ DNS:edlib.internal.auth.local, \
 DNS:edlib.internal.resource.local, \
 DNS:edlib.internal.lti.local, \
 DNS:edlib.internal.doku.local, \
+DNS:edlib.internal.version.local, \
 DNS:edlibfacade.local, \
 DNS:test.edlibfacade.local, \
 DNS:localhost, \
@@ -35,45 +36,43 @@ if [ ! -f "$CA_DIR/ca.key" ]; then
     -subj '/C=NO/ST=Nordland/L=Alsvaag/O=Cerpus AS/OU=local/CN=cerpus.com/emailAddress=local@cerpus.com'
 fi
 
-if [ ! -f "$CERTS_DIR/cerpus.key" ] || [ ! -f "$CERTS_DIR/cerpus.crt" ]; then
-  echo "Generating site certificate..."
-  rm -f "$CERTS_DIR/cerpus.*"
+echo "Generating site certificate..."
+rm -f "$CERTS_DIR/cerpus.*"
 
-  OPENSSL_CONFIG=$(mktemp)
-  {
-    echo '[dn]'
-    echo 'CN=localhost'
-    echo '[req]'
-    echo 'distinguished_name = dn'
-    echo '[EXT]'
-    echo "subjectAltName = $DOMAINS"
-    echo 'keyUsage=digitalSignature'
-    echo 'extendedKeyUsage=serverAuth'
-  } > "$OPENSSL_CONFIG"
+OPENSSL_CONFIG=$(mktemp)
+{
+  echo '[dn]'
+  echo 'CN=localhost'
+  echo '[req]'
+  echo 'distinguished_name = dn'
+  echo '[EXT]'
+  echo "subjectAltName = $DOMAINS"
+  echo 'keyUsage=digitalSignature'
+  echo 'extendedKeyUsage=serverAuth'
+} > "$OPENSSL_CONFIG"
 
-  openssl req \
-    -nodes \
-    -newkey rsa:2048 \
-    -subj '/CN=localhost' \
-    -extensions EXT \
-    -keyout "$CERTS_DIR/cerpus.key" \
-    -out "$CERTS_DIR/cerpus.csr" \
-    -config "$OPENSSL_CONFIG"
-  rm "$OPENSSL_CONFIG"
+openssl req \
+  -nodes \
+  -newkey rsa:2048 \
+  -subj '/CN=localhost' \
+  -extensions EXT \
+  -keyout "$CERTS_DIR/cerpus.key" \
+  -out "$CERTS_DIR/cerpus.csr" \
+  -config "$OPENSSL_CONFIG"
+rm "$OPENSSL_CONFIG"
 
-  EXTFILE=$(mktemp)
-  echo "subjectAltName = $DOMAINS" > "$EXTFILE"
-  openssl x509 \
-    -req \
-    -in "$CERTS_DIR/cerpus.csr" \
-    -CA "$CA_DIR/cacert.pem" \
-    -CAkey "$CA_DIR/ca.key" \
-    -CAcreateserial \
-    -out "$CERTS_DIR/cerpus.crt" \
-    -days 3649 \
-    -sha256 \
-    -extfile "$EXTFILE"
-  rm "$EXTFILE"
-fi
+EXTFILE=$(mktemp)
+echo "subjectAltName = $DOMAINS" > "$EXTFILE"
+openssl x509 \
+  -req \
+  -in "$CERTS_DIR/cerpus.csr" \
+  -CA "$CA_DIR/cacert.pem" \
+  -CAkey "$CA_DIR/ca.key" \
+  -CAcreateserial \
+  -out "$CERTS_DIR/cerpus.crt" \
+  -days 3649 \
+  -sha256 \
+  -extfile "$EXTFILE"
+rm "$EXTFILE"
 
 exec "$@"

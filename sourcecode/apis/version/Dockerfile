@@ -24,7 +24,7 @@ CMD [ "/run-tests.sh" ]
 ## App-container used to run application in deployed environments
 
 FROM openjdk:11 as app-prod
-EXPOSE 8080
+EXPOSE 80
 
 COPY --from=0 /src/target/versioning-*.jar app.jar
 
@@ -36,7 +36,7 @@ ENTRYPOINT [ "/start-app.sh" ]
 ## App-container used to run application with debugging
 
 FROM openjdk:11 as app-dev
-EXPOSE 8080
+EXPOSE 80
 EXPOSE 5555
 
 COPY --from=0 /src/target/versioning-*.jar app.jar

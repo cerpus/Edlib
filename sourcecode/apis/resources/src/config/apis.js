@@ -9,7 +9,7 @@ const edlibUrl = env('EDLIBCOMMON_URL', 'https://api.edlib.local');
 
 export default {
     version: {
-        url: env('VERSIONAPI_URL', 'http://versioningapi:8080'),
+        url: env('VERSIONAPI_URL', 'http://versionapi'),
     },
     elasticsearch: {
         resourceIndexPrefix: 'edlib-resources',
