@@ -1,4 +1,4 @@
-FROM node:14 as build
+FROM node:14.18 as build
 
 # Create app directory
 WORKDIR /app
@@ -20,7 +20,7 @@ EXPOSE 80
 
 CMD bash /createEnvFile.sh /usr/share/nginx/html; nginx -g "daemon off;"
 
-FROM node:14 as dev
+FROM node:14.18 as dev
 
 # Create app directory
 WORKDIR /app

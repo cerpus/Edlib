@@ -1,9 +1,8 @@
 import logger from '../services/logger.js';
 import authorizationJwtMiddleware from './authorizationJwt.js';
-import { ApiException, UnauthorizedException } from '../exceptions/index.js';
+import { ApiException } from '../exceptions/index.js';
 import * as errorReporting from '../services/errorReporting.js';
 import moment from 'moment';
-import JsonWebToken from 'jsonwebtoken';
 
 export default (req, res, next) => {
     if (req.user) {
@@ -31,12 +30,13 @@ export default (req, res, next) => {
             let info = null;
             if (req.context.services.edlibAuth) {
                 try {
-                    const r = await req.context.services.edlibAuth.verifyTokenAgainstAuth(
-                        req.authorizationJwt,
-                        {
-                            ignoreExpiration: true,
-                        }
-                    );
+                    const r =
+                        await req.context.services.edlibAuth.verifyTokenAgainstAuth(
+                            req.authorizationJwt,
+                            {
+                                ignoreExpiration: true,
+                            }
+                        );
 
                     info = {
                         exp: r.exp,
@@ -51,12 +51,13 @@ export default (req, res, next) => {
             }
 
             if (!info) {
-                const r = await req.context.services.auth.verifyTokenAgainstAuth(
-                    req.authorizationJwt,
-                    {
-                        ignoreExpiration: true,
-                    }
-                );
+                const r =
+                    await req.context.services.auth.verifyTokenAgainstAuth(
+                        req.authorizationJwt,
+                        {
+                            ignoreExpiration: true,
+                        }
+                    );
 
                 info = {
                     exp: r.exp,
@@ -69,17 +70,14 @@ export default (req, res, next) => {
             }
 
             if (!info) {
-                throw new UnauthorizedException();
+                return null;
             }
 
             const leeway = 60 * 60;
             const exp = moment.unix(info.exp + leeway);
 
             if (!exp.isAfter(moment())) {
-                throw new JsonWebToken.TokenExpiredError(
-                    'jwt expired',
-                    new Date(exp.unix() * 1000)
-                );
+                return null;
             }
 
             req.user = info.user;
