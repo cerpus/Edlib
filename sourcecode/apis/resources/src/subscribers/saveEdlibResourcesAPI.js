@@ -55,7 +55,7 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
 
         if (!version) {
             logger.error(
-                'Version was not found for resource. Make sure versions are saved into the versioningapi. It is required to build the resource data model'
+                'Version was not found for resource. Make sure versions are saved into the versionapi. It is required to build the resource data model'
             );
             return;
         }

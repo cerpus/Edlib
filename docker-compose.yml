@@ -106,7 +106,7 @@ services:
           - api.edlib.local
           - edlibcommon
 
-  versioningapi:
+  versionapi:
     build:
       context: ./sourcecode/apis/version
       target: app-dev

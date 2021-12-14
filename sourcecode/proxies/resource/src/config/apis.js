@@ -22,7 +22,7 @@ export default {
         url: env('ID_URL', 'http://idapi'),
     },
     version: {
-        url: env('VERSIONAPI_URL', 'http://versioningapi:8080'),
+        url: env('VERSIONAPI_URL', 'http://versionapi'),
     },
     resource: {
         url: env('RESOURCE_API_URL', 'http://resourceapi'),

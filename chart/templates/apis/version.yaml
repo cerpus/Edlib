@@ -1,8 +1,8 @@
-{{- template "helpers.initJob" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "versioningapi-config") "envFromSecret" (list "versioningapi-secret") ) }}
+{{- template "helpers.initJob" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") ) }}
 ---
-{{- template "helpers.service" (dict "name" "versionapi" "port" 8080) }}
+{{- template "helpers.service" (dict "name" "versionapi" ) }}
 ---
-{{- template "helpers.deployment" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-app" "imageTag" .Chart.AppVersion "envFromConfig" (list "versioningapi-config") "envFromSecret" (list "versioningapi-secret") "replicaCount" .Values.minReplicaCount "healthUrl" "/health" "port" 8080 "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
+{{- template "helpers.deployment" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-app" "imageTag" .Chart.AppVersion "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") "replicaCount" .Values.minReplicaCount "healthUrl" "/health" "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "versionapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---

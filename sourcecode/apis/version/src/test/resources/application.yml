@@ -1,5 +1,5 @@
 spring:
-  application.name: versioningapi
+  application.name: versionapi
   profiles.active: unittest
   datasource.url: jdbc:h2:mem:versioningdbTest
   jpa.hibernate.ddl-auto: none

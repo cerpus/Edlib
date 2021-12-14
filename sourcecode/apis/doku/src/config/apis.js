@@ -5,7 +5,7 @@ export default {
         url: env('LICENSEAPI_URL', 'http://licenseapi'),
     },
     version: {
-        url: env('VERSIONAPI_URL', 'http://versioningapi:8080'),
+        url: env('VERSIONAPI_URL', 'http://versionapi'),
     },
     coreInternal: {
         url: env('CORE_INTERNAL_URL', 'http://core'),
