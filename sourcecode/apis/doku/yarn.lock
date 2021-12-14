@@ -1106,10 +1106,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cerpus/edlib-node-utils@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@cerpus/edlib-node-utils/-/edlib-node-utils-1.7.1.tgz#ea2c1b67b5c05bdf817dff279b888658c765bb54"
-  integrity sha512-BFSigaBrhSqgYCD5sw6PSThhVI4dgGimDOF04qaw8V0+Pw0aGxUeGq3KJeqWr5CsH289K6Va5KePm0KDIpT7Aw==
+"@cerpus/edlib-node-utils@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@cerpus/edlib-node-utils/-/edlib-node-utils-1.8.0.tgz#e41020765f1feadcb02458dad8510c91f2ee5c56"
+  integrity sha512-CNNYJIo0mvc6Fnh9Tiv3WBiWZd/O0NV0/LXcabN/godA8zWbsMHvGxuBDvv8QzqyUl+5scHPrvJrz1LXnoqF7A==
   dependencies:
     "@hapi/joi" "^17.1.1"
     "@sentry/node" "^6.7.1"
