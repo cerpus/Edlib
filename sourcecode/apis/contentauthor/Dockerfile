@@ -89,7 +89,7 @@ RUN set -eux; \
 FROM buildresult AS cron
 COPY docker/laravel.schedule /laravel.schedule
 RUN set -eux; crontab /laravel.schedule; rm /laravel.schedule; crontab -l
-CMD [ "bash", "-c", "set -eux; crond -f" ]
+CMD [ "bash", "-c", "set -eu; crond -f" ]
 
 
 FROM buildresult AS deploy
