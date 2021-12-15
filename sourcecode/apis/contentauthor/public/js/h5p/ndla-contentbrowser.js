@@ -547,9 +547,9 @@ class VideoBrowser extends ContentBrowserBase {
         }
 
         const maxDepth = 20;
-        let run = true;
+        let abort = false;
         let currentDepth = 1;
-        while (run) {
+        do {
             let fieldName = 'licenseinfo';
             if (currentDepth > 1) {
                 fieldName += currentDepth;
@@ -558,15 +558,11 @@ class VideoBrowser extends ContentBrowserBase {
             if (ContentBrowserBase.checkNestedRequirements(values, `values.custom_fields.${fieldName}`)) {
                 copyRight.authors.push({ name: values.custom_fields[fieldName] });
             } else {
-                run = false;
+                abort = true;
             }
 
             currentDepth++;
-
-            if (currentDepth > maxDepth) {
-                run = false;
-            }
-        }
+        } while (currentDepth < maxDepth && !abort);
 
         return copyRight;
     }
