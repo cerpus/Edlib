@@ -21,6 +21,16 @@ export default ({ pubSubConnection }) => async ({
         return;
     }
 
+    const existingView =
+        externalReference &&
+        (await context.db.trackingResourceVersion.getByExternalReference(
+            externalReference
+        ));
+
+    if (existingView) {
+        return;
+    }
+
     await context.db.trackingResourceVersion.create({
         externalReference,
         resourceVersionId,
