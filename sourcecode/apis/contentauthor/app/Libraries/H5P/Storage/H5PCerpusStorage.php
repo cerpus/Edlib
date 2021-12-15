@@ -330,7 +330,6 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 $localPath = $target . Str::after($file, $folder);
                 $this->uploadDisk->putStream($localPath, $this->filesystem->readStream($file));
             });
-        $this->triggerRemoteSyncOfLibraries();
     }
 
     /**
@@ -630,20 +629,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 $path = Str::after($file->path, $this->getAjaxPath());
                 if ($this->uploadDisk->missing($path) || !$this->hasLibraryVersion($path, $file->version)) {
                     $file->path = $this->getDisplayPath() . $path;
-                    $this->triggerRemoteSyncOfLibraries();
                 }
             }
         }
         return $files;
-    }
-
-    private function triggerRemoteSyncOfLibraries()
-    {
-        $cacheKey = addslashes(sprintf("sync-library-process-%s", request()->getHttpHost()));
-        $config = SyncRemoteLibrariesDataObject::create($cacheKey);
-        if (Cache::add($cacheKey, true, now()->addSeconds($config->seconds))) {
-            SyncRemoteLibraries::dispatch($config);
-        }
     }
 
     private function hasLibraryVersion($path, $versionString): bool
