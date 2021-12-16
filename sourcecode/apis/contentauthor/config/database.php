@@ -45,13 +45,11 @@ return [
     */
 
     'connections' => [
-
         'sqlite-test' => [
             'driver'   => 'sqlite',
             'database' => ':memory:',
             'prefix'   => '',
         ],
-
         'mysql-test' => [
             'driver'    => 'mysql',
             'host'      => 'localhost',
@@ -63,13 +61,11 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
-
         'sqlite' => [
             'driver'   => 'sqlite',
             'database' => storage_path('database.sqlite'),
             'prefix'   => '',
         ],
-
         'mysql' => [
             'driver'    => 'mysql',
             'host'      => env('DB_HOST', 'localhost'),
@@ -82,7 +78,6 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
-
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
@@ -93,7 +88,6 @@ return [
             'prefix'   => '',
             'schema'   => 'public',
         ],
-
         'sqlsrv' => [
             'driver'   => 'sqlsrv',
             'host'     => env('DB_HOST', 'localhost'),
@@ -103,7 +97,6 @@ return [
             'charset'  => 'utf8',
             'prefix'   => '',
         ],
-
     ],
 
     /*
@@ -134,8 +127,8 @@ return [
         'cluster' => false,
         'client' => env('REDIS_CLIENT', 'predis'),
         'default' => [
-            'host'     => env('REDIS_HOST', 'redis-ha-haproxy'),
-            'port'     => env('REDIS_PORT', 6379),
+            'host'     => env('EDLIBCOMMON_REDIS_HOST', 'redis'),
+            'port'     => env('EDLIBCOMMON_REDIS_PORT', 6379),
             'password' => env('REDIS_PASSWORD', null),
             'database' => env('REDIS_DATABASE', 0),
             'read_write_timeout' => 0

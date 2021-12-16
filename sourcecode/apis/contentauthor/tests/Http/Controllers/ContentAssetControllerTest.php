@@ -34,10 +34,6 @@ class ContentAssetControllerTest extends TestCase
      */
     public function nonExistingCachedAsset()
     {
-        Cache::shouldReceive('has')
-            ->once()
-            ->andReturnFalse();
-
         $this->expectException(NotFoundHttpException::class);
         (new ContentAssetController())->__invoke("not_valid_path", new Request());
     }
@@ -47,26 +43,11 @@ class ContentAssetControllerTest extends TestCase
      */
     public function pathToCachedAsset()
     {
-        Cache::shouldReceive('has')
-            ->twice()
-            ->andReturns(false, true);
-        Cache::shouldReceive('put')
-            ->once();
-        Cache::shouldReceive('get')
-            ->once()
-            ->andReturn([
-                'content' => "body {\n    background-color: red;\n}\n",
-                "headers" => []
-            ]);
-
         $this->linkCachedAssetsFolder();
         $path = "cachedassets/my_cached_asset.css";
         $request = Request::create($path);
         $response = (new ContentAssetController())->__invoke($path, $request);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals("body {
-    background-color: red;
-}
-", $response->getContent());
+        $this->assertEquals('inline; filename=my_cached_asset.css', $response->headers->get('Content-Disposition'));
     }
 }
