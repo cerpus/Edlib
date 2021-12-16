@@ -1,51 +1,5 @@
 <?php
 
-if (env('DEPLOYMENT_ENVIRONMENT', '') != '') {
-
-    // For deployed environments
-
-    return [
-        'default' => env('CACHE_DRIVER', 'memcached'),
-
-        'stores' => [
-            'memcached' => [
-                'driver' => 'memcached',
-                'options' => [
-                    Memcached::OPT_TCP_NODELAY => true,
-                    Memcached::OPT_NO_BLOCK => true,
-                    Memcached::OPT_CONNECT_TIMEOUT => 2000,
-                    Memcached::OPT_POLL_TIMEOUT => 2000,
-                    Memcached::OPT_RECV_TIMEOUT => 750000,
-                    Memcached::OPT_SEND_TIMEOUT => 750000,
-                    Memcached::OPT_DISTRIBUTION => Memcached::DISTRIBUTION_CONSISTENT,
-                    Memcached::OPT_RETRY_TIMEOUT => 2,
-                    Memcached::OPT_SERVER_FAILURE_LIMIT => 1,
-                    Memcached::OPT_AUTO_EJECT_HOSTS => true
-                ],
-                'servers' => [
-                    ['host' => 'memcached-0', 'port' => 11211, 'weight' => 100],
-                    ['host' => 'memcached-1', 'port' => 11211, 'weight' => 100],
-                    ['host' => 'memcached-2', 'port' => 11211, 'weight' => 100],
-                    ['host' => 'memcached-3', 'port' => 11211, 'weight' => 100],
-                    ['host' => 'memcached-4', 'port' => 11211, 'weight' => 100]
-                ],
-            ],
-            'redis' => [
-                'driver' => 'redis',
-                'connection' => 'default',
-            ],
-        ],
-
-        'prefix' => env(
-            'CACHE_PREFIX',
-            'laravel_cache'
-        ),
-        'ttl' => [
-            'assets' => env("CACHE_ASSETS_TTL", 259200),
-        ]
-    ];
-}
-
 return [
 
     /*
@@ -73,26 +27,21 @@ return [
     */
 
     'stores' => [
-
         'apc' => [
             'driver' => 'apc',
         ],
-
         'array' => [
             'driver' => 'array',
         ],
-
         'database' => [
             'driver' => 'database',
             'table'  => 'cache',
             'connection' => null,
         ],
-
         'file' => [
             'driver' => 'file',
             'path'   => storage_path('framework/cache'),
         ],
-
         'memcached' => [
             'driver'  => 'memcached',
             'servers' => [
@@ -101,12 +50,10 @@ return [
                 ],
             ],
         ],
-
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
         ],
-
     ],
 
     /*
@@ -122,11 +69,10 @@ return [
 
     'prefix' => env(
         'CACHE_PREFIX',
-        str_slug(env('APP_NAME', 'laravel'), '_').'_cache'
+        'api-contentauthor'
     ),
 
     'ttl' => [
         'assets' => env("CACHE_ASSETS_TTL", 3600),
     ]
-
 ];
