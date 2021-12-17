@@ -5,6 +5,7 @@ namespace App\Libraries\H5P\Storage;
 
 use App\H5PLibrary;
 use App\Jobs\H5PFileUpload;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\H5PFileInterface;
 use App\H5PContentsVideo;
@@ -33,19 +34,19 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     private $uploadDisk;
 
     private $diskName;
-    private $cdnPrefix;
+    private ContentAuthorStorage $contentAuthorStorage;
 
-    public function __construct(Filesystem $filesystemAdapter, string $diskName, Filesystem $uploadDisk, string $cdnPrefix = '')
+    public function __construct(Filesystem $filesystemAdapter, string $diskName, Filesystem $uploadDisk, ContentAuthorStorage $contentAuthorStorage)
     {
         $this->filesystem = $filesystemAdapter;
         $this->diskName = $diskName;
         $this->uploadDisk = $uploadDisk;
-        $this->cdnPrefix = $cdnPrefix;
+        $this->contentAuthorStorage = $contentAuthorStorage;
     }
 
-    private function getUrl(string $url)
+    private function getUrl(string $url): string
     {
-        return rtrim($this->cdnPrefix, '/') . '/' . ltrim($url, '/');
+        return $this->contentAuthorStorage->getAssetUrl($url);
     }
 
     private function triggerVideoConvert($fromId, $toId, $file)
@@ -628,11 +629,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         foreach ($files as $fileTypes) {
             foreach ($fileTypes as $file) {
                 $path = Str::after($file->path, $this->getAjaxPath());
-                if ($this->uploadDisk->missing($path) || !$this->hasLibraryVersion($path, $file->version)) {
-                    $file->path = $this->getDisplayPath() . $path;
-                }
+                $file->path = $path;
             }
         }
+
         return $files;
     }
 
