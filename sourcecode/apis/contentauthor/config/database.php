@@ -12,7 +12,6 @@ return [
     | array format for simplicity. Here you can tweak the fetch style.
     |
     */
-
     'fetch' => PDO::FETCH_CLASS,
 
     /*
@@ -25,7 +24,6 @@ return [
     | you may use many connections at once using the Database library.
     |
     */
-
     'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
@@ -43,7 +41,6 @@ return [
     | choice installed on your machine before you begin development.
     |
     */
-
     'connections' => [
         'sqlite-test' => [
             'driver'   => 'sqlite',
@@ -68,34 +65,15 @@ return [
         ],
         'mysql' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', 'forge'),
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
-            'port'      => env('DB_PORT', '3306'),
+            'host'      => env('EDLIBCOMMON_DB_HOST', 'localhost'),
+            'database'  => env('DB_DATABASE', env('EDLIBCOMMON_DB_PREFIX', '') . 'contentauthor'),
+            'username'  => env('EDLIBCOMMON_DB_USER', 'forge'),
+            'password'  => env('EDLIBCOMMON_DB_PASSWORD', ''),
+            'port'      => env('EDLIBCOMMON_DB_PORT', '3306'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
             'strict'    => false,
-        ],
-        'pgsql' => [
-            'driver'   => 'pgsql',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset'  => 'utf8',
-            'prefix'   => '',
-            'schema'   => 'public',
-        ],
-        'sqlsrv' => [
-            'driver'   => 'sqlsrv',
-            'host'     => env('DB_HOST', 'localhost'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset'  => 'utf8',
-            'prefix'   => '',
         ],
     ],
 
@@ -109,7 +87,6 @@ return [
     | the migrations on disk haven't actually been run in the database.
     |
     */
-
     'migrations' => 'migrations',
 
     /*
@@ -122,7 +99,6 @@ return [
     | such as APC or Memcached. Laravel makes it easy to dig right in.
     |
     */
-
     'redis' => [
         'cluster' => false,
         'client' => env('REDIS_CLIENT', 'predis'),
@@ -134,5 +110,4 @@ return [
             'read_write_timeout' => 0
         ],
     ],
-
 ];
