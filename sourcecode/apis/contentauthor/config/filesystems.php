@@ -50,6 +50,26 @@ return [
             'driver' => 'local',
             'root'   => storage_path('logs'),
         ],
+        'localBucket' => [
+            'driver' => 'local',
+            'root' => '/buckets/main_bucket',
+        ],
+        's3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+        ],
+        'tmp' => [
+            'driver' => 'local',
+            'root' => '/tmp'
+        ],
+        'h5pTmp' => [
+            'driver' => 'local',
+            'root' => '/tmp/h5p'
+        ],
+        // @todo remove all of below buckets
         'h5p-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_H5P', public_path() . '/h5pstorage'),
@@ -69,49 +89,9 @@ return [
             'root' => env('UPLOAD_STORAGE_PATH_GAME', public_path() . '/h5pstorage/games'),
             'url' => env('UPLOAD_BASE_URL_GAME', '/h5pstorage/games'),
         ],
-        'game-uploads-s3' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 's3'),
-            'key' => env('S3_GAME_KEY', 's3-game-key'),
-            'secret' => env('S3_GAME_SECRET', 's3-game-secret'),
-            'region' => env('S3_GAME_REGION', 'eu-central-1'),
-            'bucket' => env('S3_GAME_BUCKET', 'cerpus-ca-game-uploads'),
-        ],
-        'tmp' => [
-            'driver' => 'local',
-            'root' => '/tmp'
-        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-        ],
-        'ftp' => [
-            'driver' => 'ftp',
-            'host' => 'ftp.example.com',
-            'username' => 'your-username',
-            'password' => 'your-password',
-
-            // Optional FTP Settings...
-            // 'port'     => 21,
-            // 'root'     => '',
-            // 'passive'  => true,
-            // 'ssl'      => true,
-            // 'timeout'  => 30,
-        ],
-        's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-        ],
-        'rackspace' => [
-            'driver' => 'rackspace',
-            'username' => 'your-username',
-            'key' => 'your-key',
-            'container' => 'your-container',
-            'endpoint' => 'https://identity.api.rackspacecloud.com/v2.0/',
-            'region' => 'IAD',
-            'url_type' => 'publicURL',
         ],
     ],
 

@@ -17,6 +17,7 @@ volumes:
   proxy-lti_nodemodules:
   proxy-resource_nodemodules:
   www_nodemodules:
+  api_contentauthor-main_bucket:
 
 services:
   redis:
@@ -155,6 +156,7 @@ services:
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
+      - api_contentauthor-main_bucket:/buckets/main_bucket
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
@@ -176,6 +178,7 @@ services:
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - mysql
       - redis
@@ -196,6 +199,7 @@ services:
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -208,6 +212,7 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
+      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -220,6 +225,7 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
+      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 

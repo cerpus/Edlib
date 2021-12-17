@@ -5,8 +5,8 @@ set -eux
 update-ca-certificates
 /start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672
 cd /app
-mkdir -p storage/framework/cache storage/framework/views storage/framework/sessions
+mkdir -p /buckets/main_bucket
 composer install
 php artisan migrate --force
-chown -R www-data:www-data /app/storage /app/public
+chown -R www-data:www-data /app/storage /app/public /buckets/main_bucket
 php-fpm -R -F -O
