@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Libraries\H5P\Helper\UrlHelper;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
@@ -156,8 +156,12 @@ class H5PServiceProvider extends ServiceProvider
             $storageDisk = config('app.useContentCloudStorage') ? 'cloud' : 'default';
             switch ($storageDisk) {
                 case 'cloud':
-                    $uploadDisk = Storage::disk(config('h5p.H5PStorageDisk'));
-                    $instance = new H5PCerpusStorage(Storage::cloud(), Storage::getDefaultCloudDriver(), $uploadDisk, config('app.cdnPrefix', UrlHelper::getCurrentBaseUrl()));
+                    $instance = new H5PCerpusStorage(
+                        Storage::cloud(),
+                        Storage::getDefaultCloudDriver(),
+                        Storage::disk(config('h5p.H5PStorageDisk')),
+                        $app->make(ContentAuthorStorage::class)
+                    );
                     break;
                 case 'default':
                     $path = config("h5p.storage.path");
@@ -230,7 +234,8 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             /** @var CerpusStorageInterface|H5PFileStorage $fileStorage */
             $fileStorage = $app->make(H5PFileStorage::class);
-            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, config('app.cdnPrefix', UrlHelper::getCurrentBaseUrl()));
+            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
+            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, $contentAuthorStorage->getAssetsBaseUrl());
             $core->aggregateAssets = true;
 
             $app->instance(H5PCore::class, $core);

@@ -6,14 +6,12 @@ use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\H5POption;
 use App\Http\Requests\LTIRequest;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Libraries\ImportOwner;
 use App\Observers\H5POptionObserver;
-use Cerpus\Helper\Clients\Client;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -66,6 +64,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(H5POptionsCache::class, function () {
             return new H5POptionsCache();
+        });
+
+        $this->app->singleton(ContentAuthorStorage::class, function () {
+            return new ContentAuthorStorage(config('app.cdnPrefix'));
         });
 
         $this->app->bind(
