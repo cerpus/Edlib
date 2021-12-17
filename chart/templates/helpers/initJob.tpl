@@ -34,6 +34,4 @@ spec:
                 optional: true
 {{- end }}
 {{ end }}
-      imagePullSecrets:
-        - name: dockerconfigjson-github-com
 {{- end }}
