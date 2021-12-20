@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Requests;
 use App\Libraries\NDLA\Importers\ImporterBase;
 use Illuminate\Http\Request;
 use App\Libraries\NDLA\Import;
 use Illuminate\Support\Facades\Log;
-
-//use App\Http\Controllers\Controller;
 
 class ImportController extends Controller
 {

@@ -33,9 +33,9 @@ class AjaxRequest extends \H5PEditorEndpoints
     const LIBRARY_REBUILD = 'rebuild';
 
     public function __construct(
-        H5Plugin $plugin,
-        \H5PCore $core,
-        \H5peditor $editor,
+        H5Plugin             $plugin,
+        \H5PCore             $core,
+        \H5peditor           $editor,
         ContentAuthorStorage $contentAuthorStorage
     )
     {
@@ -184,12 +184,13 @@ class AjaxRequest extends \H5PEditorEndpoints
         $originalAjax->action(self::LIBRARY_INSTALL, $token, $library);
     }
 
-    private function handleEditorBehaviorSettings(Request $request, $library)
+    private function handleEditorBehaviorSettings(Request $request, $library): array
     {
         $settings = $request->session()->get(sprintf(SessionKeys::EXT_EDITOR_BEHAVIOR_SETTINGS, $request->get('redirectToken')));
         if (empty($settings)) {
             return [];
         }
+
         try {
             /** @var ContentTypeInterface $package */
             $package = H5PPackageProvider::make($library);
@@ -203,14 +204,13 @@ class AjaxRequest extends \H5PEditorEndpoints
 
         $fileName = sprintf(self::H5P_BEHAVIOR_SETTINGS, md5($library . '|' . $styles));
 
-        $disk = Storage::disk('h5p-uploads');
-        if (!$disk->has($fileName)) {
-            $disk->put($fileName, $styles);
+        if (!$this->contentAuthorStorage->getBucketDisk()->has($fileName)) {
+            $this->contentAuthorStorage->getBucketDisk()->put($fileName, $styles);
         }
 
         return [
             'styles' => $styles,
-            'file' => $disk->url($fileName),
+            'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
         ];
 
     }
@@ -310,7 +310,7 @@ class AjaxRequest extends \H5PEditorEndpoints
         $this->core->deleteLibrary($library);
 
         $library->refresh();
-        if( $library->exists){
+        if ($library->exists) {
             throw new \Exception("Library not deleted.");
         }
         return [

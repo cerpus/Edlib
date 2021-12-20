@@ -1,14 +1,12 @@
 <?php
 namespace App\Http\Libraries;
 
-use Illuminate\Support\Facades\Storage;
+use App\Libraries\ContentAuthorStorage;
 use App\H5PContent;
 
 class H5PFileVersioner
 {
     protected $originalH5P, $newH5P;
-
-    protected $h5pDisk = 'h5p-uploads';
 
     public function __construct(H5PContent $originalH5P, H5PContent $newH5P)
     {
@@ -20,7 +18,8 @@ class H5PFileVersioner
     {
         $originalPath = DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $this->originalH5P->id;
 
-        $storage = Storage::disk($this->h5pDisk);
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
+        $storage = $contentAuthorStorage->getBucketDisk();
         $originalH5P = $this->originalH5P;
         $newH5P = $this->newH5P;
 

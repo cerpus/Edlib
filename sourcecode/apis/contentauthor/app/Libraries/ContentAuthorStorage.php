@@ -3,6 +3,7 @@
 
 namespace App\Libraries;
 
+use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,8 +17,12 @@ class ContentAuthorStorage
         $this->assetsBaseUrl = !empty($cdnPrefix) ? $cdnPrefix : route('content.asset', null, true);
     }
 
-    public function getAssetUrl(string $path): string
+    public function getAssetUrl(string $path, bool $private = false): string
     {
+        if ($private) {
+            return route('content.asset', ['path' => $path], true);
+        }
+
         return rtrim($this->assetsBaseUrl, '/') . '/' . ltrim($path, '/');
     }
 

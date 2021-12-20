@@ -4,12 +4,10 @@ namespace Tests\Traits;
 
 use App\H5PContent;
 use App\H5PContentLibrary;
-use Illuminate\Support\Facades\Storage;
+use App\Libraries\ContentAuthorStorage;
 
 trait VersionedH5PTrait
 {
-    protected $h5pDisk = 'h5p-uploads';
-
     protected $cleanupInitiated = false;
 
     protected $originalH5P;
@@ -26,7 +24,7 @@ trait VersionedH5PTrait
             ->each(function ($dirName) {
                 $directory = DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $this->originalH5P->id . DIRECTORY_SEPARATOR . $dirName;
                 $fromFile = base_path() . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'tree.jpg';
-                Storage::disk($this->h5pDisk)->put($directory . '/tree.jpg', file_get_contents($fromFile));
+                app(ContentAuthorStorage::class)->getBucketDisk()->put($directory . '/tree.jpg', file_get_contents($fromFile));
             });
 
         $this->setUpLicensing($license, $copyable);
@@ -44,7 +42,7 @@ trait VersionedH5PTrait
         collect(['audios', 'files', 'images', 'videos'])
             ->each(function ($dirName) use ($contentId) {
                 $directory = DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $contentId . DIRECTORY_SEPARATOR . $dirName;
-                Storage::disk($this->h5pDisk)->makeDirectory($directory);
+                app(ContentAuthorStorage::class)->getBucketDisk()->makeDirectory($directory);
             });
 
     }
@@ -52,7 +50,7 @@ trait VersionedH5PTrait
     public function deleteDirectoriesAfterTest()
     {
         $this->beforeApplicationDestroyed(function () {
-            Storage::disk($this->h5pDisk)->deleteDirectory('content');
+            app(ContentAuthorStorage::class)->getBucketDisk()->deleteDirectory('content');
         });
     }
 }

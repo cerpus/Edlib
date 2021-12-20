@@ -67,7 +67,7 @@ class AdminConfig implements ConfigInterface
         //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
         $this->addAsset('scripts', (string) mix('js/maxscore.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-pre-save.js'));
-        $h5pLibraryDisk = \Storage::disk('h5p');
+        $h5pLibraryDisk = \Storage::disk('h5p-library');
         H5PLibrary::get()
             ->each(function ($library) use ($h5pLibraryDisk){
                 $libraryLocation = sprintf('Presave/%s/presave.js', $library->name);

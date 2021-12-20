@@ -42,6 +42,10 @@ return [
     */
 
     'disks' => [
+        'local' => [
+            'driver' => 'local',
+            'root' => storage_path('app'),
+        ],
         'testDisk' => [
             'driver' => 'local',
             'root'   => base_path('tests'),
@@ -54,7 +58,7 @@ return [
             'driver' => 'local',
             'root' => '/buckets/main_bucket',
         ],
-        's3' => [
+        's3' => [ // used when running on AWS
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
@@ -69,29 +73,20 @@ return [
             'driver' => 'local',
             'root' => '/tmp/h5p'
         ],
-        // @todo remove all of below buckets
+        'h5p-library' => [
+            'driver' => 'local',
+            'root' => app_path() . '/Libraries/H5P'
+        ],
+        // @todo almost totally removed but must be removed from tests
         'h5p-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_H5P', public_path() . '/h5pstorage'),
             'url' => env('UPLOAD_BASE_URL_H5P', '/h5pstorage'),
         ],
-        'h5p' => [
-            'driver' => env('LIBRARIES_H5P_STORAGE_DRIVER', 'local'),
-            'root' => env('LIBRARIES_H5P_PATH', app_path() . '/Libraries/H5P')
-        ],
         'article-uploads' => [
             'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
             'root' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
             'url' => '/h5pstorage/article-uploads',
-        ],
-        'game-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_GAME', public_path() . '/h5pstorage/games'),
-            'url' => env('UPLOAD_BASE_URL_GAME', '/h5pstorage/games'),
-        ],
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
         ],
     ],
 

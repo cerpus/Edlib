@@ -54,7 +54,6 @@ return [
     ],
     'saveFrequency' => env('H5P_SAVE_FREQUENCY', 15),
     'include-custom-css' => env("H5P_INCLUDE_CUSTOM_CSS", false),
-    'H5PStorageDisk' => env('H5P_STORAGE_DISK', 'h5p-uploads'),
     "default-resource-language" => env("H5P_DEFAULT_RESOURCE_LANGUAGE", "eng"),
     'upload-media-files-timeout' => env("H5P_UPLOAD_MEDIA_FILES_TIMEOUT", 5),
     'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),

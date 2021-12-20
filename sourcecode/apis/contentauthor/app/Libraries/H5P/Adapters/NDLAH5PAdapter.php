@@ -257,7 +257,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         config(['app.deploymentEnvironment' => 'ndlaprod']);
         config(collect([
-            'app.useContentCloudStorage',
             'app.enable_licensing',
             'feature.versioning',
             'feature.licensing',
