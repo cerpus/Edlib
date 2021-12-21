@@ -53,25 +53,12 @@ spec:
             - secretRef:
                 name: common-secret
                 optional: false
-          imagePullPolicy: IfNotPresent
           livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            periodSeconds: 3
             failureThreshold: 10
-            httpGet:
-              path: /health
-              port: 80
-              scheme: HTTP
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-          readinessProbe:
-            failureThreshold: 2
-            httpGet:
-              path: /health
-              port: 80
-              scheme: HTTP
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
           resources:
             limits:
               cpu: 500m
@@ -79,16 +66,6 @@ spec:
             requests:
               cpu: 20m
               memory: 200Mi
-          startupProbe:
-            failureThreshold: 100
-            httpGet:
-              path: /health
-              port: 80
-              scheme: HTTP
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
         - name: phpfpm
@@ -145,7 +122,6 @@ spec:
             - secretRef:
                 name: common-secret
                 optional: false
-          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 500m
@@ -190,7 +166,6 @@ spec:
             - secretRef:
                 name: common-secret
                 optional: false
-          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 500m
@@ -235,7 +210,6 @@ spec:
                 - secretRef:
                     name: common-secret
                     optional: false
-              imagePullPolicy: IfNotPresent
               resources:
                 limits:
                   cpu: 500m

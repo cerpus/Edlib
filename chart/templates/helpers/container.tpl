@@ -19,18 +19,8 @@
     httpGet:
       path: {{ .healthUrl }}
       port: {{ .port | default "80" }}
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
+    periodSeconds: 3
     failureThreshold: 10
-  readinessProbe:
-    httpGet:
-      path: {{ .healthUrl }}
-      port: {{ .port | default "80" }}
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 2
 {{ end }}
   envFrom:
     - configMapRef:
