@@ -2,7 +2,7 @@
 
 return [
     'env' => env('APP_ENV', 'production'),
-    'enable_ndla_import' => env('ENABLE_NDLA_IMPORT', false),
+    'enable_ndla_import' => env('ENABLE_NDLA_IMPORT', true),
     'enable_licensing' => env('ENABLE_LICENSING', false),
 
     /*
