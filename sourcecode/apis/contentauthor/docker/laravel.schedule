@@ -1,4 +1,0 @@
-# Commands added to have the laravel scheduled commands run.
-* * * * * php /app/artisan schedule:run -q 2>&1
-# An empty line is required at the end of this file for a valid cron file.
-

@@ -192,7 +192,7 @@ services:
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;php artisan laravel-rabbitmq-pubsub:consumer"
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
@@ -207,10 +207,13 @@ services:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: cron
+      target: phpfpm-dev
+    command: /bin/bash -c "set -eu;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;while true; do php /app/artisan schedule:run -q; sleep 60; done"
     env_file:
       - ./localSetup/projects/content-author/.env
+      - ./localSetup/.env
     volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
       - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
@@ -220,10 +223,13 @@ services:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: horizonqueue
+      target: phpfpm-dev
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000; php /app/artisan horizon"
     env_file:
       - ./localSetup/projects/content-author/.env
+      - ./localSetup/.env
     volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
       - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:

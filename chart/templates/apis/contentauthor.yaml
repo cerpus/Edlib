@@ -24,8 +24,6 @@ spec:
       labels:
         app: contentauthor
         fluentd-parser: laravel-json
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       affinity:
         podAntiAffinity:
@@ -42,14 +40,6 @@ spec:
       containers:
         - name: nginx
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-app:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "1"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
           envFrom:
             - secretRef:
                 name: ca-secret
@@ -101,77 +91,8 @@ spec:
             timeoutSeconds: 5
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
-        - name: cron
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-cron:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "1"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
-          imagePullPolicy: IfNotPresent
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
-        - name: horizonqueue
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "1"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
-          imagePullPolicy: IfNotPresent
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
         - name: phpfpm
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "1"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
           envFrom:
             - secretRef:
                 name: ca-secret
@@ -187,60 +108,22 @@ spec:
                 optional: false
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
-      initContainers:
-        - name: init
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-init:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "0"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
       serviceAccount: contentauthor
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - emptyDir: {}
-          name: storage-ca
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: contentauthor-rabbitmq-subscriber
+  name: contentauthor-horizon
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: contentauthor-rabbitmq-subscriber
+      app: contentauthor-horizon
   template:
     metadata:
       labels:
-        app: contentauthor-rabbitmq-subscriber
+        app: contentauthor-horizon
         fluentd-parser: laravel-json
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       containers:
         - name: main
@@ -248,13 +131,7 @@ spec:
           command:
             - php
             - artisan
-            - laravel-rabbitmq-pubsub:consumer
-          env:
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
+            - horizon
           envFrom:
             - secretRef:
                 name: ca-secret
@@ -276,22 +153,30 @@ spec:
             requests:
               cpu: 20m
               memory: 200Mi
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
-      initContainers:
-        - name: init
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-init:{{ .Chart.AppVersion }}"
-          env:
-            - name: STARTUP_CONTAINER_ENABLED
-              value: "0"
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.namespace
+      serviceAccount: contentauthor
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contentauthor-rabbitmq-subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contentauthor-rabbitmq-subscriber
+  template:
+    metadata:
+      labels:
+        app: contentauthor-rabbitmq-subscriber
+        fluentd-parser: laravel-json
+    spec:
+      containers:
+        - name: main
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
+          command:
+            - php
+            - artisan
+            - laravel-rabbitmq-pubsub:consumer
           envFrom:
             - secretRef:
                 name: ca-secret
@@ -305,12 +190,58 @@ spec:
             - secretRef:
                 name: common-secret
                 optional: false
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /storage
-              name: storage-ca
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1500Mi
+            requests:
+              cpu: 20m
+              memory: 200Mi
       serviceAccount: contentauthor
-      volumes:
-        - emptyDir: {}
-          name: storage-ca
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: contentauthor-cron
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: contentauthor-cron
+            fluentd-parser: laravel-json
+        spec:
+          containers:
+            - name: main
+              image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
+              command:
+                - php
+                - /app/artisan
+                - schedule:run
+                - -q
+              envFrom:
+                - secretRef:
+                    name: ca-secret
+                    optional: true
+                - configMapRef:
+                    name: ca-config
+                    optional: true
+                - configMapRef:
+                    name: common-config
+                    optional: false
+                - secretRef:
+                    name: common-secret
+                    optional: false
+              imagePullPolicy: IfNotPresent
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 1500Mi
+                requests:
+                  cpu: 20m
+                  memory: 200Mi
+          serviceAccount: contentauthor
+          restartPolicy: OnFailure
