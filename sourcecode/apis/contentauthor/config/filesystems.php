@@ -42,19 +42,19 @@ return [
     */
 
     'disks' => [
-        'local' => [
+        'local' => [ // local app storage
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-        'testDisk' => [
+        'testDisk' => [ // disk where tests are located.
             'driver' => 'local',
             'root'   => base_path('tests'),
         ],
-        'storageLogs' => [
+        'storageLogs' => [ // disk where logs are stored
             'driver' => 'local',
             'root'   => storage_path('logs'),
         ],
-        'localBucket' => [
+        'localBucket' => [ // used when running on docker compose setup locally
             'driver' => 'local',
             'root' => '/buckets/main_bucket',
         ],
@@ -65,15 +65,15 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-        'tmp' => [
+        'tmp' => [ // temporary folder for contentauthor
             'driver' => 'local',
             'root' => '/tmp/contentauthor'
         ],
-        'h5pTmp' => [
+        'h5pTmp' => [ // temporary folder for h5p
             'driver' => 'local',
             'root' => '/tmp/h5p'
         ],
-        'h5p-library' => [
+        'h5p-library' => [ // folder containing extra information about some h5p packages such as if they have max scores.
             'driver' => 'local',
             'root' => app_path() . '/Libraries/H5P'
         ],
