@@ -77,17 +77,6 @@ return [
             'driver' => 'local',
             'root' => app_path() . '/Libraries/H5P'
         ],
-        // @todo almost totally removed but must be removed from tests
-        'h5p-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_H5P', public_path() . '/h5pstorage'),
-            'url' => env('UPLOAD_BASE_URL_H5P', '/h5pstorage'),
-        ],
-        'article-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
-            'url' => '/h5pstorage/article-uploads',
-        ],
     ],
 
 ];

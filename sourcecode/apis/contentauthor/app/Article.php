@@ -236,7 +236,7 @@ class Article extends Content implements VersionableObject
     public function convertToCloudPaths()
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
-        $this->content = str_replace(config('app.article-public-path'), $contentAuthorStorage->getAssetUrl(ContentStorageSettings::ARTICLE_DIR), $this->content);
+        $this->content = str_replace('/h5pstorage/article-uploads', $contentAuthorStorage->getAssetUrl(ContentStorageSettings::ARTICLE_DIR), $this->content);
     }
 
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject

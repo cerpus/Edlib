@@ -212,10 +212,6 @@ return [
         /*'sv-se' => 'Svenska',*/
     ],
 
-    'article-file-driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-    'article-upload-path' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
-    'article-public-path' => '/h5pstorage/article-uploads',
-
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
 
     'consumer-key' => env('H5P_CONSUMER_KEY', 'h5p'),
