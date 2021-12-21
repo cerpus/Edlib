@@ -9,14 +9,14 @@ use App\Libraries\H5P\h5p;
 use Tests\db\TestH5PSeeder;
 use Illuminate\Http\Request;
 use App\Libraries\H5P\H5Plugin;
+use Tests\Traits\ContentAuthorStorageTrait;
 use Tests\Traits\ResetH5PStatics;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class h5pTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, ResetH5PStatics;
+    use RefreshDatabase, TestHelpers, ResetH5PStatics, ContentAuthorStorageTrait;
 
-    const testDirectory = "h5pstoragetest";
     const testContentDirectory = "content";
     const testEditorDirectory = "editor";
 
@@ -33,31 +33,33 @@ class h5pTest extends TestCase
 
         h5p::setUp();
         H5Plugin::setUp();
+
+        $this->setUpContentAuthorStorage();
     }
 
     public function tearDown(): void
     {
-        parent::tearDown();
         if (!is_null($this->editorFilesDirectory)) {
             $this->deleteEditorFilesDirectory();
         }
+        parent::tearDown();
         h5p::setUp();
         H5Plugin::setUp();
     }
 
     private function getTempDirectory()
     {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . self::testDirectory;
+        return $this->contentAuthorStorage->getBucketDisk()->path('');
     }
 
     private function getEditorDirectory()
     {
-        return $this->getTempDirectory() . DIRECTORY_SEPARATOR . self::testEditorDirectory;
+        return $this->contentAuthorStorage->getBucketDisk()->path(self::testEditorDirectory);
     }
 
     private function getContentDirectory()
     {
-        return $this->getTempDirectory() . DIRECTORY_SEPARATOR . self::testContentDirectory;
+        return $this->contentAuthorStorage->getBucketDisk()->path(self::testContentDirectory);
     }
 
     private function createUnitTestDirectories()

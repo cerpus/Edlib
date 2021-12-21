@@ -67,7 +67,7 @@ return [
         ],
         'tmp' => [
             'driver' => 'local',
-            'root' => '/tmp'
+            'root' => '/tmp/contentauthor'
         ],
         'h5pTmp' => [
             'driver' => 'local',
