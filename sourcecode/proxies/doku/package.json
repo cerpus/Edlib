@@ -11,7 +11,7 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-env": "^7.16.7",
     "@cerpus/edlib-node-utils": "1.8.1",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
