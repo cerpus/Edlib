@@ -12,7 +12,7 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-env": "^7.16.7",
     "@cerpus/edlib-node-utils": "1.8.1",
     "@elastic/elasticsearch": "7.12.x",
     "amqplib": "^0.8.0",
