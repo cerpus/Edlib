@@ -19,7 +19,7 @@
     "axios": "^0.24.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "dataloader": "^2.0.0",
-    "jest": "^27.4.3",
+    "jest": "^27.4.5",
     "moment": "^2.29.1",
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
