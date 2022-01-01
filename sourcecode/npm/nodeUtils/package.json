@@ -35,7 +35,7 @@
     "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
     "on-finished": "^2.3.0",
-    "redis": "^4.0.0",
+    "redis": "^4.0.1",
     "redis-mock": "^0.56.3",
     "sqlite3": "^5.0.2",
     "winston": "^3.3.3"
