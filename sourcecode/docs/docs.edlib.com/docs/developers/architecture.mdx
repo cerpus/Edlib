@@ -4,9 +4,9 @@ sidebar_position: 4
 
 # Architecture
 
-## API types
+## API Types
 
-The API consists of 3 different type of applications:
+The API consists of 3 different application types:
 
 1. Proxy API
 2. Internal API
@@ -16,18 +16,17 @@ The API consists of 3 different type of applications:
 
 **Location**: `sourcecode/proxies/*`
 
-They are API's that can be accessed from the internet under a sub path (for example `/resources`).
-They can only communicate to Internal API's and Hybrid API's.
+APIs that can be accessed from the internet under a sub path (for example `/resources`). They can only communicate to Internal APIs and Hybrid APIs.
 
 ### Internal API
 
 **Location**: `sourcecode/apis/*` (except `contentauthor` and `common`)
 
-Internal API's can only be accessed by other API's in Edlib. Internal API's cannot make requests to proxy API's
+Internal APIs can only be accessed by other APIs in Edlib. Internal APIs cannot make requests to proxy APIs
 
 ### Hybrid API
 
 **Location**: `sourcecode/apis/contentauthor` and `sourcecode/apis/common`
 
-Hybrid API's can be accessed by both other API's and from the internet. The internal part is protected with a key
-shared to all API's inside Edlib. Hybrid API's cannot make requests to proxy API's.
+Hybrid APIs can be accessed by both other APIs and from the internet. The internal part is protected with a key
+shared with all Edlib-specific APIs. Hybrid APIs, in turn, cannot make requests to proxy APIs.
