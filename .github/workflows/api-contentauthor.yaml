@@ -1,0 +1,128 @@
+name: "API - Content Author"
+
+on:
+  push:
+    paths:
+      - "sourcecode/apis/contentauthor/**"
+      - ".github/workflows/api-contentauthor.yaml"
+  workflow_call:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID:
+        required: true
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY:
+        required: true
+
+env:
+  workingDirectory: sourcecode/apis/contentauthor
+  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
+
+jobs:
+  test_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build test image
+        uses: docker/build-push-action@v2
+        with:
+          tags: "contentauthor-test:latest"
+          outputs: "type=docker"
+          context: ${{ env.workingDirectory }}
+          target: test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run tests
+        run: |
+          docker run contentauthor-test
+
+      - name: Configure AWS Credentials
+        if: env.shouldPublishImage == '1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-duration-seconds: 3600
+          role-session-name: GithubCerpusPushImage
+
+      - name: Login to AWS docker registry
+        if: env.shouldPublishImage == '1'
+        shell: bash
+        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Build and push app container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-app:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: app
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push init container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-init:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: init
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push phpfpm container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: phpfpm
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push cron container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-cron:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: cron
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push deploy container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: deploy
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push horizonqueue container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/contentauthor
+          target: horizonqueue
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -7,9 +7,8 @@
     @if (isset($jwtToken) && $jwtToken)
         <meta name="jwt" content="{{ $jwtToken }}"/>
     @endif
-    <link href="{{ elixir('content_explorer_bootstrap.css') }}" rel="stylesheet">
-    <link href="{{ elixir('react-app.css') }}" rel="stylesheet">
-    <link href="{{ elixir('font-awesome.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/content_explorer_bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/font-awesome.css') }}" rel="stylesheet">
     <link href='//fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 </head>
 <body>
@@ -30,9 +29,9 @@
         </div>
     </div>
 
-    <script src="{{ elixir('bootstrap.js') }}"></script>
-    <script src="{{ elixir('jwtclient.js') }}"></script>
-    <script src="{{ elixir('js/resource-common.js') }}"></script>
+    <script src="{{ mix('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/jwtclient.js') }}"></script>
+    <script src="{{ mix('js/resource-common.js') }}"></script>
 
     <script>
     $(document).ready(function() {

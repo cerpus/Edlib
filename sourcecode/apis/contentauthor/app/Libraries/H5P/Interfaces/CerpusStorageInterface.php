@@ -22,6 +22,8 @@ interface CerpusStorageInterface
 
     public function deleteLibrary(H5PLibrary $library);
 
+    public function getFileUrl(string $path);
+
     /**
      * @param string $filePath
      * @param resource $resource

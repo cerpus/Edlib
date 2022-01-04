@@ -2,7 +2,7 @@
 
 namespace App\Libraries\Games;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use App\Gametype;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Traits\FractalTransformer;

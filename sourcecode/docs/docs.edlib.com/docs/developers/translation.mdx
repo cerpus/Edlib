@@ -1,0 +1,85 @@
+---
+sidebar_position: 7
+---
+
+# Translating Edlib
+
+Edlib's user interface is multilingual. Support for new languages can be added
+without extensive technical knowledge. This document will lead you through the
+process of translating Edlib's user interface to your language.
+
+## Before you begin
+
+You will need a text editor suitable for working with code. [Notepad++][1] and
+[Visual Studio Code][2] are good choices. If you aren't sure, please use one of
+these, as an unsuitable editor could mangle the language files in non-obvious
+ways.
+
+Download [Edlib's source code][3] to your computer and open its folder.
+
+## Translating Content Author
+
+Content Author is a prominent component inside Edlib. Its language files reside
+in the `sourcecode/apis/contentauthor/resources/lang` directory. They are
+grouped by locale, e.g. `en-gb` for British English. You should copy the
+directory corresponding to the language you wish to translate from, and name it
+according to your locale. (Don't worry about getting this wrong--it is a small
+order to rename it.)
+
+Now you can start translating. Open each .php file in the text editor, and you
+should see something like this:
+
+```php
+<?php
+
+return [
+    'dialog.cancel' => 'Are you sure you want to cancel?',
+];
+```
+
+Here, `dialog.cancel` on the left is the _key_, and `Are you sure you want to cancel?` on the right is the _value_. In reality there can be dozens of
+key/value pairs in a translation file, separated by commas. The goal is to
+translate all the right-hand values, in every file, while leaving the left-hand
+keys untouched. As an example, when the above is translated to Norwegian, it
+looks like this:
+
+```php
+<?php
+
+return [
+    'dialog.cancel' => 'Er du sikker på at du vil avbryte?',
+];
+```
+
+## Translating Edlib Components
+
+There are a few other translation files in `sourcecode/npm/components/src/i18n`.
+The same principles apply here, albeit the naming conventions and file formats
+are different.
+
+Before:
+
+```json
+{
+  "dialog.cancel": "Are you sure you want to cancel?"
+}
+```
+
+After:
+
+```json
+{
+  "dialog.cancel": "Er du sikker på at du vil avbryte?"
+}
+```
+
+## Submitting new translations
+
+If you are familiar with the workflows of Git and GitHub, you may submit your
+translation by opening a pull request. Otherwise, please [contact us][4] so we
+can help you.
+
+[1]: https://notepad-plus-plus.org/downloads/
+[2]: https://code.visualstudio.com/
+[3]: https://github.com/cerpus/Edlib
+[4]: /contact-us/

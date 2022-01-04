@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Closure;
 
 class AddRequestId

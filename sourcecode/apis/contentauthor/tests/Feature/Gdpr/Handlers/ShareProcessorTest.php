@@ -5,40 +5,42 @@ namespace Tests\Feature\Gdpr\Handlers;
 use App\Game;
 use App\Article;
 use App\H5PContent;
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
 use App\QuestionSet;
 use App\Collaborator;
 use App\H5PCollaborator;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\ArticleCollaborator;
 use App\Gdpr\Handlers\ShareProcessor;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ShareProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testRemovesSharesFromArticles()
     {
         $email = 'test@example.com';
-        $article = factory(Article::class)->create();
-        factory(ArticleCollaborator::class)->create(['article_id' => $article->id]);
-        factory(ArticleCollaborator::class)->create(['article_id' => $article->id, 'email' => $email]);
+        $article = Article::factory()->create();
+        ArticleCollaborator::factory()->create(['article_id' => $article->id]);
+        ArticleCollaborator::factory()->create(['article_id' => $article->id, 'email' => $email]);
 
         $this->assertCount(2, $article->fresh()->collaborators);
         $this->assertDatabaseHas('article_collaborators', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 
@@ -51,24 +53,19 @@ class ShareProcessorTest extends TestCase
     public function testRemovesSharesFromH5Ps()
     {
         $email = 'test@example.com';
-        $h5p = factory(H5PContent::class)->create();
+        $h5p = H5PContent::factory()->create();
 
-        factory(H5PCollaborator::class)->create(['h5p_id' => $h5p->id]);
-        factory(H5PCollaborator::class)->create(['h5p_id' => $h5p->id, 'email' => $email]);
+        H5PCollaborator::factory()->create(['h5p_id' => $h5p->id]);
+        H5PCollaborator::factory()->create(['h5p_id' => $h5p->id, 'email' => $email]);
 
         $this->assertCount(2, $h5p->fresh()->collaborators);
         $this->assertDatabaseHas('cerpus_contents_shares', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 
@@ -82,12 +79,12 @@ class ShareProcessorTest extends TestCase
     {
         $email = 'test@example.com';
 
-        $questionSet = factory(QuestionSet::class)->create();
+        $questionSet = QuestionSet::factory()->create();
         $questionSet->setCollaborators([$email, $this->faker->email]);
 
-        $game = factory(Game::class)->create();
+        $game = Game::factory()->create();
         $game->setCollaborators([$email, $this->faker->email]);
-        $anotherGame = factory(Game::class)->create();
+        $anotherGame = Game::factory()->create();
         $anotherGame->setCollaborators([$this->faker->email]);
 
         $this->assertCount(5, Collaborator::all());
@@ -96,16 +93,12 @@ class ShareProcessorTest extends TestCase
         $this->assertCount(1, $anotherGame->fresh()->collaborators);
         $this->assertDatabaseHas('collaborators', ['email' => $email]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $this->faker->uuid,
             'emails' => [$email]
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        ]);
 
         $handler = new ShareProcessor();
 

@@ -55,7 +55,6 @@ class APIArticleImporter extends ImporterBase implements ImporterInterface
         Language::class,
         AttributionHandler::class,
         AddTagClasses::class,
-        Tags::class,
         Licensing::class,
         Versioning::class,
         NotifyCore::class,

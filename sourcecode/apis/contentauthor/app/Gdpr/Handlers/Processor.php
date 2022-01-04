@@ -2,9 +2,9 @@
 
 namespace App\Gdpr\Handlers;
 
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 
 interface Processor
 {
-    public function handle(GdprDeletionRequest $deletionRequest);
+    public function handle(EdlibGdprDeleteMessage $edlibGdprDeleteMessage);
 }

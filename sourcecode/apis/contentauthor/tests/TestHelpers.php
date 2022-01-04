@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 trait TestHelpers
 {

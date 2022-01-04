@@ -15,8 +15,8 @@ class UnlockTest extends TestCase
 
     public function testUnlockSuccess()
     {
-        $user = factory(User::class)->make();
-        $lockStatus = factory(ContentLock::class)->create([
+        $user = User::factory()->make();
+        $lockStatus = ContentLock::factory()->create([
             'auth_id' => $user->auth_id,
             'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30)
         ]);
@@ -35,13 +35,13 @@ class UnlockTest extends TestCase
 
     public function testUnlockFailBecauseNotOwner()
     {
-        $user = factory(User::class)->make();
-        $lockStatus = factory(ContentLock::class)->create([
+        $user = User::factory()->make();
+        $lockStatus = ContentLock::factory()->create([
             'auth_id' => $user->auth_id,
             'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30)
         ]);
 
-        $eve = factory(User::class)->make();
+        $eve = User::factory()->make();
 
         $this->withSession(['authId' => $eve->auth_id])
             ->get(route('lock.unlock', $lockStatus->content_id))
@@ -60,7 +60,7 @@ class UnlockTest extends TestCase
 
     public function testUnlockNotFound()
     {
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
 
         $this->assertCount(0, ContentLock::all());
         $this->withSession(['authId' => $user->auth_id])

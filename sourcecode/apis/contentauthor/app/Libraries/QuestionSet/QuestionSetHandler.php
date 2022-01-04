@@ -14,9 +14,9 @@ use Cerpus\QuestionBankClient\QuestionBankClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Session;
-use DB;
-use Log;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class QuestionSetHandler
 {

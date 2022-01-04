@@ -5,8 +5,8 @@ cd "$(dirname "$0")"
 
 cd ../..
 
-pushd sourcecode/versionapi
+pushd sourcecode/apis/version
 mvn clean package -DskipTests
 popd
 
-docker-compose restart versioningapi
+docker-compose restart versionapi

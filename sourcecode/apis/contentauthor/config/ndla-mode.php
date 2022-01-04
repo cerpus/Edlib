@@ -1,11 +1,9 @@
 <?php
 return [
     'feature' => [
-        'versioning' => env('NDLA_FEATURE_VERSIONING', false),
         'licensing' => env('NDLA_FEATURE_LICENSING', false),
         'content-locking' => env('NDLA_FEATURE_CONTENT_LOCKING', true),
         'context-collaboration' => env('NDLA_FEATURE_CONTEXT_COLLABORATION', false),
-        'no-rabbitmq' => env('NDLA_FEATURE_NO_RABBITMQ', false),
         'collaboration' => env('NDLA_FEATURE_COLLABORATION', false),
         'enableDraftLogic' => env('NDLA_FEATURE_ENABLE_DRAFT_LOGIC', false),
         'export_h5p_on_save' => env('NDLA_FEATURE_EXPORT_H5P_ON_SAVE', false),
@@ -15,7 +13,6 @@ return [
         'enable_licensing' => env('NDLA_ENABLE_LICENSING', false),
         'enable_ndla_import' => env('NDLA_ENABLE_NDLA_IMPORT', false),
         'displayPropertiesBox' => env('NDLA_H5P_DISPLAY_PROPERTIES_BOX', true),
-        'useContentCloudStorage' => env("NDLA_ENABLE_CLOUD_STORAGE", true),
     ],
     'ndla' => [
         'oeruser' => env('NDLA_OERUSER', 'ndla'),
@@ -23,7 +20,6 @@ return [
         'baseUrl' => env('NDLA_BASEURL', 'http://ndla.no'),
         'linkBaseUrl' => env('NDLA_LINK_BASE_URL', 'Please set the NDLA_LINK_BASE_URL env variable'),
         'userId'  => env('NDLA_IMPORT_USERID', 'fake-import-id'),
-        'notifyCore' => env('NDLA_NOTIFY_CORE', false),
     ],
     'h5p' => [
         'H5P_DragQuestion' => [
@@ -58,8 +54,5 @@ return [
             'url' => env("NDLA_H5P_IMAGE_URL"),
         ],
         'saveFrequency' => env('NDLA_H5P_SAVE_FREQUENCY', false),
-    ],
-    'metadata' => [
-        'published-field' => env('NDLA_METADATA_PUBLISHED_FIELD', false)
     ]
 ];

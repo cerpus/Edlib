@@ -14,7 +14,7 @@ const H5PTypes = ({ contentTypes }) => {
     const approvedH5psConfig = getUserConfig('approvedH5ps') || null;
 
     const { loading, response } = useFetchWithToken(
-        edlib(`/resources/v1/content-types/contentauthor`)
+        edlib(`/resources/v2/content-types/contentauthor`)
     );
 
     if (!response || loading) {
@@ -22,10 +22,9 @@ const H5PTypes = ({ contentTypes }) => {
     }
 
     const allH5ps = response.data
-        .filter((item) => item.length !== 0)
         .map((item) => ({
-            title: t(`h5pTypes.${item.toUpperCase()}`),
-            value: item,
+            title: item.title,
+            value: item.contentType,
         }))
         .sort((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
 

@@ -17,7 +17,7 @@ use App\Transformers\QuestionSetsTransformer;
 use Cerpus\ImageServiceClient\DataObjects\ImageParamsObject;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
-use Session;
+use Illuminate\Support\Facades\Session;
 
 class Millionaire extends GameBase
 {
@@ -130,7 +130,14 @@ class Millionaire extends GameBase
             } else {
                 $question->image = "";
             }
-            shuffle($question->answers);
+            $question->questionText = html_entity_decode(strip_tags($question->questionText));
+            $question->answers = collect($question->answers)
+                ->map(function ($answer) {
+                    $answer->answer = html_entity_decode(strip_tags($answer->answer));
+                    return $answer;
+                })
+                ->shuffle()
+                ->all();
             return $question;
         });
         $gameSettings->questionSet->questions = $questions;
@@ -168,7 +175,6 @@ class Millionaire extends GameBase
 
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
-        $gameData['tags'] = $game->getMetaTagsAsArray();
 
         $ownerName = $game->getOwnerName($game->owner);
 

@@ -73,7 +73,7 @@ const buildLtiRequest = (
         ...filteredExtras,
     };
 
-    if (authorization.jwt) {
+    if (authorization && authorization.jwt) {
         fields.ext_jwt_token = authorization.jwt;
     }
 

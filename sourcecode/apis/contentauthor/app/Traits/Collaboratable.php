@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use Mail;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\Collaborator;
 use App\Mail\AddedAsCollaboratorMail;
 

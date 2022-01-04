@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="classpath:db/changelog/db.changelog-1.0.xml">
+
+    <preConditions>
+    </preConditions>
+
+    <changeSet id="changelog-1.0" author="thomashs">
+        <createTable tableName="resource_versions">
+            <column name="id" type="varchar(40)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="external_system" type="varchar(40)"/>
+            <column name="external_reference" type="varchar(100)"/>
+            <column name="external_url" type="text"/>
+            <column name="parent_id" type="varchar(40)"/>
+            <column name="created_at" type="datetime"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="resource_versions"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.1" author="thomashs">
+        <createIndex tableName="resource_versions" indexName="externalSystemIndex">
+            <column name="external_system"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="resource_versions" indexName="externalSystemIndex"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.2" author="thomashs">
+        <createIndex tableName="resource_versions" indexName="externalReferenceIndex">
+            <column name="external_reference"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="resource_versions" indexName="externalReferenceIndex"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.3" author="thomashs">
+        <createIndex tableName="resource_versions" indexName="externalReferenceSystemIndex">
+            <column name="external_reference"/>
+            <column name="external_system"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="resource_versions" indexName="externalReferenceSystemIndex"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.4" author="thomashs">
+        <addForeignKeyConstraint baseTableName="resource_versions" baseColumnNames="parent_id"
+                                 constraintName="resourceParentForeignKey"
+                                 referencedTableName="resource_versions"
+                                 referencedColumnNames="id"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="resource_versions"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.5" author="thomashs">
+        <addColumn tableName="resource_versions">
+            <column name="core_id" type="varchar(40)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="version_purpose" type="varchar(50)"/>
+            <column name="origin_reference" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="changelog-1.6" author="thomashs">
+        <addColumn tableName="resource_versions">
+            <column name="origin_system" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="resource_versions" columnName="origin_system"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.7" author="thomashs">
+        <createIndex tableName="resource_versions" indexName="unique_external_system_and_reference_index" unique="true">
+            <column name="external_system"/>
+            <column name="external_reference"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="resource_versions" indexName="unique_external_system_and_reference_index"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.8" author="thomashs">
+        <addColumn tableName="resource_versions">
+            <column name="user_id" type="varchar(40)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="resource_versions" columnName="user_id"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="changelog-1.9" author="thomashs">
+        <modifyDataType tableName="resource_versions" columnName="core_id" newDataType="varchar(4096)"/>
+        <rollback>
+            <modifyDataType tableName="resource_versions" columnName="core_id" newDataType="varchar(40)"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="20190611 1 Linear versioning setting" author="janespen">
+        <addColumn tableName="resource_versions">
+            <column name="linear_versioning" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="20190611 2 Linear versioning constraint" author="janespen">
+        <sql dbms="h2">
+            ALTER TABLE resource_versions ADD CONSTRAINT check_linear_versioning CHECK (NOT EXISTS (SELECT r2.id FROM resource_versions r2 WHERE r2.id != resource_versions.id AND r2.parent_id = resource_versions.parent_id AND (r2.linear_versioning OR resource_versions.linear_versioning)))
+        </sql>
+        <sql dbms="postgresql">
+            CREATE FUNCTION linear_versioning_check(varchar(40),varchar(40),boolean) RETURNS boolean AS 'SELECT NOT EXISTS (SELECT r2.id FROM resource_versions r2 WHERE r2.id != $1 AND r2.parent_id = $2 AND (r2.linear_versioning OR $3))' LANGUAGE 'sql' RETURNS NULL ON NULL INPUT
+        </sql>
+        <sql dbms="postgresql">
+            ALTER TABLE resource_versions ADD CONSTRAINT check_linear_versioning CHECK (linear_versioning_check(id,parent_id,linear_versioning))
+        </sql>
+    </changeSet>
+    <changeSet id="20190611 2 Linear versioning constraint 2" author="janespen">
+        <validCheckSum>8:7ca28f902715df60496d58850c2e73c2</validCheckSum>
+        <sql dbms="h2">
+            ALTER TABLE resource_versions DROP CONSTRAINT check_linear_versioning;
+            UPDATE resource_versions SET linear_versioning = false WHERE EXISTS (SELECT r2.id FROM resource_versions r2 WHERE r2.id != resource_versions.id AND r2.parent_id = resource_versions.parent_id AND r2.version_purpose = resource_versions.version_purpose AND (r2.linear_versioning OR resource_versions.linear_versioning));
+            ALTER TABLE resource_versions ADD CONSTRAINT check_linear_versioning CHECK (NOT EXISTS (SELECT r2.id FROM resource_versions r2 WHERE r2.id != resource_versions.id AND r2.parent_id = resource_versions.parent_id AND r2.version_purpose = resource_versions.version_purpose AND (r2.linear_versioning OR resource_versions.linear_versioning)))
+        </sql>
+        <sql dbms="postgresql">
+            CREATE FUNCTION linear_versioning_check_2(varchar(40),varchar(40),varchar(50),boolean) RETURNS boolean AS 'SELECT NOT EXISTS (SELECT r2.id FROM resource_versions r2 WHERE r2.id != $1 AND r2.parent_id = $2 AND r2.version_purpose = $3 AND (r2.linear_versioning OR $4))' LANGUAGE 'sql' RETURNS NULL ON NULL INPUT
+        </sql>
+        <sql dbms="postgresql">
+            ALTER TABLE resource_versions DROP CONSTRAINT check_linear_versioning;
+            UPDATE resource_versions SET linear_versioning = false WHERE NOT linear_versioning_check_2(id,parent_id,version_purpose,linear_versioning);
+            ALTER TABLE resource_versions ADD CONSTRAINT check_linear_versioning CHECK (linear_versioning_check_2(id,parent_id,version_purpose,linear_versioning))
+        </sql>
+    </changeSet>
+</databaseChangeLog>

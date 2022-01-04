@@ -2,7 +2,7 @@
 namespace App\Libraries\NDLA\Importers;
 
 use Cerpus\LicenseClient\Contracts\LicenseContract;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Article;
 use App\NdlaIdMapper;
 use Ramsey\Uuid\Uuid;
@@ -106,7 +106,7 @@ class ArticleImporter extends ImporterBase implements ImporterInterface
         return false;
     }
 
-    private function createInCore()
+    protected function createInCore($json)
     {
         if ($this->isResourceInCore() !== true) {
             $coreReporter = app(Core::class);
@@ -122,7 +122,7 @@ class ArticleImporter extends ImporterBase implements ImporterInterface
         }
     }
 
-    private function generateChecksumHash($json)
+    protected function generateChecksumHash($json)
     {
         try {
             $hashElements = [

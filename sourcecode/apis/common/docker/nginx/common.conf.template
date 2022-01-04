@@ -5,7 +5,6 @@ upstream php {
 server {
   listen  80;
   root         /var/www/edlibcommon/public;
-  access_log   off;
 
   index        index.php;
   error_page   404 /index.php;

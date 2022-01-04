@@ -4,29 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Content;
 use App\Libraries\DataObjects\ResourceDataObject;
+use App\Libraries\ModelRetriever;
 use H5PCore;
 use Illuminate\Http\Request;
 
 class LtiContentController extends Controller
 {
-    public function getGroupController($groupName)
-    {
-        switch ($groupName) {
-            case ResourceDataObject::H5P:
-                return app('App\Http\Controllers\H5PController');
-            case ResourceDataObject::ARTICLE:
-                return app('App\Http\Controllers\ArticleController');
-            case ResourceDataObject::LINK:
-                return app('App\Http\Controllers\LinkController');
-            case ResourceDataObject::GAME:
-                return app('App\Http\Controllers\GameController');
-            case ResourceDataObject::QUESTIONSET:
-                return app('App\Http\Controllers\QuestionSetController');
-            default:
-                return null;
-        }
-    }
-
     public function show($id)
     {
         $content = Content::findContentById($id);
@@ -38,7 +21,7 @@ class LtiContentController extends Controller
             ], 404);
         }
 
-        $controller = $this->getGroupController($content->getContentType());
+        $controller = ModelRetriever::getGroupController($content->getContentType());
 
         if ($controller == null) {
             return response()->json([
@@ -61,7 +44,7 @@ class LtiContentController extends Controller
             ], 404);
         }
 
-        $controller = $this->getGroupController($content->getContentType());
+        $controller = ModelRetriever::getGroupController($content->getContentType());
 
         if ($controller == null) {
             return response()->json([
@@ -75,7 +58,7 @@ class LtiContentController extends Controller
 
     public function create(Request $request, H5PCore $core, $type = ResourceDataObject::H5P)
     {
-        $controller = $this->getGroupController($type);
+        $controller = ModelRetriever::getGroupController($type);
 
         if ($controller == null) {
             return response()->json([

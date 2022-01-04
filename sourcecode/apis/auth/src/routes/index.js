@@ -85,6 +85,22 @@ export default async ({ pubSubConnection }) => {
     /**
      * @swagger
      *
+     *  /v1/lti-users/token:
+     *      post:
+     *          description: Create an auth token for lti users
+     *          produces:
+     *              - application/json
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.post(
+        '/v1/lti-users/token',
+        runAsync(tokenController.createForLtiUser)
+    );
+    /**
+     * @swagger
+     *
      *  /v1/users-by-email:
      *      post:
      *          description: Convert external token to internal token
@@ -111,19 +127,32 @@ export default async ({ pubSubConnection }) => {
         runAsync(userController.getUsersByEmail)
     );
 
-    router.get('/_ah/health', (req, res) => {
-        const probe = req.query.probe;
+    /**
+     * @swagger
+     *
+     *  /v1/users/{id}:
+     *      post:
+     *          description: Get user by ID
+     *          produces:
+     *              - application/json
+     *          parameters:
+     *              - in: path
+     *                name: id
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     *              404:
+     *                  User not found
+     */
+    apiRouter.get('/v1/users/:id', runAsync(userController.getUserById));
 
-        if (probe === 'readiness') {
-            readiness()
-                .then(() => res.send('ok'))
-                .catch((error) => {
-                    logger.error(error);
-                    res.status(503).send();
-                });
-        } else {
-            res.status(503).send();
-        }
+    router.get('/_ah/health', (req, res) => {
+        readiness()
+            .then(() => res.send('ok'))
+            .catch((error) => {
+                logger.error(error);
+                res.status(503).send();
+            });
     });
 
     router.use(addContextToRequest({ pubSubConnection }), apiRouter);

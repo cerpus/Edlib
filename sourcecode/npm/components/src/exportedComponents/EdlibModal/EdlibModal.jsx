@@ -5,6 +5,7 @@ import { useEdlibResource } from '../../hooks/requests/useResource';
 import { ConfigurationProvider } from '../../contexts/Configuration';
 import useFetch from '../../hooks/useFetch';
 import useConfig from '../../hooks/useConfig';
+import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
 import useRequestWithToken from '../../hooks/useRequestWithToken';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
@@ -33,6 +34,7 @@ const EdlibModal = ({
     const createResourceLink = useEdlibResource();
     const { getUserConfig } = useEdlibComponentsContext();
     const startPage = getStartPage(getUserConfig('landingContentExplorerPage'));
+    const { enabled: inMaintenanceMode } = useMaintenanceMode();
 
     const {
         error: errorLoadingConfig,
@@ -51,16 +53,44 @@ const EdlibModal = ({
                         dokuFeatures.enableDoku
                     }
                     enableVersionInterface={enableVersionInterface}
+                    inMaintenanceMode={inMaintenanceMode}
                 >
                     <ResourceCapabilitiesProvider
                         value={{
-                            onInsert: async (resourceId, resourceVersionId) => {
-                                const info = await createResourceLink(
-                                    resourceId,
-                                    resourceVersionId
-                                );
+                            onInsert: async (
+                                resourceId,
+                                resourceVersionId,
+                                title
+                            ) => {
+                                if (getUserConfig('returnLtiLinks')) {
+                                    const info = await createResourceLink(
+                                        resourceId,
+                                        resourceVersionId
+                                    );
 
-                                onResourceSelected(info);
+                                    onResourceSelected(info);
+                                } else {
+                                    let url = new URL(
+                                        'https://spec.edlib.com/resource-reference'
+                                    );
+
+                                    url.searchParams.append(
+                                        'resourceId',
+                                        resourceId
+                                    );
+
+                                    if (resourceVersionId) {
+                                        url.searchParams.append(
+                                            'resourceVersionId',
+                                            resourceVersionId
+                                        );
+                                    }
+
+                                    onResourceSelected({
+                                        url,
+                                        title,
+                                    });
+                                }
                             },
                             onRemove: async (edlibId) => {
                                 await request(

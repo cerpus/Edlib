@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\Game;
 
 class GameAccess

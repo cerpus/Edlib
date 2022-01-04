@@ -2,14 +2,12 @@
 
 namespace App\Exceptions;
 
-use Log;
-use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use PhpAmqpLib\Message\AMQPMessage;
-use Vinelab\Bowler\Contracts\BowlerExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class Handler extends ExceptionHandler implements BowlerExceptionHandler
+class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that should not be reported.
@@ -36,10 +34,9 @@ class Handler extends ExceptionHandler implements BowlerExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception $e
      * @return void
      */
-    public function report(Exception $e)
+    public function report(\Throwable $e)
     {
         return parent::report($e);
     }
@@ -48,10 +45,9 @@ class Handler extends ExceptionHandler implements BowlerExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Exception $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, \Throwable $e)
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
@@ -65,7 +61,7 @@ class Handler extends ExceptionHandler implements BowlerExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Illuminate\Auth\AuthenticationException $exception
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
@@ -74,20 +70,5 @@ class Handler extends ExceptionHandler implements BowlerExceptionHandler
         }
 
         return redirect()->guest('login');
-    }
-
-    public function reportQueue(\Exception $e, AMQPMessage $msg)
-    {
-        $logMsg = 'Queue processing failed! ';
-
-        if (method_exists($e, 'getCode')) {
-            $logMsg .= ' (' . $e->getCode() . ')';
-        }
-
-        if (method_exists($e, 'getMessage')) {
-            $logMsg .= ' : ' . $e->getMessage();
-        }
-
-        Log::error($logMsg);
     }
 }

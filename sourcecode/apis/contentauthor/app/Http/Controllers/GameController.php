@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LTIRequest;
 use App\SessionKeys;
-use Session;
+use Illuminate\Support\Facades\Session;
 use App\ACL\ArticleAccess;
 use App\Game;
 use App\H5pLti;
 use App\Http\Libraries\LtiTrait;
-use App\Traits\CopiesCustomMetadataFields;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\Games\GameHandler;
 use App\Traits\ReturnToCore;
@@ -21,7 +20,6 @@ class GameController extends Controller
     use LtiTrait;
     use ArticleAccess;
     use ReturnToCore;
-    use CopiesCustomMetadataFields;
 
     public function __construct(H5pLti $h5pLti)
     {
@@ -68,8 +66,6 @@ class GameController extends Controller
         $request->request->add(json_decode($request->get('questionSetJsonData'), true));
         $gameData = json_decode($request->questionSetJsonData);
         $updatedGame = $gamehandler->update($game, $request);
-        $updatedGame->updateMetaTags($gameData->tags);
-        $this->copyCustomFieldsMetadata($game->id, $updatedGame->id);
         if ($game->isOwner(Session::get('authId'))) {
             $collaborators = explode(',', $request->input('col-emails', ''));
             $game->setCollaborators($collaborators)->notifyNewCollaborators();

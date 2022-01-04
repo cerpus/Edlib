@@ -17,6 +17,10 @@ Route::get('audios/browse/{audioId}', 'H5PController@getAudio');
 Route::get('h5p/{h5p}/download', 'H5PController@downloadContent')->name('content-download')->middleware(['adaptermode']);
 Route::get('content/upgrade/library', 'H5PController@contentUpgradeLibrary')->name('content-upgrade-library');
 
+Route::group(['middleware' => ['internal.handle-jwt']], function () {
+    Route::get('/view', 'InternalController@view');
+});
+
 Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'adaptermode']], function () {
     Route::post('lti-content/create', 'LtiContentController@create');
     Route::post('lti-content/create/{type}', 'LtiContentController@create');
@@ -115,11 +119,6 @@ Route::match(['GET', 'POST'], '/ajax', 'H5PController@ajaxLoading')->middleware(
 Route::post('v1/sessiontest/{id}', 'API\SessionTestController@setValue');
 Route::get('v1/sessiontest/{id}', 'API\SessionTestController@getValue');
 
-Route::group(['prefix' => 'api', 'middleware' => ['oauth']], function () {
-    Route::post('v1/questionsandanswers', 'API\H5PReportController@questionAndAnswer');
-    Route::get('v1/resourcelicense/{id}', 'API\H5PReportController@resourceLicense');
-});
-
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', 'API\ContentTypeController@storeH5PQuestionset');
     Route::put('v1/resources/{resourceId}/publish', 'API\PublishResourceController@publishResource')->name('api.resource.publish');
@@ -127,11 +126,6 @@ Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], fu
 });
 
 Route::post('v1/copy', 'API\ContentCopyController@index')->name('content.copy')->middleware('signed.oauth10-request');
-
-Route::get('h5p/{h5p}/tags', 'ContentTagController@fetchH5PTags')->name('h5p.tags');
-Route::get('article/{article}/tags', 'ContentTagController@fetchArticleTags')->name('article.tags');
-Route::get('game/{game}/tags', 'ContentTagController@fetchGameTags')->name('game.tags');
-Route::get('link/{link}/tags', 'ContentTagController@fetchLinkTags')->name('link.tags');
 
 Route::get('article/{article}/copyright', 'ArticleCopyrightController@copyright')->name('article.copyright');
 

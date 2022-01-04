@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NDLAVideo from '@ndla/video-search';
-import Dialog from 'Dialog';
+import Dialog from '../Dialog';
 
 function VideoBrowserLayout({
     onCancel,

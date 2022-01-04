@@ -2,7 +2,7 @@
 
 namespace App\Libraries\NDLA\API;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\ClientException;
 

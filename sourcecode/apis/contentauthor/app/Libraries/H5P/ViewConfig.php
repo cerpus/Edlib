@@ -2,6 +2,8 @@
 
 namespace App\Libraries\H5P;
 
+use App\Apis\ResourceApiService;
+use App\Exceptions\NotFoundException;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
@@ -23,14 +25,20 @@ class ViewConfig implements ConfigInterface
 
     /** @var H5PAlterParametersSettingsDataObject */
     protected $alterParametersSettings;
+    private ResourceApiService $resourceApiService;
 
-    public function __construct(H5PAdapterInterface $adapter, \H5PCore $core)
+    public function __construct(
+        H5PAdapterInterface $adapter,
+        \H5PCore $core,
+        ResourceApiService $resourceApiService
+    )
     {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
 
         $adapter->setConfig($this);
         $this->adapter = $adapter;
+        $this->resourceApiService = $resourceApiService;
     }
 
     private function init()
@@ -57,6 +65,26 @@ class ViewConfig implements ConfigInterface
     {
         $this->init();
         return $this->config;
+    }
+
+    private function getEmbedCode()
+    {
+        try {
+            $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
+            $edlibEmbedPath = config('edlib.embedPath');
+
+            if (!$edlibEmbedPath) {
+                return '';
+            }
+
+            return sprintf(
+                '<iframe src="%s" width=":w" height=":h"></iframe>',
+                htmlspecialchars(str_replace('<resourceId>', $resource->id, $edlibEmbedPath), ENT_QUOTES)
+            );
+        } catch (NotFoundException $e) {
+            Log::error($e);
+            return '';
+        }
     }
 
     public function setAlterParametersSettings(H5PAlterParametersSettingsDataObject $settings)
@@ -115,7 +143,7 @@ class ViewConfig implements ConfigInterface
         $contentConfig->jsonContent = $parameters;
         $contentConfig->fullScreen = $content['library']['fullscreen'];
         $contentConfig->exportUrl = route('content-download', ['h5p' => $content['id']]);
-        $contentConfig->embedCode = Session::get(SessionKeys::EXT_CONTEXT_EMBED, '');
+        $contentConfig->embedCode = $this->getEmbedCode();
         $contentConfig->resizeCode = $contentConfig->embedCode
             ? '<script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js"></script>'
             : '';

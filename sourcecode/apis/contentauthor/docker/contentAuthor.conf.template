@@ -3,20 +3,23 @@ upstream php {
 }
 
 server {
-    listen 8081;
+    listen 80;
     index index.php;
     root /app/public;
     charset utf-8;
     client_max_body_size 2G;
 
     location / {
-            try_files $uri $uri/ /index.php$is_args$args;
+        access_log off;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
     location ~ \.php$ {
+        access_log on;
         include fastcgi.conf;
         fastcgi_pass php;
         fastcgi_param  HTTPS 'on';
+        fastcgi_read_timeout  120s;
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }

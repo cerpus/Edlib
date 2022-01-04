@@ -1,0 +1,11 @@
+{{ if not .Values.disableLicenseApi }}
+{{- template "helpers.initJob" (dict "name" "licenseapi" "image" "public.ecr.aws/f0t8l9h1/api-license-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "licenseapi-config") "envFromSecret" (list "licenseapi-secret") ) }}
+---
+{{- template "helpers.service" (dict "name" "licenseapi" "port" 8081 ) }}
+---
+{{- template "helpers.deployment" (dict "name" "licenseapi" "port" 8081 "image" "public.ecr.aws/f0t8l9h1/api-license-web" "initImage" "public.ecr.aws/f0t8l9h1/api-license-init" "imageTag" .Chart.AppVersion "envFromConfig" (list "licenseapi-config") "envFromSecret" (list "licenseapi-secret") "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "licenseapi" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "licenseapi" ) }}
+{{ end }}

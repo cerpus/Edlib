@@ -17,6 +17,5 @@ class SessionKeys
     const EXT_BEHAVIOR_SETTINGS = 'ext_behavior_settings';
     const EXT_EDITOR_BEHAVIOR_SETTINGS = 'ext_editor_behavior_settings.%s';
     const EXT_CSS_URL = 'launch_presentation_css_url';
-    const EXT_CONTEXT_EMBED = 'ext_context_oembed';
     const EXT_DRAFT_SETTING = 'ext_draft_setting.%s';
 }

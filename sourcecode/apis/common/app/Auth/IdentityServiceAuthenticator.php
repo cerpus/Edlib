@@ -39,8 +39,6 @@ class IdentityServiceAuthenticator
         $token = $request->bearerToken();
 
         if ($token === null) {
-            $this->logger->debug('No bearer token in request');
-
             return null;
         }
 

@@ -89,7 +89,7 @@ class PingVideoApiTest extends TestCase
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
-        $h5pContents = factory(H5PContent::class, 5)->create([
+        $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
         ])->each(function ($h5pContent) use ($videoSource) {
@@ -98,7 +98,7 @@ class PingVideoApiTest extends TestCase
             /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
-                ->save(factory(H5PContentsVideo::class)
+                ->save(H5PContentsVideo::factory()
                     ->create([
                         'h5p_content_id' => $h5pContent->id,
                         'source_file' => $videoSource,
@@ -187,7 +187,7 @@ class PingVideoApiTest extends TestCase
         $adapter->method('getAdapterMimeType')->willReturn($mimeType);
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
-        $h5pContentParent = factory(H5PContent::class)->create([
+        $h5pContentParent = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
             'version_id' => $this->faker->unique()->uuid,
@@ -196,7 +196,7 @@ class PingVideoApiTest extends TestCase
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
         $this->createVideo($h5pContentParent->id, $videoSource);
         $h5pContentParent->contentVideos()
-            ->save(factory(H5PContentsVideo::class)
+            ->save(H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentParent->id,
                     'source_file' => $videoSource,
@@ -209,7 +209,7 @@ class PingVideoApiTest extends TestCase
         $packageStructureParent->interactiveVideo->video->files[0]->mime = $mimeType;
 
         $packageStructureChild->interactiveVideo->unitTestValue = true;
-        $h5pContentChild = factory(H5PContent::class)->create([
+        $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
         ]);
@@ -261,7 +261,7 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($content->id);
         $this->createVideo($content->id, $videoSource);
         $content->contentVideos()
-            ->save(factory(H5PContentsVideo::class)
+            ->save(H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $content->id,
                     'source_file' => $videoSource,
@@ -286,7 +286,7 @@ class PingVideoApiTest extends TestCase
         $adapter->method('getAdapterMimeType')->willReturn($mimeType);
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
-        $h5pContents = factory(H5PContent::class, 5)->create([
+        $h5pContents =H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
             'version_id' => $this->faker->unique()->uuid,
@@ -298,7 +298,7 @@ class PingVideoApiTest extends TestCase
 
         $packageStructureChild = json_decode($packageStructure);
         $packageStructureChild->interactiveVideo->unitTestValue = true;
-        $h5pContentChild = factory(H5PContent::class)->create([
+        $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
         ]);
@@ -308,7 +308,7 @@ class PingVideoApiTest extends TestCase
         $packageStructureGrandchild = $packageStructureChild;
         $packageStructureGrandchild->interactiveVideo->unitTestValue = false;
 
-        $h5pContentGrandchild = factory(H5PContent::class)->create([
+        $h5pContentGrandchild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureGrandchild),
         ]);
@@ -387,7 +387,7 @@ class PingVideoApiTest extends TestCase
         $adapter->method('getAdapterMimeType')->willReturn($mimeType);
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
-        $h5pContentParent = factory(H5PContent::class)->create([
+        $h5pContentParent = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
             'version_id' => $this->faker->unique()->uuid,
@@ -397,7 +397,7 @@ class PingVideoApiTest extends TestCase
         $this->createVideo($h5pContentParent->id, $videoSource);
 
         $h5pContentParent->contentVideos()
-            ->save(factory(H5PContentsVideo::class)
+            ->save(H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentParent->id,
                     'source_file' => $videoSource,
@@ -406,7 +406,7 @@ class PingVideoApiTest extends TestCase
 
         $packageStructureChild = json_decode($packageStructure);
         $packageStructureChild->interactiveVideo->unitTestValue = true;
-        $h5pContentChild = factory(H5PContent::class)->create([
+        $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
             'version_id' => $this->faker->unique()->uuid,
@@ -419,7 +419,7 @@ class PingVideoApiTest extends TestCase
 
         $newFileId = 'videos/files-99937db5cd666.mp4';
         $packageStructureGrandchild->interactiveVideo->video->files[0]->path = $newFileId;
-        $h5pContentGrandchild = factory(H5PContent::class)->create([
+        $h5pContentGrandchild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureGrandchild),
             'version_id' => $this->faker->unique()->uuid,
@@ -427,7 +427,7 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $newFileId);
         $h5pContentGrandchild->contentVideos()
-            ->save(factory(H5PContentsVideo::class)
+            ->save(H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentGrandchild->id,
                     'source_file' => $newFileId,
@@ -493,7 +493,7 @@ class PingVideoApiTest extends TestCase
 
         $packageStructure = $this->packageStructure['interactiveVideoWithNoLocalVideoFiles'];
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
-        $h5pContents = factory(H5PContent::class, 5)->create([
+        $h5pContents =H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
         ])->each(function ($h5pContent) use ($videoSource) {
@@ -502,7 +502,7 @@ class PingVideoApiTest extends TestCase
             /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
-                ->save(factory(H5PContentsVideo::class)
+                ->save(H5PContentsVideo::factory()
                     ->create([
                         'h5p_content_id' => $h5pContent->id,
                         'source_file' => $videoSource,
@@ -547,7 +547,7 @@ class PingVideoApiTest extends TestCase
 
         $packageStructure = $this->packageStructure['interactiveVideoWithNoLocalVideoFiles'];
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
-        $h5pContent = factory(H5PContent::class)->create([
+        $h5pContent = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
         ]);
@@ -556,7 +556,7 @@ class PingVideoApiTest extends TestCase
         /** @var H5PContent $h5pContent */
         $h5pContent
             ->contentVideos()
-            ->save(factory(H5PContentsVideo::class)
+            ->save(H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContent->id,
                     'source_file' => '',

@@ -2,22 +2,29 @@
 
 namespace Tests\Feature\Gdpr\Handlers;
 
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\CollaboratorContext;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use App\Gdpr\Handlers\ContextShareProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ContextShareProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testContextSharesAreRemoved()
     {
         $authId = $this->faker->uuid;
-        factory(CollaboratorContext::class)->create(['collaborator_id' => $authId, 'content_id' => 1]);
-        factory(CollaboratorContext::class, 2)->create();
+        CollaboratorContext::factory()->create(['collaborator_id' => $authId, 'content_id' => 1]);
+        CollaboratorContext::factory()->count(2)->create();
 
         $this->assertCount(3, CollaboratorContext::all());
         $this->assertDatabaseHas('collaborator_contexts', ['collaborator_id' => $authId, 'content_id' => 1]);
@@ -25,15 +32,11 @@ class ContextShareProcessorTest extends TestCase
 
         $handler = new ContextShareProcessor();
 
-        $payLoad = (object)[
-            'deletionRequestId' => $this->faker->uuid,
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
             'userId' => $authId,
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payLoad->deletionRequestId;
-        $deletionRequest->payload = $payLoad;
-        $deletionRequest->save();
+            'emails' => []
+        ]);
 
         $handler->handle($deletionRequest);
 

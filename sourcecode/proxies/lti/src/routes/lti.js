@@ -97,6 +97,23 @@ export default async () => {
 
     /**
      * @swagger
+     *  /v2/resources/{resourceId}/view:
+     *      get:
+     *          description: Get request info to view a resource
+     *          produces:
+     *              - application/json
+     *          responses:
+     *              200:
+     *                  description: Home
+     */
+    router.get(
+        '/v1/resources/:resourceId/view',
+        middlewares.addUserToRequest,
+        runAsync(ltiController.viewLti)
+    );
+
+    /**
+     * @swagger
      *  /v2/resources/{resourceId}/lti-links:
      *      post:
      *          description: Create an lti link for a resource.

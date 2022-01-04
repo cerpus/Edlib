@@ -4,3 +4,4 @@
 /data
 /localSetup/.env
 node_modules
+/phpunit.phar

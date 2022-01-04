@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title }}</title>
-    <link media="all" type="text/css" rel="stylesheet" href="{{ elixir('h5p-core.css') }}">
-    <link media="all" type="text/css" rel="stylesheet" href="{{ elixir('h5pcss.css') }}">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/h5p-core.css') }}">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/h5pcss.css') }}">
     @if($inlineStyle)
         <style>{!! $inlineStyle !!}</style>
     @endif

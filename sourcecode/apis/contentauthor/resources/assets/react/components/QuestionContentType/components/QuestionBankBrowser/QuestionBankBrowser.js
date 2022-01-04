@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { QuestionBankBrowserDialog, QuestionBankBrowserLayout } from './';
 import { Answer, Card, Image, Question, rerenderMathJax } from '../utils';
 import { CardContainer } from '../QuestionCard';
-import { Debounce } from 'utils/utils';
+import { Debounce } from '../../../../utils/utils';
 
 class QuestionBankBrowser extends React.Component {
     static propTypes = {

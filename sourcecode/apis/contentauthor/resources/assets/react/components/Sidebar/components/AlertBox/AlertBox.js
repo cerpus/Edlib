@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormActions, useForm } from 'contexts/FormContext';
+import { FormActions, useForm } from '../../../../contexts/FormContext';
 import { List, ListItemText } from '@material-ui/core';
 import { Alert } from '@cerpus/ui';
 import WarningIcon from '@material-ui/icons/Warning';

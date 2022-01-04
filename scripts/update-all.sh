@@ -10,14 +10,14 @@ pushd ../sourcecode
 
 # java repos
 declare -a javaRepos=(
-  "not_migrated/versionapi"
+  "apis/version"
   "not_migrated/edlibfacade"
 )
 
 # php repos
 declare -a phpRepos=(
-  "not_migrated/h5pviewer"
-  "not_migrated/licenseapi"
+  "apis/contentauthor"
+  "apis/license"
 )
 
 for i in "${javaRepos[@]}"

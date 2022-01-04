@@ -6,10 +6,10 @@ namespace Tests\API\Handler;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Tests\TestCase;
 use Tests\db\TestH5PSeeder;
+use Tests\Traits\MockResourceApi;
 use Tests\Traits\WithFaker;
 use Tests\Traits\ResetH5PStatics;
 use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockMetadataService;
 use Tests\Traits\MockVersioningTrait;
 use Cerpus\CoreClient\DataObjects\Answer;
 use App\Libraries\H5P\Packages\MultiChoice;
@@ -21,7 +21,7 @@ use App\Http\Controllers\API\Handler\ContentTypeHandler;
 class ContentTypeHandlerTest extends TestCase
 {
 
-    use RefreshDatabase, MockMetadataService, MockLicensingTrait, MockVersioningTrait, WithFaker, ResetH5PStatics;
+    use RefreshDatabase, MockLicensingTrait, MockVersioningTrait, WithFaker, ResetH5PStatics, MockResourceApi;
 
     public function setUp(): void
     {
@@ -38,11 +38,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArray_validData_thenSuccess()
     {
-
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
+        $this->setUpResourceApi();
 
         $handler = new ContentTypeHandler();
         $this->isInstanceOf(ContentTypeHandler::class);
@@ -110,11 +106,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArrayWithDraftLogic_validData_thenSuccess()
     {
-
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
+        $this->setUpResourceApi();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('enableDraftLogic')->willReturn(true);
@@ -190,12 +182,7 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromClient_validData_thenSuccess()
     {
-
-        $this->setupMetadataService([
-            'getData' => true,
-            'createData' => true
-        ]);
-
+        $this->setUpResourceApi();
         $handler = new ContentTypeHandler();
 
         $authId = $this->faker->uuid;

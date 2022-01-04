@@ -63,7 +63,7 @@ const ResourceFilters = ({ filters }) => {
                     filters.reset();
                 }}
             >
-                Nullstill
+                {t('Reset')}
             </Button>
         </form>
     );

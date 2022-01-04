@@ -46,28 +46,7 @@ export default async () => {
     apiRouter.use(await status());
 
     router.get('/_ah/health', (req, res) => {
-        const probe = req.query.probe;
-
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
-            res.status(503).send();
-        }
-    });
-
-    // @todo remove when after next release to prod. Remember to change endpoint in bamboo specs to /_ah/health
-    router.get('/resources/_ah/health', (req, res) => {
-        const probe = req.query.probe;
-
-        if (probe === 'liveness') {
-            res.send('ok');
-        } else if (probe === 'readiness') {
-            res.send('ok');
-        } else {
-            res.status(503).send();
-        }
+        res.send('ok');
     });
 
     router.use('/auth', addContextToRequest, apiRouter);

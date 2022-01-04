@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Auth;
 use Exception;
 use LogicException;

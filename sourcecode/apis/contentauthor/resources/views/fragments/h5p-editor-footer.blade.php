@@ -1,7 +1,5 @@
-<script src="{{ elixir('bootstrap.js') }}"></script>
-<script src="{{ elixir('react-vendor.js') }}"></script>
-<script src="{{ elixir('react-components.js') }}"></script>
-<script src="{{ elixir('react-app.js') }}"></script>
+<script src="{{ mix('js/bootstrap.js') }}"></script>
+<script src="{{ mix('js/react-app.js') }}"></script>
 {!! $config !!}
 @foreach( $jsScript as $js)
 {!! HTML::script($js) !!}

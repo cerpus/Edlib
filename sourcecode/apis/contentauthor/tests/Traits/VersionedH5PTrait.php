@@ -4,7 +4,7 @@ namespace Tests\Traits;
 
 use App\H5PContent;
 use App\H5PContentLibrary;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 trait VersionedH5PTrait
 {
@@ -17,8 +17,8 @@ trait VersionedH5PTrait
     public function setUpOriginalH5P($params = [], $license = 'PRIVATE', $copyable = false) {
         //Create a h5p with a file attached and file structure
         $createParams = array_merge(['parameters' => '{}', 'license' => $license], $params);
-        $this->originalH5P = factory(H5PContent::class)->create($createParams);
-        factory(H5PContentLibrary::class)->create(['content_id' => $this->originalH5P->id]);
+        $this->originalH5P = H5PContent::factory()->create($createParams);
+        H5PContentLibrary::factory()->create(['content_id' => $this->originalH5P->id]);
 
         $this->setupContentDirectories($this->originalH5P->id);
 

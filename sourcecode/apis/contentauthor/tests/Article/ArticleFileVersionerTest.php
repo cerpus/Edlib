@@ -23,7 +23,7 @@ class ArticleFileVersionerTest extends TestCase
     {
         //Create the original article with a file attached
         $articleId = Str::uuid();
-        $this->originalArticle = factory(Article::class)->create([
+        $this->originalArticle = Article::factory()->create([
             'id' => $articleId,
             'content' => '
 <p><img src="/' . $articleId . '/tree.jpg" style="height:80px; width:454px" /></p>
@@ -57,7 +57,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testSetup()
     {
         $this->setUpOriginal();
-        $this->newArticle = factory(Article::class)->create([
+        $this->newArticle = Article::factory()->create([
             'parent_id' => $this->originalArticle->id,
             'parent_version_id' => $this->originalArticle->version_id,
         ]);
@@ -71,7 +71,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testFileCopy()
     {
         $this->setUpOriginal();
-        $this->newArticle = factory(Article::class)->create([
+        $this->newArticle = Article::factory()->create([
             'parent_id' => $this->originalArticle->id,
             'parent_version_id' => $this->originalArticle->version_id,
         ]);
@@ -84,7 +84,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testDatabaseUpdate()
     {
         $this->setUpOriginal();
-        $this->newArticle = factory(Article::class)->create([
+        $this->newArticle = Article::factory()->create([
             'parent_id' => $this->originalArticle->id,
             'parent_version_id' => $this->originalArticle->version_id,
         ]);
@@ -99,7 +99,7 @@ class ArticleFileVersionerTest extends TestCase
     public function testRewriteFilePaths()
     {
         $this->setUpOriginal();
-        $this->newArticle = factory(Article::class)->create([
+        $this->newArticle = Article::factory()->create([
             'content' => $this->originalArticle->content,
             'parent_id' => $this->originalArticle->id,
             'parent_version_id' => $this->originalArticle->version_id,

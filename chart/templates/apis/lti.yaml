@@ -1,5 +1,9 @@
-{{- template "helpers.initJob" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-migration" "imageTag" .Chart.AppVersion ) }}
+{{- template "helpers.initJob" (dict "name" "ltiapi" "image" "public.ecr.aws/f0t8l9h1/api-lti-migration" "imageTag" .Chart.AppVersion ) }}
 ---
 {{- template "helpers.service" (dict "name" "ltiapi") }}
 ---
-{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "ghcr.io/cerpus/edlib/api-lti-app" "imageTag" .Chart.AppVersion "replicaCount" 1  "healthUrl" "/_ah/health?probe=readiness" ) }}
+{{- template "helpers.deployment" (dict "name" "ltiapi" "image" "public.ecr.aws/f0t8l9h1/api-lti-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/_ah/health" "fluentdParser" "node-json" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "ltiapi" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "ltiapi" ) }}

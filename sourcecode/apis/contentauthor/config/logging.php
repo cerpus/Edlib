@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', env('DEPLOYMENT_ENVIRONMENT', '') != '' ? 'deployed-stack' : 'single'),
+    'default' => env('LOG_CHANNEL', 'stderr'),
 
     /*
     |--------------------------------------------------------------------------
@@ -38,20 +38,17 @@ return [
             'driver' => 'stack',
             'channels' => ['single'],
         ],
-
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
         ],
-
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 7,
         ],
-
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -59,25 +56,22 @@ return [
             'emoji' => ':boom:',
             'level' => 'critical',
         ],
-
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
+            'formatter' => Monolog\Formatter\JsonFormatter::class,
             'with' => [
                 'stream' => 'php://stderr',
             ],
         ],
-
         'syslog' => [
             'driver' => 'syslog',
             'level' => 'debug',
         ],
-
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
-
         'deployed-stack' => [
             'driver' => 'stack',
             'channels' => ['single', 'logstash']

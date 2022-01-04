@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
          colors="true"
+         executionOrder="depends,defects"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         beStrictAboutCoversAnnotation="false"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         convertDeprecationsToExceptions="true"
+         verbose="true"
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
@@ -19,9 +28,13 @@
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
+
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">app/</directory>
+            <directory suffix=".php">app</directory>
+            <exclude>
+                <directory>app/Libraries/oauth-php/</directory>
+            </exclude>
         </whitelist>
     </filter>
     <php>
@@ -50,9 +63,6 @@
         <env name="VERSION_API_SERVER" value="http://versionApiServer.local"/>
         <env name="XAPI_ENDPOINT" value=""/>
         <env name="OER_LICENSES_URL" value=""/>
-        <env name="LICENSE_SERVER" value=""/>
-        <env name="METADATA_SERVER" value=""/>
-        <env name="METADATA_PUBLISHED_FIELD" value="true"/>
         <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <env name="FEATURE_ENABLE_DRAFT_LOGIC" value="false"/>
         <env name="ENABLE_CLOUD_STORAGE" value="false"/>

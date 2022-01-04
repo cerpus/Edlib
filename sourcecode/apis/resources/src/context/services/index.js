@@ -9,7 +9,7 @@ export default (req) => {
 
     return {
         version: versionApi,
-        externalResourceFetcher: externalResourceFetcher(req),
+        externalResourceFetcher: externalResourceFetcher(),
         elasticsearch: elasticsearch(req),
         coreInternal: apiClients.coreInternal(req, apiConfig.coreInternal),
         edlibAuth: apiClients.edlibAuth(req, apiConfig.edlibAuth),

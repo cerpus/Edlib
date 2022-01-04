@@ -25,6 +25,8 @@ const update = (id, resource) =>
     });
 
 const getById = async (id) => db(table).select('*').where('id', id).first();
+const getAllNotRemoved = async () =>
+    db(table).select('*').whereNull('deletedAt');
 const getByIds = async (ids) => db(table).select('*').whereIn('id', ids);
 
 const getAllPaginated = async (offset, limit) =>
@@ -43,6 +45,7 @@ export default () => ({
     create,
     update,
     remove,
+    getAllNotRemoved,
     getById,
     getByIds,
     getAllPaginated,

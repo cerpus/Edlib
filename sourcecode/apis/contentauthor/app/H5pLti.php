@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Http\Requests\LTIRequest;
-use Request;
+use Illuminate\Support\Facades\Request;
 
 class H5pLti {
     private $consumerKey;

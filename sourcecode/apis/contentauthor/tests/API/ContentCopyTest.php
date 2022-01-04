@@ -1,8 +1,11 @@
 <?php
 
+namespace Tests\API;
+
 use App\User;
 use App\Article;
 use App\H5PContent;
+use Mockery;
 use Tests\TestCase;
 use App\OauthVerifier;
 use App\H5PContentLibrary;
@@ -32,8 +35,8 @@ class ContentCopyTest extends TestCase
         \Event::fake();
         $this->withoutMiddleware();
 
-        $user = factory(User::class)->make();
-        $article = factory(Article::class)->create(['owner_id' => $user->auth_id]);
+        $user = User::factory()->make();
+        $article = Article::factory()->create(['owner_id' => $user->auth_id]);
         $this->assertCount(1, Article::all());
 
         //Test required params
@@ -67,7 +70,7 @@ class ContentCopyTest extends TestCase
         $licenseingListener = Mockery::spy(HandleLicensing::class);
         app()->instance(HandleLicensing::class, $licenseingListener);
 
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
         $this->setUpOriginalArticle(['owner_id' => $user->auth_id], 'PRIVATE', false);
 
         // Test a real copy, by the owner
@@ -110,7 +113,7 @@ class ContentCopyTest extends TestCase
         $this->withoutMiddleware();
         $storage = Storage::disk('h5p-uploads');
 
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
         $originalDirectoryCount = count($storage->directories('content'));
         $h5p = $this->setUpOriginalH5P(['user_id' => $user->auth_id], 'PRIVATE', false);
         $this->assertCount(1, H5PContent::all());
@@ -143,7 +146,7 @@ class ContentCopyTest extends TestCase
     {
         \Event::fake();
         $this->withoutMiddleware();
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
 
         $this->setUpOriginalArticle(['owner_id' => $user->auth_id], 'PRIVATE', false);
         // No one but the user should be able to copy this article
@@ -193,7 +196,7 @@ class ContentCopyTest extends TestCase
     public function testOauthSigning()
     {
         \Event::fake();
-        $user = factory(User::class)->make();
+        $user = User::factory()->make();
         $this->setUpOriginalH5P(['user_id' => $user->auth_id], 'BY', true);
         $this->post(route('content.copy', [
             'id' => $this->originalH5P->id,

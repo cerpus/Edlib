@@ -3,7 +3,7 @@
 
 namespace App\Libraries\NDLA\Traits;
 
-use Cache;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Cerpus\AuthCore\CreateUserApiService;
 use Cerpus\LaravelAuth\Service\CerpusAuthService;

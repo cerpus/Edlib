@@ -45,6 +45,7 @@ const configurationValidationSchema = Joi.object({
                 .insensitive()
         )
         .default([]),
+    returnLtiLinks: Joi.boolean().default(true),
 });
 
 export const EdlibComponentsProvider = ({
@@ -55,12 +56,14 @@ export const EdlibComponentsProvider = ({
     edlibUrl = null,
     configuration = {},
 }) => {
-    const actualEdlibUrl =
+    const actualEdlibApiUrl =
         !edlibUrl || edlibUrl.length === 0 ? urls.defaultEdlibUrl : edlibUrl;
+
+    const edlibFrontendUrl = actualEdlibApiUrl.replace('api', 'www');
 
     const { token, error, loading, getToken } = useToken(
         getJwt,
-        actualEdlibUrl
+        actualEdlibApiUrl
     );
 
     React.useEffect(() => {
@@ -94,7 +97,8 @@ export const EdlibComponentsProvider = ({
                 },
                 config: {
                     urls: {
-                        edlibUrl: actualEdlibUrl,
+                        edlibUrl: actualEdlibApiUrl,
+                        edlibFrontendUrl,
                         dokuUrl:
                             !dokuUrl || dokuUrl.length === 0
                                 ? urls.defaultDokuUrl

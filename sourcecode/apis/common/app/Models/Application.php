@@ -11,7 +11,6 @@ use Ramsey\Uuid\Uuid;
 /**
  * App\Models\Application
  *
- * @mixin IdeHelperApplication
  * @property string $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -26,6 +25,9 @@ use Ramsey\Uuid\Uuid;
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Application whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GdprRequest[] $gdprRequests
+ * @property-read int|null $gdpr_requests_count
+ * @mixin IdeHelperApplication
  */
 class Application extends Model
 {
@@ -39,6 +41,11 @@ class Application extends Model
     public function accessTokens(): HasMany
     {
         return $this->hasMany(AccessToken::class);
+    }
+
+    public function gdprRequests(): HasMany
+    {
+        return $this->hasMany(GdprRequest::class);
     }
 
     public function resourceCollaborators(): HasMany

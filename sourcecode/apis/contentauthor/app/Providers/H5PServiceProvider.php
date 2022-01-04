@@ -28,7 +28,7 @@ use App\Libraries\NDLA\Importers\ImporterInterface;
 use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
-use DB;
+use Illuminate\Support\Facades\DB;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -39,10 +39,10 @@ use H5PExport;
 use H5PFileStorage;
 use H5PFrameworkInterface;
 use H5PValidator;
-use Session;
+use Illuminate\Support\Facades\Session;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
-use Storage;
+use Illuminate\Support\Facades\Storage;
 
 class H5PServiceProvider extends ServiceProvider
 {
@@ -157,7 +157,7 @@ class H5PServiceProvider extends ServiceProvider
             switch ($storageDisk) {
                 case 'cloud':
                     $uploadDisk = Storage::disk(config('h5p.H5PStorageDisk'));
-                    $instance = new H5PCerpusStorage(Storage::cloud(), Storage::getDefaultCloudDriver(), $uploadDisk);
+                    $instance = new H5PCerpusStorage(Storage::cloud(), Storage::getDefaultCloudDriver(), $uploadDisk, config('app.cdnPrefix', UrlHelper::getCurrentBaseUrl()));
                     break;
                 case 'default':
                     $path = config("h5p.storage.path");
@@ -230,7 +230,7 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             /** @var CerpusStorageInterface|H5PFileStorage $fileStorage */
             $fileStorage = $app->make(H5PFileStorage::class);
-            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, UrlHelper::getCurrentBaseUrl());
+            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, config('app.cdnPrefix', UrlHelper::getCurrentBaseUrl()));
             $core->aggregateAssets = true;
 
             $app->instance(H5PCore::class, $core);

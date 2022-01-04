@@ -1,3 +1,7 @@
 {{- template "helpers.service" (dict "name" "proxy-admin") }}
 ---
-{{- template "helpers.deployment" (dict "name" "proxy-admin" "image" "ghcr.io/cerpus/edlib/proxy-admin-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/" ) }}
+{{- template "helpers.deployment" (dict "name" "proxy-admin" "image" "public.ecr.aws/f0t8l9h1/proxy-admin-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/" "fluentdParser" "nginx" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-admin" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "proxy-admin" ) }}

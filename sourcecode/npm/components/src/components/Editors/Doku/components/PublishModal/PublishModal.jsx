@@ -53,7 +53,7 @@ const PublishModal = ({ show, setShow, license, setLicense, unpublish }) => {
                             </div>
                             <div>
                                 <i style={{ marginRight: 10 }}>
-                                    Denne ressursen er nå publisert
+                                    {t('Denne ressursen er nå publisert')}
                                 </i>
                                 <Button type="danger" onClick={unpublish}>
                                     {t('Avpubliser')}

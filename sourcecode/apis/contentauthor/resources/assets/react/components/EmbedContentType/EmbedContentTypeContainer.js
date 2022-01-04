@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Debounce } from 'utils/utils';
+import { Debounce } from '../../utils/utils';
 import Validator from 'validator';
 import Axios from 'axios';
 import Card from './components/Card';

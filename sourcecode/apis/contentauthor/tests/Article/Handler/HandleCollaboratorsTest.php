@@ -23,7 +23,7 @@ class HandleCollaboratorsTest extends TestCase
     public function testHandleCollaboratorsOnSave()
     {
         $authId = Str::uuid();
-        $article = factory(Article::class)->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
 
         $request = new Request();
 

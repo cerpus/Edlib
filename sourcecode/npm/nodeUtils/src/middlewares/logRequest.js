@@ -2,7 +2,6 @@ import OnFinished from 'on-finished';
 import url from 'url';
 import appConfig from '../envConfig/app.js';
 import logger from '../services/logger.js';
-import chalk from 'chalk';
 
 const ignoreAgents = [
     'kube-probe/',
@@ -40,18 +39,15 @@ export default () => (req, res, next) => {
         OnFinished(res, () => {
             const requestTime = Date.now() - start;
 
-            logger.debug(
-                chalk.magenta(`${info.method} ${info.path} - ${requestTime}ms`),
-                {
-                    httpRequest: {
-                        method: info.method,
-                        url: info.url,
-                        userAgent: info.userAgent,
-                        requestSize: info.requestSize,
-                        requestTime,
-                    },
-                }
-            );
+            logger.debug(`${info.method} ${info.path} - ${requestTime}ms`, {
+                httpRequest: {
+                    method: info.method,
+                    url: info.url,
+                    userAgent: info.userAgent,
+                    requestSize: info.requestSize,
+                    requestTime,
+                },
+            });
         });
     }
 

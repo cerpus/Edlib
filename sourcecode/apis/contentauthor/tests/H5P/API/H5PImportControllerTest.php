@@ -31,7 +31,6 @@ namespace Tests\H5P\API {
     use Illuminate\Http\Response;
     use Illuminate\Http\Testing\File;
     use Tests\TestCase;
-    use Tests\Traits\MockMetadataService;
     use Tests\Traits\MockVersioningTrait;
     use Tests\Traits\ResetH5PStatics;
     use Tests\Traits\WithFaker;
@@ -42,33 +41,16 @@ namespace Tests\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, ResetH5PStatics, MockMetadataService, MockVersioningTrait, WithFaker;
+        use RefreshDatabase, ResetH5PStatics, MockVersioningTrait, WithFaker;
 
         private function _setUp(): void
         {
-            factory(H5PContent::class)->create();
-            factory(H5PLibrary::class)->create();
+            H5PContent::factory()->create();
+            H5PLibrary::factory()->create();
 
             $versionData = new VersionData();
             $this->setupVersion([
                 'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-            ]);
-
-            $this->setupMetadataService([
-                'createData' => function () {
-                    $responseData = new \stdClass();
-                    $responseData->is_public = false;
-                    return $responseData;
-                },
-                'getCustomFieldDefinition' => function ($name) {
-                    $this->assertEquals('published', $name);
-                    return ['name' => 'published', 'type' => 'boolean', 'isCollection' => false];
-                },
-                'setCustomFieldValue' => function ($name, $value) {
-                    $this->assertEquals('published', $name);
-                    $this->assertFalse($value);
-                    return ['value' => false];
-                },
             ]);
         }
 
@@ -115,7 +97,7 @@ namespace Tests\H5P\API {
                 ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) use ($fakeDisk) {
                     $machineName = "H5P.Blanks";
                     $file = new File('sample.h5p', fopen(base_path($path), 'r'));
-                    $user = factory(User::class)->make();
+                    $user = User::factory()->make();
                     $parameters = [
                         'h5p' => $file,
                         'userId' => $user->auth_id,
@@ -170,7 +152,7 @@ namespace Tests\H5P\API {
             $title = "Phpunit is awesome!";
             $machineName = "H5P.MultiChoice";
             $file = new File('sample-with-image.h5p', fopen(base_path('tests/files/sample-with-image.h5p'), 'r'));
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
@@ -229,7 +211,7 @@ namespace Tests\H5P\API {
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
             $file = new File('sample-with-license-and-authors.h5p', fopen(base_path('tests/files/sample-with-license-and-authors.h5p'), 'r'));
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
@@ -298,7 +280,7 @@ namespace Tests\H5P\API {
                 ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
                 ->assertJson(['message' => 'The given data was invalid.']);
 
-            $user = factory(User::class)->make();
+            $user = User::factory()->make();
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,

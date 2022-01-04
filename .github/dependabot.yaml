@@ -3,4 +3,99 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
+
+# -----------------------------------------------------
+# ------------ sourcecode/apis repos ------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/auth"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/common"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/contentauthor"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/doku"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "composer"
+    directory: "/sourcecode/apis/license"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/lti"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/resources"
+    schedule:
+      interval: "monthly"
+    ignore:
+      - dependency-name: "@elastic/elasticsearch" # newer versions of this client doesn't support elasticsearch in AWS
+
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/apis/url"
+    schedule:
+      interval: "monthly"
+
+# -----------------------------------------------------
+# ---------- sourcecode/npm repos ---------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/npm/components"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/npm/nodeUtils"
+    schedule:
+      interval: "monthly"
+
+# -----------------------------------------------------
+# ---------- sourcecode/proxies repos -----------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/admin"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/auth"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/doku"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/iframe"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/lti"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/recommendation"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/resource"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/proxies/url"
+    schedule:
+      interval: "monthly"
+
+# -----------------------------------------------------
+# ----------------- www repos -------------------------
+# -----------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/sourcecode/www"
+    schedule:
+      interval: "monthly"

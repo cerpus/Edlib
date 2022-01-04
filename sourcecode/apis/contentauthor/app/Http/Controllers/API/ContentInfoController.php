@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Article;
 use App\CollaboratorContext;
 use App\Content;
-use App\Game;
-use App\H5PContent;
 use App\Http\Controllers\Controller;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\EdlibResourceDataObject;
-use App\QuestionSet;
+use App\Libraries\ModelRetriever;
 use Illuminate\Http\Request;
 
 class ContentInfoController extends Controller
@@ -29,26 +26,11 @@ class ContentInfoController extends Controller
         return response()->json($content->getEdlibDataObject());
     }
 
-    private function getModelFromGroup($group): string
-    {
-        switch ($group) {
-            case "article":
-                return Article::class;
-            case "game":
-                return Game::class;
-            case "questionset":
-                return QuestionSet::class;
-            case "h5p":
-            default:
-                return H5PContent::class;
-        }
-    }
-
     public function list(Request $request)
     {
         $offset = $request->get("offset", 0);
         $limit = $request->get("limit", 50);
-        $model = $this->getModelFromGroup($request->get("group"));
+        $model = ModelRetriever::getModelFromGroup($request->get("group"));
 
         $preFetchIds = $model::select("id")
             ->orderBy("created_at", "ASC")
@@ -113,5 +95,22 @@ class ContentInfoController extends Controller
         ];
 
         return response()->json($response);
+    }
+
+    public function getContentTypeInfo(string $contentType)
+    {
+        $model = ModelRetriever::getModelFromContentType($contentType);
+
+        $library = $model::getContentTypeInfo($contentType);
+
+        if (!$library) {
+            return response()->json([
+                "message" => "Content type info not found"
+            ], 404);
+        }
+
+        return response()->json([
+            'contentType' => $library
+        ]);
     }
 }

@@ -7,7 +7,7 @@ use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\H5PBehaviorSettings;
 use H5peditor;
-use Session;
+use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
 
@@ -84,7 +84,7 @@ class EditorConfig implements ConfigInterface
         $editorConfig->copyrightSemantics = $this->contentValidator->getCopyrightSemantics();
         $editorConfig->metadataSemantics = $this->contentValidator->getMetadataSemantics();
         $content = $this->getContent();
-        $editorConfig->ajaxPath = sprintf("/ajax?redirectToken=%s&h5p_id=%s&action=", $this->redirectToken, $content['id']);
+        $editorConfig->ajaxPath = sprintf("/ajax?redirectToken=%s&h5p_id=%s&action=", $this->redirectToken, $content['id'] ?? '');
         if (!empty($content['id'])) {
             $editorConfig->nodeVersionId = $content['id'];
             $this->setLibrary(H5PLibrary::find($content['library']['id']));
@@ -119,13 +119,12 @@ class EditorConfig implements ConfigInterface
     private function getEditorStyles()
     {
         $editor = $this->editor;
-        $editorStyles[] = elixir('h5p-core.css');
-        $editorStyles[] = elixir('h5p-admin.css');
+        $editorStyles[] = (string) mix('css/h5p-core.css');
+        $editorStyles[] = (string) mix('css/h5p-admin.css');
         foreach ($editor::$styles as $style) {
             $editorStyles[] = $this->getAssetUrl("editor", $style);
         }
         $editorStyles[] = '//fonts.googleapis.com/css?family=Lato:400,700';
-        $editorStyles[] = elixir('react-h5p.css');
         return array_merge($editorStyles, $this->adapter->getEditorCss());
     }
 
@@ -158,7 +157,7 @@ class EditorConfig implements ConfigInterface
         }
 
         foreach ([
-                     elixir("h5pmetadata.js"),
+                     (string) mix("js/h5pmetadata.js"),
                      '/js/editor-setup.js',
                  ] as $script) {
             $scriptPath = $this->getAssetUrl(null, $script);

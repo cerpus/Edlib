@@ -3,7 +3,7 @@ import { injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Checkbox } from '@cerpus/ui';
 import getTranslations from './language/translations';
-import { useForm, FormActions } from 'contexts/FormContext';
+import { useForm, FormActions } from '../../../../contexts/FormContext';
 
 const initialState = (displayButtons, displayDownload, displayCopyright) => (
     {

@@ -4,7 +4,7 @@ namespace App\Listeners\H5P\Copy;
 
 use App\Libraries\Versioning\VersionableObject;
 use App\Listeners\AbstractHandleVersioning;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Events\H5PWasCopied;
 use Cerpus\VersionClient\VersionData;
 use Cerpus\VersionClient\VersionClient;

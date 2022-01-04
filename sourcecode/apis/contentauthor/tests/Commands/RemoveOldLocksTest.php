@@ -14,7 +14,7 @@ class RemoveOldLocksTest extends TestCase
 
     public function testOldLocksAreRemoved()
     {
-        factory(ContentLock::class, 2)->create(
+        ContentLock::factory()->count(2)->create(
             [
                 'created_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES),
                 'updated_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES - 2),
@@ -26,7 +26,7 @@ class RemoveOldLocksTest extends TestCase
 
         $this->assertCount(2, ContentLock::all());
 
-        factory(ContentLock::class, 3)->create(
+        ContentLock::factory()->count(3)->create(
             [
                 'created_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES + 1),
                 'updated_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES + 1),

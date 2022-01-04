@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button } from '@cerpus/ui';
-import { FormActions, useForm } from 'contexts/FormContext';
-import Axios from 'utils/axiosSetup';
+import { FormActions, useForm } from '../../../../contexts/FormContext';
+import Axios from '../../../../utils/axiosSetup';
 
 const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
     const {

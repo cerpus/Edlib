@@ -4,24 +4,13 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use Illuminate\Support\Collection;
-use DB;
-use Artisan;
-use App\H5PContent;
-use App\Libraries\H5P\Interfaces\ConfigInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 use Cerpus\QuestionBankClient\QuestionBankClient;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\NDLA\Importers\ImportAdapters\CerpusH5PImporter;
 
-/**
- * Class CerpusH5PAdapter
- * @package App\Libraries\H5P\Adapters
- *
- * @method string|null getAdapterName()
- * @method static array getAllAdapters()
- * @method static array getCoreExtraTags()
- * @method void setConfig(ConfigInterface $config)
- */
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
@@ -69,7 +58,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
      */
     public function getCustomEditorScripts(): array
     {
-        return ['/js/videos/streamps.js', '/js/videos/brightcove.js'];
+        return ['/js/videos/streamps.js', asset('js/videos/brightcove.js')];
     }
 
     /**
@@ -88,7 +77,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         }
 
         if (config('h5p.include-mathjax') === true) {
-            $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+            $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG';
         }
         return $scripts;
     }
@@ -181,7 +170,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function useEmbedLink(): int
     {
-        return \H5PDisplayOptionBehaviour::NEVER_SHOW;
+        return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
     public function enableDraftLogic(): bool

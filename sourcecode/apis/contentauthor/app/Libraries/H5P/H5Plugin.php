@@ -2,7 +2,7 @@
 
 namespace App\Libraries\H5P;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class H5Plugin
 {

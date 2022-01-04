@@ -53,10 +53,9 @@ export default async () => {
     apiRouter.use(await status());
     apiRouter.use(await job());
     apiRouter.use(await directProxy());
-    // apiRouter.use(await graphql()); // @todo uncomment when graphql is ready
 
     router.get(
-        '/resources/_ah/health',
+        '/_ah/health',
         runAsync(async (req, res) => {
             res.send('ok');
         })

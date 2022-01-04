@@ -9,9 +9,7 @@ use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Illuminate\Support\Collection;
-use App\H5PContent;
 use App\H5POption;
-use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\NDLA\Importers\ImportAdapters\NdlaH5PImporter;
@@ -20,15 +18,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
-/**
- * Class NDLAH5PAdapter
- * @package App\Libraries\H5P\Adapters
- *
- * @method string|null getAdapterName()
- * @method static array getAllAdapters()
- * @method static array getCoreExtraTags() : array()
- * @method void setConfig(ConfigInterface $config)
- */
 class NDLAH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
@@ -156,10 +145,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
      */
     public function getEditorCss(): array
     {
-        $css = [elixir('ndlah5p-editor.css')];
+        $css = [(string) mix('css/ndlah5p-editor.css')];
         $css[] = '/js/cropperjs/cropper.min.css';
         if (config('h5p.include-custom-css') === true) {
-            $css[] = elixir('ndlah5p-edit.css');
+            $css[] = (string) mix('css/ndlah5p-edit.css');
         }
         return $css;
     }
@@ -170,7 +159,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getEditorSettings(): array
     {
         return [
-            'wirisPath' => request()->root() . '/js/h5p/ckeditor_wiris/plugin.js',
+            'wirisPath' => 'https://www.wiris.net/client/plugins/ckeditor/plugin.js',
         ];
     }
 
@@ -181,18 +170,16 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         return [
             "/js/h5p/wiris/h5peditor-html-wiris-addon.js",
-            elixir("ndla-contentbrowser.js"),
+            (string) mix("js/ndla-contentbrowser.js"),
             "/js/videos/brightcove.js",
-            elixir('h5p/h5peditor-image-popup.js'),
-            elixir('/js/h5p/h5peditor-custom.js'),
+            (string) mix('js/h5peditor-image-popup.js'),
+            (string) mix('js/h5peditor-custom.js'),
         ];
     }
 
     public function getCustomEditorStyles(): array
     {
-        return [
-            elixir('react-contentbrowser.css'),
-        ];
+        return [];
     }
 
     /**
@@ -201,9 +188,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomViewScripts(): array
     {
         $scripts = [
-            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
             '/js/h5p/wiris/view.js',
-            elixir('/js/h5p/h5peditor-custom.js'),
+            (string) mix('js/h5peditor-custom.js'),
         ];
         $libraries = $this->config->h5pCore->loadContentDependencies($this->config->id, "preloaded");
         if ($this->hasVideoLibrary($libraries, 1, 3) === true) {
@@ -223,10 +210,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $customCssBreakpoint = Carbon::parse($ndlaCustomCssOption->option_value);
             $updated = $this->config->content['updated_at'];
             if ($customCssBreakpoint > $updated) {
-                $css[] = elixir('ndlah5p-iframe-legacy.css');
+                $css[] = (string) mix('css/ndlah5p-iframe-legacy.css');
             }
         }
-        $css[] = elixir('ndlah5p-iframe.css');
+        $css[] = (string) mix('css/ndlah5p-iframe.css');
         return $css;
     }
 
@@ -309,7 +296,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'h5p.defaultShareSetting',
             'h5p.showDisplayOptions',
             'feature.enableDraftLogic',
-            'metadata.published-field',
         ])
             ->mapWithKeys(function ($configKey) {
                 return [$configKey => config('ndla-mode.' . $configKey, config($configKey))];
@@ -424,7 +410,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getConfigJs(): array
     {
         return [
-            elixir('react-contentbrowser.js')
+            (string) mix('js/react-contentbrowser.js')
         ];
     }
 }

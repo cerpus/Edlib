@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MillionaireLayout from './MillionaireLayout';
 import { Answer, Card, Image, Question, rerenderMathJax } from '../utils';
-import Axios from 'utils/axiosSetup';
+import Axios from '../../../../utils/axiosSetup';
 import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
-import { stripHTML } from 'utils/Helper';
+import { stripHTML } from '../../../../utils/Helper';
 
 export default MillionaireLayout;
 

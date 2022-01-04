@@ -1,14 +1,12 @@
 version: "3.7"
 
 volumes:
-  doku-lti-viewer_nodemodules:
   dokuapi_nodemodules:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
   edlib-url_nodemodules:
   edlibapi-url_nodemodules:
-  edlibfacade-test_nodemodules:
   elasticsearch:
   mysql:
   npm-components-storybook_nodemodules:
@@ -17,8 +15,8 @@ volumes:
   proxy-doku_nodemodules:
   proxy-iframe_nodemodules:
   proxy-lti_nodemodules:
-  proxy-recommendation_nodemodules:
   proxy-resource_nodemodules:
+  www_nodemodules:
 
 services:
   redis:
@@ -26,15 +24,18 @@ services:
     healthcheck:
       test: [CMD, redis-cli, ping]
 
-  memcached:
-    image: memcached:alpine
-    healthcheck:
-      test: [CMD, nc, -z, localhost, '11211']
-
   postgres:
     image: postgres:11-alpine
     healthcheck:
-      test: [CMD, psql, -d, 'postgres://postgres:thepgpassword@localhost:5432', -c, 'select 1']
+      test:
+        [
+          CMD,
+          psql,
+          -d,
+          "postgres://postgres:thepgpassword@localhost:5432",
+          -c,
+          "select 1",
+        ]
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
       - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
@@ -44,12 +45,12 @@ services:
       - 5432:5432
 
   mysql:
-    image: mariadb:10.3
+    image: mariadb:10.5.12
     environment:
       MYSQL_ROOT_PASSWORD: mysqlpassword
       MYSQL_INITDB_SKIP_TZINFO: 1
     healthcheck:
-      test: [CMD, mysql, -uroot, -pmysqlpassword, '-eSELECT 1']
+      test: [CMD, mysql, -uroot, -pmysqlpassword, "-eSELECT 1"]
     command: --init-file /data/application/init.sql
     volumes:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
@@ -78,22 +79,10 @@ services:
     ports:
       - "9200:9200"
     environment:
-      bootstrap.memory_lock: 'true'
+      bootstrap.memory_lock: "true"
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.8.1
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:5601/api/status]
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
 
   nginx:
     build: ./localSetup/projects/nginx
@@ -117,24 +106,12 @@ services:
           - api.edlib.local
           - edlibcommon
 
-  configserver:
-    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
-    volumes:
-      - ./localSetup/projects/config-server/settings:/config
-      - ./storage/blank-git:/config/.git
-    environment:
-      SPRING_PROFILES_ACTIVE: native
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8888/health]
-    ports:
-      - 8888:8888
-
-  versioningapi:
+  versionapi:
     build:
-      context: ./sourcecode/not_migrated/versionapi
+      context: ./sourcecode/apis/version
       target: app-dev
     volumes:
-      - ./sourcecode/not_migrated/versionapi/target/versioning-1.0-SNAPSHOT.jar:/app.jar
+      - ./sourcecode/apis/version/target/versioning-1.0-SNAPSHOT.jar:/app.jar
     environment:
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
@@ -148,10 +125,10 @@ services:
     restart: on-failure
 
   licenseapi:
-    build: ./sourcecode/not_migrated/licenseapi
+    build: ./sourcecode/apis/license
     command: /bin/bash -c "set -eux;chown -R www-data:www-data /app/storage; /start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;/run-app.sh"
     volumes:
-      - ./sourcecode/not_migrated/licenseapi:/app
+      - ./sourcecode/apis/license:/app
       - ./localSetup/projects/licenseapi/apache.conf:/etc/apache2/sites-enabled/001-licenseapi.conf
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./data/licenseapi/storage:/app/storage
@@ -166,7 +143,6 @@ services:
       - ./localSetup/projects/licenseapi/.env
     depends_on:
       - mysql
-      - memcached
 
   contentauthor:
     build:
@@ -177,9 +153,8 @@ services:
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
-      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
     environment:
-      PHP_FPM_HOST: "contentauthor-fpm:31004"
+      PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
       - contentauthor-fpm
 
@@ -190,21 +165,37 @@ services:
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80;update-ca-certificates;chown -R www-data:www-data /app/storage /app/public;php /app/artisan migrate --force;php-fpm -R -F -O"
+    command: /startup.sh
     healthcheck:
-      test: [CMD, nc, -z, localhost, '31004']
+      test: [CMD, nc, -z, localhost, "9000"]
     volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/contentauthor/h5pstorage:/app/public/h5pstorage
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
-      - memcached
+      - redis
       - nginx
+      - rabbitmq
+
+  contentauthor-subscribers:
+    build:
+      context: ./sourcecode/apis/contentauthor
+      target: phpfpm-dev
+    env_file:
+      - ./localSetup/projects/content-author/.env
+      - ./localSetup/.env
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./localSetup/projects/content-author/startup.sh:/startup.sh
+      - ./sourcecode/apis/contentauthor:/app
+      - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
+      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+    depends_on:
+      - contentauthor-fpm
 
   contentauthor-cron:
     build:
@@ -215,7 +206,6 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
@@ -228,20 +218,6 @@ services:
       - ./localSetup/projects/content-author/.env
     volumes:
       - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
-    depends_on:
-      - contentauthor-fpm
-
-  contentauthor-edstepmessages:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      dockerfile: Dockerfile
-      target: edstepmessages
-    env_file:
-      - ./localSetup/projects/content-author/.env
-    volumes:
-      - ./sourcecode/apis/contentauthor:/app
-      - ./data/contentauthor/storage:/app/storage
     depends_on:
       - contentauthor-fpm
 
@@ -253,11 +229,10 @@ services:
     env_file:
       - ./localSetup/.env
     environment:
-      LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/api/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - dokuapi_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/doku/src:/var/www/app/src
@@ -280,7 +255,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources/src:/var/www/app/src
@@ -303,7 +278,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
@@ -327,7 +302,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth/src:/var/www/app/src
@@ -350,7 +325,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlib-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/url/src:/var/www/app/src
@@ -362,27 +337,23 @@ services:
     depends_on:
       - mysql
 
-  doku-lti-viewer:
-    tty: true
+  www:
     build:
-      context: ./sourcecode/not_migrated/doku-lti-viewer
+      context: ./sourcecode/www
       dockerfile: Dockerfile
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      WDS_SOCKET_PATH: /doku-lti-viewer/sockjs-node
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
-      - doku-lti-viewer_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/not_migrated/doku-lti-viewer/src:/var/www/app/src
-      - ./sourcecode/not_migrated/doku-lti-viewer/public:/var/www/app/public
-      - ./sourcecode/not_migrated/doku-lti-viewer/package.json:/var/www/app/package.json
-      - ./sourcecode/not_migrated/doku-lti-viewer/yarn.lock:/var/www/app/yarn.lock
+      - www_nodemodules:/app/node_modules
+      - ./sourcecode/www/src:/app/src
+      - ./sourcecode/www/public:/app/public
+      - ./sourcecode/www/package.json:/app/package.json
+      - ./sourcecode/www/yarn.lock:/app/yarn.lock
 
   proxy-iframe:
-    tty: true
     build:
       context: ./sourcecode/proxies/iframe
       dockerfile: Dockerfile
@@ -401,7 +372,6 @@ services:
       - ./sourcecode/proxies/iframe/yarn.lock:/app/yarn.lock
 
   proxy-admin:
-    tty: true
     build:
       context: ./sourcecode/proxies/admin
       dockerfile: Dockerfile
@@ -429,7 +399,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth/src:/var/www/app/src
@@ -449,7 +419,7 @@ services:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti/src:/var/www/app/src
@@ -458,24 +428,6 @@ services:
       - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
       - ./localSetup/helpers/start-scripts:/start-scripts
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  proxy-recommendation:
-    build:
-      context: ./sourcecode/proxies/recommendation
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/recommendations/_ah/health?probe=readiness']
-    volumes:
-      - proxy-recommendation_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/recommendation/src:/var/www/app/src
-      - ./sourcecode/proxies/recommendation/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/recommendation/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/recommendation/yarn.lock:/var/www/app/yarn.lock
 
   proxy-doku:
     build:
@@ -487,7 +439,7 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-doku_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/doku/src:/var/www/app/src
@@ -504,10 +456,9 @@ services:
     env_file:
       - ./localSetup/.env
     environment:
-      LICENSEAPI_URL: http://licenseapi
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/resources/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource/src:/var/www/app/src
@@ -527,7 +478,7 @@ services:
     env_file:
       - ./localSetup/.env
     healthcheck:
-      test: [CMD, curl, -f, 'http://localhost/_ah/health?probe=readiness']
+      test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
       - edlibapi-url_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/url/src:/var/www/app/src
@@ -536,111 +487,7 @@ services:
       - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
-  #  re-recommender:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-recommender
-  #      target: appdev
-  #    environment:
-  #      PHP_FPM_HOST: "re-recommender-fpm:31004"
-  #    volumes:
-  #      - ./sourcecode/not_migrated/re-recommender/docker/nginx-dev.conf:/etc/nginx/nginx.conf
-  #    depends_on:
-  #      - re-recommender-fpm
-  #
-  #  re-recommender-fpm:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-recommender
-  #      target: phpfpmdev
-  #    command: /dev-startup.sh
-  #    environment:
-  #      DB_HOST: mysql
-  #      DB_PORT: 3306
-  #      DB_DATABASE: re_recommender
-  #      DB_USERNAME: root
-  #      DB_PASSWORD: mysqlpassword
-  #    volumes:
-  #      - ./localSetup/helpers/start-scripts:/start-scripts
-  #      - ./sourcecode/not_migrated/re-recommender:/app
-  #      - ./localSetup/projects/re-recommender/.env:/app/.env
-  #      - ./localSetup/projects/re-recommender/startup.sh:/dev-startup.sh
-  #      - ./data/re-recommender/storage/logs:/app/storage/logs
-  #      - ./data/re-recommender/bootstrap/cache:/app/bootstrap/cache
-  #    depends_on:
-  #      - mysql
-  #      - elasticsearch
-
-  #  re-content-index:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-content-index
-  #      target: appdev
-  #    environment:
-  #      PHP_FPM_HOST: "re-content-index-fpm:31004"
-  #    volumes:
-  #      - ./sourcecode/not_migrated/re-content-index/docker/nginx-dev.conf:/etc/nginx/nginx.conf
-  #    depends_on:
-  #      - re-content-index-fpm
-  #
-  #  re-content-index-fpm:
-  #    build:
-  #      context: ./sourcecode/not_migrated/re-content-index
-  #      target: phpfpmdev
-  #    command: /dev-startup.sh
-  #    environment:
-  #      DB_HOST: mysql
-  #      DB_PORT: 3306
-  #      DB_DATABASE: re_content_index
-  #      DB_USERNAME: root
-  #      DB_PASSWORD: mysqlpassword
-  #    volumes:
-  #      - ./localSetup/helpers/start-scripts:/start-scripts
-  #      - ./sourcecode/not_migrated/re-content-index:/app
-  #      - ./localSetup/projects/re-content-index/.env:/app/.env
-  #      - ./localSetup/projects/re-content-index/startup.sh:/dev-startup.sh
-  #      - ./data/re-content-index/storage/logs:/app/storage/logs
-  #      - ./data/re-content-index/bootstrap/cache:/app/bootstrap/cache
-  #    depends_on:
-  #      - mysql
-
-  edlibfacade:
-    build:
-      context: ./localSetup/projects/edlibfacade
-    entrypoint: /before-start.sh
-    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
-    depends_on:
-      - nginx
-    volumes:
-      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
-      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-      - ./localSetup/helpers/start-scripts:/start-scripts
-    environment:
-      CONFIGSERVICE_URI: http://configserver:8888
-      EDLIB_API_URL: https://api.edlib.local
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:8080/health]
-    ports:
-      - 5505:5555
-
-  edlibfacade-test:
-    tty: true
-    build:
-      context: ./sourcecode/not_migrated/edlibfacade-test
-      dockerfile: Dockerfile
-      target: dev
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:3000]
-    volumes:
-      - edlibfacade-test_nodemodules:/app/node_modules
-      - ./sourcecode/not_migrated/edlibfacade-test/src:/app/src
-      - ./sourcecode/not_migrated/edlibfacade-test/public:/app/public
-      - ./sourcecode/not_migrated/edlibfacade-test/package.json:/app/package.json
-      - ./sourcecode/not_migrated/edlibfacade-test/package-lock.json:/app/package-lock.json
-      - ./localSetup/projects/edlibfacade-test/config.json:/app/public/config.json
-
   npm-components-storybook:
-    tty: true
     build:
       context: ./sourcecode/npm/components
       dockerfile: Dockerfile
@@ -670,9 +517,58 @@ services:
     env_file:
       - ./localSetup/.env
     healthcheck:
-      test: [CMD, nc, -z, localhost, '9000']
+      test: [CMD, nc, -z, localhost, "9000"]
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
     depends_on:
       - mysql
+
+  common-subscribers:
+    build:
+      context: ./sourcecode/apis/common
+      target: dev
+    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    env_file:
+      - ./localSetup/.env
+    volumes:
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/common:/var/www/edlibcommon
+      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+    depends_on:
+      - edlib-common-fpm
+
+  # --------------------------------------------
+  # ----- Services needed for edlib facade -----
+  # --------------------------------------------
+  #  configserver:
+  #    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
+  #    volumes:
+  #      - ./localSetup/projects/config-server/settings:/config
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: native
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:8888/health]
+  #    ports:
+  #      - 8888:8888
+  #  edlibfacade:
+  #    build:
+  #      context: ./localSetup/projects/edlibfacade
+  #    entrypoint: /before-start.sh
+  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
+  #    depends_on:
+  #      - nginx
+  #    volumes:
+  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
+  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
+  #      - ./localSetup/helpers/start-scripts:/start-scripts
+  #    environment:
+  #      CONFIGSERVICE_URI: http://configserver:8888
+  #      EDLIB_API_URL: https://api.edlib.local
+  #      HEAPSPACE_MAX: 128m
+  #      DEBUGGING_ENABLED: "yes"
+  #    healthcheck:
+  #      test: [CMD, curl, -f, http://localhost:8080/health]
+  #    ports:
+  #      - 5505:5555

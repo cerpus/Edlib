@@ -11,7 +11,7 @@
 
 @push('js')
     <script src="/js/ckeditor/ckeditor.js"></script>
-    <script src="{{ elixir('react-h5p.js') }}"></script>
+    <script src="{{ mix('js/react-h5p.js') }}"></script>
     {!! $config !!}
     {!! $adminConfig !!}
     @foreach( $jsScript as $js)
@@ -20,7 +20,6 @@
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ elixir('react-h5p.css') }}">
     @if(isset($styles))
         @foreach( $styles as $css)
             {!! HTML::style($css) !!}

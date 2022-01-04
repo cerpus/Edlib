@@ -2,7 +2,7 @@
 
 namespace App\Libraries\NDLA\Importers\ImportAdapters;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use App\H5PContent;
 use App\NdlaIdMapper;

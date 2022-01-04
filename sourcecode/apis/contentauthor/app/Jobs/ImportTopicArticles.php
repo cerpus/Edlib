@@ -2,8 +2,9 @@
 
 namespace App\Jobs;
 
-use DB;
-use App;
+use App\NdlaArticleId;
+use App\NdlaIdMapper;
+use Illuminate\Support\Facades\DB;
 use App\CourseExport;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
@@ -130,8 +131,8 @@ class ImportTopicArticles implements ShouldQueue
             $unimportedArticles = [];
 
             foreach ($articlesToImport as $articleId) {
-                if (!App\NdlaIdMapper::articleByNdlaId($articleId)) { // Not imported
-                    if (App\NdlaArticleId::find($articleId)) { // But available for import
+                if (!NdlaIdMapper::articleByNdlaId($articleId)) { // Not imported
+                    if (NdlaArticleId::find($articleId)) { // But available for import
                         $unimportedArticles[] = $articleId;
                     }
                 }

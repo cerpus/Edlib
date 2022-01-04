@@ -2,7 +2,8 @@
 
 namespace App;
 
-use Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
@@ -10,6 +11,7 @@ use App\Libraries\Games\Contracts\GameTypeModelContract;
 
 class Gametype extends Model implements GameTypeModelContract
 {
+    use HasFactory;
     use UuidForKey;
 
     private $scripts = [

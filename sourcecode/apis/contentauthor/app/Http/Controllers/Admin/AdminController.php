@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use H5PCore;
 use H5peditor;
@@ -130,14 +130,13 @@ class AdminController extends Controller
 
         $env = collect($_ENV)
             ->map(function ($value, $key) {
-                $key = strtoupper($key);
-                if (str_contains($key, [
+                if (in_array(strtoupper($key), [
                     'APP_KEY',
                     'PASSWORD',
                     'OERPASS',
                     'SECRET',
                     'PUBKEY',
-                ])) {
+                ], true)) {
                     return '<a href="https://youtu.be/iThtELZvfPs" target="_blank">Keep it secret, keep it safe</a>';
                 };
                 return $value;

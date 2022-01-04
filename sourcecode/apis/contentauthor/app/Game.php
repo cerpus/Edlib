@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 use App\Traits\Collaboratable;
 use App\Libraries\Games\GameHandler;
@@ -24,7 +26,9 @@ use Iso639p3;
  */
 class Game extends Content implements VersionableObject
 {
-    use UuidForKey, Collaboratable;
+    use Collaboratable;
+    use HasFactory;
+    use UuidForKey;
 
     public $editRouteName = 'game.edit';
     /**
@@ -125,5 +129,10 @@ class Game extends Content implements VersionableObject
     function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return new ContentTypeDataObject('Game', $contentType, 'Game', "mui:VideogameAsset");
     }
 }

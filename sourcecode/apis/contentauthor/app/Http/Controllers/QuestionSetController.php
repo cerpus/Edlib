@@ -11,8 +11,8 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use Log;
-use Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use App\H5pLti;
 use App\Gametype;
 use App\SessionKeys;
@@ -162,7 +162,6 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSet $questionset */
         $questionset = QuestionSet::findOrFail($id);
-        $questionset->tags = $questionset->getMetaTagsAsString();
 
         $jwtTokenInfo = $request->session()->get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
@@ -279,7 +278,7 @@ class QuestionSetController extends Controller
 
     public function doShow($id, $context, $preview = false)
     {
-        return "Nothing to see. Moooooove along!";
+        return trans("questions.preview");
     }
 
     public function setQuestionImage(Request $request)

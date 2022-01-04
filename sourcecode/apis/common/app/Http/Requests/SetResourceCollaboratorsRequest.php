@@ -12,7 +12,7 @@ class SetResourceCollaboratorsRequest extends FormRequest
             'context' => ['required', 'string'],
             'resourceIds' => ['array'],
             'resourceIds.*' => ['required_with:resourceIds', 'string', "distinct"],
-            'tenantIds' => ['required', 'array'],
+            'tenantIds' => ['array'],
             'tenantIds.*' => ['required', 'string', "distinct"],
             'externalResources' => ['array'],
             'externalResources.*.systemName' => ['required_with:externalResources', 'string'],

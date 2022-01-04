@@ -27,8 +27,7 @@ class AccessTokenControllerTest extends TestCase
         $this->getJson("/common/applications/{$application->id}/access_tokens")
             ->assertOk()
             ->assertJsonCount(3)
-            ->assertJsonMissingExact(['token' => $accessTokens->get(0)->token])
-            ->dump();
+            ->assertJsonMissingExact(['token' => $accessTokens->get(0)->token]);
     }
 
     public function testCreate(): void

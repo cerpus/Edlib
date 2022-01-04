@@ -4,10 +4,17 @@ import {
     AxiosException,
     exceptionTranslator,
     logger,
+    redisHelpers,
 } from '@cerpus/edlib-node-utils';
 import apiConfig from '../../config/apis.js';
+import crypto from 'crypto';
 
-const getUrl = (externalSystemName) => {
+const createAxios = () => async (
+    externalSystemName,
+    urlKey,
+    path,
+    options = {}
+) => {
     const externalApiConfig =
         apiConfig.externalResourceAPIS[externalSystemName.toLowerCase()];
 
@@ -15,19 +22,29 @@ const getUrl = (externalSystemName) => {
         throw new NotFoundException('externalSystemName');
     }
 
-    return externalApiConfig.url;
-};
+    if (!externalApiConfig.urls[urlKey]) {
+        throw new NotFoundException('urlForExternalSystemName');
+    }
 
-const createAxios = (req) => async (url, options = {}) => {
     try {
+        let headers = options.headers || {};
+
+        if (externalApiConfig.httpAuthKey) {
+            headers = {
+                ...headers,
+                'x-api-key': externalApiConfig.httpAuthKey,
+            };
+        }
+
         return await axios({
             ...options,
-            url,
+            url: externalApiConfig.urls[urlKey] + path,
             maxRedirects: 0,
+            headers,
         });
     } catch (e) {
-        console.error(e.response);
-        exceptionTranslator(e, url + ' API');
+        logger.error(e.response);
+        exceptionTranslator(e, externalApiConfig.urls[urlKey] + path + ' API');
     }
 };
 
@@ -61,25 +78,57 @@ const autoRetryOnTimeout = (
     }
 };
 
-export default (req) => {
-    const request = createAxios(req);
+export default (cache = true) => {
+    const request = createAxios();
 
     const getById = async (externalSystemName, externalSystemId) => {
         return (
-            await request(`${getUrl(externalSystemName)}/${externalSystemId}`)
+            await request(externalSystemName, 'content', `/${externalSystemId}`)
         ).data;
     };
 
     const getAll = autoRetryOnTimeout(async (externalSystemName, params) => {
         return (
-            await request(getUrl(externalSystemName), {
+            await request(externalSystemName, 'content', '', {
                 params,
             })
         ).data;
     });
 
+    const _getContentTypeInfo = async (externalSystemName, contentType) => {
+        let path = '';
+
+        if (contentType) {
+            path += `/${contentType}`;
+        }
+
+        try {
+            return (await request(externalSystemName, 'contentType', path)).data
+                .contentType;
+        } catch (e) {
+            if (!(e instanceof NotFoundException)) {
+                throw e;
+            }
+        }
+
+        return null;
+    };
+
+    const getContentTypeInfo = cache
+        ? redisHelpers.cacheWrapper(
+              (...args) =>
+                  `externalResourceFetcher-getContentTypeInfo-${crypto
+                      .createHash('md5')
+                      .update(args.join(','))
+                      .digest('hex')}`,
+              _getContentTypeInfo,
+              60 * 60 * 24
+          )
+        : _getContentTypeInfo;
+
     return {
         getById,
-        getAll: getAll,
+        getAll,
+        getContentTypeInfo,
     };
 };

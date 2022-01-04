@@ -5,8 +5,8 @@ namespace App\Libraries\NDLA\Importers\ImportAdapters;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Packages\CoursePresentation;
 use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-use DB;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\H5PContent;
 use App\Libraries\H5P\h5p;
 use Illuminate\Http\Request;
@@ -49,7 +49,6 @@ class CerpusH5PImporter extends ImporterBase implements ImporterInterface
                 $this->createInCore($json);
                 $this->registerKeywords($json);
                 $this->addLicense($json);
-                $this->addNdlaKeyword($json);
                 $this->addMetadata($json);
                 $this->idMapper->save();
             }
@@ -234,22 +233,6 @@ class CerpusH5PImporter extends ImporterBase implements ImporterInterface
         }
 
         return VersionData::IMPORT;
-    }
-
-    protected function addNdlaKeyword($json)
-    {
-        /** @var H5PContent $h5p */
-        if ($h5p = $this->getH5PFromJson($json)) {
-            $this->importStatus->report .= PHP_EOL . 'Existing tags [' . $h5p->getMetaTagsAsString() . ']';
-            $tags = $h5p->getMetaTagsAsArray();
-            if (!in_array('ndla', $tags)) {
-                $tags[] = 'ndla';
-                $h5p->updateMetaTags($tags);
-            }
-            $this->importStatus->report .= PHP_EOL . 'New tags [' . $h5p->getMetaTagsAsString() . ']';
-        } else {
-            $this->importStatus->report .= PHP_EOL . 'Unable to add tags';
-        }
     }
 
     private function handleBehaviorSettings($machineName, $params)

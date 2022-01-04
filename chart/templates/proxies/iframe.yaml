@@ -1,3 +1,7 @@
 {{- template "helpers.service" (dict "name" "proxy-iframe") }}
 ---
-{{- template "helpers.deployment" (dict "name" "proxy-iframe" "image" "ghcr.io/cerpus/edlib/proxy-iframe-app" "imageTag" .Chart.AppVersion "replicaCount" 1 "healthUrl" "/" ) }}
+{{- template "helpers.deployment" (dict "name" "proxy-iframe" "image" "public.ecr.aws/f0t8l9h1/proxy-iframe-app" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount "healthUrl" "/" "fluentdParser" "nginx" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "proxy-iframe" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "proxy-iframe" ) }}

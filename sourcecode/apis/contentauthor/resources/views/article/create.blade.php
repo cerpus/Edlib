@@ -9,11 +9,10 @@
 @endpush
 @push('js')
     <script src="/js/ckeditor/ckeditor.js"></script>
-    <script src="{{ elixir('react-article.js') }}"></script>
+    <script src="{{ mix('js/react-article.js') }}"></script>
 @endpush
 
 @push('css')
-    <link rel="stylesheet" href="{{ elixir('react-article.css') }}">
-    <link rel="stylesheet" href="{{ elixir('ckeditor_popup.css') }}">
-    <link rel="stylesheet" href="{{ elixir('article.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/ckeditor_popup.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/article.css') }}">
 @endpush

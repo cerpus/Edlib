@@ -8,6 +8,7 @@ export {
 } from './hooks/requests/useResource';
 export { default as useOldGetResources } from './hooks/requests/useGetResources';
 export { default as Doku } from './exportedComponents/Doku';
+export { default as ResourceViewer } from './exportedComponents/ResourceViewer';
 export {
     createEmptyEditorState,
     createFromRaw,

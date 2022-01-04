@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 use App\Traits\Collaboratable;
 use Iso639p3;
@@ -19,7 +21,9 @@ use Iso639p3;
  */
 class QuestionSet extends Content
 {
-    use UuidForKey, Collaboratable;
+    use Collaboratable;
+    use HasFactory;
+    use UuidForKey;
 
     public $editRouteName = 'questionset.edit';
 
@@ -58,5 +62,10 @@ class QuestionSet extends Content
     function getId(): string
     {
         return $this->id;
+    }
+
+    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    {
+        return new ContentTypeDataObject('QuestionSet', $contentType, 'Question set', "mui:DoneAll");
     }
 }

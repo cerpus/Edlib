@@ -3,35 +3,38 @@
 namespace Tests\Feature\Gdpr\Handlers;
 
 use App\H5PResult;
+use App\Messaging\Messages\EdlibGdprDeleteMessage;
 use Tests\TestCase;
+use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\H5PResultProcessor;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class H5PResultsProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase;
+    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->setupRabbitMQPubSub();
+    }
 
     public function testResultsAreDeleted()
     {
         $authId = $this->faker->uuid;
 
-        factory(H5PResult::class,1)->create();
-        factory(H5PResult::class,1)->create(['user_id' => $authId]);
+        H5PResult::factory()->create();
+        H5PResult::factory()->create(['user_id' => $authId]);
 
         $this->assertCount(2, H5PResult::all());
         $this->assertDatabaseHas('h5p_results', ['user_id' => $authId]);
 
-        $payload = (object)[
-            'deletionRequestId' => $this->faker->uuid,
-            'userId' => $authId
-        ];
-
-        $deletionRequest = new GdprDeletionRequest();
-        $deletionRequest->id = $payload->deletionRequestId;
-        $deletionRequest->payload = $payload;
-        $deletionRequest->save();
+        $deletionRequest = new EdlibGdprDeleteMessage([
+            'requestId' => $this->faker->uuid,
+            'userId' => $authId,
+            'emails' => []
+        ]);
 
         $handler = new H5PResultProcessor();
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Libraries;
 
-use Storage;
+use Illuminate\Support\Facades\Storage;
 use App\H5PContent;
 
 class H5PFileVersioner

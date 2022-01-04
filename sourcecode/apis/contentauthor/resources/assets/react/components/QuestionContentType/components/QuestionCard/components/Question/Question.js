@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 import { TextField } from '@material-ui/core';
 import { ImageContainer } from '../Image';
-import RichEditor from 'RichEditor';
-import HtmlContainer from 'HtmlContainer/HtmlContainer';
+import RichEditor from '../../../../../RichEditor';
+import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
 
 function Question(props) {
     const {

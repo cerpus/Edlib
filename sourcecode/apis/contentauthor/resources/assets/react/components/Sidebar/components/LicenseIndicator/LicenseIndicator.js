@@ -10,10 +10,10 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'react-bootstrap';
 
-import ModalWindow from 'components/ModalWindow';
-import LicenseChooser from 'components/LicenseChooser';
-import LicenseIcon from 'components/LicenseIcon';
-import LicenseText from 'components/LicenseText';
+import ModalWindow from '../../../ModalWindow';
+import LicenseChooser from '../../../LicenseChooser';
+import LicenseIcon from '../../../LicenseIcon';
+import LicenseText from '../../../LicenseText';
 
 /**
  * @property {string} license                       License string

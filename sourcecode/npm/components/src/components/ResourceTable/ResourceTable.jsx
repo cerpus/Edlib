@@ -134,6 +134,7 @@ const ResourceTable = ({
                     >
                         <ImageCell vc>
                             <ResourceIcon
+                                contentTypeInfo={resource.contentTypeInfo}
                                 resourceVersion={resource.version}
                                 fontSizeRem={2}
                             />
@@ -194,7 +195,8 @@ const ResourceTable = ({
                                         setCurrentEditContextId(null);
                                         await onInsert(
                                             resource.id,
-                                            resource.version.id
+                                            resource.version.id,
+                                            resource.version.title
                                         );
                                     }}
                                     onShowVersions={() =>

@@ -7,13 +7,13 @@ import H5P from '../H5P';
 import { intlShape, injectIntl } from 'react-intl';
 import useH5PEditor from '../H5P/useH5PEditor';
 import useConfirmWindowClose from './useConfirmWindowClose';
-import { nextTick, removeKeys } from 'utils/utils';
+import { nextTick, removeKeys } from '../../utils/utils';
 import FileUploadProgress from '../FileUploadProgress';
 import { Fade } from '@material-ui/core';
 import EditorContainer from '../EditorContainer/EditorContainer';
-import { useForm } from 'contexts/FormContext';
+import { useForm } from '../../contexts/FormContext';
 import Sidebar, { AdapterSelector, DisplayOptions, ContentUpgradeContainer } from '../Sidebar';
-import { getLanguageStringFromCode } from 'utils/Helper';
+import { getLanguageStringFromCode } from '../../utils/Helper';
 import { NewReleases } from '@material-ui/icons';
 import { useTheme } from '@cerpus/ui';
 

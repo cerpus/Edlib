@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use Session;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;

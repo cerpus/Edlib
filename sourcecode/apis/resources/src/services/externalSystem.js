@@ -28,29 +28,47 @@ export default {
     getLtiResourceInfo: (resourceVersion) => {
         const config = getConfig(resourceVersion.externalSystemName);
 
-        if (!config.ltiUrl) {
+        if (!config.urls.lti) {
             throw new ApiException(
                 `Missing ltiUrl in configuration of external system ${resourceVersion.externalSystemName}`
             );
         }
 
         return {
-            url: `${config.ltiUrl}/${resourceVersion.externalSystemId}`,
+            url: `${config.urls.lti}/${resourceVersion.externalSystemId}`,
             consumerSecret: config.ltiConsumerSecret,
             consumerKey: config.ltiConsumerKey,
             resourceVersion,
         };
     },
+    getViewResourceInfo: (resourceVersion) => {
+        const config = getConfig(resourceVersion.externalSystemName);
+
+        if (!config.urls.view) {
+            throw new ApiException(
+                `Missing ltiUrl in configuration of external system ${resourceVersion.externalSystemName}`
+            );
+        }
+
+        return {
+            url: config.urls.view,
+            params: {
+                resourceVersionId: resourceVersion.id,
+                externalSystemId: resourceVersion.externalSystemId,
+                externalSystemName: resourceVersion.externalSystemName,
+            },
+        };
+    },
     getLtiCreateInfo: (externalSystemName, group) => {
         const config = getConfig(externalSystemName);
 
-        if (!config.ltiUrl) {
+        if (!config.urls.lti) {
             throw new ApiException(
                 `Missing ltiUrl in configuration of external system ${externalSystemName}`
             );
         }
 
-        let url = `${config.ltiUrl}/create`;
+        let url = `${config.urls.lti}/create`;
         if (group) {
             url += `/${group}`;
         }

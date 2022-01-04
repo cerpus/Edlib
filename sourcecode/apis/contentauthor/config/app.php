@@ -136,16 +136,12 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\H5PServiceProvider::class,
         App\Providers\NdlaApiClientProvider::class,
-        App\Providers\RabbitmqServiceProvider::class,
 
 
         Collective\Html\HtmlServiceProvider::class,
 
-        Cerpus\MetadataServiceClient\Providers\MetadataServiceClientServiceProvider::class,
         Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
-        Cerpus\Gdpr\GdprServiceProvider::class,
 
-        Vinelab\Bowler\BowlerServiceProvider::class,
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
@@ -153,8 +149,6 @@ return [
         App\Providers\AuthenticationHandlerProvider::class,
 
         App\Providers\HTMLPurifierServiceProvider::class,
-        App\Providers\OpenStackServiceProvider::class,
-
     ],
 
     /*
@@ -169,7 +163,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -232,4 +225,5 @@ return [
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
     'useContentCloudStorage' => env("ENABLE_CLOUD_STORAGE", true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
+    'cdnPrefix' => env('CDN_WITH_PREFIX', '')
 ];

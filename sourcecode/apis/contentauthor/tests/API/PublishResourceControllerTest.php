@@ -22,6 +22,11 @@ class PublishResourceControllerTest extends TestCase
     public function testPublishResource()
     {
         $this->withoutMiddleware();
+        config([
+            'feature' => [
+                'enableDraftLogic' => 'true'
+            ]
+        ]);
 
         $this->put('/api/v1/resources/1/publish')
             ->assertStatus(200);
@@ -32,9 +37,14 @@ class PublishResourceControllerTest extends TestCase
         Event::fake($this->fakedEvents);
 
         $this->withoutMiddleware();
+        config([
+            'feature' => [
+                'enableDraftLogic' => 'true'
+            ]
+        ]);
 
-        factory(H5PLibrary::class)->create(['id' => 1]);
-        factory(H5PContent::class)->create(['id' => 1, 'library_id' => 1]);
+        H5PLibrary::factory()->create(['id' => 1]);
+        H5PContent::factory()->create(['id' => 1, 'library_id' => 1]);
 
         $this->put('/api/v1/resources/1/publish')
             ->assertStatus(200);

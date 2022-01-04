@@ -9,9 +9,6 @@ use App\Events\ContentDeleting;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
 use App\Listeners\H5P\HandleExport;
-use App\Listeners\Recommendation\CreateContentInRecommendationEngine;
-use App\Listeners\Recommendation\RemoveContentFromRecommendationEngine;
-use App\Listeners\Recommendation\UpdateContentInRecommendationEngine;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -62,7 +59,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\QuestionsetWasSaved' => [
             'App\Listeners\Questionset\HandleLicensing',
             'App\Listeners\Questionset\HandlePrivacy',
-            'App\Listeners\Questionset\HandleTags',
             'App\Listeners\Questionset\HandleQuestionbank',
             'App\Listeners\ResourceEventSubscriber@onQuestionsetSaved',
         ],
@@ -70,7 +66,6 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\GameWasSaved' => [
             'App\Listeners\Game\HandleLicensing',
             'App\Listeners\Game\HandlePrivacy',
-            'App\Listeners\Game\HandleTags',
             'App\Listeners\Game\HandleVersioning',
 //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],
@@ -80,7 +75,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         ContentCreated::class => [
-            CreateContentInRecommendationEngine::class,
+//            CreateContentInRecommendationEngine::class,
         ],
 
         ContentUpdating::class => [
@@ -88,7 +83,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         ContentUpdated::class => [
-            UpdateContentInRecommendationEngine::class,
+//            UpdateContentInRecommendationEngine::class,
         ],
 
         ContentDeleting::class => [
@@ -96,7 +91,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         ContentDeleted::class => [
-            RemoveContentFromRecommendationEngine::class,
+//            RemoveContentFromRecommendationEngine::class,
         ],
     ];
 

@@ -85,6 +85,9 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
+        // Internal middleware
+        'internal.handle-jwt' => \App\Http\Middleware\InternalHandleJwt::class,
+
         // App middleware
         'core.return' => \App\Http\Middleware\CoreReturnUrl::class,
         'core.auth' => \App\Http\Middleware\CerpusAuth::class,
@@ -92,9 +95,7 @@ class Kernel extends HttpKernel
         'core.ltiauth' => \App\Http\Middleware\LtiRequestAuth::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
-        'core.embed-url' => \App\Http\Middleware\LtiEmbedUrl::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
-        'oauth' => \App\Http\Middleware\Oauth2Authentication::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
         'game-access' => GameAccess::class,

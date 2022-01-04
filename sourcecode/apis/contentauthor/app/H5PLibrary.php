@@ -2,7 +2,8 @@
 
 namespace App;
 
-use DB;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class H5PLibrary extends Model
 {
+    use HasFactory;
+
     protected $table = 'h5p_libraries';
 
     protected $guarded = ['id'];
@@ -67,7 +70,7 @@ class H5PLibrary extends Model
 
     public function scopeFromLibraryName($query, $value)
     {
-        return $query->where('name', $value);
+        return $query->where('name', 'LIKE', '%' . strtolower($value) . '%');
     }
 
     public function scopeLatestVersion($query)
