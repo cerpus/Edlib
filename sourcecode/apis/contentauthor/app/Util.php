@@ -26,6 +26,7 @@ class Util
      * @param callable():ResponseInterface $wrapper
      * @return array|string|float|int|bool|null
      * @throws NotFoundException
+     * @throws \JsonException
      */
     public static function handleEdlibNodeApiRequest(callable $wrapper)
     {

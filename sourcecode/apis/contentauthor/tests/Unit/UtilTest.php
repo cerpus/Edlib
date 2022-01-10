@@ -40,15 +40,31 @@ class UtilTest extends TestCase
     public function handleEdlibNodeApiRequest_with404(): void
     {
         $errorMessage = 'oops!';
-        $errorJson = ['error' => ['parameter' => $errorMessage]];
+        $errorData = ['error' => ['parameter' => $errorMessage]];
         $request = new Request('GET', '/');
-        $response = new Response(404, [], json_encode($errorJson, JSON_THROW_ON_ERROR));
+        $response = new Response(404, [], json_encode($errorData, JSON_THROW_ON_ERROR));
 
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage($errorMessage);
 
         Util::handleEdlibNodeApiRequest(function () use ($request, $response) {
             throw new RequestException('', $request, $response);
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function handleEdlibNodeApiRequest_with404AndBadJson(): void
+    {
+        $request = new Request('GET', '/');
+        $response = new Response(404, [], '{"a":');
+        $exception = new RequestException('', $request, $response);
+
+        $this->expectExceptionObject($exception);
+
+        Util::handleEdlibNodeApiRequest(function () use ($exception) {
+            throw $exception;
         });
     }
 
