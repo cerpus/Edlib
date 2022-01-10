@@ -96,8 +96,10 @@ class ViewConfig implements ConfigInterface
     {
         $this->assets = $this->h5pCore->getDependenciesFiles($this->h5pCore->loadContentDependencies($this->id, "preloaded"));
         array_map(function ($type){
-            return array_map(function ($file){
-                if( !filter_var($file->path, FILTER_VALIDATE_URL)){
+            return array_map(function ($file) {
+                if (isset($file->url)) {
+                    $file->path = $file->url;
+                } else if (!filter_var($file->path, FILTER_VALIDATE_URL)){
                     $file->path = $this->h5pCore->fs->getDisplayPath(false) . "/" . $file->path;
                 }
                 return $file;

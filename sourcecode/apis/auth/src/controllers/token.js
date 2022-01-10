@@ -14,10 +14,17 @@ import JsonWebToken from 'jsonwebtoken';
 
 export default {
     convertToken: async (req) => {
+        const { externalToken } = validateJoi(
+            req.body,
+            Joi.object({
+                externalToken: Joi.string().min(1).required(),
+            })
+        );
+
         let user;
 
         if (appConfig.allowFakeToken) {
-            const { data } = await JsonWebToken.decode(req.body.externalToken);
+            const { data } = await JsonWebToken.decode(externalToken);
             if (data && data.user && data.isFakeToken) {
                 user = {
                     id: data.user.id,
@@ -31,7 +38,7 @@ export default {
 
         if (!user) {
             const payload = await externalAuthService.verifyToken(
-                req.body.externalToken
+                externalToken
             );
 
             user = Object.entries(

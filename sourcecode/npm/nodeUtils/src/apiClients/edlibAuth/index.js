@@ -1,7 +1,6 @@
 import axios from 'axios';
-import JsonWebToken from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
 import * as errorReporting from '../../services/errorReporting.js';
+import { verifyTokenAgainstAuth } from '../../services/auth';
 
 let jwksClients = {};
 
@@ -18,41 +17,6 @@ const createAxios = (req, config) => async (options) =>
 
 export default (req, config) => {
     const authAxios = createAxios(req, config);
-
-    const getKeyFromAuth = (header, callback) => {
-        if (!jwksClients[config.url]) {
-            jwksClients[config.url] = jwksClient({
-                strictSsl: false,
-                jwksUri: `${config.url}/.well-known/jwks.json`,
-                timeout: 2000,
-            });
-        }
-
-        jwksClients[config.url].getSigningKey(header.kid, function (err, key) {
-            if (err) {
-                return callback(err);
-            }
-
-            callback(null, key.publicKey || key.rsaPublicKey);
-        });
-    };
-
-    const verifyTokenAgainstAuth = (token, options = {}) => {
-        return new Promise((resolve, reject) => {
-            JsonWebToken.verify(
-                token,
-                getKeyFromAuth,
-                options,
-                (err, decoded) => {
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    resolve(decoded);
-                }
-            );
-        });
-    };
 
     const convertToken = async (externalToken) => {
         return (
@@ -94,7 +58,10 @@ export default (req, config) => {
         convertToken,
         refreshToken,
         getUsersByEmail,
-        verifyTokenAgainstAuth,
+        verifyTokenAgainstAuth: verifyTokenAgainstAuth(
+            jwksClients,
+            `${config.url}/.well-known/jwks.json`
+        ),
         config,
     };
 };

@@ -42,6 +42,4 @@ spec:
       containers:
 {{ include "helpers.container" (dict "name" "nginx" "image" .proxyImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret "healthUrl" .healthUrl "port" (.port | default "80") ) | indent 8 }}
 {{ include "helpers.container" (dict "name" "fpm" "image" .fpmImage "tag" .imageTag "envFromConfig" .envFromConfig "envFromSecret" .envFromSecret ) | indent 8 }}
-      imagePullSecrets:
-        - name: dockerconfigjson-github-com
 {{- end }}

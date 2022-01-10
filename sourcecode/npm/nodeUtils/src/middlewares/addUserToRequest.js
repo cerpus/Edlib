@@ -29,44 +29,42 @@ export default (req, res, next) => {
         const verify = async () => {
             let info = null;
             if (req.context.services.edlibAuth) {
-                try {
-                    const r =
-                        await req.context.services.edlibAuth.verifyTokenAgainstAuth(
-                            req.authorizationJwt,
-                            {
-                                ignoreExpiration: true,
-                            }
-                        );
+                const tokenPayload = await req.context.services.edlibAuth.verifyTokenAgainstAuth(
+                    req.authorizationJwt,
+                    {
+                        ignoreExpiration: true,
+                    }
+                );
 
+                if (tokenPayload) {
                     info = {
-                        exp: r.exp,
+                        exp: tokenPayload.exp,
                         user: {
-                            ...r.payload.user,
-                            identityId: r.payload.user.id,
+                            ...tokenPayload.payload.user,
+                            identityId: tokenPayload.payload.user.id,
                         },
                     };
-                } catch (e) {
-                    logger.error(e);
                 }
             }
 
             if (!info) {
-                const r =
-                    await req.context.services.auth.verifyTokenAgainstAuth(
-                        req.authorizationJwt,
-                        {
-                            ignoreExpiration: true,
-                        }
-                    );
+                const tokenPayload = await req.context.services.auth.verifyTokenAgainstAuth(
+                    req.authorizationJwt,
+                    {
+                        ignoreExpiration: true,
+                    }
+                );
 
-                info = {
-                    exp: r.exp,
-                    user: {
-                        ...r.app_metadata,
-                        id: r.app_metadata.identityId,
-                        isAdmin: r.app_metadata.admin,
-                    },
-                };
+                if (tokenPayload) {
+                    info = {
+                        exp: tokenPayload.exp,
+                        user: {
+                            ...tokenPayload.app_metadata,
+                            id: tokenPayload.app_metadata.identityId,
+                            isAdmin: tokenPayload.app_metadata.admin,
+                        },
+                    };
+                }
             }
 
             if (!info) {

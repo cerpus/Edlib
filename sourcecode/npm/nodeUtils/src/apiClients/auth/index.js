@@ -2,9 +2,8 @@ import axios from 'axios';
 import AwaitLock from 'await-lock';
 import moment from 'moment';
 import logger from '../../services/logger.js';
-import JsonWebToken from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
 import * as errorReporting from '../../services/errorReporting.js';
+import { verifyTokenAgainstAuth } from '../../services/auth';
 
 let cachedToken = null;
 let jwksClients = {};
@@ -24,41 +23,6 @@ const authMutex = AwaitLock.default ? new AwaitLock.default() : new AwaitLock();
 
 export default (req, config) => {
     const authAxios = createAuthAxios(req, config);
-
-    const getKeyFromAuth = (header, callback) => {
-        if (!jwksClients[config.url]) {
-            jwksClients[config.url] = jwksClient({
-                strictSsl: false,
-                jwksUri: `${config.url}/.well-known/jwks.json`,
-                timeout: 2000,
-            });
-        }
-
-        jwksClients[config.url].getSigningKey(header.kid, function (err, key) {
-            if (err) {
-                return callback(err);
-            }
-
-            callback(null, key.publicKey || key.rsaPublicKey);
-        });
-    };
-
-    const verifyTokenAgainstAuth = (token, options = {}) => {
-        return new Promise((resolve, reject) => {
-            JsonWebToken.verify(
-                token,
-                getKeyFromAuth,
-                options,
-                (err, decoded) => {
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    resolve(decoded);
-                }
-            );
-        });
-    };
 
     const loginCallback = async (code, redirectUrl) => {
         const response = await authAxios({
@@ -158,7 +122,10 @@ export default (req, config) => {
         getOAuthToken,
         generateJwt,
         refreshJwt,
-        verifyTokenAgainstAuth,
+        verifyTokenAgainstAuth: verifyTokenAgainstAuth(
+            jwksClients,
+            `${config.url}/.well-known/jwks.json`
+        ),
         config,
     };
 };

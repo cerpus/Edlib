@@ -13,7 +13,6 @@ use Illuminate\Http\File;
 
 class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterface
 {
-
     const GET_VIDEOS = '/v1/accounts/%s/videos';
     const GET_VIDEO = '/v1/accounts/%s/videos/%s';
     const GET_VIDEO_SOURCES = self::GET_VIDEO . '/sources';
