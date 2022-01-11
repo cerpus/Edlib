@@ -175,7 +175,7 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - mysql
       - redis
@@ -195,7 +195,7 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - contentauthor-fpm
 
@@ -522,7 +522,7 @@ services:
       test: [CMD, nc, -z, localhost, "9000"]
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - mysql
 
@@ -536,7 +536,7 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - edlib-common-fpm
 
@@ -562,7 +562,7 @@ services:
   #      - nginx
   #    volumes:
   #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+  #      - ./data/nginx/ca:/cacerts.d:ro
   #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
   #      - ./localSetup/helpers/start-scripts:/start-scripts
   #    environment:
