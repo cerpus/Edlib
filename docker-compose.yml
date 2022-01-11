@@ -8,6 +8,7 @@ volumes:
   edlib-url_nodemodules:
   edlibapi-url_nodemodules:
   elasticsearch:
+  maven_cache:
   mysql:
   npm-components-storybook_nodemodules:
   proxy-admin_nodemodules:
@@ -109,22 +110,26 @@ services:
           - edlibcommon
 
   versionapi:
-    build:
-      context: ./sourcecode/apis/version
-      target: app-dev
+    image: maven:3-openjdk-11
+    command: [sh, -c, '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"']
     volumes:
-      - ./sourcecode/apis/version/target/versioning-1.0-SNAPSHOT.jar:/app.jar
+      - maven_cache:/root/.m2
+      - ./sourcecode/apis/version/:/app
+      - ./localSetup/helpers/start-scripts:/start-scripts:ro
     environment:
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
-      SPRING_APPLICATION_JSON: '{"spring":{"datasource":{"url":"jdbc:postgresql://postgres/versionapi", "username":"postgres", "password":"thepgpassword"}}}'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres/versionapi'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: thepgpassword
+      SERVER_PORT: '8080'
     depends_on:
       - postgres
     healthcheck:
       test: [CMD, curl, -f, http://localhost:8080/health]
     ports:
-      - 5504:5555
-    restart: on-failure
+      - '5504:5504'
+    working_dir: /app
 
   licenseapi:
     build: ./sourcecode/apis/license
