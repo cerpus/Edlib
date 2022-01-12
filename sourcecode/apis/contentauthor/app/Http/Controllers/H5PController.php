@@ -56,6 +56,7 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use stdClass;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -157,7 +158,7 @@ class H5PController extends Controller
                 'url' => request()->url(),
                 'request' => request()->all(),
             ]);
-            abort(404, 'Resource not found.');
+            throw new NotFoundHttpException('Resource not found', $t);
         }
 
         return view('h5p.show', $viewData);
