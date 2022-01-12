@@ -3,6 +3,7 @@
 #
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
+RUN apk add --no-cache curl
 
 #
 # appbase container, contains app and dependencies
