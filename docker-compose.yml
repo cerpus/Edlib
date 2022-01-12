@@ -8,6 +8,7 @@ volumes:
   edlib-url_nodemodules:
   edlibapi-url_nodemodules:
   elasticsearch:
+  maven_cache:
   mysql:
   npm-components-storybook_nodemodules:
   proxy-admin_nodemodules:
@@ -110,22 +111,26 @@ services:
           - edlibcommon
 
   versionapi:
-    build:
-      context: ./sourcecode/apis/version
-      target: app-dev
+    image: maven:3-openjdk-11
+    command: [sh, -c, '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"']
     volumes:
-      - ./sourcecode/apis/version/target/versioning-1.0-SNAPSHOT.jar:/app.jar
+      - maven_cache:/root/.m2
+      - ./sourcecode/apis/version/:/app
+      - ./localSetup/helpers/start-scripts:/start-scripts:ro
     environment:
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
-      SPRING_APPLICATION_JSON: '{"spring":{"datasource":{"url":"jdbc:postgresql://postgres/versionapi", "username":"postgres", "password":"thepgpassword"}}}'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres/versionapi'
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: thepgpassword
+      SERVER_PORT: '8080'
     depends_on:
       - postgres
     healthcheck:
       test: [CMD, curl, -f, http://localhost:8080/health]
     ports:
-      - 5504:5555
-    restart: on-failure
+      - '5504:5504'
+    working_dir: /app
 
   licenseapi:
     build: ./sourcecode/apis/license
@@ -177,7 +182,7 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - mysql
@@ -198,7 +203,7 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./localSetup/projects/content-author/php-extended-upload-256m.ini:/etc/php/7.2/apache2/conf.d/99-extended-upload.ini
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
@@ -534,7 +539,7 @@ services:
       test: [CMD, nc, -z, localhost, "9000"]
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - mysql
 
@@ -548,7 +553,7 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca/cacert.pem:/usr/local/share/ca-certificates/dev-cacert.crt:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     depends_on:
       - edlib-common-fpm
 
@@ -574,7 +579,7 @@ services:
   #      - nginx
   #    volumes:
   #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-  #      - ./data/nginx/ca/cacert.pem:/cacerts.d/dev-cacert.crt:ro
+  #      - ./data/nginx/ca:/cacerts.d:ro
   #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
   #      - ./localSetup/helpers/start-scripts:/start-scripts
   #    environment:

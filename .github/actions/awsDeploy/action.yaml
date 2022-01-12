@@ -69,7 +69,11 @@ runs:
       shell: bash
       run: |
         HELM_VALUES="-f ./chart/values.yaml "
-        if [ -f "./chart/values/${{ inputs.environment }}.yaml" ]; then
+        if  kubectl -n edlib get configmap edlib-helm-config; then
+          kubectl -n edlib get configmap edlib-helm-config -o jsonpath="{.data.values}" > values.yaml
+          HELM_VALUES="$HELM_VALUES -f ./values.yaml "
+          cat values.yaml
+        elif [ -f "./chart/values/${{ inputs.environment }}.yaml" ]; then
           HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ inputs.environment }}.yaml "
         fi
         echo $HELM_VALUES

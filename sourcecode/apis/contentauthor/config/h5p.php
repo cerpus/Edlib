@@ -21,11 +21,6 @@ return [
         'accountId' => env("H5P_VIDEO_ACCOUNT_ID"),
         'authUrl' => env("H5P_VIDEO_AUTH_URL"),
     ],
-    'ndla' => [
-        'custom-css' => env("H5P_NDLA_CUSTOM_CSS", false), //deprecated
-        'include-mathjax' => env("H5P_NDLA_INCLUDE_MATHJAX", false), //deprecated
-        'add-font-sizes' => env("H5P_NDLA_ADD_FONTSIZES", false), //deprecated
-    ],
     'singleContentUpgrade' => env('H5P_SINGLE_CONTENT_UPGRADE', true),
     'developmentMode' => env('H5P_DEVELOPMENT_MODE', false),
     'isHubEnabled' => env('H5P_IS_HUB_ENABLED', false),

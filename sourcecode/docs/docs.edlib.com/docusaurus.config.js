@@ -47,18 +47,14 @@ module.exports = {
             {
               label: 'Ecosystem',
               to: '/docs/product/ecosystem',
-            },
+            },            
             {
-              label: 'User guides',
-              to: '/docs/product/user-guides',
+              label: 'Frequently asked questions',
+              to: '/docs/product/faq',
             },
             {
               label: 'Demos',
               to: '/docs/product/demos',
-            },
-            {
-              label: 'Frequently asked questions',
-              to: '/docs/product/faq',
             },
           ],
         },
@@ -89,10 +85,6 @@ module.exports = {
             {
               label: 'Architecture',
               to: '/docs/developers/architecture',
-            },
-            {
-              label: 'In-production usage guide',
-              to: '/docs/developers/in-production-usage-guide',
             },
             {
               label: 'API documentation',
