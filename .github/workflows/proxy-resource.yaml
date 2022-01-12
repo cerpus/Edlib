@@ -24,8 +24,6 @@ env:
 jobs:
   test_and_release:
     runs-on: ubuntu-latest
-    needs: test
-    if: ${{ inputs.versionToRelease }}
     steps:
       - uses: actions/checkout@v2
 
