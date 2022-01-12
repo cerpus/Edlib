@@ -71,18 +71,6 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
-        ],
-        'deployed-stack' => [
-            'driver' => 'stack',
-            'channels' => ['single', 'logstash']
-        ],
-        'logstash' => [
-            'driver' => 'custom',
-            'level' => 'debug',
-            'via' => LogstashLogger::class,
-            'host' => env('LOGSTASH_HOST', 'logstash.elk'),
-            'port' => env('LOGSTASH_PORT', 9605),
-            'appName' => 'ca.' . env('POD_NAMESPACE', 'default')
         ]
     ],
 

@@ -72,17 +72,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push init container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-init:${{ inputs.versionToRelease }}
-          context: sourcecode/apis/contentauthor
-          target: init
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Build and push phpfpm container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
@@ -94,17 +83,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push cron container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-cron:${{ inputs.versionToRelease }}
-          context: sourcecode/apis/contentauthor
-          target: cron
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
       - name: Build and push deploy container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
@@ -113,16 +91,5 @@ jobs:
           tags: public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
           target: deploy
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push horizonqueue container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/api-contentauthor-horizonqueue:${{ inputs.versionToRelease }}
-          context: sourcecode/apis/contentauthor
-          target: horizonqueue
           cache-from: type=gha
           cache-to: type=gha,mode=max
