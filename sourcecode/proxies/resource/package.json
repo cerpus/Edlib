@@ -27,7 +27,6 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "jest-bamboo-reporter": "^1.2.1",
     "nodemon": "^2.0.7"
   }
 }
