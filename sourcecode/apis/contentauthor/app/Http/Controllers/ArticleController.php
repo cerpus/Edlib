@@ -106,13 +106,13 @@ class ArticleController extends Controller
         )->toJson();
 
         $state = ArticleStateDataObject::create([
-                'license' => $license,
-                'isPublished' => false,
-                'share' => config('h5p.defaultShareSetting'),
-                'redirectToken' => $request->get('redirectToken'),
-                'route' => route('article.store'),
-                '_method' => "POST",
-            ])->toJson();
+            'license' => $license,
+            'isPublished' => false,
+            'share' => config('h5p.defaultShareSetting'),
+            'redirectToken' => $request->get('redirectToken'),
+            'route' => route('article.store'),
+            '_method' => "POST",
+        ])->toJson();
 
         return view('article.create')->with(compact([
             'jwtToken', 'emails', 'config', 'editorSetup', 'state'
@@ -200,10 +200,7 @@ class ArticleController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $customCSS);
         }
 
-        if (config('app.useContentCloudStorage')) {
-            $article->convertToCloudPaths();
-        }
-
+        $article->convertToCloudPaths();
         $ndlaArticle = $article->isImported();
         $inDraftState = $article->inDraftState();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
@@ -236,9 +233,7 @@ class ArticleController extends Controller
 
         $ownerName = $article->getOwnerName($article->owner_id);
 
-        if (config('app.useContentCloudStorage')) {
-            $article->convertToCloudPaths();
-        }
+        $article->convertToCloudPaths();
 
         $emails = $this->getCollaboratorsEmails($article);
         /** @var License $licenseLib */
@@ -273,7 +268,7 @@ class ArticleController extends Controller
         ]));
 
         if (!$article->shouldCreateFork(Session::get('authId', false))) {
-            if (($locked = $article->hasLock())){
+            if (($locked = $article->hasLock())) {
                 $editUrl = $article->getEditUrl();
                 $pollUrl = route('lock.status', $id);
                 $editorSetup->setLockedProperties(LockedDataObject::create([
@@ -289,16 +284,16 @@ class ArticleController extends Controller
         $editorSetup = $editorSetup->toJson();
 
         $state = ArticleStateDataObject::create([
-                'id' => $article->id,
-                'title' => $article->title,
-                'content' => $article->content,
-                'license' => $license,
-                'isPublished' => !$article->inDraftState(),
-                'share' => !$article->isPublished() ? 'private' : 'share',
-                'redirectToken' => $request->get('redirectToken'),
-                'route' => route('article.update', ['article' => $id]),
-                '_method' => "PUT",
-            ])->toJson();
+            'id' => $article->id,
+            'title' => $article->title,
+            'content' => $article->content,
+            'license' => $license,
+            'isPublished' => !$article->inDraftState(),
+            'share' => !$article->isPublished() ? 'private' : 'share',
+            'redirectToken' => $request->get('redirectToken'),
+            'route' => route('article.update', ['article' => $id]),
+            '_method' => "PUT",
+        ])->toJson();
 
         return view('article.edit')
             ->with(compact('jwtToken', 'article', 'emails', 'id', 'config', 'origin', 'originators', 'state', 'editorSetup'));

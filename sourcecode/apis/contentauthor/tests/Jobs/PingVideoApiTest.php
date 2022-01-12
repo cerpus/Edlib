@@ -2,12 +2,14 @@
 
 namespace Tests\Jobs;
 
+use App\Libraries\ContentAuthorStorage;
 use Faker\Factory;
 use App\H5PContent;
 use Tests\TestCase;
 use App\H5PContentsVideo;
 use App\Jobs\PingVideoApi;
 use Tests\db\TestH5PSeeder;
+use Tests\Traits\ContentAuthorStorageTrait;
 use Tests\Traits\VersionedH5PTrait;
 use Cerpus\VersionClient\VersionData;
 use Tests\Traits\MockVersioningTrait;
@@ -21,7 +23,7 @@ use Tests\Traits\WithFaker;
 
 class PingVideoApiTest extends TestCase
 {
-    use RefreshDatabase, MockVersioningTrait, VersionedH5PTrait, InteractsWithDatabase, WithFaker;
+    use RefreshDatabase, MockVersioningTrait, VersionedH5PTrait, InteractsWithDatabase, WithFaker, ContentAuthorStorageTrait;
 
     private $packageStructure = [
         'interactiveVideoWithLocalVideoSource' => '{"interactiveVideo":{"video":{"startScreenOptions":{"title":"Interactive Video","hideStartTitle":false,"copyright":""},"textTracks":[{"label":"Subtitles","kind":"subtitles","srcLang":"en"}],"files":[{"path":"videos\/files-5a337db5cdf93.mp4#tmp","mime":"video\/mp4","copyright":{"license":"U"}}]},"assets":{"interactions":[],"bookmarks":[]},"summary":{"task":{"library":"H5P.Summary 1.8","params":{"intro":"Choose the correct statement.","summaries":[{"subContentId":"1dd50eaf-d839-43eb-b41a-091a7f39874d","tip":""}],"overallFeedback":[{"from":0,"to":100}],"solvedLabel":"Progress:","scoreLabel":"Wrong answers:","resultLabel":"Your result","labelCorrect":"Correct.","labelIncorrect":"Incorrect! Please try again.","labelCorrectAnswers":"Correct answers."},"subContentId":"37b2670f-e199-4f76-bd33-0d6ea81efcce"},"displayAt":3}},"override":{"autoplay":false,"loop":false,"showBookmarksmenuOnLoad":false,"showRewind10":false,"preventSkipping":false,"deactivateSound":false},"l10n":{"interaction":"Interaction","play":"Play","pause":"Pause","mute":"Mute","unmute":"Unmute","quality":"Video Quality","captions":"Captions","close":"Close","fullscreen":"Fullscreen","exitFullscreen":"Exit Fullscreen","summary":"Summary","bookmarks":"Bookmarks","defaultAdaptivitySeekLabel":"Continue","continueWithVideo":"Continue with video","playbackRate":"Playback Rate","rewind10":"Rewind 10 Seconds","navDisabled":"Navigation is disabled","sndDisabled":"Sound is disabled","requiresCompletionWarning":"You need to answer all the questions correctly before continuing.","back":"Back","hours":"Hours","minutes":"Minutes","seconds":"Seconds","currentTime":"Current time:","totalTime":"Total time:","navigationHotkeyInstructions":"Use key k for starting and stopping video at any time","singleInteractionAnnouncement":"Interaction appeared:","multipleInteractionsAnnouncement":"Multiple interactions appeared.","videoPausedAnnouncement":"Video is paused"}}',
@@ -34,8 +36,9 @@ class PingVideoApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $this->setUpContentAuthorStorage();
 
-        $this->disk = Storage::fake($this->h5pDisk);
+        $this->disk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
         config(['h5p.storage.path' => $this->disk->path("")]);
     }
 

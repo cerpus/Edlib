@@ -2,8 +2,8 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\H5P;
 
-use App\Libraries\H5P\H5Plugin;
-use Illuminate\Support\Facades\Storage;
+use App\Libraries\ContentAuthorStorage;
+use Illuminate\Filesystem\FilesystemAdapter;
 use GuzzleHttp\Client;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 
@@ -12,8 +12,8 @@ class DownloadExport
     protected $h5p;
     private $payload;
 
-    /** @var \Illuminate\Filesystem\FilesystemAdapter */
-    private $tmpDisk, $h5pDisk;
+    private FilesystemAdapter $tmpDisk;
+    private ContentAuthorStorage $contentAuthorStorage;
 
     /** @var ZipArchiveAdapter */
     private $h5pFile;
@@ -23,10 +23,10 @@ class DownloadExport
     const tmpFolder = 'export/%s';
     const contentFolder = 'content/%s';
 
-    public function __construct()
+    public function __construct(ContentAuthorStorage $contentAuthorStorage)
     {
-        $this->tmpDisk = Storage::disk('tmp');
-        $this->h5pDisk = Storage::disk('h5p-uploads');
+        $this->contentAuthorStorage = $contentAuthorStorage;
+        $this->tmpDisk = $contentAuthorStorage->getH5pTmpDisk();
     }
 
     public function handle($params, $h5p, $jsonPayload)
@@ -103,8 +103,8 @@ class DownloadExport
     private function moveFiles()
     {
         $core = resolve(\H5PCore::class);
-        if( !$this->h5pDisk->exists($this->getComputedTmpContentFolder()) ){
-            $this->h5pDisk->makeDirectory($this->getComputedTmpContentFolder());
+        if( !$this->contentAuthorStorage->getBucketDisk()->exists($this->getComputedTmpContentFolder()) ){
+            $this->contentAuthorStorage->getBucketDisk()->makeDirectory($this->getComputedTmpContentFolder());
         }
         $core->fs->moveContentDirectory(
             $this->tmpDisk->path($this->getComputedTmpFolder()),

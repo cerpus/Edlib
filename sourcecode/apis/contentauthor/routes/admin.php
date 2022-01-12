@@ -48,7 +48,7 @@ Route::middleware('auth')->namespace('Admin')->prefix('admin')->group(
         Route::post('maxscore', 'AdminController@updateMaxScore')->name('admin.maxscore.update');
         Route::get('maxscore/presave/{library}', function ($library) {
             if (\App\H5PLibrary::where('name', urlencode($library))->exists()) {
-                $disk = Storage::disk('h5p');
+                $disk = Storage::disk('h5p-library');
                 $location = sprintf('Presave/%s/presave.js', $library);
                 if ($disk->exists($location)) {
                     return $disk->read($location);

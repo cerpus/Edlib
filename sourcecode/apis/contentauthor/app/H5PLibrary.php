@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -200,9 +201,10 @@ class H5PLibrary extends Model
 
     public function supportsMaxScore(): bool
     {
-        $h5pLibraryDisk = \Storage::disk('h5p-uploads');
+        /** @var ContentAuthorStorage $contentAuthorStorage */
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
         $libraryLocation = sprintf('libraries/%s/presave.js', self::getLibraryString(true));
-        if ($h5pLibraryDisk->exists($libraryLocation)){
+        if ($contentAuthorStorage->getBucketDisk()->exists($libraryLocation)){
             return true;
         }
         return false;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use H5PCore;
@@ -156,11 +157,11 @@ class AdminController extends Controller
      * @return array|JsonResponse|void
      * @throws Exception
      */
-    public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor)
+    public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
     {
         $h5pPlugin = H5Plugin::get_instance(DB::connection()->getPdo());
 
-        $ajaxRequest = new AjaxRequest($h5pPlugin, $core, $editor);
+        $ajaxRequest = new AjaxRequest($h5pPlugin, $core, $editor, $contentAuthorStorage);
         $returnValue = $ajaxRequest->handleAjaxRequest($request);
         switch ($ajaxRequest->getReturnType()) {
             case "json":

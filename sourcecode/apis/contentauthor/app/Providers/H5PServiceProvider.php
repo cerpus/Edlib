@@ -16,7 +16,6 @@ use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5Plugin;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
-use App\Libraries\H5P\Storage\H5PStorage;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
@@ -152,31 +151,28 @@ class H5PServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(H5PCerpusStorage::class, function ($app) {
+            /** @var ContentAuthorStorage $contentAuthorStorage */
+            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
+
+            return new H5PCerpusStorage(
+                $contentAuthorStorage
+            );
+        });
+
         $this->app->singletonIf(H5PFileStorage::class, function ($app) {
-            $storageDisk = config('app.useContentCloudStorage') ? 'cloud' : 'default';
-            switch ($storageDisk) {
-                case 'cloud':
-                    $instance = new H5PCerpusStorage(
-                        Storage::cloud(),
-                        Storage::getDefaultCloudDriver(),
-                        Storage::disk(config('h5p.H5PStorageDisk')),
-                        $app->make(ContentAuthorStorage::class)
-                    );
-                    break;
-                case 'default':
-                    $path = config("h5p.storage.path");
-                    $instance = new H5PStorage($path);
-                    break;
-            }
+            /** @var H5PCerpusStorage $instance */
+            $instance = $app->make(H5PCerpusStorage::class);
             if (!empty($instance)) {
                 $app->instance(H5PFileStorage::class, $instance);
             }
             return $instance ?? null;
         });
 
-        $this->app->singletonIf('H5PFilesystem', function ($app){
-            $storageDisk = config('app.useContentCloudStorage') ? 'cloud' : 'default';
-            return $storageDisk === 'cloud' ? Storage::cloud() : Storage::disk(config('h5p.H5PStorageDisk'));
+        $this->app->singletonIf('H5PFilesystem', function ($app) {
+            /** @var ContentAuthorStorage $contentAuthorStorage */
+            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
+            return $contentAuthorStorage->getBucketDisk();
         });
 
         $this->app->bind(CerpusStorageInterface::class, function ($app, $config) {
@@ -217,15 +213,18 @@ class H5PServiceProvider extends ServiceProvider
             return resolve(H5PAdapterInterface::class)->getImporter();
         });
 
-        $this->app->singletonIf(H5peditorStorage::class, function () {
-            return new EditorStorage(resolve(H5PCore::class));
+        $this->app->singletonIf(H5peditorStorage::class, function ($app) {
+            /** @var ContentAuthorStorage $contentAuthorStorage */
+            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
+            return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
         });
 
         $this->app->singletonIf(H5PFrameworkInterface::class, function ($app) {
             /** @var App $app */
             $pdoConnection = DB::connection()->getPdo();
-            $disk = Storage::disk(config('h5p.H5PStorageDisk'));
-            $framework = new Framework($pdoConnection, $disk);
+            /** @var ContentAuthorStorage $contentAuthorStorage */
+            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
+            $framework = new Framework($pdoConnection, $contentAuthorStorage->getH5pTmpDisk());
             $app->instance(H5PFrameworkInterface::class, $framework);
             return $framework;
         });
@@ -237,17 +236,6 @@ class H5PServiceProvider extends ServiceProvider
             $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
             $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, $contentAuthorStorage->getAssetsBaseUrl());
             $core->aggregateAssets = true;
-
-            $app->instance(H5PCore::class, $core);
-            return $core;
-        });
-
-        $this->app->singleton('H5PCoreLocalStorage', function ($app) {
-            /** @var App $app */
-            $core = resolve(H5PCore::class);
-
-            $path = config("h5p.storage.path");
-            $core->fs = new H5PStorage($path);
 
             $app->instance(H5PCore::class, $core);
             return $core;

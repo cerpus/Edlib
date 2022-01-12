@@ -31,6 +31,7 @@ namespace Tests\H5P\API {
     use Illuminate\Http\Response;
     use Illuminate\Http\Testing\File;
     use Tests\TestCase;
+    use Tests\Traits\ContentAuthorStorageTrait;
     use Tests\Traits\MockVersioningTrait;
     use Tests\Traits\ResetH5PStatics;
     use Tests\Traits\WithFaker;
@@ -41,7 +42,13 @@ namespace Tests\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, ResetH5PStatics, MockVersioningTrait, WithFaker;
+        use RefreshDatabase, ResetH5PStatics, MockVersioningTrait, WithFaker, ContentAuthorStorageTrait;
+
+        protected function setUp(): void
+        {
+            parent::setUp();
+            $this->setUpContentAuthorStorage();
+        }
 
         private function _setUp(): void
         {
@@ -75,7 +82,7 @@ namespace Tests\H5P\API {
             $this->_setUp();
             $this->setupAdapter(false, false);
 
-            $fakeDisk = \Storage::fake('h5p-uploads');
+            $fakeDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             collect([
@@ -146,13 +153,15 @@ namespace Tests\H5P\API {
             $this->_setUp();
             $this->setupAdapter(false, true);
 
-            $fakeDisk = \Storage::fake('h5p-uploads');
+            $fakeDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
             config(['h5p.storage.path' => $fakeDisk->path("")]);
+            app()->instance('requestId', 123);
+            $user = User::factory()->make();
+            \Session::put('authId', $user->auth_id);
 
             $title = "Phpunit is awesome!";
             $machineName = "H5P.MultiChoice";
             $file = new File('sample-with-image.h5p', fopen(base_path('tests/files/sample-with-image.h5p'), 'r'));
-            $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
@@ -205,7 +214,7 @@ namespace Tests\H5P\API {
             $this->_setUp();
             $this->setupAdapter(true, false);
 
-            $fakeDisk = \Storage::fake('h5p-uploads');
+            $fakeDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             $title = "Text about PhpUnit";
@@ -264,7 +273,7 @@ namespace Tests\H5P\API {
             $this->withoutMiddleware();
             $_SERVER['REQUEST_METHOD'] = "POST";
 
-            $fakeDisk = \Storage::fake('h5p-uploads');
+            $fakeDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             $this

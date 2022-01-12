@@ -125,8 +125,6 @@ Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], fu
     Route::post('v1/h5p/import', 'API\H5PImportController@importH5P')->name('api.import.h5p');
 });
 
-Route::post('v1/copy', 'API\ContentCopyController@index')->name('content.copy')->middleware('signed.oauth10-request');
-
 Route::get('article/{article}/copyright', 'ArticleCopyrightController@copyright')->name('article.copyright');
 
 Route::get('/health', 'HealthController@index');

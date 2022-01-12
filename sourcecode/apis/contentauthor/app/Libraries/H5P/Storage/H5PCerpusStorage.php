@@ -27,26 +27,17 @@ use Illuminate\Support\Facades\Log;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
-    /** @var Filesystem */
-    private $filesystem;
-
-    /** @var Filesystem */
-    private $uploadDisk;
-
-    private $diskName;
+    private Filesystem $filesystem;
+    private Filesystem $uploadDisk;
+    private string $diskName;
     private ContentAuthorStorage $contentAuthorStorage;
 
-    public function __construct(Filesystem $filesystemAdapter, string $diskName, Filesystem $uploadDisk, ContentAuthorStorage $contentAuthorStorage)
+    public function __construct(ContentAuthorStorage $contentAuthorStorage)
     {
-        $this->filesystem = $filesystemAdapter;
-        $this->diskName = $diskName;
-        $this->uploadDisk = $uploadDisk;
+        $this->filesystem = $contentAuthorStorage->getBucketDisk();
+        $this->diskName = $contentAuthorStorage->getBucketDiskName();
+        $this->uploadDisk = $contentAuthorStorage->getH5pTmpDisk();
         $this->contentAuthorStorage = $contentAuthorStorage;
-    }
-
-    private function getUrl(string $url): string
-    {
-        return $this->contentAuthorStorage->getAssetUrl($url);
     }
 
     private function triggerVideoConvert($fromId, $toId, $file)
@@ -104,32 +95,9 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
         $pendingFile = H5PFile::ofFileUploadFromContent($toId)->where('filename', $file)->get()->isNotEmpty();
         if (!$pendingFile && $this->filesystem->exists($fromPath) && $this->filesystem->missing($toPath)) {
-            if (!config('feature.upload-h5p-mediafiles-directly')) {
-                $h5pFile = H5PFile::updateOrCreate(
-                    [
-                        'external_reference' => $fromPath,
-                        'content_id' => $toId,
-                    ],
-                    [
-                        'filename' => array_last($path),
-                        'user_id' => \Session::get('authId'),
-                        'state' => H5PFile::FILE_CLONEFILE,
-                        'requestId' => app('requestId'),
-                        'content_id' => $toId,
-                        'params' => json_encode([
-                            'from' => $fromPath,
-                            'to' => $toPath,
-                            'action' => H5PFileInterface::ACTION_COPY, //$fromId === 'editor' && config('feature.versioning') === true ? H5PFileUpload::ACTION_MOVE : H5PFileUpload::ACTION_COPY,
-                            'oldId' => $fromId,
-                        ]),
-                    ]
-                );
-                H5PFileUpload::dispatch($toId, $h5pFile->id)->onQueue("ca-multimedia");
-            } else {
-                $result = $this->filesystem->copy($fromPath, $toPath);
-                if (!$result) {
-                    throw new Exception("Couldn't copy file '$file' from '$fromPath' to '$toPath'");
-                }
+            $result = $this->filesystem->copy($fromPath, $toPath);
+            if (!$result) {
+                throw new Exception("Couldn't copy file '$file' from '$fromPath' to '$toPath'");
             }
         }
     }
@@ -235,27 +203,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         foreach ($allFiles as $filepath) {
             $to = $this->getFilePrefix($newId) . Str::after($filepath, $from);
             if ($from !== $to) {
-                if (!config('feature.upload-h5p-mediafiles-directly')) {
-                    $h5pFile = H5PFile::create(
-                        [
-                            'external_reference' => $filepath,
-                            'filename' => Str::after($filepath, $from),
-                            'user_id' => \Session::get('authId'),
-                            'state' => H5PFile::FILE_CLONEFILE,
-                            'requestId' => app('requestId'),
-                            'content_id' => $newId,
-                            'params' => json_encode([
-                                'from' => $filepath,
-                                'to' => $to,
-                                'action' => H5PFileInterface::ACTION_COPY,
-                                'oldId' => $id,
-                            ]),
-                        ]
-                    );
-                    H5PFileUpload::dispatch($newId, $h5pFile->id)->onQueue("ca-multimedia");
-                } else {
-                    $this->filesystem->copy($filepath, $to);
-                }
+                $this->filesystem->copy($filepath, $to);
             }
         }
     }
@@ -410,7 +358,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             $files[$type] = array((object)array(
                 'path' => $outputfile,
                 'version' => '',
-                'url' => $this->getUrl($outputfile)
+                'url' => $this->contentAuthorStorage->getAssetUrl($outputfile)
             ));
         }
     }
@@ -430,7 +378,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 $files[$type] = array((object)array(
                     'path' => $file,
                     'version' => '',
-                    'url' => $this->getUrl($file)
+                    'url' => $this->contentAuthorStorage->getAssetUrl($file)
                 ));
             }
         }
@@ -672,7 +620,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     public function getFileUrl(string $path)
     {
         if ($this->filesystem->exists($path)) {
-            return $this->getUrl($path);
+            return $this->contentAuthorStorage->getAssetUrl($path);
         }
 
         return '';
