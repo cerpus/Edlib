@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# Installing Edlib - linux
+# Installing Edlib - Linux
 
 The easiest way to install Edlib locally is to use Linux.
 
-1. First you will need to clone edlib: `git clone git@github.com:cerpus/Edlib.git`
+1. First you will need to clone Edlib: `git clone git@github.com:cerpus/Edlib.git`
 2. Go to the base directory of Edlib: `cd Edlib`
-3. When setting up Edlib for the first time run: `./scripts/first-time-setup.sh`. This script will install all dependencies and setup the repos.
-4. You can now start edlib with docker-compose: `docker-compose up -d`
-5. Make browser approve local certificate authority of Edlib. The Certificate is located at `data/nginx/ca/cacert.pem`
-6. You can now access edlib at: `https://npm.components.edlib.local/?path=/story/edlibmodal--edlib-modal`
+3. When setting up Edlib for the first time run: `./scripts/first-time-setup.sh`. This script will install all of the necessary dependencies and setup the repos.
+4. You can now start Edlib with docker-compose: `docker-compose up -d`
+5. Configure the browser to approve Edlib's local certificate authority. The certificate is located at `data/nginx/ca/cacert.pem`
+6. You can now access Edlib at: `https://npm.components.edlib.local/?path=/story/edlibmodal--edlib-modal`

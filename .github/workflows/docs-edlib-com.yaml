@@ -17,9 +17,9 @@ env:
   workingDirectory: sourcecode/docs/docs.edlib.com
 
 jobs:
-  build_pushdocker:
-    if: github.event_name == 'workflow_dispatch'
+  create_release:
     runs-on: ubuntu-latest
+    if: ${{ inputs.versionToRelease }}
     steps:
         - uses: actions/checkout@v2
         - name: Use Node.js 14

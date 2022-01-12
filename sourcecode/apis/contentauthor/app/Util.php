@@ -12,16 +12,19 @@ use Psr\Http\Message\ResponseInterface;
 class Util
 {
     /**
+     * @return array|string|float|int|bool|null
      * @throws \JsonException
      */
     public static function decodeResponse(ResponseInterface $response)
     {
         $body = $response->getBody()->getContents();
 
-        return \json_decode($body, true);
+        return \json_decode($body, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
+     * @param callable():ResponseInterface $wrapper
+     * @return array|string|float|int|bool|null
      * @throws NotFoundException
      * @throws \JsonException
      */
@@ -31,19 +34,20 @@ class Util
             $response = $wrapper();
             return self::decodeResponse($response);
         } catch (RequestException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
+            $response = $e->getResponse();
+
+            if (!$response || $response->getStatusCode() !== 404) {
+                throw $e;
+            }
+
             try {
-                $data = Util::decodeResponse($e->getResponse());
+                $data = Util::decodeResponse($response);
             } catch (\JsonException $jsonException) {
                 throw $e;
             }
 
-            if ($statusCode == 404) {
-                $field = $data["error"]["parameter"] ?? null;
-                throw new NotFoundException($field);
-            }
-
-            throw $e;
+            $field = $data["error"]["parameter"] ?? null;
+            throw new NotFoundException($field);
         }
     }
 }

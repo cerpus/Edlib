@@ -173,6 +173,15 @@ jobs:
     secrets:
       AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+  # ------------ docs ---------------
+  release_docs:
+    needs: get_variables
+    uses: cerpus/Edlib/.github/workflows/docs-edlib-com.yaml@master
+    with:
+      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
 
   building_done:
     runs-on: ubuntu-latest
@@ -194,6 +203,7 @@ jobs:
       - release_proxy_resource
       - release_proxy_url
       - release_www
+      - release_docs
     steps:
       - name: "Done building images"
         run: |

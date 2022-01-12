@@ -12,17 +12,17 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-env": "^7.16.7",
     "@cerpus/edlib-node-utils": "1.8.1",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.4.3",
+    "jest": "^27.4.5",
     "joi": "^17.5.0",
     "js-yaml": "^4.1.0",
     "prettier": "^2.5.1",
     "supertest": "^6.1.6",
     "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.2.0",
+    "swagger-ui-express": "^4.3.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
