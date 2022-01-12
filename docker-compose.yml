@@ -126,7 +126,7 @@ services:
     depends_on:
       - postgres
     healthcheck:
-      test: [CMD, curl, -f, http://localhost:8080/health]
+      test: [CMD, curl, -f, http://localhost/health]
     ports:
       - '5504:5504'
     working_dir: /app
