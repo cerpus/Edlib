@@ -26,7 +26,6 @@
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
-    "jest-bamboo-reporter": "^1.2.1",
     "nodemon": "^2.0.7"
   }
 }

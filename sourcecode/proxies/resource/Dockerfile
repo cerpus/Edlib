@@ -1,23 +1,24 @@
 #
 # base container, creates environment
 #
-FROM node:16 AS base
+FROM node:16-alpine AS base
 WORKDIR /var/www/app
 
 #
 # appbase container, contains app and dependencies
 #
-FROM node:16 AS appbase
-COPY . .
+FROM base AS appbase
+COPY package.json yarn.lock ./
+ENV NODE_ENV=production
 RUN yarn install
+COPY . .
 
 #
 # Test runner container
 #
 FROM appbase as test
 WORKDIR /var/www/app
-ENV JEST_REPORT_FILE /result/jest-report.json
-CMD [ "bash", "-c", "yarn test; exitcode=$?; chown -R ${RUN_AS_UID:-0} /result/; exit $exitcode" ]
+CMD [ "node", "node_modules/jest/bin/jest.js", "--runInBand", "--colors", "--verbose", "--forceExit", "--config=./jest.config.json" ]
 
 #
 # App container for running in production
