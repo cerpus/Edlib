@@ -7,6 +7,7 @@ use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\ModelRetriever;
 use H5PCore;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LtiContentController extends Controller
 {
@@ -15,19 +16,13 @@ class LtiContentController extends Controller
         $content = Content::findContentById($id);
 
         if (empty($content)) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Content was not found',
-            ], 404);
+            throw new NotFoundHttpException("Content not found");
         }
 
         $controller = ModelRetriever::getGroupController($content->getContentType());
 
         if ($controller == null) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Content was not found',
-            ], 404);
+            throw new NotFoundHttpException("Content not found");
         }
 
         return $controller->ltiShow($content->getId());
@@ -38,19 +33,13 @@ class LtiContentController extends Controller
         $content = Content::findContentById($id);
 
         if (empty($content)) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Content was not found',
-            ], 404);
+            throw new NotFoundHttpException("Content not found");
         }
 
         $controller = ModelRetriever::getGroupController($content->getContentType());
 
         if ($controller == null) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Editor for content was not found',
-            ], 404);
+            throw new NotFoundHttpException("Content not found");
         }
 
         return $controller->ltiEdit($request, $content->getId());
@@ -61,10 +50,7 @@ class LtiContentController extends Controller
         $controller = ModelRetriever::getGroupController($type);
 
         if ($controller == null) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Content type was not found',
-            ], 404);
+            throw new NotFoundHttpException("Content not found");
         }
 
         if ($type == ResourceDataObject::H5P) {
