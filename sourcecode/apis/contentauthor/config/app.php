@@ -2,7 +2,7 @@
 
 return [
     'env' => env('APP_ENV', 'production'),
-    'enable_ndla_import' => env('ENABLE_NDLA_IMPORT', false),
+    'enable_ndla_import' => env('ENABLE_NDLA_IMPORT', true),
     'enable_licensing' => env('ENABLE_LICENSING', false),
 
     /*
@@ -212,18 +212,12 @@ return [
         /*'sv-se' => 'Svenska',*/
     ],
 
-    'article-file-driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-    'article-upload-path' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
-    'article-public-path' => env('UPLOAD_PUBLIC_PATH_ARTICLE', '/h5pstorage/article-uploads'),
-
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
 
     'consumer-key' => env('H5P_CONSUMER_KEY', 'h5p'),
     'consumer-secret' => env('H5P_CONSUMER_SECRET', 'changeme'),
 
-    'upload-storage-disk-game' => env('UPLOAD_STORAGE_DISK_GAME', 'game-uploads'),
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
-    'useContentCloudStorage' => env("ENABLE_CLOUD_STORAGE", true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
     'cdnPrefix' => env('CDN_WITH_PREFIX', '')
 ];

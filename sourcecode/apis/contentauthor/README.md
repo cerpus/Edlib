@@ -28,12 +28,6 @@ To expose the permanent file storage
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
-For develop environments the cloud storage can be switched off. To disable it put the following configuration in the `.env` file:
-
-```
-ENABLE_CLOUD_STORAGE=false
-```
-
 ## Recommendation Engine
 
 Currently reporting to the Recommendation Engine is disabled by default.
@@ -59,15 +53,9 @@ In `.env`
 
 ```
 UPLOAD_STORAGE_DRIVER=<local>
-UPLOAD_STORAGE_PATH_ARTICLE=<.../public/h5pstorage/article-uploads>
-UPLOAD_PUBLIC_PATH_ARTICLE=</h5pstorage/article-uploads>
 ```
 
 UPLOAD_STORAGE_DRIVER: the driver to be used, defaults to local
-
-UPLOAD_STORAGE_PATH_ARTICLE: upload path, defaults to public/h5pstorage/article-uploads
-
-UPLOAD_PUBLIC_PATH_ARTICLE: public path to root of uploaded article files, defaults to /h5pstorage/article-uploads
 
 # Running scheduled tasks
 

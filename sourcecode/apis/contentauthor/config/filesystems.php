@@ -42,76 +42,40 @@ return [
     */
 
     'disks' => [
-        'testDisk' => [
-            'driver' => 'local',
-            'root'   => base_path('tests'),
-        ],
-        'storageLogs' => [
-            'driver' => 'local',
-            'root'   => storage_path('logs'),
-        ],
-        'h5p-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_H5P', public_path() . '/h5pstorage'),
-            'url' => env('UPLOAD_BASE_URL_H5P', '/h5pstorage'),
-        ],
-        'h5p' => [
-            'driver' => env('LIBRARIES_H5P_STORAGE_DRIVER', 'local'),
-            'root' => env('LIBRARIES_H5P_PATH', app_path() . '/Libraries/H5P')
-        ],
-        'article-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_ARTICLE', public_path() . '/h5pstorage/article-uploads'),
-            'url' => '/h5pstorage/article-uploads',
-        ],
-        'game-uploads' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 'local'),
-            'root' => env('UPLOAD_STORAGE_PATH_GAME', public_path() . '/h5pstorage/games'),
-            'url' => env('UPLOAD_BASE_URL_GAME', '/h5pstorage/games'),
-        ],
-        'game-uploads-s3' => [
-            'driver' => env('UPLOAD_STORAGE_DRIVER_GAME', 's3'),
-            'key' => env('S3_GAME_KEY', 's3-game-key'),
-            'secret' => env('S3_GAME_SECRET', 's3-game-secret'),
-            'region' => env('S3_GAME_REGION', 'eu-central-1'),
-            'bucket' => env('S3_GAME_BUCKET', 'cerpus-ca-game-uploads'),
-        ],
-        'tmp' => [
-            'driver' => 'local',
-            'root' => '/tmp'
-        ],
-        'local' => [
+        'local' => [ // local app storage
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-        'ftp' => [
-            'driver' => 'ftp',
-            'host' => 'ftp.example.com',
-            'username' => 'your-username',
-            'password' => 'your-password',
-
-            // Optional FTP Settings...
-            // 'port'     => 21,
-            // 'root'     => '',
-            // 'passive'  => true,
-            // 'ssl'      => true,
-            // 'timeout'  => 30,
+        'testDisk' => [ // disk where tests are located.
+            'driver' => 'local',
+            'root'   => base_path('tests'),
         ],
-        's3' => [
+        'storageLogs' => [ // disk where logs are stored
+            'driver' => 'local',
+            'root'   => storage_path('logs'),
+        ],
+        'localBucket' => [ // used when running on docker compose setup locally
+            'driver' => 'local',
+            'root' => '/buckets/main_bucket',
+        ],
+        's3' => [ // used when running on AWS
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
-        'rackspace' => [
-            'driver' => 'rackspace',
-            'username' => 'your-username',
-            'key' => 'your-key',
-            'container' => 'your-container',
-            'endpoint' => 'https://identity.api.rackspacecloud.com/v2.0/',
-            'region' => 'IAD',
-            'url_type' => 'publicURL',
+        'tmp' => [ // temporary folder for contentauthor
+            'driver' => 'local',
+            'root' => '/tmp/contentauthor'
+        ],
+        'h5pTmp' => [ // temporary folder for h5p
+            'driver' => 'local',
+            'root' => '/tmp/h5p'
+        ],
+        'h5p-library' => [ // folder containing extra information about some h5p packages such as if they have max scores.
+            'driver' => 'local',
+            'root' => app_path() . '/Libraries/H5P'
         ],
     ],
 

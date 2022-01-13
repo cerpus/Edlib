@@ -2,9 +2,9 @@
 
 namespace App;
 
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
@@ -21,30 +21,26 @@ class File extends Model
 
     public function generatePath()
     {
-        return config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name)], false) : config('app.article-public-path') . '/' . $this->article->id . '/' . $this->name;
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name), true);
     }
 
     public function generateTempPath()
     {
-        return config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name)], false) : config('app.article-public-path') . '/tmp/' . $this->name;
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name), true);
     }
 
     public function moveTempToArticle(Article $article)
     {
         $moved = false;
         try {
-            if( config('app.useContentCloudStorage')){
-                $disk = Storage::cloud();
-                $fromFile = sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name);
-                $toFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $article->id, $this->name);
-            } else {
-                $disk = Storage::disk('article-uploads');
-                $fromFile = 'tmp/' . $this->name;
-                $toFile = $article->id . '/' . $this->name;
-            }
-            $fromFileExists = $disk->exists($fromFile);
+            $contentAuthorStorage = app(ContentAuthorStorage::class);
+            $fromFile = sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name);
+            $toFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $article->id, $this->name);
+            $fromFileExists = $contentAuthorStorage->getBucketDisk()->exists($fromFile);
             if ($fromFileExists) {
-                $disk->move($fromFile, $toFile);
+                $contentAuthorStorage->getBucketDisk()->move($fromFile, $toFile);
                 $article->files()->save($this);
                 $moved = true;
             }
@@ -91,15 +87,10 @@ class File extends Model
             }
 
             $fileName = Uuid::uuid4()->toString() . '.' . $fileExtension;
+            $contentAuthorStorage = app(ContentAuthorStorage::class);
 
-            if( config('app.useContentCloudStorage')){
-                $disk = Storage::cloud();
-                $filePath = sprintf(ContentStorageSettings::ARTICLE_FILE, $path, $fileName);
-            } else {
-                $disk = Storage::disk('article-uploads');
-                $filePath = $path . '/' . $fileName;
-            }
-            $disk->put($filePath, file_get_contents($file->getRealPath()));
+            $filePath = sprintf(ContentStorageSettings::ARTICLE_FILE, $path, $fileName);
+            $contentAuthorStorage->getBucketDisk()->put($filePath, file_get_contents($file->getRealPath()));
 
             $newFile = new File();
             $newFile->name = $fileName;

@@ -1,6 +1,5 @@
 {
     "name": "proxy-url",
-    "testResultsProcessor": "jest-bamboo-reporter",
     "collectCoverage": true,
     "coverageReporters": ["text"],
     "transformIgnorePatterns": [

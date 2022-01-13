@@ -1,13 +1,12 @@
 FROM php:7.4-fpm-alpine AS php_base
 
 WORKDIR /app
-
 COPY --from=composer:2 /usr/bin/composer /usr/bin/
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-
-RUN set -eux; \
-    apk add --no-cache bash sudo rclone git unzip; \
-    install-php-extensions \
+COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
+RUN apk add --no-cache bash sudo rclone git unzip
+RUN install-php-extensions \
         bcmath \
         gettext \
         igbinary \
@@ -21,36 +20,26 @@ RUN set -eux; \
         redis \
         sockets \
         xmlrpc \
-        zip \
-    ;
-
+        zip
 COPY composer.json composer.lock ./
-
 RUN composer install \
     --no-autoloader \
     --no-dev \
     --no-scripts
-
 COPY . .
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
-
-RUN set -eux; \
-    mkdir -v -p \
-        storage/app/public \
-        storage/app/storage \
-        storage/framework/cache/data \
-        storage/framework/sessions \
-        storage/framework/testing \
-        storage/framework/views \
-        storage/logs \
-    ; \
-    composer install \
-        --no-dev \
-    ; \
-    cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
-    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
-    chown -R www-data:www-data .
+RUN mkdir -v -p \
+            storage/app/public \
+            storage/app/storage \
+            storage/framework/cache/data \
+            storage/framework/sessions \
+            storage/framework/testing \
+            storage/framework/views \
+            storage/logs
+RUN composer install \
+        --no-dev
+RUN cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library
+RUN cp -R /app/vendor/h5p/h5p-core public/h5p-php-library
+RUN chown -R www-data:www-data .
 
 
 FROM php_base as test
@@ -74,36 +63,12 @@ RUN rm -rf node_modules
 
 
 FROM php_base AS buildresult
-
 COPY --from=jsbuild /app/public /app/public
-
 RUN chown -R www-data:www-data /app/public
-# Create symlink from app to shared storage
-RUN set -eux; \
-    ln -s /storage/h5plibs public/h5pstorage; \
-    ln -s /storage/storage/app storage/app; \
-    ln -s /storage/storage/logs storage/logs; \
-    ln -s /storage/storage/framework storage/framework;
-
-
-FROM buildresult AS cron
-COPY docker/laravel.schedule /laravel.schedule
-RUN set -eux; crontab /laravel.schedule; rm /laravel.schedule; crontab -l
-CMD [ "bash", "-c", "set -eu; crond -f" ]
 
 
 FROM buildresult AS deploy
 CMD [ "php", "/app/artisan", "migrate", "--force" ]
-
-
-FROM buildresult AS init
-COPY docker/run-init.sh /init.sh
-RUN chmod +x /init.sh
-CMD /init.sh
-
-
-FROM buildresult AS horizonqueue
-CMD [ "php", "/app/artisan", "horizon" ]
 
 
 FROM buildresult AS phpfpm
@@ -111,10 +76,8 @@ CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 
 FROM buildresult AS phpfpm-dev
-RUN set -eux; \
-    install-php-extensions \
-        xdebug \
-    ;
+RUN install-php-extensions \
+        xdebug
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 CMD [ "php-fpm", "-R", "-F", "-O" ]

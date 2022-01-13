@@ -12,6 +12,9 @@ changelog:
     - title: Bug fixes
       labels:
         - bug
+    - title: Developer experience improvements
+      labels:
+        - dx
     - title: Documentation
       labels:
         - documentation

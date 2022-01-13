@@ -8,8 +8,7 @@ use Ramsey\Uuid\Uuid;
 
 trait VersionedArticleTrait
 {
-    protected $article_uploads = 'article-uploads';
-    protected $h5p_uploads = 'h5p-uploads';
+    protected string $article_uploads = 'article-uploads';
     protected $originalArticle;
 
     public function setUpOriginalArticle($params = [], $license = 'PRIVATE', $copyable = false)

@@ -66,13 +66,8 @@ return [
     | value to get prefixed to all our keys so we can avoid collisions.
     |
     */
-
     'prefix' => env(
         'CACHE_PREFIX',
         'api-contentauthor'
-    ),
-
-    'ttl' => [
-        'assets' => env("CACHE_ASSETS_TTL", 3600),
-    ]
+    )
 ];

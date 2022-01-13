@@ -2,8 +2,8 @@
 return [
     'oeruser' => env('OERUSER', env('NDLA_OERUSER', 'ndla')),
     'oerpass' => env('OERPASS', env('NDLA_OERPASS', 'ndla')),
-    'baseUrl' => env('NDLA_BASEURL', 'http://ndla.no'),
-    'linkBaseUrl' => env('NDLA_LINK_BASE_URL', 'Please set the NDLA_LINK_BASE_URL env variable'),
+    'baseUrl' => env('NDLA_BASEURL', 'http://ndlareplica.cerpusdev.net'),
+    'linkBaseUrl' => 'https://ndla.no',
     'userId' => env('IMPORT_USERID', env('NDLA_IMPORT_USERID', 'fake-import-id')),
     'notifyCore' => env('NOTIFY_CORE', true),
     'edStepUrl' => env('EDSTEP_URL', false),

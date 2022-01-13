@@ -19,18 +19,19 @@
     httpGet:
       path: {{ .healthUrl }}
       port: {{ .port | default "80" }}
-    timeoutSeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
+    periodSeconds: 3
     failureThreshold: 10
-  readinessProbe:
+
+{{ if .slowStartMaxTimeSeconds }}
+  startupProbe:
     httpGet:
       path: {{ .healthUrl }}
       port: {{ .port | default "80" }}
+    initialDelaySeconds: 10
     timeoutSeconds: 5
     periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 2
+    failureThreshold: {{ ceil (add (div .slowStartMaxTimeSeconds 10) (mod .slowStartMaxTimeSeconds 10)) }}
+{{ end }}
 {{ end }}
   envFrom:
     - configMapRef:

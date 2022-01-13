@@ -37,7 +37,7 @@ class H5PImport
 
         if (!$this->isPackageValid()) {
             throw new \Exception($core->h5pF->getErrorMessage());
-        };
+        }
 
         $displayOptions = $core->getDisplayOptionsForEdit();
         $metadata = collect($core->mainJsonData)

@@ -2,7 +2,7 @@
 ---
 {{- template "helpers.service" (dict "name" "versionapi" ) }}
 ---
-{{- template "helpers.deployment" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-app" "imageTag" .Chart.AppVersion "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") "replicaCount" .Values.minReplicaCount "healthUrl" "/health" "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
+{{- template "helpers.deployment" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-app" "imageTag" .Chart.AppVersion "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") "replicaCount" .Values.minReplicaCount "healthUrl" "/health" "slowStartMaxTimeSeconds" 300 "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "versionapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---

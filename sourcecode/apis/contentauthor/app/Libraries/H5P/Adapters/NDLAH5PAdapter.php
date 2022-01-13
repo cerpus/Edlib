@@ -257,7 +257,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         config(['app.deploymentEnvironment' => 'ndlaprod']);
         config(collect([
-            'app.useContentCloudStorage',
             'app.enable_licensing',
             'feature.versioning',
             'feature.licensing',
@@ -266,13 +265,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
-            'app.enable_ndla_import',
-            'ndla.notifyCore',
-            'ndla.oeruser',
-            'ndla.oerpass',
             'ndla.userId',
-            'ndla.baseUrl',
-            'ndla.linkBaseUrl',
             'h5p.image.authDomain',
             'h5p.image.key',
             'h5p.image.secret',

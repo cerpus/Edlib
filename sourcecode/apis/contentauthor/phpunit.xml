@@ -45,13 +45,9 @@
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="DB_CONNECTION" value="sqlite-test"/>
         <env name="ENABLE_LICENSING" value="true"/>
-        <env name="FEATURE_VERSIONING" value="true"/>
         <env name="FEATURE_CONTENT_LOCKING" value="true"/>
         <env name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
         <env name="FEATURE_COLLABORATION" value="true"/>
-        <env name="UPLOAD_STORAGE_DRIVER" value="local"/>
-        <env name="UPLOAD_STORAGE_PATH_ARTICLE" value="/tmp/articletest"/>
-        <env name="UPLOAD_STORAGE_PATH_H5P" value="/tmp/h5pstoragetest"/>
         <env name="LICENSE_SITE" value="ContentAuthorTest"/>
         <env name="H5P_CONSUMER_KEY" value="h5p"/>
         <env name="H5P_CONSUMER_SECRET" value="secret2"/>
@@ -65,7 +61,7 @@
         <env name="OER_LICENSES_URL" value=""/>
         <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <env name="FEATURE_ENABLE_DRAFT_LOGIC" value="false"/>
-        <env name="ENABLE_CLOUD_STORAGE" value="false"/>
         <env name="FEATURE_ENABLE_RECOMMENDATION_ENGINE" value="false"/>
+        <env name="FILESYSTEM_CLOUD" value="tmp"/>
     </php>
 </phpunit>

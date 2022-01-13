@@ -53,7 +53,7 @@ export default async () => {
         res.json(features);
     });
 
-    router.get('/resources/_ah/health', (req, res) => {
+    router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
 
         if (probe === 'liveness') {
@@ -61,7 +61,7 @@ export default async () => {
         } else if (probe === 'readiness') {
             res.send('ok');
         } else {
-            res.status(503).send();
+            res.send();
         }
     });
 
