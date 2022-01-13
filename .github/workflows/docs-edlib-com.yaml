@@ -22,7 +22,7 @@ env:
   shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
-  create_release:
+  test_and_release:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v2
@@ -31,18 +31,17 @@ jobs:
           with:
             node-version: 14
 
-        - name: "Yarn install with cache"
-          uses: bahmutov/npm-install@v1
-          with:
-            working-directory: ${{ env.workingDirectory }}
-
-        - name: "Build"
-          run: yarn build
-          shell: bash
-
         - name: Set up Docker Buildx
-          if: env.shouldPublishImage == '1'
           uses: docker/setup-buildx-action@v1
+
+        - name: Build to ensure everything works
+          uses: docker/build-push-action@v2
+          with:
+            tags: "build:latest"
+            context: ${{ env.workingDirectory }}
+            target: build
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
 
         - name: Configure AWS Credentials
           if: env.shouldPublishImage == '1'
@@ -66,5 +65,7 @@ jobs:
           with:
             push: true
             tags: public.ecr.aws/f0t8l9h1/docs-edlib-com:${{ inputs.versionToRelease }}
-            context: sourcecode/docs/docs.edlib.com
+            context: ${{ env.workingDirectory }}
             target: prod
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
