@@ -62,10 +62,6 @@ module.exports = {
           title: 'Solutions',
           items: [
             {
-              label: 'Case studies',
-              to: '/docs/solutions/case-studies',
-            },
-            {
               label: 'Open source',
               to: '/docs/solutions/open-source',
             },
