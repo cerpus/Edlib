@@ -210,6 +210,7 @@ return [
         'en-gb' => 'English',
         'nb-no' => 'Norsk',
         /*'sv-se' => 'Svenska',*/
+        'ko-kr' => '한국어',
     ],
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
