@@ -21,11 +21,6 @@ return [
         'accountId' => env("H5P_VIDEO_ACCOUNT_ID"),
         'authUrl' => env("H5P_VIDEO_AUTH_URL"),
     ],
-    'ndla' => [
-        'custom-css' => env("H5P_NDLA_CUSTOM_CSS", false), //deprecated
-        'include-mathjax' => env("H5P_NDLA_INCLUDE_MATHJAX", false), //deprecated
-        'add-font-sizes' => env("H5P_NDLA_ADD_FONTSIZES", false), //deprecated
-    ],
     'singleContentUpgrade' => env('H5P_SINGLE_CONTENT_UPGRADE', true),
     'developmentMode' => env('H5P_DEVELOPMENT_MODE', false),
     'isHubEnabled' => env('H5P_IS_HUB_ENABLED', false),
@@ -54,7 +49,6 @@ return [
     ],
     'saveFrequency' => env('H5P_SAVE_FREQUENCY', 15),
     'include-custom-css' => env("H5P_INCLUDE_CUSTOM_CSS", false),
-    'H5PStorageDisk' => env('H5P_STORAGE_DISK', 'h5p-uploads'),
     "default-resource-language" => env("H5P_DEFAULT_RESOURCE_LANGUAGE", "eng"),
     'upload-media-files-timeout' => env("H5P_UPLOAD_MEDIA_FILES_TIMEOUT", 5),
     'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),

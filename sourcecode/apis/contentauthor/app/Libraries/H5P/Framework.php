@@ -277,10 +277,9 @@ class Framework implements \H5PFrameworkInterface, Result
         return $message;
     }
 
-    public function getH5pPath()
+    public function getH5pPath(string $path)
     {
-        $plugin = H5Plugin::get_instance($this->db);
-        return $plugin->getPath();
+        return $this->disk->path($path);
     }
 
     /**

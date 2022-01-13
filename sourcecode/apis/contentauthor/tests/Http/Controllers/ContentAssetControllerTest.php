@@ -3,22 +3,24 @@
 namespace Tests\Http\Controllers;
 
 use App\Http\Controllers\ContentAssetController;
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\TestCase;
+use Tests\Traits\ContentAuthorStorageTrait;
 
 class ContentAssetControllerTest extends TestCase
 {
+    use ContentAuthorStorageTrait;
     private $testDisk, $fakedisk;
 
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->setUpContentAuthorStorage();
         $this->testDisk = Storage::disk('testDisk');
-        $this->fakedisk = Storage::fake('h5p-uploads');
+        $this->fakedisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
         config([
             'h5p.storage.path' => $this->fakedisk->path(""),
         ]);
@@ -35,7 +37,7 @@ class ContentAssetControllerTest extends TestCase
     public function nonExistingCachedAsset()
     {
         $this->expectException(NotFoundHttpException::class);
-        (new ContentAssetController())->__invoke("not_valid_path", new Request());
+        (new ContentAssetController($this->contentAuthorStorage))->__invoke("not_valid_path", new Request());
     }
 
     /**
@@ -46,7 +48,7 @@ class ContentAssetControllerTest extends TestCase
         $this->linkCachedAssetsFolder();
         $path = "cachedassets/my_cached_asset.css";
         $request = Request::create($path);
-        $response = (new ContentAssetController())->__invoke($path, $request);
+        $response = (new ContentAssetController($this->contentAuthorStorage))->__invoke($path, $request);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('inline; filename=my_cached_asset.css', $response->headers->get('Content-Disposition'));
     }

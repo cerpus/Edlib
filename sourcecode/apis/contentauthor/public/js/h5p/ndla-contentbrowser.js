@@ -546,24 +546,12 @@ class VideoBrowser extends ContentBrowserBase {
             }
         }
 
-        const maxDepth = 20;
-        let abort = false;
-        let currentDepth = 1;
-        do {
-            let fieldName = 'licenseinfo';
-            if (currentDepth > 1) {
-                fieldName += currentDepth;
-            }
-
-            if (ContentBrowserBase.checkNestedRequirements(values, `values.custom_fields.${fieldName}`)) {
-                copyRight.authors.push({ name: values.custom_fields[fieldName] });
-            } else {
-                abort = true;
-            }
-
-            currentDepth++;
-        } while (currentDepth < maxDepth && !abort);
-
+        if (ContentBrowserBase.checkNestedRequirements(values, 'values.custom_fields.licenseinfo')) {
+            copyRight.authors.push({ name: values.custom_fields.licenseinfo });
+        }
+        if (ContentBrowserBase.checkNestedRequirements(values, 'values.custom_fields.licenseinfo2')) {
+            copyRight.authors.push({ name: values.custom_fields.licenseinfo2 });
+        }
         return copyRight;
     }
 

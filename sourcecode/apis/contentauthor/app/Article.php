@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Log;
@@ -234,7 +235,8 @@ class Article extends Content implements VersionableObject
 
     public function convertToCloudPaths()
     {
-        $this->content = str_replace(config('app.article-public-path'), route('content.asset', ['path' => ContentStorageSettings::ARTICLE_DIR], false), $this->content);
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
+        $this->content = str_replace('/h5pstorage/article-uploads', $contentAuthorStorage->getAssetUrl(ContentStorageSettings::ARTICLE_DIR), $this->content);
     }
 
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject

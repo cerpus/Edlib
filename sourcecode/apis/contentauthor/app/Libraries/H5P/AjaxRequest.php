@@ -3,6 +3,7 @@
 namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\UnknownH5PPackageException;
@@ -20,6 +21,7 @@ class AjaxRequest extends \H5PEditorEndpoints
     private $core;
     private $returnType;
     private $editor;
+    private ContentAuthorStorage $contentAuthorStorage;
 
     const CONTENT_UPGRADE_PROCESS = 'content_upgrade_progress';
     const CONTENT_SETFINISHED = 'setFinished';
@@ -30,11 +32,17 @@ class AjaxRequest extends \H5PEditorEndpoints
     const LIBRARY_DELETE = 'delete';
     const LIBRARY_REBUILD = 'rebuild';
 
-    public function __construct(H5Plugin $plugin, \H5PCore $core, \H5peditor $editor)
+    public function __construct(
+        H5Plugin             $plugin,
+        \H5PCore             $core,
+        \H5peditor           $editor,
+        ContentAuthorStorage $contentAuthorStorage
+    )
     {
         $this->h5pPlugin = $plugin;
         $this->core = $core;
         $this->editor = $editor;
+        $this->contentAuthorStorage = $contentAuthorStorage;
     }
 
     public function getReturnType()
@@ -176,12 +184,13 @@ class AjaxRequest extends \H5PEditorEndpoints
         $originalAjax->action(self::LIBRARY_INSTALL, $token, $library);
     }
 
-    private function handleEditorBehaviorSettings(Request $request, $library)
+    private function handleEditorBehaviorSettings(Request $request, $library): array
     {
         $settings = $request->session()->get(sprintf(SessionKeys::EXT_EDITOR_BEHAVIOR_SETTINGS, $request->get('redirectToken')));
         if (empty($settings)) {
             return [];
         }
+
         try {
             /** @var ContentTypeInterface $package */
             $package = H5PPackageProvider::make($library);
@@ -195,14 +204,13 @@ class AjaxRequest extends \H5PEditorEndpoints
 
         $fileName = sprintf(self::H5P_BEHAVIOR_SETTINGS, md5($library . '|' . $styles));
 
-        $disk = Storage::disk('h5p-uploads');
-        if (!$disk->has($fileName)) {
-            $disk->put($fileName, $styles);
+        if (!$this->contentAuthorStorage->getBucketDisk()->has($fileName)) {
+            $this->contentAuthorStorage->getBucketDisk()->put($fileName, $styles);
         }
 
         return [
             'styles' => $styles,
-            'file' => $disk->url($fileName),
+            'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
         ];
 
     }
@@ -238,12 +246,6 @@ class AjaxRequest extends \H5PEditorEndpoints
     {
         $framework = $this->core->h5pF;
 
-        /** @var \H5PValidator $validator */
-        $validator = resolve(\H5PValidator::class);
-        $tmpdir = $framework->getH5pPath() . '/libraries/';
-        $libraryData = $validator->getLibraryData($H5PLibrary->getLibraryString(true), $tmpdir . '/' . $H5PLibrary->getLibraryString(true), $tmpdir);
-        $libraryData['libraryId'] = $H5PLibrary->id;
-
         $libraries = collect();
         $this->getLibraryDetails($H5PLibrary, $libraries)
             ->each(function ($library) use ($framework) {
@@ -270,8 +272,19 @@ class AjaxRequest extends \H5PEditorEndpoints
     private function getLibraryDetails(H5PLibrary $H5PLibrary, $affectedLibraries)
     {
         $validator = resolve(\H5PValidator::class);
-        $tmpdir = $this->core->h5pF->getH5pPath() . '/libraries/'; //TODO Load files from remote
-        $libraryData = $validator->getLibraryData($H5PLibrary->getLibraryString(true), $tmpdir . '/' . $H5PLibrary->getLibraryString(true), $tmpdir);
+        $h5pDataFolderName = $H5PLibrary->getLibraryString(true);
+        $tmpLibrariesRelative = 'libraries';
+        $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
+        // Download files from bucket to tmp folder
+        $this->contentAuthorStorage->copyFolder(
+            $this->contentAuthorStorage->getBucketDisk(),
+            $this->contentAuthorStorage->getH5pTmpDisk(),
+            $tmpLibraryRelative,
+            $tmpLibraryRelative
+        );
+        $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
+        $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);
+        $libraryData = $validator->getLibraryData($H5PLibrary->getLibraryString(true), $tmpLibraryFolder, $tmpLibraries);
         $libraryData['libraryId'] = $H5PLibrary->id;
 
         if (!$affectedLibraries->has($H5PLibrary->getLibraryString())) {
@@ -297,7 +310,7 @@ class AjaxRequest extends \H5PEditorEndpoints
         $this->core->deleteLibrary($library);
 
         $library->refresh();
-        if( $library->exists){
+        if ($library->exists) {
             throw new \Exception("Library not deleted.");
         }
         return [

@@ -2,8 +2,8 @@
 
 namespace App\Libraries\H5P;
 
-
 use App\H5PLibrary;
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,11 +12,13 @@ class H5PArtisan
     private $uploadDisk, $librariesDisk;
     private $presaveDirectories;
     private $command;
+    private ContentAuthorStorage $contentAuthorStorage;
 
     public function __construct(Storage $storage, Command $command)
     {
-        $this->librariesDisk = $storage::disk('h5p');
-        $this->uploadDisk = $storage::disk('h5p-uploads');
+        $this->contentAuthorStorage = app(ContentAuthorStorage::class);
+        $this->librariesDisk = $storage::disk('h5p-library');
+        $this->uploadDisk = $this->contentAuthorStorage->getBucketDisk();
         $this->command = $command;
     }
 

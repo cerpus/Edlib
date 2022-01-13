@@ -15,22 +15,24 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
+use Tests\Traits\ContentAuthorStorageTrait;
 use Tests\Traits\MockH5PAdapterInterface;
 use Tests\Traits\WithFaker;
 use ZipArchive;
 
 class H5PExportTest extends TestCase
 {
-    use DatabaseMigrations, RefreshDatabase, WithFaker, MockH5PAdapterInterface;
+    use DatabaseMigrations, RefreshDatabase, WithFaker, MockH5PAdapterInterface, ContentAuthorStorageTrait;
 
     private $testDisk, $exportDisk;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->setUpContentAuthorStorage();
 
         $this->testDisk = \Storage::disk('testDisk');
-        $this->exportDisk = \Storage::fake('h5p-exports');
+        $this->exportDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
         config(['h5p.storage.path' => $this->exportDisk->path("")]);
     }
 

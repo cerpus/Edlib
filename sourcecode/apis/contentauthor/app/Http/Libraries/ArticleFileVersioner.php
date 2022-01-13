@@ -3,32 +3,31 @@
 namespace App\Http\Libraries;
 
 use App\Article;
-use Illuminate\Support\Facades\Storage;
+use App\Libraries\ContentAuthorStorage;
+use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\NDLA\Importers\Handlers\Helpers\HTMLHelper;
 
 class ArticleFileVersioner
 {
     use HTMLHelper;
 
+    private ContentAuthorStorage $contentAuthorStorage;
     protected $originalArticle, $newArticle;
-
-    protected $disk = 'article-uploads';
 
     public function __construct(Article $originalArticle, Article $newArticle)
     {
         $this->originalArticle = $originalArticle;
         $this->newArticle = $newArticle;
+        $this->contentAuthorStorage = app(ContentAuthorStorage::class);
     }
 
     public function copy()
     {
-        $originalPath = DIRECTORY_SEPARATOR . $this->originalArticle->id;
-
-        $originalFiles = Storage::disk($this->disk)->files($originalPath);
-
+        $originalPath = sprintf(ContentStorageSettings::ARTICLE_PATH, $this->originalArticle->id);
+        $originalFiles = $this->contentAuthorStorage->getBucketDisk()->files($originalPath);
         foreach ($originalFiles as $originalFile) {
             $newPath = str_replace($this->originalArticle->id, $this->newArticle->id, $originalFile);
-            Storage::disk($this->disk)->copy($originalFile, $newPath);
+            $this->contentAuthorStorage->getBucketDisk()->copy($originalFile, $newPath);
         }
 
         return $this;

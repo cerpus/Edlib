@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\UuidForKey;
@@ -115,7 +116,8 @@ class Gametype extends Model implements GameTypeModelContract
 
     public function getPublicFolder()
     {
-        return config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder())], false) . "/" : Storage::disk(config('app.upload-storage-disk-game'))->url($this->getMachineFolder());
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder()), true) . '/';
     }
 
     public function getMachineFolder()
@@ -127,22 +129,23 @@ class Gametype extends Model implements GameTypeModelContract
     {
         $assets = collect();
         $machinePath = $this->getMachineFolder();
+        $contentAuthorStorage = app(ContentAuthorStorage::class);
         switch ($type) {
             case 'scripts':
-                $assets = collect($this->getScripts())->map(function ($script) use ($machinePath) {
-                    return config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $script)], false) : Storage::disk(config('app.upload-storage-disk-game'))->url($machinePath . $script);
+                $assets = collect($this->getScripts())->map(function ($script) use ($machinePath, $contentAuthorStorage) {
+                    return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $script));
                 });
                 break;
 
             case 'css':
-                $assets = collect($this->getCss())->map(function ($css) use ($machinePath) {
-                    return config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $css)], false) : Storage::disk(config('app.upload-storage-disk-game'))->url($machinePath . $css);
+                $assets = collect($this->getCss())->map(function ($css) use ($machinePath, $contentAuthorStorage) {
+                    return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $css));
                 });
                 break;
 
             case 'links':
-                $assets = collect($this->getLinks())->map(function ($link) use ($machinePath) {
-                    $link['href'] = config('app.useContentCloudStorage') ? route('content.asset', ['path' => sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $link['href'])], false) : Storage::disk(config('app.upload-storage-disk-game'))->url($machinePath . $link['href']);
+                $assets = collect($this->getLinks())->map(function ($link) use ($machinePath, $contentAuthorStorage) {
+                    $link['href'] = $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $link['href']));
                     return (object)$link;
                 });
                 break;

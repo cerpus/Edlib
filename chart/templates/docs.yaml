@@ -1,0 +1,9 @@
+{{ if .Values.enableDocs }}
+{{- template "helpers.service" (dict "name" "docs" ) }}
+---
+{{- template "helpers.deployment" (dict "name" "docs" "image" "public.ecr.aws/f0t8l9h1/docs-edlib-com" "imageTag" .Chart.AppVersion "replicaCount" .Values.minReplicaCount  "healthUrl" "/" ) }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "docs" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "docs" ) }}
+{{ end }}

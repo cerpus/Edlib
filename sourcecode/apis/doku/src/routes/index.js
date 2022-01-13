@@ -49,7 +49,7 @@ export default async () => {
     apiRouter.use(await resources());
     apiRouter.use(await status());
 
-    router.get('/api/_ah/health', (req, res) => {
+    router.get('/_ah/health', (req, res) => {
         const probe = req.query.probe;
 
         if (probe === 'readiness') {
@@ -60,7 +60,7 @@ export default async () => {
                     res.status(503).send();
                 });
         } else {
-            res.status(503).send();
+            res.send();
         }
     });
 

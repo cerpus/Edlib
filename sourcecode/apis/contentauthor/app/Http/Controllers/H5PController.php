@@ -8,6 +8,7 @@ use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
 use App\H5PFile;
 use App\Jobs\H5PFilesUpload;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
@@ -55,6 +56,7 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use stdClass;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -156,7 +158,7 @@ class H5PController extends Controller
                 'url' => request()->url(),
                 'request' => request()->all(),
             ]);
-            abort(404, 'Resource not found.');
+            throw new NotFoundHttpException('Resource not found', $t);
         }
 
         return view('h5p.show', $viewData);
@@ -834,9 +836,9 @@ class H5PController extends Controller
      * @return array|\Illuminate\Http\JsonResponse|void
      * @throws Exception
      */
-    public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor)
+    public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
     {
-        $ajaxRequest = new AjaxRequest($this->h5pPlugin, $core, $editor);
+        $ajaxRequest = new AjaxRequest($this->h5pPlugin, $core, $editor, $contentAuthorStorage);
         $returnValue = $ajaxRequest->handleAjaxRequest($request);
         switch ($ajaxRequest->getReturnType()) {
             case "json":

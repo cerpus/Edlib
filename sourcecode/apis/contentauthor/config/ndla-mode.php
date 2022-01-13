@@ -11,14 +11,9 @@ return [
     ],
     'app' => [
         'enable_licensing' => env('NDLA_ENABLE_LICENSING', false),
-        'enable_ndla_import' => env('NDLA_ENABLE_NDLA_IMPORT', false),
         'displayPropertiesBox' => env('NDLA_H5P_DISPLAY_PROPERTIES_BOX', true),
     ],
     'ndla' => [
-        'oeruser' => env('NDLA_OERUSER', 'ndla'),
-        'oerpass' => env('NDLA_OERPASS', 'ndla'),
-        'baseUrl' => env('NDLA_BASEURL', 'http://ndla.no'),
-        'linkBaseUrl' => env('NDLA_LINK_BASE_URL', 'Please set the NDLA_LINK_BASE_URL env variable'),
         'userId'  => env('NDLA_IMPORT_USERID', 'fake-import-id'),
     ],
     'h5p' => [
