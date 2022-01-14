@@ -2,7 +2,15 @@ import React from 'react';
 import store from 'store';
 import sign from 'jwt-encode';
 import { isTokenExpired } from '../helpers/token.js';
-import { Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from '@material-ui/core';
+import {
+    Button,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Radio,
+    RadioGroup,
+    TextField,
+} from '@material-ui/core';
 
 const AuthWrapper = ({ children }) => {
     const [jwtToken, setJwtToken] = React.useState(null);
@@ -33,7 +41,7 @@ const AuthWrapper = ({ children }) => {
         store.set('lastName', lastName);
         store.set('email', email);
         store.set('userId', id);
-        store.set('language', language)
+        store.set('language', language);
     }, [firstName, lastName, email, id, language]);
 
     if (!jwtToken) {
@@ -75,10 +83,18 @@ const AuthWrapper = ({ children }) => {
                         <RadioGroup
                             name="language"
                             value={language}
-                            onChange={e => setLanguage(e.target.value)}
+                            onChange={(e) => setLanguage(e.target.value)}
                         >
-                            <FormControlLabel value="nb" control={<Radio />} label="Norsk" />
-                            <FormControlLabel value="en" control={<Radio />} label="English" />
+                            <FormControlLabel
+                                value="nb"
+                                control={<Radio />}
+                                label="Norsk"
+                            />
+                            <FormControlLabel
+                                value="en"
+                                control={<Radio />}
+                                label="English"
+                            />
                         </RadioGroup>
                     </FormControl>
                 </div>
@@ -95,8 +111,14 @@ const AuthWrapper = ({ children }) => {
                                     data: {
                                         isFakeToken: true,
                                         user: {
-                                            firstName,
-                                            lastName,
+                                            firstName:
+                                                firstName.length !== 0
+                                                    ? firstName
+                                                    : null,
+                                            lastName:
+                                                lastName.length !== 0
+                                                    ? lastName
+                                                    : null,
                                             email,
                                             id,
                                             isAdmin: true,
