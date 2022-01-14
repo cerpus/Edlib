@@ -285,6 +285,27 @@ services:
     depends_on:
       - mysql
 
+  resourceapi-subscribers:
+    build:
+      context: ./sourcecode/apis/resources
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh resourceapi:80;update-ca-certificates; yarn dev:subscribers'"
+    volumes:
+      - edlib-resources_nodemodules:/var/www/app/node_modules
+      - ./sourcecode/apis/resources/src:/var/www/app/src
+      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    depends_on:
+      - resourceapi
+
   ltiapi:
     build:
       context: ./sourcecode/apis/lti
