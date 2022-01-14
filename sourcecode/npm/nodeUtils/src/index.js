@@ -1,6 +1,7 @@
 export { default as setupApi } from './setupApi/api.js';
 export { default as setupApp } from './setupApi/app.js';
 export { default as runMigrations } from './setupApi/runMigrations.js';
+export { default as runSubscribers } from './setupApi/runSubscribers.js';
 
 export { default as logger } from './services/logger.js';
 export { default as runAsync } from './services/runAsync.js';
