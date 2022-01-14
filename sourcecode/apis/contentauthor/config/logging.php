@@ -59,7 +59,7 @@ return [
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
-            'formatter' => Monolog\Formatter\JsonFormatter::class,
+            'formatter' => App\Logging\JsonFormatter::class,
             'with' => [
                 'stream' => 'php://stderr',
             ],
