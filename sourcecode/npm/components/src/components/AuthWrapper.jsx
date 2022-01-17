@@ -119,7 +119,10 @@ const AuthWrapper = ({ children }) => {
                                                 lastName.length !== 0
                                                     ? lastName
                                                     : null,
-                                            email,
+                                            email:
+                                                email.length !== 0
+                                                    ? email
+                                                    : null,
                                             id,
                                             isAdmin: true,
                                         },
