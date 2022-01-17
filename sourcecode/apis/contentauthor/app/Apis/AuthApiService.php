@@ -37,7 +37,7 @@ class AuthApiService
                     ->wait();
             });
 
-            $user = new User($userId, $data["firstName"] ?? '', $data["lastName"] ?? '', $data["email"]);
+            $user = new User($userId, $data["firstName"], $data["lastName"], $data["email"]);
 
             Cache::put($cacheKey, $user, now()->addMinutes(60));
 
