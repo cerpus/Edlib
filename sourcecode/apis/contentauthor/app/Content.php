@@ -123,7 +123,7 @@ abstract class Content extends Model implements RecommendableInterface
             $authApi = app(AuthApiService::class);
             $user = $authApi->getUser($ownerId);
             if ($user) {
-                $ownerName = trim(implode(' ', [$user->getFirstName(''), $user->getLastName('')]));
+                $ownerName = trim(implode(' ', [$user->getFirstName() ?? '', $user->getLastName() ?? '']));
             }
 
         } catch (Exception $e) {
@@ -295,9 +295,9 @@ abstract class Content extends Model implements RecommendableInterface
         $ownerData = $authApiService->getUser($user->id);
 
         if ($ownerData) {
-            $user->firstname = $ownerData->getFirstName('');
-            $user->lastName = $ownerData->getLastName('');
-            $user->email = $ownerData->getEmail('');
+            $user->firstname = $ownerData->getFirstName() ?? '';
+            $user->lastName = $ownerData->getLastName() ?? '';
+            $user->email = $ownerData->getEmail() ?? '';
         }
 
         return $user;

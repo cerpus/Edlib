@@ -22,18 +22,18 @@ class User
         return $this->id;
     }
 
-    public function getFirstName($default = null): ?string
+    public function getFirstName(): ?string
     {
-        return $this->firstName ?? $default;
+        return $this->firstName;
     }
 
-    public function getLastName($default = null): ?string
+    public function getLastName(): ?string
     {
-        return $this->lastName ?? $default;
+        return $this->lastName;
     }
 
-    public function getEmail($default = null): ?string
+    public function getEmail(): ?string
     {
-        return $this->email ?? $default;
+        return $this->email;
     }
 }
