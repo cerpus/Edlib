@@ -41,4 +41,12 @@ mix
     .js('resources/assets/entrypoints/react-embed.js', 'js/react-embed.js')
     .js('resources/assets/entrypoints/react-h5p.js', 'js/react-h5p.js')
     .js('resources/assets/entrypoints/react-questionset.js', 'js/react-questionset.js')
+    .webpackConfig({
+        resolve: {
+            fallback: {
+                // silence warnings about colors not being available
+                os: false,
+            }
+        }
+    })
 ;
