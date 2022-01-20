@@ -4,8 +4,8 @@ namespace App\Libraries\H5P\Video;
 
 
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
+use GuzzleHttp\ClientInterface;
+use InvalidArgumentException;
 
 class StreampsAdapter implements H5PVideoInterface
 {
@@ -14,10 +14,21 @@ class StreampsAdapter implements H5PVideoInterface
     const VIDEO_DETAILS = '/video/%s/%s.json';
     const SEE_VIDEO = '/video/%s/%s';
     const MIME_TYPE = 'video/Streamps';
-    private $client, $appId, $appKey;
 
-    public function __construct(Client $client, $appId, $appKey)
+    private ClientInterface $client;
+    private string $appId;
+    private string $appKey;
+
+    public function __construct(ClientInterface $client, string $appId, string $appKey)
     {
+        if ($appId === '') {
+            throw new InvalidArgumentException('$appId cannot be an empty string');
+        }
+
+        if ($appKey === '') {
+            throw new InvalidArgumentException('$appKey cannot be an empty string');
+        }
+
         $this->client = $client;
         $this->appId = $appId;
         $this->appKey = $appKey;
