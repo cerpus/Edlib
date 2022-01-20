@@ -125,8 +125,9 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
             ->pluck('src')
             ->first();
 
+        $client = resolve(Client::class);
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
-        $this->client->get($videoSource, [
+        $client->get($videoSource, [
             'sink' => $tempFile
         ]);
 
