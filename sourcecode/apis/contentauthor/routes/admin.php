@@ -103,9 +103,6 @@ Route::middleware('auth')->namespace('Admin')->prefix('admin')->group(
         Route::get('norgesfilm/ndla-url-not-found', 'NorgesfilmController@ndlaUrlNotFound')->name('admin.norgesfilm.ndla-url-not-found');
 
         // More general Admin Backend routes
-        Route::get('logs', "AdminController@logs")->name('admin.logs');
-        Route::get('system-info', "AdminController@systemInfo")->name('admin.system-info');
-
         Route::resource('admin-users', 'AdminUserController')->only(['index', 'store', 'destroy']);
 
         Route::get('support/versioning', 'VersioningController@index')->name('admin.support.versioning');

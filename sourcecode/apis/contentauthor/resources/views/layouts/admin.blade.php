@@ -40,13 +40,6 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('admin.logs') }}">View Laravel Log</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.system-info') }}">System Info</a>
-                            </li>
-
-                            <li>
                                 <a href="{{ route('admin-users.index') }}">Admin users</a>
                             </li>
 
