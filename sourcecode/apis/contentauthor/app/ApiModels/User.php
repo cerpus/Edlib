@@ -4,12 +4,12 @@ namespace App\ApiModels;
 
 class User
 {
-    private $id;
-    private $firstName;
-    private $lastName;
-    private $email;
+    private string $id;
+    private ?string $firstName;
+    private ?string $lastName;
+    private ?string $email;
 
-    public function __construct(string $id, string $firstName, string $lastName, string $email)
+    public function __construct(string $id, ?string $firstName, ?string $lastName, ?string $email)
     {
         $this->id = $id;
         $this->firstName = $firstName;
@@ -22,17 +22,17 @@ class User
         return $this->id;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
