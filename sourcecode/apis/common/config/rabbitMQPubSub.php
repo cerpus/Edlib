@@ -1,5 +1,7 @@
 <?php
 
+use App\Messaging\Handlers\AuthMigrationExecuteDone;
+use App\Messaging\Handlers\AuthMigrationInfoFeedback;
 use App\Messaging\Handlers\EdlibGdprDeleteRequestFeedback;
 
 return [
@@ -15,6 +17,20 @@ return [
             'subscriptions' => [
                 'edlib_gdpr_delete_request_feedback-common' => [
                     'handler' => EdlibGdprDeleteRequestFeedback::class
+                ]
+            ]
+        ],
+        'auth_migration_info_feedback' => [
+            'subscriptions' => [
+                'auth_migration_info_feedback-common' => [
+                    'handler' => AuthMigrationInfoFeedback::class
+                ]
+            ]
+        ],
+        'auth_migration_execute_done' => [
+            'subscriptions' => [
+                'auth_migration_execute_done-common' => [
+                    'handler' => AuthMigrationExecuteDone::class
                 ]
             ]
         ],

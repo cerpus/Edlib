@@ -35,9 +35,8 @@ const Sidebar = () => {
     const classes = useStyles();
     const history = useHistory();
     const location = useLocation();
-    const [currentlyExpandedName, setCurrentlyExpandedName] = React.useState(
-        null
-    );
+    const [currentlyExpandedName, setCurrentlyExpandedName] =
+        React.useState(null);
 
     React.useEffect(() => {
         setCurrentlyExpandedName(null);
@@ -67,8 +66,8 @@ const Sidebar = () => {
             to: '/jobs',
             icon: <LocalOffer />,
             subLinks: [
-                { name: 'Migrate old core data', to: '/migrate-core' },
                 { name: 'Resources', to: '/resources' },
+                { name: 'Auth migration', to: '/auth-migration' },
             ],
         },
         {

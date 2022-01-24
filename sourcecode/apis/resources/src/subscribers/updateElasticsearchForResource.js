@@ -7,22 +7,22 @@ import * as elasticSearchService from '../services/elasticSearch.js';
  * @param pubSubConnection
  * @returns {function(*): Promise<void>}
  */
-const updateElasticsearchForResource = ({ pubSubConnection }) => async ({
-    resourceId,
-}) => {
-    const context = buildRawContext({}, {}, { pubSubConnection });
+const updateElasticsearchForResource =
+    ({ pubSubConnection }) =>
+    async ({ resourceId }) => {
+        const context = buildRawContext({}, {}, { pubSubConnection });
 
-    if (!resourceId) {
-        return;
-    }
+        if (!resourceId) {
+            return;
+        }
 
-    const resource = await context.db.resource.getById(resourceId);
+        const resource = await context.db.resource.getById(resourceId);
 
-    if (!resource) {
-        return;
-    }
+        if (!resource) {
+            return;
+        }
 
-    await elasticSearchService.syncResource(context, resource);
-};
+        await elasticSearchService.syncResource(context, resource);
+    };
 
 export default updateElasticsearchForResource;

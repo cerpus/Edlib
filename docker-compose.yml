@@ -112,7 +112,12 @@ services:
 
   versionapi:
     image: maven:3-openjdk-11
-    command: [sh, -c, '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"']
+    command:
+      [
+        sh,
+        -c,
+        '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
+      ]
     volumes:
       - maven_cache:/root/.m2
       - ./sourcecode/apis/version/:/app
@@ -120,7 +125,7 @@ services:
     environment:
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres/versionapi'
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres/versionapi"
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: thepgpassword
     depends_on:
@@ -128,7 +133,7 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost/health]
     ports:
-      - '5504:5504'
+      - "5504:5504"
     working_dir: /app
 
   licenseapi:
@@ -302,7 +307,7 @@ services:
       - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
       - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
       - ./localSetup/helpers/start-scripts:/start-scripts
-      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - resourceapi
 
