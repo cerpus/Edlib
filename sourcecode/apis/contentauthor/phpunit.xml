@@ -13,7 +13,6 @@
          beStrictAboutCoversAnnotation="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
-         convertDeprecationsToExceptions="true"
          verbose="true"
          processIsolation="false"
          stopOnFailure="false">
