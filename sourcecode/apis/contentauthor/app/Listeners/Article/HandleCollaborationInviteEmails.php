@@ -39,7 +39,7 @@ class HandleCollaborationInviteEmails
                     if ($collaborator) {// Send mails to the new additions
                         $mailData = new \stdClass();
                         $mailData->emailTo = $collaborator;
-                        $mailData->inviterName = $event->theSession['name'];
+                        $mailData->inviterName = $event->theSession['name'] ?? '';
                         $mailData->contentTitle = $event->article->title;
                         $mailData->originSystemName = array_key_exists('originalSystem', $event->theSession) ? $event->theSession['originalSystem']: 'edLib';
                         $mailData->emailTitle = trans('emails/collaboration-invite.email-title',
