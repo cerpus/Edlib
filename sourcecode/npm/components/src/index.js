@@ -13,3 +13,4 @@ export {
     createEmptyEditorState,
     createFromRaw,
 } from './exportedComponents/Doku/draftJSHelpers/createEditorState';
+export { default as useToken } from './hooks/useToken';
