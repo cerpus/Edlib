@@ -120,7 +120,7 @@ class License
 
         try {
             $content = $this->lc->getContent($id);
-            if (property_exists($content, 'licenses') && !empty($content->licenses)) {
+            if (!empty($content->licenses)) {
                 $license = $content->licenses[0];
                 // Normalize license
                 $license = $this->toEdLibLicenseString($license);

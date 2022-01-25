@@ -1,13 +1,21 @@
 import React from 'react';
 import store from 'store';
-import storageKeys from '../../constants/storageKeys.js';
-import request from '../../helpers/request.js';
-import AuthContext from '../../contexts/auth.js';
-import { Button, TextField } from '@material-ui/core';
-import jwt from 'jsonwebtoken';
+import sign from 'jwt-encode';
+import {
+    Button,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    Radio,
+    RadioGroup,
+    TextField,
+} from '@material-ui/core';
 import useFetch from '../../hooks/useFetch.jsx';
+import request from '../../helpers/request.js';
+import storageKeys from '../../constants/storageKeys.js';
+import AuthContext from '../../contexts/auth.js';
 
-const MockProviderContainer = ({ children }) => {
+const AuthWrapper = ({ children }) => {
     const [jwtToken, setJwtToken] = React.useState(null);
 
     const [firstName, setFirstName] = React.useState(() => {
@@ -26,13 +34,18 @@ const MockProviderContainer = ({ children }) => {
         const stored = store.get('userId');
         return stored ? stored : '';
     });
+    const [language, setLanguage] = React.useState(() => {
+        const stored = store.get('language');
+        return stored ? stored : 'nb';
+    });
 
     React.useEffect(() => {
         store.set('firstName', firstName);
         store.set('lastName', lastName);
         store.set('email', email);
         store.set('userId', id);
-    }, [firstName, lastName, email, id]);
+        store.set('language', language);
+    }, [firstName, lastName, email, id, language]);
 
     if (!jwtToken) {
         return (
@@ -67,35 +80,60 @@ const MockProviderContainer = ({ children }) => {
                         fullWidth
                     />
                 </div>
+                <div>
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Language</FormLabel>
+                        <RadioGroup
+                            name="language"
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value)}
+                        >
+                            <FormControlLabel
+                                value="nb"
+                                control={<Radio />}
+                                label="Norsk"
+                            />
+                            <FormControlLabel
+                                value="en"
+                                control={<Radio />}
+                                label="English"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </div>
                 <Button
                     color="primary"
                     variant="contained"
                     onClick={() => {
-                        request('/auth/v1/jwt/convert', 'POST', {
-                            body: {
-                                externalToken: jwt.sign(
-                                    {
-                                        exp:
-                                            Math.floor(Date.now() / 1000) +
-                                            60 * 60,
-                                        data: {
-                                            isFakeToken: true,
-                                            user: {
-                                                firstName,
-                                                lastName,
-                                                email,
-                                                id,
-                                                isAdmin: true,
-                                            },
+                        console.log('create token');
+                        setJwtToken(
+                            sign(
+                                {
+                                    exp:
+                                        Math.floor(Date.now() / 1000) + 60 * 60,
+                                    data: {
+                                        isFakeToken: true,
+                                        user: {
+                                            firstName:
+                                                firstName.length !== 0
+                                                    ? firstName
+                                                    : null,
+                                            lastName:
+                                                lastName.length !== 0
+                                                    ? lastName
+                                                    : null,
+                                            email:
+                                                email.length !== 0
+                                                    ? email
+                                                    : null,
+                                            id,
+                                            isAdmin: true,
                                         },
                                     },
-                                    'anything'
-                                ),
-                            },
-                        }).then((response) => {
-                            setJwtToken(response.token);
-                            store.set(storageKeys.AUTH_TOKEN, response.token);
-                        });
+                                },
+                                'anything'
+                            )
+                        );
                     }}
                 >
                     Start new session
@@ -157,4 +195,4 @@ const MockProvider = ({ children, logout }) => {
     );
 };
 
-export default MockProviderContainer;
+export default AuthWrapper;

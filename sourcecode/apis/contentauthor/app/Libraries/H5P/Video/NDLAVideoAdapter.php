@@ -9,7 +9,9 @@ use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Http\File;
+use InvalidArgumentException;
 
 class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterface
 {
@@ -21,12 +23,16 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
 
     const VIDEO_URL = 'https://bc/%s';
 
-    private $client, $accountId;
-    /** @var CerpusStorageInterface */
-    private $storage;
+    private ClientInterface $client;
+    private string $accountId;
+    private CerpusStorageInterface $storage;
 
-    public function __construct(Client $client, $accountId)
+    public function __construct(Client $client, string $accountId)
     {
+        if ($accountId === '') {
+            throw new InvalidArgumentException('$accountId cannot be an empty string');
+        }
+
         $this->client = $client;
         $this->accountId = $accountId;
     }

@@ -11,9 +11,7 @@ use App\H5PContent;
 use App\H5PLibrary;
 use App\ContentLock;
 use Illuminate\Http\Request;
-use App\Libraries\SystemInfo;
 use Illuminate\Http\Response;
-use App\Libraries\LaravelLog;
 use App\Libraries\H5P\H5Plugin;
 use Illuminate\Http\JsonResponse;
 use App\Libraries\H5P\AjaxRequest;
@@ -103,51 +101,6 @@ class AdminController extends Controller
                 return $resource;
             });
         return view('admin.maxscore-failed-overview', compact('resources'));
-    }
-
-    public function logs(Request $request)
-    {
-        $lines = $request->input('lines', 2000);
-
-        $log = (new LaravelLog)->read($lines);
-
-        return view('admin.logs')->with(compact('log'));;
-    }
-
-    public function systemInfo()
-    {
-        $sysinfo = new SystemInfo();
-
-        $loadAvg = $sysinfo->getLoadAverage();
-        $memoryUsage = $sysinfo->getMemoryUsage();
-        $availMem = $sysinfo->getAvailableMemory();
-        $phpVersion = $sysinfo->getPhpVersion();
-        $cpuInfo = $sysinfo->getCpuInfo();
-        $uptime = $sysinfo->getUptime();
-        $memoryLimit = '???';
-        if (function_exists('ini_get')) {
-            $memoryLimit = ini_get('memory_limit');
-        }
-
-        $env = collect($_ENV)
-            ->map(function ($value, $key) {
-                if (in_array(strtoupper($key), [
-                    'APP_KEY',
-                    'PASSWORD',
-                    'OERPASS',
-                    'SECRET',
-                    'PUBKEY',
-                ], true)) {
-                    return '<a href="https://youtu.be/iThtELZvfPs" target="_blank">Keep it secret, keep it safe</a>';
-                };
-                return $value;
-            })
-            ->all();
-
-        $extensions = array_sort(get_loaded_extensions());
-
-        return view('admin.system-info')->with(compact('loadAvg', 'availMem', 'memoryUsage', 'phpVersion', 'uptime',
-            'cpuInfo', 'memoryLimit', 'env', 'extensions'));
     }
 
     /**

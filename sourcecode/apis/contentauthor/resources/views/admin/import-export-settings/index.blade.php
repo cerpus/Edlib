@@ -28,8 +28,6 @@
                                 <button type="button" class="btn btn-default" data-toggle="modal"
                                         data-target="#runPresaveCommandModal">Run h5p:addPresave
                                 </button>
-
-                                <a href="{{route('admin.logs')}}" class="btn btn-default">Show Laravel log</a>
                             </div>
                         </div>
                     </div>

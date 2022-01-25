@@ -33,7 +33,7 @@
     "@ndla/tabs": "^0.11.31",
     "@ndla/ui": "^0.27.49",
     "@ndla/util": "^0.4.0",
-    "@ndla/video-search": "^0.8.45",
+    "@ndla/video-search": "^1.4.9",
     "ajv": "^6.12.3",
     "axios": "^0.19.2",
     "bootstrap-sass": "^3.3.7",
