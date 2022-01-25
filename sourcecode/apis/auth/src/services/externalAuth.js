@@ -1,6 +1,7 @@
 import JsonWebToken from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
+import _ from 'lodash';
 
 let jwksClients = {};
 
@@ -38,4 +39,56 @@ const verifyToken = (token, options = {}) =>
         });
     });
 
-export default { verifyToken };
+const getUserDataFromToken = (payload) => {
+    let firstName, lastName, isAdmin;
+
+    if (externalTokenVerifierConfig.propertyPaths.name) {
+        const fullName = _.get(
+            payload,
+            externalTokenVerifierConfig.propertyPaths.name
+        );
+
+        if (fullName.split(' ').length > 1) {
+            const lastIndexOfSpace = fullName.lastIndexOf(' ');
+            lastName = fullName.substring(lastIndexOfSpace + 1);
+            firstName = fullName.substring(0, lastIndexOfSpace);
+        } else {
+            firstName = fullName;
+            lastName = '';
+        }
+    } else {
+        firstName = _.get(
+            payload,
+            externalTokenVerifierConfig.propertyPaths.firstName
+        );
+        lastName = _.get(
+            payload,
+            externalTokenVerifierConfig.propertyPaths.lastName
+        );
+    }
+
+    if (!externalTokenVerifierConfig.propertyPaths.isAdminMethod) {
+        isAdmin = _.get(
+            payload,
+            externalTokenVerifierConfig.propertyPaths.isAdmin
+        );
+    } else {
+        isAdmin =
+            _.get(
+                payload,
+                externalTokenVerifierConfig.propertyPaths.isAdminInArrayKey
+            ).indexOf(
+                externalTokenVerifierConfig.propertyPaths.isAdminInArrayValue
+            ) !== -1;
+    }
+
+    return {
+        id: _.get(payload, externalTokenVerifierConfig.propertyPaths.id),
+        email: _.get(payload, externalTokenVerifierConfig.propertyPaths.email),
+        firstName,
+        lastName,
+        isAdmin,
+    };
+};
+
+export default { verifyToken, getUserDataFromToken };

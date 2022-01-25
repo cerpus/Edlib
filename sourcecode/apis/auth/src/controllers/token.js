@@ -41,11 +41,7 @@ export default {
                 externalToken
             );
 
-            user = Object.entries(
-                externalTokenVerifierConfig.propertyPaths
-            ).reduce((user, [property, path]) => {
-                return { ...user, [property]: _.get(payload, path) };
-            }, {});
+            user = externalAuthService.getUserDataFromToken(payload);
         }
 
         user.isAdmin = user.isAdmin ? 1 : 0;
@@ -82,9 +78,9 @@ export default {
             dbUser = await req.context.db.user.update(user.id, {
                 ...user,
                 lastSeen: new Date(),
-                updatedAt: Object.keys(
-                    externalTokenVerifierConfig.propertyPaths
-                ).some((key) => dbUser[key] !== user[key])
+                updatedAt: Object.keys(user).some(
+                    (key) => dbUser[key] !== user[key]
+                )
                     ? new Date()
                     : undefined,
             });
