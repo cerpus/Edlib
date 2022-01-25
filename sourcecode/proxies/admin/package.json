@@ -14,7 +14,7 @@
     "axios": "^0.24.0",
     "classnames": "^2.3.1",
     "font-awesome": "^4.7.0",
-    "jsonwebtoken": "^8.5.1",
+    "jwt-encode": "^1.0.1",
     "moment": "^2.29.1",
     "node-sass": "^6.0.1",
     "prettier": "^2.5.1",
