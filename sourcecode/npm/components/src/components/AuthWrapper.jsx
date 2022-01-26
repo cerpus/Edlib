@@ -102,7 +102,6 @@ const AuthWrapper = ({ children }) => {
                     color="primary"
                     variant="contained"
                     onClick={() => {
-                        console.log('create token');
                         setJwtToken(
                             sign(
                                 {

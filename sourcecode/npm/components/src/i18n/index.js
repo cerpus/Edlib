@@ -1,4 +1,4 @@
-import i18n from 'i18next/index';
+import i18n from 'i18next';
 
 const i = i18n.createInstance();
 
