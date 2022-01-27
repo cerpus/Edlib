@@ -13,6 +13,7 @@ export default (getJwt, edlibUrl) => {
     const [jwtError, setJwtError] = React.useState(null);
     const [retry, setRetry] = React.useState(null);
     const prevCountRef = React.useRef(null);
+    const currentId = React.useRef(1);
 
     React.useEffect(() => {
         if (!prevCountRef) {
@@ -30,6 +31,9 @@ export default (getJwt, edlibUrl) => {
             console.error('getJwt is not provided');
             return null;
         }
+
+        const id = currentId.current + 1;
+        currentId.current = id;
 
         setJwtLoading(true);
         const _update = async () => {
@@ -85,6 +89,10 @@ export default (getJwt, edlibUrl) => {
                 newInternalToken = internalToken;
             }
 
+            if (id !== currentId.current) {
+                return;
+            }
+
             if (!newInternalToken) {
                 setJwtError('Error creating internal JWT token');
                 return console.error('Error creating internal JWT token');
@@ -97,11 +105,18 @@ export default (getJwt, edlibUrl) => {
         };
         _update()
             .catch((e) => {
+                if (id !== currentId.current) {
+                    return;
+                }
                 console.error(e);
                 setJwtError('Noe skjedde');
                 setRetry(retry ? retry + 1 : 1);
             })
             .finally(() => {
+                if (id !== currentId.current) {
+                    return;
+                }
+
                 setJwtLoading(false);
             });
     }, [getJwt, setJwt, setJwtLoading, setJwtError, jwt]);
