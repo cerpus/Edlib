@@ -170,7 +170,7 @@ export default (getJwt, edlibUrl) => {
         setJwtError(null);
         setRetry(null);
         updateToken();
-    }, [jwt]);
+    }, [updateToken]);
 
     return {
         token: jwt,
