@@ -76,10 +76,13 @@ const getUserDataFromToken = (payload) => {
         isAdmin =
             _.get(
                 payload,
-                externalTokenVerifierConfig.propertyPaths.isAdminInArrayKey
-            ).indexOf(
-                externalTokenVerifierConfig.propertyPaths.isAdminInArrayValue
-            ) !== -1;
+                externalTokenVerifierConfig.propertyPaths.isAdminInScopeKey
+            )
+                .split(' ')
+                .indexOf(
+                    externalTokenVerifierConfig.propertyPaths
+                        .isAdminInScopeValue
+                ) !== -1;
     }
 
     return {

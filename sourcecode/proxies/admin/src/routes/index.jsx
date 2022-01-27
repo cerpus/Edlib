@@ -11,6 +11,7 @@ import { Box, CircularProgress } from '@material-ui/core';
 import Page from '../components/Page';
 import Jobs from './Jobs';
 import Analytics from './Analytics';
+import MockLogin from './MockLogin.jsx';
 
 const Index = ({ isAuthenticated }) => {
     return (
@@ -37,6 +38,7 @@ const Index = ({ isAuthenticated }) => {
             {!isAuthenticated && (
                 <Switch>
                     <Route exact path="/login" component={Login} />
+                    <Route exact path="/login/mock" component={MockLogin} />
                     <Route
                         exact
                         path="/login/callback"

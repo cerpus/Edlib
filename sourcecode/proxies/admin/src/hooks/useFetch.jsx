@@ -5,7 +5,7 @@ const useFetch = (url, method, options, wait = false) => {
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(false);
     const [response, setResponse] = React.useState(null);
-    const [inc, setInc] = React.useState(0);
+    const [fetchId, setFetchId] = React.useState(1);
 
     React.useEffect(() => {
         setLoading(true);
@@ -24,21 +24,28 @@ const useFetch = (url, method, options, wait = false) => {
                 setError(false);
             })
             .catch((e) => {
-                setError(e);
-                setLoading(false);
+                if (e.name !== 'AbortError') {
+                    setError(e);
+                    setLoading(false);
+                }
             });
 
         return () => {
             abortController.abort();
         };
-    }, [url, method, options, wait, inc]);
+    }, [url, method, options, wait, fetchId]);
+
+    const refetch = React.useCallback(
+        () => setFetchId(fetchId + 1),
+        [setFetchId, fetchId]
+    );
 
     return {
         loading,
         error,
         response,
         setResponse,
-        refetch: () => setInc(inc + 1),
+        refetch,
     };
 };
 

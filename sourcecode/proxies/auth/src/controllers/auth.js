@@ -17,19 +17,17 @@ export default {
             callbackUrl
         );
 
-        const {
-            token: externalToken,
-        } = await req.context.services.auth.generateJwt(
-            authServiceInfo.access_token
-        );
+        const { token: externalToken } =
+            await req.context.services.auth.generateJwt(
+                authServiceInfo.access_token
+            );
 
         const user = await req.context.services.auth.identity(
             authServiceInfo.access_token
         );
 
-        const {
-            token: internalToken,
-        } = await req.context.services.edlibAuth.convertToken(externalToken);
+        const { token: internalToken } =
+            await req.context.services.edlibAuth.convertToken(externalToken);
 
         return {
             user,
@@ -95,8 +93,8 @@ export default {
     },
     getAuthServiceInfo: async (req, res, next) => {
         return {
-            url: apiConfig.externalAuth.url,
-            clientId: apiConfig.externalAuth.clientId,
+            adapter: apiConfig.externalAuth.adapter,
+            settings: apiConfig.externalAuth.adapterSettings.public,
         };
     },
 };

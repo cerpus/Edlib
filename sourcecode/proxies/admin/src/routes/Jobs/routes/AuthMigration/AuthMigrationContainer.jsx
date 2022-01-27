@@ -2,11 +2,12 @@ import React from 'react';
 import { Button, Container, Grid, TextField } from '@material-ui/core';
 import { useArray } from 'moment-hooks';
 import useRequestAction from '../../../../hooks/useRequestAction.jsx';
-import request from '../../../../helpers/request.js';
 import { useHistory } from 'react-router-dom';
+import useRequestWithToken from '../../../../hooks/useRequestWithToken.jsx';
 
 const AuthMigrationContainer = ({ match }) => {
     const history = useHistory();
+    const request = useRequestWithToken();
     const [userIds, userIdsActions] = useArray([]);
     const [from, setFrom] = React.useState('');
     const [to, setTo] = React.useState('');

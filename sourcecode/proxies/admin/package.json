@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "/admin",
   "dependencies": {
+    "@auth0/auth0-react": "^1.9.0",
+    "@cerpus/edlib-components": "0.0.0-29ac0136102045d093d26688874266f538bef21e",
     "@cerpus/ui": "^2.0.3",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
@@ -13,6 +15,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.24.0",
     "classnames": "^2.3.1",
+    "debug": "^4.3.3",
     "font-awesome": "^4.7.0",
     "jwt-encode": "^1.0.1",
     "moment": "^2.29.1",

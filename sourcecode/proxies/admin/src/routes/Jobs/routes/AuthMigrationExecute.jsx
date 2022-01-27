@@ -12,14 +12,16 @@ import {
     TableRow,
 } from '@material-ui/core';
 import useRequestAction from '../../../hooks/useRequestAction.jsx';
-import request from '../../../helpers/request.js';
+import useRequestWithToken from '../../../hooks/useRequestWithToken.jsx';
+import useFetchWithToken from '../../../hooks/useFetchWithToken.jsx';
 
 const AuthMigrationExecute = ({ match }) => {
-    const authMigrationFetchData = useFetch(
+    const authMigrationFetchData = useFetchWithToken(
         `/common/auth-migrations/${match.params.id}`,
         'GET',
         React.useMemo(() => ({}), [])
     );
+    const request = useRequestWithToken();
 
     const { status: executeAuthMigrationStatus, action: executeAuthMigration } =
         useRequestAction((userIds) =>
@@ -50,7 +52,6 @@ const AuthMigrationExecute = ({ match }) => {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    disabled={!response.ready}
                                     onClick={() => refetch()}
                                 >
                                     Oppdater siden

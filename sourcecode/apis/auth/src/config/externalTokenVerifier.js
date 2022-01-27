@@ -22,16 +22,16 @@ const isValid = () => {
     } else {
         if (
             process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_METHOD !==
-            'inarray'
+            'inscope'
         ) {
             return false;
         }
 
         if (
             !process.env
-                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INARRAY_KEY ||
+                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_KEY ||
             !process.env
-                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INARRAY_VALUE
+                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_VALUE
         ) {
             return false;
         }
@@ -56,12 +56,12 @@ export default {
         email: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_EMAIL,
         isAdminMethod:
             process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_METHOD,
-        isAdminInArrayKey:
+        isAdminInScopeKey:
             process.env
-                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INARRAY_KEY,
-        isAdminInArrayValue:
+                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_KEY,
+        isAdminInScopeValue:
             process.env
-                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INARRAY_VALUE,
+                .EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_VALUE,
         isAdmin: process.env.EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN,
     },
 };

@@ -47,11 +47,6 @@ const getHeaders = (options) => {
         headers['Content-Type'] = 'application/json';
     }
 
-    const authToken = store.get(storageKeys.AUTH_TOKEN);
-    if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-    }
-
     return headers;
 };
 

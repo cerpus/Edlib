@@ -7,21 +7,20 @@ import {
     DialogTitle,
 } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
-import request from '../../../../../../helpers/request';
 import useRequestAction from '../../../../../../hooks/useRequestAction';
 import ApplicationContext from '../../../../../../contexts/application';
+import useRequestWithToken from '../../../../../../hooks/useRequestWithToken.jsx';
 
 const ConfirmDelete = ({ accessTokenToDelete, onClose, onDeleted }) => {
     const { id: applicationId } = React.useContext(ApplicationContext);
-    const {
-        status: deleteAccessTokenStatus,
-        action: deleteAccessToken,
-    } = useRequestAction(() =>
-        request(
-            `/common/applications/${applicationId}/access_tokens/${accessTokenToDelete}`,
-            'DELETE'
-        )
-    );
+    const request = useRequestWithToken();
+    const { status: deleteAccessTokenStatus, action: deleteAccessToken } =
+        useRequestAction(() =>
+            request(
+                `/common/applications/${applicationId}/access_tokens/${accessTokenToDelete}`,
+                'DELETE'
+            )
+        );
 
     return (
         <Dialog open={!!accessTokenToDelete} fullWidth maxWidth="xs">

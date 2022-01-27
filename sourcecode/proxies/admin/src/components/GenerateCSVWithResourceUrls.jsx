@@ -1,13 +1,15 @@
 import React from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import request from '../helpers/request.js';
 import apiConfig from '../config/api.js';
+import useRequestWithToken from '../hooks/useRequestWithToken.jsx';
 
 const listToCSVContent = (list) =>
     'data:text/csv;charset=utf-8,' + list.map((e) => e.join(',')).join('\n');
 
 const GenerateCsvWithResourceUrls = () => {
+    const request = useRequestWithToken();
+
     const [{ loading, error, success }, setStatus] = React.useState({
         loading: false,
         error: false,
