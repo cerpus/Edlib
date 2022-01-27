@@ -37,8 +37,15 @@ export default (getJwt, edlibUrl) => {
 
             if (!jwt) {
                 const externalToken = await getJwt();
-                let getJwtTokenData = externalToken;
 
+                if (!externalToken) {
+                    setJwtError('jwt was not returned from getJwt function');
+                    return console.error(
+                        'jwt was not returned from getJwt function'
+                    );
+                }
+
+                let getJwtTokenData = externalToken;
                 if (typeof externalToken === 'string') {
                     getJwtTokenData = {
                         type: 'external',
@@ -79,10 +86,8 @@ export default (getJwt, edlibUrl) => {
             }
 
             if (!newInternalToken) {
-                setJwtError('jwt was not returned from getJwt function');
-                return console.error(
-                    'jwt was not returned from getJwt function'
-                );
+                setJwtError('Error creating internal JWT token');
+                return console.error('Error creating internal JWT token');
             } else if (isTokenExpired(newInternalToken)) {
                 setJwtError('Returned token has expired');
                 return console.error('Returned token has expired');
@@ -159,10 +164,18 @@ export default (getJwt, edlibUrl) => {
         throw new Error('No valid token is available');
     }, [jwt]);
 
+    const reset = React.useCallback(async () => {
+        setJwt(null);
+        setJwtLoading(null);
+        setJwtError(null);
+        setRetry(null);
+    }, [jwt]);
+
     return {
         token: jwt,
         loading: jwtLoading,
         error: jwtError,
         getToken,
+        reset,
     };
 };
