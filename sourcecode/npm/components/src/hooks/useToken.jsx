@@ -169,6 +169,7 @@ export default (getJwt, edlibUrl) => {
         setJwtLoading(null);
         setJwtError(null);
         setRetry(null);
+        updateToken();
     }, [jwt]);
 
     return {
