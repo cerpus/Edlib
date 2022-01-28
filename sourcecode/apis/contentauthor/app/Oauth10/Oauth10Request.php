@@ -22,7 +22,7 @@ class Oauth10Request
      */
     public function validateOauth10(string $consumerKey, string $consumerSecret): bool
     {
-        if ($consumerKey !== $this->combinedParams['oauth_consumer_key'] ?? null) {
+        if ($consumerKey !== ($this->combinedParams['oauth_consumer_key'] ?? null)) {
             return false;
         }
 
