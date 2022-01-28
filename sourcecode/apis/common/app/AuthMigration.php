@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Support\Str;
 
-class AuthMigration
+class AuthMigration implements \JsonSerializable
 {
     public string $id;
     public array $tables = [];
-    public bool $ready = false;
+    public static int $totalNumberOfTablesToUpdate = 7;
 
     public function __construct(public array $userIdToChange)
     {
@@ -34,5 +34,17 @@ class AuthMigration
                 $table["rowsUpdated"] = $rowsUpdated;
             }
         }
+    }
+
+    public function isReady(): bool
+    {
+        return count($this->tables) == $this::$totalNumberOfTablesToUpdate;
+    }
+
+    public function jsonSerialize()
+    {
+        $data = get_object_vars($this);
+        $data["ready"] = $this->isReady();
+        return $data;
     }
 }

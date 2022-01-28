@@ -24,10 +24,6 @@ final class AuthMigrationController extends Controller
             throw new NotFoundHttpException("Auth migration was not found");
         }
 
-        if (count($authMigrationData->tables) == 7) {
-            $authMigrationData->ready = true;
-        }
-
         return new JsonResponse($authMigrationData);
     }
 
