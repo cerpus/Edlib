@@ -41,10 +41,10 @@ class SignedOauth10Request
             $this->consumerSecret,
         );
         if (!$validRequest) {
-            throw new UnauthorizedHttpException(sprintf(
-                "Unable to verify signature of oAuth 1.0 request to %s" .
+            throw new UnauthorizedHttpException(
+                "Unable to verify signature of oAuth 1.0 request to " .
                 $request->url(),
-            ));
+            );
         }
 
         return $next($request);
