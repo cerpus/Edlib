@@ -2,6 +2,7 @@
 
 namespace Tests\Middleware;
 
+use App\Oauth10\Oauth10Request;
 use Tests\TestCase;
 
 class Oauth10VerificationTest extends TestCase
@@ -20,7 +21,7 @@ class Oauth10VerificationTest extends TestCase
         $url = "https://photos.example.net/initiate";
         $method = "POST";
 
-        $oauthRequest = new \App\Http\Requests\Oauth10Request($method, $url, [], $authorizeHeader);
+        $oauthRequest = new Oauth10Request($method, $url, [], $authorizeHeader);
         $this->assertTrue($oauthRequest->validateOauth10($consumerKey, $secret));
     }
 
@@ -37,7 +38,19 @@ class Oauth10VerificationTest extends TestCase
         $url = "https://photos.example.net/initiate";
         $method = "POST";
 
-        $oauthRequest = new \App\Http\Requests\Oauth10Request($method, $url, [], $authorizeHeader);
+        $oauthRequest = new Oauth10Request($method, $url, [], $authorizeHeader);
         $this->assertTrue($oauthRequest->validateOauth10($consumerKey, $secret));
+    }
+
+    public function testInvalidAuthorizationHeader(): void
+    {
+        $authorizeHeader = 'Invalid';
+        $consumerKey = "dpf43f3p2l4k3l03";
+        $secret = "kd94hf93k423kf44";
+        $url = "https://photos.example.net/initiate";
+        $method = "POST";
+
+        $oauthRequest = new Oauth10Request($method, $url, [], $authorizeHeader);
+        $this->assertFalse($oauthRequest->validateOauth10($consumerKey, $secret));
     }
 }

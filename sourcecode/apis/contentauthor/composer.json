@@ -12,6 +12,7 @@
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-memcached": "*",
+    "ext-oauth": "*",
     "ext-zip": "*",
     "cerpus/cerpushelper": "^1.6",
     "cerpus/coreclient": "^1.4.0",

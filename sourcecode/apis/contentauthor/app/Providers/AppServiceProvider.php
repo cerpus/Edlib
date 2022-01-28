@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\H5POption;
+use App\Http\Middleware\SignedOauth10Request;
 use App\Http\Requests\LTIRequest;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
@@ -50,6 +51,16 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+
+        $this->app
+            ->when(SignedOauth10Request::class)
+            ->needs('$consumerKey')
+            ->giveConfig('app.consumer-key');
+
+        $this->app
+            ->when(SignedOauth10Request::class)
+            ->needs('$consumerSecret')
+            ->giveConfig('app.consumer-secret');
 
         $this->app->bind(ImportOwner::class, function ($app) {
             return new ImportOwner(config('ndla.userId'));
