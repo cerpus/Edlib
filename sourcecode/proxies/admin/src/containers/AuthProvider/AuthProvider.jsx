@@ -6,7 +6,7 @@ import { useTokenContext } from '../../contexts/token.js';
 
 const AuthProviderWithoutJwt = ({ children, onLoginCallback, onLogin }) => {
     const history = useHistory();
-    const { updateExternalToken, jwt } = useTokenContext();
+    const { updateExternalToken } = useTokenContext();
 
     return (
         <AuthContext.Provider

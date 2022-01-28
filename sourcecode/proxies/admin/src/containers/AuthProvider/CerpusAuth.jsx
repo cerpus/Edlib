@@ -26,15 +26,14 @@ const CerpusAuth = ({ children }) => {
                     return;
                 }
 
-                const { token } = await request(
-                    `/auth/v1/login/callback?code=${query.code}&callbackUrl=${loginRedirectUrl}`,
+                const { externalToken } = await request(
+                    `/auth/v1/cerpusauth/login/callback?code=${query.code}&callbackUrl=${loginRedirectUrl}`,
                     'GET'
                 );
 
-                return token;
+                return externalToken;
             }}
             onLogoutCallback={async () => {
-                await request(`/auth/v1/logout`, 'GET', { json: false });
                 history.push('/login');
             }}
         >

@@ -19,24 +19,23 @@ const getKeyFromAuth = (jwksClients, url) => (header, callback) => {
     });
 };
 
-export const verifyTokenAgainstAuth = (jwksClients, url) => (
-    token,
-    options = {}
-) =>
-    new Promise((resolve, reject) => {
-        JsonWebToken.verify(
-            token,
-            getKeyFromAuth(jwksClients, url),
-            options,
-            (err, decoded) => {
-                if (err) {
-                    if (err instanceof JsonWebTokenError) {
-                        return resolve(null);
+export const verifyTokenAgainstAuth =
+    (jwksClients, url) =>
+    (token, options = {}) =>
+        new Promise((resolve, reject) => {
+            JsonWebToken.verify(
+                token,
+                getKeyFromAuth(jwksClients, url),
+                options,
+                (err, decoded) => {
+                    if (err) {
+                        if (err instanceof JsonWebTokenError) {
+                            return resolve(null);
+                        }
+                        return reject(err);
                     }
-                    return reject(err);
-                }
 
-                resolve(decoded);
-            }
-        );
-    });
+                    resolve(decoded);
+                }
+            );
+        });

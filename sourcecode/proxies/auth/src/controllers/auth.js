@@ -22,51 +22,11 @@ export default {
                 authServiceInfo.access_token
             );
 
-        const user = await req.context.services.auth.identity(
-            authServiceInfo.access_token
-        );
-
-        const { token: internalToken } =
-            await req.context.services.edlibAuth.convertToken(externalToken);
-
         return {
-            user,
-            token: internalToken,
+            externalToken,
         };
     },
     refresh: async (req, res, next) => {
-        const refreshToken = req.query.refresh_token;
-        if (!refreshToken) {
-            throw new UnauthorizedException();
-        }
-
-        let refreshTokenPayload;
-
-        try {
-            const { payload } = services.jwt.verify(refreshToken);
-            refreshTokenPayload = payload;
-        } catch (e) {
-            throw new UnauthorizedException();
-        }
-
-        const { token } = await req.context.services.auth.generateJwt(
-            refreshTokenPayload.access_token
-        );
-
-        return {
-            authToken: token,
-        };
-    },
-    refreshV2: async (req, res, next) => {
-        const { token } = await req.context.services.auth.refreshJwt(
-            req.authorizationJwt
-        );
-
-        return {
-            authToken: token,
-        };
-    },
-    refreshV3: async (req, res, next) => {
         const { token } = await req.context.services.edlibAuth.refreshToken(
             req.authorizationJwt
         );
@@ -83,10 +43,6 @@ export default {
         return {
             token,
         };
-    },
-    logout: async (req, res, next) => {
-        services.cookie.clearCookie(res, 'jwt');
-        res.sendStatus(200);
     },
     me: async (req, res, next) => {
         return req.user;
