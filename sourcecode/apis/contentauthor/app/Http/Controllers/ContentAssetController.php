@@ -26,7 +26,7 @@ class ContentAssetController
 
         $detector = new FinfoMimeTypeDetector();
         $response = new StreamedResponse;
-        $filename = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', basename($path));
+        $filename = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', basename($path));
 
         $response->headers->replace([
             'ETag' => md5($path . request()->input('ver')),
