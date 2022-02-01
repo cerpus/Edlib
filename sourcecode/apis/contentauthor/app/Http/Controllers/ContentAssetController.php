@@ -23,10 +23,10 @@ class ContentAssetController
         if (!$this->contentAuthorStorage->getBucketDisk()->exists($path)) {
             throw new NotFoundHttpException('File not found');
         }
-        
+
         $detector = new FinfoMimeTypeDetector();
         $response = new StreamedResponse;
-        $filename = basename($path);
+        $filename = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', basename($path));
 
         $response->headers->replace([
             'ETag' => md5($path . request()->input('ver')),
