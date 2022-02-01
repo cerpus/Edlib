@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@sentry/node": "^6.16.1",
+    "@sentry/node": "^6.17.3",
     "@sentry/tracing": "^6.7.1",
     "await-lock": "^2.1.0",
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "body-parser": "^1.19.1",
     "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
@@ -35,14 +35,14 @@
     "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
     "on-finished": "^2.3.0",
-    "redis": "^4.0.0",
+    "redis": "^4.0.3",
     "redis-mock": "^0.56.3",
     "sqlite3": "^5.0.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",
-    "@babel/core": "^7.16.7",
+    "@babel/core": "^7.16.12",
     "@babel/node": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
     "amqplib": "^0.8.0",
@@ -50,7 +50,7 @@
     "jest": "^27.4.5",
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.1",
-    "nock": "^13.2.1",
+    "nock": "^13.2.2",
     "prettier": "^2.5.1"
   },
   "peerDependencies": {
