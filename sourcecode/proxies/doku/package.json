@@ -17,7 +17,7 @@
     "amqplib": "^0.8.0",
     "axios": "^0.25.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.4.5",
+    "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "supertest": "^6.2.2",
     "swagger-jsdoc": "^6.1.0",
