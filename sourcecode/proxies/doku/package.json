@@ -19,7 +19,7 @@
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^27.4.5",
     "prettier": "^2.5.1",
-    "supertest": "^6.1.6",
+    "supertest": "^6.2.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0"
   },
