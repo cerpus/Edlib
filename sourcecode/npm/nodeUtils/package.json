@@ -18,7 +18,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@sentry/node": "^6.16.1",
-    "@sentry/tracing": "^6.7.1",
+    "@sentry/tracing": "^6.17.3",
     "await-lock": "^2.1.0",
     "axios": "^0.25.0",
     "body-parser": "^1.19.1",
