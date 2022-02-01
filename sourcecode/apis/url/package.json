@@ -20,7 +20,7 @@
     "joi": "^17.5.0",
     "lodash": "^4.17.21",
     "prettier": "^2.5.1",
-    "supertest": "^6.1.6",
+    "supertest": "^6.2.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0"
   },
