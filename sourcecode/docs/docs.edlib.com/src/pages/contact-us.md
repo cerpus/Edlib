@@ -28,8 +28,8 @@ Norway<br/>
 
 ### Bodø Office
 
-Stormyrveien 10<br/>
-8008 Bodø<br/>
+Per Helgesens vei 58<br/>
+8013 Bodø<br/>
 Norway<br/>
 
 <div class="text--center">
