@@ -381,16 +381,16 @@
         },
         {
             "name": "cerpus/cerpushelper",
-            "version": "v1.6.0",
+            "version": "v1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-cerpushelper.git",
-                "reference": "dc541c6746f107a4711d51ec859f2aca8c959fef"
+                "reference": "caee2db3f0cf737aac924849ef0981c24e191d5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/dc541c6746f107a4711d51ec859f2aca8c959fef",
-                "reference": "dc541c6746f107a4711d51ec859f2aca8c959fef",
+                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/caee2db3f0cf737aac924849ef0981c24e191d5a",
+                "reference": "caee2db3f0cf737aac924849ef0981c24e191d5a",
                 "shasum": ""
             },
             "require": {
@@ -434,9 +434,9 @@
             "description": "Base package for common components",
             "support": {
                 "issues": "https://github.com/cerpus/php-cerpushelper/issues",
-                "source": "https://github.com/cerpus/php-cerpushelper/tree/v2.0.0"
+                "source": "https://github.com/cerpus/php-cerpushelper/tree/v1.6.1"
             },
-            "time": "2021-12-03T07:47:04+00:00"
+            "time": "2022-02-01T08:35:56+00:00"
         },
         {
             "name": "cerpus/coreclient",
