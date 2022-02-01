@@ -25,44 +25,6 @@ Working at a company is so much more than &quot;just a salary&quot;. Although we
 
 ## Roles
 
-### UX/UI Designer
-
-We are looking for a UX Designer to design learning software and platforms that meet our users's needs. You will combine interfaces and workflows to enhance the combined learning and user experience.
-
-<div class="text--center">
-    <img alt="Designer" width="240" src="/img/designer.svg" />
-    <br/>
-    <br/>
-</div>
-
-In this role, you should be an analytical and creative designer who is able to grasp user needs and solve problems. A strong portfolio of successful UX and other technical projects is essential.
-
-Ultimately, you will make our learning products more user-friendly and intuitive to attract and retain customers.
-
-#### Responsibilities
-
-* Understand product specifications and user psychology
-* Conduct concept and usability testing and gather feedback
-* Create personas through user research and data
-* Define the right interaction model and evaluate its success
-* Develop wireframes and prototypes around customer needs
-* Find creative ways to solve UX problems (for example, usability and findability)
-* Implement attractive designs
-* Communicate design ideas and prototypes to developers
-* Keep abreast of competitor products and industry trends
-
-#### Requirements
-
-* Proven experience as a UX Designer, UI Designer or similar role
-* Strong portfolio of design projects
-* Background in project management and research
-* Familiarity with interaction design and information architecture
-* Proficient in design software
-* Knowledge of HTML and CSS; JavaScript is a plus
-* Problem-solving aptitude
-* Analytical mind with a business acumen
-* Excellent communication skills
-
 ### Frontend Developer
 
 We are looking for a qualified Front-end Developer to join our Development team. You will be responsible for building the &lsquo;client-side&rsquo; of our web applications. You should be able to translate our company and customer needs into functional and appealing interactive applications.
