@@ -31,12 +31,19 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')->except('logout', 'ssoFromEdlibAdmin');
     }
 
     public function username()
     {
         return 'username';
+    }
 
+    /**
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function ssoFromEdlibAdmin()
+    {
+        return redirect('admin');
     }
 }

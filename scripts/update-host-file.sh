@@ -17,6 +17,7 @@ $ip\tedlibfacade.local
 $ip\ttest.edlibfacade.local
 $ip\tlocalhost
 $ip\tcontentauthor.local
+$ip\tca.edlib.local
 $ip\tapi.edlib.local
 $ip\twww.edlib.local
 $ip\tnpm.components.edlib.local

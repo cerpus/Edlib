@@ -1,8 +1,6 @@
 import externalAuthService from '../services/externalAuth.js';
 import jwksProviderService from '../services/jwksProvider.js';
-import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 import Joi from 'joi';
-import _ from 'lodash';
 import {
     UnauthorizedException,
     pubsub,
@@ -22,6 +20,7 @@ export default {
         );
 
         let user;
+        let roles = [];
 
         if (appConfig.allowFakeToken) {
             const { data } = await JsonWebToken.decode(externalToken);
@@ -42,6 +41,10 @@ export default {
             );
 
             user = externalAuthService.getUserDataFromToken(payload);
+        }
+
+        if (user.isAdmin) {
+            roles.push('superadmin');
         }
 
         user.isAdmin = user.isAdmin ? 1 : 0;
@@ -88,9 +91,10 @@ export default {
 
         return {
             user,
+            roles,
             token: await jwksProviderService.encrypt(
                 req.context,
-                { type: 'user', user },
+                { type: 'user', user, roles },
                 1,
                 user.id
             ),

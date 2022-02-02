@@ -12,6 +12,7 @@ import Page from '../components/Page';
 import Jobs from './Jobs';
 import Analytics from './Analytics';
 import MockLogin from './MockLogin.jsx';
+import ContentAuthor from './ContentAuthor.jsx';
 
 const Index = ({ isAuthenticated }) => {
     return (
@@ -19,6 +20,11 @@ const Index = ({ isAuthenticated }) => {
             {isAuthenticated && (
                 <Switch>
                     <Route exact path="/dashboard" component={Home} />
+                    <Route
+                        exact
+                        path="/content-author"
+                        component={ContentAuthor}
+                    />
                     <Route
                         exact
                         path="/monitoring/system-status"
