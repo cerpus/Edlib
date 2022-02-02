@@ -19,6 +19,7 @@
     "@hapi/joi": "^17.1.1",
     "@sentry/node": "^6.17.3",
     "@sentry/tracing": "^6.7.1",
+    "@vscode/sqlite3": "^5.0.7",
     "await-lock": "^2.1.0",
     "axios": "^0.25.0",
     "body-parser": "^1.19.1",
@@ -37,7 +38,6 @@
     "on-finished": "^2.3.0",
     "redis": "^4.0.3",
     "redis-mock": "^0.56.3",
-    "sqlite3": "^5.0.2",
     "winston": "^3.5.1"
   },
   "devDependencies": {
