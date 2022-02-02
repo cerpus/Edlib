@@ -1,4 +1,4 @@
-FROM node:14.18 as build
+FROM node:16.13 as build
 WORKDIR /app
 COPY . .
 RUN yarn
@@ -13,7 +13,7 @@ COPY ./createEnvFile.sh /createEnvFile.sh
 EXPOSE 80
 CMD bash /createEnvFile.sh /usr/share/nginx/html; nginx -g "daemon off;"
 
-FROM node:14.18 as dev
+FROM node:16.13 as dev
 WORKDIR /app
 EXPOSE 3000
 EXPOSE 3001
