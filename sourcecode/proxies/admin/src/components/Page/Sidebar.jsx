@@ -44,6 +44,7 @@ const Sidebar = () => {
 
     const links = [
         { name: 'Dashboard', to: '/dashboard', icon: <Dashboard /> },
+        { name: 'Content Author', to: '/content-author', icon: <Settings /> },
         {
             name: 'Settings',
             to: '/settings',

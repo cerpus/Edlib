@@ -37,7 +37,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -85,12 +84,16 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // Internal middleware
+        // Edlib middleware
+        'edlib.parse-jwt' => \App\Http\Middleware\EdlibParseJwt::class,
+        'edlib.auth' => \App\Http\Middleware\EdlibAuth::class,
+
+        // Edlib internal middleware
         'internal.handle-jwt' => \App\Http\Middleware\InternalHandleJwt::class,
 
         // App middleware
         'core.return' => \App\Http\Middleware\CoreReturnUrl::class,
-        'core.auth' => \App\Http\Middleware\CerpusAuth::class,
+        'core.auth' => \App\Http\Middleware\EdlibParseJwt::class,
         'core.ownership' => \App\Http\Middleware\CheckOwnership::class,
         'core.ltiauth' => \App\Http\Middleware\LtiRequestAuth::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
@@ -114,6 +117,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\EdlibAuth::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
