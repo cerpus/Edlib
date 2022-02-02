@@ -11,15 +11,15 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "prettier": "^2.5.1",
-    "query-string": "^7.0.1",
+    "query-string": "^7.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "styled-components": "^5.2.1",
-    "web-vitals": "^2.1.2"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

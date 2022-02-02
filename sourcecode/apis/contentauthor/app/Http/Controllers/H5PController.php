@@ -111,55 +111,46 @@ class H5PController extends Controller
 
     public function doShow($id, $context, $preview = false)
     {
-        try {
-            $styles = [];
-            if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
-                $styles[] = $this->lti->getLtiRequest()->getLaunchPresentationCssUrl();
-                \Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
-            }
-            /** @var H5PContent $h5pContent */
-            $h5pContent = H5PContent::findOrFail($id);
-            if (!$h5pContent->canShow($preview)) {
-                return view('layouts.draft-resource', compact('styles'));
-            }
-            $h5p = new h5p(DB::connection()->getPdo());
-            if (Session::get('userId', false)) {
-                $h5p->setUserId(Session::get('userId', false));
-            }
-            $viewConfig = (resolve(ViewConfig::class))
-                ->setId($id)
-                ->setUserId(Session::get('userId', false))
-                ->setUserName(Session::get('name', false))
-                ->setEmail(Session::get('email', false))
-                ->setPreview($preview)
-                ->setContext($context);
-            $viewConfig->setAlterParametersSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
-
-            $h5p->init($viewConfig);
-            $content = $h5p->getContents($id);
-            $settings = $h5p->getSettings();
-            $styles = array_merge($h5p->getStyles(), $styles);
-
-            $viewData = [
-                'id' => $id,
-                'title' => $content['title'],
-                'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
-                'config' => $settings,
-                'jsScripts' => $h5p->getScripts(),
-                'styles' => $styles,
-                'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-                'inDraftState' => $h5pContent->inDraftState(),
-                'preview' => $preview,
-                'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
-            ];
-        } catch (\Throwable $t) {
-            Log::error('[' . app('requestId') . '] ' . __METHOD__ . '(' . $t->getLine() . '): ' . $t->getMessage(), [
-                'user' => Session::get('userId', 'not-logged-in-user'),
-                'url' => request()->url(),
-                'request' => request()->all(),
-            ]);
-            throw new NotFoundHttpException('Resource not found', $t);
+        $styles = [];
+        if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
+            $styles[] = $this->lti->getLtiRequest()->getLaunchPresentationCssUrl();
+            \Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
         }
+        /** @var H5PContent $h5pContent */
+        $h5pContent = H5PContent::findOrFail($id);
+        if (!$h5pContent->canShow($preview)) {
+            return view('layouts.draft-resource', compact('styles'));
+        }
+        $h5p = new h5p(DB::connection()->getPdo());
+        if (Session::get('userId', false)) {
+            $h5p->setUserId(Session::get('userId', false));
+        }
+        $viewConfig = (resolve(ViewConfig::class))
+            ->setId($id)
+            ->setUserId(Session::get('userId', false))
+            ->setUserName(Session::get('name', false))
+            ->setEmail(Session::get('email', false))
+            ->setPreview($preview)
+            ->setContext($context);
+        $viewConfig->setAlterParametersSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
+
+        $h5p->init($viewConfig);
+        $content = $h5p->getContents($id);
+        $settings = $h5p->getSettings();
+        $styles = array_merge($h5p->getStyles(), $styles);
+
+        $viewData = [
+            'id' => $id,
+            'title' => $content['title'],
+            'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
+            'config' => $settings,
+            'jsScripts' => $h5p->getScripts(),
+            'styles' => $styles,
+            'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
+            'inDraftState' => $h5pContent->inDraftState(),
+            'preview' => $preview,
+            'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
+        ];
 
         return view('h5p.show', $viewData);
     }

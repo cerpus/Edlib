@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Requests;
 
-use App\SessionKeys;
+use App\Oauth10\Oauth10Request;
 use Illuminate\Support\Facades\Session;
 
 class LTIRequest extends Oauth10Request
@@ -10,7 +10,7 @@ class LTIRequest extends Oauth10Request
 
     public function __construct($requestUri, $params)
     {
-        parent::__construct("POST", $requestUri, $params, null);
+        parent::__construct("POST", $requestUri, $params, '');
         $this->params = $params;
     }
 

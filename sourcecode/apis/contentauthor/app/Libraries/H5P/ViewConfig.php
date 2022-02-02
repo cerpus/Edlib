@@ -26,6 +26,7 @@ class ViewConfig implements ConfigInterface
     /** @var H5PAlterParametersSettingsDataObject */
     protected $alterParametersSettings;
     private ResourceApiService $resourceApiService;
+    private ?string $edlibUrl = null;
 
     public function __construct(
         H5PAdapterInterface $adapter,
@@ -48,6 +49,7 @@ class ViewConfig implements ConfigInterface
         $this->initContentConfig();
         $this->getDependentFiles();
         $this->addCustomScripts();
+        $this->initDocumentUrl();
         $this->makePackageSpecificConfigModifications();
     }
 
@@ -67,24 +69,45 @@ class ViewConfig implements ConfigInterface
         return $this->config;
     }
 
+    public function initDocumentUrl()
+    {
+        $edlibUrl = $this->getEdlibUrl();
+
+        if ($edlibUrl) {
+            $this->config->documentUrl = $edlibUrl;
+        }
+    }
+
+    public function getEdlibUrl()
+    {
+        if ($this->edlibUrl) {
+            return $this->edlibUrl;
+        }
+
+        $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
+        $edlibEmbedPath = config('edlib.embedPath');
+
+        if (!$edlibEmbedPath) {
+            return null;
+        }
+
+        $this->edlibUrl = str_replace('<resourceId>', $resource->id, $edlibEmbedPath);
+
+        return $this->edlibUrl;
+    }
+
     private function getEmbedCode()
     {
-        try {
-            $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
-            $edlibEmbedPath = config('edlib.embedPath');
+        $edlibUrl = $this->getEdlibUrl();
 
-            if (!$edlibEmbedPath) {
-                return '';
-            }
-
-            return sprintf(
-                '<iframe src="%s" width=":w" height=":h"></iframe>',
-                htmlspecialchars(str_replace('<resourceId>', $resource->id, $edlibEmbedPath), ENT_QUOTES)
-            );
-        } catch (NotFoundException $e) {
-            Log::error($e);
+        if (!$edlibUrl) {
             return '';
         }
+
+        return sprintf(
+            '<iframe src="%s" width=":w" height=":h"></iframe>',
+            htmlspecialchars($edlibUrl, ENT_QUOTES)
+        );
     }
 
     public function setAlterParametersSettings(H5PAlterParametersSettingsDataObject $settings)

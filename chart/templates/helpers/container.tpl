@@ -19,8 +19,11 @@
     httpGet:
       path: {{ .healthUrl }}
       port: {{ .port | default "80" }}
-    periodSeconds: 3
-    failureThreshold: 10
+  readinessProbe:
+    httpGet:
+      path: {{ .healthUrl }}
+      port: {{ .port | default "80" }}
+    failureThreshold: 1
 
 {{ if .slowStartMaxTimeSeconds }}
   startupProbe:
