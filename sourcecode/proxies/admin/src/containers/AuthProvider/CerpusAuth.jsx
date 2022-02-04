@@ -3,8 +3,12 @@ import AuthProvider from './AuthProvider.jsx';
 import configContext from '../../contexts/config.js';
 import queryString from 'query-string';
 import request from '../../helpers/request.js';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const CerpusAuth = ({ children }) => {
+    const history = useHistory();
+    const location = useLocation();
+
     const {
         authServiceSettings: settings,
         loginRedirectUrl,

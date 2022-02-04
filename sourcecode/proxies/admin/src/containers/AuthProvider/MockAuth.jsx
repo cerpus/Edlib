@@ -1,10 +1,11 @@
 import React from 'react';
 import AuthProvider from './AuthProvider.jsx';
 import queryString from 'query-string';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const MockAuth = ({ children }) => {
     const history = useHistory();
+    const location = useLocation();
 
     return (
         <AuthProvider
