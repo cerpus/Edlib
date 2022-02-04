@@ -12,7 +12,7 @@ const AuthProviderContainer = ({ children }) => {
         return <MockAuth children={children} />;
     }
 
-    if (adapter === 'cerpusauth') {
+    if (adapter === 'cerpusAuth') {
         return <CerpusAuth children={children} />;
     }
 
