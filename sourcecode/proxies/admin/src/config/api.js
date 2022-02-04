@@ -1,6 +1,6 @@
 import getEnv from '../helpers/getEnv.js';
 
-export default {
+const apiConfig = {
     wwwUrl: getEnv('REACT_APP_API_URL', 'https://api.edlib.local').replace(
         'api',
         'www'
@@ -12,3 +12,5 @@ export default {
     url: getEnv('REACT_APP_API_URL', 'https://api.edlib.local'),
     showMockLogin: getEnv('REACT_APP_SHOW_MOCK_LOGIN', 'false') === 'true',
 };
+
+export default apiConfig;
