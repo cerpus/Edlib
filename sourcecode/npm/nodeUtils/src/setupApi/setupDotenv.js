@@ -9,7 +9,7 @@ const dotenvFiles = [`.env`, `.env.defaults`].filter(Boolean);
 
 dotenvFiles.forEach((dotenvFile) => {
     if (fs.existsSync(dotenvFile)) {
-        dotenvExpand(
+        dotenvExpand.expand(
             dotenv.config({
                 path: `${appPath}/${dotenvFile}`,
             })
