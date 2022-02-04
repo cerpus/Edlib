@@ -126,6 +126,7 @@ const AuthWrapper = ({ children }) => {
                                             isAdmin: true,
                                         },
                                     },
+                                    iss: 'fake',
                                 },
                                 'anything'
                             )

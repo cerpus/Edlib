@@ -36,8 +36,8 @@ const Auth0Wrapper = ({ children }) => {
             domain={settings.domain}
             clientId={settings.clientId}
             redirectUri={loginRedirectUrl}
-            audience="edlib"
-            scope="superadmin"
+            audience={settings.audience}
+            scope="edlib:superadmin"
         >
             <Auth0>{children}</Auth0>
         </Auth0Provider>

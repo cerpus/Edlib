@@ -3,7 +3,8 @@
 #
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
-RUN apk add --no-cache curl
+RUN apk --no-cache add --virtual .builds-deps build-base python3 curl
+RUN ln -sf python3 /usr/bin/python
 
 #
 # appbase container, contains app and dependencies
