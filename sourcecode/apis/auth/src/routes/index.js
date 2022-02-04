@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import jwksController from '../controllers/jwks.js';
 import tokenController from '../controllers/token.js';
 import userController from '../controllers/user.js';
+import loginController from '../controllers/login.js';
 import readiness from '../readiness.js';
 
 const { Router } = express;
@@ -145,6 +146,14 @@ export default async ({ pubSubConnection }) => {
      *                  User not found
      */
     apiRouter.get('/v1/users/:id', runAsync(userController.getUserById));
+    apiRouter.get(
+        '/v1/cerpusauth/login/callback',
+        runAsync(loginController.cerpusAuthLoginCallback)
+    );
+    apiRouter.get(
+        '/v1/auth-service-info',
+        runAsync(loginController.getAuthServiceInfo)
+    );
 
     router.get('/_ah/health', (req, res) => {
         readiness()
