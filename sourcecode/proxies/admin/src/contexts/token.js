@@ -23,7 +23,7 @@ const ContextWithToken = ({
         if (error && !loading) {
             removeExternalToken();
         }
-    }, [error, loading]);
+    }, [error, loading, removeExternalToken]);
 
     return (
         <tokenContext.Provider
