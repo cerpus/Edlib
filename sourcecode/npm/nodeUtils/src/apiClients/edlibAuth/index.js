@@ -68,11 +68,9 @@ export default (req, config) => {
             await authAxios({
                 url: `/v1/cerpusauth/login/callback`,
                 method: 'GET',
-                data: {
-                    params: {
-                        code,
-                        callbackUrl,
-                    },
+                params: {
+                    code,
+                    callbackUrl,
                 },
             })
         ).data;
