@@ -35,7 +35,7 @@ jobs:
           tags: "build:latest"
           outputs: "type=docker"
           context: ${{ env.workingDirectory }}
-          target: build
+          target: base
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
