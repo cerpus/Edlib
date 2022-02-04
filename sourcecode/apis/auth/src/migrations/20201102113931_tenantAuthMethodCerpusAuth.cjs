@@ -6,10 +6,6 @@ exports.up = function (knex) {
             table.string('url', 255).notNullable();
             table.string('clientId', 255).notNullable();
             table.string('secret', 255).notNullable();
-            table.string('propertyPathId', 255).notNullable();
-            table.string('propertyPathEmail', 255).notNullable();
-            table.string('propertyPathFirstName', 255).notNullable();
-            table.string('propertyPathLastName', 255).notNullable();
             table
                 .timestamp('updatedAt', { useTz: true })
                 .notNullable()
