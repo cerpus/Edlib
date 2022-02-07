@@ -181,6 +181,8 @@ metadata:
   name: contentauthor-cron
 spec:
   schedule: "*/1 * * * *"
+  concurrencyPolicy: "Forbid"
+  startingDeadlineSeconds: "60"
   jobTemplate:
     spec:
       template:
@@ -218,4 +220,4 @@ spec:
                   cpu: 20m
                   memory: 200Mi
           serviceAccount: contentauthor
-          restartPolicy: OnFailure
+          restartPolicy: "Never"
