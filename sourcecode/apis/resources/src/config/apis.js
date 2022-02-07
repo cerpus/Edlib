@@ -39,7 +39,7 @@ export default {
                 'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET',
                 'secret2'
             ),
-        },
+       },
         url: {
             urls: {
                 content: `http://urlapi/v1/content`,
@@ -54,6 +54,12 @@ export default {
                 'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET',
                 'secret2'
             ),
+        },
+        doku: {
+            urls: {
+                content: `http://dokuapi/v1/content`,
+            },
+            disableVersioning: true,
         },
     },
     coreInternal: {

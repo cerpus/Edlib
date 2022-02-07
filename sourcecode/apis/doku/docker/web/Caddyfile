@@ -1,0 +1,5 @@
+dokuapi:80, doku.edlib.local:80 {
+    root * /var/www/doku/public
+    php_fastcgi {$PHP_FPM_HOST}
+    file_server
+}

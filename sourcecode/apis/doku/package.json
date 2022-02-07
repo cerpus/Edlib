@@ -1,33 +1,26 @@
 {
-  "name": "edlib-api",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "nodemon src/api.js",
-    "start": "node src/api.js",
-    "migrate": "node src/runMigrations.js",
-    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js"
-  },
-  "engines": {
-    "node": ">= 16.0.0"
-  },
-  "dependencies": {
-    "@babel/preset-env": "^7.16.11",
-    "@cerpus/edlib-node-utils": "0.0.0-0399a6f5472f8aa5e2a0d7edce3faf17df03c56c",
-    "@hapi/joi": "^17.1.1",
-    "amqplib": "^0.8.0",
-    "axios": "^0.26.1",
-    "babel-plugin-transform-default-import": "^1.0.0",
-    "dataloader": "^2.0.0",
-    "jest": "^27.5.1",
-    "moment": "^2.29.1",
-    "prettier": "^2.6.1",
-    "supertest": "^6.2.2",
-    "swagger-jsdoc": "^6.1.0",
-    "swagger-ui-express": "^4.3.0",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
-  }
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+    "devDependencies": {
+        "@babel/preset-react": "^7.16.7",
+        "axios": "^0.21",
+        "laravel-mix": "^6.0.6",
+        "lodash": "^4.17.19",
+        "postcss": "^8.1.14",
+        "ts-loader": "^9.2.6",
+        "typescript": "^4.5.5"
+    },
+    "dependencies": {
+        "@cerpus/edlib-components": "^3.4.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2"
+    }
 }
