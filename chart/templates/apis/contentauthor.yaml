@@ -220,4 +220,4 @@ spec:
                   cpu: 20m
                   memory: 200Mi
           serviceAccount: contentauthor
-          restartPolicy: OnFailure
+          restartPolicy: "Never"
