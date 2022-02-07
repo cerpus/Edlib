@@ -181,6 +181,8 @@ metadata:
   name: contentauthor-cron
 spec:
   schedule: "*/1 * * * *"
+  concurrencyPolicy: "Forbid"
+  startingDeadlineSeconds: "60"
   jobTemplate:
     spec:
       template:
