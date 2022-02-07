@@ -1,10 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import Dashboard from './Dashboard.jsx';
-import useFetch from '../../../../hooks/useFetch.jsx';
+import useFetchWithToken from '../../../../hooks/useFetchWithToken.jsx';
 
 const DashboardContainer = () => {
-    const { response, loading, error } = useFetch(
+    const { response, loading, error } = useFetchWithToken(
         '/resources/v1/stats/resource-version/views/by-day',
         'GET'
     );

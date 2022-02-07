@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthMigrationController;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\MaintenanceModeController;
@@ -15,3 +16,7 @@ Route::delete('/applications/{application}/access_tokens/{accessToken}', [Access
 
 Route::get('/maintenance_mode', [MaintenanceModeController::class, 'status']);
 Route::put('/maintenance_mode', [MaintenanceModeController::class, 'toggle']);
+
+Route::get('/auth-migrations/{id}', [AuthMigrationController::class, 'get']);
+Route::post('/auth-migrations/{id}/execute', [AuthMigrationController::class, 'execute']);
+Route::post('/auth-migrations', [AuthMigrationController::class, 'create']);

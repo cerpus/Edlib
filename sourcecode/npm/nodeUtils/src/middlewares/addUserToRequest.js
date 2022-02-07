@@ -9,12 +9,6 @@ export default (req, res, next) => {
         next();
     }
 
-    if (!req.context || !req.context.services || !req.context.services.auth) {
-        throw new ApiException(
-            'In order to authenticate users the variable req.context.services.auth must be set with the auth api client'
-        );
-    }
-
     req.user = null;
 
     authorizationJwtMiddleware(req, res, (err) => {
@@ -29,12 +23,13 @@ export default (req, res, next) => {
         const verify = async () => {
             let info = null;
             if (req.context.services.edlibAuth) {
-                const tokenPayload = await req.context.services.edlibAuth.verifyTokenAgainstAuth(
-                    req.authorizationJwt,
-                    {
-                        ignoreExpiration: true,
-                    }
-                );
+                const tokenPayload =
+                    await req.context.services.edlibAuth.verifyTokenAgainstAuth(
+                        req.authorizationJwt,
+                        {
+                            ignoreExpiration: true,
+                        }
+                    );
 
                 if (tokenPayload) {
                     info = {
@@ -42,26 +37,6 @@ export default (req, res, next) => {
                         user: {
                             ...tokenPayload.payload.user,
                             identityId: tokenPayload.payload.user.id,
-                        },
-                    };
-                }
-            }
-
-            if (!info) {
-                const tokenPayload = await req.context.services.auth.verifyTokenAgainstAuth(
-                    req.authorizationJwt,
-                    {
-                        ignoreExpiration: true,
-                    }
-                );
-
-                if (tokenPayload) {
-                    info = {
-                        exp: tokenPayload.exp,
-                        user: {
-                            ...tokenPayload.app_metadata,
-                            id: tokenPayload.app_metadata.identityId,
-                            isAdmin: tokenPayload.app_metadata.admin,
                         },
                     };
                 }

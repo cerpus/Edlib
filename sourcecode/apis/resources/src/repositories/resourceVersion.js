@@ -5,7 +5,8 @@ const table = 'resourceVersions';
 
 const format = (resourceVersion) => {
     if (resourceVersion.externalSystemName) {
-        resourceVersion.externalSystemName = resourceVersion.externalSystemName.toLowerCase();
+        resourceVersion.externalSystemName =
+            resourceVersion.externalSystemName.toLowerCase();
     }
 
     return resourceVersion;
@@ -96,6 +97,36 @@ const getAllPaginated = async (offset, limit) =>
 const count = async () =>
     (await db(table).count('*', { as: 'count' }).first()).count;
 
+const getCountForOwners = async (ids) =>
+    (
+        await db(table)
+            .count('*', { as: 'count' })
+            .whereIn('ownerId', ids)
+            .first()
+    ).count;
+const updateOwnerIds = async (userIds) => {
+    return db(table)
+        .update({
+            ownerId: db.raw(`CASE ownerId
+                      ${userIds
+                          .map((userId) =>
+                              db
+                                  .raw(`WHEN ? THEN ?`, [
+                                      userId.from,
+                                      userId.to,
+                                  ])
+                                  .toString()
+                          )
+                          .join('\n')}
+                      END
+    `),
+        })
+        .whereIn(
+            'ownerId',
+            userIds.map((userId) => userId.from)
+        );
+};
+
 const remove = async (id) => db(table).where('id', id).del();
 
 export default () => ({
@@ -112,4 +143,6 @@ export default () => ({
     getAllPaginated,
     getLatestNonDraftResourceVersion,
     count,
+    getCountForOwners,
+    updateOwnerIds,
 });

@@ -18,8 +18,8 @@ const AuthProviderContainer = ({ children }) => {
         <ConfigContext.Provider
             value={{
                 ...defaultConfigContextValues,
-                authUrl: authServiceInfo.url,
-                authClientId: authServiceInfo.clientId,
+                authServiceAdapter: authServiceInfo.adapter,
+                authServiceSettings: authServiceInfo.settings,
             }}
         >
             {children}

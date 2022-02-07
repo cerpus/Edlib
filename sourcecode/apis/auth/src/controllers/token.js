@@ -1,16 +1,18 @@
-import externalAuthService from '../services/externalAuth.js';
-import jwksProviderService from '../services/jwksProvider.js';
-import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
 import Joi from 'joi';
-import _ from 'lodash';
 import {
     UnauthorizedException,
     pubsub,
     NotFoundException,
     validateJoi,
+    ValidationException,
+    validationExceptionError,
 } from '@cerpus/edlib-node-utils';
-import appConfig from '../config/app.js';
 import JsonWebToken from 'jsonwebtoken';
+
+import appConfig from '../config/app.js';
+import externalTokenVerifierConfig from '../config/externalTokenVerifier.js';
+import externalAuthService from '../services/externalAuth.js';
+import jwksProviderService from '../services/jwksProvider.js';
 
 export default {
     convertToken: async (req) => {
@@ -22,30 +24,83 @@ export default {
         );
 
         let user;
+        let roles = [];
+        const { data, iss } = await JsonWebToken.decode(externalToken);
 
-        if (appConfig.allowFakeToken) {
-            const { data } = await JsonWebToken.decode(externalToken);
-            if (data && data.user && data.isFakeToken) {
-                user = {
-                    id: data.user.id,
-                    firstName: data.user.firstName,
-                    lastName: data.user.lastName,
-                    email: data.user.email,
-                    isAdmin: data.user.isAdmin,
-                };
+        if (iss === 'fake') {
+            // We have a fake issuer in order to test easier locally
+            if (!appConfig.allowFakeToken) {
+                throw new ValidationException(
+                    validationExceptionError(
+                        'externalToken',
+                        'body',
+                        'Token cannot be fake'
+                    )
+                );
             }
-        }
+            if (!data || !data.isFakeToken || !data.user) {
+                throw new ValidationException(
+                    validationExceptionError(
+                        'externalToken',
+                        'body',
+                        "Token doesn't have the correct fake format"
+                    )
+                );
+            }
 
-        if (!user) {
+            user = {
+                id: data.user.id,
+                firstName: data.user.firstName,
+                lastName: data.user.lastName,
+                email: data.user.email,
+                isAdmin: data.user.isAdmin,
+            };
+        } else if (iss === externalTokenVerifierConfig.issuer) {
+            // If the issuer is the one set in the environment variables we use the configuration from there
             const payload = await externalAuthService.verifyToken(
+                externalTokenVerifierConfig.wellKnownEndpoint,
                 externalToken
             );
 
-            user = Object.entries(
-                externalTokenVerifierConfig.propertyPaths
-            ).reduce((user, [property, path]) => {
-                return { ...user, [property]: _.get(payload, path) };
-            }, {});
+            user = externalAuthService.getUserDataFromToken(
+                externalTokenVerifierConfig.adapter,
+                payload,
+                externalAuthService.getConfiguration(
+                    externalTokenVerifierConfig
+                ).settings.propertyPaths
+            );
+        } else {
+            const tenantAuthMethod =
+                await req.context.db.tenantAuthMethod.getByIssuer(iss);
+
+            if (!tenantAuthMethod) {
+                throw new ValidationException(
+                    validationExceptionError(
+                        'externalToken',
+                        'body',
+                        'Token issuer was not found'
+                    )
+                );
+            }
+
+            const payload = await externalAuthService.verifyToken(
+                tenantAuthMethod.jwksEndpoint,
+                externalToken
+            );
+
+            user = externalAuthService.getUserDataFromToken(
+                tenantAuthMethod.adapter,
+                payload,
+                await externalAuthService.getPropertyPathsFromDb(
+                    req.context,
+                    tenantAuthMethod.adapter,
+                    tenantAuthMethod.id
+                )
+            );
+        }
+
+        if (user.isAdmin) {
+            roles.push('superadmin');
         }
 
         user.isAdmin = user.isAdmin ? 1 : 0;
@@ -82,9 +137,9 @@ export default {
             dbUser = await req.context.db.user.update(user.id, {
                 ...user,
                 lastSeen: new Date(),
-                updatedAt: Object.keys(
-                    externalTokenVerifierConfig.propertyPaths
-                ).some((key) => dbUser[key] !== user[key])
+                updatedAt: Object.keys(user).some(
+                    (key) => dbUser[key] !== user[key]
+                )
                     ? new Date()
                     : undefined,
             });
@@ -92,9 +147,10 @@ export default {
 
         return {
             user,
+            roles,
             token: await jwksProviderService.encrypt(
                 req.context,
-                { type: 'user', user },
+                { type: 'user', user, roles },
                 1,
                 user.id
             ),

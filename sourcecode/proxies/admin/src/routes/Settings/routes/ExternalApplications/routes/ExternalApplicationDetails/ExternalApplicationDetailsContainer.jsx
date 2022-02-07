@@ -1,5 +1,4 @@
 import React from 'react';
-import useFetch from '../../../../../../hooks/useFetch';
 import ExternalApplicationDetails from './ExternalApplicationDetails';
 import useRequestAction from '../../../../../../hooks/useRequestAction';
 import request from '../../../../../../helpers/request';
@@ -7,15 +6,16 @@ import moment from 'moment';
 import DefaultHookQuery from '../../../../../../containers/DefaultHookQuery';
 import ApplicationContext from '../../../../../../contexts/application';
 import ConfirmDelete from './ConfirmDelete';
+import useFetchWithToken from '../../../../../../hooks/useFetchWithToken.jsx';
 
 const ExternalApplicationDetailsContainer = ({ match }) => {
-    const applicationFetchData = useFetch(
+    const applicationFetchData = useFetchWithToken(
         `/common/applications/${match.params.id}`,
         'GET',
         React.useMemo(() => ({}), [])
     );
 
-    const applicationTokensFetchData = useFetch(
+    const applicationTokensFetchData = useFetchWithToken(
         `/common/applications/${match.params.id}/access_tokens`,
         'GET',
         React.useMemo(() => ({}), [])

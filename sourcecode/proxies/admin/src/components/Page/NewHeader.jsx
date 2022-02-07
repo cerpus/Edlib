@@ -30,10 +30,8 @@ const useStyles = makeStyles((theme) => ({
 export default ({ className }) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { isAuthenticated, user, loginUrl } = React.useContext(authContext);
-    const { authUrl, logoutRedirectUrl } = React.useContext(configContext);
-
-    const logoutUrl = `${authUrl}/logout?returnUrl=${logoutRedirectUrl}`;
+    const { isAuthenticated, user, onLogout, onLogin } =
+        React.useContext(authContext);
 
     const isMenuOpen = Boolean(anchorEl);
 
@@ -64,11 +62,7 @@ export default ({ className }) => {
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {!isAuthenticated && (
-                            <Button
-                                color="inherit"
-                                component="a"
-                                href={loginUrl}
-                            >
+                            <Button color="inherit" onClick={onLogin}>
                                 Login
                             </Button>
                         )}
@@ -102,9 +96,7 @@ export default ({ className }) => {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
             >
-                <MenuItem component="a" href={logoutUrl}>
-                    Logg ut
-                </MenuItem>
+                <MenuItem onClick={onLogout}>Logg ut</MenuItem>
             </Menu>
         </>
     );

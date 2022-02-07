@@ -1,60 +1,30 @@
 import React from 'react';
-
-import useFetch from '../../hooks/useFetch.jsx';
 import AuthContext from '../../contexts/auth.js';
-import configContext from '../../contexts/config.js';
-import request from '../../helpers/request.js';
-import store from 'store';
-import storageKeys from '../../constants/storageKeys.js';
+import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
+import { useHistory } from 'react-router-dom';
+import { useTokenContext } from '../../contexts/token.js';
 
-const AuthProviderContainer = ({ children }) => {
-    const fetch = async () => {};
-    const { authUrl, authClientId, loginRedirectUrl } =
-        React.useContext(configContext);
-    const { loading, response: user, setResponse } = useFetch('/auth/v1/me');
-
-    const authPath = '/oauth/authorize';
-    const loginUrl = `${authUrl}${authPath}?client_id=${authClientId}&redirect_uri=${loginRedirectUrl}&response_type=code&scope=read&state=%`;
-
-    React.useEffect(() => {
-        if (!user) {
-            return;
-        }
-
-        const intervalId = setInterval(() => {
-            const refreshToken = store.get(storageKeys.REFRESH_TOKEN);
-            if (!refreshToken) {
-                return setResponse(null);
-            }
-
-            request('/auth/v3/jwt/refresh', 'POST')
-                .then(({ token }) => {
-                    store.set(storageKeys.AUTH_TOKEN, token);
-                })
-                .catch(() => {
-                    setResponse(null);
-                });
-        }, 1000 * 60);
-
-        return () => clearInterval(intervalId);
-    }, [user]);
+const AuthProviderWithoutJwt = ({ children, onLoginCallback, onLogin }) => {
+    const history = useHistory();
+    const { updateExternalToken } = useTokenContext();
 
     return (
         <AuthContext.Provider
             value={{
-                isAuthenticated: !!user,
-                isAuthenticating: loading,
-                user,
-                refetch: fetch,
-                logout: () => {
-                    setResponse(null);
-                    store.remove(storageKeys.AUTH_TOKEN);
+                isAuthenticated: false,
+                isAuthenticating: false,
+                user: null,
+                refetch: () => {},
+                onLoginCallback: async () => {
+                    const token = await onLoginCallback();
+                    updateExternalToken(token);
+                    history.push('/');
                 },
-                login: ({ user, token }) => {
-                    setResponse(user);
-                    store.set(storageKeys.AUTH_TOKEN, token);
+                onLogoutCallback: async () => {
+                    history.push('/');
                 },
-                loginUrl,
+                onLogin,
+                onLogout: async () => {},
             }}
         >
             {children}
@@ -62,4 +32,84 @@ const AuthProviderContainer = ({ children }) => {
     );
 };
 
-export default AuthProviderContainer;
+const AuthProviderWithJwt = ({ children, onLogoutCallback, onLogout }) => {
+    const history = useHistory();
+    const { removeExternalToken } = useTokenContext();
+
+    const {
+        loading,
+        response: user,
+        refetch,
+    } = useFetchWithToken(
+        '/auth/v1/me',
+        'GET',
+        React.useMemo(() => ({}), [])
+    );
+
+    return (
+        <AuthContext.Provider
+            value={{
+                isAuthenticated: !!user,
+                isAuthenticating: loading,
+                user,
+                refetch,
+                onLoginCallback: async () => {
+                    history.push('/');
+                },
+                onLogoutCallback: async () => {
+                    removeExternalToken();
+                    await onLogoutCallback();
+                    history.push('/login');
+                },
+                onLogin: async () => {},
+                onLogout,
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+};
+
+const AuthProvider = ({
+    children,
+    onLogin,
+    onLoginCallback,
+    onLogout,
+    onLogoutCallback,
+}) => {
+    const { jwt } = useTokenContext();
+
+    if (jwt.loading) {
+        return (
+            <AuthContext.Provider
+                value={{
+                    isAuthenticated: false,
+                    isAuthenticating: true,
+                    user: null,
+                }}
+            >
+                {children}
+            </AuthContext.Provider>
+        );
+    }
+
+    if (!jwt.value) {
+        return (
+            <AuthProviderWithoutJwt
+                children={children}
+                onLoginCallback={onLoginCallback}
+                onLogin={onLogin}
+            />
+        );
+    }
+
+    return (
+        <AuthProviderWithJwt
+            children={children}
+            onLogout={onLogout}
+            onLogoutCallback={onLogoutCallback}
+        />
+    );
+};
+
+export default AuthProvider;

@@ -7,10 +7,11 @@ use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\RecommendationEngineController;
 
 Route::get('auth/login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('sso-edlib-admin', 'Auth\LoginController@ssoFromEdlibAdmin')->middleware('edlib.parse-jwt', 'edlib.auth:superadmin');
 Route::post('auth/login', 'Auth\LoginController@login');
 Route::post('auth/logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::middleware('auth')->namespace('Admin')->prefix('admin')->group(
+Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')->group(
     function () {
         Route::get('/', 'AdminController@index')->name('admin');
 

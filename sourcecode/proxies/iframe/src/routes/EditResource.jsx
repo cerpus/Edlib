@@ -31,27 +31,12 @@ const EditResource = () => {
             launchUrl: query.launchUrl || null,
         };
     }, []);
-    const [currentJwt, setCurrentJwt] = React.useState(jwt);
 
     const config = React.useMemo(() => getConfig(configString), [configString]);
     return (
         <EdlibComponentsProvider
             language={language}
-            getJwt={async () => {
-                const { data } = await axios.post(
-                    `/auth/v2/jwt/refresh`,
-                    null,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${currentJwt}`,
-                        },
-                    }
-                );
-
-                setCurrentJwt(data.authToken);
-
-                return data.authToken;
-            }}
+            getJwt={async () => jwt}
             edlibUrl={apiConfig.url}
             configuration={config}
         >

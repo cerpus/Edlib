@@ -1,12 +1,12 @@
 import React from 'react';
 import Home from './Home.jsx';
 import { useHistory } from 'react-router-dom';
-import useFetch from '../../../../../../hooks/useFetch';
+import useFetchWithToken from '../../../../../../hooks/useFetchWithToken.jsx';
 
 const HomeContainer = ({ match }) => {
     const history = useHistory();
 
-    const { response, loading, refetch } = useFetch(
+    const { response, loading, refetch } = useFetchWithToken(
         '/common/applications',
         'GET',
         React.useMemo(() => ({}), [])

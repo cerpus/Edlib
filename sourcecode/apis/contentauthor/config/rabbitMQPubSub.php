@@ -1,5 +1,7 @@
 <?php
 
+use App\Messaging\Handlers\AuthMigrationExecute;
+use App\Messaging\Handlers\AuthMigrationGetFeedback;
 use App\Messaging\Handlers\EdlibGdprDeleteRequest;
 
 return [
@@ -15,6 +17,20 @@ return [
             'subscriptions' => [
                 'edlib_gdpr_delete_request-contentauthor' => [
                     'handler' => EdlibGdprDeleteRequest::class
+                ]
+            ]
+        ],
+        'auth_migration_get_info' => [
+            'subscriptions' => [
+                'auth_migration_get_info-contentauthor' => [
+                    'handler' => AuthMigrationGetFeedback::class
+                ]
+            ]
+        ],
+        'auth_migration_execute' => [
+            'subscriptions' => [
+                'auth_migration_execute-contentauthor' => [
+                    'handler' => AuthMigrationExecute::class
                 ]
             ]
         ],

@@ -2228,10 +2228,10 @@ domexception@^2.0.1:
   dependencies:
     webidl-conversions "^5.0.0"
 
-dotenv-expand@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-6.0.1.tgz#233328515e4b71091a6513e2ffe7e9a24b49bb0c"
-  integrity sha512-GNHcCOyRKLCXWnH3L/+sJ04PQxxgTOZDCPuQQnqkqPMGIilyoxHZ2JUNmh2VWKCfzVKH/AZsqcbuSYlDDVb/xw==
+dotenv-expand@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-8.0.1.tgz#332aa17c14b12e28e2e230f8d183eecc1c014fdc"
+  integrity sha512-j/Ih7bIERDR5PzI89Zu8ayd3tXZ6E3dbY0ljQ9Db0K87qBO8zdLsi2dIvDHMWtjC3Yxb8XixOTHAtia0fDHRpg==
 
 dotenv@^15.0.0:
   version "15.0.0"

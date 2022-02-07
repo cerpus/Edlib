@@ -1,9 +1,9 @@
 import React from 'react';
-import useFetch from '../../hooks/useFetch.jsx';
 import SystemStatus from './SystemStatus.jsx';
+import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
 
 const SystemStatusContainer = ({ name, endpoint }) => {
-    const { response, loading, error } = useFetch(endpoint, 'GET');
+    const { response, loading, error } = useFetchWithToken(endpoint, 'GET');
 
     return (
         <SystemStatus

@@ -1,0 +1,82 @@
+---
+sidebar_position: 2
+---
+
+# Setup Auth0 for Edlib
+
+In this guide we will describe the steps to setup auth0 for Edlib.
+
+## 1. Create a new API in Auth0
+
+First of all you will need to create an API for Edlib. You find the API's page at Applications -> API's. If you have an existing API from before you can use that otherwise you can press the "Create API" Button.
+Below is an example of values you could use:
+
+- Name: Edlib
+- Identifier: edlib
+- Signing Algorithm: RS256
+
+## 2. Create a scope/permission for the API
+
+In order to give admin permission for some users you will need to create a scope. To do that you go to your newly created
+API and go under the permissions tab. There you can create a new scope with the following values
+
+- Permission: edlib:superadmin
+- Description: Highest level of permission in Edlib
+
+## 3. Create an Application
+
+You will also need to create an application for Edlib in Auth0. You find the applications page under Applications > Applications.
+You can now press the "Create application" button and use the following values:
+
+- Name: Edlib
+- Choose an application type: Single page web applications
+
+## 4. Setup allowed url's for the newly created application
+
+Go to your newly created application and press the Settings tab in Auth0. Scroll down to the "Application URIs" section
+and add the following URIs. `<edlib-url>` refers to the url of your edlib API installation. For edlib.com this url would
+be `https://api.edlib.com`.
+
+- Application login URI: `<edlib-url>`/admin/login
+- Allowed Callback URLs: `<edlib-url>`/admin/login/callback
+- Allowed Logout URLs: `<edlib-url>`/admin/logout/callback
+- Allowed Web Origins: `<edlib-url>`
+- Allowed Origins: `<edlib-url>`
+
+## 5. Create a rule to add claims needed for Edlib in your access token.
+
+In order for Edlib to have the necessary user information the access token must contain information about the user.
+In order to do that in Auth0 you must go to Auth Pipeline > Rules and create a new rule. You can use the following
+parameters when creating it:
+
+- Pick a rules template: Empty rule
+- Name: Add user info for Edlib
+- Script:
+
+```
+function (user, context, callback) {
+  const namespace = 'https://edlib.com/';
+  context.accessToken[namespace + "userId"] = user.user_id;
+  context.accessToken[namespace + "userName"] = user.name;
+  context.accessToken[namespace + "userEmail"] = user.email;
+  return callback(null, user, context);
+}
+```
+
+You can set the namespace and parameter name to whatever you want as this can be configured in step 6.
+
+## 6. Add environment variables to Edlib
+
+When you are done configuring Auth0 you can now setup Edlib. You do this by setting the following environment variables:
+
+- EDLIBCOMMON_EXTERNALAUTH_ADAPTER: auth0
+- EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_DOMAIN: Applications > Applications > (the edlib application created in step 3) > Settings > Domain
+- EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_CLIENTID: Applications > Applications > (the edlib application created in step 3) > Settings > Client ID
+- EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_AUDIENCE: Identifier you used for the API in step 1
+- EDLIBCOMMON_EXTERNALAUTH_JWKS_ENDPOINT: (Applications > Applications > (the edlib application created in step 3) > Settings > Domain)/.well-known/jwks.json
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ID: The claim name you chose in step 5. In the example it is set to `https://edlib.com/userId`
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_EMAIL: The claim name you chose in step 5. In the example it is set to `https://edlib.com/userEmail`
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_NAME: The claim name you chose in step 5. In the example it is set to `https://edlib.com/userName`
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_METHOD: inscope
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_KEY: scope
+- EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ISADMIN_INSCOPE_VALUE: edlib:superadmin

@@ -54,10 +54,34 @@ export default (req, config) => {
         ).data;
     };
 
+    const getAuthServiceInfo = async () => {
+        return (
+            await authAxios({
+                url: `/v1/auth-service-info`,
+                method: 'GET',
+            })
+        ).data;
+    };
+
+    const cerpusAuthLoginCallback = async (code, callbackUrl) => {
+        return (
+            await authAxios({
+                url: `/v1/cerpusauth/login/callback`,
+                method: 'GET',
+                params: {
+                    code,
+                    callbackUrl,
+                },
+            })
+        ).data;
+    };
+
     return {
         convertToken,
         refreshToken,
         getUsersByEmail,
+        cerpusAuthLoginCallback,
+        getAuthServiceInfo,
         verifyTokenAgainstAuth: verifyTokenAgainstAuth(
             jwksClients,
             `${config.url}/.well-known/jwks.json`

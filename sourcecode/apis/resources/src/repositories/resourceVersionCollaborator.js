@@ -39,6 +39,36 @@ const remove = async (ids) => {
 
     return db(table).whereIn('id', ids).del();
 };
+const updateTenantIds = async (userIds) => {
+    return db(table)
+        .update({
+            tenantId: db.raw(`CASE tenantId
+                      ${userIds
+                          .map((userId) =>
+                              db
+                                  .raw(`WHEN ? THEN ?`, [
+                                      userId.from,
+                                      userId.to,
+                                  ])
+                                  .toString()
+                          )
+                          .join('\n')}
+                      END
+    `),
+        })
+        .whereIn(
+            'tenantId',
+            userIds.map((userId) => userId.from)
+        );
+};
+
+const getCountForTenants = async (ids) =>
+    (
+        await db(table)
+            .count('*', { as: 'count' })
+            .whereIn('tenantId', ids)
+            .first()
+    ).count;
 
 export default () => ({
     create,
@@ -48,4 +78,6 @@ export default () => ({
     getWithTenantsForResourceVersion,
     remove,
     getForEmailWithMissingTenantWithResourceId,
+    getCountForTenants,
+    updateTenantIds,
 });

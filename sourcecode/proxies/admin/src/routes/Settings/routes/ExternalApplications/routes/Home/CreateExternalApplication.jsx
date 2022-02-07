@@ -7,12 +7,12 @@ import {
     DialogTitle,
     TextField,
 } from '@material-ui/core';
-import request from '../../../../../../helpers/request';
 import useRequestAction from '../../../../../../hooks/useRequestAction';
+import useRequestWithToken from '../../../../../../hooks/useRequestWithToken.jsx';
 
 const CreateExternalApplication = ({ isOpen, onClose, onAdded }) => {
     const [name, setName] = React.useState('');
-
+    const request = useRequestWithToken();
     const { status, action } = useRequestAction((name) =>
         request('/common/applications', 'POST', {
             body: {

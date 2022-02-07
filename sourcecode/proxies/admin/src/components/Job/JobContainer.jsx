@@ -1,7 +1,7 @@
 import React from 'react';
 import Job from './Job.jsx';
-import request from '../../helpers/request.js';
 import useFetch from '../../hooks/useFetch.jsx';
+import useRequestWithToken from '../../hooks/useRequestWithToken.jsx';
 
 const JobContainer = ({
     name,
@@ -10,6 +10,7 @@ const JobContainer = ({
     showKillButton = false,
     resumable = false,
 }) => {
+    const request = useRequestWithToken();
     const [status, setStatus] = React.useState({
         loading: false,
         error: false,

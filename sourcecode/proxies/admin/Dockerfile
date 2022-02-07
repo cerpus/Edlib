@@ -1,7 +1,10 @@
-FROM node:16.13 as build
+FROM node:16.13 as base
 WORKDIR /app
 COPY . .
 RUN yarn
+
+FROM base as build
+WORKDIR /app
 RUN yarn build
 RUN rm /app/build/static/**/*.map
 

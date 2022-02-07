@@ -1,6 +1,4 @@
 import apiConfig from '../config/api.js';
-import store from 'store';
-import storageKeys from '../constants/storageKeys.js';
 
 export class RequestError extends Error {
     constructor(response) {
@@ -9,7 +7,7 @@ export class RequestError extends Error {
     }
 }
 
-export default async (url, method, options = {}) => {
+const request = async (url, method, options = {}) => {
     let actualUrl = `${apiConfig.url}${url}`;
 
     if (options.query) {
@@ -40,16 +38,13 @@ export default async (url, method, options = {}) => {
     }
 };
 
+export default request;
+
 const getHeaders = (options) => {
     const headers = { ...options.headers };
 
     if (options.body) {
         headers['Content-Type'] = 'application/json';
-    }
-
-    const authToken = store.get(storageKeys.AUTH_TOKEN);
-    if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
     }
 
     return headers;

@@ -13,6 +13,7 @@ export default (getJwt, edlibUrl) => {
     const [jwtError, setJwtError] = React.useState(null);
     const [retry, setRetry] = React.useState(null);
     const prevCountRef = React.useRef(null);
+    const currentId = React.useRef(1);
 
     React.useEffect(() => {
         if (!prevCountRef) {
@@ -31,14 +32,24 @@ export default (getJwt, edlibUrl) => {
             return null;
         }
 
+        const id = currentId.current + 1;
+        currentId.current = id;
+
         setJwtLoading(true);
         const _update = async () => {
             let newInternalToken;
 
             if (!jwt) {
                 const externalToken = await getJwt();
-                let getJwtTokenData = externalToken;
 
+                if (!externalToken) {
+                    setJwtError('jwt was not returned from getJwt function');
+                    return console.error(
+                        'jwt was not returned from getJwt function'
+                    );
+                }
+
+                let getJwtTokenData = externalToken;
                 if (typeof externalToken === 'string') {
                     getJwtTokenData = {
                         type: 'external',
@@ -78,11 +89,13 @@ export default (getJwt, edlibUrl) => {
                 newInternalToken = internalToken;
             }
 
+            if (id !== currentId.current) {
+                return;
+            }
+
             if (!newInternalToken) {
-                setJwtError('jwt was not returned from getJwt function');
-                return console.error(
-                    'jwt was not returned from getJwt function'
-                );
+                setJwtError('Error creating internal JWT token');
+                return console.error('Error creating internal JWT token');
             } else if (isTokenExpired(newInternalToken)) {
                 setJwtError('Returned token has expired');
                 return console.error('Returned token has expired');
@@ -92,11 +105,18 @@ export default (getJwt, edlibUrl) => {
         };
         _update()
             .catch((e) => {
+                if (id !== currentId.current) {
+                    return;
+                }
                 console.error(e);
                 setJwtError('Noe skjedde');
                 setRetry(retry ? retry + 1 : 1);
             })
             .finally(() => {
+                if (id !== currentId.current) {
+                    return;
+                }
+
                 setJwtLoading(false);
             });
     }, [getJwt, setJwt, setJwtLoading, setJwtError, jwt]);
@@ -159,10 +179,19 @@ export default (getJwt, edlibUrl) => {
         throw new Error('No valid token is available');
     }, [jwt]);
 
+    const reset = React.useCallback(async () => {
+        setJwt(null);
+        setJwtLoading(null);
+        setJwtError(null);
+        setRetry(null);
+        updateToken();
+    }, [updateToken]);
+
     return {
         token: jwt,
         loading: jwtLoading,
         error: jwtError,
         getToken,
+        reset,
     };
 };
