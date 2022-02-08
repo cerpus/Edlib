@@ -64,60 +64,16 @@ class EdlibParseJwt extends AuthJwtParser
                     'name' => $this->getBestName($user),
                     'email' => $this->getEmail($user)
                 ]));
+
+                Auth::login(new GenericUser([
+                    'id' => $payload->sub,
+                    'name' => $this->getBestName($user),
+                    'email' => $this->getEmail($user)
+                ]));
                 return $next($request);
             }
         }
 
-        $isLoggedIn = Session::get('authId');
-
-        if ($isLoggedIn) {
-            return $next($request);
-        }
-
-        $this->request = $request;
-        return $this->handleAuth();
-    }
-
-    private function handleAuth()
-    {
-        if ($this->requestContainsAuthAnswer()) {
-            return $this->logInUser();
-        }
-        return $this->doOAuth();
-    }
-
-    private function requestContainsAuthAnswer()
-    {
-        return false;
-    }
-
-    private function logInUser()
-    {
-        $userId = $this->getUserIdFromAuthResponse();
-        return Auth::loginUsingId($userId);
-    }
-
-    private function getUserIdFromAuthResponse()
-    {
-        return Session::get('userId');
-    }
-
-    private function doOAuth()
-    {
-        /**
-         * @var $cerpusAuthService CerpusAuthService
-         */
-        $cerpusAuthService = \App::make(CerpusAuthService::class);
-
-        $afterOAuthUrl = $this->request->url() . '?' . $_SERVER['QUERY_STRING'];
-        Session::put('afterOAuthUrl', $afterOAuthUrl);
-
-        $authorize = $cerpusAuthService->startFlow()
-            ->setSingleSignoutEndpoint(route('slo'))
-            ->setRequirements('v1')
-            ->setSuccessUrl($afterOAuthUrl)
-            ->authorizeUrl(route('oauth2.return'));
-
-        return redirect($authorize);
+        return redirect('auth/login');
     }
 }

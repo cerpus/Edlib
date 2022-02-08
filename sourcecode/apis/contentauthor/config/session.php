@@ -1,23 +1,5 @@
 <?php
 
-if (env('DEPLOYMENT_ENVIRONMENT', '') != '') {
-    // Applies to all deployed environments
-
-    return [
-        'driver' => 'database',
-        'lifetime' => env('SESSION_LIFETIME', 120),
-        'expire_on_close' => true,
-        'encrypt' => true,
-        'table' => 'sessions',
-        'lottery' => [2, 100],
-        'cookie' => 'ca_session',
-        'path' => "/",
-        'domain' => null,
-        'secure' => true,
-        'same_site' => 'none',
-    ];
-}
-
 return [
 
     /*
@@ -33,7 +15,6 @@ return [
     |            "memcached", "redis", "array"
     |
     */
-
     'driver' => env('SESSION_DRIVER', 'redis'),
 
     /*
@@ -46,7 +27,6 @@ return [
     | to immediately expire on the browser closing, set that option.
     |
     */
-
     'lifetime' => env('SESSION_LIFETIME', 120),
 
     'expire_on_close' => true,
@@ -87,7 +67,6 @@ return [
     | correspond to a connection in your database configuration options.
     |
     */
-
     'connection' => env('SESSION_CONNECTION', 'default'),
 
     /*
