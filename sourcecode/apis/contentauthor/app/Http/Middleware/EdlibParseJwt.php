@@ -59,17 +59,13 @@ class EdlibParseJwt extends AuthJwtParser
                 Session::put('verifiedEmails', $this->getVerifiedEmails($user));
                 Session::put('isAdmin', in_array('superadmin', $roles));
                 Session::put('roles', $roles);
-                Session::put('user', new GenericUser([
+                $genericUser = new GenericUser([
                     'id' => $payload->sub,
                     'name' => $this->getBestName($user),
                     'email' => $this->getEmail($user)
-                ]));
-
-                Auth::login(new GenericUser([
-                    'id' => $payload->sub,
-                    'name' => $this->getBestName($user),
-                    'email' => $this->getEmail($user)
-                ]));
+                ]);
+                Session::put('user', $genericUser);
+                Auth::login($genericUser);
                 return $next($request);
             }
         }
