@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Http\Libraries\AuthJwtParser;
-use Cerpus\LaravelAuth\Service\CerpusAuthService;
 use Cerpus\LaravelAuth\Service\JWTValidationService;
 use Closure;
 use Illuminate\Auth\GenericUser;
@@ -13,8 +12,6 @@ use Illuminate\Support\Facades\Session;
 
 class EdlibParseJwt extends AuthJwtParser
 {
-    private Request $request;
-
     private function getJwtFromRequest(Request $request): ?string
     {
         $authorize = trim($request->header('Authorization', ''));
@@ -68,6 +65,12 @@ class EdlibParseJwt extends AuthJwtParser
                 Auth::login($genericUser);
                 return $next($request);
             }
+        }
+
+        $isLoggedIn = Session::get('authId');
+
+        if ($isLoggedIn) {
+            return $next($request);
         }
 
         return redirect('auth/login');
