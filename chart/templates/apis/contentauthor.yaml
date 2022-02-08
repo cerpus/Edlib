@@ -182,7 +182,7 @@ metadata:
 spec:
   schedule: "*/1 * * * *"
   concurrencyPolicy: "Forbid"
-  startingDeadlineSeconds: "60"
+  startingDeadlineSeconds: 60
   jobTemplate:
     spec:
       template:
