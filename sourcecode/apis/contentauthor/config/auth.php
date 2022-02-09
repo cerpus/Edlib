@@ -40,8 +40,7 @@ return [
             'provider' => 'users',
         ],
         'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins'
+            'driver' => 'edlib'
         ]
     ],
     /*

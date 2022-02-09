@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Auth\Guards\EdlibGuard;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -24,6 +27,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(GateContract $gate)
     {
+        Auth::extend('edlib', function (Container $app) {
+            return new EdlibGuard($app['request']);
+        });
+
         parent::registerPolicies($gate);
 
         //
