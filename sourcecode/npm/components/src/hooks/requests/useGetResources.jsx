@@ -16,7 +16,9 @@ export default (requestBody, wait) => {
         edlib('/resources/v2/resources'),
         'GET',
         options,
-        wait
+        wait,
+        true,
+        false
     );
 
     return {

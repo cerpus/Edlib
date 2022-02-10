@@ -26,10 +26,11 @@ export default {
         const externalSystemName = req.params.externalSystemName;
         const externalSystemId = req.params.externalSystemId;
 
-        let resourceVersion = await req.context.db.resourceVersion.getByExternalId(
-            externalSystemName,
-            externalSystemId
-        );
+        let resourceVersion =
+            await req.context.db.resourceVersion.getByExternalId(
+                externalSystemName,
+                externalSystemId
+            );
 
         if (!resourceVersion) {
             throw new NotFoundException('resource');
@@ -45,18 +46,20 @@ export default {
         const externalSystemName = req.params.externalSystemName;
         const externalSystemId = req.params.externalSystemId;
 
-        let resourceVersion = await req.context.db.resourceVersion.getByExternalId(
-            externalSystemName,
-            externalSystemId
-        );
+        let resourceVersion =
+            await req.context.db.resourceVersion.getByExternalId(
+                externalSystemName,
+                externalSystemId
+            );
 
         if (!resourceVersion) {
             throw new NotFoundException('resource');
         }
 
-        const collaborators = await req.context.db.resourceCollaborator.getForResource(
-            resourceVersion.resourceId
-        );
+        const collaborators =
+            await req.context.db.resourceCollaborator.getForResource(
+                resourceVersion.resourceId
+            );
 
         return {
             collaborators: collaborators.map((collaborator) => ({
@@ -81,10 +84,11 @@ export default {
 
         const resources = await Promise.all(
             externalSystemReferences.map(async (externalSystemReference) => {
-                let resourceVersion = await req.context.db.resourceVersion.getByExternalId(
-                    externalSystemReference.externalSystemName,
-                    externalSystemReference.externalSystemId
-                );
+                let resourceVersion =
+                    await req.context.db.resourceVersion.getByExternalId(
+                        externalSystemReference.externalSystemName,
+                        externalSystemReference.externalSystemId
+                    );
 
                 if (!resourceVersion) {
                     throw new NotFoundException('resource');
@@ -137,10 +141,11 @@ export default {
         });
     },
     ensureResourceExists: async (req) => {
-        const externalResource = await req.context.services.externalResourceFetcher.getById(
-            req.params.externalSystemName,
-            req.params.externalSystemId
-        );
+        const externalResource =
+            await req.context.services.externalResourceFetcher.getById(
+                req.params.externalSystemName,
+                req.params.externalSystemId
+            );
 
         await saveEdlibResourcesAPI({
             pubSubConnection: req.context.pubSubConnection,
@@ -180,10 +185,11 @@ export default {
             resourceIds = [];
         }
 
-        const existingResourceCollaborators = await req.context.db.resourceCollaborator.getforApplicationContext(
-            applicationId,
-            context
-        );
+        const existingResourceCollaborators =
+            await req.context.db.resourceCollaborator.getforApplicationContext(
+                applicationId,
+                context
+            );
 
         const actualResources = await Promise.all(
             resourceIds.map((resourceId) =>
@@ -280,6 +286,13 @@ export default {
 
         return {
             success: true,
+        };
+    },
+    getLanguages: async (req) => {
+        return {
+            data: (
+                await req.context.db.resourceVersion.getDistinctLanguages()
+            ).map((row) => row.language),
         };
     },
 };

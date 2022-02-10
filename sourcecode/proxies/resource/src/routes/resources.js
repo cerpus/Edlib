@@ -47,7 +47,7 @@ export default async () => {
     router.get(
         '/v2/resources',
         middlewares.isUserAuthenticated,
-        runAsync(recommendationController.getV2)
+        runAsync(recommendationController.get)
     );
 
     router.get(

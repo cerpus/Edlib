@@ -32,6 +32,7 @@ const getResourcesFromRequestValidation = (data) => {
                 .items(Joi.string())
                 .default([])
                 .optional(),
+            languages: Joi.array().items(Joi.string()).default([]).optional(),
         })
     );
 };
@@ -40,6 +41,10 @@ const getResourcesFromRequest = async (req, tenantId) => {
     // ensure licenses is always an array
     if (req.query.licenses && !Array.isArray(req.query.licenses)) {
         req.query.licenses = [req.query.licenses];
+    }
+
+    if (req.query.languages && !Array.isArray(req.query.languages)) {
+        req.query.languages = [req.query.languages];
     }
 
     if (req.query.contentTypes && !Array.isArray(req.query.contentTypes)) {
@@ -53,6 +58,7 @@ const getResourcesFromRequest = async (req, tenantId) => {
         licenses,
         searchString,
         contentTypes,
+        languages,
     } = getResourcesFromRequestValidation(req.query);
 
     const field = !tenantId ? 'publicVersion' : 'protectedVersion';
@@ -67,6 +73,22 @@ const getResourcesFromRequest = async (req, tenantId) => {
                     should: licenses.map((license) => ({
                         match_phrase: {
                             [`${field}.license.keyword`]: license.toLowerCase(),
+                        },
+                    })),
+                },
+            },
+        ]);
+    }
+
+    if (languages.length !== 0) {
+        _.set(extraQuery, 'bool.must', [
+            ..._.get(extraQuery, 'bool.must', []),
+            {
+                bool: {
+                    should: languages.map((language) => ({
+                        match_phrase: {
+                            [`${field}.language.keyword`]:
+                                language.toLowerCase(),
                         },
                     })),
                 },
@@ -95,7 +117,8 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 bool: {
                     should: contentTypes.map((contentType) => ({
                         match_phrase: {
-                            [`${field}.contentType.keyword`]: contentType.toLowerCase(),
+                            [`${field}.contentType.keyword`]:
+                                contentType.toLowerCase(),
                         },
                     })),
                 },
@@ -212,12 +235,13 @@ const transformElasticResources = async (
 
 const retrieveCoreInfo = async (context, resourceVersions) => {
     try {
-        const coreInfos = await context.services.coreInternal.resource.multipleFromExternalIdInfo(
-            resourceVersions.map((rv) => ({
-                externalSystemName: rv.externalSystemName,
-                externalSystemId: rv.externalSystemId,
-            }))
-        );
+        const coreInfos =
+            await context.services.coreInternal.resource.multipleFromExternalIdInfo(
+                resourceVersions.map((rv) => ({
+                    externalSystemName: rv.externalSystemName,
+                    externalSystemId: rv.externalSystemId,
+                }))
+            );
 
         for (let {
             externalSystemName,
@@ -254,9 +278,10 @@ const retrieveCoreInfo = async (context, resourceVersions) => {
 };
 
 const status = async (context, resourceId) => {
-    const resourceVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
-        resourceId
-    );
+    const resourceVersion =
+        await context.db.resourceVersion.getLatestNonDraftResourceVersion(
+            resourceId
+        );
 
     const isPublished = resourceVersion && resourceVersion.isPublished;
 

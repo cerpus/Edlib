@@ -16,5 +16,14 @@ export default async () => {
         )
     );
 
+    router.get(
+        '/v1/languages',
+        middlewares.isUserAuthenticated,
+        proxyRequest(
+            (req) => req.context.services.resource.proxy,
+            (req) => `/v1/languages`
+        )
+    );
+
     return router;
 };

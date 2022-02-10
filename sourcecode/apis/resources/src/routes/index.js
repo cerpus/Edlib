@@ -281,6 +281,20 @@ export default async ({ pubSubConnection }) => {
     apiRouter.post('/v1/jobs/:jobId/resume', runAsync(jobController.resumeJob));
     apiRouter.delete('/v1/jobs/:jobId', runAsync(jobController.killJob));
 
+    /**
+     * @swagger
+     *
+     *  /v1/languages:
+     *      get:
+     *          description: Get all different languages used in Edlib
+     *          produces:
+     *              - application/json
+     *          responses:
+     *              200:
+     *                  description: Successful request
+     */
+    apiRouter.get('/v1/languages', runAsync(resourceController.getLanguages));
+
     apiRouter.use(await contentTypes());
     apiRouter.use(await stats());
 

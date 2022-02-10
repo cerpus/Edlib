@@ -13,7 +13,6 @@ jest.mock('@cerpus/edlib-node-utils', () => {
             ...actual.apiClients,
             id: jest.fn(),
             version: jest.fn(),
-            coreInternal: jest.fn(),
         },
         middlewares: {
             ...actual.middlewares,
@@ -100,12 +99,6 @@ describe('Test endpoints', () => {
         //         .fn()
         //         .mockResolvedValueOnce(structure1)
         //         .mockResolvedValueOnce(structure2);
-        //
-        //     apiClients.coreInternal.mockImplementation(() => ({
-        //         resource: {
-        //             structure: structureMock,
-        //         },
-        //     }));
         //
         //     const response = await request((c) =>
         //         c

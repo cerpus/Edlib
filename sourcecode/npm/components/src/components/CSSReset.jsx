@@ -9,10 +9,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body .edlib-components {
-    * {
-      box-sizing: border-box;
-    }
-
     code {
       font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;

@@ -12,10 +12,12 @@ import useArray from '../../hooks/useArray';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceColumns from '../../constants/resourceColumns';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
+import PublishedTag from '../PublishedTag.jsx';
+import { iso6393ToString } from '../../helpers/language.js';
 
 const Row = styled.div`
     display: grid;
-    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 60px [license] 80px [actions] 60px;
+    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 160px [status] 130px [license] 80px [actions] 60px;
 `;
 
 const BodyRow = styled(Row)`
@@ -92,6 +94,7 @@ const CogWrapper = styled.div`
 `;
 
 const ResourceTable = ({
+    totalCount,
     resources,
     onResourceClick,
     showDeleteButton = false,
@@ -100,27 +103,37 @@ const ResourceTable = ({
     const { onInsert, onRemove } = useResourceCapabilities();
     const { getUserConfig } = useEdlibComponentsContext();
     const hideResourceColumns = getUserConfig('hideResourceColumns');
-    const [currentEditContextId, setCurrentEditContextId] = React.useState(
-        null
-    );
-    const [resourceVersionModal, setResourceVersionModal] = React.useState(
-        null
-    );
-    const [
-        showConfirmDeletionModal,
-        setShowConfirmDeletionModal,
-    ] = React.useState(false);
+    const [currentEditContextId, setCurrentEditContextId] =
+        React.useState(null);
+    const [resourceVersionModal, setResourceVersionModal] =
+        React.useState(null);
+    const [showConfirmDeletionModal, setShowConfirmDeletionModal] =
+        React.useState(false);
     const idsToHide = useArray();
     const history = useHistory();
 
     return (
         <>
             <HeaderRow>
-                <div>{t('Innhold')}</div>
-                <div />
+                <div
+                    style={{
+                        gridColumnStart: 'icon',
+                        gridColumnEnd: 'span date',
+                    }}
+                >
+                    {t('Innhold')}{' '}
+                    <span
+                        style={{
+                            fontWeight: 'normal',
+                        }}
+                    >
+                        <i>{`${totalCount} ${t('ressurser')}`}</i>
+                    </span>
+                </div>
                 <div>{t('Sist endret')}</div>
                 <div>{t('Forfatter')}</div>
                 <div>{t('Språk')}</div>
+                <div>{t('Status')}</div>
                 {hideResourceColumns.indexOf(resourceColumns.LICENSE) ===
                     -1 && <div>{t('Lisenser')}</div>}
                 <div />
@@ -152,7 +165,12 @@ const ResourceTable = ({
                             {resource.version.authorOverwrite}
                         </Cell>
                         <Cell vc secondary>
-                            {resource.version.language}
+                            {iso6393ToString(resource.version.language)}
+                        </Cell>
+                        <Cell vc secondary>
+                            <PublishedTag
+                                isPublished={resource.version.isPublished}
+                            />
                         </Cell>
                         {hideResourceColumns.indexOf(
                             resourceColumns.LICENSE

@@ -47,12 +47,12 @@ const H5PTypes = ({ contentTypes }) => {
                     <strong>{t('Godkjente')}</strong>
                 </p>
             )}
-            {approvedH5ps.map(({ title, value }) => (
-                <FormGroup key={value}>
+            {approvedH5ps.map((approvedH5p) => (
+                <FormGroup key={approvedH5p.value}>
                     <Checkbox
-                        onToggle={() => contentTypes.toggle(value)}
-                        checked={contentTypes.has(value)}
-                        title={title}
+                        onToggle={() => contentTypes.toggle(approvedH5p)}
+                        checked={contentTypes.has(approvedH5p)}
+                        title={approvedH5p.title}
                     />
                 </FormGroup>
             ))}
@@ -61,12 +61,12 @@ const H5PTypes = ({ contentTypes }) => {
                     <strong>{t('Ikke godkjente')}</strong>
                 </p>
             )}
-            {notApprovedH5ps.map(({ title, value }) => (
-                <FormGroup key={value}>
+            {notApprovedH5ps.map((notApprovedH5p) => (
+                <FormGroup key={notApprovedH5p.value}>
                     <Checkbox
-                        onToggle={() => contentTypes.toggle(value)}
-                        checked={contentTypes.has(value)}
-                        title={title}
+                        onToggle={() => contentTypes.toggle(notApprovedH5p)}
+                        checked={contentTypes.has(notApprovedH5p)}
+                        title={notApprovedH5p.title}
                     />
                 </FormGroup>
             ))}

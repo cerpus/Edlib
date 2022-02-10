@@ -6,25 +6,29 @@ export default (contentFilter = 'myContent') => {
     const [searchInput, setSearchInput] = React.useState('');
 
     const tags = useArray();
-    const sources = useArray();
-    const contentTypes = useArray();
-    const licenses = useArray();
+    const languages = useArray();
+    const contentTypes = useArray([], (list, item) =>
+        list.findIndex((listItem) => listItem.value === item.value)
+    );
+    const licenses = useArray([], (list, item) =>
+        list.findIndex((listItem) => listItem.value === item.value)
+    );
 
     const debouncedSearchInput = useDebounce(searchInput, 500);
 
     const requestData = React.useMemo(
         () => ({
             contentFilter,
-            contentTypes: contentTypes.value,
-            licenses: licenses.value,
-            sources: sources.value,
+            contentTypes: contentTypes.value.map((ct) => ct.value),
+            licenses: licenses.value.map((ct) => ct.value),
+            languages: languages.value,
             keywords: tags.value.map((tag) => tag.value),
             searchString:
                 debouncedSearchInput === '' ? null : debouncedSearchInput,
         }),
         [
             tags.value,
-            sources.value,
+            languages.value,
             contentTypes.value,
             licenses.value,
             debouncedSearchInput,
@@ -34,14 +38,14 @@ export default (contentFilter = 'myContent') => {
 
     const reset = React.useCallback(() => {
         tags.setValue([]);
-        sources.setValue([]);
+        languages.setValue([]);
         contentTypes.setValue([]);
         licenses.setValue([]);
         setSearchInput('');
     }, [
         setSearchInput,
         tags.setValue,
-        sources.setValue,
+        languages.setValue,
         contentTypes.setValue,
         licenses.setValue,
     ]);
@@ -51,7 +55,7 @@ export default (contentFilter = 'myContent') => {
         debouncedSearchInput,
         setSearchInput,
         tags,
-        sources,
+        languages,
         contentTypes,
         licenses,
         requestData,

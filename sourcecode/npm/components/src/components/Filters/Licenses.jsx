@@ -31,12 +31,12 @@ const Licenses = ({ licenses }) => {
                 .sort((a, b) =>
                     a.title < b.title ? -1 : a.title > b.title ? 1 : 0
                 )
-                .map(({ title, value }) => (
-                    <FormGroup key={value}>
+                .map((license) => (
+                    <FormGroup key={license.value}>
                         <Checkbox
-                            onToggle={() => licenses.toggle(value)}
-                            checked={licenses.has(value)}
-                            title={title}
+                            onToggle={() => licenses.toggle(license)}
+                            checked={licenses.has(license)}
+                            title={license.title}
                         />
                     </FormGroup>
                 ))}
