@@ -12,7 +12,7 @@ import useArray from '../../hooks/useArray';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceColumns from '../../constants/resourceColumns';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
-import PublishedTag from '../PublishedTag.jsx';
+import PublishedTag from '../PublishedTag';
 import { iso6393ToString } from '../../helpers/language.js';
 
 const Row = styled.div`

@@ -1,6 +1,6 @@
 import React from 'react';
 import request from '../helpers/request';
-import { useRequestCacheContext } from '../contexts/RequestCache.jsx';
+import { useRequestCacheContext } from '../contexts/RequestCache';
 
 export default (url, method, options, wait = false, cache = false) => {
     const { cachedDataWithStatus, setCachedData, ignoreFirstFetch } =

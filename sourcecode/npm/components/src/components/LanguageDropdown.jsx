@@ -1,6 +1,6 @@
 import React from 'react';
 import { Autocomplete } from '@material-ui/lab';
-import useFetchWithToken from '../hooks/useFetchWithToken.jsx';
+import useFetchWithToken from '../hooks/useFetchWithToken';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { iso6393ToString } from '../helpers/language.js';
 import useTranslation from '../hooks/useTranslation.js';

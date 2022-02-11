@@ -28,7 +28,7 @@ import { Search as SearchIcon } from '@material-ui/icons';
 import resourceOrders from '../../constants/resourceOrders';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
-import LanguageDropdown from '../LanguageDropdown.jsx';
+import LanguageDropdown from '../LanguageDropdown';
 
 const StyledResourcePage = styled.div`
     background-color: #f3f3f3;
