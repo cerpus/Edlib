@@ -45,7 +45,7 @@ const ResourceFilters = ({ filters }) => {
             content: <Licenses licenses={filters.licenses} />,
         },
     ];
-    const open = useArray();
+    const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
 
     return (
         <form

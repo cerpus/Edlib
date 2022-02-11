@@ -47,10 +47,12 @@ const StyledResourcePage = styled.div`
 
     & > div:first-child {
         max-width: 300px;
+        width: 300px;
         padding: 5px;
     }
 
     .pageContent {
+        overflow-y: scroll;
         display: flex;
         flex-direction: column;
         padding: 15px;
@@ -205,6 +207,15 @@ const ResourcePage = ({
             <Select
                 MenuProps={{
                     style: { zIndex: 2051 },
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    },
+                    transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center',
+                    },
+                    getContentAnchorEl: null,
                 }}
                 value={sortingOrder}
                 onChange={(e) => setSortingOrder(e.target.value)}
@@ -263,14 +274,14 @@ const ResourcePage = ({
                 {!filterMobileView && (
                     <div className="contentOptions">
                         <Box display="flex">
-                            <div
+                            <Box
+                                paddingRight={1}
                                 style={{
                                     width: 400,
                                 }}
                             >
                                 <TextField
                                     fullWidth
-                                    required
                                     label={t('Søk')}
                                     variant="outlined"
                                     value={filters.searchInput}
@@ -287,7 +298,7 @@ const ResourcePage = ({
                                         ),
                                     }}
                                 />
-                            </div>
+                            </Box>
                             <div
                                 style={{
                                     width: 200,
