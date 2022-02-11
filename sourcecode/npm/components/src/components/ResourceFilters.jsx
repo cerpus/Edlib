@@ -1,22 +1,40 @@
 import React from 'react';
-import ResourcePageFilterGroup from './ResourcePage/components/ResourcePageFilterGroup';
-import BorderSeparated from './BorderSeparated';
-import Collapsable from './Collapsable';
 import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 import resourceFilters from '../constants/resourceFilters';
-import { Button } from '@material-ui/core';
+import {
+    Button,
+    Collapse,
+    List,
+    ListItem,
+    ListItemText,
+    makeStyles,
+} from '@material-ui/core';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import useArray from '../hooks/useArray.js';
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+    nested: {
+        paddingLeft: theme.spacing(1),
+    },
+}));
 
 const ResourceFilters = ({ filters }) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
+    const classes = useStyles();
     const disabledFilters = getUserConfig('disabledFilters') || null;
 
     const filterBlocks = [
         {
             type: resourceFilters.H5P_TYPE,
-            title: t('H5P Type'),
+            title: t('Innholdstype'),
             count: filters.contentTypes.value.length,
             content: <H5PTypes contentTypes={filters.contentTypes} />,
         },
@@ -27,6 +45,7 @@ const ResourceFilters = ({ filters }) => {
             content: <Licenses licenses={filters.licenses} />,
         },
     ];
+    const open = useArray();
 
     return (
         <form
@@ -35,25 +54,38 @@ const ResourceFilters = ({ filters }) => {
                 e.stopPropagation();
             }}
         >
-            <ResourcePageFilterGroup title={t('Ressurser')}>
-                <BorderSeparated>
-                    {filterBlocks
-                        .filter(
-                            (filterBlock) =>
-                                disabledFilters === null ||
-                                disabledFilters.indexOf(filterBlock.type) === -1
-                        )
-                        .map((filterBlock) => (
-                            <Collapsable
-                                key={filterBlock.type}
-                                title={filterBlock.title}
-                                filterCount={filterBlock.count}
+            <List component="nav" className={classes.root} dense>
+                {filterBlocks
+                    .filter(
+                        (filterBlock) =>
+                            disabledFilters === null ||
+                            disabledFilters.indexOf(filterBlock.type) === -1
+                    )
+                    .map((filterBlock) => (
+                        <>
+                            <ListItem
+                                button
+                                onClick={() => open.toggle(filterBlock.type)}
+                            >
+                                <ListItemText>
+                                    <strong>{t(filterBlock.title)}</strong>
+                                </ListItemText>
+                                {open.has(filterBlock.type) ? (
+                                    <ExpandLess />
+                                ) : (
+                                    <ExpandMore />
+                                )}
+                            </ListItem>
+                            <Collapse
+                                in={open.has(filterBlock.type)}
+                                timeout="auto"
+                                unmountOnExit
                             >
                                 {filterBlock.content}
-                            </Collapsable>
-                        ))}
-                </BorderSeparated>
-            </ResourcePageFilterGroup>
+                            </Collapse>
+                        </>
+                    ))}
+            </List>
             <Button
                 variant="outlined"
                 color="primary"

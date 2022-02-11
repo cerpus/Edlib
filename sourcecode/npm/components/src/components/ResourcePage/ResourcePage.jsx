@@ -47,7 +47,7 @@ const StyledResourcePage = styled.div`
 
     & > div:first-child {
         max-width: 300px;
-        padding: 20px;
+        padding: 5px;
     }
 
     .pageContent {

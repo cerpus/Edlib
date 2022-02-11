@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default (
+const useArray = (
     defaultValue = [],
     finder = (list, item) => list.findIndex((listItem) => listItem === item)
 ) => {
@@ -51,3 +51,5 @@ export default (
         [has, toggle, push, removeIndex, value]
     );
 };
+
+export default useArray;
