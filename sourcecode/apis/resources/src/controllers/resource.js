@@ -290,9 +290,9 @@ export default {
     },
     getLanguages: async (req) => {
         return {
-            data: (
-                await req.context.db.resourceVersion.getDistinctLanguages()
-            ).map((row) => row.language),
+            data: (await req.context.db.resourceVersion.getDistinctLanguages())
+                .map((row) => row.language)
+                .filter(Boolean),
         };
     },
 };
