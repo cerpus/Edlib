@@ -46,6 +46,7 @@ const StyledResourcePage = styled.div`
     }
 
     & > div:first-child {
+        flex-shrink: 0;
         max-width: 300px;
         width: 300px;
         padding: 5px;
