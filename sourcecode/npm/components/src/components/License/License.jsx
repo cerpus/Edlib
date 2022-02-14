@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import useTranslation from '../../hooks/useTranslation';
-import byUrl from './icons/by.svg';
+import byUrl, { ReactComponent as test } from './icons/by.svg';
 import byNcUrl from './icons/by-nc.svg';
 import byNcNdUrl from './icons/by-nc-nd.svg';
 import byNcSaUrl from './icons/by-nc-sa.svg';
