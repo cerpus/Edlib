@@ -7,7 +7,6 @@
   "engines": {
     "node": "14.x || 16.x"
   },
-  "type": "module",
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.2",
     "react-dom": "^16.8.0 || ^17.0.2",
