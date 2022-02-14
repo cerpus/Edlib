@@ -85,7 +85,7 @@ const _groupsManager = (groupsInfo) => {
                         name: group.name,
                         aggs: {
                             [group.name]: {
-                                terms: { field: group.fieldPath },
+                                terms: { field: group.fieldPath, size: 10000 },
                             },
                         },
                         query:
