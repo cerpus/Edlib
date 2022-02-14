@@ -1,44 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
 import useTranslation from '../../hooks/useTranslation';
-import byUrl, { ReactComponent as test } from './icons/by.svg';
-import byNcUrl from './icons/by-nc.svg';
-import byNcNdUrl from './icons/by-nc-nd.svg';
-import byNcSaUrl from './icons/by-nc-sa.svg';
-import byNdUrl from './icons/by-nd.svg';
-import bySaUrl from './icons/by-sa.svg';
-import cc0Url from './icons/cc0.svg';
-import pdmUrl from './icons/pdm.svg';
-import zeroUrl from './icons/zero.svg';
-import pdUrl from './icons/pd.svg';
-import ndUrl from './icons/nd.svg';
-import saUrl from './icons/sa.svg';
-import ncJpUrl from './icons/nc-jp.svg';
-import ncEuUrl from './icons/nc-eu.svg';
-import ncUrl from './icons/nc.svg';
-import ccUrl from './icons/cc.svg';
-import remixUrl from './icons/remix.svg';
-import shareUrl from './icons/share.svg';
+import by from './icons/by.svg';
+import byNc from './icons/by-nc.svg';
+import byNcNd from './icons/by-nc-nd.svg';
+import byNcSa from './icons/by-nc-sa.svg';
+import byNd from './icons/by-nd.svg';
+import bySa from './icons/by-sa.svg';
+import cc0 from './icons/cc0.svg';
+import pdm from './icons/pdm.svg';
+import zero from './icons/zero.svg';
+import pd from './icons/pd.svg';
+import nd from './icons/nd.svg';
+import sa from './icons/sa.svg';
+import ncJp from './icons/nc-jp.svg';
+import ncEu from './icons/nc-eu.svg';
+import nc from './icons/nc.svg';
+import cc from './icons/cc.svg';
+import remix from './icons/remix.svg';
+import share from './icons/share.svg';
 
 const licenseFileMap = {
-    'by': byUrl,
-    'by-nc': byNcUrl,
-    'by-nc-nd': byNcNdUrl,
-    'by-nc-sa': byNcSaUrl,
-    'by-nd': byNdUrl,
-    'by-sa': bySaUrl,
-    'cc0': cc0Url,
-    'pdm': pdmUrl,
-    'zero': zeroUrl,
-    'pd': pdUrl,
-    'nd': ndUrl,
-    'sa': saUrl,
-    'ncJp': ncJpUrl,
-    'ncEu': ncEuUrl,
-    'nc': ncUrl,
-    'cc': ccUrl,
-    'remix': remixUrl,
-    'share': shareUrl,
+    'by': by,
+    'by-nc': byNc,
+    'by-nc-nd': byNcNd,
+    'by-nc-sa': byNcSa,
+    'by-nd': byNd,
+    'by-sa': bySa,
+    'cc0': cc0,
+    'pdm': pdm,
+    zero,
+    pd,
+    nd,
+    sa,
+    ncJp,
+    ncEu,
+    nc,
+    cc,
+    remix,
+    share,
 };
 
 const StyledLicense = styled.div`
