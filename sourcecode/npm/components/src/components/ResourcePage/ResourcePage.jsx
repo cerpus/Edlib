@@ -184,18 +184,19 @@ const ResourcePage = ({
     const [page, setPage] = React.useState(0);
     const [pageSize, setPageSize] = React.useState(40);
 
-    const { error, loading, resources, pagination, refetch } = useGetResources(
-        React.useMemo(
-            () => ({
-                limit: pageSize,
-                offset: page * pageSize,
-                resourceCapabilities: ['view'],
-                orderBy: sortingOrder,
-                ...(filters && filters.requestData),
-            }),
-            [page, sortingOrder, filters && filters.requestData, pageSize]
-        )
-    );
+    const { error, loading, resources, pagination, refetch, filterCount } =
+        useGetResources(
+            React.useMemo(
+                () => ({
+                    limit: pageSize,
+                    offset: page * pageSize,
+                    resourceCapabilities: ['view'],
+                    orderBy: sortingOrder,
+                    ...(filters && filters.requestData),
+                }),
+                [page, sortingOrder, filters && filters.requestData, pageSize]
+            )
+        );
 
     React.useEffect(() => {
         setPage(0);
@@ -238,7 +239,7 @@ const ResourcePage = ({
                     expanded: filtersExpanded,
                 })}
             >
-                <ResourceFilters filters={filters} />
+                <ResourceFilters filters={filters} filterCount={filterCount} />
             </Filters>
             {filterMobileView && filtersExpanded && (
                 <MobileBackground onClick={() => setFiltersExpanded(false)} />

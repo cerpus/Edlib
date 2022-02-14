@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Licenses = ({ licenses }) => {
+const Licenses = ({ licenses, filterCount }) => {
     const { t } = useTranslation();
     const { edlib } = useConfig();
     const classes = useStyles();
@@ -49,11 +49,17 @@ const Licenses = ({ licenses }) => {
                 {response
                     .map((item) => {
                         const parts = item.id.split('-');
+                        const count = filterCount.find(
+                            (filterCount) =>
+                                filterCount.key === item.id.toLowerCase()
+                        );
+
                         return {
                             title: parts
                                 .map((part) => t(`licenses.${part}`))
                                 .join(' - '),
                             value: item.id,
+                            filteredCount: count ? count.count : 0,
                         };
                     })
                     .sort((a, b) =>
@@ -83,7 +89,9 @@ const Licenses = ({ licenses }) => {
                                     }}
                                 />
                             </ListItemIcon>
-                            <ListItemText primary={license.title} />
+                            <ListItemText
+                                primary={`${license.title} (${license.filteredCount})`}
+                            />
                         </ListItem>
                     ))}
             </List>

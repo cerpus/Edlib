@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const H5PTypes = ({ contentTypes }) => {
+const H5PTypes = ({ contentTypes, filterCount }) => {
     const { t } = useTranslation();
     const { edlib } = useConfig();
     const classes = useStyles();
@@ -51,10 +51,16 @@ const H5PTypes = ({ contentTypes }) => {
     }
 
     const allH5ps = response.data
-        .map((item) => ({
-            title: item.title,
-            value: item.contentType,
-        }))
+        .map((item) => {
+            const count = filterCount.find(
+                (filterCount) => filterCount.key === item.contentType
+            );
+            return {
+                title: item.title,
+                value: item.contentType,
+                filteredCount: count ? count.count : 0,
+            };
+        })
         .sort((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
 
     const categoriesObject = allH5ps.reduce((categories, h5p) => {
@@ -137,7 +143,9 @@ const H5PTypes = ({ contentTypes }) => {
                                             }}
                                         />
                                     </ListItemIcon>
-                                    <ListItemText primary={h5p.title} />
+                                    <ListItemText
+                                        primary={`${h5p.title} (${h5p.filteredCount})`}
+                                    />
                                 </ListItem>
                             ))}
                         </List>

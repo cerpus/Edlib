@@ -7,6 +7,7 @@ import {
 } from '@cerpus/edlib-node-utils';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
 import moment from 'moment';
+import apiConfig from '../config/apis.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
@@ -37,6 +38,61 @@ const getResourcesFromRequestValidation = (data) => {
     );
 };
 
+const _groupsManager = (groupsInfo) => {
+    const groups = groupsInfo.reduce((groups, groupInfo) => {
+        groups[groupInfo.name] = {
+            name: groupInfo.name,
+            fieldPath: groupInfo.fieldPath,
+            ignoreCountQuery: groupInfo.ignoreCountQuery,
+            boolMust: null,
+            boolMustCount: [],
+        };
+
+        return groups;
+    }, {});
+
+    return {
+        addFilter: (groupName, boolMust) => {
+            groups[groupName].boolMust = boolMust;
+            Object.values(groups)
+                .filter((group) => group.name !== groupName)
+                .forEach((group) =>
+                    groups[group.name].boolMustCount.push(boolMust)
+                );
+        },
+        getSearchQuery: () => {
+            return {
+                bool: {
+                    must: Object.values(groups)
+                        .filter((group) => group.boolMust !== null)
+                        .map((group) => group.boolMust),
+                },
+            };
+        },
+        getCountQueryGroups: () =>
+            Object.values(groups)
+                .filter((group) => !group.ignoreCountQuery)
+                .map((group) => {
+                    return {
+                        name: group.name,
+                        aggs: {
+                            [group.name]: {
+                                terms: { field: group.fieldPath },
+                            },
+                        },
+                        query:
+                            group.boolMustCount.length === 0
+                                ? undefined
+                                : {
+                                      bool: {
+                                          must: group.boolMustCount,
+                                      },
+                                  },
+                    };
+                }),
+    };
+};
+
 const getResourcesFromRequest = async (req, tenantId) => {
     // ensure licenses is always an array
     if (req.query.licenses && !Array.isArray(req.query.licenses)) {
@@ -62,68 +118,72 @@ const getResourcesFromRequest = async (req, tenantId) => {
     } = getResourcesFromRequestValidation(req.query);
 
     const field = !tenantId ? 'publicVersion' : 'protectedVersion';
-
-    let extraQuery = {};
+    const groups = _groupsManager([
+        {
+            name: 'licenses',
+            fieldPath: `${field}.license.keyword`,
+        },
+        {
+            name: 'languages',
+            fieldPath: `${field}.language.keyword`,
+        },
+        {
+            name: 'search',
+            fieldPath: `${field}.title`,
+            ignoreCountQuery: true,
+        },
+        {
+            name: 'contentTypes',
+            fieldPath: `${field}.contentType.keyword`,
+        },
+    ]);
 
     if (licenses.length !== 0) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                bool: {
-                    should: licenses.map((license) => ({
-                        match_phrase: {
-                            [`${field}.license.keyword`]: license.toLowerCase(),
-                        },
-                    })),
-                },
+        groups.addFilter('licenses', {
+            bool: {
+                should: licenses.map((license) => ({
+                    match_phrase: {
+                        [`${field}.license.keyword`]: license.toLowerCase(),
+                    },
+                })),
             },
-        ]);
+        });
     }
 
     if (languages.length !== 0) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                bool: {
-                    should: languages.map((language) => ({
-                        match_phrase: {
-                            [`${field}.language.keyword`]:
-                                language.toLowerCase(),
-                        },
-                    })),
-                },
+        groups.addFilter('languages', {
+            bool: {
+                should: languages.map((language) => ({
+                    match_phrase: {
+                        [`${field}.language.keyword`]: language.toLowerCase(),
+                    },
+                })),
             },
-        ]);
+        });
     }
 
     if (searchString) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                match: {
-                    [`${field}.title`]: {
-                        query: searchString,
-                        fuzziness: 'AUTO',
-                    },
+        groups.addFilter('search', {
+            match: {
+                [`${field}.title`]: {
+                    query: searchString,
+                    fuzziness: 'AUTO',
                 },
             },
-        ]);
+        });
     }
 
     if (contentTypes) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                bool: {
-                    should: contentTypes.map((contentType) => ({
-                        match_phrase: {
-                            [`${field}.contentType.keyword`]:
-                                contentType.toLowerCase(),
-                        },
-                    })),
-                },
+        groups.addFilter('contentTypes', {
+            bool: {
+                should: contentTypes.map((contentType) => ({
+                    match_phrase: {
+                        [`${field}.contentType.keyword`]:
+                            contentType.toLowerCase(),
+                    },
+                })),
             },
-        ]);
+        });
     }
 
     const { body } = await req.context.services.elasticsearch.search(
@@ -141,7 +201,23 @@ const getResourcesFromRequest = async (req, tenantId) => {
                       )}.createdAt`,
             direction: 'DESC',
         },
-        Object.keys(extraQuery).length === 0 ? null : extraQuery
+        groups.getSearchQuery()
+    );
+
+    const response = await Promise.all(
+        groups.getCountQueryGroups().map(async (group) => {
+            return {
+                name: group.name,
+                aggregations:
+                    await req.context.services.elasticsearch.client.search({
+                        index: apiConfig.elasticsearch.resourceIndexPrefix,
+                        body: {
+                            aggs: group.aggs,
+                            query: group.query,
+                        },
+                    }),
+            };
+        })
     );
 
     return {
@@ -155,6 +231,16 @@ const getResourcesFromRequest = async (req, tenantId) => {
             body.hits.hits,
             !tenantId
         ),
+        filterCount: response.reduce((filterCount, response) => {
+            filterCount[response.name] =
+                response.aggregations.body.aggregations[
+                    response.name
+                ].buckets.map((bucket) => ({
+                    key: bucket.key,
+                    count: bucket.doc_count,
+                }));
+            return filterCount;
+        }, {}),
     };
 };
 

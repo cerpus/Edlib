@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ResourceFilters = ({ filters }) => {
+const ResourceFilters = ({ filters, filterCount }) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
     const classes = useStyles();
@@ -36,13 +36,23 @@ const ResourceFilters = ({ filters }) => {
             type: resourceFilters.H5P_TYPE,
             title: t('Innholdstype'),
             count: filters.contentTypes.value.length,
-            content: <H5PTypes contentTypes={filters.contentTypes} />,
+            content: (
+                <H5PTypes
+                    contentTypes={filters.contentTypes}
+                    filterCount={filterCount ? filterCount.contentTypes : []}
+                />
+            ),
         },
         {
             type: resourceFilters.LICENSE,
             title: t('Lisens'),
             count: filters.licenses.value.length,
-            content: <Licenses licenses={filters.licenses} />,
+            content: (
+                <Licenses
+                    licenses={filters.licenses}
+                    filterCount={filterCount ? filterCount.licenses : []}
+                />
+            ),
         },
     ];
     const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
