@@ -50,6 +50,7 @@ const _groupsManager = (groupsInfo) => {
 
         return groups;
     }, {});
+    const globalFilters = [];
 
     return {
         addFilter: (groupName, boolMust) => {
@@ -60,12 +61,18 @@ const _groupsManager = (groupsInfo) => {
                     groups[group.name].boolMustCount.push(boolMust)
                 );
         },
+        addGlobalFilter: (boolMust) => {
+            globalFilters.push(boolMust);
+        },
         getSearchQuery: () => {
             return {
                 bool: {
-                    must: Object.values(groups)
-                        .filter((group) => group.boolMust !== null)
-                        .map((group) => group.boolMust),
+                    must: [
+                        ...globalFilters,
+                        ...Object.values(groups)
+                            .filter((group) => group.boolMust !== null)
+                            .map((group) => group.boolMust),
+                    ],
                 },
             };
         },
@@ -73,6 +80,7 @@ const _groupsManager = (groupsInfo) => {
             Object.values(groups)
                 .filter((group) => !group.ignoreCountQuery)
                 .map((group) => {
+                    const must = [...globalFilters, ...group.boolMustCount];
                     return {
                         name: group.name,
                         aggs: {
@@ -81,11 +89,11 @@ const _groupsManager = (groupsInfo) => {
                             },
                         },
                         query:
-                            group.boolMustCount.length === 0
+                            must.length === 0
                                 ? undefined
                                 : {
                                       bool: {
-                                          must: group.boolMustCount,
+                                          must,
                                       },
                                   },
                     };
@@ -186,23 +194,38 @@ const getResourcesFromRequest = async (req, tenantId) => {
         });
     }
 
-    const { body } = await req.context.services.elasticsearch.search(
-        tenantId,
-        {
-            limit,
-            offset,
+    groups.addGlobalFilter({
+        exists: {
+            field,
         },
-        {
-            column:
-                orderBy === 'usage'
-                    ? 'views'
-                    : `${getElasticVersionFieldKey(
-                          tenantId === null
-                      )}.createdAt`,
-            direction: 'DESC',
+    });
+
+    if (tenantId) {
+        groups.addGlobalFilter({
+            match: {
+                protectedUserIds: tenantId,
+            },
+        });
+    }
+
+    const { body } = await req.context.services.elasticsearch.client.search({
+        index: apiConfig.elasticsearch.resourceIndexPrefix,
+        track_total_hits: true,
+        body: {
+            from: offset,
+            size: limit,
+            query: groups.getSearchQuery(),
+            sort: [
+                {
+                    [orderBy === 'usage'
+                        ? 'views'
+                        : `${getElasticVersionFieldKey(
+                              tenantId === null
+                          )}.createdAt`]: { order: 'DESC' },
+                },
+            ],
         },
-        groups.getSearchQuery()
-    );
+    });
 
     const response = await Promise.all(
         groups.getCountQueryGroups().map(async (group) => {

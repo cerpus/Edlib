@@ -40,8 +40,7 @@ export default () => {
             body: {
                 script: {
                     lang: 'painless',
-                    source:
-                        'ctx._source.views = ctx._source.views != null ? ctx._source.views + 1 : 1',
+                    source: 'ctx._source.views = ctx._source.views != null ? ctx._source.views + 1 : 1',
                 },
             },
         });
@@ -156,57 +155,11 @@ export default () => {
         return true;
     };
 
-    const search = async (
-        tenantId,
-        pagination = {
-            limit: 20,
-            offset: 0,
-        },
-        orderBy,
-        extraQuery
-    ) => {
-        const field = !tenantId ? 'publicVersion' : 'protectedVersion';
-
-        const query = {
-            bool: {
-                must: [
-                    {
-                        exists: {
-                            field,
-                        },
-                    },
-                    tenantId && {
-                        match: {
-                            protectedUserIds: tenantId,
-                        },
-                    },
-                    extraQuery,
-                ].filter(Boolean),
-            },
-        };
-
-        return client.search({
-            index: apiConfig.elasticsearch.resourceIndexPrefix,
-            track_total_hits: true,
-            body: {
-                from: pagination.offset,
-                size: pagination.limit,
-                query,
-                sort: [
-                    {
-                        [orderBy.column]: { order: orderBy.direction },
-                    },
-                ],
-            },
-        });
-    };
-
     return {
         client,
         updateOrCreate,
         remove,
         createOrIgnoreIndex,
-        search,
         incrementView,
     };
 };
