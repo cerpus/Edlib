@@ -16,13 +16,16 @@ export default (requestBody, wait) => {
         edlib('/resources/v2/resources'),
         'GET',
         options,
-        wait
+        wait,
+        true,
+        false
     );
 
     return {
         loading: !error && loading,
         error,
         resources: response && response.data,
+        filterCount: response && response.filterCount,
         pagination: response && response.pagination,
         refetch,
     };

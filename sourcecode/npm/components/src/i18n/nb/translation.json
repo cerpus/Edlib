@@ -162,5 +162,8 @@
     "maintenance": "Edlib gjennomgår for øyeblikket vedlikehold. Du kan ikke opprette eller redigere ressurser akkurat nå. Vennligst prøv igjen senere.",
     "Reset": "Nullstill",
     "Sortering": "Sortering",
-    "Denne ressursen er nå publisert": "Denne ressursen er nå publisert"
+    "Denne ressursen er nå publisert": "Denne ressursen er nå publisert",
+    "Publisert": "Publisert",
+    "Avpublisert": "Avpublisert",
+    "Status": "Status"
 }

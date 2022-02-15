@@ -2,7 +2,14 @@ import React from 'react';
 import useFetch from './useFetch';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 
-export default (url, method, options, wait = false, forceToken = true) => {
+export default (
+    url,
+    method,
+    options,
+    wait = false,
+    forceToken = true,
+    cache = false
+) => {
     const { jwt } = useEdlibComponentsContext();
     const [hasChanged, setHasChanged] = React.useState(false);
     const previousJwt = React.useRef(jwt.value);
@@ -51,7 +58,8 @@ export default (url, method, options, wait = false, forceToken = true) => {
         url,
         method,
         requestOptions,
-        (forceToken && !tempJwt) || wait
+        (forceToken && !tempJwt) || wait,
+        cache
     );
 
     const hasError = forceToken && ((!jwt.value && jwt.error) || error);

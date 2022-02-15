@@ -87,6 +87,9 @@ const getContentTypesForExternalSystemName = async (externalSystemName) =>
         .distinct('contentType')
         .where('externalSystemName', externalSystemName);
 
+const getDistinctLanguages = async () =>
+    db(table).select('language').distinct('language');
+
 const getAllPaginated = async (offset, limit) =>
     db(table)
         .select('*')
@@ -145,4 +148,5 @@ export default () => ({
     count,
     getCountForOwners,
     updateOwnerIds,
+    getDistinctLanguages,
 });

@@ -57,10 +57,8 @@ const ResourceEditCog = ({
 }) => {
     const { t } = useTranslation();
     const capabilities = useResourceCapabilities(resource);
-    const {
-        enableVersionInterface,
-        enableTranslationButton,
-    } = useConfigurationContext();
+    const { enableVersionInterface, enableTranslationButton } =
+        useConfigurationContext();
     const { getUserConfig } = useEdlibComponentsContext();
     const canReturnResources = getUserConfig('canReturnResources');
 
@@ -70,9 +68,6 @@ const ResourceEditCog = ({
                 {({ ref }) => (
                     <MaterialIcon
                         name="MoreVert"
-                        style={{
-                            color: '#2196f3',
-                        }}
                         ref={ref}
                         onClick={(e) => {
                             e.stopPropagation();

@@ -1,5 +1,5 @@
 export default {
-    getV2: async (req, res, next) => {
+    get: async (req, res, next) => {
         if (req.query.contentFilter === 'myContent') {
             return await req.context.services.resource.getTenantResources(
                 req.user.identityId,

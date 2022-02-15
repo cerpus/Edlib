@@ -1,10 +1,13 @@
 import React from 'react';
 
-export default (defaultValue = []) => {
+const useArray = (
+    defaultValue = [],
+    finder = (list, item) => list.findIndex((listItem) => listItem === item)
+) => {
     const [value, setValue] = React.useState(defaultValue);
 
     const has = React.useCallback(
-        (hasValue) => value.indexOf(hasValue) !== -1,
+        (hasValue) => finder(value, hasValue) !== -1,
         [value]
     );
 
@@ -22,9 +25,10 @@ export default (defaultValue = []) => {
         (valueToToggle) => {
             let newValue = [...value];
 
-            if (has(valueToToggle)) {
+            let index = finder(newValue, valueToToggle);
+            if (index !== -1) {
                 newValue = newValue.filter(
-                    (itemValue) => itemValue !== valueToToggle
+                    (_, itemIndex) => itemIndex !== index
                 );
             } else {
                 newValue.push(valueToToggle);
@@ -47,3 +51,5 @@ export default (defaultValue = []) => {
         [has, toggle, push, removeIndex, value]
     );
 };
+
+export default useArray;

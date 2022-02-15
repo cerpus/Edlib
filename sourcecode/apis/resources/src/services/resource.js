@@ -7,6 +7,7 @@ import {
 } from '@cerpus/edlib-node-utils';
 import resourceCapabilities from '../constants/resourceCapabilities.js';
 import moment from 'moment';
+import apiConfig from '../config/apis.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
@@ -32,14 +33,82 @@ const getResourcesFromRequestValidation = (data) => {
                 .items(Joi.string())
                 .default([])
                 .optional(),
+            languages: Joi.array().items(Joi.string()).default([]).optional(),
         })
     );
+};
+
+const _groupsManager = (groupsInfo) => {
+    const groups = groupsInfo.reduce((groups, groupInfo) => {
+        groups[groupInfo.name] = {
+            name: groupInfo.name,
+            fieldPath: groupInfo.fieldPath,
+            ignoreCountQuery: groupInfo.ignoreCountQuery,
+            boolMust: null,
+            boolMustCount: [],
+        };
+
+        return groups;
+    }, {});
+    const globalFilters = [];
+
+    return {
+        addFilter: (groupName, boolMust) => {
+            groups[groupName].boolMust = boolMust;
+            Object.values(groups)
+                .filter((group) => group.name !== groupName)
+                .forEach((group) =>
+                    groups[group.name].boolMustCount.push(boolMust)
+                );
+        },
+        addGlobalFilter: (boolMust) => {
+            globalFilters.push(boolMust);
+        },
+        getSearchQuery: () => {
+            return {
+                bool: {
+                    must: [
+                        ...globalFilters,
+                        ...Object.values(groups)
+                            .filter((group) => group.boolMust !== null)
+                            .map((group) => group.boolMust),
+                    ],
+                },
+            };
+        },
+        getCountQueryGroups: () =>
+            Object.values(groups)
+                .filter((group) => !group.ignoreCountQuery)
+                .map((group) => {
+                    const must = [...globalFilters, ...group.boolMustCount];
+                    return {
+                        name: group.name,
+                        aggs: {
+                            [group.name]: {
+                                terms: { field: group.fieldPath, size: 10000 },
+                            },
+                        },
+                        query:
+                            must.length === 0
+                                ? undefined
+                                : {
+                                      bool: {
+                                          must,
+                                      },
+                                  },
+                    };
+                }),
+    };
 };
 
 const getResourcesFromRequest = async (req, tenantId) => {
     // ensure licenses is always an array
     if (req.query.licenses && !Array.isArray(req.query.licenses)) {
         req.query.licenses = [req.query.licenses];
+    }
+
+    if (req.query.languages && !Array.isArray(req.query.languages)) {
+        req.query.languages = [req.query.languages];
     }
 
     if (req.query.contentTypes && !Array.isArray(req.query.contentTypes)) {
@@ -53,72 +122,125 @@ const getResourcesFromRequest = async (req, tenantId) => {
         licenses,
         searchString,
         contentTypes,
+        languages,
     } = getResourcesFromRequestValidation(req.query);
 
     const field = !tenantId ? 'publicVersion' : 'protectedVersion';
-
-    let extraQuery = {};
+    const groups = _groupsManager([
+        {
+            name: 'licenses',
+            fieldPath: `${field}.license.keyword`,
+        },
+        {
+            name: 'languages',
+            fieldPath: `${field}.language.keyword`,
+        },
+        {
+            name: 'search',
+            fieldPath: `${field}.title`,
+            ignoreCountQuery: true,
+        },
+        {
+            name: 'contentTypes',
+            fieldPath: `${field}.contentType.keyword`,
+        },
+    ]);
 
     if (licenses.length !== 0) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                bool: {
-                    should: licenses.map((license) => ({
-                        match_phrase: {
-                            [`${field}.license.keyword`]: license.toLowerCase(),
-                        },
-                    })),
-                },
+        groups.addFilter('licenses', {
+            bool: {
+                should: licenses.map((license) => ({
+                    match_phrase: {
+                        [`${field}.license.keyword`]: license.toLowerCase(),
+                    },
+                })),
             },
-        ]);
+        });
+    }
+
+    if (languages.length !== 0) {
+        groups.addFilter('languages', {
+            bool: {
+                should: languages.map((language) => ({
+                    match_phrase: {
+                        [`${field}.language.keyword`]: language.toLowerCase(),
+                    },
+                })),
+            },
+        });
     }
 
     if (searchString) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                match: {
-                    [`${field}.title`]: {
-                        query: searchString,
-                        fuzziness: 'AUTO',
-                    },
+        groups.addFilter('search', {
+            match: {
+                [`${field}.title`]: {
+                    query: searchString,
+                    fuzziness: 'AUTO',
                 },
             },
-        ]);
+        });
     }
 
     if (contentTypes) {
-        _.set(extraQuery, 'bool.must', [
-            ..._.get(extraQuery, 'bool.must', []),
-            {
-                bool: {
-                    should: contentTypes.map((contentType) => ({
-                        match_phrase: {
-                            [`${field}.contentType.keyword`]: contentType.toLowerCase(),
-                        },
-                    })),
-                },
+        groups.addFilter('contentTypes', {
+            bool: {
+                should: contentTypes.map((contentType) => ({
+                    match_phrase: {
+                        [`${field}.contentType.keyword`]:
+                            contentType.toLowerCase(),
+                    },
+                })),
             },
-        ]);
+        });
     }
 
-    const { body } = await req.context.services.elasticsearch.search(
-        tenantId,
-        {
-            limit,
-            offset,
+    groups.addGlobalFilter({
+        exists: {
+            field,
         },
-        {
-            column:
-                orderBy === 'usage'
-                    ? 'views'
-                    : `${getElasticVersionFieldKey(
-                          tenantId === null
-                      )}.createdAt`,
-            direction: 'DESC',
+    });
+
+    if (tenantId) {
+        groups.addGlobalFilter({
+            match: {
+                protectedUserIds: tenantId,
+            },
+        });
+    }
+
+    const { body } = await req.context.services.elasticsearch.client.search({
+        index: apiConfig.elasticsearch.resourceIndexPrefix,
+        track_total_hits: true,
+        body: {
+            from: offset,
+            size: limit,
+            query: groups.getSearchQuery(),
+            sort: [
+                {
+                    [orderBy === 'usage'
+                        ? 'views'
+                        : `${getElasticVersionFieldKey(
+                              tenantId === null
+                          )}.createdAt`]: { order: 'DESC' },
+                },
+            ],
         },
-        Object.keys(extraQuery).length === 0 ? null : extraQuery
+    });
+
+    const response = await Promise.all(
+        groups.getCountQueryGroups().map(async (group) => {
+            return {
+                name: group.name,
+                aggregations:
+                    await req.context.services.elasticsearch.client.search({
+                        index: apiConfig.elasticsearch.resourceIndexPrefix,
+                        body: {
+                            aggs: group.aggs,
+                            query: group.query,
+                        },
+                    }),
+            };
+        })
     );
 
     return {
@@ -132,6 +254,16 @@ const getResourcesFromRequest = async (req, tenantId) => {
             body.hits.hits,
             !tenantId
         ),
+        filterCount: response.reduce((filterCount, response) => {
+            filterCount[response.name] =
+                response.aggregations.body.aggregations[
+                    response.name
+                ].buckets.map((bucket) => ({
+                    key: bucket.key,
+                    count: bucket.doc_count,
+                }));
+            return filterCount;
+        }, {}),
     };
 };
 
@@ -212,12 +344,13 @@ const transformElasticResources = async (
 
 const retrieveCoreInfo = async (context, resourceVersions) => {
     try {
-        const coreInfos = await context.services.coreInternal.resource.multipleFromExternalIdInfo(
-            resourceVersions.map((rv) => ({
-                externalSystemName: rv.externalSystemName,
-                externalSystemId: rv.externalSystemId,
-            }))
-        );
+        const coreInfos =
+            await context.services.coreInternal.resource.multipleFromExternalIdInfo(
+                resourceVersions.map((rv) => ({
+                    externalSystemName: rv.externalSystemName,
+                    externalSystemId: rv.externalSystemId,
+                }))
+            );
 
         for (let {
             externalSystemName,
@@ -254,9 +387,10 @@ const retrieveCoreInfo = async (context, resourceVersions) => {
 };
 
 const status = async (context, resourceId) => {
-    const resourceVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
-        resourceId
-    );
+    const resourceVersion =
+        await context.db.resourceVersion.getLatestNonDraftResourceVersion(
+            resourceId
+        );
 
     const isPublished = resourceVersion && resourceVersion.isPublished;
 
