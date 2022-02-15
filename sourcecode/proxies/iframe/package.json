@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@cerpus/edlib-components": "v0.0.0-29ac0136102045d093d26688874266f538bef21e",
+    "@cerpus/edlib-components": "3.5.0",
     "@cerpus/ui": "^2.0.2",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",

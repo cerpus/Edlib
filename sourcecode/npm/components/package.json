@@ -1,6 +1,6 @@
 {
   "name": "@cerpus/edlib-components",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "private": false,
   "main": "dist/index.js",
   "license": "AGPL-3.0-or-later",
