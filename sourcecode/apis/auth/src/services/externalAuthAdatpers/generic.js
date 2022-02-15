@@ -2,7 +2,7 @@ import { getUserDataFromToken as _getUserDataFromToken } from './helpers.js';
 
 const getConfiguration = (options) => {
     if (!options) {
-        throw new Error('Missing genric configuration');
+        throw new Error('Missing generic configuration');
     }
 
     if (
