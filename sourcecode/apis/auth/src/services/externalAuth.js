@@ -6,6 +6,7 @@ import {
     ValidationException,
     validationExceptionError,
 } from '@cerpus/edlib-node-utils';
+import generic from './externalAuthAdatpers/generic.js';
 
 let jwksClients = {};
 
@@ -49,6 +50,8 @@ const getAdapterFunctions = (adapter) => {
             return auth0();
         case 'cerpusAuth':
             return cerpusAuth();
+        case 'generic':
+            return generic();
     }
 
     throw new ValidationException(
@@ -63,11 +66,41 @@ const getAdapterFunctions = (adapter) => {
 const getUserDataFromToken = (adapter, payload, propertyPaths) =>
     getAdapterFunctions(adapter).getUserDataFromToken(payload, propertyPaths);
 
-const getPropertyPathsFromDb = async (context, adapter, tenantAuthMethodId) =>
-    getAdapterFunctions(adapter).getPropertyPathsFromDb(
-        context,
-        tenantAuthMethodId
-    );
+const getPropertyPaths = async (context, tenantAuthMethod) => {
+    const defaultPropertyPaths = await getAdapterFunctions(
+        tenantAuthMethod.adapter
+    ).getDefaultPropertyPaths();
+
+    let names = {};
+
+    if (tenantAuthMethod.propertyPathName) {
+        names.name = tenantAuthMethod.propertyPathName;
+    } else if (
+        tenantAuthMethod.propertyPathFirstName &&
+        tenantAuthMethod.propertyPathLastName
+    ) {
+        names = {
+            firstName: tenantAuthMethod.propertyPathFirstName,
+            lastName: tenantAuthMethod.propertyPathLastName,
+        };
+    } else {
+        names = {
+            name: defaultPropertyPaths.name,
+            firstName: defaultPropertyPaths.firstName,
+            lastName: defaultPropertyPaths.lastName,
+        };
+    }
+
+    return {
+        ...names,
+        id: tenantAuthMethod.propertyPathId || defaultPropertyPaths.id,
+        email: tenantAuthMethod.propertyPathEmail || defaultPropertyPaths.email,
+        isAdmin: defaultPropertyPaths.isAdmin,
+        isAdminMethod: defaultPropertyPaths.isAdminMethod,
+        isAdminInScopeKey: defaultPropertyPaths.isAdminInScopeKey,
+        isAdminInScopeValue: defaultPropertyPaths.isAdminInScopeValue,
+    };
+};
 
 const getConfiguration = (configuration) => {
     if (
@@ -97,5 +130,5 @@ export default {
     verifyToken,
     getUserDataFromToken,
     getConfiguration,
-    getPropertyPathsFromDb,
+    getPropertyPaths,
 };
