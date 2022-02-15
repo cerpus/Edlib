@@ -91,10 +91,9 @@ export default {
             user = externalAuthService.getUserDataFromToken(
                 tenantAuthMethod.adapter,
                 payload,
-                await externalAuthService.getPropertyPathsFromDb(
+                await externalAuthService.getPropertyPaths(
                     req.context,
-                    tenantAuthMethod.adapter,
-                    tenantAuthMethod.id
+                    tenantAuthMethod
                 )
             );
         }

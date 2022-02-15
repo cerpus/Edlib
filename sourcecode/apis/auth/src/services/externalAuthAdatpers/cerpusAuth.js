@@ -1,5 +1,4 @@
 import { getUserDataFromToken as _getUserDataFromToken } from './helpers.js';
-import { ApiException } from '@cerpus/edlib-node-utils';
 
 const getConfiguration = (options) => {
     if (!options) {
@@ -34,13 +33,12 @@ const getConfiguration = (options) => {
 
 export default () => ({
     getConfiguration,
-    getUserDataFromToken: (payload, propertyPaths) =>
-        _getUserDataFromToken(payload, {
-            id: 'app_metadata.identityId',
-            email: 'app_metadata.email',
-            firstName: 'app_metadata.firstName',
-            lastName: 'app_metadata.lastName',
-            isAdmin: 'app_metadata.admin',
-        }),
-    getPropertyPathsFromDb: async () => ({}),
+    getUserDataFromToken: _getUserDataFromToken,
+    getDefaultPropertyPaths: async () => ({
+        id: 'app_metadata.identityId',
+        email: 'app_metadata.email',
+        firstName: 'app_metadata.firstName',
+        lastName: 'app_metadata.lastName',
+        isAdmin: 'app_metadata.admin',
+    }),
 });
