@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     nested: {
         paddingLeft: theme.spacing(1),
     },
+    mainCategories: {
+        fontSize: '1.1em',
+    },
 }));
 
 const ResourceFilters = ({ filters, filterCount }) => {
@@ -77,7 +80,11 @@ const ResourceFilters = ({ filters, filterCount }) => {
                                 button
                                 onClick={() => open.toggle(filterBlock.type)}
                             >
-                                <ListItemText>
+                                <ListItemText
+                                    classes={{
+                                        primary: classes.mainCategories,
+                                    }}
+                                >
                                     <strong>{t(filterBlock.title)}</strong>
                                 </ListItemText>
                                 {open.has(filterBlock.type) ? (
