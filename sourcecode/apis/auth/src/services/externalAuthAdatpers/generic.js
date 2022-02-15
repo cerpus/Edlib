@@ -1,6 +1,6 @@
 import { getUserDataFromToken as _getUserDataFromToken } from './helpers.js';
 
-const getConfiguration = (options) => {
+const getEnvConfiguration = (options) => {
     if (!options) {
         throw new Error('Missing generic configuration');
     }
@@ -22,7 +22,7 @@ const getConfiguration = (options) => {
 };
 
 export default () => ({
-    getConfiguration,
+    getEnvConfiguration,
     getUserDataFromToken: _getUserDataFromToken,
     getDefaultPropertyPaths: async () => ({
         id: 'https://edlib.com/id',

@@ -66,22 +66,38 @@ const getAdapterFunctions = (adapter) => {
 const getUserDataFromToken = (adapter, payload, propertyPaths) =>
     getAdapterFunctions(adapter).getUserDataFromToken(payload, propertyPaths);
 
-const getPropertyPaths = async (context, tenantAuthMethod) => {
+const translateTenantAuthMethodPropertyPaths = (tenantAuthMethod) => ({
+    id: tenantAuthMethod.id,
+    name: tenantAuthMethod.propertyPathName,
+    email: tenantAuthMethod.propertyPathEmail,
+    firstName: tenantAuthMethod.propertyPathFirstName,
+    lastName: tenantAuthMethod.propertyPathLastName,
+});
+
+const getPropertyPathsFromTenantAuthMethod = async (
+    context,
+    tenantAuthMethod
+) => {
+    return getPropertyPaths(
+        context,
+        tenantAuthMethod.adapter,
+        translateTenantAuthMethodPropertyPaths(tenantAuthMethod)
+    );
+};
+
+const getPropertyPaths = async (context, adapter, paths = {}) => {
     const defaultPropertyPaths = await getAdapterFunctions(
-        tenantAuthMethod.adapter
+        adapter
     ).getDefaultPropertyPaths();
 
     let names = {};
 
-    if (tenantAuthMethod.propertyPathName) {
-        names.name = tenantAuthMethod.propertyPathName;
-    } else if (
-        tenantAuthMethod.propertyPathFirstName &&
-        tenantAuthMethod.propertyPathLastName
-    ) {
+    if (paths.name) {
+        names.name = paths.name;
+    } else if (paths.firstName && paths.lastName) {
         names = {
-            firstName: tenantAuthMethod.propertyPathFirstName,
-            lastName: tenantAuthMethod.propertyPathLastName,
+            firstName: paths.firstName,
+            lastName: paths.lastName,
         };
     } else {
         names = {
@@ -93,8 +109,8 @@ const getPropertyPaths = async (context, tenantAuthMethod) => {
 
     return {
         ...names,
-        id: tenantAuthMethod.propertyPathId || defaultPropertyPaths.id,
-        email: tenantAuthMethod.propertyPathEmail || defaultPropertyPaths.email,
+        id: paths.id || defaultPropertyPaths.id,
+        email: paths.email || defaultPropertyPaths.email,
         isAdmin: defaultPropertyPaths.isAdmin,
         isAdminMethod: defaultPropertyPaths.isAdminMethod,
         isAdminInScopeKey: defaultPropertyPaths.isAdminInScopeKey,
@@ -113,7 +129,7 @@ const getConfiguration = (configuration) => {
 
     const { frontendSettings, settings } = getAdapterFunctions(
         configuration.adapter
-    ).getConfiguration(configuration[configuration.adapter]);
+    ).getEnvConfiguration(configuration[configuration.adapter]);
 
     return {
         frontendSettings,
@@ -131,4 +147,5 @@ export default {
     getUserDataFromToken,
     getConfiguration,
     getPropertyPaths,
+    getPropertyPathsFromTenantAuthMethod,
 };

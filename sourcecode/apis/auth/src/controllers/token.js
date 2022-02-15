@@ -65,9 +65,13 @@ export default {
             user = externalAuthService.getUserDataFromToken(
                 externalTokenVerifierConfig.adapter,
                 payload,
-                externalAuthService.getConfiguration(
-                    externalTokenVerifierConfig
-                ).settings.propertyPaths
+                await externalAuthService.getPropertyPaths(
+                    req.context,
+                    externalTokenVerifierConfig.adapter,
+                    externalTokenVerifierConfig[
+                        externalTokenVerifierConfig.adapter
+                    ].propertyPaths
+                )
             );
         } else {
             const tenantAuthMethod =
@@ -91,7 +95,7 @@ export default {
             user = externalAuthService.getUserDataFromToken(
                 tenantAuthMethod.adapter,
                 payload,
-                await externalAuthService.getPropertyPaths(
+                await externalAuthService.getPropertyPathsFromTenantAuthMethod(
                     req.context,
                     tenantAuthMethod
                 )
