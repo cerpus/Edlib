@@ -55,6 +55,11 @@ const useStyles = makeStyles((theme) => {
         selectedButton: {
             color: theme.palette.secondary.main,
         },
+        headerButton: {
+            '&:hover': {
+                color: theme.palette.secondary.main,
+            },
+        },
     };
 });
 
@@ -133,8 +138,8 @@ const CustomHeader = ({ onClose }) => {
         setAnchorEl(null);
     };
 
-    const buttonClasses = (active, extraClasses) =>
-        cn(extraClasses, {
+    const buttonClasses = (active) =>
+        cn(classes.headerButton, {
             [classes.selectedButton]: active,
         });
 
