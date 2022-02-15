@@ -40,7 +40,7 @@ export const getUserDataFromToken = (payload, propertyPaths) => {
         data.isAdmin = _.get(payload, propertyPaths.isAdmin);
     } else {
         data.isAdmin =
-            _.get(payload, propertyPaths.isAdminInScopeKey)
+            _.get(payload, propertyPaths.isAdminInScopeKey, '')
                 .split(' ')
                 .indexOf(propertyPaths.isAdminInScopeValue) !== -1;
     }
