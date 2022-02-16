@@ -12,7 +12,6 @@ use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Libraries\ImportOwner;
 use App\Observers\H5POptionObserver;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,17 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapThree();
-
-        if (!Collection::hasMacro('recursive')) {
-            Collection::macro('recursive', function ($levels = 100) {
-                return $this->map(function ($value) use ($levels) {
-                    if ($levels > 0 && (is_array($value) || is_object($value))) {
-                        return collect($value)->recursive(--$levels);
-                    }
-                    return $value;
-                });
-            });
-        }
 
         H5POption::observe(H5POptionObserver::class);
         //
