@@ -67,7 +67,7 @@ const getUserDataFromToken = (adapter, payload, propertyPaths) =>
     getAdapterFunctions(adapter).getUserDataFromToken(payload, propertyPaths);
 
 const translateTenantAuthMethodPropertyPaths = (tenantAuthMethod) => ({
-    id: tenantAuthMethod.id,
+    id: tenantAuthMethod.propertyPathId,
     name: tenantAuthMethod.propertyPathName,
     email: tenantAuthMethod.propertyPathEmail,
     firstName: tenantAuthMethod.propertyPathFirstName,
