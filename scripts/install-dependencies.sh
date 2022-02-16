@@ -17,7 +17,7 @@ fi
 
 # Install packages
 sudo apt update
-sudo apt install -y maven git wget curl php7.4-cli php7.4-pgsql php7.4-mysql php7.4-curl php7.4-mbstring php7.4-xml php7.4-zip php-memcached php-amqplib php-intl php-oauth php-bcmath php-gd php-xdebug docker-compose
+sudo apt install -y maven git wget curl php-memcached php-amqplib php-intl php-oauth php-bcmath php-gd php-xdebug docker-compose
 
 # Install NVM
 if [ -z ${NVM_DIR+x} ]; then
