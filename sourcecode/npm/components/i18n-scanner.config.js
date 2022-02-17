@@ -20,7 +20,6 @@ module.exports = {
         ns: ['translation'],
         defaultLng: 'en',
         defaultNs: 'translation',
-        defaultValue: '__STRING_NOT_TRANSLATED__',
         resource: {
             loadPath: 'src/i18n/{{lng}}/{{ns}}.json',
             savePath: 'i18n/{{lng}}/{{ns}}.json',
@@ -31,5 +30,7 @@ module.exports = {
             prefix: '{{',
             suffix: '}}',
         },
+        nsSeparator: ':',
+        keySeparator: '.',
     },
 };

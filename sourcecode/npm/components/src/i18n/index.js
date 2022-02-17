@@ -11,8 +11,8 @@ i.init({
             translation: require('./nb/translation'),
         },
     },
-    fallbackLng: 'nb',
-    lng: 'nb',
+    fallbackLng: 'en',
+    lng: 'en',
     interpolation: {
         escapeValue: false,
     },
