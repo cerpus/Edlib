@@ -43,7 +43,7 @@ return [
     'embedDescription' => 'View the embed code for this content.',
     'h5pDescription' => 'Visit H5P.org to check out more cool content.',
     'contentChanged' => 'This content has changed since you last used it.',
-    'startingOver' => 'Youll be starting over . ',
+    'startingOver' => 'You\'ll be starting over.',
     'confirmDialogHeader' => 'Confirm action',
     'confirmDialogBody' => 'Please confirm that you wish to proceed. This action is not reversible.',
     'cancelLabel' => 'Cancel',

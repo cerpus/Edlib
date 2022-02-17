@@ -7,7 +7,7 @@ return [
     'create' => "Lag",
     'create-content' => "Skap innhold",
     'edit-content' => "Rediger innhold",
-    'need-id' => "Du trenger en ID for å se innhold.",
+    'need-id' => "Du trenger en ID for å se innhold",
     'create-interactive-content' => "Opprett interaktivt innhold",
     'you-are-currently-editing' => "Du redigerer nå",
     'select-content-type' => "Velg innholdstype",
