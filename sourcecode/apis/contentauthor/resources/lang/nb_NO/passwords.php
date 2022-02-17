@@ -12,4 +12,5 @@ return [
     */
     'password' => 'Passord må ha minst seks tegn og må være lik bekreftelsen.',
     'reset' => 'Ditt passord har blitt nullstilt!',
+    'sent' => 'Vi har sendt deg e-post med lenke til nullstilling av passord!',
 ];
