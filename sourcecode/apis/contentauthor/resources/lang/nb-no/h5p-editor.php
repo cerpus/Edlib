@@ -1,7 +1,7 @@
 <?php
 return [
     'title' => "Tittel",
-    'content-loading' => "Laster innhold...",
+    'content-loading' => "Laster innhold…",
     'save' => "Lagre",
     'upload' => "Last opp",
     'create' => "Lag",
@@ -49,7 +49,7 @@ return [
     'cancelLabel' => 'Avbryt',
     'confirmLabel' => 'Bekreft',
     'sharing-title' => 'Del?',
-    'processing' => "Prosesserer...",
+    'processing' => "Prosesserer…",
     'owner-title' => 'Eier',
     'upgrade-content' => "Oppdatere innhold",
     'download-button' => "Vis nedlasting",
