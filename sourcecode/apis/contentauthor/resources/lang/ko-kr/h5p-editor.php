@@ -1,7 +1,7 @@
 <?php
 return [
     'title' => "제목",
-    'content-loading' => "콘텐츠 불러오는 중. 잠시만 기다려주세요...",
+    'content-loading' => "콘텐츠 불러오는 중. 잠시만 기다려주세요…",
     'save' => "저장",
     'upload' => "업로드",
     'create' => "만들기",
