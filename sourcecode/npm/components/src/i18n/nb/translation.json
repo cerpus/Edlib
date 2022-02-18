@@ -116,11 +116,11 @@
     "Privat": "Privat",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i Edlib",
     "Delt/offentlig": "Delt/offentlig",
-    "Alle kans se denne Doku": "Alle kans se denne Doku",
-    "Hvordan skal andre forfattere kunne bruke denne Doku?": "Hvordan skal andre forfattere kunne bruke denne Doku?",
+    "Alle kans se denne Doku": "Alle kan se denne \"Doku'en\"",
+    "Hvordan skal andre forfattere kunne bruke denne Doku?": "Hvordan skal andre forfattere kunne bruke denne \"Doku'en\"?",
     "Kan bruke den som den er": "Kan bruke den som den er",
     "Kan bruke og/eller kopiere og endre den": "Kan bruke og/eller kopiere og endre den",
-    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku",
+    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne \"Doku'en\"",
     "Interaktivitet": "Interaktivitet",
     "Spørsmål": "Spørsmål",
     "Video": "Video",
@@ -144,7 +144,7 @@
     "Skriv formelen": "Skriv formelen",
     "Sett inn": "Sett inn",
     "S": {
-        "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere."
+        "ERROR_PUBLISHING": "Noe gikk galt da vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere."
     },
     "Godkjente": "Godkjente",
     "Ikke godkjente": "Ikke godkjente",
