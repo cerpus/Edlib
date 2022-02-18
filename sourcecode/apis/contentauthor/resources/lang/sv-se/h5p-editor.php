@@ -1,7 +1,7 @@
 <?php
 return [
     'title' => "Titel",
-    'content-loading' => "Innehållet laddas. Vänligen vänta...",
+    'content-loading' => "Innehållet laddas. Vänligen vänta…",
     'save' => "Spara",
     'upload' => "Ladda upp",
     'create' => "Skapa",
@@ -43,7 +43,7 @@ return [
     'embedDescription' => 'Visa inbäddningskod för det här innehållet.',
     'h5pDescription' => 'Besök H5P.org för att se mer häftigt innehåll.',
     'contentChanged' => 'Det här innehållet har ändrats sedan du senast använde det.',
-    'startingOver' => 'Du kommer att börja om. ',
+    'startingOver' => 'Du kommer att börja om.',
     'confirmDialogHeader' => 'Bekräfta åtgärd',
     'confirmDialogBody' => 'Vänligen bekräfta att du vill fortsätta. Denna åtgärd går inte att ångra.',
     'cancelLabel' => 'Avbryt',
