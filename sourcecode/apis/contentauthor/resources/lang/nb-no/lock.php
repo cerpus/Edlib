@@ -6,7 +6,7 @@ return [
     'edit' => 'Rediger',
     'edit-most-recent' => 'Rediger nyeste versjon',
     'open-for-edit' => 'Innholdet kan redigeres.',
-    'no-new-version' => 'Det finnes ingen nyere versjon.',
+    'no-new-version' => 'Det finnes ingen nyere versjon',
     'new-version-created' => "Det finnes en nyere versjon av innholdet.",
     'view' => 'Vis',
 ];
