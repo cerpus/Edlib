@@ -7,12 +7,12 @@ import { useEdlibResource } from '../../hooks/requests/useResource';
 import ModalHeader from '../../components/ModalHeader';
 import { MemoryRouter } from 'react-router-dom';
 import ExportWrapper from '../../components/ExportWrapper';
-import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
 import useTranslation from '../../hooks/useTranslation';
 import {
     ConfigurationProvider,
     useConfigurationContext,
 } from '../../contexts/Configuration';
+import EdlibIframe from '../../components/EdlibIframe';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     const { edlib } = useConfig();
@@ -63,37 +63,38 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onUpdateDone }) => {
     );
 };
 
-export default ({ removePadding = false, ...props }) => {
-    const { enabled: inMaintenanceMode } = useMaintenanceMode();
-
+export default ({
+    removePadding,
+    ltiLaunchUrl,
+    onClose,
+    header,
+    onUpdateDone,
+}) => {
     return (
-        <ExportWrapper>
-            <MemoryRouter>
-                <ConfigurationProvider inMaintenanceMode={inMaintenanceMode}>
-                    <Modal
-                        isOpen={true}
-                        width="100%"
-                        onClose={props.onClose}
-                        displayCloseButton={false}
-                        removePadding={removePadding}
-                    >
-                        <div
-                            style={{
-                                height: removePadding
-                                    ? '100vh'
-                                    : 'calc(100vh - 40px)',
-                                display: 'flex',
-                                flexDirection: 'column',
-                            }}
-                        >
-                            <ModalHeader onClose={props.onClose}>
-                                {props.header}
-                            </ModalHeader>
-                            <EditEdlibResourceModal {...props} />
-                        </div>
-                    </Modal>
-                </ConfigurationProvider>
-            </MemoryRouter>
-        </ExportWrapper>
+        <div
+            style={{
+                height: removePadding ? '100vh' : 'calc(100vh - 40px)',
+            }}
+        >
+            <EdlibIframe
+                path="/s/edit-from-lti-link"
+                params={{
+                    ltiLaunchUrl,
+                    resourceTitle: header || 'Title',
+                }}
+                onAction={(data) => {
+                    switch (data.messageType) {
+                        case 'onClose':
+                            onClose();
+                            break;
+                        case 'onUpdateDone':
+                            onUpdateDone(data.extras);
+                            break;
+                        default:
+                            break;
+                    }
+                }}
+            />
+        </div>
     );
 };

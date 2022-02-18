@@ -51,7 +51,7 @@ const configurationValidationSchema = Joi.object({
 export const EdlibComponentsProvider = ({
     children,
     getJwt = null,
-    language = 'nb',
+    language = 'en',
     dokuUrl = null,
     edlibUrl = null,
     configuration = {},
@@ -61,19 +61,9 @@ export const EdlibComponentsProvider = ({
 
     const edlibFrontendUrl = actualEdlibApiUrl.replace('api', 'www');
 
-    const { token, error, loading, getToken } = useToken(
-        getJwt,
-        actualEdlibApiUrl
-    );
-
-    React.useEffect(() => {
-        i18n.changeLanguage(language);
-    }, [language]);
-
     const validatedConfiguration = React.useMemo(() => {
-        const { value, error } = configurationValidationSchema.validate(
-            configuration
-        );
+        const { value, error } =
+            configurationValidationSchema.validate(configuration);
 
         if (error) {
             console.error(
@@ -89,25 +79,15 @@ export const EdlibComponentsProvider = ({
     return (
         <EdlibComponentContext.Provider
             value={{
-                jwt: {
-                    value: token,
-                    loading: loading,
-                    error: error,
-                    getToken,
-                },
+                getJwt,
                 config: {
                     urls: {
                         edlibUrl: actualEdlibApiUrl,
                         edlibFrontendUrl,
-                        dokuUrl:
-                            !dokuUrl || dokuUrl.length === 0
-                                ? urls.defaultDokuUrl
-                                : dokuUrl,
-                        ndlaUrl: urls.ndla,
-                        ndlaApiUrl: urls.ndlaApi,
                     },
                 },
                 language,
+                configuration: validatedConfiguration,
                 getUserConfig: (path) => _.get(validatedConfiguration, path),
             }}
         >

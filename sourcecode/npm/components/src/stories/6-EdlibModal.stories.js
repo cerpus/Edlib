@@ -18,10 +18,7 @@ export const EdlibModal = () => {
                 return (
                     <EdlibComponentsProvider
                         edlibUrl={edlibApiUrl}
-                        getJwt={async () => ({
-                            type: 'external',
-                            token: await getJwt(),
-                        })}
+                        getJwt={getJwt}
                         configuration={{
                             canReturnResources: true,
                         }}
@@ -80,9 +77,10 @@ export const EditResourceModal = () => {
                     >
                         <EditEdlibResourceModal
                             ltiLaunchUrl={
-                                'https://api.edlib.local/lti/v2/lti-links/3e65c56c-2558-43f2-a587-4ff7a358fb92'
+                                'https://api.edlib.local/lti/v2/lti-links/5beae706-dbfb-4a3d-9830-edd24aae6f2b'
                             }
                             onUpdateDone={action('Resource update done')}
+                            onClose={action('onClose')}
                         />
                     </EdlibComponentsProvider>
                 );

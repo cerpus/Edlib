@@ -1,134 +1,28 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import { ResourceCapabilitiesProvider } from '../../contexts/ResourceCapabilities';
-import { useEdlibResource } from '../../hooks/requests/useResource';
-import { ConfigurationProvider } from '../../contexts/Configuration';
-import useFetch from '../../hooks/useFetch';
-import useConfig from '../../hooks/useConfig';
-import useMaintenanceMode from '../../hooks/requests/useMaintenanceMode';
-import useRequestWithToken from '../../hooks/useRequestWithToken';
-import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
-import contentExplorerLandingPages from '../../constants/contentExplorerLandingPages';
-import ExportWrapper from '../../components/ExportWrapper';
 import { Modal } from '@material-ui/core';
-import EdlibModalContent from './EdlibModalContent';
-import { RequestCacheProvider } from '../../contexts/RequestCache';
 
-const getStartPage = (userConfiguredStartPage) => {
-    if (
-        userConfiguredStartPage &&
-        contentExplorerLandingPages[userConfiguredStartPage]
-    ) {
-        return contentExplorerLandingPages[userConfiguredStartPage];
+import EdlibModalContent from './EdlibModalContent';
+
+const EdlibModal = ({ onClose, onResourceSelected, contentOnly = false }) => {
+    if (contentOnly) {
+        return <EdlibModalContent onClose={onClose} />;
     }
 
-    return '/my-content';
-};
-
-const EdlibModal = ({
-    onClose,
-    onResourceSelected,
-    enableVersionInterface = false,
-    contentOnly = false,
-}) => {
-    const { edlib } = useConfig();
-    const createResourceLink = useEdlibResource();
-    const { getUserConfig } = useEdlibComponentsContext();
-    const startPage = getStartPage(getUserConfig('landingContentExplorerPage'));
-    const { enabled: inMaintenanceMode } = useMaintenanceMode();
-
-    const {
-        error: errorLoadingConfig,
-        loading: loadingConfig,
-        response: dokuFeatures,
-    } = useFetch(edlib(`/dokus/features`), 'GET');
-    const request = useRequestWithToken();
-
     return (
-        <ExportWrapper>
-            <MemoryRouter initialEntries={[startPage]}>
-                <ConfigurationProvider
-                    enableDoku={
-                        !errorLoadingConfig &&
-                        !loadingConfig &&
-                        dokuFeatures.enableDoku
-                    }
-                    enableVersionInterface={enableVersionInterface}
-                    inMaintenanceMode={inMaintenanceMode}
-                >
-                    <RequestCacheProvider>
-                        <ResourceCapabilitiesProvider
-                            value={{
-                                onInsert: async (
-                                    resourceId,
-                                    resourceVersionId,
-                                    title
-                                ) => {
-                                    if (getUserConfig('returnLtiLinks')) {
-                                        const info = await createResourceLink(
-                                            resourceId,
-                                            resourceVersionId
-                                        );
-
-                                        onResourceSelected(info);
-                                    } else {
-                                        let url = new URL(
-                                            'https://spec.edlib.com/resource-reference'
-                                        );
-
-                                        url.searchParams.append(
-                                            'resourceId',
-                                            resourceId
-                                        );
-
-                                        if (resourceVersionId) {
-                                            url.searchParams.append(
-                                                'resourceVersionId',
-                                                resourceVersionId
-                                            );
-                                        }
-
-                                        onResourceSelected({
-                                            url,
-                                            title,
-                                        });
-                                    }
-                                },
-                                onRemove: async (edlibId) => {
-                                    await request(
-                                        edlib(
-                                            `/resources/v2/resources/${edlibId}`
-                                        ),
-                                        'DELETE'
-                                    );
-                                },
-                            }}
-                        >
-                            {contentOnly ? (
-                                <EdlibModalContent
-                                    onClose={onClose}
-                                    loading={loadingConfig}
-                                />
-                            ) : (
-                                <Modal
-                                    open={true}
-                                    width="100%"
-                                    onClose={onClose}
-                                    style={{ margin: 20 }}
-                                >
-                                    <div>
-                                        <EdlibModalContent
-                                            onClose={onClose}
-                                            height="calc(100vh - 40px)"
-                                        />
-                                    </div>
-                                </Modal>
-                            )}
-                        </ResourceCapabilitiesProvider>
-                    </RequestCacheProvider>
-                </ConfigurationProvider>
-            </MemoryRouter>
-        </ExportWrapper>
+        <Modal
+            open={true}
+            width="100%"
+            onClose={onClose}
+            style={{ margin: 20 }}
+        >
+            <div>
+                <EdlibModalContent
+                    onClose={onClose}
+                    onResourceSelected={onResourceSelected}
+                    height="calc(100vh - 40px)"
+                />
+            </div>
+        </Modal>
     );
 };
 
