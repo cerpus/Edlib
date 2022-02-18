@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     FromSideModal,
     FromSideModalHeader,
@@ -38,7 +39,7 @@ const Contributors = ({ show, setShow }) => {
                                     <TableRow>
                                         <TableCell />
                                         <TableCell align="center">
-                                            {t('Forfatter')}
+                                            {_.capitalize(t('author'))}
                                         </TableCell>
                                         <TableCell align="center">
                                             {t('Samarbeider')}

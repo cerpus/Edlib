@@ -48,7 +48,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
         },
         {
             type: resourceFilters.LICENSE,
-            title: t('Lisens'),
+            title: t('license', { count: 1 }),
             count: filters.licenses.value.length,
             content: (
                 <Licenses

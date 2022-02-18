@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import _ from 'lodash';
 import ResourceEditCog from '../ResourceEditCog';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import License from '../License';
@@ -130,12 +131,12 @@ const ResourceTable = ({
                         <i>{`${totalCount} ${t('ressurser')}`}</i>
                     </span>
                 </div>
-                <div>{t('Sist endret')}</div>
-                <div>{t('Forfatter')}</div>
-                <div>{t('Språk')}</div>
-                <div>{t('Status')}</div>
+                <div>{_.capitalize(t('last_changed'))}</div>
+                <div>{_.capitalize(t('author'))}</div>
+                <div>{_.capitalize(t('language'))}</div>
+                <div>{_.capitalize(t('status'))}</div>
                 {hideResourceColumns.indexOf(resourceColumns.LICENSE) ===
-                    -1 && <div>{t('Lisenser')}</div>}
+                    -1 && <div>{_.capitalize(t('license', { count: 2 }))}</div>}
                 <div />
             </HeaderRow>
             {resources

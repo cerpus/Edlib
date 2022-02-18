@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
 import styled from 'styled-components';
-import { FormGroup, Input, useIsDevice } from '@cerpus/ui';
+import { Input, useIsDevice } from '@cerpus/ui';
 import { Tune as TuneIcon } from '@material-ui/icons';
 import { Spinner } from '@cerpus/ui';
+import _ from 'lodash';
 import ResourceModal from '../ResourceModal';
 import useTranslation from '../../hooks/useTranslation';
 import ResourceFilters from '../ResourceFilters';
@@ -139,7 +140,7 @@ const getOrderText = (t, order) => {
         case resourceOrders.RELEVANT:
             return t('Foreslåtte ressurser');
         case resourceOrders.CREATED:
-            return t('Sist endret');
+            return _.capitalize(t('last_changed'));
         case resourceOrders.USAGE:
             return t('Mest brukte');
         default:

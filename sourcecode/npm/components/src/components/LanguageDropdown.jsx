@@ -1,5 +1,6 @@
 import React from 'react';
 import { Autocomplete } from '@material-ui/lab';
+import _ from 'lodash';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { iso6393ToString } from '../helpers/language.js';
@@ -41,7 +42,7 @@ const LanguageDropdown = ({ language, setLanguage }) => {
                 <TextField
                     {...params}
                     fullWidth
-                    label={t('Språk')}
+                    label={_.capitalize(t('language'))}
                     variant="outlined"
                     InputProps={{
                         ...params.InputProps,

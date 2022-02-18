@@ -6,6 +6,7 @@ import {
     Close as CloseIcon,
 } from '@material-ui/icons';
 import styled from 'styled-components';
+import _ from 'lodash';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import useResourceCapabilitiesFlags from '../../hooks/useResourceCapabilities';
 import ResourcePreview from '../../containers/ResourcePreview';
@@ -194,7 +195,9 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 <div>{frame}</div>
                                 <Footer>
                                     <Meta>
-                                        <div>Publiseringsdato</div>
+                                        <div>
+                                            {_.capitalize(t('publishing_date'))}
+                                        </div>
                                         <div>
                                             {moment(
                                                 resource.version.createdAt
@@ -202,7 +205,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                         </div>
                                     </Meta>
                                     <Meta>
-                                        <div>Lisens</div>
+                                        <div>{_.capitalize(t('license'))}</div>
                                         <div>
                                             <License
                                                 license={
