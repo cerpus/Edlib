@@ -8,7 +8,6 @@ use App\Libraries\H5P\Helper\H5PPackageProvider;
 
 class CoursePresentation extends H5PBase
 {
-
     public static $machineName = "H5P.CoursePresentation";
     protected $composedComponent = true;
     protected $majorVersion = 1;
