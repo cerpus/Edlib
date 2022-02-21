@@ -1,20 +1,14 @@
 import React from 'react';
 import request from '../helpers/request';
-import { useRequestCacheContext } from '../contexts/RequestCache';
 
-export default (url, method, options, wait = false, cache = false) => {
-    const { cachedDataWithStatus, setCachedData, ignoreFirstFetch } =
-        useRequestCacheContext(url, method, options, cache);
-
-    const [loading, setLoading] = React.useState(cachedDataWithStatus.loading);
-    const [error, setError] = React.useState(cachedDataWithStatus.error);
-    const [response, setResponse] = React.useState(
-        cachedDataWithStatus.response
-    );
+export default (url, method, options, wait = false) => {
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(false);
+    const [response, setResponse] = React.useState(null);
     const [fetchId, setFetchId] = React.useState(1);
 
     React.useEffect(() => {
-        if (ignoreFirstFetch && fetchId === 1) {
+        if (fetchId === 1) {
             return;
         }
 
@@ -44,7 +38,7 @@ export default (url, method, options, wait = false, cache = false) => {
         return () => {
             abortController.abort();
         };
-    }, [url, method, options, wait, fetchId, ignoreFirstFetch]);
+    }, [url, method, options, wait, fetchId]);
 
     const refetch = React.useCallback(
         () => setFetchId(fetchId + 1),
