@@ -79,7 +79,7 @@
     "Skriv formelen": "Write formula",
     "Sett inn": "Insert",
     "S": {
-        "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere"
+        "ERROR_PUBLISHING": "Something went wrong whilst trying to publish. Please try again, or come back later."
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",
