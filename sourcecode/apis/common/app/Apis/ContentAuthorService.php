@@ -32,4 +32,20 @@ class ContentAuthorService
             ])
             ->then(fn($response) => Util::decodeResponse($response));
     }
+
+    /**
+     * @param array $data
+     * @return PromiseInterface<array>
+     */
+    public function getQuestionAndAnswers(array $data): PromiseInterface
+    {
+        return $this->client
+            ->postAsync('/internal/v1/questionsandanswers', [
+                'json' => $data,
+                'headers' => [
+                    'x-api-key' => $this->contentAuthorInternalApiKey
+                ]
+            ])
+            ->then(fn($response) => Util::decodeResponse($response));
+    }
 }
