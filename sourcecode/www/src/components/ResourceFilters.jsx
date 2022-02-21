@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
@@ -37,7 +38,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
     const filterBlocks = [
         {
             type: resourceFilters.H5P_TYPE,
-            title: t('Innholdstype'),
+            title: _.capitalize(t('Innholdstype', { count: 1 })),
             count: filters.contentTypes.value.length,
             content: (
                 <H5PTypes
@@ -48,7 +49,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
         },
         {
             type: resourceFilters.LICENSE,
-            title: t('license', { count: 1 }),
+            title: _.capitalize(t('license', { count: 1 })),
             count: filters.licenses.value.length,
             content: (
                 <Licenses
