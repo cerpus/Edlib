@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-    EdlibComponentsProvider,
-} from '@cerpus/edlib-components';
+import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
 import appConfig from '../../../../../config/app.js';
 import { Box, Container } from '@material-ui/core';
 import ResourceView from '../../../../../components/ResourceView';

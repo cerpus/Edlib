@@ -1,6 +1,6 @@
 import React from 'react';
 import queryString from 'query-string';
-import { EdlibComponentsProvider } from '@cerpus/edlib-components';
+import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
 import appConfig from '../../../../../config/app.js';
 import axios from 'axios';
 import ContentExplorer from '../../components/ContentExplorer';
