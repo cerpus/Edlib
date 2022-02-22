@@ -5,7 +5,6 @@ namespace App\Console;
 use App\Console\Commands\EnsureVersionExists;
 use App\Console\Commands\Inspire;
 use App\Console\Commands\CerpusSetup;
-use App\Console\Commands\ListenToEdlibMessageBus;
 use App\Console\Commands\PublishPresave;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\RemoveOldContentLocks;
@@ -23,7 +22,6 @@ class Kernel extends ConsoleKernel
         CerpusSetup::class,
         EnsureVersionExists::class,
         Inspire::class,
-        ListenToEdlibMessageBus::class,
         PublishPresave::class,
         RemoveOldContentLocks::class,
         VersionAllUnversionedContent::class,

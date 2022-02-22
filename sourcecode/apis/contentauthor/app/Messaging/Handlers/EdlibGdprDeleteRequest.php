@@ -20,12 +20,6 @@ class EdlibGdprDeleteRequest implements RabbitMQPubSubConsumerHandler
         ContentLockProcessor::class,
     ];
 
-    public function handleError(\Exception $e, $broker): void
-    {
-        $broker->ackMessage();
-        Log::error($e);
-    }
-
     public function consume(string $data)
     {
         $edlibGdprDeleteMessage = new EdlibGdprDeleteMessage(json_decode($data, true));
