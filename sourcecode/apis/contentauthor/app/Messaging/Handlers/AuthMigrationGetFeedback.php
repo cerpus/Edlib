@@ -7,16 +7,9 @@ use App\H5PContentsUserData;
 use App\H5PFile;
 use Cerpus\LaravelRabbitMQPubSub\Facades\RabbitMQPubSub;
 use Cerpus\LaravelRabbitMQPubSub\RabbitMQPubSubConsumerHandler;
-use Illuminate\Support\Facades\Log;
 
 class AuthMigrationGetFeedback implements RabbitMQPubSubConsumerHandler
 {
-    public function handleError(\Exception $e, $broker): void
-    {
-        $broker->ackMessage();
-        Log::error($e);
-    }
-
     public function consume(string $dataString)
     {
         $data = json_decode($dataString, true);
