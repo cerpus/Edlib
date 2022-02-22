@@ -37,6 +37,10 @@ class CoursePresentation extends H5PBase
                 }
             })
             ->reject(function ($items) {
+                if (!isset($items)) {
+                    return true;
+                }
+
                 /** @var PackageInterface $item */
                 $item = $items['package'];
                 return is_null($item) || $item->canExtractAnswers() === false || $item->validate() !== true;
