@@ -32,7 +32,7 @@ class H5PReportController extends Controller
                 ];
             })->reject(function ($item) {
                 return empty($item['elements']);
-            });
+            })->values();
 
         return response()->json($returnValues);
     }
