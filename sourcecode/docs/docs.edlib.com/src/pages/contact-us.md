@@ -13,7 +13,7 @@ Want to get in touch? It would be great to hear from you. Here's how you can rea
 **Cerpus AS**<br/>
 Phone: +47 76 11 99 00<br/>
 General enquiries: <post@cerpus.com><br/>
-Support: <support@cerpus.com><br/>
+Support: <support@edlib.com><br/>
 
 ## Visit Us
 
