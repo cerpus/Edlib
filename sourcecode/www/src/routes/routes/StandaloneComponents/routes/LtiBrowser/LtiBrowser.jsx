@@ -1,10 +1,11 @@
 import React from 'react';
 import queryString from 'query-string';
-import { EdlibModal, EdlibComponentsProvider } from '@cerpus/edlib-components';
+import { EdlibComponentsProvider } from '@cerpus/edlib-components';
 import appConfig from '../../../../../config/app.js';
 import axios from 'axios';
+import ContentExplorer from '../../components/ContentExplorer';
 
-const LtiBrowser = () => {
+const LtiBrowser = ({ match }) => {
     const { jwt, language } = React.useMemo(() => {
         const query = queryString.parse(window.location.search);
 
@@ -42,24 +43,28 @@ const LtiBrowser = () => {
                     returnLtiLinks: false,
                 }}
             >
-                <EdlibModal
-                    contentOnly
-                    isOpen
-                    onResourceSelected={async (info) => {
-                        const infoUpdated = JSON.parse(JSON.stringify(info));
-                        window.parent.postMessage(
-                            {
-                                resources: [
-                                    {
-                                        type: 'ltiResourceLink',
-                                        url: infoUpdated.url,
-                                        title: infoUpdated.title,
-                                    },
-                                ],
-                                messageType: 'resourceSelected',
-                            },
-                            '*'
-                        );
+                <ContentExplorer
+                    basePath={match.path}
+                    baseUrl={match.url}
+                    onAction={(messageType, extras) => {
+                        if (messageType === 'onResourceSelected') {
+                            const infoUpdated = JSON.parse(
+                                JSON.stringify(extras)
+                            );
+                            window.parent.postMessage(
+                                {
+                                    resources: [
+                                        {
+                                            type: 'ltiResourceLink',
+                                            url: infoUpdated.url,
+                                            title: infoUpdated.title,
+                                        },
+                                    ],
+                                    messageType: 'resourceSelected',
+                                },
+                                '*'
+                            );
+                        }
                     }}
                 />
             </EdlibComponentsProvider>

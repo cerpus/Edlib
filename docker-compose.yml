@@ -386,6 +386,8 @@ services:
       context: ./sourcecode/www
       dockerfile: Dockerfile
       target: dev
+    environment:
+      WDS_SOCKET_PORT: 443
     env_file:
       - ./localSetup/.env
     healthcheck:

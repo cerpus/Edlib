@@ -2,6 +2,8 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import ViewResource from './routes/ViewResource';
 import LtiBrowser from './routes/LtiBrowser';
+import ContentExplorer from './routes/ContentExplorer';
+import EditResourceFromLtiLink from './routes/EditResourceFromLtiLink';
 
 const Index = ({ match }) => (
     <Switch>
@@ -14,6 +16,14 @@ const Index = ({ match }) => (
             exact
             path={`${match.path}/lti/browser`}
             component={LtiBrowser}
+        />
+        <Route
+            path={`${match.path}/content-explorer`}
+            component={ContentExplorer}
+        />
+        <Route
+            path={`${match.path}/edit-from-lti-link`}
+            component={EditResourceFromLtiLink}
         />
     </Switch>
 );
