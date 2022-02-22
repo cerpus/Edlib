@@ -1,5 +1,4 @@
 <?php
-
 return [
     'title' => '제목',
     'reuse' => '재사용',
@@ -38,7 +37,7 @@ return [
     'resubmitScores' => '저장된 결과 제출 시도 중.',
     'offlineDialogHeader' => '서버에 대한 연결이 끊어졌습니다.',
     'offlineDialogBody' => '이 작업의 완료에 대한 정보를 보낼 수 없습니다. 인터넷 연결을 확인하십시오.',
-    'offlineDialogRetryMessage' => ':num.... 후에 재시도',
+    'offlineDialogRetryMessage' => ':num 후에 재시도…',
     'offlineDialogRetryButtonLabel' => '지금 재시도',
     'offlineSuccessfulSubmit' => '결과 제출 완료.',
 ];
