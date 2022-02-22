@@ -1,7 +1,7 @@
 <?php
 return [
     'title' => "Title",
-    'content-loading' => "Content is loading. Please wait...",
+    'content-loading' => "Content is loading. Please wait…",
     'save' => "Save",
     'upload' => "Upload",
     'create' => "Create",
@@ -11,7 +11,7 @@ return [
     'create-interactive-content' => "Create Interactive content",
     'you-are-currently-editing' => "You are currently editing",
     'select-content-type' => "Select content type",
-    'save-and-close' => "Save & close",
+    'save-and-close' => "Save and close",
     'display-action-bar' => "Display action bar",
     'copyright-button' => "Copyright button",
     'create-new-content' => "Create new content",
@@ -49,7 +49,7 @@ return [
     'cancelLabel' => 'Cancel',
     'confirmLabel' => 'Confirm',
     'sharing-title' => 'Share?',
-    'processing' => "Processing...",
+    'processing' => "Processing…",
     'owner-title' => 'Owner',
     'upgrade-content' => "Upgrade content",
     'download-button' => "Download button",

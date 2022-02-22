@@ -1,5 +1,4 @@
 <?php
-
 return [
     'title' => 'Tittel',
     'reuse' => 'Gjenbruk',
@@ -17,7 +16,7 @@ return [
     'licenseCCBYNCSA' => 'Navngivelse-IkkeKommersiell-DelPåSammeVilkår',
     'licenseCCBYNCND' => 'Navngivelse-IkkeKommersiell-IngenBearbeidelser',
     'licenseCC40' => '4.0 Internasjonal',
-    'licenseCC30' => '3.0 Unported',
+    'licenseCC30' => 'Navngivelse 3.0 Unported',
     'licenseCC25' => '2.5 Generell',
     'licenseCC20' => '2.0 Generell',
     'licenseCC10' => '1.0 Generell',
