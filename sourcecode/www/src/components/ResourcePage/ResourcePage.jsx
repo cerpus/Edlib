@@ -30,6 +30,8 @@ import resourceOrders from '../../constants/resourceOrders';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import LanguageDropdown from '../LanguageDropdown';
+import FilterChips from './components/FilterChips.jsx';
+import FilterUtils from '../ResourceFilters/Filters/filterUtils.js';
 
 const StyledResourcePage = styled.div`
     background-color: #f3f3f3;
@@ -165,12 +167,6 @@ const useDefaultOrder = () => {
     }, []);
 };
 
-const useStyles = makeStyles((theme) => ({
-    chip: {
-        margin: theme.spacing(0.5),
-    },
-}));
-
 const ResourcePage = ({
     filters,
     selectedResource,
@@ -178,13 +174,13 @@ const ResourcePage = ({
     showDeleteButton = false,
 }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
 
     const [filtersExpanded, setFiltersExpanded] = React.useState(false);
     const [sortingOrder, setSortingOrder] = React.useState(useDefaultOrder());
     const filterMobileView = useIsDevice('<', 'md');
     const [page, setPage] = React.useState(0);
     const [pageSize, setPageSize] = React.useState(40);
+    const filterUtils = FilterUtils(filters);
 
     const { error, loading, resources, pagination, refetch, filterCount } =
         useGetResources(
@@ -324,28 +320,7 @@ const ResourcePage = ({
                         <div>{sortOrderDropDown}</div>
                     </div>
                 )}
-                <Box paddingY={1}>
-                    {filters.contentTypes.value.map((contentType, index) => (
-                        <Chip
-                            key={contentType.value}
-                            label={contentType.title}
-                            onDelete={() =>
-                                filters.contentTypes.removeIndex(index)
-                            }
-                            color="secondary"
-                            className={classes.chip}
-                        />
-                    ))}
-                    {filters.licenses.value.map((license, index) => (
-                        <Chip
-                            key={license.value}
-                            label={license.title}
-                            onDelete={() => filters.licenses.removeIndex(index)}
-                            color="secondary"
-                            className={classes.chip}
-                        />
-                    ))}
-                </Box>
+                <FilterChips chips={filterUtils.getChipsFromFilters()} />
                 <Content>
                     <div style={{ marginTop: 20 }}>
                         {loading && <Spinner />}
@@ -366,11 +341,11 @@ const ResourcePage = ({
                                 component="div"
                                 count={pagination.totalCount}
                                 page={page}
-                                onChangePage={(e, page) => {
+                                onPageChange={(e, page) => {
                                     setPage(page);
                                 }}
                                 rowsPerPage={pageSize}
-                                onChangeRowsPerPage={(e, pageSize) => {
+                                onRowsPerPageChange={(e, pageSize) => {
                                     setPageSize(pageSize);
                                     setPage(0);
                                 }}

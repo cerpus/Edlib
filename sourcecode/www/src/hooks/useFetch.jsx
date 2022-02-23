@@ -55,6 +55,7 @@ export default (url, method, options, wait = false, cache = false) => {
         loading,
         error,
         response,
+        setResponse,
         refetch,
     };
 };

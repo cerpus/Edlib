@@ -11,11 +11,9 @@ import {
 } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
-import useFetchWithToken from '../../hooks/useFetchWithToken';
-import useConfig from '../../hooks/useConfig';
-import useTranslation from '../../hooks/useTranslation';
-import useArray from '../../hooks/useArray.js';
-import contentAuthorConstants from '../../constants/contentAuthor.js';
+import useTranslation from '../../../hooks/useTranslation.js';
+import useArray from '../../../hooks/useArray.js';
+import contentAuthorConstants from '../../../constants/contentAuthor.js';
 
 const useStyles = makeStyles((theme) => ({
     nested: {
@@ -30,28 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const H5PTypes = ({ contentTypes, filterCount }) => {
+const H5PTypes = ({ contentTypes, filterCount, contentTypeData }) => {
     const { t } = useTranslation();
-    const { edlib } = useConfig();
     const classes = useStyles();
 
     const open = useArray();
 
-    const { loading, response } = useFetchWithToken(
-        edlib(`/resources/v2/content-types/contentauthor`),
-
-        'GET',
-        React.useMemo(() => ({}), []),
-        false,
-        true,
-        true
-    );
-
-    if (!response || loading) {
-        return <CircularProgress />;
-    }
-
-    const allH5ps = response.data
+    const allH5ps = contentTypeData
         .map((item) => {
             const count = filterCount.find(
                 (filterCount) => filterCount.key === item.contentType
@@ -103,7 +86,7 @@ const H5PTypes = ({ contentTypes, filterCount }) => {
     return (
         <List dense component="div" disablePadding className={classes.nested}>
             {categories.map((category) => (
-                <>
+                <React.Fragment key={category.name}>
                     <ListItem button onClick={() => open.toggle(category.name)}>
                         <ListItemText>
                             <strong>{t(category.name)}</strong>
@@ -122,12 +105,12 @@ const H5PTypes = ({ contentTypes, filterCount }) => {
                         <List dense component="div" disablePadding>
                             {category.contentTypes.map((h5p) => (
                                 <ListItem
+                                    key={h5p.value}
                                     button
                                     dense
                                     onClick={() => contentTypes.toggle(h5p)}
                                 >
                                     <ListItemIcon
-                                        dense
                                         classes={{
                                             root: classes.listItemIcon,
                                         }}
@@ -151,7 +134,7 @@ const H5PTypes = ({ contentTypes, filterCount }) => {
                             ))}
                         </List>
                     </Collapse>
-                </>
+                </React.Fragment>
             ))}
         </List>
     );

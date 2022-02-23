@@ -90,7 +90,7 @@
     "H5P Type": "H5P type",
     "Mest brukte": "Most used",
     "maintenance": "Edlib is currently under maintenance. You cannot create or modify resources right now. Please try again later.",
-    "Reset": "Reset",
+    "reset": "reset",
     "Sortering": "Sorting",
     "Denne ressursen er nå publisert": "This resource is now published",
     "Publisert": "Published",
@@ -102,5 +102,16 @@
     "author": "author",
     "language": "language",
     "status": "status",
-    "publishing_date": "publishing date"
+    "publishing_date": "publishing date",
+    "saved_filter": "saved filter",
+    "saved_filter_plural": "saved filters",
+    "content_type": "content type",
+    "content_type_plural": "content types",
+    "create_new": "create new",
+    "edit_filter": "edit filter",
+    "choose_group": "choose group",
+    "cancel": "cancel",
+    "save": "save",
+    "delete_filter": "delete filter",
+    "delete": "delete"
 }
