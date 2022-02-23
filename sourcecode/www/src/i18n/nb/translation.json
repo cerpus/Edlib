@@ -169,7 +169,7 @@
     "status": "status",
     "publishing_date": "publiseringsdato",
     "saved_filter": "lagret filter",
-    "saved_filter_plural": "lagret filter",
+    "saved_filter_plural": "lagrede filtre",
     "content_type": "innholdstype",
     "content_type_plural": "innholdstyper",
     "create_new": "lag ny",
@@ -178,5 +178,6 @@
     "cancel": "avbryt",
     "save": "lagre",
     "delete_filter": "slett filter",
-    "delete": "slett"
+    "delete": "slett",
+    "reset": "nullstill"
 }
