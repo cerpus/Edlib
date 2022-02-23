@@ -178,5 +178,12 @@
     "cancel": "avbryt",
     "save": "lagre",
     "delete_filter": "slett filter",
-    "delete": "slett"
+    "delete": "slett",
+    "content_type_groups": {
+        "text": "tekst",
+        "media": "media",
+        "visualization": "visualisering",
+        "tasks_and_quizzes": "oppgaver og quiz",
+        "others": "andre"
+    }
 }
