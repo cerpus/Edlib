@@ -10,6 +10,7 @@ import {
     makeStyles,
 } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import _ from 'lodash';
 
 import useFetchWithToken from '../../hooks/useFetchWithToken';
 import useConfig from '../../hooks/useConfig';
@@ -70,20 +71,21 @@ const H5PTypes = ({ contentTypes, filterCount }) => {
         );
         if (groups.length === 0) {
             groups.push({
-                name: 'Others',
+                translationKey: 'others',
                 order: null,
             });
         }
+
         groups.forEach((group) => {
-            if (!categories[group.name]) {
-                categories[group.name] = {
-                    name: group.name,
+            if (!categories[group.translationKey]) {
+                categories[group.translationKey] = {
+                    translationKey: group.translationKey,
                     order: group.order,
                     contentTypes: [],
                 };
             }
 
-            categories[group.name].contentTypes.push(h5p);
+            categories[group.translationKey].contentTypes.push(h5p);
         });
 
         return categories;
@@ -104,18 +106,27 @@ const H5PTypes = ({ contentTypes, filterCount }) => {
         <List dense component="div" disablePadding className={classes.nested}>
             {categories.map((category) => (
                 <>
-                    <ListItem button onClick={() => open.toggle(category.name)}>
+                    <ListItem
+                        button
+                        onClick={() => open.toggle(category.translationKey)}
+                    >
                         <ListItemText>
-                            <strong>{t(category.name)}</strong>
+                            <strong>
+                                {_.capitalize(
+                                    t(
+                                        `content_type_groups.${category.translationKey}`
+                                    )
+                                )}
+                            </strong>
                         </ListItemText>
-                        {open.has(category.name) ? (
+                        {open.has(category.translationKey) ? (
                             <ExpandLess />
                         ) : (
                             <ExpandMore />
                         )}
                     </ListItem>
                     <Collapse
-                        in={open.has(category.name)}
+                        in={open.has(category.translationKey)}
                         timeout="auto"
                         unmountOnExit
                     >

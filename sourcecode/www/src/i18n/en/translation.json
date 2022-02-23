@@ -102,5 +102,12 @@
     "author": "author",
     "language": "language",
     "status": "status",
-    "publishing_date": "publishing date"
+    "publishing_date": "publishing date",
+    "content_type_groups": {
+        "text": "text",
+        "media": "media",
+        "visualization": "visualization",
+        "tasks_and_quizzes": "tasks and quizzes",
+        "others": "others"
+    }
 }
