@@ -16,14 +16,14 @@
         "game": "Game"
     },
     "licenses": {
-        "CC0": "CC0: Creative Commons",
+        "CC0": "CC0: Public Domain Dedication",
         "BY": "CC Attribution",
-        "BY-SA": "CC Attribution-ShareAlike",
-        "BY-ND": "CC Attribution-NoDerivatives",
-        "BY-NC": "CC Attribution-NonCommercial",
-        "BY-NC-SA": "CC Attribution-NonCommercial-ShareAlike",
-        "BY-NC-ND": "CC Attribution-NonCommercial-NoDerivatives",
-        "SA": "CC Share alike",
+        "BY-SA": "CC Attribution - ShareAlike",
+        "BY-ND": "CC Attribution - NoDerivatives",
+        "BY-NC": "CC Attribution - NonCommercial",
+        "BY-NC-SA": "CC Attribution - NonCommercial - ShareAlike",
+        "BY-NC-ND": "CC Attribution - NonCommercial - NoDerivatives",
+        "SA": "Share alike",
         "ND": "No derivatives",
         "NC": "Non commercial",
         "PDM": "Public Domain Mark",
@@ -36,10 +36,10 @@
     "urlDisplayTypes": {
         "ndla": "NDLA",
         "card": "Card",
-        "embedly": "integrated"
+        "embedly": "Integrated"
     },
     "urlAuthor": {
-        "ndlaWarning": "We have found the resource in NDLA's system. If you choose to use this resource the content will be appended to the DOKU."
+        "ndlaWarning": "We have found the resource in NDLA's system. If you choose to use this resource the content will be appended to the Doku."
     },
     "bruk": "Use",
     "Forhåndsvisning": "Preview",
@@ -51,11 +51,11 @@
     "Privat": "Private",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Only you can use this resource and only you can preview it in Edlib",
     "Delt/offentlig": "Shared/public",
-    "Alle kans se denne Doku": "Everybody can see this doku",
+    "Alle kans se denne Doku": "Everybody can see this Doku",
     "Hvordan skal andre forfattere kunne bruke denne Doku?": "How can other authors use this Doku?",
     "Kan bruke den som den er": "Can use as is",
     "Kan bruke og/eller kopiere og endre den": "Can use and/or copy and edit it",
-    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Can use, copy and/or get rights to share or resell this doku",
+    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Can use, copy and/or get rights to share or resell this Doku",
     "Interaktivitet": "Interactivity",
     "Spørsmål": "Question",
     "Video": "Video",
@@ -79,7 +79,7 @@
     "Skriv formelen": "Write formula",
     "Sett inn": "Insert",
     "S": {
-        "ERROR_PUBLISHING": "Something went wrong whilst trying to publish. Please try again, or come back later."
+        "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later."
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",
