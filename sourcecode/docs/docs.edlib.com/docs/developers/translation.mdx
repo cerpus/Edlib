@@ -4,63 +4,35 @@ sidebar_position: 3
 
 # Translating Edlib
 
-Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. This document will lead you through the process of translating Edlib's user interface to your language.
+Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. This document will lead you through the process of translating Edlib's user interface to your language via Weblate. 
+[Follow this link to find an overview of all translatable Edlib-projects on our Weblate site.][1].
 
-## Before You Begin
 
-You will need a text editor suitable for working with code. [Notepad++][1] and [Visual Studio Code][2] are good choices. If you aren't sure, please use one of these, as an unsuitable editor could mangle the language files in non-obvious ways.
+### Translating Content Author
 
-Download [Edlib's source code][3] to your computer and open its folder.
+Content Author is a prominent component inside Edlib. Its language files reside in https://weblate.edlib.com/projects/content-author/. By choosing "Language" in the menu, you'll get an overview of the different translations and the percentage they've been translated.
 
-## Translating Content Author
+### Translating Content Explorer and other Edlib Components
 
-Content Author is a prominent component inside Edlib. Its language files reside in the `sourcecode/apis/contentauthor/resources/lang` directory. They are grouped by locale, e.g. `en-gb` for British English. You should copy the directory corresponding to the language you wish to translate from, and name it according to your locale. (Don't worry about getting this wrong--it is a small order to rename it.)
+The remaining parts of Edlib, including Content Explorer, can be found within "NPM Components": https://weblate.edlib.com/projects/npm-components/ and "WWW" https://weblate.edlib.com/projects/www/ 
 
-Now you can start translating. Open each .php file in the text editor, and you should see something like this:
 
-```php
-<?php
-
-return [
-    'dialog.cancel' => 'Are you sure you want to cancel?',
-];
-```
-
-Here, `dialog.cancel` on the left is the _key_, and `Are you sure you want to cancel?` on the right is the _value_. In reality there can be dozens of key/value pairs in a translation file, separated by commas. The goal is to translate all the right-hand values, in every file, while leaving the left-hand keys untouched. As an example, when the above is translated to Norwegian, it looks like this:
-
-```php
-<?php
-
-return [
-    'dialog.cancel' => 'Er du sikker på at du vil avbryte?',
-];
-```
-
-## Translating Edlib Components
-
-There are a few other translation files in `sourcecode/npm/components/src/i18n`. The same principles apply here, albeit the naming conventions and file formats are different.
-
-Before:
-
-```json
-{
-  "dialog.cancel": "Are you sure you want to cancel?"
-}
-```
-
-After:
-
-```json
-{
-  "dialog.cancel": "Er du sikker på at du vil avbryte?"
-}
-```
 
 ## Submitting New Translations
 
-If you are familiar with the workflows of Git and GitHub, you may submit your translation by opening a pull request. Otherwise, please [contact us][4] so we can help you.
+There are two ways to submit translations using Weblate.
 
-[1]: https://notepad-plus-plus.org/downloads/
-[2]: https://code.visualstudio.com/
-[3]: https://github.com/cerpus/Edlib
-[4]: /contact-us/
+1. [Register an account][2] and submit the translations more or less directly to the translation files. Make sure you start out on Edlib's Weblate site. Otherwise, you'll be creating the account outside of our project. When the account has been created and verified, contact us using support@edlib.com, and we'll grant your user access to translate.
+
+::: note
+If you don't receive the email to verify your account in a few minutes, check your spam folder. If after 15 minutes you still cannot find it in either your inbox or spam folder, you can [contact us][3] :::
+
+2. Making anonymous suggestions. Note that these translations need to be verified and added by us in order to be taken in as part of the translation files, and you will not be attributed. We prefer you go with option A, as we cannot verify all translations in different languages and we'd really like to honour our contributors. 
+
+### What if my language is missing? 
+If you want to translate Edlib to a language not listed in the project, please [contact us][3]. We can then set up the translation files needed for your language.
+
+
+[1]: https://weblate.edlib.com/projects/
+[2]: https://weblate.edlib.com/accounts/register/
+[3]: /contact-us/
