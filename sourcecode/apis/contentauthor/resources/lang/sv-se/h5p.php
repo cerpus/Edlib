@@ -1,5 +1,4 @@
 <?php
-
 return [
     'title' => 'Title',
     'reuse' => 'Reuse',
@@ -36,9 +35,9 @@ return [
     'connectionLost' => 'Connection lost. Results will be stored and sent when you regain connection.',
     'connectionReestablished' => 'Connection reestablished.',
     'resubmitScores' => 'Attempting to submit stored results.',
-    'offlineDialogHeader' => 'Your connection to the server was lost',
+    'offlineDialogHeader' => 'Your connection to the server was lost.',
     'offlineDialogBody' => 'We were unable to send information about your completion of this task. Please check your internet connection.',
-    'offlineDialogRetryMessage' => 'Retrying in :num....',
+    'offlineDialogRetryMessage' => 'Retrying in :num…',
     'offlineDialogRetryButtonLabel' => 'Retry now',
     'offlineSuccessfulSubmit' => 'Successfully submitted results.',
 ];

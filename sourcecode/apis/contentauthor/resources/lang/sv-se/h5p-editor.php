@@ -49,7 +49,7 @@ return [
     'cancelLabel' => 'Avbryt',
     'confirmLabel' => 'Bekräfta',
     'sharing-title' => 'Dela?',
-    'processing' => "Bearbetar...",
+    'processing' => "Bearbetar…",
     'owner-title' => 'Ägare',
     'upgrade-content' => "Upgrade content",
     'download-button' => "Download button",

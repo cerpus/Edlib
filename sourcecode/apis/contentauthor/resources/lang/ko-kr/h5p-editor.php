@@ -49,7 +49,7 @@ return [
     'cancelLabel' => '취소',
     'confirmLabel' => '확인',
     'sharing-title' => '공유하겠습니까?',
-    'processing' => "처리중...",
+    'processing' => "처리중…",
     'owner-title' => '소유자',
     'upgrade-content' => "콘텐츠 업그레이드",
     'download-button' => "다운로드 버튼",

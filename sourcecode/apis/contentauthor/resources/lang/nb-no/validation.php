@@ -89,7 +89,7 @@ return [
             'rule-name' => 'tilpasset melding',
         ],
         'isPublished' => [
-            'cant-publish' => "Du har ikke tilgang til å publisere denne ressursen",
+            'cant-publish' => "Du har ikke tilgang til å publisere denne ressursen.",
         ],
     ],
     'attributes' => [

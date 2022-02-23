@@ -54,7 +54,7 @@ export default (
         };
     }, [options, tempJwt]);
 
-    const { error, loading, response, refetch } = useFetch(
+    const { error, loading, response, refetch, setResponse } = useFetch(
         url,
         method,
         requestOptions,
@@ -68,6 +68,7 @@ export default (
         loading: !hasError && loading,
         error: hasError,
         response,
+        setResponse,
         refetch,
     };
 };
