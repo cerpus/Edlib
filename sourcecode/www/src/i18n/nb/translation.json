@@ -169,7 +169,7 @@
     "status": "status",
     "publishing_date": "publiseringsdato",
     "saved_filter": "lagret filter",
-    "saved_filter_plural": "lagret filter",
+    "saved_filter_plural": "lagrede filtre",
     "content_type": "innholdstype",
     "content_type_plural": "innholdstyper",
     "create_new": "lag ny",
@@ -185,5 +185,6 @@
         "visualization": "visualisering",
         "tasks_and_quizzes": "oppgaver og quiz",
         "others": "andre"
-    }
+    },
+    "reset": "nullstill"
 }
