@@ -120,5 +120,8 @@
         "visualization": "visualization",
         "tasks_and_quizzes": "tasks and quizzes",
         "others": "others"
-    }
+    },
+    "preview": "preview",
+    "are_you_sure": "are you sure",
+    "close": "close"
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Checkbox,
-    CircularProgress,
     Collapse,
     List,
     ListItem,
@@ -87,8 +86,8 @@ const H5PTypes = ({ contentTypes, filterCount, contentTypeData }) => {
 
     return (
         <List dense component="div" disablePadding className={classes.nested}>
-            {categories.map((category) => (
-                <React.Fragment key={category.name}>
+            {categories.map((category, index) => (
+                <React.Fragment key={index}>
                     <ListItem
                         button
                         onClick={() => open.toggle(category.translationKey)}
@@ -114,9 +113,9 @@ const H5PTypes = ({ contentTypes, filterCount, contentTypeData }) => {
                         unmountOnExit
                     >
                         <List dense component="div" disablePadding>
-                            {category.contentTypes.map((h5p) => (
+                            {category.contentTypes.map((h5p, index) => (
                                 <ListItem
-                                    key={h5p.value}
+                                    key={index}
                                     button
                                     dense
                                     onClick={() => contentTypes.toggle(h5p)}

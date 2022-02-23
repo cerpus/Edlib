@@ -15,6 +15,8 @@ import resourceColumns from '../../constants/resourceColumns';
 import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import PublishedTag from '../PublishedTag';
 import { iso6393ToString } from '../../helpers/language.js';
+import { useIframeStandaloneContext } from '../../contexts/IframeStandalone.jsx';
+import ViewContainer from '../ResourcePage/components/ViewContainer.jsx';
 
 const Row = styled.div`
     display: grid;
@@ -94,176 +96,101 @@ const CogWrapper = styled.div`
     flex: 1;
 `;
 
-const ResourceTable = ({
-    totalCount,
-    resources,
-    onResourceClick,
-    showDeleteButton = false,
-}) => {
+const ResourceTable = ({ totalCount, resources, showDeleteButton = false }) => {
     const { t } = useTranslation();
-    const { onInsert, onRemove } = useResourceCapabilities();
     const { getUserConfig } = useEdlibComponentsContext();
     const hideResourceColumns = getUserConfig('hideResourceColumns');
-    const [currentEditContextId, setCurrentEditContextId] =
-        React.useState(null);
-    const [resourceVersionModal, setResourceVersionModal] =
-        React.useState(null);
-    const [showConfirmDeletionModal, setShowConfirmDeletionModal] =
-        React.useState(false);
-    const idsToHide = useArray();
-    const history = useHistory();
 
     return (
-        <>
-            <HeaderRow>
-                <div
-                    style={{
-                        gridColumnStart: 'icon',
-                        gridColumnEnd: 'span date',
-                    }}
-                >
-                    {t('Innhold')}{' '}
-                    <span
-                        style={{
-                            fontWeight: 'normal',
-                        }}
-                    >
-                        <i>{`${totalCount} ${t('ressurser')}`}</i>
-                    </span>
-                </div>
-                <div>{_.capitalize(t('last_changed'))}</div>
-                <div>{_.capitalize(t('author'))}</div>
-                <div>{_.capitalize(t('language'))}</div>
-                <div>{_.capitalize(t('status'))}</div>
-                {hideResourceColumns.indexOf(resourceColumns.LICENSE) ===
-                    -1 && <div>{_.capitalize(t('license', { count: 2 }))}</div>}
-                <div />
-            </HeaderRow>
-            {resources
-                .filter((resource) => !idsToHide.has(resource.id))
-                .map((resource) => (
-                    <BodyRow
-                        onClick={() => onResourceClick(resource)}
-                        key={resource.id}
-                    >
-                        <ImageCell vc>
-                            <ResourceIcon
-                                contentTypeInfo={resource.contentTypeInfo}
-                                resourceVersion={resource.version}
-                                fontSizeRem={2}
-                            />
-                        </ImageCell>
-                        <Cell vc>
-                            <Title>{resource.version.title}</Title>
-                            <UnderTitle>{getResourceName(resource)}</UnderTitle>
-                        </Cell>
-                        <Cell vc secondary>
-                            {moment(resource.version.createdAt).format(
-                                'D. MMM YY'
-                            )}
-                        </Cell>
-                        <Cell vc secondary>
-                            {resource.version.authorOverwrite}
-                        </Cell>
-                        <Cell vc secondary>
-                            {iso6393ToString(resource.version.language)}
-                        </Cell>
-                        <Cell vc secondary>
-                            <PublishedTag
-                                isPublished={resource.version.isPublished}
-                            />
-                        </Cell>
+        <ViewContainer showDeleteButton={showDeleteButton}>
+            {({ cogProps, setSelectedResource }) => (
+                <>
+                    <HeaderRow>
+                        <div
+                            style={{
+                                gridColumnStart: 'icon',
+                                gridColumnEnd: 'span date',
+                            }}
+                        >
+                            {t('Innhold')}{' '}
+                            <span
+                                style={{
+                                    fontWeight: 'normal',
+                                }}
+                            >
+                                <i>{`${totalCount} ${t('ressurser')}`}</i>
+                            </span>
+                        </div>
+                        <div>{_.capitalize(t('last_changed'))}</div>
+                        <div>{_.capitalize(t('author'))}</div>
+                        <div>{_.capitalize(t('language'))}</div>
+                        <div>{_.capitalize(t('status'))}</div>
                         {hideResourceColumns.indexOf(
                             resourceColumns.LICENSE
                         ) === -1 && (
-                            <Cell vc secondary>
-                                <License license={resource.version.license} />
-                            </Cell>
+                            <div>
+                                {_.capitalize(t('license', { count: 2 }))}
+                            </div>
                         )}
-                        <ResourceIconCell
-                            className="actions"
-                            secondary
-                            name="actions"
+                        <div />
+                    </HeaderRow>
+                    {resources.map((resource) => (
+                        <BodyRow
+                            onClick={() => setSelectedResource(resource)}
+                            key={resource.id}
                         >
-                            <CogWrapper>
-                                <ResourceEditCog
-                                    resource={resource}
-                                    showDeleteButton={showDeleteButton}
-                                    onOpen={() =>
-                                        setCurrentEditContextId(resource.id)
-                                    }
-                                    onClose={() =>
-                                        setCurrentEditContextId(null)
-                                    }
-                                    isOpen={
-                                        resource.id === currentEditContextId
-                                    }
-                                    onEdit={() => {
-                                        setCurrentEditContextId(null);
-                                        history.push(
-                                            `/resources/${resource.id}`
-                                        );
-                                    }}
-                                    onTranslate={() => {
-                                        setCurrentEditContextId(null);
-                                        history.push(
-                                            `/resources/${resource.id}/nno`
-                                        );
-                                    }}
-                                    onUse={async () => {
-                                        setCurrentEditContextId(null);
-                                        await onInsert(
-                                            resource.id,
-                                            resource.version.id,
-                                            resource.version.title
-                                        );
-                                    }}
-                                    onShowVersions={() =>
-                                        setResourceVersionModal(resource)
-                                    }
-                                    onRemove={() =>
-                                        setShowConfirmDeletionModal(resource.id)
-                                    }
+                            <ImageCell vc>
+                                <ResourceIcon
+                                    contentTypeInfo={resource.contentTypeInfo}
+                                    resourceVersion={resource.version}
+                                    fontSizeRem={2}
                                 />
-                            </CogWrapper>
-                        </ResourceIconCell>
-                    </BodyRow>
-                ))}
-            <ResourceVersions
-                onClose={() => setResourceVersionModal(null)}
-                selectedResource={resourceVersionModal}
-            />
-            <Dialog
-                open={showConfirmDeletionModal}
-                onClose={() => setShowConfirmDeletionModal(false)}
-                maxWidth="sm"
-                fullWidth
-            >
-                <DialogTitle>Er du sikker?</DialogTitle>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        variant="outlined"
-                        onClick={() => setShowConfirmDeletionModal(false)}
-                    >
-                        Lukk
-                    </Button>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        style={{ marginLeft: 5 }}
-                        onClick={() => {
-                            onRemove(showConfirmDeletionModal).then(() => {
-                                idsToHide.push(showConfirmDeletionModal);
-                                setShowConfirmDeletionModal(false);
-                            });
-                        }}
-                    >
-                        Fjern
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                            </ImageCell>
+                            <Cell vc>
+                                <Title>{resource.version.title}</Title>
+                                <UnderTitle>
+                                    {getResourceName(resource)}
+                                </UnderTitle>
+                            </Cell>
+                            <Cell vc secondary>
+                                {moment(resource.version.createdAt).format(
+                                    'D. MMM YY'
+                                )}
+                            </Cell>
+                            <Cell vc secondary>
+                                {resource.version.authorOverwrite}
+                            </Cell>
+                            <Cell vc secondary>
+                                {iso6393ToString(resource.version.language)}
+                            </Cell>
+                            <Cell vc secondary>
+                                <PublishedTag
+                                    isPublished={resource.version.isPublished}
+                                />
+                            </Cell>
+                            {hideResourceColumns.indexOf(
+                                resourceColumns.LICENSE
+                            ) === -1 && (
+                                <Cell vc secondary>
+                                    <License
+                                        license={resource.version.license}
+                                    />
+                                </Cell>
+                            )}
+                            <ResourceIconCell
+                                className="actions"
+                                secondary
+                                name="actions"
+                            >
+                                <CogWrapper>
+                                    <ResourceEditCog {...cogProps(resource)} />
+                                </CogWrapper>
+                            </ResourceIconCell>
+                        </BodyRow>
+                    ))}
+                </>
+            )}
+        </ViewContainer>
     );
 };
 
