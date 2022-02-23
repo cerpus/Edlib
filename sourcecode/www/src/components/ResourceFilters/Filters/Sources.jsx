@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormGroup, Spinner } from '@cerpus/ui';
-import useFetchWithToken from '../../hooks/useFetchWithToken';
-import useConfig from '../../hooks/useConfig';
-import useTranslation from '../../hooks/useTranslation';
-import Checkbox from './components/Checkbox';
+import useFetchWithToken from '../../../hooks/useFetchWithToken.jsx';
+import useConfig from '../../../hooks/useConfig.js';
+import useTranslation from '../../../hooks/useTranslation.js';
+import Checkbox from './components/Checkbox.jsx';
 
 const Sources = ({ sources }) => {
     const { t } = useTranslation();

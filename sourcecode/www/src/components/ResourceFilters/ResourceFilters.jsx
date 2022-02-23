@@ -1,9 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
 import { H5PTypes, Licenses } from './Filters';
-import useTranslation from '../hooks/useTranslation';
-import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
-import resourceFilters from '../constants/resourceFilters';
+import useTranslation from '../../hooks/useTranslation';
+import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
+import resourceFilters from '../../constants/resourceFilters';
 import {
     Button,
     Collapse,
@@ -13,7 +13,8 @@ import {
     makeStyles,
 } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import useArray from '../hooks/useArray.js';
+import useArray from '../../hooks/useArray.js';
+import SavedFilters from './Filters/SavedFilters.jsx';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,7 +30,14 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ResourceFilters = ({ filters, filterCount }) => {
+const ResourceFilters = ({
+    filters,
+    filterCount,
+    contentTypeData,
+    licenseData,
+    savedFilterData,
+    updateSavedFilter,
+}) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
     const classes = useStyles();
@@ -37,11 +45,25 @@ const ResourceFilters = ({ filters, filterCount }) => {
 
     const filterBlocks = [
         {
+            type: resourceFilters.SAVED_FILTERS,
+            title: _.capitalize(t('saved_filter', { count: 2 })),
+            content: (
+                <SavedFilters
+                    savedFilterData={savedFilterData}
+                    licenseData={licenseData}
+                    contentTypeData={contentTypeData}
+                    filters={filters}
+                    updateSavedFilter={updateSavedFilter}
+                />
+            ),
+        },
+        {
             type: resourceFilters.H5P_TYPE,
-            title: _.capitalize(t('Innholdstype', { count: 1 })),
+            title: _.capitalize(t('content_type', { count: 2 })),
             count: filters.contentTypes.value.length,
             content: (
                 <H5PTypes
+                    contentTypeData={contentTypeData}
                     contentTypes={filters.contentTypes}
                     filterCount={filterCount ? filterCount.contentTypes : []}
                 />
@@ -53,6 +75,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
             count: filters.licenses.value.length,
             content: (
                 <Licenses
+                    licenseData={licenseData}
                     licenses={filters.licenses}
                     filterCount={filterCount ? filterCount.licenses : []}
                 />
@@ -62,12 +85,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
     const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
 
     return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }}
-        >
+        <>
             <List component="nav" className={classes.root} dense>
                 {filterBlocks
                     .filter(
@@ -76,7 +94,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
                             disabledFilters.indexOf(filterBlock.type) === -1
                     )
                     .map((filterBlock) => (
-                        <>
+                        <React.Fragment key={filterBlock.type}>
                             <ListItem
                                 button
                                 onClick={() => open.toggle(filterBlock.type)}
@@ -101,7 +119,7 @@ const ResourceFilters = ({ filters, filterCount }) => {
                             >
                                 {filterBlock.content}
                             </Collapse>
-                        </>
+                        </React.Fragment>
                     ))}
             </List>
             <Button
@@ -113,9 +131,9 @@ const ResourceFilters = ({ filters, filterCount }) => {
                     filters.reset();
                 }}
             >
-                {t('Reset')}
+                {_.capitalize(t('reset'))}
             </Button>
-        </form>
+        </>
     );
 };
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthMigrationController;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\MaintenanceModeController;
+use App\Http\Controllers\SavedFilterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/applications', [ApplicationController::class, 'list']);
@@ -20,3 +21,10 @@ Route::put('/maintenance_mode', [MaintenanceModeController::class, 'toggle']);
 Route::get('/auth-migrations/{id}', [AuthMigrationController::class, 'get']);
 Route::post('/auth-migrations/{id}/execute', [AuthMigrationController::class, 'execute']);
 Route::post('/auth-migrations', [AuthMigrationController::class, 'create']);
+
+Route::prefix('saved-filters')->middleware('auth')->group(function () {
+    Route::get('/', [SavedFilterController::class, 'getAllForUser']);
+    Route::post('/', [SavedFilterController::class, 'createNew']);
+    Route::post('/{savedFilter}', [SavedFilterController::class, 'updateWithId']);
+    Route::delete('/{savedFilter}', [SavedFilterController::class, 'deleteWithId']);
+});
