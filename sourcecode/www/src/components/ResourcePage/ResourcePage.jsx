@@ -6,14 +6,12 @@ import { Input, useIsDevice } from '@cerpus/ui';
 import { Tune as TuneIcon } from '@material-ui/icons';
 import { Spinner } from '@cerpus/ui';
 import _ from 'lodash';
-import ResourceModal from '../ResourceModal';
 import useTranslation from '../../hooks/useTranslation';
 import ResourceFilters from '../ResourceFilters';
 import ResourceTable from '../ResourceTable';
 import useGetResources from '../../hooks/requests/useGetResources';
 import {
     Button,
-    Chip,
     FormControl,
     Icon,
     InputAdornment,
@@ -22,16 +20,21 @@ import {
     Select,
     TablePagination,
     TextField,
-    makeStyles,
     Box,
+    IconButton,
 } from '@material-ui/core';
-import { Search as SearchIcon } from '@material-ui/icons';
+import {
+    Search as SearchIcon,
+    List as ListIcon,
+    ViewModule as ViewModuleIcon,
+} from '@material-ui/icons';
 import resourceOrders from '../../constants/resourceOrders';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import LanguageDropdown from '../LanguageDropdown';
 import FilterChips from './components/FilterChips.jsx';
 import FilterUtils from '../ResourceFilters/Filters/filterUtils.js';
+import CardView from './components/CardView.jsx';
 
 const StyledResourcePage = styled.div`
     background-color: #f3f3f3;
@@ -167,12 +170,7 @@ const useDefaultOrder = () => {
     }, []);
 };
 
-const ResourcePage = ({
-    filters,
-    selectedResource,
-    setSelectedResource,
-    showDeleteButton = false,
-}) => {
+const ResourcePage = ({ filters, showDeleteButton = false }) => {
     const { t } = useTranslation();
 
     const [filtersExpanded, setFiltersExpanded] = React.useState(false);
@@ -180,6 +178,7 @@ const ResourcePage = ({
     const filterMobileView = useIsDevice('<', 'md');
     const [page, setPage] = React.useState(0);
     const [pageSize, setPageSize] = React.useState(40);
+    const [isGridView, setIsGridView] = React.useState(false);
     const filterUtils = FilterUtils(filters);
 
     const { error, loading, resources, pagination, refetch, filterCount } =
@@ -320,16 +319,39 @@ const ResourcePage = ({
                         <div>{sortOrderDropDown}</div>
                     </div>
                 )}
-                <FilterChips chips={filterUtils.getChipsFromFilters()} />
+                <Box
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    pt={1}
+                >
+                    <Box>
+                        <FilterChips
+                            chips={filterUtils.getChipsFromFilters()}
+                        />
+                    </Box>
+                    <Box>
+                        <IconButton onClick={() => setIsGridView(!isGridView)}>
+                            {isGridView ? <ListIcon /> : <ViewModuleIcon />}
+                        </IconButton>
+                    </Box>
+                </Box>
                 <Content>
                     <div style={{ marginTop: 20 }}>
                         {loading && <Spinner />}
                         {error && <div>{t('Noe skjedde')}</div>}
-                        {!loading && !error && resources && (
+                        {!loading && !error && resources && !isGridView && (
                             <ResourceTable
                                 totalCount={pagination.totalCount}
                                 resources={resources}
-                                onResourceClick={setSelectedResource}
+                                refetch={refetch}
+                                showDeleteButton={showDeleteButton}
+                            />
+                        )}
+                        {!loading && !error && resources && isGridView && (
+                            <CardView
+                                totalCount={pagination.totalCount}
+                                resources={resources}
                                 refetch={refetch}
                                 showDeleteButton={showDeleteButton}
                             />
@@ -355,11 +377,6 @@ const ResourcePage = ({
                     )}
                 </Content>
             </div>
-            <ResourceModal
-                isOpen={!!selectedResource}
-                onClose={() => setSelectedResource(null)}
-                resource={selectedResource}
-            />
         </StyledResourcePage>
     );
 };
@@ -367,7 +384,6 @@ const ResourcePage = ({
 ResourcePage.propTypes = {
     filters: PropTypes.object.isRequired,
     selectedResource: PropTypes.object,
-    setSelectedResource: PropTypes.func.isRequired,
 };
 
 export default ResourcePage;

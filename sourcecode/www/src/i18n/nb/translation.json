@@ -186,5 +186,8 @@
         "tasks_and_quizzes": "oppgaver og quiz",
         "others": "andre"
     },
-    "reset": "nullstill"
+    "reset": "nullstill",
+    "preview": "forhåndsvisning",
+    "are_you_sure": "er du sikker",
+    "close": "lukk"
 }

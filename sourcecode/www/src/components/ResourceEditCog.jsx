@@ -16,6 +16,7 @@ import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 
 const Wrapper = styled.div`
     position: fixed;
+    z-index: 1;
     top: 0;
     left: 0;
     width: 100%;
@@ -51,31 +52,37 @@ const ResourceEditCog = ({
     onUse,
     onEdit,
     onTranslate,
-    onShowVersions,
     onRemove,
     showDeleteButton,
+    children,
 }) => {
     const { t } = useTranslation();
     const capabilities = useResourceCapabilities(resource);
-    const { enableVersionInterface, enableTranslationButton } =
-        useConfigurationContext();
+    const { enableTranslationButton } = useConfigurationContext();
     const { getUserConfig } = useEdlibComponentsContext();
     const canReturnResources = getUserConfig('canReturnResources');
 
     return (
         <Manager>
             <Reference>
-                {({ ref }) => (
-                    <MaterialIcon
-                        name="MoreVert"
-                        ref={ref}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            onOpen();
-                        }}
-                    />
-                )}
+                {({ ref }) =>
+                    children ? (
+                        children({
+                            ref,
+                            onOpen,
+                        })
+                    ) : (
+                        <MaterialIcon
+                            name="MoreVert"
+                            ref={ref}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                onOpen();
+                            }}
+                        />
+                    )
+                }
             </Reference>
             {isOpen && (
                 <Popper placement="left-start" positionFixed>
@@ -122,14 +129,6 @@ const ResourceEditCog = ({
                                             label: t('Fjern'),
                                             icon: DeleteIcon,
                                             onClick: onRemove,
-                                        },
-                                    capabilities[
-                                        resourceCapabilities.VERSION
-                                    ] &&
-                                        enableVersionInterface && {
-                                            label: t('Versjoner'),
-                                            icon: HistoryIcon,
-                                            onClick: onShowVersions,
                                         },
                                 ]
                                     .filter(Boolean)
