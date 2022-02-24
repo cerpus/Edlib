@@ -1,6 +1,6 @@
 import React from 'react';
-import useRequestWithToken from '../useRequestWithToken';
 import appConfig from '../../config/app';
+import useRequestWithToken from '../useRequestWithToken';
 
 export const useEdlibResource = () => {
     const request = useRequestWithToken();

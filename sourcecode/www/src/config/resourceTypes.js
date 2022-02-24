@@ -17,9 +17,11 @@ export const externalSystemNames = {
     URL: 'url',
 };
 
-export default {
+const resourceTypes = {
     provider: 'SELECTION_LAUNCH',
     H5P: 'H5P_RESOURCE',
     URL: 'URL_RESOURCE',
     DOKU: 'DOKU_RESOURCE',
 };
+
+export default resourceTypes;

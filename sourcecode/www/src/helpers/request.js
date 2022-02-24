@@ -1,4 +1,3 @@
-import React from 'react';
 import * as queryString from 'query-string';
 
 export class RequestError extends Error {
@@ -8,7 +7,7 @@ export class RequestError extends Error {
     }
 }
 
-export default async (url, method, options = {}) => {
+const request = async (url, method, options = {}) => {
     let actualUrl = url;
 
     if (options.query) {
@@ -46,3 +45,5 @@ const getHeaders = (options) => {
 
 const queryParams = (params) =>
     queryString.stringify(params, { arrayFormat: 'bracket' });
+
+export default request;

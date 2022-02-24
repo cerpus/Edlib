@@ -1,8 +1,8 @@
+import { useDebounce } from 'moment-hooks';
 import React from 'react';
 import useArray from './useArray';
-import { useDebounce } from 'moment-hooks';
 
-export default (contentFilter = 'myContent') => {
+const useResourcesFilters = (contentFilter = 'myContent') => {
     const [searchInput, setSearchInput] = React.useState('');
 
     const tags = useArray();
@@ -20,9 +20,9 @@ export default (contentFilter = 'myContent') => {
         () => ({
             contentFilter,
             contentTypes: contentTypes.value.map((ct) => ct.value),
-            licenses: licenses.value.map((ct) => ct.value),
-            languages: languages.value,
             keywords: tags.value.map((tag) => tag.value),
+            languages: languages.value,
+            licenses: licenses.value.map((ct) => ct.value),
             searchString:
                 debouncedSearchInput === '' ? null : debouncedSearchInput,
         }),
@@ -42,23 +42,19 @@ export default (contentFilter = 'myContent') => {
         contentTypes.setValue([]);
         licenses.setValue([]);
         setSearchInput('');
-    }, [
-        setSearchInput,
-        tags.setValue,
-        languages.setValue,
-        contentTypes.setValue,
-        licenses.setValue,
-    ]);
+    }, [setSearchInput, tags, languages, contentTypes, licenses]);
 
     return {
-        searchInput,
-        debouncedSearchInput,
-        setSearchInput,
-        tags,
-        languages,
         contentTypes,
+        debouncedSearchInput,
+        languages,
         licenses,
         requestData,
         reset,
+        searchInput,
+        setSearchInput,
+        tags,
     };
 };
+
+export default useResourcesFilters;

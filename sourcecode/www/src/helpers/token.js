@@ -1,5 +1,5 @@
-import moment from 'moment';
 import decode from 'jwt-decode';
+import moment from 'moment';
 
 export const isTokenExpired = (token, marginSec = 0) => {
     const payload = decode(token);

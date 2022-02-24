@@ -1,7 +1,6 @@
-import React from 'react';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 
-export default () => {
+const useConfig = () => {
     const { config } = useEdlibComponentsContext();
 
     return {
@@ -13,3 +12,5 @@ export default () => {
         ndlaApiUrl: config.urls.ndlaApiUrl,
     };
 };
+
+export default useConfig;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
-import ViewResource from './routes/ViewResource';
-import LtiBrowser from './routes/LtiBrowser';
+import { Route, Switch } from 'react-router-dom';
 import ContentExplorer from './routes/ContentExplorer';
 import EditResourceFromLtiLink from './routes/EditResourceFromLtiLink';
+import LtiBrowser from './routes/LtiBrowser';
+import ViewResource from './routes/ViewResource';
 
 const Index = ({ match }) => (
     <Switch>

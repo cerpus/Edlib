@@ -1,14 +1,14 @@
 import React from 'react';
 
-const useArray = (
-    defaultValue = [],
-    finder = (list, item) => list.findIndex((listItem) => listItem === item)
-) => {
+const defaultFinder = (list, item) =>
+    list.findIndex((listItem) => listItem === item);
+
+const useArray = (defaultValue = [], finder = defaultFinder) => {
     const [value, setValue] = React.useState(defaultValue);
 
     const has = React.useCallback(
         (hasValue) => finder(value, hasValue) !== -1,
-        [value]
+        [value, finder]
     );
 
     const push = React.useCallback(
@@ -36,7 +36,7 @@ const useArray = (
 
             setValue(newValue);
         },
-        [value]
+        [value, finder]
     );
 
     return React.useMemo(
