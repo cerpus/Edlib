@@ -451,7 +451,7 @@ abstract class Content extends Model implements RecommendableInterface
                     return $email != "";
                 })
                 ->sort()
-                ->all(),
+                ->values(),
             $this->getAuthorOverwrite()
         );
     }
