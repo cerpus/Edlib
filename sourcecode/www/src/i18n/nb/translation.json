@@ -189,5 +189,7 @@
     "reset": "nullstill",
     "preview": "forhåndsvisning",
     "are_you_sure": "er du sikker",
-    "close": "lukk"
+    "close": "lukk",
+    "view": "visning",
+    "view_plural": "visninger"
 }
