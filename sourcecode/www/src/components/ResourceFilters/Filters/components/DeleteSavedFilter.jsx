@@ -10,6 +10,7 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    Box,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import useTranslation from '../../../../hooks/useTranslation.js';
@@ -47,37 +48,41 @@ const DeleteSavedFilter = ({
         <Dialog open={show} onClose={() => onClose()} maxWidth="sm" fullWidth>
             <DialogTitle>{_.capitalize(t('delete_filter'))}</DialogTitle>
             <DialogContent>
-                <FormControl
-                    variant="outlined"
-                    fullWidth
-                    className={classes.formControl}
-                >
-                    <InputLabel>{_.capitalize(t('choose_group'))}</InputLabel>
-                    <Select
-                        value={selected}
-                        onChange={(e) => setSelected(e.target.value)}
-                        label={_.capitalize(t('choose_group'))}
+                <Box pt={1}>
+                    <FormControl
+                        variant="outlined"
+                        fullWidth
+                        className={classes.formControl}
                     >
-                        {savedFilterData.map((savedFilter) => (
-                            <MenuItem
-                                key={savedFilter.id}
-                                value={savedFilter.id}
-                            >
-                                {savedFilter.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <div className={classes.formControl}>
-                    <FilterChips
-                        chips={filterUtils.getChipsFromChoices(
-                            selectedSavedFilter
-                                ? selectedSavedFilter.choices
-                                : []
-                        )}
-                        color="default"
-                    />
-                </div>
+                        <InputLabel>
+                            {_.capitalize(t('choose_group'))}
+                        </InputLabel>
+                        <Select
+                            value={selected}
+                            onChange={(e) => setSelected(e.target.value)}
+                            label={_.capitalize(t('choose_group'))}
+                        >
+                            {savedFilterData.map((savedFilter) => (
+                                <MenuItem
+                                    key={savedFilter.id}
+                                    value={savedFilter.id}
+                                >
+                                    {savedFilter.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <div className={classes.formControl}>
+                        <FilterChips
+                            chips={filterUtils.getChipsFromChoices(
+                                selectedSavedFilter
+                                    ? selectedSavedFilter.choices
+                                    : []
+                            )}
+                            color="default"
+                        />
+                    </div>
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button

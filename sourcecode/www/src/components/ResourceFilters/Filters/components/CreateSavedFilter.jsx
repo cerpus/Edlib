@@ -11,6 +11,7 @@ import {
     Select,
     MenuItem,
     TextField,
+    Box,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import useTranslation from '../../../../hooks/useTranslation.js';
@@ -43,46 +44,50 @@ const CreateSavedFilter = ({
         <Dialog open={show} onClose={() => onClose()} maxWidth="sm" fullWidth>
             <DialogTitle>{_.capitalize(t('edit_filter'))}</DialogTitle>
             <DialogContent>
-                <FormControl
-                    variant="outlined"
-                    fullWidth
-                    className={classes.formControl}
-                >
-                    <InputLabel>{_.capitalize(t('choose_group'))}</InputLabel>
-                    <Select
-                        value={selected}
-                        onChange={(e) => setSelected(e.target.value)}
-                        label={_.capitalize(t('choose_group'))}
-                    >
-                        <MenuItem value="new">
-                            <em>{_.capitalize(t('create_new'))}</em>
-                        </MenuItem>
-                        {savedFilterData.map((savedFilter) => (
-                            <MenuItem
-                                key={savedFilter.id}
-                                value={savedFilter.id}
-                            >
-                                {savedFilter.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                {selected === 'new' && (
-                    <TextField
-                        required
-                        label={_.capitalize('name')}
+                <Box pt={1}>
+                    <FormControl
                         variant="outlined"
-                        className={classes.formControl}
                         fullWidth
-                        value={newFilterName}
-                        onChange={(e) => setNewFilterName(e.target.value)}
-                    />
-                )}
-                <div className={classes.formControl}>
-                    <FilterChips
-                        chips={filterUtils.getChipsFromFilters(false)}
-                    />
-                </div>
+                        className={classes.formControl}
+                    >
+                        <InputLabel>
+                            {_.capitalize(t('choose_group'))}
+                        </InputLabel>
+                        <Select
+                            value={selected}
+                            onChange={(e) => setSelected(e.target.value)}
+                            label={_.capitalize(t('choose_group'))}
+                        >
+                            <MenuItem value="new">
+                                <em>{_.capitalize(t('create_new'))}</em>
+                            </MenuItem>
+                            {savedFilterData.map((savedFilter) => (
+                                <MenuItem
+                                    key={savedFilter.id}
+                                    value={savedFilter.id}
+                                >
+                                    {savedFilter.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    {selected === 'new' && (
+                        <TextField
+                            required
+                            label={_.capitalize('name')}
+                            variant="outlined"
+                            className={classes.formControl}
+                            fullWidth
+                            value={newFilterName}
+                            onChange={(e) => setNewFilterName(e.target.value)}
+                        />
+                    )}
+                    <div className={classes.formControl}>
+                        <FilterChips
+                            chips={filterUtils.getChipsFromFilters(false)}
+                        />
+                    </div>
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button
