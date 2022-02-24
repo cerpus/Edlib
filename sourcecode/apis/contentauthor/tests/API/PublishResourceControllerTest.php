@@ -15,7 +15,7 @@ class PublishResourceControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $fakedEvents = [
+    protected array $fakedEvents = [
         ResourceSaved::class
     ];
 

@@ -2,26 +2,20 @@
 
 namespace App\Libraries\QuestionSet;
 
-
-use App\H5PContent;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Games\Millionaire\Millionaire;
+use App\Libraries\H5P\Packages\QuestionSet as H5PQuestionSet;
+use App\QuestionSet as QuestionSetModel;
 use Cerpus\CoreClient\DataObjects\Answer;
 use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
 use Cerpus\CoreClient\DataObjects\Questionset as CoreClientQuestionset;
-use App\QuestionSet as QuestionSetModel;
-use App\Libraries\H5P\Packages\QuestionSet as H5PQuestionSet;
 
 class QuestionSetConvert
 {
-
     /**
-     * @param $convertTo
-     * @param QuestionSetModel $questionSet
-     * @param array $metadata
      * @return array|null
      * @throws \Exception
      */
@@ -38,7 +32,7 @@ class QuestionSetConvert
     }
 
 
-    public function createH5PQuestionSet(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData)
+    public function createH5PQuestionSet(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): array
     {
         $h5pQuiz = CoreClientQuestionset::create([
             'title' => $questionSet->title,
@@ -48,6 +42,7 @@ class QuestionSetConvert
         ]);
 
         $questionSet->questions->each(function($question) use ($h5pQuiz){
+            /** @var MultiChoiceQuestion $h5pQuestion */
             $h5pQuestion = MultiChoiceQuestion::create([
                 'text' => $question->question_text,
             ]);
@@ -73,9 +68,11 @@ class QuestionSetConvert
         ];
     }
 
-    public function createMillionaireGame(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData)
+    public function createMillionaireGame(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): array
     {
+        /** @var Millionaire $millionaire */
         $millionaire = app(Millionaire::class);
+        /** @var GameHandler $gameHandler */
         $gameHandler = app(GameHandler::class);
         $game = $gameHandler->store([
             'title' => $questionSet->title,

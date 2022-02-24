@@ -3,16 +3,16 @@
 namespace App\Libraries\Games;
 
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
+use App\Events\GameWasSaved;
 use App\Game;
 use App\Gametype;
-use App\Events\GameWasSaved;
-use Illuminate\Http\Request;
-use Cerpus\VersionClient\VersionData;
-use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
+use App\Libraries\Games\Contracts\GameTypeContract;
+use App\Libraries\Games\Millionaire\Millionaire;
+use Cerpus\VersionClient\VersionData;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class GameHandler
 {
@@ -26,6 +26,7 @@ class GameHandler
         $game->owner = $values['authId'];
         $game->game_settings = $gametype->createGameSettings($values);
         $game->is_published = $values['is_published'];
+        $game->license = $values['license'];
 
         $game->save();
 
@@ -46,7 +47,7 @@ class GameHandler
      * @return GameTypeContract
      * @throws \Exception
      */
-    public static function makeGameTypeFromId($gametypeId)
+    public static function makeGameTypeFromId($gametypeId): GameTypeContract
     {
         $gametypes = Gametype::findOrFail($gametypeId)->get();
 
@@ -68,6 +69,7 @@ class GameHandler
 
     public function update(Game $game, Request $request)
     {
+        /** @var Game $game */
         list($game, $reason) = $this->handleCopy($game, $request);
 
         $gametype = self::makeGameTypeFromId($game->gameType->id);
@@ -75,6 +77,7 @@ class GameHandler
         $game->title = $request->get('title');
         $game->game_settings = $gametype->createGameSettings($request->all());
         $game->is_published = $game::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $game->license = $request->input('license');
 
         $game->save();
 

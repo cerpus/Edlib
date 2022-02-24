@@ -2,6 +2,7 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\APIArticle;
 
+use App\Traits\HTMLHelper;
 use Illuminate\Support\Facades\Log;
 use DOMElement;
 use App\Article;
@@ -10,7 +11,6 @@ use App\NdlaArticleImportStatus;
 use App\Libraries\NDLA\API\AudioApiClient;
 use App\Libraries\NDLA\API\ImageApiClient;
 use App\Libraries\NDLA\API\ArticleApiClient;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\HTMLHelper;
 
 abstract class BaseHandler
 {

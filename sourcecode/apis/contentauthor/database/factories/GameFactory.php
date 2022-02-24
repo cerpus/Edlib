@@ -16,6 +16,7 @@ class GameFactory extends Factory
             'owner' => $this->faker->uuid,
             'game_settings' => json_encode(['setting' => true]),
             'version_id' => null,
+            'license' => '',
         ];
     }
 }

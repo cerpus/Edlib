@@ -2,6 +2,8 @@
 
 namespace App\Libraries\H5P\ContentType;
 
+use App\Http\Libraries\License;
+
 class H5PAudio extends BaseH5PContent
 {
     protected $title = '';
@@ -41,7 +43,7 @@ class H5PAudio extends BaseH5PContent
 
     public function setLicense($license)
     {
-        $license = $this->toH5PLicenseString($license);
+        $license = License::toH5PLicenseString($license);
         if ($license) {
             $this->license = $license;
             $this->content->params->files[0]->copyright->license = $license;

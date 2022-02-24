@@ -2,6 +2,7 @@
 
 namespace Tests\H5P;
 
+use stdClass;
 use Tests\TestCase;
 use Tests\TestHelpers;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use Tests\db\TestProgressSeeder;
 use Tests\Traits\ResetH5PStatics;
 use App\Libraries\H5P\H5PProgress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use TypeError;
 
 class H5PProgressTest extends TestCase
 {
@@ -39,14 +41,14 @@ class H5PProgressTest extends TestCase
 
     public function testStoreProgressWithInvalidAction()
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $h5pprogress = $this->getH5PProgress();
         $h5pprogress->storeProgress("InvalidAction");
     }
 
     public function testStoreProgressWithActionButNoData()
     {
-        $expectedResult = new \stdClass();
+        $expectedResult = new stdClass();
         $expectedResult->success = false;
         $expectedResult->message = "Missing parameters";
         $h5pprogress = $this->getH5PProgress();
@@ -112,7 +114,6 @@ class H5PProgressTest extends TestCase
         $user1 = rand(1, 100);
         $user2 = rand(101, 200);
 
-        /** @var h5pprogress $h5pprogressuser1 */
         $h5pprogressuser1 = $this->getH5PProgress($user1);
 
         $this->assertequals(0, $h5pprogressuser1->countprogresses($courseid1));
@@ -173,7 +174,6 @@ class H5PProgressTest extends TestCase
             'context' => null,
         ]);
 
-        /** @var h5pprogress $h5pprogressuser2 */
         $h5pprogressuser2 = $this->getH5PProgress($user2);
 
         $response = self::callmethod($h5pprogressuser2, "storeusercontentdata", [
@@ -265,7 +265,6 @@ class H5PProgressTest extends TestCase
 
     public function testStoreUserContentDataWithContext()
     {
-        /** @var h5pprogress $h5pprogressuser */
         $h5pprogressuser = new H5PProgress($this->getPDOConnection(), 1);
         $response = self::callmethod($h5pprogressuser, "storeusercontentdata", [
             [
@@ -383,7 +382,6 @@ class H5PProgressTest extends TestCase
         $contentId = 2;
         $userId = 1;
 
-        /** @var h5pprogress $h5pprogressuser */
         $h5pprogressuser = new H5PProgress($this->getPDOConnection(), $userId);
         $response = self::callmethod($h5pprogressuser, "storeusercontentdata", [
             [
@@ -432,7 +430,7 @@ class H5PProgressTest extends TestCase
 
     public function testMissingRequestWithProgress()
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
 
         $progress = $this->getH5PProgress(1);
         $progress->getProgress();

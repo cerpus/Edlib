@@ -2,49 +2,39 @@
 
 namespace Tests\Unit\Models;
 
+use Exception;
+use Generator;
 use Tests\TestCase;
 use App\ContentLanguage;
 
 class ContentLanguageTest extends TestCase
 {
-    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharacters_OneCharacter()
+    /** @dataProvider codeProvider */
+    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharacter(string $code)
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Please provide a two or three letter ISO 639 language code.");
 
         $contentLanguage = new ContentLanguage();
-        $contentLanguage->language_code = 'e';
+        $contentLanguage->language_code = $code;
     }
 
-    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharacters_FourCharacters()
+    /** @dataProvider codeProvider */
+    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharactersMassAssignment(string $code)
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Please provide a two or three letter ISO 639 language code.");
 
-        $contentLanguage = new ContentLanguage();
-        $contentLanguage->language_code = 'engl';
-    }
-
-    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharactersMassAssignment_FourCharacters()
-    {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Please provide a two or three letter ISO 639 language code.");
-
-        $contentLanguage = new ContentLanguage([
-            'language_code' => 'engl'
+        new ContentLanguage([
+            'language_code' => $code,
         ]);
     }
 
-    public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharactersMassAssignment_OneCharacter()
+    public function codeProvider(): Generator
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Please provide a two or three letter ISO 639 language code.");
-
-        $contentLanguage = new ContentLanguage([
-            'language_code' => 'e'
-        ]);
+        yield['e'];
+        yield['engl'];
     }
-
 }
 
 

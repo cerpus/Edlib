@@ -4,10 +4,11 @@ namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
+use App\Traits\Collaboratable;
 use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
-use App\Traits\Collaboratable;
 use Iso639p3;
 
 /**
@@ -18,6 +19,10 @@ use Iso639p3;
  * @property string owner
  * @property string external_reference
  * @property string tags
+ * @property Collection<QuestionSetQuestion> questions
+ *
+ * @method static self find($id, $columns = ['*'])
+ * @method static self findOrFail($id, $columns = ['*'])
  */
 class QuestionSet extends Content
 {
@@ -25,7 +30,7 @@ class QuestionSet extends Content
     use HasFactory;
     use UuidForKey;
 
-    public $editRouteName = 'questionset.edit';
+    public string $editRouteName = 'questionset.edit';
 
     public function questions()
     {

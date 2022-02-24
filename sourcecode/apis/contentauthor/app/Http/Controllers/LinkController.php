@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
+use App\Events\ContentCreated;
 use App\Events\ContentCreating;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
@@ -13,11 +14,10 @@ use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\LinksRequest;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Link;
-use App\LinksExternaldata;
 use App\Traits\ReturnToCore;
 use Carbon\Carbon;
-use Cerpus\LicenseClient\Contracts\LicenseContract;
 use Cerpus\VersionClient\VersionData;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
@@ -25,55 +25,48 @@ use Illuminate\View\View;
 
 class LinkController extends Controller
 {
-
     use LtiTrait;
     use ReturnToCore;
     use ArticleAccess;
 
-    protected $lti;
-    protected $licenseClient;
+    protected H5pLti $lti;
 
-    public function __construct(H5pLti $h5pLti, LicenseContract $licenseClient)
+    public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
 
         $this->lti = $h5pLti;
-        $this->licenseClient = $licenseClient;
     }
 
     public function create(Request $request)
     {
-
         if (!$this->canCreate()) {
             abort(403);
         }
 
         $adapter = app(H5PAdapterInterface::class);
-        $licenseLib = app(License::class);  //new License(config('license'), config('cerpusauth.user'), config('cerpusauth.secret'));
         $ltiRequest = $this->lti->getLtiRequest();
 
-        $licenses = $licenseLib->getLicenses($ltiRequest);
-        $license = $licenseLib->getDefaultLicense($ltiRequest);
+        $licenses = License::getLicenses($ltiRequest);
+        $license = License::getDefaultLicense($ltiRequest);
+
         $emails = '';
         $link = app(Link::class);
         $redirectToken = $request->get('redirectToken');
         $useDraft = $adapter->enableDraftLogic();
         $canPublish = true;
-        $canList = true;
         $isPublished = false;
+        $canList = true;
 
         return view('link.create')->with(compact('licenses', 'license', 'emails', 'link', 'redirectToken', 'useDraft', 'canPublish', 'isPublished', 'canList'));
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  LinksRequest  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(LinksRequest $request)
+    public function store(LinksRequest $request): JsonResponse
     {
         event(new ContentCreating($request));
 
@@ -93,6 +86,7 @@ class LinkController extends Controller
         $link->title = $metadata->title;
         $link->metadata = !empty($inputs['linkMetadata']) ? $inputs['linkMetadata'] : null;
         $link->is_published = $link::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $link->license = $inputs['license'] ?? '';
         $link->save();
 
         event(new LinkWasSaved($link, VersionData::CREATE));
@@ -116,7 +110,6 @@ class LinkController extends Controller
 
     public function edit(Request $request, $id)
     {
-        /** @var Link $link */
         $link = Link::findOrFail($id);
         $adapter = app(H5PAdapterInterface::class);
 
@@ -126,7 +119,7 @@ class LinkController extends Controller
             $locked = $link->hasLock();
             if ($locked) { // Article is locked, add some info to the response
                 $now = Carbon::now();
-                $expires = Carbon::createFromTimestamp($locked->updated_at->timestamp)->addHour(1);
+                $expires = Carbon::createFromTimestamp($locked->updated_at->timestamp)->addHour();
                 $lockHeadline = trans('lock.article-is-locked');
                 $lockMessage = trans('lock.article-will-expire',
                     [
@@ -144,9 +137,8 @@ class LinkController extends Controller
 
         $emails = ""; //$this->getCollaboratorsEmails($link);
         $ltiRequest = $this->lti->getLtiRequest();
-        $licenseLib = app(License::class); //$licenseLib = new License(config('license'), config('cerpusauth.user'), config('cerpusauth.secret'));
-        $licenses = $licenseLib->getLicenses($ltiRequest);
-        $license = $licenseLib->getLicense($id);
+        $licenses = License::getLicenses($ltiRequest);
+        $license = $link->license;
         $redirectToken = $request->get('redirectToken');
         $useDraft = $adapter->enableDraftLogic();
         $canPublish = $link->canPublish($request);
@@ -154,13 +146,12 @@ class LinkController extends Controller
         $canList = $link->canList($request);
 
         return view('link.edit')->with(compact('link', 'isOwner', 'emails', 'license', 'licenses', 'id', 'redirectToken', 'useDraft', 'canPublish', 'canList', 'isPublished'));
-
     }
 
     public function update(LinksRequest $request, $id)
     {
+        /** @var Link $link */
         $link = app(Link::class);
-        /** @var Link $oldLink */
         $oldLink = $link::findOrFail($id);
 
         event(new ContentUpdating($oldLink, $request));
@@ -171,7 +162,6 @@ class LinkController extends Controller
 
         $inputs = $request->all();
 
-        /** @var License $oldLicense */
         $oldLicense = $oldLink->getContentLicense();
         $reason = $oldLink->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
 
@@ -205,6 +195,7 @@ class LinkController extends Controller
         $link->metadata = !empty($inputs['linkMetadata']) ? $inputs['linkMetadata'] : null;
         $isDraftLogicEnabled = $link::isDraftLogicEnabled();
         $link->is_published = $isDraftLogicEnabled ? $request->input('isPublished', 1) : 1;
+        $link->license = $inputs['license'] ?? $oldLink->license;
 
         $link->save();
 
@@ -229,11 +220,8 @@ class LinkController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return View
      */
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context, $preview = false): View
     {
         $customCSS = !empty($this->lti->getLtiRequest()) ? $this->lti->getLtiRequest()->getLaunchPresentationCssUrl() : null;
         /** @var Link $link */

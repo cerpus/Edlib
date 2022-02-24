@@ -31,6 +31,7 @@ class HandleVersioning extends AbstractHandleVersioning
     {
         if (!empty($id)) {
             $h5p = H5PContent::find($id);
+            /** @var VersionClient $versionClient */
             $versionClient = app(VersionClient::class);
 
             if (is_object($h5p)) {

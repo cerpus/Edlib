@@ -16,7 +16,8 @@ class ArticleFactory extends Factory
             'original_id' => $this->faker->uuid,
             'parent_id' => null,
             'parent_version_id' => null,
-            'version_id' => $this->faker->uuid
+            'version_id' => $this->faker->uuid,
+            'license' => '',
         ];
     }
 

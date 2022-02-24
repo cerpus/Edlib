@@ -2,20 +2,18 @@
 
 namespace Tests\Article;
 
-use App\File;
 use App\Article;
-use App\Libraries\DataObjects\ContentStorageSettings;
-use Tests\TestCase;
-use Illuminate\Support\Str;
-use Tests\Traits\ContentAuthorStorageTrait;
-use Tests\Traits\MockLicensingTrait;
-use Illuminate\Support\Facades\Storage;
+use App\File;
 use App\Http\Libraries\ArticleFileVersioner;
+use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Tests\TestCase;
+use Tests\Traits\ContentAuthorStorageTrait;
 
 class ArticleFileVersionerTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, ContentAuthorStorageTrait;
+    use RefreshDatabase, ContentAuthorStorageTrait;
 
     protected $originalArticle, $newArticle;
 

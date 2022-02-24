@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use Mail;
 use App\Game;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 use App\QuestionSet;
 use App\Collaborator;

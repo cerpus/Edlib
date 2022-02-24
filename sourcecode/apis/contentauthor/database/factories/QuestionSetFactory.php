@@ -14,6 +14,7 @@ class QuestionSetFactory extends Factory
             'owner' => $this->faker->uuid,
             'external_reference' => null,
             'language_code' => $this->faker->languageCode,
+            'license' => '',
         ];
     }
 }

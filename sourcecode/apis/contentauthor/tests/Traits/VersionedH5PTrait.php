@@ -8,7 +8,7 @@ use App\Libraries\ContentAuthorStorage;
 
 trait VersionedH5PTrait
 {
-    protected $cleanupInitiated = false;
+    protected bool $cleanupInitiated = false;
 
     protected $originalH5P;
 
@@ -26,8 +26,6 @@ trait VersionedH5PTrait
                 $fromFile = base_path() . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'tree.jpg';
                 app(ContentAuthorStorage::class)->getBucketDisk()->put($directory . '/tree.jpg', file_get_contents($fromFile));
             });
-
-        $this->setUpLicensing($license, $copyable);
 
         return $this->originalH5P;
     }

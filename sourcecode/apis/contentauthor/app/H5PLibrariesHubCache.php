@@ -5,6 +5,14 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string title
+ * @property string summary
+ * @property string description
+ * @property string license
+ * @property string screenshots
+ */
+
 class H5PLibrariesHubCache extends Model
 {
     protected $table = 'h5p_libraries_hub_cache';

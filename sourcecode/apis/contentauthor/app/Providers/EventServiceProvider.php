@@ -25,7 +25,6 @@ class EventServiceProvider extends ServiceProvider
 
         'App\Events\ArticleWasSaved' => [
             'App\Listeners\Article\HandleVersioning',
-            'App\Listeners\Article\HandleLicensing',
             'App\Listeners\Article\HandleCollaborators',
             'App\Listeners\Article\HandlePrivacy',
             'App\Listeners\Article\HandleCollaborationInviteEmails',
@@ -34,12 +33,10 @@ class EventServiceProvider extends ServiceProvider
 
         'App\Events\ArticleWasCopied' => [
             'App\Listeners\Article\HandleVersioning',
-            'App\Listeners\Article\Copy\HandleLicensing',
         ],
 
         'App\Events\H5PWasCopied' => [
             'App\Listeners\H5P\Copy\HandleVersioning',
-            'App\Listeners\H5P\Copy\HandleLicensing',
         ],
 
         'App\Events\H5PWasSaved' => [
@@ -57,14 +54,12 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Events\QuestionsetWasSaved' => [
-            'App\Listeners\Questionset\HandleLicensing',
             'App\Listeners\Questionset\HandlePrivacy',
             'App\Listeners\Questionset\HandleQuestionbank',
             'App\Listeners\ResourceEventSubscriber@onQuestionsetSaved',
         ],
 
         'App\Events\GameWasSaved' => [
-            'App\Listeners\Game\HandleLicensing',
             'App\Listeners\Game\HandlePrivacy',
             'App\Listeners\Game\HandleVersioning',
 //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic

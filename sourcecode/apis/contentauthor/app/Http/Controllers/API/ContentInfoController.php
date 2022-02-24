@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Article;
 use App\CollaboratorContext;
 use App\Content;
+use App\Game;
+use App\H5PContent;
 use App\Http\Controllers\Controller;
-use App\Http\Libraries\License;
 use App\Libraries\DataObjects\EdlibResourceDataObject;
 use App\Libraries\ModelRetriever;
+use App\QuestionSet;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ContentInfoController extends Controller
 {
-    public function index($id)
+    public function index($id): JsonResponse
     {
         $content = Content::findContentById($id);
 
@@ -26,41 +30,24 @@ class ContentInfoController extends Controller
         return response()->json($content->getEdlibDataObject());
     }
 
-    public function list(Request $request)
+    public function list(Request $request): JsonResponse
     {
-        $offset = $request->get("offset", 0);
-        $limit = $request->get("limit", 50);
-        $model = ModelRetriever::getModelFromGroup($request->get("group"));
+        $offset = $request->input("offset", 0);
+        $limit = $request->input("limit", 50);
+        /** @var Article|Game|QuestionSet|H5PContent $model */
+        $model = ModelRetriever::getModelFromGroup($request->input("group"));
 
-        $preFetchIds = $model::select("id")
+        $modelResources = $model::select()
             ->orderBy("created_at", "ASC")
             ->limit($limit)
             ->offset($offset)
             ->get()
-            ->map(function ($row) {
-                return $row->id;
-            });
-
-        $modelResources = $model::findMany($preFetchIds);
+        ;
 
         $resources = [];
 
-        $contentIds = $modelResources->map(function ($modelResource) {
-            return strval($modelResource->id);
-        })->toArray();
-
-        $lic = app()->make(License::class);
-
-        $licenses = $lic->getLicensesByContentId($contentIds);
-
         foreach ($modelResources as $modelResource) {
-            $actualLicense = null;
-            foreach ($licenses as $license) {
-                if ($license->id == strval($modelResource->id)) {
-                    $actualLicense = $license->license;
-                }
-            }
-
+            /** @var Article|Game|QuestionSet|H5PContent $modelResource */
             $resources[] = new EdlibResourceDataObject(
                 strval($modelResource->id),
                 $modelResource->title,
@@ -69,7 +56,7 @@ class ContentInfoController extends Controller
                 !$modelResource->inDraftState(),
                 $modelResource->getISO6393Language(),
                 $modelResource->getContentType(true),
-                $actualLicense,
+                $modelResource->license,
                 $modelResource->getMaxScore(),
                 $modelResource->created_at,
                 $modelResource->updated_at,
@@ -83,7 +70,7 @@ class ContentInfoController extends Controller
                     ->sort()
                     ->all(),
                 $modelResource->getAuthorOverwrite()
-            );;
+            );
         }
         $response = [
             "pagination" => [
@@ -97,8 +84,9 @@ class ContentInfoController extends Controller
         return response()->json($response);
     }
 
-    public function getContentTypeInfo(string $contentType)
+    public function getContentTypeInfo(string $contentType): JsonResponse
     {
+        /** @var Article|Game|QuestionSet|H5PContent $model */
         $model = ModelRetriever::getModelFromContentType($contentType);
 
         $library = $model::getContentTypeInfo($contentType);

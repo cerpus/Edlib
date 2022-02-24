@@ -24,17 +24,16 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
-use Carbon\Carbon;
-use Cerpus\LicenseClient\Contracts\LicenseContract;
 use Cerpus\VersionClient\VersionData;
-use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Session;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
@@ -43,10 +42,9 @@ class ArticleController extends Controller
     use LtiTrait;
     use ReturnToCore;
 
-    protected $lti;
-    protected $licenseClient;
+    protected H5pLti $lti;
 
-    public function __construct(H5pLti $h5pLti, LicenseContract $licenseClient)
+    public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
@@ -55,7 +53,6 @@ class ArticleController extends Controller
         $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
 
         $this->lti = $h5pLti;
-        $this->licenseClient = $licenseClient;
     }
 
     /**
@@ -70,19 +67,16 @@ class ArticleController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         if (!$this->canCreate()) {
             abort(403);
         }
 
-        $licenseLib = app(License::class);  //new License(config('license'), config('cerpusauth.user'), config('cerpusauth.secret'));
         $ltiRequest = $this->lti->getLtiRequest();
 
-        $license = $licenseLib->getDefaultLicense($ltiRequest);
+        $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
 
         $jwtTokenInfo = Session::get('jwtToken', null);
@@ -121,11 +115,8 @@ class ArticleController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(ArticleRequest $request)
+    public function store(ArticleRequest $request): JsonResponse
     {
         if (!$this->canCreate()) {
             abort(403);
@@ -142,6 +133,7 @@ class ArticleController extends Controller
         $article->original_id = $article->id;
         $article->owner_id = Session::get('authId');
         $article->max_score = $article->getMaxScoreHelper($inputs['content']);
+        $article->license = $request->input('license');
 
         // next line commented out in anticipation of permanently deciding if attribution for Articles is no longer maintained
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
@@ -157,8 +149,7 @@ class ArticleController extends Controller
             $emailCollaborators = collect(explode(",", $request->get('col-emails')));
         }
 
-
-        // Handles licensing, privacy, collaborators, and registering a new version
+        // Handles privacy, collaborators, and registering a new version
         event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
 
         // A more Laravelly event system
@@ -236,9 +227,6 @@ class ArticleController extends Controller
         $article->convertToCloudPaths();
 
         $emails = $this->getCollaboratorsEmails($article);
-        /** @var License $licenseLib */
-        $licenseLib = app(License::class);
-        $license = $licenseLib->getLicense($id);
 
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
@@ -287,7 +275,7 @@ class ArticleController extends Controller
             'id' => $article->id,
             'title' => $article->title,
             'content' => $article->content,
-            'license' => $license,
+            'license' => $article->license,
             'isPublished' => !$article->inDraftState(),
             'share' => !$article->isPublished() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -335,7 +323,6 @@ class ArticleController extends Controller
                     break;
                 default:
                     throw new UnhandledVersionReasonException("Unhandled Version Reason: $reason");
-                    break;
             }
         }
 
@@ -345,7 +332,7 @@ class ArticleController extends Controller
             $article->content = $this->cleanContent($content);
         }
         $article->max_score = $article->getMaxScoreHelper($article->content);
-
+        $article->license = $request->input('license', $oldLicense);
         $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
@@ -417,7 +404,7 @@ class ArticleController extends Controller
         }
     }
 
-    protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason)
+    protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
     {
         switch ($reason) {
             case VersionData::UPDATE:
@@ -430,11 +417,10 @@ class ArticleController extends Controller
                     }
                 }
                 return collect(explode(",", $collaborators));
-                break;
+
             case VersionData::COPY:
             default:
                 return collect();
-                break;
         }
     }
 }

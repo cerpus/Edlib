@@ -2,34 +2,39 @@
 
 namespace Tests\Article;
 
-use App\User;
 use App\Article;
+use App\ArticleCollaborator;
+use App\Listeners\Article\HandleCollaborationInviteEmails;
+use App\User;
+use Cerpus\VersionClient\VersionData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
-use Illuminate\Support\Str;
-use App\ArticleCollaborator;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
-use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\WithFaker;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use WithFaker;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->refreshDatabase();
+        $versionData = new VersionData();
+        $this->setupVersion([
+            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
+        ]);
     }
 
     public function testDatabaseVersioning()
     {
-        $this->setUpLicensing('BY', true);
-        $this->setupVersion();
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
@@ -55,10 +60,12 @@ class ArticleVersioningTest extends TestCase
 
     public function testVersioningTriggers()
     {
-        $this->setUpLicensing('BY', true);
         $request = new Request();
         $authId = Str::uuid();
-        $originalArticle = Article::factory()->create(['owner_id' => $authId]);
+        $originalArticle = Article::factory()->create([
+            'owner_id' => $authId,
+            'license' => 'BY',
+        ]);
         $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
         $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);
         $originalArticle->collaborators()->save($c1);
@@ -132,9 +139,11 @@ class ArticleVersioningTest extends TestCase
 
     public function testVersioning()
     {
+        $inviteEmail = $this->createMock(HandleCollaborationInviteEmails::class);
+        $inviteEmail->expects($this->exactly(3))->method('handle');
+        $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
+
         $this->setUpResourceApi();
-        $this->setupVersion();
-        $this->setUpLicensing('BY', true);
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
@@ -143,7 +152,10 @@ class ArticleVersioningTest extends TestCase
         $copyist = User::factory()->make();
         $eve = User::factory()->make();
 
-        $article = Article::factory()->create(['owner_id' => $owner->auth_id]);
+        $article = Article::factory()->create([
+            'owner_id' => $owner->auth_id,
+            'license' => 'BY',
+        ]);
         $article->collaborators()->save(ArticleCollaborator::factory()->create(['email' => $collaborator->email]));
 
         $article->fresh();
@@ -154,10 +166,9 @@ class ArticleVersioningTest extends TestCase
             'authId' => $collaborator->auth_id,
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
-
         ])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_OK);
+        ->get(route('article.edit', $article->id))
+        ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "New title",
@@ -172,8 +183,8 @@ class ArticleVersioningTest extends TestCase
             'email' => $copyist->email,
             'verifiedEmails' => [$copyist->email],
         ])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_OK);
+        ->get(route('article.edit', $article->id))
+        ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",
@@ -186,19 +197,17 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
         $this->assertCount(2, ArticleCollaborator::all());
 
-
-        $this->setUpLicensing('PRIVATE', false);
+        $article->license = 'PRIVATE';
+        $article->save();
 
         // Cannot edit article if not collaborator and non copyable resource
         $this->withSession([
             'authId' => $eve->auth_id,
             'email' => $eve->email,
             'verifiedEmails' => [$eve->email],
-
-
         ])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_FORBIDDEN);
+        ->get(route('article.edit', $article->id))
+        ->assertStatus(Response::HTTP_FORBIDDEN);
         $this->assertCount(2, ArticleCollaborator::all());
 
         // Well, maybe if i post directly? PURE GENIUS!
@@ -206,17 +215,15 @@ class ArticleVersioningTest extends TestCase
             'authId' => $eve->auth_id,
             'email' => $eve->email,
             'verifiedEmails' => [$eve->email],
-
         ])
-            ->put(route('article.update', $article->id), [
-                '_token' => csrf_token(),
-                'title' => 'Evil edit',
-                'content' => 'Muahahaha',
-                'license' => 'BY',
-                'collaborators' => 'a@b.com,c@d.com',
-            ])
-            ->assertStatus(Response::HTTP_FORBIDDEN);
-
+        ->put(route('article.update', $article->id), [
+            '_token' => csrf_token(),
+            'title' => 'Evil edit',
+            'content' => 'Muahahaha',
+            'license' => 'BY',
+            'collaborators' => 'a@b.com,c@d.com',
+        ])
+        ->assertStatus(Response::HTTP_FORBIDDEN);
 
         // Can edit if you are a collaborator even if the resource is non copyable
         $this->withSession([
@@ -224,8 +231,8 @@ class ArticleVersioningTest extends TestCase
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
         ])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_OK);
+        ->get(route('article.edit', $article->id))
+        ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",

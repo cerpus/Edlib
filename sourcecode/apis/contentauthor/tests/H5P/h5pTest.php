@@ -3,6 +3,9 @@
 namespace Tests\H5P;
 
 use App\H5PContent;
+use Exception;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Tests\TestCase;
 use Tests\TestHelpers;
 use App\Libraries\H5P\h5p;
@@ -67,30 +70,30 @@ class h5pTest extends TestCase
         $tmpDir = $this->getTempDirectory();
         $editorDirectory = $this->getEditorDirectory();
         if (!is_dir($editorDirectory) && (mkdir($editorDirectory, 0777, true)) !== true) {
-            throw new \Exception("Can't create EditorFilesDirectory");
+            throw new Exception("Can't create EditorFilesDirectory");
         }
         $this->editorFilesDirectory = realpath($tmpDir);
     }
 
     private function deleteEditorFilesDirectory()
     {
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->editorFilesDirectory, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->editorFilesDirectory, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($files as $fileinfo) {
             $action = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
             $pos = strpos($fileinfo->getRealPath(), realpath($this->getTempDirectory()), 0);
             if ($pos !== 0) {
-                throw new \Exception("Target is not in the tmp space");
+                throw new Exception("Target is not in the tmp space");
             }
             if (!$action($fileinfo->getRealPath())) {
-                throw new \Exception("Could not delete the file/directory:" . $fileinfo->getRealPath());
+                throw new Exception("Could not delete the file/directory:" . $fileinfo->getRealPath());
             }
         }
         if (!rmdir($this->editorFilesDirectory)) {
-            throw new \Exception("Could not delete the editorFilesDirectory");
+            throw new Exception("Could not delete the editorFilesDirectory");
         }
     }
 
@@ -103,10 +106,10 @@ class h5pTest extends TestCase
             }
             $pos = strpos($filePath, realpath($this->getTempDirectory()), 0);
             if ($pos !== 0) {
-                throw new \Exception("Target '$filePath' is not in the tmp space");
+                throw new Exception("Target '$filePath' is not in the tmp space");
             }
             if (file_put_contents($filePath, $fileContent) === false) {
-                throw new \Exception("Could not write to file '$filePath'");
+                throw new Exception("Could not write to file '$filePath'");
             }
         }
     }
@@ -170,7 +173,7 @@ class h5pTest extends TestCase
 
         $h5pContent = H5PContent::find(1);
         $this->assertEquals($h5pContent->id, $updatedContent['id']);
-        $this->assertEquals($h5pContent->title, "Deltittel");
+        $this->assertEquals("Deltittel", $h5pContent->title);
 
         $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
         $this->assertDatabaseMissing("h5p_contents", ["id" => 2]);
@@ -246,7 +249,7 @@ class h5pTest extends TestCase
      */
     public function contentNotValidated()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage("Content must be validated before storing");
 
         $request = new Request([

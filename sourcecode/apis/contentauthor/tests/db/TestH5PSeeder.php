@@ -3,6 +3,7 @@
 namespace Tests\db;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TestH5PSeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class TestH5PSeeder extends Seeder
 
     public function h5pLibraries()
     {
-        \DB::table("h5p_libraries")->insert(
+        DB::table("h5p_libraries")->insert(
             array(
                 array(
                     'id' => '1',
@@ -583,7 +584,7 @@ class TestH5PSeeder extends Seeder
 
     public function h5pLibrariesLibraries()
     {
-        \DB::table("h5p_libraries_libraries")->insert(
+        DB::table("h5p_libraries_libraries")->insert(
             array(
                 array('library_id' => '1', 'required_library_id' => '76', 'dependency_type' => 'preloaded'),
                 array('library_id' => '72', 'required_library_id' => '3', 'dependency_type' => 'preloaded'),

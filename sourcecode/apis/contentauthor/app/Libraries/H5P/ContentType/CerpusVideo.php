@@ -2,12 +2,10 @@
 
 namespace App\Libraries\H5P\ContentType;
 
-use App\Libraries\NDLA\Importers\Handlers\Helpers\LicenseHelper;
+use App\Http\Libraries\License;
 
 class CerpusVideo extends BaseH5PContent
 {
-    use LicenseHelper;
-
     protected $title;
     protected $library = 'H5P.CerpusVideo 1.0';
     protected $libraryId = 'CV';
@@ -31,12 +29,12 @@ class CerpusVideo extends BaseH5PContent
 
     public function setLicense($license)
     {
-        $license = $this->toH5PLicenseString($license);
+        $license = License::toH5PLicenseString($license);
         if ($license) {
             $this->license = $license;
             $this->content->params->sources[0]->copyright->license = $license;
             $this->content->metadata->license = $license;
-            if (strstr($license, 'BY')) {
+            if (strstr($license, License::LICENSE_BY)) {
                 $this->content->params->sources[0]->copyright->version = '4.0';
                 $this->content->metadata->licenseVersion = '4.0';
 

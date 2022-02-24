@@ -4,36 +4,44 @@ namespace Tests\Article;
 
 use App\ApiModels\User;
 use App\Article;
-use Faker\Factory;
-use Tests\TestCase;
+use App\ArticleCollaborator;
 use App\ContentLock;
+use Cerpus\VersionClient\VersionData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
+use Tests\TestCase;
 use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
-use Illuminate\Support\Str;
-use App\ArticleCollaborator;
-use Illuminate\Http\Response;
 use Tests\Traits\MockResourceApi;
-use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\WithFaker;
 
 class ArticleLockTest extends TestCase
 {
-    use RefreshDatabase, MockMQ, MockLicensingTrait, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use WithFaker;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $versionData = new VersionData();
+        $this->setupVersion([
+            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
+        ]);
+    }
 
     public function testArticleHasLockWhenUserEdits()
     {
         $this->withoutMiddleware();
-        $this->setUpLicensing();
-        $this->setUpVersion();
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
-        $faker = Factory::create();
         $authId = Str::uuid();
-        $authName = $faker->name;
-        $authEmail = $faker->email;
+        $authName = $this->faker->name;
+        $authEmail = $this->faker->email;
         $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->withSession(['authId' => $authId, 'email' => $authEmail, 'name' => $authName, 'verifiedEmails' => [$authEmail]])
@@ -47,16 +55,13 @@ class ArticleLockTest extends TestCase
      */
     public function LockIsRemovedOnSave()
     {
-        $this->setUpLicensing();
-        $this->setUpVersion();
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
-        $faker = Factory::create();
         $authId = Str::uuid();
-        $authName = $faker->name;
-        $authEmail = $faker->email;
+        $authName = $this->faker->name;
+        $authEmail = $this->faker->email;
         $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->withSession([
@@ -82,13 +87,9 @@ class ArticleLockTest extends TestCase
      */
     public function CanOnlyHaveOneLock()
     {
-        $this->setUpLicensing();
-        $this->setUpVersion();
-
-        $faker = Factory::create();
         $authId = Str::uuid();
         $authName = "John Doe";
-        $authEmail = $faker->email;
+        $authEmail = $this->faker->email;
 
         $article = Article::factory()->create(['owner_id' => $authId]);
 
@@ -97,8 +98,8 @@ class ArticleLockTest extends TestCase
         ]);
 
         $authId2 = Str::uuid();
-        $authName2 = $faker->name;
-        $authEmail2 = $faker->email;
+        $authName2 = $this->faker->name;
+        $authEmail2 = $this->faker->email;
 
         $articleCollaborator = ArticleCollaborator::factory()->make(['email' => $authEmail2]);
         $article->collaborators()->save($articleCollaborator);
@@ -120,17 +121,17 @@ class ArticleLockTest extends TestCase
     public function forkArticle_thenFail()
     {
         $this->setUpResourceApi();
-        $this->setUpLicensing('PRIVATE', false);
-        $this->setUpVersion();
 
-        $faker = Factory::create();
         $authId = Str::uuid();
 
-        $article = Article::factory()->create(['owner_id' => $authId]);
+        $article = Article::factory()->create([
+            'owner_id' => $authId,
+            'license' => 'PRIVATE',
+        ]);
 
         $authId2 = Str::uuid();
-        $authName2 = $faker->name;
-        $authEmail2 = $faker->email;
+        $authName2 = $this->faker->name;
+        $authEmail2 = $this->faker->email;
 
         // Try to fork as another user
         $this->withSession(['authId' => $authId2, 'email' => $authEmail2, 'name' => $authName2, 'verifiedEmails' => [$authEmail2]])
@@ -146,17 +147,13 @@ class ArticleLockTest extends TestCase
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);
 
-        $this->setUpLicensing('PRIVATE', true);
-        $this->setUpVersion();
-
-        $faker = Factory::create();
         $authId = Str::uuid();
 
         $article = Article::factory()->create(['owner_id' => $authId]);
 
         $authId2 = Str::uuid();
-        $authName2 = $faker->name;
-        $authEmail2 = $faker->email;
+        $authName2 = $this->faker->name;
+        $authEmail2 = $this->faker->email;
 
         // Try to fork as another user
         $this->withSession(['authId' => $authId2, 'email' => $authEmail2, 'name' => $authName2, 'verifiedEmails' => [$authEmail2]])

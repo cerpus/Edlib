@@ -12,8 +12,8 @@ class ContentUpdating
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $content;
-    public $request;
+    public Content $content;
+    public Request $request;
 
     /**
      * Create a new event instance.

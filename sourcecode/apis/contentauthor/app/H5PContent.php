@@ -13,11 +13,12 @@ use H5PCore;
 use H5PFrameworkInterface;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Iso639p3;
-use stdClass;
 
 /**
  * Class H5PContent
@@ -32,21 +33,26 @@ use stdClass;
  * @property int disable
  * @property string content_type
  * @property string author
- * @property string license
  * @property string keywords
  * @property string description
  * @property string content_create_mode
  * @property string $language_iso_639_3
  *
+ * @property Collection<Collaborator> collaborators
+ * @property H5PLibrary library
+ *
+ * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()
  * @method self replicate(array $except = null)
+ * @method static self find($id, $columns = ['*'])
+ * @method static self findOrFail($id, $columns = ['*'])
  */
 class H5PContent extends Content implements VersionableObject
 {
     use HasFactory;
 
     protected $table = 'h5p_contents';
-    public $editRouteName = 'h5p.edit';
+    public string $editRouteName = 'h5p.edit';
 
     protected $guarded = [
         'user_id',
@@ -60,7 +66,7 @@ class H5PContent extends Content implements VersionableObject
         'is_published' => 'boolean',
     ];
 
-    public function collaborators()
+    public function collaborators(): HasMany
     {
         return $this->hasMany('App\H5PCollaborator', 'h5p_id');
     }
@@ -181,7 +187,7 @@ class H5PContent extends Content implements VersionableObject
         return $this->hasMany(H5PContentsVideo::class, 'h5p_content_id');
     }
 
-    public function requestShouldBecomeNewVersion(Request $request)
+    public function requestShouldBecomeNewVersion(Request $request): bool
     {
         if ($this->useVersioning() !== true) {
             return false;
@@ -203,7 +209,6 @@ class H5PContent extends Content implements VersionableObject
         }
 
         return false;
-
     }
 
     public function getContentType($withSubType = false): string

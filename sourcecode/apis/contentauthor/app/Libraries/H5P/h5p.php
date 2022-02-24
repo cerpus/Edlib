@@ -220,6 +220,7 @@ class h5p
         $content['params'] = $request->get('parameters');
         $content['is_published'] = Content::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
         $content['language_iso_639_3'] = $request->get('language_iso_639_3');
+        $content['license'] = $request->get('license');
 
         $params = json_decode($content['params']);
         if (isset($params->params) && isset($params->metadata)) {

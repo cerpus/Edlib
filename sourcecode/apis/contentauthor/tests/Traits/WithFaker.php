@@ -2,18 +2,15 @@
 
 namespace Tests\Traits;
 
-
 use Faker\Factory;
 use Faker\Generator;
 
 trait WithFaker
 {
-    /** @var  Generator */
-    protected $faker;
+    protected Generator $faker;
 
     public function setUpFaker()
     {
         $this->faker = Factory::create();
     }
-
 }

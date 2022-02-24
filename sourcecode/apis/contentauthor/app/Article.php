@@ -2,37 +2,44 @@
 
 namespace App;
 
+use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\ContentAuthorStorage;
-use App\Libraries\DataObjects\ContentTypeDataObject;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Log;
 use App\Libraries\DataObjects\ContentStorageSettings;
+use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
+use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Http\Request;
-use App\Http\Libraries\ArticleFileVersioner;
 
 /**
  * Class Article
  * @package App
  *
+ * @property string id
  * @property string parent_id
  * @property string perent_version_id
  * @property string original_id
  * @property string owner_id
  * @property string content
- * @property int deleted_at
+ * @property Carbon deleted_at
  * @property string note_id
  * @property string ndla_url
  *
+ * @property Collection<Collaborator> collaborators
+ *
  * @method null|self noMaxScore()
  * @method null|self ofBulkCalculated($type)
+ * @method static self find($id, $columns = ['*'])
+ * @method static self findOrFail($id, $columns = ['*'])
  */
 class Article extends Content implements VersionableObject
 {
@@ -42,8 +49,8 @@ class Article extends Content implements VersionableObject
 
     public $incrementing = false;
 
-    public $userColumn = 'owner_id';
-    public $editRouteName = 'article.edit';
+    public string $userColumn = 'owner_id';
+    public string $editRouteName = 'article.edit';
 
     const BULK_UNTOUCHED = 0;
     const BULK_PROGRESS = 1;

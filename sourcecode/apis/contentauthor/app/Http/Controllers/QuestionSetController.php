@@ -2,32 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\ACL\ArticleAccess;
 use App\Content;
 use App\Events\ContentCreated;
 use App\Events\ContentCreating;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
+use App\Gametype;
+use App\H5pLti;
+use App\Http\Libraries\License;
+use App\Http\Libraries\LtiTrait;
+use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
+use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\QuestionSet\QuestionSetHandler;
+use App\QuestionSet;
+use App\SessionKeys;
+use App\Traits\FractalTransformer;
+use App\Traits\ReturnToCore;
+use App\Transformers\QuestionSetsTransformer;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use App\H5pLti;
-use App\Gametype;
-use App\SessionKeys;
-use App\QuestionSet;
-use App\ACL\ArticleAccess;
-use Illuminate\Http\Request;
-use App\Traits\ReturnToCore;
-use Illuminate\Http\Response;
-use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
-use App\Traits\FractalTransformer;
-use App\Http\Requests\ApiQuestionsetRequest;
-use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\QuestionSet\QuestionSetHandler;
-use App\Transformers\QuestionSetsTransformer;
+use Illuminate\View\View;
+use Throwable;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class QuestionSetController extends Controller
@@ -38,7 +42,7 @@ class QuestionSetController extends Controller
     use FractalTransformer;
 
     const QUESTIONSET_TMP_IMAGE_FOLDER = 'temp' . DIRECTORY_SEPARATOR . 'images';
-
+    protected H5pLti $lti;
 
     public function __construct(H5pLti $h5pLti)
     {
@@ -72,7 +76,7 @@ class QuestionSetController extends Controller
         return $contentTypes;
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         if (!$this->canCreate()) {
             abort(403);
@@ -82,8 +86,6 @@ class QuestionSetController extends Controller
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $emails = '';
-
-        $licenseLib = new License(config('license'), config('cerpus-auth.key'), config('cerpus-auth.secret'));
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
         Session::forget(SessionKeys::EXT_QUESTION_SET);
@@ -102,7 +104,7 @@ class QuestionSetController extends Controller
                 ],
                 'questionSetJsonData' => $extQuestionSetData,
                 'contentTypes' => $contenttypes,
-                'license' => $licenseLib->getDefaultLicense(),
+                'license' => License::getDefaultLicense(),
                 'isPublished' => false,
                 'share' => config('h5p.defaultShareSetting'),
                 'redirectToken' => $request->get('redirectToken'),
@@ -120,7 +122,7 @@ class QuestionSetController extends Controller
 
     /**
      * @param ApiQuestionsetRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(ApiQuestionsetRequest $request)
     {
@@ -129,9 +131,10 @@ class QuestionSetController extends Controller
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
         try {
+            /** @var QuestionSetHandler $questionsetHandler */
             $questionsetHandler = app(QuestionSetHandler::class);
             [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'text' => $exception->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
@@ -154,21 +157,16 @@ class QuestionSetController extends Controller
         return response()->json($responseValues, Response::HTTP_CREATED);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $id): View
     {
         if (!$this->canCreate()) {
             abort(403);
         }
 
-        /** @var QuestionSet $questionset */
         $questionset = QuestionSet::findOrFail($id);
 
         $jwtTokenInfo = $request->session()->get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
-        $licenseLib = new License(config('license'), config('cerpus-auth.key'), config('cerpus-auth.secret'));
-
-        $isPrivate = !$questionset->isPublished();
 
         $links = (object)[
             "store" => route('questionset.store'),
@@ -183,6 +181,7 @@ class QuestionSetController extends Controller
         $emails = $questionset->getCollaboratorEmails();
         $ownerName = $questionset->getOwnerName($questionset->owner);
 
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
         $useDraft = $adapter->enableDraftLogic();
 
@@ -204,7 +203,7 @@ class QuestionSetController extends Controller
         $state = QuestionSetStateDataObject::create([
             'id' => $questionset->id,
             'title' => $questionset->title,
-            'license' => $licenseLib->getLicense($id),
+            'license' => $questionset->license,
             'isPublished' => !$questionset->inDraftState(),
             'share' => !$questionset->isPublished() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -233,15 +232,16 @@ class QuestionSetController extends Controller
         }
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
         try {
+            /** @var QuestionSetHandler $questionsetHandler */
             $questionsetHandler = app(QuestionSetHandler::class);
             [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             Log::error($exception->getFile() . ' (' . $exception->getLine() . '): ' . $exception->getMessage());
 
             return response()->json([
                 'text' => $exception->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             Log::error($throwable->getFile() . ' (' . $throwable->getLine() . '): ' . $throwable->getMessage());
 
             return response()->json([
@@ -268,7 +268,6 @@ class QuestionSetController extends Controller
         ];
 
         return response()->json($responseValues, Response::HTTP_OK);
-
     }
 
     public function show($id)

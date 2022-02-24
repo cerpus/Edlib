@@ -3,8 +3,9 @@
 namespace Tests\H5P;
 
 use App\H5PContent;
-use App\Libraries\H5P\Framework;
-use App\Libraries\H5P\Storage\H5PStorage;
+use Exception;
+use H5PCore;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 use App\H5PLibrary;
 use App\H5PContentsMetadata;
@@ -21,7 +22,7 @@ class H5PCopyrightTest extends TestCase
     {
         parent::setUp();
 
-        \Storage::fake('h5p-uploads');
+        Storage::fake('h5p-uploads');
     }
 
     /**
@@ -29,7 +30,7 @@ class H5PCopyrightTest extends TestCase
      */
     public function invalidData()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $h5pContent = H5PContent::factory()->create([
             'filtered' => null,
@@ -45,7 +46,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"data": [{"text":"Question 1","answer":"Answer 1","image":{"path":"","mime":"","copyright":{"license":"U"}}},{"text":"Question 2","answer":"Answer 2"}]}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $this->assertEquals([
             'h5p' => null,
             'h5pLibrary' => null,
@@ -61,7 +62,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"data": [{"text":"Question 1","answer":"Answer 1","image":{"path":"","mime":"","metadata":{"license":"U"}}},{"text":"Question 2","answer":"Answer 2"}]}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $this->assertEquals([
             'h5p' => null,
             'h5pLibrary' => null,
@@ -77,7 +78,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"data":[{"text":"Question 1","answer":"Answer 1","image":{"path":"images\/image-5c6e5e7364254.jpg","mime":"image\/jpeg","copyright":{"license":"U"}}},{"text":"Question 2","answer":"Answer 2"}]}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $this->assertEquals([
             'h5p' => null,
             'h5pLibrary' => null,
@@ -93,7 +94,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"media":{"params":{"contentName":"Image","file":{"path":"images\/file-5c74f3b33fa76.jpg","mime":"image\/jpeg","copyright":{"license":"U"},"width":640,"height":640}},"library":"H5P.Image 1.1","metadata":{"contentType":"Image","license":"U","title":"Untitled Image"},"subContentId":"0e3aa323-15a7-41c4-8d5a-c1995646d349"}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $this->assertEquals([
             'h5p' => null,
             'h5pLibrary' => null,
@@ -109,7 +110,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"data":[{"text":"Question 1","answer":"Answer 1","image":{"path":"images\/image-5c6e5e7364254.jpg","mime":"image\/jpeg","copyright": {"license": "GNU GPL","title": "Elizabeth","author": "Me","version": "v3"},"width":3250,"height":4333}},{"text":"Question 2","answer":"Answer 2"}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => "Elizabeth",
             'license' => "GNU GPL",
@@ -139,7 +140,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"elements":[{"dropZones":["0"],"type":{"library":"H5P.Image 1.1","params":{"contentName":"Image","file":{"path":"images\/backgroundimage.jpg","mime":"image\/jpeg","copyright":{"license":"U"},"width":3245,"height":3877},"alt":"Nagasagi"},"subContentId":"c3096441-8fa1-4c70-88de-7ae37568d12c","metadata":{"contentType":"Image","license":"CC BY","title":"Bomb","authors":[{"name":"Shakespeare","role":"Author"}],"licenseVersion":"4.0"}},"backgroundOpacity":100,"multiple":false}]}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedImageCopyright = H5PCopyrightDataObject::create([
             'license' => "CC BY",
             'title' => "Bomb",
@@ -170,7 +171,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"question":{"settings":{"size":{"width":620,"height":310},"background":{"path":"images\/einstein.jpg","mime":"image\/jpeg","copyright":{"license":"C","source":"http:\/\/stoneage.old"},"width":3250,"height":4333}},"task":{"elements":[{"x":6.4516129032258,"y":9.6774193548387,"width":7.125,"height":8.875,"dropZones":[],"type":{"library":"H5P.AdvancedText 1.1","params":{"text":"<p>A fool thinks himself to be wise, but a wise man knows himself to be a fool.<\/p>\n"},"subContentId":"b3d45ff8-1681-4537-946f-b8246ef2413b","metadata":{"contentType":"Text","license":"CC BY-SA","title":"Shakespeare quotes","authors":[{"name":"William Shakespeare","role":"Author"}],"licenseVersion":"4.0"}},"backgroundOpacity":100,"multiple":false},{"x":83.870967741935,"y":58.064516129032,"width":3.3557046979866,"height":5,"dropZones":["0"],"type":{"library":"H5P.Image 1.1","params":{"contentName":"Image","alt":"Mona Lisa","file":{"path":"images\/monalisa.jpg","mime":"image\/jpeg","copyright":{"license":"U"},"width":800,"height":1192}},"subContentId":"c3096441-8fa1-4c70-88de-7ae37568d12c","metadata":{"contentType":"Image","license":"CC BY","title":"Mona Lisa","authors":[{"name":"Leonardo Da Vinci","role":"Author"}],"licenseVersion":"4.0"}},"backgroundOpacity":100,"multiple":false}]}}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedBackgroundImageCopyright = H5PCopyrightDataObject::create([
             'license' => "C",
             'source' => 'http://stoneage.old',
@@ -219,7 +220,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"media":{"params":{"visuals":{"fit":true,"controls":true},"playback":{"autoplay":false,"loop":false},"sources":[{"path":"videos\/sources-5c74f64fc15d0.mp4","mime":"video\/mp4","copyright":{"license":"CC BY","version":"4.0","title":"Demo"}}]},"library":"H5P.Video 1.3","metadata":{"contentType":"Video","license":"U"},"subContentId":"05c0ef32-fb91-41c7-b4b1-7674c61795e4"}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedVideoCopyright = H5PCopyrightDataObject::create([
             'license' => "CC BY",
             'licenseVersion' => "4.0",
@@ -243,7 +244,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"video":{"title":"Interactive Video","startScreenOptions":{"hideStartTitle":false},"files":[{"path":"videos\/files-5c73d5ef21a3c.mp4","mime":"video\/mp4","copyright":{"license":"PD","title":"Video","author":"Quinton Tarantino"}}],"copyright":""}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedVideoCopyright = H5PCopyrightDataObject::create([
             'license' => "PD",
             'title' => 'Video',
@@ -270,7 +271,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"video":{"title":"Interactive Video","startScreenOptions":{"hideStartTitle":false},"copyright":"","files":[{"path":"https:\/\/www.youtube.com\/watch?v=F0jr-HQeT74","mime":"video\/YouTube","copyright":{"license":"PD","title":"Video","author":"Quinton Tarantino","year":"1900-2000","source":"https:\/\/www.youtube.com\/watch?v=F0jr-HQeT74","version":"CC PDM"}}]}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedVideoCopyright = H5PCopyrightDataObject::create([
             'license' => "PD",
             'licenseVersion' => "CC PDM",
@@ -301,7 +302,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = H5PContent::factory()->create([
             'filtered' => '{"media":{"params":{"sources":[{"path":"videos\/sources-5c750cb31e0ca.mp4","mime":"video\/mp4","copyright":{"license":"U"}}]},"library":"H5P.Video 1.5","metadata":{"contentType":"Video","license":"CC BY","title":"Demo video","authors":[{"name":"Ola Nordmann","role":"Author"}],"licenseVersion":"3.0","yearFrom":2000,"yearTo":2010,"source":"https:\/\/mysecretsource.hidden","licenseExtras":"No info"},"subContentId":"99e08ff8-f4b8-468e-b069-55490ebfe1b7"}}',
         ]);
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedVideoCopyright = H5PCopyrightDataObject::create([
             'license' => "CC BY",
             'licenseVersion' => "3.0",
@@ -340,7 +341,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent->library()->associate($library);
         $h5pContent->parameters = '{"media":{"params":{"sources":[{"path":"videos\/sources-5c750cb31e0ca.mp4","mime":"video\/mp4","copyright":{"license":"U"}}]},"library":"H5P.Video 1.5","metadata":{"contentType":"Video","license":"CC BY","title":"Demo video","authors":[{"name":"Ola Nordmann","role":"Author"}],"licenseVersion":"3.0","yearFrom":2000,"yearTo":2010,"source":"https:\/\/mysecretsource.hidden","licenseExtras":"No info"},"subContentId":"99e08ff8-f4b8-468e-b069-55490ebfe1b7"}}';
 
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => $h5pContent->title,
             'license' => "CC BY",
@@ -372,7 +373,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent->library()->associate($library);
         $h5pContent->parameters = '{"media":{"params":{"sources":[{"path":"videos\/sources-5c750cb31e0ca.mp4","mime":"video\/mp4","copyright":{"license":"U"}}]},"library":"H5P.Video 1.5","metadata":{"contentType":"Video","license":"CC BY","title":"Demo video","authors":[{"name":"Ola Nordmann","role":"Author"}],"licenseVersion":"3.0","yearFrom":2000,"yearTo":2010,"source":"https:\/\/mysecretsource.hidden","licenseExtras":"No info"},"subContentId":"99e08ff8-f4b8-468e-b069-55490ebfe1b7"}}';
 
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => $h5pContent->title,
             'license' => "CC BY",
@@ -403,7 +404,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent = $h5pContentMetadata->content()->first();
         $h5pContent->filtered = '{"media":{"params":{"sources":[{"path":"videos\/sources-5c750cb31e0ca.mp4","mime":"video\/mp4","copyright":{"license":"U"}}]},"library":"H5P.Video 1.5","metadata":{"contentType":"Video","license":"CC BY","title":"Demo video","authors":[{"name":"Ola Nordmann","role":"Author"}],"licenseVersion":"3.0","yearFrom":2000,"yearTo":2010,"source":"https:\/\/mysecretsource.hidden","licenseExtras":"No info"},"subContentId":"99e08ff8-f4b8-468e-b069-55490ebfe1b7"}}';
 
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => $h5pContent->title,
             'license' => "CC BY",
@@ -449,7 +450,7 @@ class H5PCopyrightTest extends TestCase
             'filtered' => '[]'
         ]);
 
-        $actualCopyright = (new H5PCopyright(resolve(\H5PCore::class)))->getCopyrights($h5pContent);
+        $actualCopyright = (new H5PCopyright(resolve(H5PCore::class)))->getCopyrights($h5pContent);
         $this->assertEquals([
             'h5p' => null,
             'h5pLibrary' => [
@@ -479,7 +480,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent->library_id = $h5pLibrary->id;
         $h5pContent->filtered = '{"contentName":"Image","file":{"path":"images\/testimage.jpg","mime":"image\/jpeg","copyright":{"license":"U"},"width":1024,"height":615},"alt":"Alt text for image"}';
 
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => $h5pContent->title,
             'license' => "CC BY",
@@ -517,7 +518,7 @@ class H5PCopyrightTest extends TestCase
         $h5pContent->library_id = $h5pLibrary->id;
         $h5pContent->filtered = '{"visuals":{"fit":true,"controls":true},"playback":{"autoplay":false,"loop":false},"l10n":{"name":"Video","loading":"Video player loading...","noPlayers":"Found no video players that supports the given video format.","noSources":"Video is missing sources.","aborted":"Media playback has been aborted.","networkFailure":"Network failure.","cannotDecode":"Unable to decode media.","formatNotSupported":"Video format not supported.","mediaEncrypted":"Media encrypted.","unknownError":"Unknown error.","invalidYtId":"Invalid YouTube ID.","unknownYtId":"Unable to find video with the given YouTube ID.","restrictedYt":"The owner of this video does not allow it to be embedded."},"sources":[{"path":"https:\/\/www.youtube.com\/watch?v=66MJEpsfFEU","mime":"video\/YouTube","copyright":{"license":"U"}}]}';
 
-        $h5pCopyright = new H5PCopyright(resolve(\H5PCore::class));
+        $h5pCopyright = new H5PCopyright(resolve(H5PCore::class));
         $expectedCopyright = H5PCopyrightDataObject::create([
             'title' => $h5pContent->title,
             'license' => "CC BY-ND",

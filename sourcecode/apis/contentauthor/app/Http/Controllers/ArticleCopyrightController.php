@@ -7,7 +7,6 @@ use App\H5PContent;
 use App\Libraries\H5P\H5PCopyright;
 use Cerpus\Helper\Clients\Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
-use GuzzleHttp\ClientInterface;
 use Masterminds\HTML5;
 
 class ArticleCopyrightController extends Controller

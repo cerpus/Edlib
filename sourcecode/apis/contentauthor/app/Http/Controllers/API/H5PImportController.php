@@ -11,6 +11,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Cerpus\VersionClient\VersionData;
 use H5PStorage;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class H5PImportController extends Controller
@@ -25,12 +26,11 @@ class H5PImportController extends Controller
      */
     public function importH5P(H5PImportRequest $request, H5PImport $import, H5PStorage $storage, H5PAdapterInterface $adapter)
     {
-
         try {
             $uploadedFile = $request->file('h5p');
             $response = $import->import($uploadedFile, $storage, $request->input('userId'), $request->input('isDraft'), !$request->input('isPublic', $adapter->getDefaultImportPrivacy()));
         } catch (\Exception $exception){
-            \Log::error($exception->getMessage());
+            Log::error($exception->getMessage());
             abort(400, $exception->getMessage());
         }
         $h5pContent = H5PContent::find($response->h5pId);

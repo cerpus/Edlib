@@ -5,7 +5,6 @@ namespace App\Libraries\Games\Millionaire;
 
 use App\Game;
 use App\Gametype;
-use App\Http\Libraries\License;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
@@ -16,15 +15,15 @@ use App\QuestionSetQuestionAnswer;
 use App\Transformers\QuestionSetsTransformer;
 use Cerpus\ImageServiceClient\DataObjects\ImageParamsObject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Session;
 
 class Millionaire extends GameBase
 {
 
-    public static $machineName = "CERPUS.MILLIONAIRE";
+    public static string $machineName = "CERPUS.MILLIONAIRE";
 
-    protected $maxScore = 15;
+    protected int $maxScore = 15;
 
     // Find and return the most recent version of the millionaire game
     public function getGameType()
@@ -49,10 +48,10 @@ class Millionaire extends GameBase
         return $asObject !== true ? json_encode($gameSettings) : $gameSettings;
     }
 
-    private function createGameSettingsFromQuestionset(QuestionSet $questionSet)
+    private function createGameSettingsFromQuestionset(QuestionSet $questionSet): Collection
     {
         return $questionSet->questions->map(function (QuestionSetQuestion $questionSetQuestion) {
-            $question = [
+            return [
                 'questionText' => $questionSetQuestion->question_text,
                 'image' => $questionSetQuestion->image,
                 'answers' => $questionSetQuestion
@@ -65,11 +64,10 @@ class Millionaire extends GameBase
                     })
                     ->toArray()
             ];
-            return $question;
         });
     }
 
-    private function createGameSettingsFromForm($questions)
+    private function createGameSettingsFromForm($questions): Collection
     {
         return collect($questions)
             ->map(function ($question) {
@@ -171,7 +169,6 @@ class Millionaire extends GameBase
     public function edit(Game $game, Request $request)
     {
         $jwtTokenInfo = $request->session()->get('jwtToken', null);
-        $licenseLib = new License(config('license'), config('cerpus-auth.key'), config('cerpus-auth.secret'));
 
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
@@ -194,7 +191,7 @@ class Millionaire extends GameBase
         $state = QuestionSetStateDataObject::create([
             'id' => $game->id,
             'title' => $game->title,
-            'license' => $licenseLib->getLicense($game->id),
+            'license' => $game->license,
             'isPublished' => !$game->inDraftState(),
             'share' => !$game->isPublished() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -215,7 +212,7 @@ class Millionaire extends GameBase
         ]);
     }
 
-    private function convertDataToQuestionSet($game)
+    private function convertDataToQuestionSet(Game $game)
     {
         $questionSet = QuestionSet::make();
         $questionSet->title = $game->title;

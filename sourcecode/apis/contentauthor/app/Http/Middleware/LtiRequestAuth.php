@@ -3,11 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\H5pLti;
+use App\Http\Libraries\License;
+use App\Http\Requests\LTIRequest;
 use Cerpus\LaravelAuth\Service\JWTValidationService;
 use Closure;
-use App\Http\Requests\LTIRequest;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
 class LtiRequestAuth {
@@ -45,9 +44,18 @@ class LtiRequestAuth {
                 } else {
                     Session::put('jwtToken', null);
                 }
-                $allowedLicenses = 'PRIVATE,CC0,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND';
+                $allowedLicenses = implode(',', [
+                    License::LICENSE_PRIVATE,
+                    License::LICENSE_CC0,
+                    License::LICENSE_BY,
+                    License::LICENSE_BY_SA,
+                    License::LICENSE_BY_NC,
+                    License::LICENSE_BY_ND,
+                    License::LICENSE_BY_NC_SA,
+                    License::LICENSE_BY_NC_ND,
+                ]);
                 Session::put('allowedLicenses', $ltiRequest->getAllowedLicenses($allowedLicenses));
-                $defaultLicense = 'BY';
+                $defaultLicense = License::LICENSE_BY;
                 Session::put('defaultLicense', $ltiRequest->getDefaultLicense($defaultLicense));
                 Session::put('originalSystem', $ltiRequest->getToolConsumerInfoProductFamilyCode());
             }

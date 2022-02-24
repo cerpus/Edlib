@@ -2,17 +2,15 @@
 
 namespace App\Libraries\NDLA\Importers\Handlers\APIArticle;
 
-use App\File;
 use App\Article;
-use Illuminate\Support\Facades\Storage;
-use Cerpus\VersionClient\VersionClient;
+use App\File;
 use App\Libraries\NDLA\Traits\NdlaUrlHelper;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\ClassNames;
-use function GuzzleHttp\Psr7\parse_query;
+use GuzzleHttp\Psr7\Query;
+use Illuminate\Support\Facades\Storage;
 
 class Norgesfilm extends BaseHandler
 {
-    use ClassNames, NdlaUrlHelper;
+    use NdlaUrlHelper;
 
     protected $originalNdlaUrl;
 
@@ -122,7 +120,7 @@ class Norgesfilm extends BaseHandler
 
         $queryPart = parse_url($url, PHP_URL_QUERY);
         if ($queryPart) {
-            $parsedQuery = parse_query($queryPart);
+            $parsedQuery = Query::parse($queryPart);
             if (array_key_exists('filmId', $parsedQuery)) {
                 $norgesfilmId = $parsedQuery['filmId'];
             }
@@ -137,5 +135,21 @@ class Norgesfilm extends BaseHandler
 
 
        $this->originalNdlaUrl = $this->fetchNewNdlaUrl($originalArticle);
+    }
+
+    protected function iframeClassNames(\DOMElement $embedNode)
+    {
+        $classNames = ['edlib_resource'];
+        $size = str_replace('fullbredde', 'full', $embedNode->getAttribute('data-size'));
+        $align = $embedNode->getAttribute('data-align');
+        if (!empty($align)) {
+            if (!empty($size)) {
+                $classNames[] = sprintf('u-float-%s-%s', $size, $align);
+            } else {
+                $classNames[] = sprintf('u-float-%s', $align);
+            }
+        }
+
+        return $classNames;
     }
 }

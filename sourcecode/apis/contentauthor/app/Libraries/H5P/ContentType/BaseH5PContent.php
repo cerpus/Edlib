@@ -2,20 +2,16 @@
 
 namespace App\Libraries\H5P\ContentType;
 
-
-use App\Libraries\NDLA\Importers\Handlers\Helpers\LicenseHelper;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\H5PMetadataHelper;
+use App\Http\Libraries\License;
 
 abstract class BaseH5PContent
 {
-    use LicenseHelper, H5PMetadataHelper;
-
     protected $id;
     protected $title, $maxScore;
     protected $action = 'create';
     protected $copyright = 0;
     protected $sharing = 'sharing';
-    protected $license = 'BY';
+    protected $license = License::LICENSE_BY;
     protected $library = '';
     protected $libraryId = '';
     protected $contentTemplate = '{}';

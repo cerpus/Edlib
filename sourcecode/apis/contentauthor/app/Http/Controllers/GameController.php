@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LTIRequest;
-use App\SessionKeys;
-use Illuminate\Support\Facades\Session;
 use App\ACL\ArticleAccess;
 use App\Game;
 use App\H5pLti;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
+use App\Http\Requests\LTIRequest;
 use App\Libraries\Games\GameHandler;
 use App\Traits\ReturnToCore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
     use LtiTrait;
     use ArticleAccess;
     use ReturnToCore;
+
+    protected H5pLti $lti;
 
     public function __construct(H5pLti $h5pLti)
     {
@@ -48,9 +49,10 @@ class GameController extends Controller
         return $gameType->view($game, $context, $preview);
     }
 
-    public function edit(Request $request, $game)
+    public function edit(Request $request, $gameId)
     {
-        $game = Game::with('gametype')->findOrFail($game);
+        /** @var Game $game */
+        $game = Game::with('gametype')->findOrFail($gameId);
 
         if (!$this->canCreate()) {
             abort(403);
@@ -62,9 +64,10 @@ class GameController extends Controller
 
     public function update(Game $game, ApiQuestionsetRequest $request)
     {
+        /** @var GameHandler $gamehandler */
         $gamehandler = app(GameHandler::class);
         $request->request->add(json_decode($request->get('questionSetJsonData'), true));
-        $gameData = json_decode($request->questionSetJsonData);
+        //$gameData = json_decode($request->questionSetJsonData);
         $updatedGame = $gamehandler->update($game, $request);
         if ($game->isOwner(Session::get('authId'))) {
             $collaborators = explode(',', $request->input('col-emails', ''));

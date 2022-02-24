@@ -6,21 +6,21 @@ use App\Article;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\ArticleCopyrightController;
-use Tests\TestCase;
 use GuzzleHttp\ClientInterface;
-use Tests\Traits\MockLicensingTrait;
-use Psr\Http\Message\ResponseInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Psr\Http\Message\ResponseInterface;
+use Tests\TestCase;
 
 class ArticleCopyrightControllerTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait;
+    use RefreshDatabase;
 
     public function test_copyright_endpointIsWorking()
     {
-        $this->setUpLicensing( );
+        /** @var Article $article */
         $article = Article::factory()->create([
             'title' => 'This is a test article',
+            'license' => 'PRIVATE',
         ]);
 
         $response = $this->get('/article/' . $article->id . '/copyright');
@@ -39,12 +39,12 @@ class ArticleCopyrightControllerTest extends TestCase
 
     public function test_copyright_canFetchOriginators()
     {
-        $this->setUpLicensing();
         /** @var Article $article */
         $article = Article::factory()->create();
         $article->setAttributionOrigin('http://en.wikipedia.org/');
         $article->addAttributionOriginator('http://www.example.com', 'Source');
         $article->addAttributionOriginator('Luigi', 'Writer');
+        $article->license = 'PRIVATE';
         $article->save();
 
         $response = $this->get('/article/' . $article->id . '/copyright');
@@ -72,17 +72,18 @@ class ArticleCopyrightControllerTest extends TestCase
 
     public function test_copyright_canFetchSubresourceCopyright()
     {
-        $this->setUpLicensing();
         /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::factory()->create([
             'library_id' => H5PLibrary::factory()->create()->id,
             'filtered' => '[]',
         ]);
 
+        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p><iframe class="edlib_resource" height="171" ' .
                 'src="/lti/launch?url=http%3A%2F%2Fcore%2Flti%2Flaunch%2F44444444-4444-4444-4444-444444444444">' .
                 '</iframe></p>',
+            'license' => 'PRIVATE',
         ]);
 
         $response = $this->createMock(ResponseInterface::class);

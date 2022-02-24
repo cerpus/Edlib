@@ -17,7 +17,7 @@ use App\QuestionSet as QuestionSetModel;
 
 class ApiQuestionsetRequest extends FormRequest
 {
-    private $selectedPresentation;
+    private ?string $selectedPresentation;
     private $contentModel;
 
     /**
@@ -37,13 +37,11 @@ class ApiQuestionsetRequest extends FormRequest
      */
     public function rules()
     {
-
         $jsonData = $this->filled('questionSetJsonData') ? json_decode($this->get('questionSetJsonData'), true) : [];
-        $selectedPresentation = !empty($jsonData['selectedPresentation']) ? $jsonData['selectedPresentation'] : null;
-        $this->selectedPresentation = $selectedPresentation;
-        $this->request->add(['selectedPresentation' => $selectedPresentation]);
+        $this->selectedPresentation = !empty($jsonData['selectedPresentation']) ? $jsonData['selectedPresentation'] : null;
+        $this->request->add(['selectedPresentation' => $this->selectedPresentation]);
 
-        switch ($selectedPresentation) {
+        switch ($this->selectedPresentation) {
             case QuestionSet::$machineName:
                 $rules = [
                     'cards' => 'required|array|min:1',
@@ -105,7 +103,7 @@ class ApiQuestionsetRequest extends FormRequest
         $this->request->add($jsonData);
     }
 
-    private function getCommonRules()
+    private function getCommonRules(): array
     {
         return [
             'sharing' => 'sometimes|boolean',
@@ -118,7 +116,7 @@ class ApiQuestionsetRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         switch ($this->selectedPresentation) {
             case Millionaire::$machineName:
@@ -130,18 +128,9 @@ class ApiQuestionsetRequest extends FormRequest
                     'cards.*.answers.size' => trans('game.error.exactly-4'),
                     'cards.*.answers.*.answerText.required_with' => trans('questions.error.answer-missing-text'),
                 ];
-                break;
 
             case QuestionSet::$machineName:
-                return [
-                    'title.required' => trans('questions.error.title'),
-                    'cards.required' => trans('questions.error.no-cards'),
-                    'cards.*.question.text.required' => trans('questions.error.question-missing-text'),
-                    'cards.*.answers.*.answerText.required_with' => trans('questions.error.answer-missing-text'),
-                ];
-
-                break;
-
+                // Fall through
             default:
                 return [
                     'title.required' => trans('questions.error.title'),
@@ -149,15 +138,14 @@ class ApiQuestionsetRequest extends FormRequest
                     'cards.*.question.text.required' => trans('questions.error.question-missing-text'),
                     'cards.*.answers.*.answerText.required_with' => trans('questions.error.answer-missing-text'),
                 ];
-
-                break;
         }
     }
 
-    public function validationData()
+    public function validationData(): array
     {
         $all = parent::validationData();
         $jsonData = $this->filled('questionSetJsonData') ? json_decode($this->get('questionSetJsonData'), true) : [];
+
         return array_merge($all, $jsonData);
     }
 }

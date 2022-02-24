@@ -2,13 +2,10 @@
 
 namespace App\Listeners\Link;
 
-use App\Events\Event;
 use App\Events\LinkWasSaved;
 use App\Libraries\Versioning\VersionableObject;
 use App\Listeners\AbstractHandleVersioning;
-use Cerpus\VersionClient\VersionData;
 use Cerpus\VersionClient\VersionClient;
-use Illuminate\Support\Facades\Log;
 
 class HandleVersioning extends AbstractHandleVersioning
 {

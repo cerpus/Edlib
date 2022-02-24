@@ -12,9 +12,16 @@ use Illuminate\Database\Eloquent\Model;
  * Class H5PLibrary
  * @package App
  *
+ * @see H5PLibrary::scopeFromLibrary()
  * @method static Builder fromLibrary($value)
+
+ * @see H5PLibrary::scopeFromLibraryName()
  * @method static Builder fromLibraryName($value)
+
+ * @see H5PLibrary::scopeLatestVersion()
  * @method static Builder latestVersion()
+ *
+ * @method static find($id, $columns = ['*'])
  */
 class H5PLibrary extends Model
 {

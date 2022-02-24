@@ -7,12 +7,11 @@ use App\Content;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
 
 class RecommendableTraitTest extends TestCase
 {
-    use RefreshDatabase, MockLicensingTrait, MockVersioningTrait;
+    use RefreshDatabase, MockVersioningTrait;
 
     protected function setUp(): void
     {
@@ -25,11 +24,9 @@ class RecommendableTraitTest extends TestCase
     {
         $this->setupVersion([
             "getVersion" => function () {
-                $vd = app(VersionData::class);
-                return $vd;
+                return app(VersionData::class);
             },
         ]);
-        $this->setUpLicensing("BY", true);
 
         /** @var Article $article */
         $publishedListedArticle = Article::factory()->newlyCreated()->listed()->create();
@@ -46,7 +43,6 @@ class RecommendableTraitTest extends TestCase
         $this->assertEquals(Content::RE_ACTION_UPDATE_OR_CREATE, $publishedListedArticle->determineREAction());
 
         // Not copyable
-        $this->setUpLicensing("BY-ND", false);
         $this->assertEquals(Content::RE_ACTION_REMOVE, $publishedListedArticle->determineREAction());
 
         // Not listed and not copyable
@@ -83,7 +79,6 @@ class RecommendableTraitTest extends TestCase
                 return $vd;
             },
         ]);
-        $this->setUpLicensing("BY", true);
 
         // We have public children -> We should remove the content from RE
         $this->assertEquals(Content::RE_ACTION_REMOVE, $article->determineREAction());
