@@ -157,13 +157,16 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                                     onClick={handleMenu}
                                     color="inherit"
                                     startIcon={<AddCircleRounded />}
-                                    className={buttonClasses(
-                                        isActive([
+                                    sx={{
+                                        color: isActive([
                                             getUrl('/resources/new'),
                                             getUrl('/link-author'),
                                             getUrl('/doku-author'),
                                         ])
-                                    )}
+                                            ? 'secondary.main'
+                                            : 'default',
+                                    }}
+                                    className={classes.headerButton}
                                 >
                                     {t('Opprett innhold')}
                                 </Button>
@@ -210,11 +213,14 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                                     }}
                                     color="inherit"
                                     startIcon={<AddCircleRounded />}
-                                    className={buttonClasses(
-                                        isActive(
+                                    sx={{
+                                        color: isActive(
                                             activatedEditorsList[0][1].link
                                         )
-                                    )}
+                                            ? 'secondary.main'
+                                            : 'default',
+                                    }}
+                                    className={classes.headerButton}
                                 >
                                     {t('Opprett innhold')}
                                 </Button>
@@ -228,9 +234,12 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                                 }}
                                 color="inherit"
                                 startIcon={<ShoppingCart />}
-                                className={buttonClasses(
-                                    isActive(getUrl('/shared-content'))
-                                )}
+                                sx={{
+                                    color: isActive(getUrl('/shared-content'))
+                                        ? 'secondary.main'
+                                        : 'default',
+                                }}
+                                className={classes.headerButton}
                             >
                                 {t('Delt innhold')}
                             </Button>
@@ -243,9 +252,12 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                                 }}
                                 color="inherit"
                                 startIcon={<Home />}
-                                className={buttonClasses(
-                                    isActive(getUrl('/my-content'))
-                                )}
+                                sx={{
+                                    color: isActive(getUrl('/my-content'))
+                                        ? 'secondary.main'
+                                        : 'default',
+                                }}
+                                className={classes.headerButton}
                             >
                                 {t('Mitt innhold')}
                             </Button>
