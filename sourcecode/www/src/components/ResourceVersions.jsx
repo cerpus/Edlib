@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import { AccountCircle } from '@material-ui/icons';
+import { AccountCircle } from '@mui/icons-material';
 import { FromSideModal, FromSideModalHeader } from './FromSideModal';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import useConfig from '../hooks/useConfig';

@@ -4,15 +4,9 @@ import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceFilters from '../../constants/resourceFilters';
-import {
-    Button,
-    Collapse,
-    List,
-    ListItem,
-    ListItemText,
-    makeStyles,
-} from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { Button, Collapse, List, ListItem, ListItemText } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import useArray from '../../hooks/useArray.js';
 import SavedFilters from './Filters/SavedFilters.jsx';
 

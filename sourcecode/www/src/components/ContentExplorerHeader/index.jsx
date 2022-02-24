@@ -4,15 +4,9 @@ import {
     Home,
     ShoppingCart,
     Close,
-} from '@material-ui/icons';
-import {
-    AppBar,
-    Button,
-    makeStyles,
-    Menu,
-    MenuItem,
-    Toolbar,
-} from '@material-ui/core';
+} from '@mui/icons-material';
+import { AppBar, Button, Menu, MenuItem, Toolbar } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import styled from 'styled-components';
 import cn from 'classnames';
 import { useLocation, matchPath, useHistory } from 'react-router-dom';

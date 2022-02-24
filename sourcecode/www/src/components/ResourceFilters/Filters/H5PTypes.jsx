@@ -6,9 +6,9 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
-    makeStyles,
-} from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import _ from 'lodash';
 
 import useTranslation from '../../../hooks/useTranslation.js';

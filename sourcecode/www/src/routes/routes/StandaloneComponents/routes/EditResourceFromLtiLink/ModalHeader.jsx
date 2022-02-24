@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Close } from '@material-ui/icons';
+import { Close } from '@mui/icons-material';
 
 const Wrapper = styled.div`
     position: relative;

@@ -1,21 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import ResourceEditCog from '../ResourceEditCog';
-import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import License from '../License';
 import { getResourceName, ResourceIcon } from '../Resource';
-import ResourceVersions from '../ResourceVersions';
 import useTranslation from '../../hooks/useTranslation';
 import moment from 'moment';
-import useArray from '../../hooks/useArray';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceColumns from '../../constants/resourceColumns';
-import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
 import PublishedTag from '../PublishedTag';
 import { iso6393ToString } from '../../helpers/language.js';
-import { useIframeStandaloneContext } from '../../contexts/IframeStandalone.jsx';
 import ViewContainer from '../ResourcePage/components/ViewContainer.jsx';
 
 const Row = styled.div`

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Box, Chip, makeStyles } from '@material-ui/core';
+import { Box, Chip } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
     chip: {

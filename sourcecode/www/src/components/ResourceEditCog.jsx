@@ -5,7 +5,7 @@ import {
     Edit as EditIcon,
     History as HistoryIcon,
     Delete as DeleteIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import MaterialIcon from './Icons/Material';
 import styled from 'styled-components';
 import useResourceCapabilities from '../hooks/useResourceCapabilities';

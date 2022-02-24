@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack } from '@mui/icons-material';
 
 const Wrapper = styled.div`
     position: relative;

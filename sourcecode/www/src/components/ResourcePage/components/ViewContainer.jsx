@@ -4,7 +4,7 @@ import { useIframeStandaloneContext } from '../../../contexts/IframeStandalone.j
 import { useResourceCapabilities } from '../../../contexts/ResourceCapabilities.jsx';
 import { useHistory } from 'react-router-dom';
 import useArray from '../../../hooks/useArray.js';
-import { Button, Dialog, DialogActions, DialogTitle } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import ResourceModal from '../../ResourceModal/ResourceModal.jsx';
 import useTranslation from '../../../hooks/useTranslation.js';
 

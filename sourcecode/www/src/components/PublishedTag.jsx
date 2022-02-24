@@ -1,7 +1,7 @@
 import React from 'react';
 import useTranslation from '../hooks/useTranslation.js';
-import { Chip } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { Chip } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const PublishedTag = ({ isPublished }) => {
     const { t } = useTranslation();

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@mui/material';
 import _ from 'lodash';
 import useFetchWithToken from '../hooks/useFetchWithToken';
-import { CircularProgress, TextField } from '@material-ui/core';
+import { CircularProgress, TextField } from '@mui/material';
 import { iso6393ToString } from '../helpers/language.js';
 import useTranslation from '../hooks/useTranslation.js';
 import useConfig from '../hooks/useConfig.js';
@@ -30,7 +30,7 @@ const LanguageDropdown = ({ language, setLanguage }) => {
             onClose={() => {
                 setOpen(false);
             }}
-            getOptionSelected={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) => option === value}
             getOptionLabel={(option) => iso6393ToString(option)}
             options={response ? response.data : []}
             loading={loading}

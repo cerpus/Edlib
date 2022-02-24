@@ -1,7 +1,7 @@
 import React from 'react';
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
 import appConfig from '../../../../../config/app.js';
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 import ResourceView from '../../../../../components/ResourceView';
 
 const ViewResourceContainer = ({ match }) => {
