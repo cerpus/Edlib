@@ -4,6 +4,7 @@ namespace App\Http\Libraries\ContentTypes;
 
 use App\LibraryDescription;
 use App\H5PLibrary;
+use H5peditor;
 use Illuminate\Support\Facades\Lang;
 
 class H5PContentType implements ContentTypeInterface
@@ -12,8 +13,8 @@ class H5PContentType implements ContentTypeInterface
     {
         $locale = Lang::getLocale();
         $contentTypes = [];
-        /** @var \H5peditor $editor */
-        $editor = resolve(\H5peditor::class);
+        /** @var H5peditor $editor */
+        $editor = resolve(H5peditor::class);
 
         $libraries = $editor->getLibraries();
         if (is_string($libraries)) {
@@ -56,108 +57,42 @@ class H5PContentType implements ContentTypeInterface
 
     private function getH5PIcon($h5pType)
     {
-        switch (strtolower($h5pType)) {
-            case '':
-                return 'fa fa-exclamation';
-                break;
-            case 'h5p.accordion':
-                return 'h5p-icon-Accordion';
-                break;
-            case 'h5p.appearin':
-                return 'h5p-icon-AppearIn';
-                break;
-            case 'h5p.arithmeticquiz':
-                return 'h5p-icon-ArithmeticQuiz';
-                break;
-            case 'h5p.audio':
-                return 'fa fa-volume-up';
-                break;
-            case 'h5p.boardgame':
-                return 'h5p-icon-BoardGame';
-                break;
-            case 'h5p.chart':
-                return 'h5p-icon-Chart';
-                break;
-            case 'h5p.collage':
-                return 'h5p-icon-Collage';
-                break;
-            case 'h5p.coursepresentation':
-                return 'h5p-icon-CoursePresentation';
-                break;
-            case 'h5p.dialogcards':
-                return 'h5p-icon-DialogueCards';
-                break;
-            case 'h5p.documentationtool':
-                return 'h5p-icon-DocumentationTool';
-                break;
-            case 'h5p.dragndrop':
-                return 'h5p-icon-DragandDrop';
-                break;
-            case 'h5p.dragquestion':
-                return 'h5p-icon-DragandDrop';
-                break;
-            case 'h5p.dragtext':
-                return 'h5p-icon-DragtheWords';
-                break;
-            case 'h5p.facebookpagefeed':
-                return 'h5p-icon-FacebookFeed';
-                break;
-            case 'h5p.blanks':
-                return 'h5p-icon-FillintheBlanks';
-                break;
-            case 'h5p.impresspresentation':
-                return 'h5p-icon-ImpressivePresentation';
-                break;
-            case 'h5p.imagehotspotquestion':
-                return 'h5p-icon-FindtheHotspot';
-                break;
-            case 'h5p.flashcards':
-                return 'h5p-icon-Flashcards';
-                break;
-            case 'h5p.greetingcard':
-                return 'fa fa-space-shuttle';
-                break;
-            case 'h5p.guesstheanswer':
-                return 'h5p-icon-GuesstheAnswer';
-                break;
-            case 'h5p.iframeembed':
-                return 'h5p-icon-IframeEmbedder';
-                break;
-            case 'h5p.imagehotspots':
-                return 'h5p-icon-ImageHotspots';
-                break;
-            case 'h5p.interactivevideo':
-                return 'h5p-icon-InteractiveVideo';
-                break;
-            case 'h5p.markthewords':
-                return 'h5p-icon-MarktheWords';
-                break;
-            case 'h5p.memorygame':
-                return 'h5p-icon-MemoryGame';
-                break;
-            case 'h5p.multichoice':
-                return 'h5p-icon-MultipleChoice';
-                break;
-            case 'h5p.questionset':
-                return 'h5p-icon-Quiz';
-                break;
-            case 'h5p.singlechoiceset':
-                return 'h5p-icon-SingleChoice';
-                break;
-            case 'h5p.summary':
-                return 'h5p-icon-Summary';
-                break;
-            case 'h5p.timeline':
-                return 'h5p-icon-Timeline';
-                break;
-            case 'h5p.twitteruserfeed':
-                return 'h5p-icon-TwitterUserFeed';
-                break;
-            case 'h5p.temparticle':
-                return 'fa fa-file-text-o';
-                break;
-        }
+        return match (strtolower($h5pType)) {
+            '' => 'fa fa-exclamation',
+            'h5p.accordion' => 'h5p-icon-Accordion',
+            'h5p.appearin' => 'h5p-icon-AppearIn',
+            'h5p.arithmeticquiz' => 'h5p-icon-ArithmeticQuiz',
+            'h5p.audio' => 'fa fa-volume-up',
+            'h5p.boardgame' => 'h5p-icon-BoardGame',
+            'h5p.chart' => 'h5p-icon-Chart',
+            'h5p.collage' => 'h5p-icon-Collage',
+            'h5p.coursepresentation' => 'h5p-icon-CoursePresentation',
+            'h5p.dialogcards' => 'h5p-icon-DialogueCards',
+            'h5p.documentationtool' => 'h5p-icon-DocumentationTool',
+            'h5p.dragndrop' => 'h5p-icon-DragandDrop',
+            'h5p.dragquestion' => 'h5p-icon-DragandDrop',
+            'h5p.dragtext' => 'h5p-icon-DragtheWords',
+            'h5p.facebookpagefeed' => 'h5p-icon-FacebookFeed',
+            'h5p.blanks' => 'h5p-icon-FillintheBlanks',
+            'h5p.impresspresentation' => 'h5p-icon-ImpressivePresentation',
+            'h5p.imagehotspotquestion' => 'h5p-icon-FindtheHotspot',
+            'h5p.flashcards' => 'h5p-icon-Flashcards',
+            'h5p.greetingcard' => 'fa fa-space-shuttle',
+            'h5p.guesstheanswer' => 'h5p-icon-GuesstheAnswer',
+            'h5p.iframeembed' => 'h5p-icon-IframeEmbedder',
+            'h5p.imagehotspots' => 'h5p-icon-ImageHotspots',
+            'h5p.interactivevideo' => 'h5p-icon-InteractiveVideo',
+            'h5p.markthewords' => 'h5p-icon-MarktheWords',
+            'h5p.memorygame' => 'h5p-icon-MemoryGame',
+            'h5p.multichoice' => 'h5p-icon-MultipleChoice',
+            'h5p.questionset' => 'h5p-icon-Quiz',
+            'h5p.singlechoiceset' => 'h5p-icon-SingleChoice',
+            'h5p.summary' => 'h5p-icon-Summary',
+            'h5p.timeline' => 'h5p-icon-Timeline',
+            'h5p.twitteruserfeed' => 'h5p-icon-TwitterUserFeed',
+            'h5p.temparticle' => 'fa fa-file-text-o',
+            default => 'fa fa-list',
+        };
 
-        return 'fa fa-list';
     }
 }

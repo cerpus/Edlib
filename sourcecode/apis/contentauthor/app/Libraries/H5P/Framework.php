@@ -1248,7 +1248,6 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function updateContentFields($id, $fields)
     {
-        /** @var H5PContent $content */
         $content = H5PContent::findOrFail($id);
         $content->fill($fields);
         if ($content->isDirty([

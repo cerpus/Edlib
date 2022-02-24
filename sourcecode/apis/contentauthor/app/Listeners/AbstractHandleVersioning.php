@@ -61,7 +61,7 @@ abstract class AbstractHandleVersioning
                 Log::debug(__METHOD__ . ' Versioning not enabled. Set "FEATURE_VERSIONING=true" in .env to enable');
             }
         } catch (\Exception $e) {
-            Log::error(__METHOD__ . ': Unable to add Versioning to article ' . $this->article->id . '. ' . $e->getCode() . ': ' . $e->getMessage());
+            Log::error(__METHOD__ . ': Unable to add Versioning to object ' . $object->getId() . '. ' . $e->getCode() . ': ' . $e->getMessage());
         }
     }
 

@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Requests\LTIRequest;
-use Illuminate\Support\Facades\Request;
 
 class H5pLti {
     private $consumerKey;
@@ -21,6 +20,7 @@ class H5pLti {
 
     public function getLtiRequest() {
         if (isset($_POST['lti_message_type'])) {
+            /** @var LTIRequest $ltiRequest */
             $ltiRequest = LTIRequest::current();
             if ($ltiRequest->validateOauth10($this->consumerKey, $this->consumerSecret)) {
                 $this->ltiRequest = $ltiRequest;

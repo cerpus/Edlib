@@ -3,7 +3,6 @@
 namespace Tests\Http\Controllers;
 
 use App\Http\Controllers\ContentAssetController;
-use App\Libraries\ContentAuthorStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

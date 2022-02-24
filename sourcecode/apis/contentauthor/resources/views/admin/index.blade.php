@@ -21,15 +21,6 @@
                     <div class="panel-body">
                         <h2 class="text-center">NDLA Import</h2>
                         @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
-                            <a class="col-md-6 well well-lg text-center" href="{{ route('admin.ndla.index') }}">
-                                <i class="glyphicon glyphicon-edit"></i> Import Articles
-                            </a>
-                            <a class="col-md-6 well well-lg text-center" href="{{ route('admin.learningpath.index') }}">
-                                <i class="glyphicon glyphicon-edit"></i> Import Learning Paths
-                            </a>
-                            <a class="col-md-6 well well-lg text-center" href="{{ route('admin.courseimport.index') }}">
-                                <i class="glyphicon glyphicon-edit"></i> Export Courses to EdStep
-                            </a>
                             <a class="col-md-6 well well-lg text-center" href="{{ route('admin.importexport.index') }}">
                                 <i class="glyphicon glyphicon-edit"></i> Import / Export settings and management
                             </a>

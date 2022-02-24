@@ -1,4 +1,17 @@
 <?php
+
+use App\Http\Controllers\API\ContentInfoController;
+use App\Http\Controllers\API\H5PImportController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ContentController;
+use App\Http\Controllers\EmbedController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\H5PController;
+use App\Http\Controllers\LinkController;
+use App\Http\Controllers\LtiContentController;
+use App\Http\Controllers\QuestionSetController;
+use Illuminate\Support\Facades\Route;
+
 Route::post('h5p/adapter', function () {
     return ["url" => route('create')];
 })->name('h5p.adapter')->middleware('adaptermode');
@@ -22,41 +35,41 @@ Route::group(['middleware' => ['internal.handle-jwt']], function () {
 });
 
 Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'adaptermode']], function () {
-    Route::post('lti-content/create', 'LtiContentController@create');
-    Route::post('lti-content/create/{type}', 'LtiContentController@create');
-    Route::post('lti-content/{id}', 'LtiContentController@show')->middleware(['core.behavior-settings:view']);
-    Route::post('lti-content/{id}/edit', 'LtiContentController@edit')->middleware(['core.ownership','core.behavior-settings:editor','draftaction']);
+    Route::post('lti-content/create', [LtiContentController::class, 'create']);
+    Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
+    Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
+    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.ownership','core.behavior-settings:editor','draftaction']);
 
-    Route::post('/h5p/{id}', 'H5PController@ltiShow')->middleware(['core.behavior-settings:view'])->name('h5p.ltishow');
-    Route::post('/game/{id}', 'GameController@ltiShow');
+    Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view'])->name('h5p.ltishow');
+    Route::post('/game/{id}', [GameController::class, 'ltiShow']);
 
-    Route::post('/link/create', 'LinkController@ltiCreate');
-    Route::post('/link/{id}', 'LinkController@ltiShow');
+    Route::post('/link/create', [LinkController::class, 'ltiCreate']);
+    Route::post('/link/{id}', [LinkController::class, 'ltiShow']);
 
-    Route::post('/embed/create', 'EmbedController@ltiCreate');
-    Route::post('/embed/{id}', 'EmbedController@ltiShow');
+    Route::post('/embed/create', [EmbedController::class, 'ltiCreate']);
+    Route::post('/embed/{id}', [EmbedController::class, 'ltiShow']);
 
-    Route::post('questionset/create', 'QuestionSetController@ltiCreate');
-    Route::post('questionset/{id}', 'QuestionSetController@ltiShow');
-    Route::post('questionsets/image', 'QuestionSetController@setQuestionImage')->name('set.questionImage');
+    Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
+    Route::post('questionset/{id}', [QuestionSetController::class,'ltiShow']);
+    Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
 
-    Route::post('/article/create', 'ArticleController@ltiCreate')->middleware(['core.behavior-settings:editor','draftaction']);
-    Route::post('/article/{id}', 'ArticleController@ltiShow')->middleware('core.behavior-settings:view');
-    Route::post('/article/{id}/edit', 'ArticleController@ltiEdit')->middleware(['core.behavior-settings:editor','draftaction']);
+    Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor', 'draftaction']);
+    Route::post('/article/{id}', [ArticleController::class, 'ltiShow'])->middleware('core.behavior-settings:view');
+    Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','draftaction']);
 
-    Route::get("/h5p/create/{contenttype}", 'H5PController@create')->name("create.h5pContenttype");
+    Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
 
-    Route::match(['GET', 'POST'], '/create/{contenttype?}', 'ContentController@index')->middleware(["core.auth", "lti.question-set", 'core.behavior-settings:editor','draftaction'])->name('create');
+    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["core.auth", "lti.question-set", 'core.behavior-settings:editor', 'draftaction'])->name('create');
 
     Route::resource('questionset', 'QuestionSetController', ['except' => ['destroy']]);
-    Route::post('questionset/{id}/edit', 'QuestionSetController@ltiEdit');
+    Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
 
     Route::resource('game', 'GameController', ['except' => ['destroy']]);
-    Route::post('game/{id}/edit', 'GameController@ltiEdit');
+    Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
 
     Route::group(['middleware' => ['core.ownership']], function () {
-        Route::post('h5p/{id}/edit', 'H5PController@ltiEdit')->middleware(['core.behavior-settings:editor','draftaction'])->name('h5p.ltiedit');
-        Route::post('link/{id}/edit', 'LinkController@ltiEdit');
+        Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','draftaction'])->name('h5p.ltiedit');
+        Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
     });
 
 });
@@ -87,8 +100,8 @@ Route::get('/lti/launch', 'ContentExplorerController@launch')->name('lti.launch'
 // *************************
 Route::get('api/h5p-type/{ids}', 'API\H5PTypeApi@getTypes');
 
-Route::get('v1/content/{id}', 'API\ContentInfoController@index');
-Route::get('v1/content', 'API\ContentInfoController@list');
+Route::get('v1/content/{id}', [ContentInfoController::class, 'index']);
+Route::get('v1/content', [ContentInfoController::class, 'list']);
 Route::get('v1/h5p/{id}/info', 'API\H5PInfoController@index');
 Route::get('v1/article/{id}/info', 'API\ArticleInfoController@index');
 Route::get('v1/link/{id}/info', 'API\LinkInfoController@index');
@@ -107,9 +120,6 @@ Route::group(['middleware' => ['core.auth']], function () {
     Route::get('v1/gdpr/user/{userId}', 'API\GdprSubjectDataController@getUserData')->name('gdpr.user.data');
 });
 
-// Faked Import API
-Route::match(['GET', 'POST'], 'api/v1/import', 'ImportController@import');
-
 // AJAX and REST(ish) routes
 Route::post('api/progress', 'Progress@storeProgress')->name("setProgress");
 Route::get('api/progress', 'Progress@getProgress')->name("getProgress");
@@ -122,7 +132,7 @@ Route::get('v1/sessiontest/{id}', 'API\SessionTestController@getValue');
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', 'API\ContentTypeController@storeH5PQuestionset');
     Route::put('v1/resources/{resourceId}/publish', 'API\PublishResourceController@publishResource')->name('api.resource.publish');
-    Route::post('v1/h5p/import', 'API\H5PImportController@importH5P')->name('api.import.h5p');
+    Route::post('v1/h5p/import', [H5PImportController::class, 'importH5P'])->name('api.import.h5p');
 });
 
 Route::get('article/{article}/copyright', 'ArticleCopyrightController@copyright')->name('article.copyright');

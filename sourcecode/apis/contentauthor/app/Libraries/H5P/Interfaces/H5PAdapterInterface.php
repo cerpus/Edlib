@@ -3,9 +3,7 @@
 namespace App\Libraries\H5P\Interfaces;
 
 
-use App\H5PContent;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use App\Libraries\NDLA\Importers\ImporterInterface;
 use Illuminate\Support\Collection;
 
 interface H5PAdapterInterface
@@ -82,9 +80,6 @@ interface H5PAdapterInterface
     public function adapterIs($adapter);
 
     public function useEmbedLink(): int;
-
-    /** @return ImporterInterface */
-    public function getImporter();
 
     /** @return bool */
     public function emptyArticleImportLog($sessionKey): void;

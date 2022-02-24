@@ -3,13 +3,12 @@
 namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Artisan;
-use Cerpus\QuestionBankClient\QuestionBankClient;
-use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\NDLA\Importers\ImportAdapters\CerpusH5PImporter;
+use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
+use Cerpus\QuestionBankClient\QuestionBankClient;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
@@ -132,14 +131,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getDefaultImportPrivacy()
     {
         return false; // Shared by default. Corresponds to is_private = false
-    }
-
-    /**
-     * @return \App\Libraries\NDLA\Importers\ImporterInterface
-     */
-    public function getImporter()
-    {
-        return resolve(CerpusH5PImporter::class);
     }
 
     public function emptyArticleImportLog($sessionKey = 'message'): void

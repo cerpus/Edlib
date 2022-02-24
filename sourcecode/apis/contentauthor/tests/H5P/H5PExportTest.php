@@ -13,6 +13,7 @@ use Exception;
 use H5PExport as H5PDefaultExport;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\ContentAuthorStorageTrait;
@@ -31,8 +32,8 @@ class H5PExportTest extends TestCase
         parent::setUp();
         $this->setUpContentAuthorStorage();
 
-        $this->testDisk = \Storage::disk('testDisk');
-        $this->exportDisk = \Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+        $this->testDisk = Storage::disk('testDisk');
+        $this->exportDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
         config(['h5p.storage.path' => $this->exportDisk->path("")]);
     }
 

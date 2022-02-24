@@ -14,6 +14,8 @@ class LinkFactory extends Factory
             'link_url' => $this->faker->url,
             'link_type' => 'external_link',
             'link_text' => $this->faker->sentence,
+            'owner_id' => $this->faker->uuid,
+            'license' => '',
         ];
     }
 }

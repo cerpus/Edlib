@@ -10,6 +10,7 @@ use Tests\Traits\WithFaker;
 use Illuminate\Support\Facades\DB;
 use App\Libraries\DataObjects\Attribution;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use TypeError;
 
 class ContentAttributionTest extends TestCase
 {
@@ -22,7 +23,6 @@ class ContentAttributionTest extends TestCase
         $article->owner_id = Uuid::uuid4()->toString();
         $article->save();
 
-        /** @var Attribution $attribution */
         $attribution = $article->getAttribution();
 
         $this->assertInstanceOf(Attribution::class, $attribution);
@@ -63,7 +63,7 @@ class ContentAttributionTest extends TestCase
 
     public function testWillThrowExceptionIfSetAttributionIsNotAnAttributionObject()
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(TypeError::class);
         $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
         $article->id = Uuid::uuid4()->toString();
         $article->owner_id = Uuid::uuid4()->toString();

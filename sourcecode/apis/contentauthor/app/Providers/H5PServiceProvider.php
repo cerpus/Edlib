@@ -3,10 +3,6 @@
 namespace App\Providers;
 
 use App\Libraries\ContentAuthorStorage;
-use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
-use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
-use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
-use Illuminate\Foundation\Application as App;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
 use App\Libraries\H5P\Audio\NDLAAudioBrowser;
@@ -15,19 +11,21 @@ use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5Plugin;
-use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
+use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use App\Libraries\H5P\Video\StreampsAdapter;
-use App\Libraries\NDLA\Importers\ImporterInterface;
 use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
-use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -38,10 +36,10 @@ use H5PExport;
 use H5PFileStorage;
 use H5PFrameworkInterface;
 use H5PValidator;
+use Illuminate\Foundation\Application as App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Storage;
 
 class H5PServiceProvider extends ServiceProvider
 {
@@ -206,11 +204,6 @@ class H5PServiceProvider extends ServiceProvider
                 $adapter->overrideAdapterSettings();
             }
             return $adapter;
-        });
-
-        $this->app->bind(ImporterInterface::class, function () {
-            /** @var H5PAdapterInterface $adapter */
-            return resolve(H5PAdapterInterface::class)->getImporter();
         });
 
         $this->app->singletonIf(H5peditorStorage::class, function ($app) {

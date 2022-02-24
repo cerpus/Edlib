@@ -7,6 +7,7 @@ use App\Util;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use JsonException;
 use PHPUnit\Framework\TestCase;
 
 class UtilTest extends TestCase
@@ -29,7 +30,7 @@ class UtilTest extends TestCase
     {
         $response = new Response(200, [], '{"a":');
 
-        $this->expectException(\JsonException::class);
+        $this->expectException(JsonException::class);
 
         Util::handleEdlibNodeApiRequest(fn() => $response);
     }

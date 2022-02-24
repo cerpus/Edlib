@@ -2,10 +2,15 @@
 
 namespace App\Traits;
 
-use Mail;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use App\Collaborator;
 use App\Mail\AddedAsCollaboratorMail;
+
+/**
+ * @property Collection<Collaborator> collaborators
+ */
 
 trait Collaboratable
 {

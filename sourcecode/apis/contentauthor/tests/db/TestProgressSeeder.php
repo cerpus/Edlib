@@ -2,7 +2,9 @@
 
 namespace Tests\db;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TestProgressSeeder extends Seeder
 {
@@ -14,7 +16,7 @@ class TestProgressSeeder extends Seeder
 
     public function h5pContentUserData()
     {
-        \DB::table('h5p_contents_user_data')->insert([
+        DB::table('h5p_contents_user_data')->insert([
             [
                 'content_id' => 1,
                 'user_id' => 1,
@@ -23,7 +25,7 @@ class TestProgressSeeder extends Seeder
                 'data_id' => 'state',
                 'preload' => 1,
                 'invalidate' => 1,
-                'updated_at' => \Carbon\Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'context' => null
             ],
             [
@@ -34,7 +36,7 @@ class TestProgressSeeder extends Seeder
                 'data_id' => 'state',
                 'preload' => 1,
                 'invalidate' => 1,
-                'updated_at' => \Carbon\Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'context' => null
             ],
             [
@@ -45,7 +47,7 @@ class TestProgressSeeder extends Seeder
                 'data_id' => 'state',
                 'preload' => 1,
                 'invalidate' => 1,
-                'updated_at' => \Carbon\Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'context' => null
             ],
             [
@@ -56,7 +58,7 @@ class TestProgressSeeder extends Seeder
                 'data_id' => 'state',
                 'preload' => 1,
                 'invalidate' => 1,
-                'updated_at' => \Carbon\Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'context' => 'context_1'
             ],
             [
@@ -67,7 +69,7 @@ class TestProgressSeeder extends Seeder
                 'data_id' => 'state',
                 'preload' => 1,
                 'invalidate' => 1,
-                'updated_at' => \Carbon\Carbon::now(),
+                'updated_at' => Carbon::now(),
                 'context' => 'context_2'
             ]
         ]);

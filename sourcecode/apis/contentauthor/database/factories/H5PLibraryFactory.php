@@ -18,7 +18,7 @@ class H5PLibraryFactory extends Factory
             'fullscreen' => true,
             'embed_types' => 'div',
             'semantics' => '[]',
-            'tutorial_url' => 'http://burgerking.com',
+            'tutorial_url' => 'https://burgerking.com',
         ];
     }
 }

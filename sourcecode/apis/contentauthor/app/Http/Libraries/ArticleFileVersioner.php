@@ -5,7 +5,7 @@ namespace App\Http\Libraries;
 use App\Article;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\HTMLHelper;
+use App\Traits\HTMLHelper;
 
 class ArticleFileVersioner
 {

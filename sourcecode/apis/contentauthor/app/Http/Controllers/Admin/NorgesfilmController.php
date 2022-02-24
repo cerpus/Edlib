@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Article;
 use App\Norgesfilm;
+use App\Traits\HTMLHelper;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use App\Jobs\PopulateNorgesfilm;
 use App\Http\Controllers\Controller;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\interfaces\VersionDataInterface;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\HTMLHelper;
 use App\Libraries\NDLA\Importers\Handlers\APIArticle\Norgesfilm as NorgesfilmProcessor;
 
 class NorgesfilmController extends Controller

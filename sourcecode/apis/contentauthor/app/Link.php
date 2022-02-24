@@ -5,6 +5,7 @@ namespace App;
 use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Http\Request;
 use Iso639p3;
@@ -13,6 +14,7 @@ use Iso639p3;
  * Class Link
  * @package App
  *
+ * @property string id
  * @property string link_url
  * @property string link_type
  * @property string owner_id
@@ -20,7 +22,12 @@ use Iso639p3;
  * @property string link_text
  * @property string metadata
  *
+ * @property Collection<Collaborator> collaborators
+ *
  * @method Link replicate(array $except = null)
+ *
+ * @method static self find($id, $columns = ['*'])
+ * @method static self findOrFail($id, $columns = ['*'])
  */
 class Link extends Content implements VersionableObject
 {

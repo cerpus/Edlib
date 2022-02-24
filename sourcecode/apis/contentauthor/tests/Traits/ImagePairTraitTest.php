@@ -14,11 +14,11 @@ class ImagePairTraitTest extends TestCase
         $imagePair = app(ImagePair::class, ['packageStructure' => $this->getImagePairStructure()]);
 
         $settings = json_decode($imagePair->applyBehaviorSettings(BehaviorSettingsDataObject::create(['enableRetry' => true])), true);
-        $this->assertTrue(array_key_exists('behaviour', $settings));
+        $this->assertArrayHasKey('behaviour', $settings);
         $this->assertTrue($settings['behaviour']);
 
         $settings = json_decode($imagePair->applyBehaviorSettings(BehaviorSettingsDataObject::create(['enableRetry' => false])), true);
-        $this->assertTrue(array_key_exists('behaviour', $settings));
+        $this->assertArrayHasKey('behaviour', $settings);
         $this->assertFalse($settings['behaviour']);
     }
 

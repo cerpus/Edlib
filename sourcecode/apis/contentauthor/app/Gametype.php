@@ -3,12 +3,21 @@
 namespace App;
 
 use App\Libraries\ContentAuthorStorage;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Storage;
-use App\Traits\UuidForKey;
-use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\Games\Contracts\GameTypeModelContract;
+use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property string id
+ *
+ * @see Gametype::scopeOfName()
+ * @method static Builder ofName($machineName)
+ *
+ * @method static findOrFail($id, $columns = ['*'])
+ */
 
 class Gametype extends Model implements GameTypeModelContract
 {

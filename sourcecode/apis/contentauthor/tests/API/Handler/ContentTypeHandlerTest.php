@@ -3,32 +3,34 @@
 namespace Tests\API\Handler;
 
 
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use Tests\TestCase;
-use Tests\db\TestH5PSeeder;
-use Tests\Traits\MockResourceApi;
-use Tests\Traits\WithFaker;
-use Tests\Traits\ResetH5PStatics;
-use Tests\Traits\MockLicensingTrait;
-use Tests\Traits\MockVersioningTrait;
-use Cerpus\CoreClient\DataObjects\Answer;
-use App\Libraries\H5P\Packages\MultiChoice;
-use Cerpus\CoreClient\DataObjects\Questionset;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
+use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Packages\MultiChoice;
+use Cerpus\CoreClient\DataObjects\Answer;
+use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
+use Cerpus\CoreClient\DataObjects\Questionset;
+use Cerpus\VersionClient\VersionData;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\db\TestH5PSeeder;
+use Tests\TestCase;
+use Tests\Traits\MockResourceApi;
+use Tests\Traits\MockVersioningTrait;
+use Tests\Traits\ResetH5PStatics;
+use Tests\Traits\WithFaker;
 
 class ContentTypeHandlerTest extends TestCase
 {
 
-    use RefreshDatabase, MockLicensingTrait, MockVersioningTrait, WithFaker, ResetH5PStatics, MockResourceApi;
+    use RefreshDatabase, MockVersioningTrait, WithFaker, ResetH5PStatics, MockResourceApi;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->seed(TestH5PSeeder::class);
-        $this->setupVersion();
-        $this->setUpLicensing();
+        $versionData = new VersionData();
+        $this->setupVersion([
+            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
+        ]);
     }
 
     /**
@@ -210,6 +212,7 @@ class ContentTypeHandlerTest extends TestCase
             ]),
         ]);
 
+        /** @var MultiChoiceQuestion $question */
         $question = MultiChoiceQuestion::create([
             'text' => $questionText
         ]);

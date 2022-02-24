@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Article\Handler;
 
+use App\Article;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class HandlePrivacyTest extends TestCase
     public function testHandlePrivacyOnSave()
     {
         $authId = Str::uuid();
-        $article = \App\Article::factory()->create(['owner_id' => $authId]);
+        $article = Article::factory()->create(['owner_id' => $authId]);
         $this->assertNotEquals(1, $article->is_private);
 
         $request = new Request();

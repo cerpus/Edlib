@@ -28,6 +28,7 @@ class QuestionSetsTransformer extends TransformerAbstract
             'links' => !empty($questionSet->id) ? $this->links($questionSet) : [],
             'langCode' => $questionSet->language_code,
             'tags' => (mb_strlen($questionSet->tags) > 0 ? explode(',', $questionSet->tags) : []),
+            'license' => $questionSet->license,
         ];
     }
 

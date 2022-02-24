@@ -18,7 +18,8 @@ class QuestionSetTest extends TestCase
         $questionset = new QuestionSet();
         $generatedStructure = $questionset->getPackageSemantics();
 
-        $this->isJson($generatedStructure);
+        $this->assertEquals(JSON_ERROR_NONE, json_last_error());
+        $this->assertIsObject($generatedStructure);
         $this->assertObjectHasAttribute("introPage", $generatedStructure);
         $this->assertObjectHasAttribute("progressType", $generatedStructure);
         $this->assertObjectHasAttribute("passPercentage", $generatedStructure);

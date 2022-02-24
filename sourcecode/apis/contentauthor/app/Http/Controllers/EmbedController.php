@@ -10,9 +10,7 @@ use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\EmbedRequest;
 use App\Libraries\DataObjects\EmbedStateDataObject;
 use App\Link;
-use App\LinksExternaldata;
 use App\Traits\ReturnToCore;
-use Cerpus\LicenseClient\Contracts\LicenseContract;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -25,16 +23,14 @@ class EmbedController extends Controller
     use ArticleAccess;
 
     protected $lti;
-    protected $licenseClient;
 
-    public function __construct(H5pLti $h5pLti, LicenseContract $licenseClient)
+    public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
 
         $this->lti = $h5pLti;
-        $this->licenseClient = $licenseClient;
     }
 
     public function create(Request $request)
@@ -43,12 +39,12 @@ class EmbedController extends Controller
             abort(403);
         }
 
-        $licenseLib = app(License::class);  //new License(config('license'), config('cerpusauth.user'), config('cerpusauth.secret'));
         $ltiRequest = $this->lti->getLtiRequest();
 
-        $licenses = $licenseLib->getLicenses($ltiRequest);
-        $license = $licenseLib->getDefaultLicense($ltiRequest);
+        $licenses = License::getLicenses($ltiRequest);
+        $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
+        /** @var Link $link */
         $link = app(Link::class);
         $redirectToken = $request->get('redirectToken');
         $useDraft = false;
@@ -62,7 +58,17 @@ class EmbedController extends Controller
             '_method' => "POST",
         ])->toJson();
 
-        return view('embed.create')->with(compact(['licenses', 'license', 'emails', 'link', 'redirectToken', 'useDraft', 'canPublish', 'canList', 'state']));
+        return view('embed.create')->with(compact([
+            'licenses',
+            'license',
+            'emails',
+            'link',
+            'redirectToken',
+            'useDraft',
+            'canPublish',
+            'canList',
+            'state',
+        ]));
     }
 
     /**

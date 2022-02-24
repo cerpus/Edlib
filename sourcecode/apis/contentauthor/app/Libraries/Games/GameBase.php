@@ -2,8 +2,6 @@
 
 namespace App\Libraries\Games;
 
-use Illuminate\Support\Facades\Storage;
-use App\Gametype;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Traits\FractalTransformer;
 
@@ -11,12 +9,12 @@ abstract class GameBase implements GameTypeContract
 {
     use FractalTransformer;
 
-    public static $machineName;
+    public static string $machineName;
 
     protected $majorVersion;
     protected $minorVersion;
 
-    protected $maxScore;
+    protected int $maxScore;
 
     public static function customValidation($dataToBeValidated)
     {

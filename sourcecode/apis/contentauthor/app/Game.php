@@ -4,25 +4,30 @@ namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceDataObject;
+use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
+use App\Traits\Collaboratable;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
-use App\Traits\Collaboratable;
-use App\Libraries\Games\GameHandler;
 use Iso639p3;
 
 /**
  * Class Game
  * @package App
  *
+ * @property string id
  * @property string gametype
  * @property string language_code
  * @property string owner
- * @property string game_settings
+ * @property object game_settings
  * @property int deleted_at
  *
- * @method Game findOrFail($id, $columns = ['*'])
+ * @property Gametype gameType
+ *
+ * @method static self find($id, $columns = ['*'])
+ * @method static self findOrFail($id, $columns = ['*'])
  */
 class Game extends Content implements VersionableObject
 {
@@ -30,7 +35,7 @@ class Game extends Content implements VersionableObject
     use HasFactory;
     use UuidForKey;
 
-    public $editRouteName = 'game.edit';
+    public string $editRouteName = 'game.edit';
     /**
      * @param Request $request
      * @return mixed
@@ -60,19 +65,12 @@ class Game extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
-    /**
-     * @return Gametype
-     */
-    public function gameType()
+    public function gameType(): BelongsTo
     {
         return $this->belongsTo(Gametype::class, 'gametype');
     }
 
-    /**
-     * @param $gameSettings
-     * @return object
-     */
-    public function getGameSettingsAttribute($gameSettings)
+    public function getGameSettingsAttribute(string $gameSettings): Object
     {
         return !empty($gameSettings) ? json_decode($gameSettings) : (object)[];
     }

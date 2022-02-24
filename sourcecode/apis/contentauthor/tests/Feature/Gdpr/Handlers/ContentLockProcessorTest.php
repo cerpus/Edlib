@@ -8,7 +8,6 @@ use App\ContentLock;
 use Tests\Traits\MockRabbitMQPubsub;
 use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\ContentLockProcessor;
-use Cerpus\Gdpr\Models\GdprDeletionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ContentLockProcessorTest extends TestCase

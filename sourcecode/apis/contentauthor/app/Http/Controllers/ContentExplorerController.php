@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Session;
 use App\SessionKeys;
 use Ramsey\Uuid\Uuid;
 use App\Libraries\BasicLTI;
+use stdClass;
 
 class ContentExplorerController extends Controller
 {
     use LtiUrlFunctions;
+
     /**
-     * @return string
      * @throws \Exception
      */
-    public function insertResource()
+    public function insertResource(): string
     {
         $resourceId = Uuid::uuid4()->toString();
         $lti = new BasicLTI(config('core.key'), config('core.secret'));
@@ -27,9 +28,9 @@ class ContentExplorerController extends Controller
         $ltiParams['selection_directive'] = true;
         $ltiParams['ext_content_return_types'] = 'lti_launch_url';
         $ltiParams['ext_read_only'] = 1;
-        $filter = new \stdClass();
-        $filter->source = new \stdClass();
-        $filter->source->blacklist = new \stdClass();
+        $filter = new stdClass();
+        $filter->source = new stdClass();
+        $filter->source->blacklist = new stdClass();
         $filter->source->blacklist->value = array('Article');
         $ltiParams['ext_content_filter'] = json_encode($filter);
         $lti->setExtraLti($ltiParams);

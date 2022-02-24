@@ -7,14 +7,6 @@ use Illuminate\Contracts\Validation\Rule;
 
 class LicenseContent implements Rule
 {
-
-    private $licenseClient;
-
-    public function __construct(License $license)
-    {
-        $this->licenseClient = $license;
-    }
-
     /**
      * Determine if the provided 'share' value is valid
      *
@@ -24,7 +16,7 @@ class LicenseContent implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $this->licenseClient->isLicenseSupported($value);
+        return License::isLicenseSupported($value);
     }
 
     /**

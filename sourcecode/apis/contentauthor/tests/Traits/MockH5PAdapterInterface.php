@@ -3,6 +3,7 @@
 namespace Tests\Traits;
 
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Closure;
 
 trait MockH5PAdapterInterface
 {
@@ -11,7 +12,7 @@ trait MockH5PAdapterInterface
     {
         $h5pAdapter = $this->createStub(H5PAdapterInterface::class);
         foreach ($methods as $method => $returnValue) {
-            if ($returnValue instanceof \Closure) {
+            if ($returnValue instanceof Closure) {
                 $h5pAdapter->method($method)->willReturnCallback($returnValue);
                 continue;
             }

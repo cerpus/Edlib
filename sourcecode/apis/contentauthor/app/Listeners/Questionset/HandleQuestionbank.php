@@ -9,6 +9,8 @@ use Cerpus\QuestionBankClient\DataObjects\MetadataDataObject;
 use Cerpus\QuestionBankClient\DataObjects\QuestionDataObject;
 use Cerpus\QuestionBankClient\DataObjects\QuestionsetDataObject;
 use Cerpus\QuestionBankClient\QuestionBankClient;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class HandleQuestionbank
 {

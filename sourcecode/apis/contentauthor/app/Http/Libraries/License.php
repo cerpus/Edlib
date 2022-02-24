@@ -1,213 +1,278 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: oddaj
- * Date: 8/22/16
- * Time: 11:10 AM
- */
 
 namespace App\Http\Libraries;
 
-use Cerpus\LicenseClient\Contracts\LicenseContract;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\LTIRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
-use App\Libraries\NDLA\Importers\Handlers\Helpers\LicenseHelper;
-use stdClass;
 
 class License
 {
-    use LicenseHelper;
+    const LICENSE_CC0 = 'CC0';
+    const LICENSE_COPYRIGHT = 'COPYRIGHT';
+    const LICENSE_EDLIB = "EDLL";
+    const LICENSE_PDM = 'PDM';
+    const LICENSE_PRIVATE = 'PRIVATE';
 
-    /** @var bool|LicenseContract  */
-    protected $lc = false;
+    const LICENSE_BY_NC = 'BY-NC';
+    const LICENSE_BY_ND = 'BY-ND';
+    const LICENSE_BY_NC_ND = 'BY-NC-ND';
+    const LICENSE_BY_NC_SA = 'BY-NC-SA';
+    const LICENSE_BY_SA = 'BY-SA';
 
-    public function __construct($config = [], $key = null, $secret = null)
-    {
-        if (config('app.enable_licensing')) {
-            $this->lc = resolve(LicenseContract::class);
-        }
-    }
+    const LICENSE_BY = 'BY';
+    const LICENSE_CC = 'CC';
+    const LICENSE_NC = 'NC';
+    const LICENSE_ND = 'ND';
+    const LICENSE_SA = 'SA';
 
-    public function addContent($contentId, $contentName)
-    {
-        if ($this->lc === false) {
-            return false;
-        }
+    const LICENSE_CC_BY = 'CC-BY';
+    const LICENSE_CC_BY_SA = 'CC-BY-SA';
+    const LICENSE_CC_BY_ND = 'CC-BY-ND';
+    const LICENSE_CC_BY_NC = 'CC-BY-NC';
+    const LICENSE_CC_BY_NC_SA = 'CC-BY-NC-SA';
+    const LICENSE_CC_BY_NC_ND = 'CC-BY-NC-ND';
 
-        return $this->lc->addContent($contentId, $contentName);
-    }
+    const ALLOWED_LICENSES = 'PRIVATE,CC0,PDM,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND,EDLL';
 
-    public function getOrAddContent($content)
-    {
-        if ($this->lc === false) {
-            return false;
-        }
+    const VALID_LICENSES = [
+        self::LICENSE_BY,
+        self::LICENSE_BY_SA,
+        self::LICENSE_BY_ND,
+        self::LICENSE_BY_NC,
+        self::LICENSE_BY_NC_SA,
+        self::LICENSE_BY_NC_ND,
+        self::LICENSE_CC0,
+        self::LICENSE_PRIVATE,
+        self::LICENSE_PDM,
+        self::LICENSE_EDLIB,
+    ];
 
-        $theContent = $this->lc->getContent($content->id);
-        if ($theContent === false) {
-            $theContent = $this->lc->addContent($content->id, $content->title);
-        }
+    const THROW_AWAY_LICENSE_PARTS = [
+        'CREATIVE COMMONS',
+        'CREATIVE-COMMONS',
+        'LICENSE',
+        'CC-',
+        'CC ',
+        '-1.0',
+        '1.0',
+        '-2.0',
+        '2.0',
+        '-2.5',
+        '2.5',
+        '-3.0',
+        '3.0',
+        '-4.0',
+        '4.0',
+        'INTERNATIONAL',
+    ];
 
-        return $theContent;
-    }
+    // This must be in sync with LICENSE_LONG_FORM_PARTS for replacement to happen correctly
+    const LICENSE_SHORT_FORM_PARTS = [
+        self::LICENSE_BY,
+        self::LICENSE_SA,
+        self::LICENSE_ND,
+        self::LICENSE_NC,
+        'C',
+        'C',
+        self::LICENSE_CC0,
+        self::LICENSE_PDM,
+        self::LICENSE_EDLIB,
+    ];
+
+    // This must be in sync with LICENSE_SHORT_FORM_PARTS for replacement to happen correctly
+    const LICENSE_LONG_FORM_PARTS = [
+        'en' => [
+            'ATTRIBUTION',
+            'SHAREALIKE',
+            'NODERIVATIVES',
+            'NONCOMMERCIAL',
+            'PRIVATE',
+            'COPYRIGHT',
+            'ZERO',
+            'PUBLIC DOMAIN MARK',
+            'EDLIB LICENSE',
+        ],
+        'no' => [
+            'NAVNGIVELSE',
+            'DEL PA SAMME VILKAR', // Note: Norwegian characters are replaced in toEdLibLicenseString
+            'INGEN BEARBEIDELSE',
+            'IKKEKOMMERSIELL',
+            'PRIVATE',
+            'COPYRIGHT',
+            'ZERO',
+            'PUBLIC DOMAIN MARK',
+            'EDLIB LISENS',
+        ]
+    ];
 
     /**
      * Return the OER Licenses.
-     *
-     * @param int $id
-     * @return none
      */
-    public function getLicenses($ltiRequest = null)
+    public static function getLicenses(LTIRequest $ltiRequest = null): array
     {
-        if ($this->lc === false) {
-            return [];
-        }
-        $allowedLicenses = explode(',', $this->getAllowedLicenses($ltiRequest));
-        $licenses = $this->lc->getLicenses();
-
-        $finalLicenses = [];
-        foreach ($licenses as $license) {
-            if (in_array($license->id, $allowedLicenses)) {
-                $finalLicenses[] = $license;
-            }
-        }
-
-        $finalLicenses = $this->translateLicensesName($finalLicenses);
-
-        return $finalLicenses;
+        $allowedLicenses = explode(',', self::getAllowedLicenses($ltiRequest));
+        return self::translateLicensesName($allowedLicenses)->all();
     }
 
-    protected function translateLicensesName($licenses = [])
+    protected static function translateLicensesName(array $licenses = []): Collection
     {
         return collect($licenses)
             ->map(function ($license) {
-                $key = 'licenses.' . $license->id;
-                $license->name = trans($key);
-                return $license;
+                return (object) [
+                    'id' => $license,
+                    'name' => trans('licenses.' . $license),
+                ];
             });
     }
 
-    protected function getAllowedLicenses($ltiRequest)
+    protected static function getAllowedLicenses(LTIRequest $ltiRequest = null)
     {
-        $allowedLicenses = 'PRIVATE,CC0,PDM,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND,EDLL';
         if (empty($ltiRequest)) {
-            $sessionAllowed = Session::get('allowedLicenses', $allowedLicenses);
-            return $sessionAllowed;
+            return Session::get('allowedLicenses', self::ALLOWED_LICENSES);
         }
 
-        return $ltiRequest->getAllowedLicenses($allowedLicenses);
+        return $ltiRequest->getAllowedLicenses(self::ALLOWED_LICENSES);
     }
 
-    public function getDefaultLicense($ltiRequest = null)
+    public static function getDefaultLicense(LTIRequest $ltiRequest = null)
     {
         $defaultLicense = config('license.default-license');
         if (empty($ltiRequest)) {
-            $defaultLicense = Session::get('defaultLicense', $defaultLicense);
-            return $defaultLicense;
+            return Session::get('defaultLicense', $defaultLicense);
         }
 
         return $ltiRequest->getDefaultLicense($defaultLicense);
-
     }
 
-    public function getLicense($id)
+    public static function isContentCopyable(string $licenseName): bool
     {
-        $license = false;
+        return !(
+            mb_stristr($licenseName, '-ND') ||
+            mb_stristr($licenseName, self::LICENSE_PRIVATE) ||
+            mb_stristr($licenseName, self::LICENSE_EDLIB)
+        );
+    }
 
-        if ($this->lc === false) {
-            return $license;
+    public static function isLicenseSupported(string $checkLicense): bool
+    {
+        return collect(explode(',', self::getAllowedLicenses()))
+            ->filter(function ($license) use ($checkLicense) {
+                return strtolower($license) === strtolower($checkLicense);
+            })
+            ->isNotEmpty();
+    }
+
+    /**
+     * Normalizes a license string and returns the H5P equivalent license string. If EdLib does not support the resulting license null is returned.
+     *
+     * @param string $licenseString The string to get H5P equivalent license for
+     * @return string|null The H5P licens string, or null if license is unsupported in EdLib.
+     */
+    public static function toH5PLicenseString($licenseString)
+    {
+        if (!$normalizedString = self::toEdLibLicenseString($licenseString)) {
+            return null;
         }
 
-        try {
-            $content = $this->lc->getContent($id);
-            if (!empty($content->licenses)) {
-                $license = $content->licenses[0];
-                // Normalize license
-                $license = $this->toEdLibLicenseString($license);
+        $normalizedLicenseToH5pLicenseMap = [
+            self::LICENSE_CC0 => 'CC0 1.0',
+            self::LICENSE_BY => 'CC BY',
+            self::LICENSE_BY_SA => 'CC BY-SA',
+            self::LICENSE_BY_ND => 'CC BY-ND',
+            self::LICENSE_BY_NC => 'CC BY-NC',
+            self::LICENSE_BY_NC_SA => 'CC BY-NC-SA',
+            self::LICENSE_BY_NC_ND => 'CC BY-NC-ND',
+            self::LICENSE_PRIVATE => 'C',
+            self::LICENSE_PDM => 'CC PDM',
+        ];
+
+        return $normalizedLicenseToH5pLicenseMap[$normalizedString];
+    }
+
+    /**
+     * Take almost any half way sensible Creative Commons or EdLib license string and normalize it to the license format used by EdLib.
+     *
+     * @param string $licenseString The string you want normalized.
+     * @return string|null The normalized license string. Null if the resulting license is not supported by EdLib or makes no sense
+     */
+    public static function toEdLibLicenseString(string $licenseString): ?string
+    {
+        $normalizingCopyrightString = strtoupper(trim($licenseString));
+
+        $normalizingCopyrightString = str_replace(['Æ', 'Ø', 'Å'], ['A', 'O', 'A'], $normalizingCopyrightString);
+        $normalizingCopyrightString = str_replace(['æ', 'ø', 'å'], ['A', 'O', 'A'], $normalizingCopyrightString);
+
+        // Replace long form parts of a license with short form. Ex Attribution -> BY
+        // Supports English and Norwegian longform parts
+        foreach (self::LICENSE_LONG_FORM_PARTS as $licenseLongFormPart) {
+            $normalizingCopyrightString = str_replace($licenseLongFormPart, self::LICENSE_SHORT_FORM_PARTS, $normalizingCopyrightString);
+        }
+
+        // Some massaging of the string to get it to a point where we can
+        $normalizingCopyrightString = str_replace(self::THROW_AWAY_LICENSE_PARTS, '', $normalizingCopyrightString);
+        $normalizingCopyrightString = preg_replace("/(\s)\\1+/", '-', $normalizingCopyrightString);
+        $normalizingCopyrightString = str_replace(' ', '-', $normalizingCopyrightString);
+
+        $licenseParts = explode('-', $normalizingCopyrightString);
+        $licenseParts = array_unique($licenseParts);
+        $licenseParts = array_values(array_filter($licenseParts, 'strlen')); // Remove empty array fields
+
+        if (sizeof($licenseParts) === 1) {
+            if ($licenseParts[0] === 'C') {
+                $licenseParts[0] = self::LICENSE_PRIVATE;
+            } elseif ($licenseParts[0] === 'PD') {
+                $licenseParts[0] = self::LICENSE_PDM;
             }
-        } catch (\Exception $e) {
-            Log::error('Unable to get license for content ' . $id . ': ' . $e->getMessage());
         }
 
-        return $license;
+        $licenseParts = self::rearrangeLicenseTerms($licenseParts);
+
+        $normalizedCopyrightString = implode('-', $licenseParts);
+
+        if (!in_array($normalizedCopyrightString, self::VALID_LICENSES)) {
+            return null;
+        }
+
+        return $normalizedCopyrightString;
     }
 
-    public function getLicensesByContentId($ids)
+    /**
+     * Make sure the order of the cc license terms is correct.
+     *
+     * @param array $licenseParts The array to check.
+     * @return array The license with the correct order of the license parts.
+     */
+    protected static function rearrangeLicenseTerms(array $licenseParts = []): array
     {
-        $licenses = [];
-
-        if ($this->lc === false || empty($ids)) {
-            return $licenses;
+        if (empty($licenseParts)) {
+            return [];
         }
 
-        try {
-            $contents = $this->lc->getContents($ids);
+        $rearrangedLicenseParts = [];
 
-            foreach ($ids as $id) {
-                $license = false;
-                foreach ($contents as $content) {
-                    if ($content->content_id == $id && property_exists($content, 'licenses') && !empty($content->licenses)) {
-                        $license = $content->licenses[0];
-                        // Normalize license
-                        $license = $this->toEdLibLicenseString($license->name);
-                    }
-                }
+        $orderedLicenseParts = [
+            self::LICENSE_BY,
+            self::LICENSE_NC,
+            self::LICENSE_SA,
+            self::LICENSE_ND,
+            self::LICENSE_CC0,
+            self::LICENSE_PRIVATE,
+            self::LICENSE_PDM,
+            self::LICENSE_EDLIB,
+        ];
 
-                $value = new stdClass();
-                $value->id = $id;
-                $value->license = $license;
-                $licenses[] = $value;
+        // Create a new array containing the license parts in the correct order
+        foreach ($orderedLicenseParts as $licensePart) {
+            if (in_array($licensePart, $licenseParts)) {
+                $rearrangedLicenseParts[] = $licensePart;
             }
-        } catch (\Exception $e) {
-            Log::error('Unable to get licenses for content ' . json_encode($ids) . ': ' . $e->getMessage());
-            throw $e;
         }
 
-        return $licenses;
-    }
-
-    public function setLicense($licenseId, $contentId)
-    {
-        if ($this->lc === false) {
-            return false;
+        if (sizeof($rearrangedLicenseParts) !== sizeof($licenseParts)) {
+            return [];
         }
 
-        try {
-            if ($licenseId !== $this->getLicense($contentId)) {
-                return $this->lc->addLicense($contentId, $this->toEdLibLicenseString($licenseId));
-            }
-        } catch (\Exception $e) {
-            Log::error('Unable to add license ' . $licenseId . ' to ' . $contentId . ': ' . $e->getMessage());
-
-            return false;
-        }
-    }
-
-    public function isContentCopyable($contentId)
-    {
-        if ($this->lc === false) {
-            return false;
-        }
-
-        try {
-            return $this->lc->isContentCopyable($contentId);
-        } catch (\Exception $e) {
-            Log::error('Unable to determine if content is copyable. Errormessage : ' . $e->getMessage());
-            return false;
-        }
-
-    }
-
-    public function isLicenseSupported($license)
-    {
-        if ($this->lc === false) {
-            return true;
-        }
-        try {
-            return $this->lc->isLicenseSupported($license);
-        } catch (\Exception $e) {
-            Log::error('Unable to determine if the license is suppported. Errormessage : ' . $e->getMessage());
-            return false;
-        }
+        return $rearrangedLicenseParts;
     }
 }

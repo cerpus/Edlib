@@ -21,20 +21,12 @@ class LTIRequest extends Oauth10Request
 
     public function getLaunchPresentationReturnUrl()
     {
-        if (isset($this->params['launch_presentation_return_url'])) {
-            return $this->params['launch_presentation_return_url'];
-        } else {
-            return null;
-        }
+        return $this->params['launch_presentation_return_url'] ?? null;
     }
 
     public function param($name, $default = null)
     {
-        if (isset($this->params[$name])) {
-            return $this->params[$name];
-        } else {
-            return $default;
-        }
+        return $this->params[$name] ?? $default;
     }
 
     public function getUserId()
@@ -121,11 +113,11 @@ class LTIRequest extends Oauth10Request
         return sha1(json_encode($keys));
     }
 
-    public function getAllowedLicenses($default = "PRIVATE,CC0,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND")
+    public function getAllowedLicenses(string $default = "PRIVATE,CC0,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND")
     {
         $allowedLicenses = $this->param("ext_create_content_allowed_licenses");
         if (empty($allowedLicenses)) {
-            $allowedLicenses = $default;
+            return $default;
         }
 
         return $allowedLicenses;

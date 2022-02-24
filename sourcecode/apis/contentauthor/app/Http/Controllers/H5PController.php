@@ -6,57 +6,57 @@ use App\Events\ContentCreated;
 use App\Events\ContentCreating;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
+use App\Events\H5PWasSaved;
+use App\Events\ResourceSaved;
+use App\H5PCollaborator;
+use App\H5PContent;
 use App\H5PFile;
+use App\H5PLibrary;
+use App\H5pLti;
+use App\Http\Libraries\License;
+use App\Http\Libraries\LtiTrait;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\ContentAuthorStorage;
-use App\Libraries\DataObjects\LockedDataObject;
-use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
+use App\Libraries\DataObjects\LockedDataObject;
+use App\Libraries\DataObjects\ResourceDataObject;
+use App\Libraries\DataObjects\ResourceInfoDataObject;
+use App\Libraries\H5P\AdminConfig;
+use App\Libraries\H5P\AjaxRequest;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\EditorConfig;
+use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PCopyright;
 use App\Libraries\H5P\H5PExport;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
+use App\Libraries\H5P\H5PLibraryAdmin;
+use App\Libraries\H5P\H5Plugin;
+use App\Libraries\H5P\H5PProgress;
+use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use App\Libraries\H5P\ViewConfig;
+use App\SessionKeys;
+use App\Traits\ReturnToCore;
+use Cerpus\VersionClient\VersionData;
+use Exception;
 use H5PCore;
 use H5peditor;
-use Exception;
-use App\H5pLti;
-use Carbon\Carbon;
-use App\H5PContent;
-use App\H5PLibrary;
-use App\SessionKeys;
-use App\H5PCollaborator;
-use App\Libraries\H5P\h5p;
-use App\Events\H5PWasSaved;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Traits\ReturnToCore;
-use App\Events\ResourceSaved;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Iso639p3;
 use MatthiasMullie\Minify\CSS;
-use App\Libraries\H5P\H5Plugin;
-use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
-use App\Libraries\H5P\ViewConfig;
-use App\Libraries\H5P\AdminConfig;
-use App\Libraries\H5P\AjaxRequest;
-use App\Libraries\H5P\H5PProgress;
-use App\Libraries\H5P\EditorConfig;
-use App\Libraries\H5P\H5PCopyright;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Cerpus\VersionClient\VersionData;
-use App\Libraries\H5P\H5PLibraryAdmin;
-use Illuminate\Support\Facades\Session;
-use App\Libraries\DataObjects\ResourceDataObject;
-use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PVideoInterface;
-use App\Libraries\DataObjects\ResourceInfoDataObject;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use stdClass;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -64,15 +64,14 @@ class H5PController extends Controller
     use LtiTrait;
     use ReturnToCore;
 
-    private $viewDataCacheName = 'viewData-';
+    private string $viewDataCacheName = 'viewData-';
     private $errorMessage;
 
-    protected $h5pPlugin;
-    protected $lti;
-    private $sendEmail = true;
+    protected H5Plugin $h5pPlugin;
+    protected H5pLti $lti;
+    private bool $sendEmail = true;
 
-    /** @var h5p */
-    private $h5p;
+    private ?h5p $h5p = null;
 
     /**
      * Constructor.
@@ -101,7 +100,7 @@ class H5PController extends Controller
     /**
      * Handle index route.
      *
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     * @return View|Factory
      */
     public function index()
     {
@@ -114,9 +113,8 @@ class H5PController extends Controller
         $styles = [];
         if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
             $styles[] = $this->lti->getLtiRequest()->getLaunchPresentationCssUrl();
-            \Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
+            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
         }
-        /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::findOrFail($id);
         if (!$h5pContent->canShow($preview)) {
             return view('layouts.draft-resource', compact('styles'));
@@ -158,19 +156,15 @@ class H5PController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     * @return View
      * @throws Exception
      */
-    public function show($id): View
+    public function show(int $id): View
     {
         return $this->doShow($id, null);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return View
      */
     public function create(Request $request, H5PCore $core, $contenttype = null): View
     {
@@ -181,9 +175,10 @@ class H5PController extends Controller
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
             $language = Iso639p3::code($language);
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
+        /** @var EditorConfig $editorConfig */
         $editorConfig = (resolve(EditorConfig::class))
             ->setUserId(Session::get('authId', false))
             ->setUserName(Session::get('userName', false))
@@ -195,8 +190,6 @@ class H5PController extends Controller
             ->hideH5pJS();
 
         $h5p->init($editorConfig);
-
-        $licenseLib = new License(config('license'), config('cerpus-auth.key'), config('cerpus-auth.secret'));
 
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
@@ -234,7 +227,7 @@ class H5PController extends Controller
 
         $state = H5PStateDataObject::create($displayOptions + [
                 'library' => $contenttype,
-                'license' => $licenseLib->getDefaultLicense(),
+                'license' => License::getDefaultLicense(),
                 'isPublished' => false,
                 'share' => config('h5p.defaultShareSetting'),
                 'language_iso_639_3' => $language,
@@ -259,12 +252,8 @@ class H5PController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return View
      */
-    public function edit(Request $request, $id): View
+    public function edit(Request $request, int $id): View
     {
         Log::info('[' . app('requestId') . '] ' . "Edit H5P: $id, user: " . Session::get('authId', 'not-logged-in-user'));
 
@@ -314,12 +303,9 @@ class H5PController extends Controller
 
         $params = $adapter->alterParameters($params, H5PAlterParametersSettingsDataObject::create(['useImageWidth' => false]));
 
-        $licenseLib = new License(config('license'), config('cerpus-auth.key'), config('cerpus-auth.secret'));
-
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
-        /** @var H5PLibrary $library */
         $library = $h5pContent->library;
         $settings = [];
         $scripts = $h5p->getScripts(false);
@@ -380,7 +366,7 @@ class H5PController extends Controller
             'language_iso_639_3' => $contentLanguage,
             'isNewLanguageVariant' => $isNewLanguageVariant,
             'title' => $h5pContent->title,
-            'license' => $licenseLib->getLicense($content["id"]) ?: $licenseLib->getDefaultLicense(),
+            'license' => $h5pContent->license ?: License::getDefaultLicense(),
             'isPublished' => !$h5pContent->inDraftState(),
             'share' => !$h5pContent->isPublished() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -435,12 +421,9 @@ class H5PController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param H5PContent $h5p
-     * @return \Illuminate\Http\JsonResponse|Response
      * @throws Exception
      */
-    public function update(Request $request, H5PContent $h5p, H5PCore $core)
+    public function update(Request $request, H5PContent $h5p, H5PCore $core): Response|JsonResponse
     {
         $this->initH5P();
         if ($this->h5p->validateStoreInput($request, $h5p) !== true) {
@@ -512,7 +495,7 @@ class H5PController extends Controller
                     return !in_array($newCollaborator, $oldCollaborators) && Session::get("email") !== $newCollaborator;
                 })->each(function ($collaborator) use ($newContent) {
                     if ($collaborator) {// Send mails to the new additions
-                        $mailData = new \stdClass();
+                        $mailData = new stdClass();
                         $mailData->emailTo = $collaborator;
                         $mailData->inviterName = Session::get('name');
                         $mailData->contentTitle = $newContent->title;
@@ -576,11 +559,8 @@ class H5PController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request): Response|JsonResponse
     {
         $request->merge([
             "parameters" => self::addAuthorToParameters($request->get("parameters"))
@@ -625,9 +605,6 @@ class H5PController extends Controller
     }
 
     /**
-     * @param $request
-     * @param $authId
-     * @return H5PContent
      * @throws Exception
      */
     public function persistContent(Request $request, $authId): H5PContent
@@ -640,6 +617,7 @@ class H5PController extends Controller
 
         $this->h5p->setUserId($authId);
         $content = $this->h5p->storeContent($request);
+        $this->storeContentLicense($request, $content['id']);
 
         /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
@@ -647,9 +625,7 @@ class H5PController extends Controller
         $this->store_content_shares($content['id'],
             $request->filled("col-emails") ? $request->request->get("col-emails") : "");
 
-        $this->storeContentLicense($request, $content['id']);
         $this->store_content_is_private($newH5pContent, $request);
-        $this->handleLicense($request, (object)$content);
 
         $theOldContent = $this->getEmptyOldContent();
 
@@ -662,9 +638,6 @@ class H5PController extends Controller
 
     /**
      * Store whenever or not content is private.
-     *
-     * @param int $id
-     * @param string $share
      */
     private function store_content_is_private(H5PContent $content, $request)
     {
@@ -676,17 +649,15 @@ class H5PController extends Controller
 
     /**
      * Store who has access to handled content.
-     *
-     * @param int $id
      */
-    private function store_content_shares($id, $emailsList)
+    private function store_content_shares(int $id, $emailsList)
     {
         $emails = !empty($emailsList) ? explode(",", $emailsList) : [];
         $validEmails = [];
 
         foreach ($emails as $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
-                array_push($validEmails, $email);
+                $validEmails[] = $email;
             }
         }
 
@@ -704,12 +675,8 @@ class H5PController extends Controller
 
     /**
      * Set license for h5p resource.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return Response
      */
-    public function storeContentLicense(Request $request, $id): void
+    public function storeContentLicense(Request $request, int $id): void
     {
         $db = DB::connection()->getPdo();
         $sql = 'UPDATE h5p_contents SET license=:license WHERE id=:id';
@@ -721,27 +688,10 @@ class H5PController extends Controller
         $statement->execute($params);
     }
 
-    protected function handleLicense(Request $request, $content)
-    {
-        $license = $request->input('license', false);
-        if ($license) {
-            $licenseLib = app(License::class);
-            $licenseContent = $licenseLib->getOrAddContent($content);
-            if ($licenseContent) {
-                $licenseLib->setLicense($license, $content->id);
-            }
-        }
-
-        return;
-    }
-
     /**
      * Get license for h5p resource.
-     *
-     * @param int $id
-     * @return Response
      */
-    public function getContentLicense($id)
+    public function getContentLicense(int $id): Response
     {
         $db = DB::connection()->getPdo();
         $sql = 'SELECT license FROM h5p_contents WHERE id=:id';
@@ -752,15 +702,16 @@ class H5PController extends Controller
         if (isset($result)) {
             return $result;
         }
-        return config('license.default-license');
+
+        return License::getDefaultLicense();
     }
 
     /**
-     * @return \stdClass
+     * @return stdClass
      */
     protected function getEmptyOldContent()
     {
-        $theOldContent = new \stdClass();
+        $theOldContent = new stdClass();
         $theOldContent->id = null;
         $theOldContent->collaborators = collect([]);
         return $theOldContent;
@@ -768,11 +719,8 @@ class H5PController extends Controller
 
     /**
      * Get content privacy status for h5p resource.
-     *
-     * @param int $id
-     * @return Response
      */
-    private function get_content_privacy($id)
+    private function get_content_privacy(int $id): Response
     {
         $db = DB::connection()->getPdo();
         $sql = 'SELECT is_private FROM h5p_contents WHERE id=:id';
@@ -785,11 +733,8 @@ class H5PController extends Controller
 
     /**
      * Get content shares for h5p resource
-     *
-     * @param int $id
-     * @return Response
      */
-    private function get_content_shares($id)
+    private function get_content_shares(int $id): string
     {
         $db = DB::connection()->getPdo();
         $sql = 'SELECT email FROM cerpus_contents_shares WHERE h5p_id=:id';
@@ -799,7 +744,7 @@ class H5PController extends Controller
         $result = $statement->fetchAll($db::FETCH_COLUMN, 0);
         $emails = array();
         foreach ($result as $email_raw) {
-            array_push($emails, $email_raw);
+            $emails[] = $email_raw;
         }
         $emails_str = implode(',', $emails);
         if (isset($emails)) {
@@ -811,20 +756,14 @@ class H5PController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return none
      */
-    public function destroy($id)
+    public function destroy(int $id): void
     {
         //
     }
 
     /**
-     * @param Request $request
-     * @param H5PCore $core
-     * @param H5peditor $editor
-     * @return array|\Illuminate\Http\JsonResponse|void
+     * @return array|JsonResponse|void
      * @throws Exception
      */
     public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
@@ -842,11 +781,8 @@ class H5PController extends Controller
 
     /**
      * Check if any users has progress for this resource.
-     *
-     * @param int $id
-     * @return bool
      */
-    public function hasUserProgress(H5PContent $h5p)
+    public function hasUserProgress(H5PContent $h5p): bool
     {
         if (config('feature.versioning') !== true){
             return false;
@@ -854,9 +790,6 @@ class H5PController extends Controller
         return $h5p->contentUserData()->get()->isNotEmpty();
     }
 
-    /**
-     * @param H5PContent $content
-     */
     protected function getScoringForContent(H5PContent $content): int
     {
         return $content->max_score > 0 ? 1 : 0;
@@ -872,15 +805,11 @@ class H5PController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param H5PContent $h5pContent
-     * @param $authId
-     * @param $versionPurpose
-     * @return array
      * @throws Exception
      */
     private function performUpdate(Request $request, H5PContent $h5pContent, $authId, $versionPurpose): array
     {
+        /** @var H5PCore $core */
         $core = resolve(H5PCore::class);
         $oldContent = $core->loadContent($h5pContent->id);
         $this->h5p->setUserId($authId);
@@ -911,7 +840,6 @@ class H5PController extends Controller
             $export->deleteExport($oldContent);
         }
 
-        /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
 
         event(new H5PWasSaved($newH5pContent, $request, $versionPurpose, $h5pContent));
@@ -924,7 +852,6 @@ class H5PController extends Controller
 
             $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
-            $this->handleLicense($request, (object)$content);
         } elseif ($versionPurpose === VersionData::UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
             $emails = $h5pContent->collaborators->pluck('email')->toArray();
             $currentUserEmail = Session::get('email', "noemail");
@@ -938,13 +865,13 @@ class H5PController extends Controller
             $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
             $this->store_content_shares($content['id'], $collaborators);
-            $this->handleLicense($request, (object)$content);
         }
         return array($oldContent, $content, $newH5pContent);
     }
 
     public function downloadContent(H5PContent $h5p)
     {
+        /** @var H5PCore $core */
         $core = resolve(H5PCore::class);
         $displayOptions = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
         if (!array_key_exists('export', $displayOptions) || $displayOptions['export'] !== true) {
@@ -952,6 +879,7 @@ class H5PController extends Controller
         }
 
         $fileName = sprintf("%s-%d.h5p", $h5p->slug, $h5p->id);
+        /** @var H5PExport $export */
         $export = resolve(H5PExport::class, ['content' => $h5p]);
         if ($core->fs->hasExport($fileName) || $export->generateExport(config('feature.export_h5p_with_local_files'))) {
             return $core->fs->downloadContent($fileName, $h5p->title);
@@ -962,6 +890,7 @@ class H5PController extends Controller
 
     public function browseImages(Request $request)
     {
+        /** @var H5PImageAdapterInterface $imageAdapter */
         $imageAdapter = app(H5PImageAdapterInterface::class);
         return $imageAdapter->findImages([
             'page' => $request->get('page'),
@@ -971,12 +900,14 @@ class H5PController extends Controller
 
     public function getImage($imageId)
     {
+        /** @var H5PImageAdapterInterface $imageAdapter */
         $imageAdapter = app(H5PImageAdapterInterface::class);
         return $imageAdapter->getImage($imageId);
     }
 
     public function browseVideos(Request $request)
     {
+        /** @var H5PVideoInterface $videodapter */
         $videodapter = app(H5PVideoInterface::class);
         return $videodapter->findVideos([
             'source' => $request->get('source'),
@@ -986,6 +917,7 @@ class H5PController extends Controller
 
     public function getVideo($videoId)
     {
+        /** @var H5PVideoInterface $videoAdapter */
         $videoAdapter = app(H5PVideoInterface::class);
         return $videoAdapter->getVideo($videoId);
     }
@@ -1001,6 +933,7 @@ class H5PController extends Controller
 
     public function browseAudios(Request $request)
     {
+        /** @var H5PAudioInterface $audioAdapter */
         $audioAdapter = app(H5PAudioInterface::class);
         return $audioAdapter->findAudio([
             'query' => $request->get('query'),
@@ -1009,6 +942,7 @@ class H5PController extends Controller
 
     public function getAudio($audioId)
     {
+        /** @var H5PAudioInterface $audioAdapter */
         $audioAdapter = app(H5PAudioInterface::class);
         return $audioAdapter->getAudio($audioId);
     }

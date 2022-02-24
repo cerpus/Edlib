@@ -2,31 +2,31 @@
 
 namespace Tests\H5P;
 
+use App\Events\ResourceSaved;
 use App\H5PCollaborator;
+use App\H5PContent;
 use App\H5PLibrary;
 use App\H5pLti;
 use App\Http\Requests\LTIRequest;
 use App\User;
-use App\H5PContent;
+use Cerpus\VersionClient\VersionData;
+use Exception;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\TestHelpers;
 use Tests\Traits\MockH5PAdapterInterface;
 use Tests\Traits\MockMQ;
-use Tests\db\TestH5PSeeder;
 use Tests\Traits\MockResourceApi;
-use Tests\Traits\WithFaker;
-use Illuminate\Http\Response;
-use App\Events\ResourceSaved;
-use Tests\Traits\ResetH5PStatics;
-use Illuminate\Support\Facades\DB;
-use Tests\Traits\MockLicensingTrait;
 use Tests\Traits\MockVersioningTrait;
-use Cerpus\VersionClient\VersionData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Traits\ResetH5PStatics;
+use Tests\Traits\WithFaker;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockLicensingTrait, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockH5PAdapterInterface, MockResourceApi;
+    use RefreshDatabase, TestHelpers, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockH5PAdapterInterface, MockResourceApi;
 
     const testDirectory = "h5pstorage";
     const testContentDirectory = "content";
@@ -43,7 +43,7 @@ class CRUTest extends TestCase
 
         $this->assertFileExists($dest, "File $dest does not exist");
         $this->assertTrue(unlink($dest), "Unable to remove file $dest");
-        $this->assertFileNotExists($dest, "File $dest still exist");
+        $this->assertFileDoesNotExist($dest, "File $dest still exist");
     }
 
     private function mockH5pLti()
@@ -72,7 +72,6 @@ class CRUTest extends TestCase
 
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
-        $this->setUpLicensing();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
@@ -185,7 +184,8 @@ class CRUTest extends TestCase
         $this->assertCount(2, H5PContent::find(3)->collaborators); // Collaborators not updated
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $owner->auth_id, 'title' => 'Tittel 3']); // Owner has not changed, title updated
 
-        $this->setUpLicensing('BY', true);
+        $h5p->license = 'BY';
+        $h5p->save();
 
         $this->withSession([
             'authId' => $copyist->auth_id,
@@ -218,14 +218,14 @@ class CRUTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     private function createUnitTestDirectories()
     {
         $tmpDir = $this->getTempDirectory();
         $editorDirectory = $this->getEditorDirectory();
         if (!is_dir($editorDirectory) && (mkdir($editorDirectory, 0777, true)) !== true) {
-            throw new \Exception("Can't create EditorFilesDirectory");
+            throw new Exception("Can't create EditorFilesDirectory");
         }
         $this->editorFilesDirectory = realpath($tmpDir);
     }
@@ -256,7 +256,6 @@ class CRUTest extends TestCase
         ]);
 
         $this->createUnitTestDirectories();
-        $this->setUpLicensing();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
@@ -297,7 +296,7 @@ class CRUTest extends TestCase
     {
         $this->expectsEvents(ResourceSaved::class);
 
-        $this->seed(\tests\db\TestH5PSeeder::class);
+        $this->seed(TestH5PSeeder::class);
         $owner = User::factory()->make();
         $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
@@ -306,7 +305,6 @@ class CRUTest extends TestCase
         ]);
 
         $this->createUnitTestDirectories();
-        $this->setUpLicensing();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
@@ -356,7 +354,6 @@ class CRUTest extends TestCase
         $owner = User::factory()->make();
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
-        $this->setUpLicensing();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
@@ -427,7 +424,6 @@ class CRUTest extends TestCase
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
-        $this->setUpLicensing();
 
         $this->setupH5PAdapter([
             'enableDraftLogic' => true,
@@ -462,7 +458,6 @@ class CRUTest extends TestCase
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
-        $this->setUpLicensing();
 
         $this->setupH5PAdapter([
             'enableDraftLogic' => false,
@@ -497,7 +492,6 @@ class CRUTest extends TestCase
         $owner = User::factory()->make();
         $me = User::factory()->make();
         $this->createUnitTestDirectories();
-        $this->setUpLicensing();
         $this->setUpResourceApi();
         $versionData = new VersionData();
         $this->setupVersion([
@@ -510,6 +504,7 @@ class CRUTest extends TestCase
             'library_id' => H5PLibrary::factory()->create(),
             'user_id' => $owner->auth_id,
             'is_published' => 0,
+            'license' => 'PRIVATE',
         ]);
 
         /** @var H5PContent $newContent */

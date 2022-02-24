@@ -2,20 +2,17 @@
 
 namespace App\Libraries\H5P\Adapters;
 
+use App\H5POption;
 use App\Libraries\H5P\Audio\NDLAAudioBrowser;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\File\NDLATextTrack;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
+use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
-use Illuminate\Support\Collection;
-use App\H5POption;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
-use App\Libraries\NDLA\Importers\ImportAdapters\NdlaH5PImporter;
-use App\SessionKeys;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Collection;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -296,14 +293,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getDefaultImportPrivacy()
     {
         return true; // Private by default. Corresponds to is_private = true
-    }
-
-    /**
-     * @return \App\Libraries\NDLA\Importers\ImporterInterface
-     */
-    public function getImporter()
-    {
-        return app(NdlaH5PImporter::class);
     }
 
     public function emptyArticleImportLog($sessionKey = 'message'): void

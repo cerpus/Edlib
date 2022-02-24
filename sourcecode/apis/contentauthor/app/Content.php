@@ -13,15 +13,15 @@ use App\Models\Traits\RecommendableInterface;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
-use App\Traits\Recommendable;
 use App\Traits\Versionable;
+use Carbon\Carbon;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -29,13 +29,21 @@ use Illuminate\Support\Facades\Session;
  * @package App
  *
  * @property string|int id
- * @property int created_at
- * @property int updated_at
+ * @property Carbon created_at
+ * @property Carbon updated_at
  * @property string title
  * @property int is_private
  * @property string version_id
  * @property int|null max_score
  * @property int bulk_calculated
+ * @property bool is_published
+ * @property string license
+ * @property string node_id
+ *
+ * @method static Collection findMany($ids, $columns = ['*'])
+ * @method static Builder select($columns = ['*'])
+ * @method static int count($columns = '*')
+ * @method static Builder where($column, $operator = null, $value = null, $boolean = 'and')
  */
 abstract class Content extends Model implements RecommendableInterface
 {
@@ -48,9 +56,9 @@ abstract class Content extends Model implements RecommendableInterface
     // HasVersions / Versionable
     // HasLocks / Lockable
 
-    public $userColumn = 'user_id';
-    private $versionColumn = 'version_id';
-    public $editRouteName;
+    public string $userColumn = 'user_id';
+    private string $versionColumn = 'version_id';
+    public string $editRouteName;
 
     protected $casts = [
         'is_published' => 'boolean',
@@ -68,7 +76,7 @@ abstract class Content extends Model implements RecommendableInterface
 
     abstract public function getISO6393Language();
 
-    public function isOwner($currentUserId)
+    public function isOwner($currentUserId): bool
     {
         if ($currentUserId === false || $this->getContentOwnerId() != $currentUserId) {
             return false;
@@ -83,11 +91,9 @@ abstract class Content extends Model implements RecommendableInterface
         return $this->hasOne(NdlaIdMapper::class, 'ca_id');
     }
 
-    public function isCopyable()
+    public function isCopyable(): bool
     {
-        /** @var License $license */
-        $license = app(License::class);
-        return $license->isContentCopyable($this->id);
+        return License::isContentCopyable($this->license);
     }
 
     public function locks()
@@ -157,7 +163,7 @@ abstract class Content extends Model implements RecommendableInterface
         return $isCollaborator;
     }
 
-    public function shouldCreateFork($userId)
+    public function shouldCreateFork($userId): bool
     {
         return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
     }
@@ -182,11 +188,9 @@ abstract class Content extends Model implements RecommendableInterface
         return $request->get('license');
     }
 
-    public function getContentLicense()
+    public function getContentLicense(): string
     {
-        $lic = app()->make(License::class);
-        $license = $lic->getLicense($this->id);
-        return $license;
+        return $this->license ?? '';
     }
 
     /**
@@ -231,11 +235,8 @@ abstract class Content extends Model implements RecommendableInterface
 
     /**
      * Determine if the request should result in a new version
-     *
-     * @param Request $request
-     * @return bool
      */
-    public function requestShouldBecomeNewVersion(Request $request)
+    public function requestShouldBecomeNewVersion(Request $request): bool
     {
         if ($this->useVersioning() === true) {
             $ct = $this->getContentTitle();
@@ -254,7 +255,6 @@ abstract class Content extends Model implements RecommendableInterface
         }
 
         return false;
-
     }
 
     public function hasLock()

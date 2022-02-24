@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\EdlibLicenseMigrate;
+use App\Console\Commands\EdlibLicenseStats;
 use App\Console\Commands\EnsureVersionExists;
 use App\Console\Commands\Inspire;
 use App\Console\Commands\CerpusSetup;
@@ -25,6 +27,8 @@ class Kernel extends ConsoleKernel
         PublishPresave::class,
         RemoveOldContentLocks::class,
         VersionAllUnversionedContent::class,
+        EdlibLicenseMigrate::class,
+        EdlibLicenseStats::class,
     ];
 
     /**

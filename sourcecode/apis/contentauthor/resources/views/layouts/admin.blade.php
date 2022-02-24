@@ -73,15 +73,6 @@
                         <ul class="dropdown-menu" role="menu">
                             @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
                                 <li>
-                                    <a href="{{ route('admin.ndla.index') }}">Article Import</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.ndla.status') }}">View Article Import Log</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.courseimport.index') }}">Export Course to EdStep</a>
-                                </li>
-                                <li>
                                     <a href="{{ route('admin.importexport.index') }}">Import / Export Settings</a>
                                 </li>
                                 <li>

@@ -13,10 +13,9 @@ use App\QuestionSetQuestionAnswer;
 use Cerpus\QuestionBankClient\QuestionBankClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class QuestionSetHandler
 {
@@ -35,6 +34,7 @@ class QuestionSetHandler
         $questionSet->owner = Session::get('authId');
         $questionSet->language_code = $request->session()->get('locale', '');
         $questionSet->is_published = $questionSet::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $questionSet->license = $request->get('license', '');
         if ($questionSet->save() !== true) {
             throw new \Exception("Could not store Question Set");
         };
@@ -96,6 +96,7 @@ class QuestionSetHandler
 
     private function createPresentation($selectedPresentation, Request $request, QuestionSet $questionSet)
     {
+        /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
         list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter->convert($selectedPresentation, $questionSet, ResourceMetadataDataObject::create([
             'license' => $request->get('license'),
@@ -118,6 +119,7 @@ class QuestionSetHandler
     {
         $questionSet->title = $values['title'];
         $questionSet->is_published = $questionSet::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $questionSet->license = $request->input('license', $questionSet->license);
         $questionSet->save();
 
         try {

@@ -37,7 +37,7 @@ class EditorConfig implements ConfigInterface
      * @param null $id
      * @return EditorConfig
      */
-    public function setId($id)
+    public function setId($id): self
     {
         $this->id = $id;
         return $this;
@@ -172,10 +172,9 @@ class EditorConfig implements ConfigInterface
      */
     private function addCustomScripts()
     {
-        $customScripts = array_map(function ($script){
+        return array_map(function ($script){
             return $this->getAssetUrl(null, $script);
         }, $this->adapter->getCustomEditorScripts());
-        return $customScripts;
     }
 
     private function addDefaultEditorAssets()
@@ -203,8 +202,7 @@ class EditorConfig implements ConfigInterface
     {
         $path = public_path('h5p-editor-php-library/language/' . $preferredLanguage . '.js');
 
-        $exists = file_exists($path);
-        return $exists;
+        return file_exists($path);
     }
 
     public function addCustomEditorStyles()
