@@ -39,12 +39,15 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
                     resourceId === response.id &&
                     resourceVersionId === response.version.id
                 ) {
-                    return onAction('onUpdateDone', null);
+                    onAction('onUpdateDone', null);
+                    onAction('onLtiResourceSelected', null);
+                    return;
                 }
 
                 const info = await createResourceLink(resourceId);
 
                 onAction('onUpdateDone', info);
+                onAction('onLtiResourceSelected', info);
             }}
         />
     );
