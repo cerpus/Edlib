@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-    Box,
-    Button,
-    Checkbox,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    makeStyles,
-} from '@material-ui/core';
+import { Box, Button, Checkbox, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import useTranslation from '../../../hooks/useTranslation.js';
 import CreateSavedFilter from './components/CreateSavedFilter.jsx';
 import FilterUtils from './filterUtils.js';

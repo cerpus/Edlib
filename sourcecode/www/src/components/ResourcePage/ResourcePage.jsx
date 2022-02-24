@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cn from 'classnames';
 import styled from 'styled-components';
 import { Input, useIsDevice } from '@cerpus/ui';
-import { Tune as TuneIcon } from '@material-ui/icons';
+import { Tune as TuneIcon } from '@mui/icons-material';
 import { Spinner } from '@cerpus/ui';
 import _ from 'lodash';
 import useTranslation from '../../hooks/useTranslation';
@@ -22,12 +22,12 @@ import {
     TextField,
     Box,
     IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     Search as SearchIcon,
     List as ListIcon,
     ViewModule as ViewModuleIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import resourceOrders from '../../constants/resourceOrders';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
@@ -213,7 +213,6 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                         vertical: 'top',
                         horizontal: 'center',
                     },
-                    getContentAnchorEl: null,
                 }}
                 value={sortingOrder}
                 onChange={(e) => setSortingOrder(e.target.value)}
@@ -331,7 +330,10 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                         />
                     </Box>
                     <Box>
-                        <IconButton onClick={() => setIsGridView(!isGridView)}>
+                        <IconButton
+                            onClick={() => setIsGridView(!isGridView)}
+                            size="large"
+                        >
                             {isGridView ? <ListIcon /> : <ViewModuleIcon />}
                         </IconButton>
                     </Box>

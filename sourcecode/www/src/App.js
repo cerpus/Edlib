@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import Routes from './routes/index.js';
 import ThemeSetup from './components/ThemeSetup';
 import { RequestCacheProvider } from './contexts/RequestCache';
+import Routes from './routes/index.js';
 
 function App() {
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
 import useConfig from '../../hooks/useConfig.js';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import ResourceFilters from './ResourceFilters.jsx';
 
 const ResourceFiltersContainer = (props) => {

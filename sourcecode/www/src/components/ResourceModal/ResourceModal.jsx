@@ -4,7 +4,7 @@ import {
     ArrowForward,
     Edit as EditIcon,
     Close as CloseIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import styled from 'styled-components';
 import _ from 'lodash';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
@@ -23,11 +23,11 @@ import {
     DialogActions as MuiDialogActions,
     DialogTitle as MuiDialogTitle,
     IconButton,
-    makeStyles,
     Typography,
-    withStyles,
     Dialog,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
 import { ResourceIcon } from '../Resource';
 import useConfig from '../../hooks/useConfig.js';
 import { useIframeStandaloneContext } from '../../contexts/IframeStandalone';
@@ -165,7 +165,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                             aria-label="close"
                             className={classes.closeButton}
                             onClick={onClose}
-                        >
+                            size="large">
                             <CloseIcon />
                         </IconButton>
                     </Box>

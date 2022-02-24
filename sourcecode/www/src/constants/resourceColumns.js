@@ -1,3 +1,5 @@
-export default {
+const resourceColumns = {
     LICENSE: 'license',
 };
+
+export default resourceColumns;

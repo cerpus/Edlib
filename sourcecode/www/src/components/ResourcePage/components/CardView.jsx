@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Button, Grid, makeStyles, Paper } from '@material-ui/core';
+import { Box, Button, Grid, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import { getResourceName, ResourceIcon } from '../../Resource';
 import useTranslation from '../../../hooks/useTranslation.js';
 import PublishedTag from '../../PublishedTag.jsx';
-import { MoreVert as MoreVertIcon } from '@material-ui/icons';
+import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import ResourceEditCog from '../../ResourceEditCog.jsx';
 import ViewContainer from './ViewContainer.jsx';
 

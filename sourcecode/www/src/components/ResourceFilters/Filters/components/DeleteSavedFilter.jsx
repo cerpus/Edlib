@@ -10,8 +10,8 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import useTranslation from '../../../../hooks/useTranslation.js';
 import FilterChips from '../../../ResourcePage/components/FilterChips.jsx';
 import useRequestWithToken from '../../../../hooks/useRequestWithToken.jsx';

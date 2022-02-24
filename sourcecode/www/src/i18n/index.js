@@ -7,6 +7,14 @@ import 'moment/locale/nb';
 const i = i18n.createInstance();
 
 i.init({
+    fallbackLng: 'en',
+    interpolation: {
+        escapeValue: false,
+    },
+    lng: 'en',
+    react: {
+        useSuspense: false,
+    },
     resources: {
         en: {
             translation: require('./en/translation'),
@@ -14,14 +22,6 @@ i.init({
         nb: {
             translation: require('./nb/translation'),
         },
-    },
-    fallbackLng: 'en',
-    lng: 'en',
-    interpolation: {
-        escapeValue: false,
-    },
-    react: {
-        useSuspense: false,
     },
 });
 

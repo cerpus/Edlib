@@ -1,6 +1,3 @@
-import { Chip } from '@material-ui/core';
-import React from 'react';
-
 const areFiltersAndChoicesIdenticalForGroup = (choices, filters) => {
     if (filters.length !== choices.length) {
         return false;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Whatshot } from '@material-ui/icons';
+import { Whatshot } from '@mui/icons-material';
 
 const Wrapper = styled.div`
     background-color: white;

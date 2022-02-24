@@ -1,9 +1,9 @@
 import {
-    externalSystemNames,
     contentAuthorTypes,
+    externalSystemNames,
 } from '../config/resourceTypes';
 
-export default (resource) => {
+const useResourceSource = (resource) => {
     if (resource.version.externalSystemName === externalSystemNames.URL) {
         return 'Url';
     }
@@ -30,3 +30,5 @@ export default (resource) => {
 
     return 'Uvisst';
 };
+
+export default useResourceSource;
