@@ -24,7 +24,7 @@ const getCountForResource = async (resourceId) =>
         await db('resourceVersions as rv')
             .count('*', { as: 'count' })
             .where('rv.resourceId', resourceId)
-            .leftJoin(`${table} as trv`, 'rv.id', 'trv.resourceVersionId')
+            .join(`${table} as trv`, 'rv.id', 'trv.resourceVersionId')
             .first()
     ).count;
 
