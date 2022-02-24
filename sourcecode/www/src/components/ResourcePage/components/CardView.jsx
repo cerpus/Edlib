@@ -99,6 +99,7 @@ const CardView = ({ resources, showDeleteButton = false, onResourceClick }) => {
                                             {({ ref, onOpen }) => (
                                                 <Button
                                                     size="small"
+                                                    color="grey"
                                                     variant="contained"
                                                     style={{ minWidth: 0 }}
                                                     onClick={onOpen}

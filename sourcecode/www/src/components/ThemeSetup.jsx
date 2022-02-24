@@ -1,6 +1,10 @@
 import React from 'react';
-import { ThemeProvider as StyledComponentsThemeProvider, StyledEngineProvider } from 'styled-components';
-import { createTheme, ThemeProvider as MaterialUiThemeProvider, adaptV4Theme } from '@mui/material';
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components';
+import {
+    createTheme,
+    ThemeProvider as MaterialUiThemeProvider,
+} from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 const borderColor = '#d1d5da';
 
@@ -49,8 +53,12 @@ const ThemeSetup = ({ children }) => {
             }}
         >
             <MaterialUiThemeProvider
-                theme={createTheme(adaptV4Theme({
+                theme={createTheme({
                     palette: {
+                        grey: {
+                            main: grey[300],
+                            dark: grey[400],
+                        },
                         primary: {
                             main: '#21456A',
                             dark: '#21456A',
@@ -64,7 +72,7 @@ const ThemeSetup = ({ children }) => {
                         htmlFontSize: 16,
                         fontFamily: "'Lato', sans-serif",
                     },
-                }))}
+                })}
             >
                 {children}
             </MaterialUiThemeProvider>
