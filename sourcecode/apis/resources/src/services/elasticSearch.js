@@ -12,9 +12,8 @@ export const syncResource = async (context, resource, waitForIndex) => {
         return context.services.elasticsearch.remove(resource.id);
     }
 
-    const latestVersion = await context.db.resourceVersion.getLatestResourceVersion(
-        resource.id
-    );
+    const latestVersion =
+        await context.db.resourceVersion.getLatestResourceVersion(resource.id);
 
     if (resource.deletedAt || !latestVersion) {
         return context.services.elasticsearch.remove(resource.id);
@@ -24,22 +23,24 @@ export const syncResource = async (context, resource, waitForIndex) => {
 
     let publicVersion;
     if (resourceStatus.isListed) {
-        publicVersion = await context.db.resourceVersion.getLatestNonDraftResourceVersion(
-            resource.id
-        );
+        publicVersion =
+            await context.db.resourceVersion.getLatestNonDraftResourceVersion(
+                resource.id
+            );
     }
 
-    const latestVersionCollaborators = await context.db.resourceVersionCollaborator.getWithTenantsForResourceVersion(
-        latestVersion.id
-    );
+    const latestVersionCollaborators =
+        await context.db.resourceVersionCollaborator.getWithTenantsForResourceVersion(
+            latestVersion.id
+        );
 
-    const resourceCollaborators = await context.db.resourceCollaborator.getForResource(
-        resource.id
-    );
+    const resourceCollaborators =
+        await context.db.resourceCollaborator.getForResource(resource.id);
 
-    const viewCount = await context.db.trackingResourceVersion.getCountForResource(
-        latestVersion.resourceId
-    );
+    const viewCount =
+        await context.db.trackingResourceVersion.getCountForResource(
+            latestVersion.resourceId
+        );
 
     const resourceVersionToElasticVersion = (resourceVersion) => ({
         id: resourceVersion.id,
@@ -66,7 +67,7 @@ export const syncResource = async (context, resource, waitForIndex) => {
             ...latestVersionCollaborators.map((c) => c.tenantId),
             ...resourceCollaborators.map((rc) => rc.tenantId),
         ]),
-        views: viewCount,
+        views: viewCount.count,
     };
 
     await context.services.elasticsearch.updateOrCreate(

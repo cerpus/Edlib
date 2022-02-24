@@ -297,6 +297,9 @@ const transformElasticResources = async (
                     resourceCapabilities.VIEW,
                     resourceCapabilities.EDIT, //@todo fix based on type
                 ],
+                analytics: {
+                    viewCount: esr._source.views,
+                },
             };
         })
         .filter((esr) => esr.version);

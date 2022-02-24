@@ -123,5 +123,7 @@
     },
     "preview": "preview",
     "are_you_sure": "are you sure",
-    "close": "close"
+    "close": "close",
+    "view": "view",
+    "view_plural": "views"
 }

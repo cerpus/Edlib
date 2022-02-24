@@ -14,7 +14,7 @@ import ViewContainer from '../ResourcePage/components/ViewContainer.jsx';
 
 const Row = styled.div`
     display: grid;
-    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 160px [status] 130px [license] 80px [actions] 60px;
+    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 160px [status] 130px [views] 80px [license] 80px [actions] 60px;
 `;
 
 const BodyRow = styled(Row)`
@@ -119,6 +119,7 @@ const ResourceTable = ({ totalCount, resources, showDeleteButton = false }) => {
                         <div>{_.capitalize(t('author'))}</div>
                         <div>{_.capitalize(t('language'))}</div>
                         <div>{_.capitalize(t('status'))}</div>
+                        <div>{_.capitalize(t('view', { count: 2 }))}</div>
                         {hideResourceColumns.indexOf(
                             resourceColumns.LICENSE
                         ) === -1 && (
@@ -161,6 +162,11 @@ const ResourceTable = ({ totalCount, resources, showDeleteButton = false }) => {
                                 <PublishedTag
                                     isPublished={resource.version.isPublished}
                                 />
+                            </Cell>
+                            <Cell vc secondary>
+                                {resource.analytics.viewCount !== 0
+                                    ? resource.analytics.viewCount
+                                    : ''}
                             </Cell>
                             {hideResourceColumns.indexOf(
                                 resourceColumns.LICENSE

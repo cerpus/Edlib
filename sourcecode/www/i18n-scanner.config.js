@@ -12,11 +12,11 @@ module.exports = {
             i18nKey: 'i18nKey',
             defaultsKey: 'defaults',
             extensions: ['.js', '.jsx'],
-            fallbackKey: function(ns, value) {
+            fallbackKey: function (ns, value) {
                 return value;
             },
         },
-        lngs: ['en', 'nb'],
+        lngs: ['en'],
         ns: ['translation'],
         defaultLng: 'en',
         defaultNs: 'translation',
