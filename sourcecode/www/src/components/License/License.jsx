@@ -19,6 +19,7 @@ import nc from './icons/nc.svg';
 import cc from './icons/cc.svg';
 import remix from './icons/remix.svg';
 import share from './icons/share.svg';
+import edll from './icons/edll.svg';
 
 const licenseFileMap = {
     'by': by,
@@ -39,6 +40,7 @@ const licenseFileMap = {
     cc,
     remix,
     share,
+    edll,
 };
 
 const StyledLicense = styled.div`
