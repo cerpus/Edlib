@@ -53,6 +53,8 @@ class LtiRequestAuth {
                     License::LICENSE_BY_ND,
                     License::LICENSE_BY_NC_SA,
                     License::LICENSE_BY_NC_ND,
+                    License::LICENSE_PDM,
+                    License::LICENSE_EDLIB,
                 ]);
                 Session::put('allowedLicenses', $ltiRequest->getAllowedLicenses($allowedLicenses));
                 $defaultLicense = License::LICENSE_BY;
