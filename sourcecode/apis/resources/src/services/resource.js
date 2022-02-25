@@ -18,6 +18,7 @@ const getResourcesFromRequestValidation = (data) => {
         Joi.object({
             limit: Joi.number().optional().min(1).default(20),
             offset: Joi.number().optional().min(0).default(0),
+            contentFilter: Joi.string().default('').optional(),
             orderBy: Joi.string()
                 .allow('created', 'usage')
                 .default('created')
@@ -51,6 +52,7 @@ const _groupsManager = (groupsInfo) => {
         return groups;
     }, {});
     const globalFilters = [];
+    const filtersToLog = [];
 
     return {
         addFilter: (groupName, boolMust) => {
@@ -60,6 +62,14 @@ const _groupsManager = (groupsInfo) => {
                 .forEach((group) =>
                     groups[group.name].boolMustCount.push(boolMust)
                 );
+        },
+        addFiltersToLog: (groupName, filters) => {
+            filters.forEach((value) =>
+                filtersToLog.push({
+                    groupName,
+                    value,
+                })
+            );
         },
         addGlobalFilter: (boolMust) => {
             globalFilters.push(boolMust);
@@ -98,6 +108,7 @@ const _groupsManager = (groupsInfo) => {
                                   },
                     };
                 }),
+        getFiltersToLog: () => filtersToLog,
     };
 };
 
@@ -123,6 +134,7 @@ const getResourcesFromRequest = async (req, tenantId) => {
         searchString,
         contentTypes,
         languages,
+        contentFilter,
     } = getResourcesFromRequestValidation(req.query);
 
     const field = !tenantId ? 'publicVersion' : 'protectedVersion';
@@ -156,6 +168,10 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 })),
             },
         });
+        groups.addFiltersToLog(
+            'licenses',
+            licenses.map((l) => l.toLowerCase())
+        );
     }
 
     if (languages.length !== 0) {
@@ -168,6 +184,10 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 })),
             },
         });
+        groups.addFiltersToLog(
+            'languages',
+            languages.map((l) => l.toLowerCase())
+        );
     }
 
     if (searchString) {
@@ -192,6 +212,10 @@ const getResourcesFromRequest = async (req, tenantId) => {
                 })),
             },
         });
+        groups.addFiltersToLog(
+            'contentTypes',
+            contentTypes.map((ct) => ct.toLowerCase())
+        );
     }
 
     groups.addGlobalFilter({
@@ -241,6 +265,24 @@ const getResourcesFromRequest = async (req, tenantId) => {
                     }),
             };
         })
+    );
+
+    const resourceSearch = await req.context.db.resourceSearch.create({
+        userId: tenantId,
+        contentFilter,
+        searchString,
+        orderBy,
+        offset,
+        limit,
+    });
+
+    await Promise.all(
+        groups.getFiltersToLog().map((ftl) =>
+            req.context.db.resourceSearchFilter.create({
+                resourceSearchId: resourceSearch.id,
+                ...ftl,
+            })
+        )
     );
 
     return {
