@@ -1,0 +1,34 @@
+---
+sidebar_position: 1
+---
+
+# Creating content
+
+This guide will look at how to create new content in Edlib.
+
+:::info
+
+For a full list of all the H5P types and how to use them, check out H5P.org's [Examples and Downloads page](https://h5p.org/content-types-and-applications).
+Edlib supports most of the H5P content types.
+
+:::
+
+To start creating content, click the **Create content** button to the top left. Here you will have three options:
+
+  - [Interactivity](#interactivity)
+  - [Question](#question)
+  - [Text](#text)
+</br>
+
+![Creating new content](../../../static/img/create-content-create-content.png)
+
+<center>Starting from scratch: When you want to create your own content</center>
+</div>
+
+## Interactivity
+
+
+## Question
+
+
+## Text
