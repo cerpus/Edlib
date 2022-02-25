@@ -6,6 +6,8 @@ import resourceVersionCollaborator from '../repositories/resourceVersionCollabor
 import job from '../repositories/job.js';
 import trackingResourceVersion from '../repositories/trackingResourceVersion.js';
 import resourceCollaborator from '../repositories/resourceCollaborator.js';
+import resourceSearch from '../repositories/resourceSearch.js';
+import resourceSearchFilter from '../repositories/resourceSearchFilter.js';
 
 export const buildRawContext = (req = {}, res = {}, { pubSubConnection }) => ({
     services: services(req, res),
@@ -14,6 +16,8 @@ export const buildRawContext = (req = {}, res = {}, { pubSubConnection }) => ({
         resourceVersion: resourceVersion(),
         resourceVersionCollaborator: resourceVersionCollaborator(),
         resourceGroup: resourceGroup(),
+        resourceSearch: resourceSearch(),
+        resourceSearchFilter: resourceSearchFilter(),
         job: job(),
         trackingResourceVersion: trackingResourceVersion(),
         resourceCollaborator: resourceCollaborator(),
