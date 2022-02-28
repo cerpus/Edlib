@@ -165,7 +165,8 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                             aria-label="close"
                             className={classes.closeButton}
                             onClick={onClose}
-                            size="large">
+                            size="large"
+                        >
                             <CloseIcon />
                         </IconButton>
                     </Box>

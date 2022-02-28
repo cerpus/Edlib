@@ -175,7 +175,7 @@ const ResourceTable = ({
                                 </UnderTitle>
                             </Cell>
                             <Cell vc secondary>
-                                {moment(resource.version.createdAt).format(
+                                {moment(resource.version.updatedAt).format(
                                     'D. MMM YY'
                                 )}
                             </Cell>
