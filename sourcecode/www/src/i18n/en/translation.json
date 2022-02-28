@@ -125,5 +125,8 @@
     "are_you_sure": "are you sure",
     "close": "close",
     "view": "view",
-    "view_plural": "views"
+    "view_plural": "views",
+    "first_changed": "first changed",
+    "most_used": "most used",
+    "least_used": "least used"
 }
