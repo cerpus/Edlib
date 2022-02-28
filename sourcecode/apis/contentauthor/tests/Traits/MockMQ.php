@@ -12,7 +12,8 @@ trait MockMQ
         $manager = $this->createPartialMock(ResourceManagerInterface::class, ['save']);
         app()->instance(ResourceManagerInterface::class, $manager);
 
-        $manager = $this->createMock(ResourceKit::class);
-        $manager->method('getResourceManager')->willReturn($manager);
+        $resourceKit = $this->createMock(ResourceKit::class);
+        $resourceKit->method('getResourceManager')->willReturn($manager);
+        app()->instance(ResourceKit::class, $resourceKit);
     }
 }
