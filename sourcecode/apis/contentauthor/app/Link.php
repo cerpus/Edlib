@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
@@ -83,9 +82,9 @@ class Link extends Content implements VersionableObject
         return $this->link_url;
     }
 
-    public function getContentType($withSubType = false): string
+    public function getContentType(bool $withSubType = false): string
     {
-        return ResourceDataObject::LINK;
+        return Content::TYPE_LINK;
     }
 
     function getId(): string

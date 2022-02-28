@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Traits\Collaboratable;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
@@ -59,9 +58,9 @@ class QuestionSet extends Content
         return Iso639p3::code3letters('eng');
     }
 
-    public function getContentType($withSubType = false): string
+    public function getContentType(bool $withSubType = false): string
     {
-        return ResourceDataObject::QUESTIONSET;
+        return Content::TYPE_QUESTIONSET;
     }
 
     function getId(): string

@@ -3,11 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Article;
+use App\Content;
 use App\Events\ResourceSaved;
 use App\Game;
 use App\H5PContent;
 use App\Http\Libraries\License;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Link;
 use App\QuestionSet;
 use Cerpus\LicenseClient\Contracts\LicenseContract;
@@ -59,11 +59,11 @@ class EdlibLicenseMigrate extends Command
         $this->progressBar->setEmptyBarCharacter(' ');
         $this->progressBar->setProgressCharacter('>');
 
-        $this->migrateLicense(Article::class, 'articles', ResourceDataObject::ARTICLE);
-        $this->migrateLicense(QuestionSet::class, 'question_sets', ResourceDataObject::QUESTIONSET);
-        $this->migrateLicense(Game::class, 'games', ResourceDataObject::GAME);
-        $this->migrateLicense(Link::class, 'links', ResourceDataObject::LINK);
-        $this->migrateLicense(H5PContent::class, 'h5p_contents', ResourceDataObject::H5P);
+        $this->migrateLicense(Article::class, 'articles', Content::TYPE_ARTICLE);
+        $this->migrateLicense(QuestionSet::class, 'question_sets', Content::TYPE_QUESTIONSET);
+        $this->migrateLicense(Game::class, 'games', Content::TYPE_GAME);
+        $this->migrateLicense(Link::class, 'links', Content::TYPE_LINK);
+        $this->migrateLicense(H5PContent::class, 'h5p_contents', Content::TYPE_H5P);
 
         $this->newLine();
 
@@ -98,15 +98,7 @@ class EdlibLicenseMigrate extends Command
                                     $local->license = $license === License::LICENSE_PRIVATE ? License::LICENSE_EDLIB : $license;
                                     $local->save();
                                     if ($local->license !== $license) {
-                                        event(new ResourceSaved(
-                                            new ResourceDataObject(
-                                                $local->id,
-                                                $local->title,
-                                                ResourceSaved::UPDATE,
-                                                $resourceType
-                                            ),
-                                            $local->getEdlibDataObject()
-                                        ));
+                                        event(new ResourceSaved($local->getEdlibDataObject()));
                                     }
                                 }
                             }

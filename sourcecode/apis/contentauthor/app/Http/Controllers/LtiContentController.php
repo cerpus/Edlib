@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Content;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\ModelRetriever;
 use H5PCore;
 use Illuminate\Http\Request;
@@ -45,7 +44,7 @@ class LtiContentController extends Controller
         return $controller->ltiEdit($request, $content->getId());
     }
 
-    public function create(Request $request, H5PCore $core, $type = ResourceDataObject::H5P)
+    public function create(Request $request, H5PCore $core, $type = Content::TYPE_H5P)
     {
         $controller = ModelRetriever::getGroupController($type);
 
@@ -53,7 +52,7 @@ class LtiContentController extends Controller
             throw new NotFoundHttpException("Content not found");
         }
 
-        if ($type == ResourceDataObject::H5P) {
+        if ($type == Content::TYPE_H5P) {
             return $controller->create($request, $core, null);
         }
 

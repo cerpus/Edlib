@@ -2,11 +2,11 @@
 
 namespace Tests\Libraries;
 
+use App\Content;
 use App\Events\GameWasSaved;
 use App\Events\H5PWasSaved;
 use App\Gametype;
 use App\Http\Libraries\License;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Packages\QuestionSet as H5PQuestionSet;
@@ -56,7 +56,7 @@ class QuestionSetConverterTest extends TestCase
         ]);
         $this->assertEquals('Game', $machineName);
         $this->assertEquals(route('game.edit', $id), $route);
-        $this->assertEquals(ResourceDataObject::GAME, $resourceType);
+        $this->assertEquals(Content::TYPE_GAME, $resourceType);
     }
 
     public function testCreateH5PQuestionSet(): void
@@ -102,6 +102,6 @@ class QuestionSetConverterTest extends TestCase
         ]);
         $this->assertEquals(H5PQuestionSet::$machineName, $machineName);
         $this->assertEquals(route('h5p.edit', $id), $route);
-        $this->assertEquals(ResourceDataObject::H5P, $resourceType);
+        $this->assertEquals(Content::TYPE_H5P, $resourceType);
     }
 }

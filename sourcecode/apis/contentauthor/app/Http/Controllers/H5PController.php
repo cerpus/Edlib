@@ -20,7 +20,6 @@ use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
 use App\Libraries\DataObjects\LockedDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
@@ -453,11 +452,7 @@ class H5PController extends Controller
         $newContent = H5PContent::find($newH5pContent["id"]);
         $oldContent = H5PContent::find($oldContent["id"]);
 
-        event(new ResourceSaved(
-            new ResourceDataObject($content['id'], $content['title'], ResourceSaved::UPDATE, ResourceDataObject::H5P),
-            $newContent->getEdlibDataObject()
-        ));
-
+        event(new ResourceSaved($newContent->getEdlibDataObject()));
         event(new ContentUpdated($newContent, $oldContent));
 
         $urlToCore = $this->getRedirectToCoreUrl(
@@ -577,11 +572,7 @@ class H5PController extends Controller
 
         Cache::forget($this->viewDataCacheName . $content->id);
 
-        event(new ResourceSaved(
-            new ResourceDataObject($content['id'], $content['title'], ResourceSaved::CREATE, ResourceDataObject::H5P),
-            $content->getEdlibDataObject()
-        ));
-
+        event(new ResourceSaved($content->getEdlibDataObject()));
         event(new ContentCreated($content));
 
         $urlToCore = $this->getRedirectToCoreUrl(

@@ -4,9 +4,9 @@ namespace App;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
+use App\EdlibResource\CaEdlibResource;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use App\Libraries\DataObjects\EdlibResourceDataObject;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Models\Traits\RecommendableInterface;
@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Session;
  * @property bool is_published
  * @property string license
  * @property string node_id
+ * @property Collection $collaborators
  *
  * @method static Collection findMany($ids, $columns = ['*'])
  * @method static Builder select($columns = ['*'])
@@ -47,6 +48,12 @@ use Illuminate\Support\Facades\Session;
  */
 abstract class Content extends Model implements RecommendableInterface
 {
+    public const TYPE_ARTICLE = 'article';
+    public const TYPE_GAME = 'game';
+    public const TYPE_H5P = 'h5p';
+    public const TYPE_LINK = 'link';
+    public const TYPE_QUESTIONSET = 'questionset';
+
     use HasLanguage, HasTranslations, Attributable, Versionable;
     //use Recommendable;
 
@@ -84,7 +91,7 @@ abstract class Content extends Model implements RecommendableInterface
         return true;
     }
 
-    abstract public function getContentType($withSubType = false);
+    abstract public function getContentType(bool $withSubType = false);
 
     public function ndlaMapper()
     {
@@ -429,10 +436,10 @@ abstract class Content extends Model implements RecommendableInterface
         return null;
     }
 
-    public function getEdlibDataObject(): EdlibResourceDataObject
+    public function getEdlibDataObject(): CaEdlibResource
     {
-        return new EdlibResourceDataObject(
-            strval($this->id),
+        return new CaEdlibResource(
+            (string) $this->id,
             $this->title,
             $this->getContentOwnerId(),
             $this->isPublished(),
@@ -441,17 +448,15 @@ abstract class Content extends Model implements RecommendableInterface
             $this->getContentType(true),
             $this->getContentLicense(),
             $this->getMaxScore(),
-            $this->created_at,
-            $this->updated_at,
+            $this->created_at->toDateTimeImmutable(),
+            $this->updated_at->toDateTimeImmutable(),
             CollaboratorContext::getResourceContextCollaborators($this->id),
             $this->collaborators
-                ->map(function ($collaborator) {
-                    return strtolower($collaborator->email);
-                })->filter(function ($email) {
-                    return $email != "";
-                })
+                ->map(fn($collaborator) => strtolower($collaborator->email))
+                ->filter(fn($email) => $email !== "")
                 ->sort()
-                ->values(),
+                ->values()
+                ->toArray(),
             $this->getAuthorOverwrite()
         );
     }

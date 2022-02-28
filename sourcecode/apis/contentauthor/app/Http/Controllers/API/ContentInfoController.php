@@ -5,10 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Article;
 use App\CollaboratorContext;
 use App\Content;
+use App\EdlibResource\CaEdlibResource;
 use App\Game;
 use App\H5PContent;
 use App\Http\Controllers\Controller;
-use App\Libraries\DataObjects\EdlibResourceDataObject;
 use App\Libraries\ModelRetriever;
 use App\QuestionSet;
 use Illuminate\Http\JsonResponse;
@@ -48,7 +48,7 @@ class ContentInfoController extends Controller
 
         foreach ($modelResources as $modelResource) {
             /** @var Article|Game|QuestionSet|H5PContent $modelResource */
-            $resources[] = new EdlibResourceDataObject(
+            $resources[] = new CaEdlibResource(
                 strval($modelResource->id),
                 $modelResource->title,
                 $modelResource->getContentOwnerId(),
@@ -58,8 +58,8 @@ class ContentInfoController extends Controller
                 $modelResource->getContentType(true),
                 $modelResource->license,
                 $modelResource->getMaxScore(),
-                $modelResource->created_at,
-                $modelResource->updated_at,
+                $modelResource->created_at->toDateTimeImmutable(),
+                $modelResource->updated_at->toDateTimeImmutable(),
                 CollaboratorContext::getResourceContextCollaborators($modelResource->id),
                 $modelResource->collaborators
                     ->map(function ($collaborator) {

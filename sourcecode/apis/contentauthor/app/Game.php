@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
@@ -103,9 +102,9 @@ class Game extends Content implements VersionableObject
         return $game;
     }
 
-    public function getContentType($withSubType = false): string
+    public function getContentType(bool $withSubType = false): string
     {
-        return ResourceDataObject::GAME;
+        return Content::TYPE_GAME;
     }
 
     function getId(): string
