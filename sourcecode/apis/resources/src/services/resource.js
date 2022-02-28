@@ -8,6 +8,7 @@ import {
 import resourceCapabilities from '../constants/resourceCapabilities.js';
 import moment from 'moment';
 import apiConfig from '../config/apis.js';
+import licenses from '../constants/licenses.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
@@ -354,6 +355,18 @@ const transformElasticResources = async (
         )
     );
 
+    function publicCapabilities(license) {
+        const capabilities = [
+            resourceCapabilities.VIEW,
+        ];
+
+        if (license !== licenses.EDLIB && !license.includes(licenses.CC_ELEMENT_ND)) {
+            capabilities.push(resourceCapabilities.EDIT);
+        }
+
+        return capabilities;
+    }
+
     let results = elasticsearchResources
         .map((esr) => {
             return {
@@ -365,10 +378,13 @@ const transformElasticResources = async (
                             getElasticVersionFieldKey(isPublicResources)
                         ].id
                 ),
-                resourceCapabilities: [
-                    resourceCapabilities.VIEW,
-                    resourceCapabilities.EDIT, //@todo fix based on type
-                ],
+                resourceCapabilities: isPublicResources ?
+                    publicCapabilities(esr._source.publicVersion.license.toLowerCase()) :
+                    [
+                        resourceCapabilities.VIEW,
+                        resourceCapabilities.EDIT,
+                    ]
+                ,
                 analytics: {
                     viewCount: esr._source.views,
                 },
