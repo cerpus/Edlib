@@ -355,7 +355,7 @@ const transformElasticResources = async (
         )
     );
 
-    function publicCapabilities(license) {
+    function publicCapabilities(license = '') {
         const capabilities = [
             resourceCapabilities.VIEW,
         ];
@@ -379,7 +379,7 @@ const transformElasticResources = async (
                         ].id
                 ),
                 resourceCapabilities: isPublicResources ?
-                    publicCapabilities(esr._source.publicVersion.license.toLowerCase()) :
+                    publicCapabilities(esr._source.publicVersion.license?.toLowerCase()) :
                     [
                         resourceCapabilities.VIEW,
                         resourceCapabilities.EDIT,
