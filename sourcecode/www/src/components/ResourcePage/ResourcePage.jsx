@@ -142,12 +142,14 @@ const Content = styled.div`
 
 const getOrderText = (t, order) => {
     switch (order) {
-        case resourceOrders.RELEVANT:
-            return t('Foreslåtte ressurser');
-        case resourceOrders.CREATED:
+        case resourceOrders.UPDATED_AT_DESC:
             return _.capitalize(t('last_changed'));
-        case resourceOrders.USAGE:
-            return t('Mest brukte');
+        case resourceOrders.UPDATED_AT_ASC:
+            return _.capitalize(t('first_changed'));
+        case resourceOrders.VIEWS_DESC:
+            return _.capitalize(t('most_used'));
+        case resourceOrders.VIEWS_ASC:
+            return _.capitalize(t('least_used'));
         default:
             return '';
     }
@@ -163,7 +165,7 @@ const useDefaultOrder = () => {
             !query.sortBy ||
             Object.values(resourceOrders).indexOf(query.sortBy) === -1
         ) {
-            return resourceOrders.CREATED;
+            return resourceOrders.UPDATED_AT_DESC;
         }
 
         return query.sortBy;
@@ -218,7 +220,12 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 onChange={(e) => setSortingOrder(e.target.value)}
                 label={getOrderText(t, sortingOrder)}
             >
-                {['usage', 'created'].map((value, index) => (
+                {[
+                    resourceOrders.VIEWS_DESC,
+                    resourceOrders.VIEWS_ASC,
+                    resourceOrders.UPDATED_AT_DESC,
+                    resourceOrders.UPDATED_AT_ASC,
+                ].map((value, index) => (
                     <MenuItem key={index} value={value}>
                         {getOrderText(t, value)}
                     </MenuItem>
@@ -348,6 +355,8 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                                 resources={resources}
                                 refetch={refetch}
                                 showDeleteButton={showDeleteButton}
+                                sortingOrder={sortingOrder}
+                                setSortingOrder={setSortingOrder}
                             />
                         )}
                         {!loading && !error && resources && isGridView && (

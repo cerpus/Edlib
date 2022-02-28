@@ -11,10 +11,11 @@ import resourceColumns from '../../constants/resourceColumns';
 import PublishedTag from '../PublishedTag';
 import { iso6393ToString } from '../../helpers/language.js';
 import ViewContainer from '../ResourcePage/components/ViewContainer.jsx';
+import ClickableHeader from './ClickableHeader.jsx';
 
 const Row = styled.div`
     display: grid;
-    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 160px [status] 130px [views] 80px [license] 80px [actions] 60px;
+    grid-template-columns: [icon] 80px [title] minmax(0, 1fr) [date] 100px [author] 100px [language] 160px [status] 130px [views] 90px [license] 80px [actions] 60px;
 `;
 
 const BodyRow = styled(Row)`
@@ -34,6 +35,12 @@ const HeaderRow = styled(Row)`
     font-weight: bold;
     margin-bottom: 8px;
     font-size: ${(props) => props.theme.rem(0.8)};
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 `;
 
 const Cell = styled.div`
@@ -90,7 +97,13 @@ const CogWrapper = styled.div`
     flex: 1;
 `;
 
-const ResourceTable = ({ totalCount, resources, showDeleteButton = false }) => {
+const ResourceTable = ({
+    totalCount,
+    resources,
+    showDeleteButton = false,
+    sortingOrder,
+    setSortingOrder,
+}) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
     const hideResourceColumns = getUserConfig('hideResourceColumns');
@@ -106,20 +119,34 @@ const ResourceTable = ({ totalCount, resources, showDeleteButton = false }) => {
                                 gridColumnEnd: 'span date',
                             }}
                         >
-                            {t('Innhold')}{' '}
-                            <span
-                                style={{
-                                    fontWeight: 'normal',
-                                }}
-                            >
-                                <i>{`${totalCount} ${t('ressurser')}`}</i>
-                            </span>
+                            <div>
+                                {t('Innhold')}{' '}
+                                <span
+                                    style={{
+                                        fontWeight: 'normal',
+                                    }}
+                                >
+                                    <i>{`${totalCount} ${t('ressurser')}`}</i>
+                                </span>
+                            </div>
                         </div>
-                        <div>{_.capitalize(t('last_changed'))}</div>
+                        <ClickableHeader
+                            sortingOrder={sortingOrder}
+                            setSortingOrder={setSortingOrder}
+                            name="updatedAt"
+                        >
+                            {_.capitalize(t('last_changed'))}
+                        </ClickableHeader>
                         <div>{_.capitalize(t('author'))}</div>
                         <div>{_.capitalize(t('language'))}</div>
                         <div>{_.capitalize(t('status'))}</div>
-                        <div>{_.capitalize(t('view', { count: 2 }))}</div>
+                        <ClickableHeader
+                            sortingOrder={sortingOrder}
+                            setSortingOrder={setSortingOrder}
+                            name="views"
+                        >
+                            {_.capitalize(t('view', { count: 2 }))}
+                        </ClickableHeader>
                         {hideResourceColumns.indexOf(
                             resourceColumns.LICENSE
                         ) === -1 && (

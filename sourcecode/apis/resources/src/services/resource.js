@@ -11,7 +11,7 @@ import apiConfig from '../config/apis.js';
 
 const getElasticVersionFieldKey = (isListedFetch) =>
     isListedFetch ? 'publicVersion' : 'protectedVersion';
-
+const orderByRegex = /^([a-zA-Z]*)(\((desc|asc)\))?$/;
 const getResourcesFromRequestValidation = (data) => {
     return validateJoi(
         data,
@@ -20,8 +20,8 @@ const getResourcesFromRequestValidation = (data) => {
             offset: Joi.number().optional().min(0).default(0),
             contentFilter: Joi.string().default('').optional(),
             orderBy: Joi.string()
-                .allow('created', 'usage')
-                .default('created')
+                .regex(orderByRegex)
+                .default('updatedAt(desc)')
                 .optional(),
             searchString: Joi.string()
                 .min(1)
@@ -110,6 +110,35 @@ const _groupsManager = (groupsInfo) => {
                 }),
         getFiltersToLog: () => filtersToLog,
     };
+};
+
+const parseOrderBy = (orderBy, prefix) => {
+    const allowedFields = ['views', 'updatedAt'];
+    const allowedDirections = ['asc', 'desc'];
+    const fieldsToPrefix = ['updatedAt'];
+
+    const result = {
+        direction: 'desc',
+        column: 'updatedAt',
+    };
+
+    const match = orderBy.match(orderByRegex);
+    const matchField = match[1];
+    const matchDirection = match[3];
+
+    if (matchDirection && allowedDirections.indexOf(matchDirection) !== -1) {
+        result.direction = matchDirection;
+    }
+
+    if (allowedFields.indexOf(matchField) !== -1) {
+        result.column = matchField;
+    }
+
+    if (fieldsToPrefix.indexOf(result.column) !== -1) {
+        result.column = `${prefix}.${result.column}`;
+    }
+
+    return result;
 };
 
 const getResourcesFromRequest = async (req, tenantId) => {
@@ -232,6 +261,11 @@ const getResourcesFromRequest = async (req, tenantId) => {
         });
     }
 
+    const parsedOrderBy = parseOrderBy(
+        orderBy,
+        getElasticVersionFieldKey(tenantId === null)
+    );
+
     const { body } = await req.context.services.elasticsearch.client.search({
         index: apiConfig.elasticsearch.resourceIndexPrefix,
         track_total_hits: true,
@@ -241,11 +275,7 @@ const getResourcesFromRequest = async (req, tenantId) => {
             query: groups.getSearchQuery(),
             sort: [
                 {
-                    [orderBy === 'usage'
-                        ? 'views'
-                        : `${getElasticVersionFieldKey(
-                              tenantId === null
-                          )}.createdAt`]: { order: 'DESC' },
+                    [parsedOrderBy.column]: { order: parsedOrderBy.direction },
                 },
             ],
         },
