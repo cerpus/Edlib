@@ -1,9 +1,6 @@
 import { env } from '@cerpus/edlib-node-utils';
 
 export default {
-    licenseApi: {
-        url: env('LICENSEAPI_URL', 'http://licenseapi'),
-    },
     id: {
         url: env('ID_URL', 'http://idapi'),
     },
