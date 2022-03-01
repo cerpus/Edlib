@@ -4,13 +4,9 @@ import resource from './services/resource.js';
 
 export const buildRawContext = (req) => {
     const idApi = apiClients.id(req, apiConfig.id);
-    const licenseApi = apiClients.license(req, apiConfig.licenseApi, {
-        idApiClient: idApi,
-    });
     const versionApi = apiClients.version(req, apiConfig.version);
 
     const statusService = services.status({
-        licenseApi,
         idApi,
     });
 
@@ -18,7 +14,6 @@ export const buildRawContext = (req) => {
         services: {
             version: versionApi,
             id: idApi,
-            license: licenseApi,
             resource: resource(req),
             status: statusService,
             edlibAuth: apiClients.edlibAuth(req, apiConfig.edlibAuth),
