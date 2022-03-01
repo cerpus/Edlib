@@ -17,7 +17,7 @@ jobs:
     environment: "${{ github.event.inputs.environment }}"
     concurrency: deploy-${{ github.event.inputs.environment }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Deploy
         uses: ./.github/actions/awsDeploy
         with:
