@@ -14,7 +14,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.0",
-    "i18next": "^21.6.11",
+    "i18next": "^21.6.12",
     "iso-639-3": "^3.0.1",
     "joi": "^17.6.0",
     "jwt-decode": "^3.1.2",
