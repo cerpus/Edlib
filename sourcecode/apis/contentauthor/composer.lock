@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b3b23c9514e55cfaf3540aed6504ce2",
+    "content-hash": "0edcb15ed4f0dd6681c0f9248fdfcf2a",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -4129,16 +4129,16 @@
         },
         {
             "name": "lusitanian/oauth",
-            "version": "v0.6.2",
+            "version": "v0.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Lusitanian/PHPoAuthLib.git",
-                "reference": "7d7d7574052f35306acd6202e06f639672304059"
+                "reference": "fc11a53db4b66da555a6a11fce294f574a8374f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/7d7d7574052f35306acd6202e06f639672304059",
-                "reference": "7d7d7574052f35306acd6202e06f639672304059",
+                "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/fc11a53db4b66da555a6a11fce294f574a8374f9",
+                "reference": "fc11a53db4b66da555a6a11fce294f574a8374f9",
                 "shasum": ""
             },
             "require": {
@@ -4196,7 +4196,7 @@
                 "issues": "https://github.com/Lusitanian/PHPoAuthLib/issues",
                 "source": "https://github.com/Lusitanian/PHPoAuthLib/tree/master"
             },
-            "time": "2015-10-07T00:08:23+00:00"
+            "time": "2018-02-14T22:37:14+00:00"
         },
         {
             "name": "marcusschwarz/lesserphp",
