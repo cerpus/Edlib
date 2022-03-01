@@ -35,7 +35,7 @@
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
-    "on-finished": "^2.3.0",
+    "on-finished": "^2.4.1",
     "redis": "^4.0.3",
     "redis-mock": "^0.56.3",
     "winston": "^3.5.1"
