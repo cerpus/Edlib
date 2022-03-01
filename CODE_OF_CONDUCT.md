@@ -32,7 +32,7 @@ Inappropriate/unacceptable behavior is anything hurtful that interferes with oth
 
 ## Reporting
 
-Repository maintainers reserve the right to remove offensive content. To report inappropriate behavior, you can also contact [support@cerpus.com](mailto:support@cerpus.com).
+Repository maintainers reserve the right to remove offensive content. To report inappropriate behavior, you can also contact [support@cerpus.com](mailto:support@edlib.com).
 
 ## Consequences
 
