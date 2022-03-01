@@ -3753,14 +3753,14 @@ minimist@^1.2.5:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
 
-mock-jwks@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/mock-jwks/-/mock-jwks-1.0.1.tgz#4e00be4088ef9473a15d7a617da9cf4dee9408cf"
-  integrity sha512-6rA82krn+vIQ500EWv1xwk66/OTLKIx9h3sfa1OG3TgEip223Ellww5BbxD0fi6YP6e9KS9wEgcSWo9YmsX+2A==
+mock-jwks@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/mock-jwks/-/mock-jwks-1.0.3.tgz#2c675a7d5dcb8c9574cebcfd483fa351526cb770"
+  integrity sha512-/O+mwJUp9FITzXqMUWz9mxoQSUe2DTgx7J0TiM02BxExGM47/llZRAEDiuJTtIGCFa11J3rAuSPE2BZw2kTFIQ==
   dependencies:
     base64-url "^2.2.0"
     jsonwebtoken "^8.2.0"
-    node-forge "^0.10.0"
+    node-forge "^1.0.0"
     node-rsa "^0.4.2"
 
 moment-timezone@^0.5.33:
@@ -3833,10 +3833,10 @@ node-environment-flags@^1.0.5:
     object.getownpropertydescriptors "^2.0.3"
     semver "^5.7.0"
 
-node-forge@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.10.0.tgz#32dea2afb3e9926f02ee5ce8794902691a676bf3"
-  integrity sha512-PPmu8eEeG9saEUvI97fm4OYxXVB6bFvyNTyiUOBichBpFG8A1Ljw3bY62+5oOjDEMHRnd0Y7HQ+x7uzxOzC6JA==
+node-forge@^1.0.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.2.1.tgz#82794919071ef2eb5c509293325cec8afd0fd53c"
+  integrity sha512-Fcvtbb+zBcZXbTTVwqGA5W+MKBj56UjVRevvchv5XrcyXbmNdesfZL37nlcWOfpgHhgmxApw3tQbTr4CqNmX4w==
 
 node-int64@^0.4.0:
   version "0.4.0"
