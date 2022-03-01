@@ -37,6 +37,7 @@ const HeaderRow = styled(Row)`
     font-size: ${(props) => props.theme.rem(0.8)};
 
     & > div {
+        padding: 0 5px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -44,6 +45,7 @@ const HeaderRow = styled(Row)`
 `;
 
 const Cell = styled.div`
+    padding: 0 5px;
     ${(props) =>
         props.name &&
         `
