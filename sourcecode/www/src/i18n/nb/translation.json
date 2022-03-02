@@ -193,5 +193,7 @@
     "view": "visning",
     "view_plural": "visninger",
     "least_used": "minst brukt",
-    "most_used": "mest brukt"
+    "most_used": "mest brukt",
+    "first_changed": "først endret",
+    "something_happened": "noe skjedde"
 }
