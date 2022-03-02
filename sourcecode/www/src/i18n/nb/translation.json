@@ -191,5 +191,7 @@
     "are_you_sure": "er du sikker",
     "close": "lukk",
     "view": "visning",
-    "view_plural": "visninger"
+    "view_plural": "visninger",
+    "least_used": "minst brukt",
+    "most_used": "mest brukt"
 }
