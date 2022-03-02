@@ -221,12 +221,27 @@ const getResourcesFromRequest = async (req, tenantId) => {
     }
 
     if (searchString) {
+        const matches = searchString.match(/(\w{4,12}-?){5}/);
+
         groups.addFilter('search', {
-            match: {
-                [`${field}.title`]: {
-                    query: searchString,
-                    fuzziness: 'AUTO',
-                },
+            bool: {
+                should: [
+                    {
+                        match: {
+                            [`${field}.title`]: {
+                                query: searchString,
+                                fuzziness: 'AUTO',
+                            },
+                        },
+                    },
+                    matches !== null && {
+                        match: {
+                            [`id`]: {
+                                query: matches[0],
+                            },
+                        },
+                    },
+                ].filter(Boolean),
             },
         });
     }
@@ -356,11 +371,12 @@ const transformElasticResources = async (
     );
 
     function publicCapabilities(license = '') {
-        const capabilities = [
-            resourceCapabilities.VIEW,
-        ];
+        const capabilities = [resourceCapabilities.VIEW];
 
-        if (license !== licenses.EDLIB && !license.includes(licenses.CC_ELEMENT_ND)) {
+        if (
+            license !== licenses.EDLIB &&
+            !license.includes(licenses.CC_ELEMENT_ND)
+        ) {
             capabilities.push(resourceCapabilities.EDIT);
         }
 
@@ -378,13 +394,11 @@ const transformElasticResources = async (
                             getElasticVersionFieldKey(isPublicResources)
                         ].id
                 ),
-                resourceCapabilities: isPublicResources ?
-                    publicCapabilities(esr._source.publicVersion.license?.toLowerCase()) :
-                    [
-                        resourceCapabilities.VIEW,
-                        resourceCapabilities.EDIT,
-                    ]
-                ,
+                resourceCapabilities: isPublicResources
+                    ? publicCapabilities(
+                          esr._source.publicVersion.license?.toLowerCase()
+                      )
+                    : [resourceCapabilities.VIEW, resourceCapabilities.EDIT],
                 analytics: {
                     viewCount: esr._source.views,
                 },

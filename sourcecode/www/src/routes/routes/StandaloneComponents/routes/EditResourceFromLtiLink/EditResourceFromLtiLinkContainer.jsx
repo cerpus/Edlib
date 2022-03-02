@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Spinner } from '@cerpus/ui';
 import ModalHeader from './ModalHeader';
 import useIframeIntegration from '../../../../../hooks/useIframeIntegration';
@@ -7,10 +8,18 @@ import { useEdlibResource } from '../../../../../hooks/requests/useResource';
 import useFetchWithToken from '../../../../../hooks/useFetchWithToken';
 import ResourceEditor from '../../../../../components/ResourceEditor';
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
+import useConfig from '../../../../../hooks/useConfig.js';
+import useTranslation from '../../../../../hooks/useTranslation.js';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
     const createResourceLink = useEdlibResource();
-    const { response, ltiError, ltiLoading } = useFetchWithToken(
+    const { edlibFrontend } = useConfig();
+    const { t } = useTranslation();
+    const {
+        response,
+        error: ltiError,
+        loading: ltiLoading,
+    } = useFetchWithToken(
         `${appConfig.apiUrl}/lti/v2/lti/convert-launch-url`,
         'GET',
         React.useMemo(
@@ -23,33 +32,47 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
         )
     );
 
-    if (ltiLoading || !response) {
+    if (ltiLoading) {
         return <Spinner />;
     }
 
     if (ltiError) {
-        return <div>Noe skjedde</div>;
+        return (
+            <>
+                <ModalHeader onClose={() => onAction('onClose')}>
+                    {_.capitalize(t('something_happened'))}
+                </ModalHeader>
+            </>
+        );
     }
 
     return (
-        <ResourceEditor
-            edlibId={response.id}
-            onResourceReturned={async ({ resourceId, resourceVersionId }) => {
-                if (
-                    resourceId === response.id &&
-                    resourceVersionId === response.version.id
-                ) {
-                    onAction('onUpdateDone', null);
-                    onAction('onLtiResourceSelected', null);
-                    return;
-                }
+        <>
+            <ModalHeader onClose={() => onAction('onClose')}>
+                {edlibFrontend(`/s/resources/${response.id}`)}
+            </ModalHeader>
+            <ResourceEditor
+                edlibId={response.id}
+                onResourceReturned={async ({
+                    resourceId,
+                    resourceVersionId,
+                }) => {
+                    if (
+                        resourceId === response.id &&
+                        resourceVersionId === response.version.id
+                    ) {
+                        onAction('onUpdateDone', null);
+                        onAction('onLtiResourceSelected', null);
+                        return;
+                    }
 
-                const info = await createResourceLink(resourceId);
+                    const info = await createResourceLink(resourceId);
 
-                onAction('onUpdateDone', info);
-                onAction('onLtiResourceSelected', info);
-            }}
-        />
+                    onAction('onUpdateDone', info);
+                    onAction('onLtiResourceSelected', info);
+                }}
+            />
+        </>
     );
 };
 
@@ -84,9 +107,6 @@ const EditResourceFromLtiLinkContainer = () => {
                     backgroundColor: 'white',
                 }}
             >
-                <ModalHeader onClose={() => onAction('onClose')}>
-                    {queryParams.resourceTitle}
-                </ModalHeader>
                 <EditEdlibResourceModal
                     ltiLaunchUrl={queryParams.ltiLaunchUrl}
                     onAction={onAction}
