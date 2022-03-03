@@ -114,13 +114,15 @@ const _groupsManager = (groupsInfo) => {
 };
 
 const parseOrderBy = (orderBy, prefix) => {
-    const allowedFields = ['views', 'updatedAt'];
+    const allowedFields = ['views', 'updatedAt', 'relevant'];
     const allowedDirections = ['asc', 'desc'];
-    const fieldsToPrefix = ['updatedAt'];
-
     const result = {
         direction: 'desc',
         column: 'updatedAt',
+    };
+    const fieldMap = {
+        relevant: '_score',
+        updatedAt: `${prefix}.updatedAt`,
     };
 
     const match = orderBy.match(orderByRegex);
@@ -135,8 +137,8 @@ const parseOrderBy = (orderBy, prefix) => {
         result.column = matchField;
     }
 
-    if (fieldsToPrefix.indexOf(result.column) !== -1) {
-        result.column = `${prefix}.${result.column}`;
+    if (fieldMap[matchField]) {
+        result.column = fieldMap[matchField];
     }
 
     return result;

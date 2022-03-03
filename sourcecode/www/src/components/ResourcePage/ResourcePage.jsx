@@ -150,6 +150,8 @@ const getOrderText = (t, order) => {
             return _.capitalize(t('most_used'));
         case resourceOrders.VIEWS_ASC:
             return _.capitalize(t('least_used'));
+        case resourceOrders.RELEVANT_DESC:
+            return _.capitalize(t('most_relevant'));
         default:
             return '';
     }
@@ -201,6 +203,16 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
         setPage(0);
     }, [sortingOrder, filters.requestData]);
 
+    const setSearch = React.useCallback(
+        (searchText) => {
+            filters.setSearchInput(searchText);
+            if (sortingOrder !== resourceOrders.RELEVANT_DESC) {
+                setSortingOrder(resourceOrders.RELEVANT_DESC);
+            }
+        },
+        [filters, sortingOrder, setSortingOrder]
+    );
+
     const sortOrderDropDown = (
         <FormControl variant="outlined">
             <InputLabel>{t('Sortering')}</InputLabel>
@@ -221,6 +233,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 label={getOrderText(t, sortingOrder)}
             >
                 {[
+                    resourceOrders.RELEVANT_DESC,
                     resourceOrders.VIEWS_DESC,
                     resourceOrders.VIEWS_ASC,
                     resourceOrders.UPDATED_AT_DESC,
@@ -254,9 +267,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                             className="mobileSearch"
                             placeholder="Søk"
                             value={filters.searchInput}
-                            onChange={(e) =>
-                                filters.setSearchInput(e.target.value)
-                            }
+                            onChange={(e) => setSearch(e.target.value)}
                         />
                         <div className="mobileSearchButtons">
                             <Button
@@ -289,9 +300,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                                     label={t('Søk')}
                                     variant="outlined"
                                     value={filters.searchInput}
-                                    onChange={(e) =>
-                                        filters.setSearchInput(e.target.value)
-                                    }
+                                    onChange={(e) => setSearch(e.target.value)}
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
