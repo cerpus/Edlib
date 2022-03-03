@@ -8,7 +8,7 @@ tags: [edlib, translations, cleanup, open-source, ndla]
 ---
 
 Keeping an open-source project alive is like gardening your plants - you'll need to give the project water and space to grow, but you must also make sure to provide the soil with some needed nutrients now and then.
-Finally, the plant must be kept healthy by removing obstacles like dead leaves or rearranging the position of some parts. Finally, it needs the proper exposition to the sun.
+Furthermore plant must be kept healthy by removing obstacles like dead leaves or rearranging the position of some parts. Finally, it needs the proper exposure to the sun.
 
 In Edlib, all this takes place over time. Over the last months, we've been working continuously with gardening by removing dead or overcomplicated code. Such gardening makes room for adding new code in a healthier and more tidy environment. You can follow this work in detail, by visiting our [release overview page](https://docs.edlib.com/docs/developers/translation). 
 
