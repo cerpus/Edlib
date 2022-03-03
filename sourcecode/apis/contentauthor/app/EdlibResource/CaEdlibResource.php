@@ -6,9 +6,8 @@ namespace App\EdlibResource;
 
 use Cerpus\EdlibResourceKit\Contract\EdlibResource;
 use DateTimeImmutable;
-use JsonSerializable;
 
-class CaEdlibResource implements EdlibResource, JsonSerializable
+class CaEdlibResource implements EdlibResource
 {
     /**
      * @param array<string> $collaborators
@@ -108,30 +107,5 @@ class CaEdlibResource implements EdlibResource, JsonSerializable
     public function getAuthorOverwrite(): string|null
     {
         return $this->authorOverwrite;
-    }
-
-    /**
-     * Kept around for ContentInfoController, which serializes these types of
-     * objects as part of API output.
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'externalSystemName' => $this->getExternalSystemName(),
-            'externalSystemId' => $this->getExternalSystemId(),
-            'title' => $this->getTitle(),
-            'ownerId' => $this->getOwnerId(),
-            'isListed' => $this->isListed(),
-            'isPublished' => $this->isPublished(),
-            'language' => $this->getLanguage(),
-            'contentType' => $this->getContentType(),
-            'license' => $this->getLicense(),
-            'maxScore' => $this->getMaxScore(),
-            'createdAt' => $this->getCreatedAt(),
-            'updatedAt' => $this->getUpdatedAt(),
-            'emailCollaborators' => $this->getEmailCollaborators(),
-            'collaborators' => $this->getCollaborators(),
-            'authorOverwrite' => $this->getAuthorOverwrite(),
-        ];
     }
 }

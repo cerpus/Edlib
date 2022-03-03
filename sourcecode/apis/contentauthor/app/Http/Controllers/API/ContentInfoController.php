@@ -6,6 +6,7 @@ use App\Article;
 use App\CollaboratorContext;
 use App\Content;
 use App\EdlibResource\CaEdlibResource;
+use App\EdlibResource\ResourceSerializer;
 use App\Game;
 use App\H5PContent;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,10 @@ use Illuminate\Http\Request;
 
 class ContentInfoController extends Controller
 {
+    public function __construct(private ResourceSerializer $resourceSerializer)
+    {
+    }
+
     public function index($id): JsonResponse
     {
         $content = Content::findContentById($id);
@@ -27,7 +32,9 @@ class ContentInfoController extends Controller
             ], 404);
         }
 
-        return response()->json($content->getEdlibDataObject());
+        return response()->json(
+            $this->resourceSerializer->serialize($content->getEdlibDataObject()),
+        );
     }
 
     public function list(Request $request): JsonResponse
@@ -78,7 +85,10 @@ class ContentInfoController extends Controller
                 "offset" => $offset,
                 "limit" => $limit
             ],
-            "resources" => $resources
+            "resources" => array_map(
+                fn(CaEdlibResource $resource) => $this->resourceSerializer->serialize($resource),
+                $resources,
+            ),
         ];
 
         return response()->json($response);
