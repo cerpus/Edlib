@@ -50,7 +50,12 @@ export default ({ font, tags: wantedTags, enterMode }) => {
     const tags = wantedTags ?? defaultTags;
     const config = {
         ...baseConfig,
-        toolbar: [],
+        toolbar: [
+            {
+                name: 'document',
+                items: ['Source'],
+            }
+        ],
         enterMode: enterMode === 'p' ? CKEDITOR_ENTERMODE_P : CKEDITOR_ENTERMODE_DIV,
     };
     const items = {
