@@ -217,7 +217,7 @@ jobs:
       - building_done
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -247,7 +247,7 @@ jobs:
     concurrency: deploy-${{ matrix.environment }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Deploy
         uses: ./.github/actions/awsDeploy
         with:
