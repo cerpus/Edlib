@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "99eb0ad6ef8bb1d121e90eea310f7b0d",
+    "content-hash": "498c0598442aedc28aa9b8e02c53245a",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -1066,42 +1066,42 @@
         },
         {
             "name": "components/font-awesome",
-            "version": "4.7.0",
+            "version": "6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/font-awesome.git",
-                "reference": "885308b939369d147bec93174722786bc2c4eedd"
+                "reference": "f4ea2a4bb540af601952db5e5200f4b0407b7f4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/font-awesome/zipball/885308b939369d147bec93174722786bc2c4eedd",
-                "reference": "885308b939369d147bec93174722786bc2c4eedd",
+                "url": "https://api.github.com/repos/components/font-awesome/zipball/f4ea2a4bb540af601952db5e5200f4b0407b7f4d",
+                "reference": "f4ea2a4bb540af601952db5e5200f4b0407b7f4d",
                 "shasum": ""
             },
             "type": "component",
             "extra": {
                 "component": {
                     "styles": [
-                        "css/font-awesome.css"
+                        "css/all.css"
                     ],
                     "files": [
-                        "css/font-awesome.min.css",
-                        "css/font-awesome.css.map",
-                        "fonts/*"
+                        "css/all.min.css",
+                        "webfonts/*"
                     ]
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
+                "CC-BY-4.0",
                 "MIT",
                 "OFL-1.1"
             ],
-            "description": "The iconic font designed for use with Twitter Bootstrap.",
+            "description": "Font Awesome, the iconic SVG, font, and CSS framework.",
             "support": {
                 "issues": "https://github.com/components/font-awesome/issues",
-                "source": "https://github.com/components/font-awesome/tree/master"
+                "source": "https://github.com/components/font-awesome/tree/6.0.0"
             },
-            "time": "2016-10-25T10:56:23+00:00"
+            "time": "2022-02-14T14:44:14+00:00"
         },
         {
             "name": "components/jquery",
