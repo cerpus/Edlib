@@ -8,7 +8,9 @@ use App\Events\ContentDeleted;
 use App\Events\ContentDeleting;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
+use App\Events\ResourceSaved;
 use App\Listeners\H5P\HandleExport;
+use App\Listeners\ResourceEventHandler;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -28,7 +30,6 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Article\HandleCollaborators',
             'App\Listeners\Article\HandlePrivacy',
             'App\Listeners\Article\HandleCollaborationInviteEmails',
-            'App\Listeners\ResourceEventSubscriber@onArticleSaved',
         ],
 
         'App\Events\ArticleWasCopied' => [
@@ -46,7 +47,6 @@ class EventServiceProvider extends ServiceProvider
 
         'App\Events\LinkWasSaved' => [
             'App\Listeners\Link\HandleVersioning',
-            'App\Listeners\ResourceEventSubscriber@onLinkSaved',
         ],
 
         'App\Events\VideoSourceChanged' => [
@@ -56,13 +56,16 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\QuestionsetWasSaved' => [
             'App\Listeners\Questionset\HandlePrivacy',
             'App\Listeners\Questionset\HandleQuestionbank',
-            'App\Listeners\ResourceEventSubscriber@onQuestionsetSaved',
         ],
 
         'App\Events\GameWasSaved' => [
             'App\Listeners\Game\HandlePrivacy',
             'App\Listeners\Game\HandleVersioning',
 //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
+        ],
+
+        ResourceSaved::class => [
+            ResourceEventHandler::class,
         ],
 
         ContentCreating::class => [
@@ -88,10 +91,6 @@ class EventServiceProvider extends ServiceProvider
         ContentDeleted::class => [
 //            RemoveContentFromRecommendationEngine::class,
         ],
-    ];
-
-    protected $subscribe = [
-        'App\Listeners\ResourceEventSubscriber',
     ];
 
     /**

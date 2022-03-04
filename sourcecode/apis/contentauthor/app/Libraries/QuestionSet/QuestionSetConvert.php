@@ -2,8 +2,8 @@
 
 namespace App\Libraries\QuestionSet;
 
+use App\Content;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Games\Millionaire\Millionaire;
@@ -64,7 +64,7 @@ class QuestionSetConvert
             $content['title'],
             H5PQuestionSet::$machineName,
             route('h5p.edit', $content['id']),
-            ResourceDataObject::H5P
+            Content::TYPE_H5P
         ];
     }
 
@@ -89,7 +89,7 @@ class QuestionSetConvert
             $game['title'],
             "Game", //TODO: need to change this to what type of game when "the Core" gets back
             route('game.edit', $game['id']),
-            ResourceDataObject::GAME
+            Content::TYPE_GAME
         ];
     }
 }

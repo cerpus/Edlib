@@ -4,7 +4,6 @@ namespace App;
 
 use App\Http\Libraries\H5PFileVersioner;
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
@@ -213,8 +212,8 @@ class H5PContent extends Content implements VersionableObject
 
     public function getContentType($withSubType = false): string
     {
-        if (!$withSubType || !isset($this->library) || !isset($this->library->name)) {
-            return ResourceDataObject::H5P;
+        if (!$withSubType || !isset($this->library->name)) {
+            return Content::TYPE_H5P;
         }
 
         return Str::lower($this->library->name);

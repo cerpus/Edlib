@@ -3,9 +3,9 @@
 namespace App\Libraries\QuestionSet;
 
 
+use App\Content;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
@@ -47,11 +47,8 @@ class QuestionSetHandler
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::CREATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
-            list($id, $title, $type, $score, $fallbackUrl, $resourceType) = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
-            event(new ResourceSaved(
-                new ResourceDataObject($id, $title, ResourceSaved::CREATE, $resourceType),
-                $questionSet->getEdlibDataObject()
-            ));
+            list($id, $title, $type, $score, $fallbackUrl) = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
+            event(new ResourceSaved($questionSet->getEdlibDataObject()));
         } else {
             list($id, $title, $type, $score, $fallbackUrl) = [
                 $questionSet->id,
@@ -204,10 +201,7 @@ class QuestionSetHandler
 
         if (!empty($values['selectedPresentation'])) {
             list($id, $title, $type, $score, $fallbackUrl, $resourceType) = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
-            event(new ResourceSaved(
-                new ResourceDataObject($id, $title, ResourceSaved::CREATE, $resourceType),
-                $questionSet->getEdlibDataObject()
-            ));
+            event(new ResourceSaved($questionSet->getEdlibDataObject()));
         } else {
             list($id, $title, $type, $score, $fallbackUrl, $resourceType) = [
                 $questionSet->id,
@@ -215,7 +209,7 @@ class QuestionSetHandler
                 "QuestionSet",
                 false,
                 route('questionset.edit', $questionSet->id),
-                ResourceDataObject::QUESTIONSET,
+                Content::TYPE_QUESTIONSET,
             ];
         }
 

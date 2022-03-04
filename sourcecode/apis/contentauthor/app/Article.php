@@ -6,7 +6,6 @@ use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ContentTypeDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
@@ -136,9 +135,9 @@ class Article extends Content implements VersionableObject
         return $newArticle;
     }
 
-    public function getContentType($withSubType = false): string
+    public function getContentType(bool $withSubType = false): string
     {
-        return ResourceDataObject::ARTICLE;
+        return Content::TYPE_ARTICLE;
     }
 
     public function scopeOfBulkCalculated($query, $type)

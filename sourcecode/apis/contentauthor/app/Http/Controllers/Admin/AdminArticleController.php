@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ResourceSaved;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
@@ -69,10 +68,7 @@ class AdminArticleController extends Controller
                     $batch->push($status);
                     $article->save();
                     if( $status['success'] === true){
-                        event(new ResourceSaved(
-                            new ResourceDataObject($article->id, $article->title, ResourceSaved::UPDATE, ResourceDataObject::ARTICLE),
-                            $article->getEdlibDataObject()
-                        ));
+                        event(new ResourceSaved($article->getEdlibDataObject()));
                     }
                 }
             });

@@ -7,7 +7,6 @@ use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
 use App\Http\Controllers\H5P_Plugin_Admin;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\H5P\Packages\QuestionSet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -249,10 +248,7 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Setting of score failed");
                     }
-                    event(new ResourceSaved(
-                        new ResourceDataObject($content->id, $content->title, ResourceSaved::UPDATE, ResourceDataObject::H5P),
-                        $content->getEdlibDataObject()
-                    ));
+                    event(new ResourceSaved($content->getEdlibDataObject()));
                 });
         }
 

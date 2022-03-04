@@ -3,6 +3,7 @@
 namespace Tests\Http\Controllers;
 
 use App\ApiModels\User;
+use App\Content;
 use App\Events\ContentCreated;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
@@ -11,7 +12,6 @@ use App\H5pLti;
 use App\Http\Controllers\QuestionSetController;
 use App\Http\Libraries\License;
 use App\Http\Requests\ApiQuestionsetRequest;
-use App\Libraries\DataObjects\ResourceDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\QuestionSet\QuestionSetConvert;
@@ -100,7 +100,7 @@ class QuestionSetControllerTest extends TestCase
                 $game->title,
                 "Game",
                 route('game.edit', $game['id']),
-                ResourceDataObject::GAME,
+                Content::TYPE_GAME,
             ]);
 
         $requestData = [

@@ -2,15 +2,18 @@
 
 namespace Tests\Traits;
 
-use App\Listeners\ResourceEventSubscriber;
+use Cerpus\EdlibResourceKit\Resource\ResourceManagerInterface;
+use Cerpus\EdlibResourceKit\ResourceKit;
 
 trait MockMQ
 {
-
     public function setUpMockMQ()
     {
-        $partialMock = $this->createPartialMock(ResourceEventSubscriber::class, ['onResourceSaved']);
-        app()->instance(ResourceEventSubscriber::class, $partialMock);
-    }
+        $manager = $this->createPartialMock(ResourceManagerInterface::class, ['save']);
+        app()->instance(ResourceManagerInterface::class, $manager);
 
+        $resourceKit = $this->createMock(ResourceKit::class);
+        $resourceKit->method('getResourceManager')->willReturn($manager);
+        app()->instance(ResourceKit::class, $resourceKit);
+    }
 }

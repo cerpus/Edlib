@@ -2,8 +2,7 @@
 
 namespace App\Events;
 
-use App\Libraries\DataObjects\EdlibResourceDataObject;
-use App\Libraries\DataObjects\ResourceDataObject;
+use Cerpus\EdlibResourceKit\Contract\EdlibResource;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -14,22 +13,13 @@ class ResourceSaved extends Event
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    const CREATE = "create";
-    const UPDATE = "update";
-
-    public $resourceData;
-    public $edlibResourceDataObject;
-
-    /**
-     * Create a new job instance.
-     *
-     * @param ResourceDataObject $dataObject
-     * @param EdlibResourceDataObject $edlibResourceDataObject
-     */
-    public function __construct(ResourceDataObject $dataObject, EdlibResourceDataObject $edlibResourceDataObject)
+    public function __construct(private EdlibResource $resource)
     {
-        $this->resourceData = $dataObject;
-        $this->edlibResourceDataObject = $edlibResourceDataObject;
+    }
+
+    public function getResource(): EdlibResource
+    {
+        return $this->resource;
     }
 
     /**
