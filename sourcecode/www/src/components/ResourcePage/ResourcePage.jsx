@@ -180,10 +180,12 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
     const [filtersExpanded, setFiltersExpanded] = React.useState(false);
     const [sortingOrder, setSortingOrder] = React.useState(useDefaultOrder());
     const filterMobileView = useIsDevice('<', 'md');
+    const forceGridView = useIsDevice('<=', 'md');
     const [page, setPage] = React.useState(0);
     const [pageSize, setPageSize] = React.useState(40);
-    const [isGridView, setIsGridView] = React.useState(false);
+    const [_isGridView, setIsGridView] = React.useState(false);
     const filterUtils = FilterUtils(filters);
+    const isGridView = forceGridView || _isGridView;
 
     const { error, loading, resources, pagination, refetch, filterCount } =
         useGetResources(
@@ -261,78 +263,63 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 <MobileBackground onClick={() => setFiltersExpanded(false)} />
             )}
             <div className="pageContent">
-                {filterMobileView && (
-                    <div>
-                        <Input
-                            className="mobileSearch"
-                            placeholder="Søk"
-                            value={filters.searchInput}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        <div className="mobileSearchButtons">
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={() =>
-                                    setFiltersExpanded(!filtersExpanded)
-                                }
-                                startIcon={<TuneIcon />}
-                            >
-                                <span style={{ textTransform: 'uppercase' }}>
-                                    {t('avansert søk')}
-                                </span>
-                            </Button>
-                            {sortOrderDropDown}
-                        </div>
-                    </div>
-                )}
-                {!filterMobileView && (
-                    <div className="contentOptions">
-                        <Box display="flex">
-                            <Box
-                                paddingRight={1}
-                                style={{
-                                    width: 400,
+                <div className="contentOptions">
+                    <Box display="flex" paddingRight={1}>
+                        <Box
+                            paddingRight={1}
+                            style={{
+                                width: 400,
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                label={t('Søk')}
+                                variant="outlined"
+                                value={filters.searchInput}
+                                onChange={(e) => setSearch(e.target.value)}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <Icon>
+                                                <SearchIcon />
+                                            </Icon>
+                                        </InputAdornment>
+                                    ),
                                 }}
-                            >
-                                <TextField
-                                    fullWidth
-                                    label={t('Søk')}
-                                    variant="outlined"
-                                    value={filters.searchInput}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <Icon>
-                                                    <SearchIcon />
-                                                </Icon>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Box>
-                            <div
-                                style={{
-                                    width: 200,
-                                }}
-                            >
-                                <LanguageDropdown
-                                    language={
-                                        filters.languages.length !== 0
-                                            ? filters.languages[0]
-                                            : null
-                                    }
-                                    setLanguage={(value) =>
-                                        filters.languages.setValue(
-                                            value ? [value] : []
-                                        )
-                                    }
-                                />
-                            </div>
+                            />
                         </Box>
-                        <div>{sortOrderDropDown}</div>
-                    </div>
+                        <div
+                            style={{
+                                width: 200,
+                            }}
+                        >
+                            <LanguageDropdown
+                                language={
+                                    filters.languages.length !== 0
+                                        ? filters.languages[0]
+                                        : null
+                                }
+                                setLanguage={(value) =>
+                                    filters.languages.setValue(
+                                        value ? [value] : []
+                                    )
+                                }
+                            />
+                        </div>
+                    </Box>
+                    <div>{sortOrderDropDown}</div>
+                </div>
+                {filterMobileView && (
+                    <Box pt={1}>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() => setFiltersExpanded(!filtersExpanded)}
+                            startIcon={<TuneIcon />}
+                        >
+                            {t('filter', { count: 2 })}
+                        </Button>
+                    </Box>
                 )}
                 <Box
                     display="flex"
@@ -346,12 +333,14 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                         />
                     </Box>
                     <Box>
-                        <IconButton
-                            onClick={() => setIsGridView(!isGridView)}
-                            size="large"
-                        >
-                            {isGridView ? <ListIcon /> : <ViewModuleIcon />}
-                        </IconButton>
+                        {!forceGridView && (
+                            <IconButton
+                                onClick={() => setIsGridView(!isGridView)}
+                                size="large"
+                            >
+                                {isGridView ? <ListIcon /> : <ViewModuleIcon />}
+                            </IconButton>
+                        )}
                     </Box>
                 </Box>
                 <Content>
