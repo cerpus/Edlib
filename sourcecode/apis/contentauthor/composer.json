@@ -30,7 +30,7 @@
     "components/jqueryui": "^1.11",
     "daniel-km/simple-iso-639-3": "^0.1.1",
     "doctrine/dbal": "^2.5",
-    "embed/embed": "^3.2",
+    "embed/embed": "^4.4",
     "facade/ignition": "^2.16",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "~6.0",
