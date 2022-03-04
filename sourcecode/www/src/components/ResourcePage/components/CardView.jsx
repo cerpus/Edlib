@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     title: {
         fontWeight: '500',
         fontSize: '1.2em',
+        wordBreak: 'break-word',
     },
     subtitle: {
         fontSize: '0.8em',
@@ -46,8 +47,7 @@ const CardView = ({ resources, showDeleteButton = false, onResourceClick }) => {
                             key={resource.id}
                             item
                             xs={6}
-                            md={4}
-                            lg={3}
+                            lg={4}
                             className={classes.gridItem}
                         >
                             <Paper className={classes.paper}>
