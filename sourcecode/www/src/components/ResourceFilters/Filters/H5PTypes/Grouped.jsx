@@ -7,13 +7,11 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import _ from 'lodash';
-
-import useTranslation from '../../../hooks/useTranslation.js';
-import useArray from '../../../hooks/useArray.js';
-import contentAuthorConstants from '../../../constants/contentAuthor.js';
+import makeStyles from '@mui/styles/makeStyles';
+import useTranslation from '../../../../hooks/useTranslation.js';
+import contentAuthorConstants from '../../../../constants/contentAuthor.js';
+import useArray from "../../../../hooks/useArray.js";
 
 const useStyles = makeStyles((theme) => ({
     nested: {
@@ -28,24 +26,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const H5PTypes = ({ contentTypes, filterCount, contentTypeData }) => {
+const Grouped = ({ allH5ps, contentTypes }) => {
     const { t } = useTranslation();
     const classes = useStyles();
-
     const open = useArray();
-
-    const allH5ps = contentTypeData
-        .map((item) => {
-            const count = filterCount.find(
-                (filterCount) => filterCount.key === item.contentType
-            );
-            return {
-                title: item.title,
-                value: item.contentType,
-                filteredCount: count ? count.count : 0,
-            };
-        })
-        .sort((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0));
 
     const categoriesObject = allH5ps.reduce((categories, h5p) => {
         let groups = contentAuthorConstants.groups.filter(
@@ -150,4 +134,4 @@ const H5PTypes = ({ contentTypes, filterCount, contentTypeData }) => {
     );
 };
 
-export default H5PTypes;
+export default Grouped;

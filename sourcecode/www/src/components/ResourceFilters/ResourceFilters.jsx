@@ -1,20 +1,34 @@
 import React from 'react';
 import _ from 'lodash';
+import store from 'store';
 import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceFilters from '../../constants/resourceFilters';
-import { Button, Collapse, List, ListItem, ListItemText } from '@mui/material';
+import {
+    Box,
+    Button,
+    Collapse,
+    List,
+    ListItem,
+    ListItemText,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import {
+    ExpandLess,
+    ExpandMore,
+    FilterList as FilterListIcon,
+} from '@mui/icons-material';
 import useArray from '../../hooks/useArray.js';
 import SavedFilters from './Filters/SavedFilters.jsx';
+import viewTypes from './filterViewTypes';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
+        padding: 0,
     },
     nested: {
         paddingLeft: theme.spacing(1),
@@ -36,6 +50,16 @@ const ResourceFilters = ({
     const { getUserConfig } = useEdlibComponentsContext();
     const classes = useStyles();
     const disabledFilters = getUserConfig('disabledFilters') || null;
+    const [filterViewType, _setFilterViewType] = React.useState(() => {
+        return store.get('filterViewType', viewTypes.GROUPED);
+    });
+    const setFilterViewType = React.useCallback(
+        (value) => {
+            _setFilterViewType(value);
+            store.set('filterViewType', value);
+        },
+        [_setFilterViewType]
+    );
 
     const filterBlocks = [
         {
@@ -60,6 +84,7 @@ const ResourceFilters = ({
                     contentTypeData={contentTypeData}
                     contentTypes={filters.contentTypes}
                     filterCount={filterCount ? filterCount.contentTypes : []}
+                    filterViewType={filterViewType}
                 />
             ),
         },
@@ -80,6 +105,26 @@ const ResourceFilters = ({
 
     return (
         <>
+            <Box pr={1} display="flex" justifyContent="end">
+                <Button
+                    onClick={() =>
+                        setFilterViewType(
+                            filterViewType === viewTypes.GROUPED
+                                ? viewTypes.ALPHABETICAL
+                                : viewTypes.GROUPED
+                        )
+                    }
+                    endIcon={<FilterListIcon />}
+                    style={{
+                        color: 'inherit',
+                    }}
+                    size="small"
+                >
+                    {filterViewType === viewTypes.GROUPED
+                        ? t('grouped')
+                        : t('A-Z')}
+                </Button>
+            </Box>
             <List component="nav" className={classes.root} dense>
                 {filterBlocks
                     .filter(
