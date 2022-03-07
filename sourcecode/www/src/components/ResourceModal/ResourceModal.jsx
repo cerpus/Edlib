@@ -25,12 +25,14 @@ import {
     IconButton,
     Typography,
     Dialog,
+    Grid,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import withStyles from '@mui/styles/withStyles';
 import { ResourceIcon } from '../Resource';
 import useConfig from '../../hooks/useConfig.js';
 import { useIframeStandaloneContext } from '../../contexts/IframeStandalone';
+import ResourceStats from './ResourceStats.jsx';
 
 const Footer = styled.div`
     margin-top: 30px;
@@ -108,7 +110,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
 
     return (
         <Dialog
-            maxWidth="md"
+            maxWidth="lg"
             fullWidth
             onClose={onClose}
             open={isOpen}
@@ -173,55 +175,68 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                 ) : null}
             </MuiDialogTitle>
             <DialogContent dividers>
-                <ResourcePreview resource={resource}>
-                    {({ loading, error, frame }) => {
-                        if (loading) {
-                            return (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        padding: '20px 0',
-                                    }}
-                                >
-                                    <Spinner />
-                                </div>
-                            );
-                        }
+                <Grid container spacing={1}>
+                    <Grid item lg={7} xs={12}>
+                        <ResourcePreview resource={resource}>
+                            {({ loading, error, frame }) => {
+                                if (loading) {
+                                    return (
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                padding: '20px 0',
+                                            }}
+                                        >
+                                            <Spinner />
+                                        </div>
+                                    );
+                                }
 
-                        if (error) {
-                            return <div>Noe skjedde</div>;
-                        }
+                                if (error) {
+                                    return <div>Noe skjedde</div>;
+                                }
 
-                        return (
-                            <>
-                                <div>{frame}</div>
-                                <Footer>
-                                    <Meta>
-                                        <div>
-                                            {_.capitalize(t('publishing_date'))}
-                                        </div>
-                                        <div>
-                                            {moment(
-                                                resource.version.createdAt
-                                            ).format('D. MMMM YYYY')}
-                                        </div>
-                                    </Meta>
-                                    <Meta>
-                                        <div>{_.capitalize(t('license'))}</div>
-                                        <div>
-                                            <License
-                                                license={
-                                                    resource.version.license
-                                                }
-                                            />
-                                        </div>
-                                    </Meta>
-                                </Footer>
-                            </>
-                        );
-                    }}
-                </ResourcePreview>
+                                return (
+                                    <>
+                                        <div>{frame}</div>
+                                        <Footer>
+                                            <Meta>
+                                                <div>
+                                                    {_.capitalize(
+                                                        t('publishing_date')
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    {moment(
+                                                        resource.version
+                                                            .createdAt
+                                                    ).format('D. MMMM YYYY')}
+                                                </div>
+                                            </Meta>
+                                            <Meta>
+                                                <div>
+                                                    {_.capitalize(t('license'))}
+                                                </div>
+                                                <div>
+                                                    <License
+                                                        license={
+                                                            resource.version
+                                                                .license
+                                                        }
+                                                    />
+                                                </div>
+                                            </Meta>
+                                        </Footer>
+                                    </>
+                                );
+                            }}
+                        </ResourcePreview>
+                    </Grid>
+                    <Grid item lg={5} xs={12}>
+                        <ResourceStats resourceId={resource.id} />
+                    </Grid>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 {capabilities[resourceCapabilities.EDIT] && (

@@ -79,7 +79,8 @@
     "Skriv formelen": "Write formula",
     "Sett inn": "Insert",
     "S": {
-        "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later."
+        "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later.",
+        "VIEWS_PAST_7_DAYS": "Views last 7 days"
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",
@@ -134,5 +135,7 @@
     "grouped": "grouped",
     "A-Z": "a-z",
     "filter": "filter",
-    "filter_plural": "filters"
+    "filter_plural": "filters",
+    "resource_view": "resource view",
+    "resource_view_plural": "resource views"
 }

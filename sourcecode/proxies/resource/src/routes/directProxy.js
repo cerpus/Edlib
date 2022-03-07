@@ -17,6 +17,15 @@ export default async () => {
     );
 
     router.get(
+        '/v1/resources/:resourceId/stats',
+        middlewares.isUserAuthenticated,
+        proxyRequest(
+            (req) => req.context.services.resource.proxy,
+            (req) => `/v1/resources/${req.params.resourceId}/stats`
+        )
+    );
+
+    router.get(
         '/v1/languages',
         middlewares.isUserAuthenticated,
         proxyRequest(
