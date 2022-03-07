@@ -134,7 +134,7 @@ runs:
                   " *<https://github.com/cerpus/Edlib/tree/${{ inputs.version }}|${{ inputs.version }}>* has been deployed to *${{ inputs.environment }}* by ${{ github.actor }}.",
                 fields: fields,
                 footer: "Edlib deploy bot",
-                ts: 1234567899,
+                ts: Math.floor(Date.now() / 1000),
               },
             ],
           };
