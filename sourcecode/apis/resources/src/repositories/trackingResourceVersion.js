@@ -28,6 +28,16 @@ const getCountForResource = async (resourceId) =>
             .first()
     ).count;
 
+const getCountByDayForResource = async (from, to, resourceId) => {
+    return db(`${table} as trv`)
+        .count('*', { as: 'count' })
+        .select(db.raw('date(trv.createdAt) as date'))
+        .join(`resourceVersions as rv`, 'rv.id', 'trv.resourceVersionId')
+        .where('rv.resourceId', resourceId)
+        .whereBetween('trv.createdAt', [from, to])
+        .groupByRaw('date(trv.createdAt)');
+};
+
 const getCountByDay = async (from, to) => {
     return db(`${table} as trv`)
         .count('*', { as: 'count' })
@@ -43,4 +53,5 @@ export default () => ({
     getCountForResource,
     createManyOrIgnore,
     getCountByDay,
+    getCountByDayForResource,
 });

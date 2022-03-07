@@ -9,4 +9,16 @@ export default {
             ),
         };
     },
+    getResourceStats: async (req) => {
+        return {
+            data: {
+                last7daysViews:
+                    await req.context.db.trackingResourceVersion.getCountByDayForResource(
+                        moment().subtract(7, 'days').startOf('day').toDate(),
+                        moment().endOf('day').toDate(),
+                        req.params.resourceId
+                    ),
+            },
+        };
+    },
 };

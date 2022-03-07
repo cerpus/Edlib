@@ -11,6 +11,10 @@ export default async () => {
         '/v1/stats/resource-version/:type/by-day',
         runAsync(statsController.getResourceVersionEventsByDay)
     );
+    router.get(
+        '/v1/resources/:resourceId/stats',
+        runAsync(statsController.getResourceStats)
+    );
 
     return router;
 };
