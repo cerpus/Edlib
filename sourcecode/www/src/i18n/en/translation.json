@@ -130,5 +130,9 @@
     "most_used": "most used",
     "least_used": "least used",
     "something_happened": "something happened",
-    "most_relevant": "most relevant"
+    "most_relevant": "most relevant",
+    "grouped": "grouped",
+    "A-Z": "a-z",
+    "filter": "filter",
+    "filter_plural": "filters"
 }

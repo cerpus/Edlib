@@ -122,7 +122,7 @@ const ResourceFilters = ({
                 >
                     {filterViewType === viewTypes.GROUPED
                         ? t('grouped')
-                        : 'A-Z'}
+                        : t('A-Z')}
                 </Button>
             </Box>
             <List component="nav" className={classes.root} dense>
