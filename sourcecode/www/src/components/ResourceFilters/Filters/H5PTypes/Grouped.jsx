@@ -9,9 +9,10 @@ import {
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import makeStyles from '@mui/styles/makeStyles';
+import _ from 'lodash';
 import useTranslation from '../../../../hooks/useTranslation.js';
 import contentAuthorConstants from '../../../../constants/contentAuthor.js';
-import useArray from "../../../../hooks/useArray.js";
+import useArray from '../../../../hooks/useArray.js';
 
 const useStyles = makeStyles((theme) => ({
     nested: {
