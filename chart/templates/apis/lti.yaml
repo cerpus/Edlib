@@ -7,3 +7,39 @@
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "ltiapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---
 {{- template "helpers.podDisruptionBudget" (dict "name" "ltiapi" ) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ltiapi-subscriber
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ltiapi-subscriber
+  template:
+    metadata:
+      labels:
+        app: ltiapi-subscriber
+        fluentd-parser: node-json
+    spec:
+      containers:
+        - name: main
+          image: "public.ecr.aws/f0t8l9h1/api-lti-app:{{ .Chart.AppVersion }}"
+          command:
+            - yarn
+            - start:subscribers
+          envFrom:
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "150m"

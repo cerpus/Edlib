@@ -6,7 +6,10 @@ export default {
         return req.context.services.lti.getJobStatus(req.params.jobId);
     },
     startJob: async (req, res, next) => {
-        return req.context.services.lti.startJob(req.params.jobName);
+        return req.context.services.lti.startJob(
+            req.params.jobName,
+            req.body.data
+        );
     },
     getResumableJob: async (req, res, next) => {
         return req.context.services.lti.getResumableJob(req.params.jobName);

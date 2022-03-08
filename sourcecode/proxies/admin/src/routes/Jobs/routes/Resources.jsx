@@ -17,6 +17,14 @@ const Resources = () => {
                 </Grid>
                 <Grid item md={12}>
                     <Job
+                        name="Import LTI usages for CA"
+                        startUrl="/lti/v1/jobs/import-usages"
+                        statusUrl={(jobId) => `/lti/v1/jobs/${jobId}`}
+                        showInput
+                    />
+                </Grid>
+                <Grid item md={12}>
+                    <Job
                         name="Oppdater elasticsearch index"
                         startUrl="/resources/v1/jobs/refresh-elasticsearch-index"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}

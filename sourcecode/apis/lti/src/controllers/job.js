@@ -36,13 +36,14 @@ export default {
             req.params.jobName
         );
 
-        if (!currentSyncJob) {
+        if (!currentSyncJob || req.params.jobName === jobNames.IMPORT_USAGES) {
             if (Object.values(jobNames).indexOf(req.params.jobName) === -1) {
                 throw new NotFoundException('job');
             }
 
             currentSyncJob = await req.context.db.job.create({
                 type: req.params.jobName,
+                data: req.body.data,
             });
 
             await pubsub.publish(
