@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Doku;
+use Cerpus\EdlibResourceKitProvider\Facades\ResourceManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -13,6 +14,11 @@ final class DokuTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
+
+    public static function setUpBeforeClass(): void
+    {
+        ResourceManager::fake();
+    }
 
     public function testGet(): void
     {
