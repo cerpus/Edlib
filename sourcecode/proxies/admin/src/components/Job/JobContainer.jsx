@@ -1,7 +1,7 @@
 import React from 'react';
 import Job from './Job.jsx';
-import useFetch from '../../hooks/useFetch.jsx';
 import useRequestWithToken from '../../hooks/useRequestWithToken.jsx';
+import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
 
 const JobContainer = ({
     name,
@@ -19,7 +19,7 @@ const JobContainer = ({
     });
     const [currentJobId, setCurrentJobId] = React.useState(null);
 
-    const { response } = useFetch(
+    const { response } = useFetchWithToken(
         startUrl + '/resumable',
         'GET',
         React.useMemo(() => ({}), []),
