@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2583c8a8d145105d929abebf24e9dc8a",
+    "content-hash": "8a7f89d0949b589a2dc4103e3c369929",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -176,16 +176,16 @@
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
-            "version": "dev-facade-fake",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit-laravel.git",
-                "reference": "0a3e7c49d93db439ce5e4fe8c9186a647f704a07"
+                "reference": "f6a3f8b1959a5b4b4f218933215b120b51c2e15d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/0a3e7c49d93db439ce5e4fe8c9186a647f704a07",
-                "reference": "0a3e7c49d93db439ce5e4fe8c9186a647f704a07",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/f6a3f8b1959a5b4b4f218933215b120b51c2e15d",
+                "reference": "f6a3f8b1959a5b4b4f218933215b120b51c2e15d",
                 "shasum": ""
             },
             "require": {
@@ -228,9 +228,9 @@
             "homepage": "https://edlib.com/",
             "support": {
                 "issues": "https://github.com/cerpus/php-edlib-resource-kit-laravel/issues",
-                "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/facade-fake"
+                "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/v0.4.0"
             },
-            "time": "2022-03-08T13:14:52+00:00"
+            "time": "2022-03-08T13:17:20+00:00"
         },
         {
             "name": "cerpus/pubsub",
@@ -9017,9 +9017,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "cerpus/edlib-resource-kit-laravel": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
