@@ -15,15 +15,10 @@ final class DokuTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    public static function setUpBeforeClass(): void
-    {
-        ResourceManager::fake();
-    }
-
     public function testGet(): void
     {
         /** @var Doku $doku */
-        $doku = Doku::factory()->create();
+        $doku = Doku::factory()->createQuietly();
 
         $this
             ->getJson("/doku/v1/dokus/{$doku->id}")
@@ -42,7 +37,7 @@ final class DokuTest extends TestCase
 
     public function testGetPaginated(): void
     {
-        Doku::factory()->count(120)->create();
+        Doku::factory()->count(120)->createQuietly();
 
         $response = $this
             ->getJson('/doku/v1/dokus')
@@ -58,6 +53,10 @@ final class DokuTest extends TestCase
 
     public function testCreate(): void
     {
+        ResourceManager::fake()
+            ->expects('save')
+            ->once();
+
         $data = [
             'title' => $this->faker->sentence,
             'data' => [
@@ -82,7 +81,11 @@ final class DokuTest extends TestCase
 
     public function testUpdate(): void
     {
-        $doku = Doku::factory()->create();
+        ResourceManager::fake()
+            ->expects('save')
+            ->once();
+
+        $doku = Doku::factory()->createQuietly();
 
         $data = [
             'title' => $this->faker->sentence,
@@ -109,7 +112,11 @@ final class DokuTest extends TestCase
 
     public function testPublish(): void
     {
-        $doku = Doku::factory()->create();
+        ResourceManager::fake()
+            ->expects('save')
+            ->once();
+
+        $doku = Doku::factory()->createQuietly();
 
         $this->postJson('/doku/v1/dokus/' . $doku->id . '/publish')
             ->assertOk()
@@ -121,7 +128,11 @@ final class DokuTest extends TestCase
 
     public function testUnpublish(): void
     {
-        $doku = Doku::factory()->create();
+        ResourceManager::fake()
+            ->expects('save')
+            ->once();
+
+        $doku = Doku::factory()->createQuietly();
 
         $this->postJson('/doku/v1/dokus/' . $doku->id . '/unpublish')
             ->assertOk()
