@@ -144,7 +144,8 @@
     "Skriv formelen": "Skriv formelen",
     "Sett inn": "Sett inn",
     "S": {
-        "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere."
+        "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere.",
+        "VIEWS_PAST_7_DAYS": "Visninger de siste 7 dager"
     },
     "Godkjente": "Godkjente",
     "Ikke godkjente": "Ikke godkjente",
@@ -195,5 +196,12 @@
     "least_used": "minst brukt",
     "most_used": "mest brukt",
     "first_changed": "først endret",
-    "something_happened": "noe skjedde"
+    "something_happened": "noe skjedde",
+    "most_relevant": "mest relevant",
+    "A-Z": "a-å",
+    "filter": "filter",
+    "filter_plural": "filtre",
+    "resource_view": "visninger av ressurs",
+    "resource_view_plural": "ressursvisninger",
+    "grouped": "gruppert"
 }
