@@ -12,6 +12,7 @@ const Resources = () => {
                         startUrl="/resources/v1/jobs/sync-external-resources"
                         statusUrl={(jobId) => `/resources/v1/jobs/${jobId}`}
                         showKillButton
+                        resumable
                     />
                 </Grid>
                 <Grid item md={12}>
