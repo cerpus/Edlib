@@ -7,7 +7,7 @@
   "license": "GPL-3.0-only",
   "type": "project",
   "require": {
-    "php": "8.0.*",
+    "php": "8.1.*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
