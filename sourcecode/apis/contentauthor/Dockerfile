@@ -1,4 +1,5 @@
 FROM php:8.1-fpm-alpine AS php_base
+ENV IPE_GD_WITHOUTAVIF=1
 
 WORKDIR /app
 COPY --from=composer:2 /usr/bin/composer /usr/bin/
