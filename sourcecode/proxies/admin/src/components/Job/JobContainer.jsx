@@ -1,7 +1,7 @@
 import React from 'react';
 import Job from './Job.jsx';
-import useFetch from '../../hooks/useFetch.jsx';
 import useRequestWithToken from '../../hooks/useRequestWithToken.jsx';
+import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
 
 const JobContainer = ({
     name,
@@ -9,6 +9,7 @@ const JobContainer = ({
     statusUrl,
     showKillButton = false,
     resumable = false,
+    showInput = false,
 }) => {
     const request = useRequestWithToken();
     const [status, setStatus] = React.useState({
@@ -18,8 +19,9 @@ const JobContainer = ({
         message: '',
     });
     const [currentJobId, setCurrentJobId] = React.useState(null);
+    const [data, setData] = React.useState('');
 
-    const { response } = useFetch(
+    const { response } = useFetchWithToken(
         startUrl + '/resumable',
         'GET',
         React.useMemo(() => ({}), []),
@@ -37,13 +39,17 @@ const JobContainer = ({
         [setCurrentJobId, setStatus]
     );
 
-    const start = React.useCallback(() => {
+    const start = React.useCallback((data = null) => {
         setStatus({
             loading: true,
             error: false,
         });
 
-        request(startUrl, 'POST')
+        request(startUrl, 'POST', {
+            body: {
+                data,
+            },
+        })
             .then(({ jobId }) => {
                 setCurrentJobId(jobId);
             })
@@ -113,13 +119,16 @@ const JobContainer = ({
 
     return (
         <Job
-            start={start}
+            start={() => start(data)}
             status={status}
             name={name}
             onStop={onStop}
             onResume={onResume}
             showKillButton={showKillButton}
             showResumeButton={!!response}
+            showInput={showInput}
+            data={data}
+            setData={setData}
         />
     );
 };

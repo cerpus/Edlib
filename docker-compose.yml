@@ -335,6 +335,27 @@ services:
     depends_on:
       - mysql
 
+  ltiapi-subscribers:
+    build:
+      context: ./sourcecode/apis/lti
+      dockerfile: Dockerfile
+      target: dev
+    env_file:
+      - ./localSetup/.env
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
+    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh ltiapi:80;update-ca-certificates; yarn dev:subscribers'"
+    volumes:
+      - edlib-lti_nodemodules:/var/www/app/node_modules
+      - ./sourcecode/apis/lti/src:/var/www/app/src
+      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
+      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
+      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
+    depends_on:
+      - ltiapi
+
   authapi:
     build:
       context: ./sourcecode/apis/auth

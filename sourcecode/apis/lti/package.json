@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/api.js",
+    "dev:subscribers": "nodemon -L src/runSubscribers.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
-    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js"
+    "migrate:local": "DB_HOST=127.0.0.1 node src/runMigrations.js",
+    "start:subscribers": "node src/runSubscribers.js"
   },
   "engines": {
     "node": ">= 16.0.0"

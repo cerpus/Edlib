@@ -91,11 +91,14 @@ const killJob = async (jobId) => {
     ).data;
 };
 
-const startJob = async (jobName) => {
+const startJob = async (jobName, data = null) => {
     return (
         await ltiAxios({
             url: `/v1/jobs/${jobName}`,
             method: 'POST',
+            data: {
+                data,
+            },
         })
     ).data;
 };

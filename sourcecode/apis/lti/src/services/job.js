@@ -11,7 +11,7 @@ export const updateJobInfo = async (context, jobId, data) => {
     }
 };
 
-export const getResumeData = async (context, jobId) => {
+export const getJobData = async (context, jobId) => {
     const job = await context.db.job.getById(jobId);
 
     let resumeData = null;
@@ -21,5 +21,5 @@ export const getResumeData = async (context, jobId) => {
         } catch (e) {}
     }
 
-    return resumeData;
+    return { resumeData, data: job.data };
 };

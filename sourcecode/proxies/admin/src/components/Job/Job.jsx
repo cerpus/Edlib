@@ -1,5 +1,11 @@
 import React from 'react';
-import { Button, CircularProgress, LinearProgress } from '@material-ui/core';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    LinearProgress,
+    TextareaAutosize,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 
 const Job = ({
@@ -9,11 +15,22 @@ const Job = ({
     onStop,
     showKillButton,
     showResumeButton,
+    showInput,
     onResume,
+    data,
+    setData,
 }) => {
     return (
         <>
             <h2>{name}</h2>
+            {showInput && (
+                <Box>
+                    <TextareaAutosize
+                        value={data}
+                        onChange={(e) => setData(e.target.value)}
+                    />
+                </Box>
+            )}
             {status.loading && (
                 <>
                     <div>
@@ -37,8 +54,15 @@ const Job = ({
             )}
             {status.done && <Alert severity="success">{status.message}</Alert>}
             {status.error && <Alert severity="error">{status.message}</Alert>}
-            {!status.loading && !status.done && !status.error && (
-                <Button onClick={start}>Start</Button>
+            {!status.loading && (
+                <Button
+                    onClick={start}
+                    disabled={showInput && data === ''}
+                    variant="contained"
+                    color="primary"
+                >
+                    Start
+                </Button>
             )}
             {!status.loading &&
                 !status.done &&
