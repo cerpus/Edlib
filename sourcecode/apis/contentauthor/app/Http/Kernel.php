@@ -5,7 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\DraftAction;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
-use App\Http\Middleware\AddRequestId;
 use App\Http\Middleware\APIAuth;
 use App\Http\Middleware\GameAccess;
 use App\Http\Middleware\QuestionSetAccess;
@@ -59,7 +58,6 @@ class Kernel extends HttpKernel
             APIAuth::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            AddRequestId::class,
         ],
         'internal-api' => [
             'auth.internalApi',
