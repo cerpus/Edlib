@@ -1,0 +1,41 @@
+---
+sidebar_position: 3
+---
+
+# Coding standards
+
+## Coding style
+
+Edlib is a collaborative effort. We want to keep the code consistent, rather than having each developer applying their own opinion on how code should look.
+
+If your editor supports [EditorConfig](https://editorconfig.org/), some of the basic rules will be applied automatically.
+
+### PHP
+
+New PHP code in Edlib should adhere to the [PSR-12 coding style specification](https://www.php-fig.org/psr/psr-12/).
+
+
+## Backward compatibility
+
+### Composer packages
+
+Breaking changes can come in the form of incompatible changes to a package's API, or change in behaviour. As examples:
+
+* Adding a method to an interface is an incompatible change to the API, as now every implementation of the interface almost certainly lacks this method.
+
+* A method named `save()` changed to do nothing would almost certainly be considered a breaking change. A judgement call has to be made in these cases.
+
+Edlib's Composer packages follow the [Semantic Versioning](https://semver.org/) scheme. In short, the latest package in a major version series must remain backward compatible with the earliest. Upgrading from a package's `1.0.0` to `1.99.99` versions should not require any changes to the code consuming the package, for instance.
+
+Adding stricter version requirements to a package's dependencies, including to PHP itself, is *not* a breaking change. Composer will not upgrade to dependencies where the requirements cannot be met, and will resolve the situation by keeping the current version of the package. As upgrading a major version is subject to manual review, and the tooling can handle version resolution, bumping the major version of a package to reflect increased dependency requirements is discouraged.
+
+### REST APIs/applications/microservices
+
+Edlib's applications/microservices are unversioned and do not export any code, therefore any changes to interfaces or signatures do not matter, as long as every usage is updated.
+
+In general, REST APIs must avoid introducing new requirements to JSON payloads. For instance, adding a new required entry to the JSON payload would be a breaking change, as this breaks existing endpoint uses.
+
+
+## Tests
+
+Submitted code must pass the automated test suites.
