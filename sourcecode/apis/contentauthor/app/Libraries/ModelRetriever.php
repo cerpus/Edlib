@@ -32,7 +32,7 @@ class ModelRetriever
 
     public static function getModelFromContentType($contentType): string
     {
-        if (starts_with(strtolower($contentType), 'h5p.')) {
+        if (str_starts_with(strtolower($contentType), 'h5p.')) {
             return H5PContent::class;
         }
 

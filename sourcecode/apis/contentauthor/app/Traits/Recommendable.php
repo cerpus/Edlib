@@ -11,6 +11,7 @@ use App\Content;
 use App\QuestionSet;
 use Cerpus\REContentClient\REContent;
 use Cerpus\VersionClient\VersionData;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 trait Recommendable
@@ -111,7 +112,7 @@ trait Recommendable
             }
         }
 
-        return array_unique(array_flatten($childIds));
+        return array_unique(Arr::flatten($childIds));
     }
 
     public function hasPublicChildren(): bool
