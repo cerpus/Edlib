@@ -10,6 +10,7 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Http\File;
 use InvalidArgumentException;
 
@@ -111,7 +112,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
         $request = $this->client->get(sprintf(self::GET_VIDEO_SOURCES, $this->accountId, urlencode($videoId)));
         $response = $request->getBody()->getContents();
 
-        return \GuzzleHttp\json_decode($response);
+        return GuzzleUtils::jsonDecode($response);
     }
 
     public function downloadVideo($videoId)

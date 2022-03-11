@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "088d9db325b308e1bc1f30832438ab1d",
+    "content-hash": "daa66d0380407c2af3769314f7e039fa",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -381,25 +381,25 @@
         },
         {
             "name": "cerpus/cerpushelper",
-            "version": "v1.6.1",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-cerpushelper.git",
-                "reference": "caee2db3f0cf737aac924849ef0981c24e191d5a"
+                "reference": "1d8b601a228c552a0f3e9604cfbf76c8bc86e4d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/caee2db3f0cf737aac924849ef0981c24e191d5a",
-                "reference": "caee2db3f0cf737aac924849ef0981c24e191d5a",
+                "url": "https://api.github.com/repos/cerpus/php-cerpushelper/zipball/1d8b601a228c552a0f3e9604cfbf76c8bc86e4d5",
+                "reference": "1d8b601a228c552a0f3e9604cfbf76c8bc86e4d5",
                 "shasum": ""
             },
             "require": {
                 "auth0/auth0-php": "^7.5",
                 "cerpus/cerpusauthlib-core": "^0.0",
                 "ext-json": "*",
-                "guzzlehttp/guzzle": "*",
-                "guzzlehttp/oauth-subscriber": "*",
-                "illuminate/support": "^5.3|>=6.0|>=7.0",
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "guzzlehttp/oauth-subscriber": "^0.6.0",
+                "illuminate/support": "^8.0|^9.0",
                 "kamermans/guzzle-oauth2-subscriber": "^1.0",
                 "php": "^7.4|^8.0"
             },
@@ -434,9 +434,9 @@
             "description": "Base package for common components",
             "support": {
                 "issues": "https://github.com/cerpus/php-cerpushelper/issues",
-                "source": "https://github.com/cerpus/php-cerpushelper/tree/v1.6.1"
+                "source": "https://github.com/cerpus/php-cerpushelper/tree/v2.1.0"
             },
-            "time": "2022-02-01T08:35:56+00:00"
+            "time": "2022-02-25T10:19:40+00:00"
         },
         {
             "name": "cerpus/coreclient",
@@ -614,28 +614,29 @@
         },
         {
             "name": "cerpus/imageservice-client",
-            "version": "v2.0.0",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-imageservice-client.git",
-                "reference": "50efd0e363bf168b3ef026304b710bc5f32bc99b"
+                "reference": "3f58bc2eac9018881f1968d947a6ac7f32465143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-imageservice-client/zipball/50efd0e363bf168b3ef026304b710bc5f32bc99b",
-                "reference": "50efd0e363bf168b3ef026304b710bc5f32bc99b",
+                "url": "https://api.github.com/repos/cerpus/php-imageservice-client/zipball/3f58bc2eac9018881f1968d947a6ac7f32465143",
+                "reference": "3f58bc2eac9018881f1968d947a6ac7f32465143",
                 "shasum": ""
             },
             "require": {
-                "cerpus/cerpushelper": "^1.5",
+                "cerpus/cerpushelper": "^2.0",
                 "ext-json": "*",
-                "illuminate/support": "^6.0|^7.0|^8.0",
-                "nesbot/carbon": "^2.0"
+                "illuminate/support": "^8.0||^9.0",
+                "nesbot/carbon": "^2.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "fzaninotto/faker": "^1.7",
-                "orchestra/testbench": "^4",
-                "phpunit/phpunit": "^8",
+                "fakerphp/faker": "^1.17",
+                "orchestra/testbench": "^6.23|^7.0",
+                "phpunit/phpunit": "^9.5",
                 "shrikeh/teapot": "^2.3"
             },
             "type": "library",
@@ -661,9 +662,9 @@
             "description": "Client to handle communication with the Cerpus ImageService",
             "support": {
                 "issues": "https://github.com/cerpus/php-imageservice-client/issues",
-                "source": "https://github.com/cerpus/php-imageservice-client/tree/v2.0.0"
+                "source": "https://github.com/cerpus/php-imageservice-client/tree/v2.1.0"
             },
-            "time": "2021-11-17T10:29:28+00:00"
+            "time": "2022-02-25T09:26:11+00:00"
         },
         {
             "name": "cerpus/jwtsupportlib",
@@ -863,71 +864,87 @@
         },
         {
             "name": "cerpus/questionbank-client",
-            "version": "0.2.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-questionbank-client.git",
-                "reference": "205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a"
+                "reference": "2292a73cbf12722ba8ca947459d9a79c55d91b77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a",
-                "reference": "205b9943b0cc5767bcc5c8a6f0ea5ee864ecdf5a",
+                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/2292a73cbf12722ba8ca947459d9a79c55d91b77",
+                "reference": "2292a73cbf12722ba8ca947459d9a79c55d91b77",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.2",
-                "guzzlehttp/oauth-subscriber": "^0.3.0",
-                "illuminate/support": ">=5.4",
-                "kamermans/guzzle-oauth2-subscriber": "^1.0"
+                "cerpus/cerpushelper": "^2.0",
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.0|^7.0",
+                "illuminate/support": "^8.0|^9.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "fzaninotto/faker": "^1.7",
-                "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "^6.4",
+                "fakerphp/faker": "^1.16",
+                "mockery/mockery": "^1.4",
+                "phpunit/phpunit": "^9.5",
                 "shrikeh/teapot": "^2.3"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "\\Cerpus\\QuestionBankClient\\Providers\\QuestionBankClientServiceProvider"
+                    ]
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Cerpus\\QuestionBankClient\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
                     "email": "thomass@cerpus.com"
+                },
+                {
+                    "name": "Odd-Arne Johansen",
+                    "email": "odd-arne@gamilab.com"
                 }
             ],
-            "description": "Client to talk do the Cerpus Questionset Service",
+            "description": "Client to talk do the Cerpus Questionbank Service",
             "support": {
                 "issues": "https://github.com/cerpus/php-questionbank-client/issues",
-                "source": "https://github.com/cerpus/php-questionbank-client/tree/0.2.0"
+                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.1.0"
             },
-            "time": "2019-10-25T05:22:59+00:00"
+            "time": "2022-02-25T13:04:13+00:00"
         },
         {
             "name": "cerpus/version-client",
-            "version": "1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-version-client.git",
-                "reference": "9b6be7bfc6db30d4f01342df287d2a73d649532b"
+                "reference": "66f83359d3264fd8bba2d6f288f00ff31a3dcc49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-version-client/zipball/9b6be7bfc6db30d4f01342df287d2a73d649532b",
-                "reference": "9b6be7bfc6db30d4f01342df287d2a73d649532b",
+                "url": "https://api.github.com/repos/cerpus/php-version-client/zipball/66f83359d3264fd8bba2d6f288f00ff31a3dcc49",
+                "reference": "66f83359d3264fd8bba2d6f288f00ff31a3dcc49",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.2",
-                "php": ">=7.0"
+                "guzzlehttp/guzzle": "^6.2|^7.0",
+                "illuminate/support": "^8.0|^9.0",
+                "php": "^7.4|^8.0"
             },
             "require-dev": {
-                "mockery/mockery": "1.2.*",
-                "phpunit/phpunit": "6.5.14"
+                "mockery/mockery": "^1.2",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "autoload": {
@@ -936,6 +953,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
             "authors": [
                 {
                     "name": "Thomas Horn Sivertsen",
@@ -949,9 +969,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cerpus/php-version-client/issues",
-                "source": "https://github.com/cerpus/php-version-client/tree/1.2.0"
+                "source": "https://github.com/cerpus/php-version-client/tree/v1.3.0"
             },
-            "time": "2020-11-02T14:10:57+00:00"
+            "time": "2022-03-11T10:54:14+00:00"
         },
         {
             "name": "ckeditor/ckeditor",
@@ -2555,37 +2575,45 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.5.5",
+            "version": "7.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e"
+                "reference": "ee0a041b1760e6a53d2a39c8c34115adc2af2c79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
-                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ee0a041b1760e6a53d2a39c8c34115adc2af2c79",
+                "reference": "ee0a041b1760e6a53d2a39c8c34115adc2af2c79",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.6.1",
-                "php": ">=5.5",
-                "symfony/polyfill-intl-idn": "^1.17.0"
+                "guzzlehttp/promises": "^1.5",
+                "guzzlehttp/psr7": "^1.8.3 || ^2.1",
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-client": "^1.0",
+                "symfony/deprecation-contracts": "^2.2 || ^3.0"
+            },
+            "provide": {
+                "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4.1",
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
-                "psr/log": "^1.1"
+                "php-http/client-integration-tests": "^3.0",
+                "phpunit/phpunit": "^8.5.5 || ^9.3.5",
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
+                "ext-curl": "Required for CURL handler support",
+                "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.5-dev"
+                    "dev-master": "7.4-dev"
                 }
             },
             "autoload": {
@@ -2602,53 +2630,102 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Jeremy Lindblom",
+                    "email": "jeremeamia@gmail.com",
+                    "homepage": "https://github.com/jeremeamia"
+                },
+                {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://github.com/sagikazarmark"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
+                    "homepage": "https://github.com/Tobion"
                 }
             ],
             "description": "Guzzle is a PHP HTTP client library",
-            "homepage": "http://guzzlephp.org/",
             "keywords": [
                 "client",
                 "curl",
                 "framework",
                 "http",
                 "http client",
+                "psr-18",
+                "psr-7",
                 "rest",
                 "web service"
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/6.5"
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.1"
             },
-            "time": "2020-06-16T21:01:06+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-12-06T18:43:05+00:00"
         },
         {
             "name": "guzzlehttp/oauth-subscriber",
-            "version": "0.3.0",
+            "version": "0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/oauth-subscriber.git",
-                "reference": "04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf"
+                "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf",
-                "reference": "04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf",
+                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/8d6cab29f8397e5712d00a383eeead36108a3c1f",
+                "reference": "8d6cab29f8397e5712d00a383eeead36108a3c1f",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "~6.0",
+                "guzzlehttp/guzzle": "^6.5|^7.2",
+                "guzzlehttp/psr7": "^1.7|^2.0",
                 "php": ">=5.5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "~4.0|^9.3.3"
+            },
+            "suggest": {
+                "ext-openssl": "Required to sign using RSA-SHA1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.6-dev"
                 }
             },
             "autoload": {
@@ -2675,9 +2752,9 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/oauth-subscriber/issues",
-                "source": "https://github.com/guzzle/oauth-subscriber/tree/master"
+                "source": "https://github.com/guzzle/oauth-subscriber/tree/0.6.0"
             },
-            "time": "2015-08-15T19:44:28+00:00"
+            "time": "2021-07-13T12:01:32+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -5410,192 +5487,6 @@
                 "source": "https://github.com/php-http/discovery/tree/1.14.1"
             },
             "time": "2021-09-18T07:57:46+00:00"
-        },
-        {
-            "name": "php-http/guzzle6-adapter",
-            "version": "v2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/guzzle6-adapter.git",
-                "reference": "9d1a45eb1c59f12574552e81fb295e9e53430a56"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/guzzle6-adapter/zipball/9d1a45eb1c59f12574552e81fb295e9e53430a56",
-                "reference": "9d1a45eb1c59f12574552e81fb295e9e53430a56",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "php": "^7.1 || ^8.0",
-                "php-http/httplug": "^2.0",
-                "psr/http-client": "^1.0"
-            },
-            "provide": {
-                "php-http/async-client-implementation": "1.0",
-                "php-http/client-implementation": "1.0",
-                "psr/http-client-implementation": "1.0"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "php-http/client-integration-tests": "^2.0 || ^3.0",
-                "phpunit/phpunit": "^7.4 || ^8.4"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Adapter\\Guzzle6\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "David de Boer",
-                    "email": "david@ddeboer.nl"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com"
-                }
-            ],
-            "description": "Guzzle 6 HTTP Adapter",
-            "homepage": "http://httplug.io",
-            "keywords": [
-                "Guzzle",
-                "http"
-            ],
-            "support": {
-                "issues": "https://github.com/php-http/guzzle6-adapter/issues",
-                "source": "https://github.com/php-http/guzzle6-adapter/tree/v2.0.2"
-            },
-            "time": "2021-03-02T10:52:33+00:00"
-        },
-        {
-            "name": "php-http/httplug",
-            "version": "2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/httplug.git",
-                "reference": "f640739f80dfa1152533976e3c112477f69274eb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/httplug/zipball/f640739f80dfa1152533976e3c112477f69274eb",
-                "reference": "f640739f80dfa1152533976e3c112477f69274eb",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1 || ^8.0",
-                "php-http/promise": "^1.1",
-                "psr/http-client": "^1.0",
-                "psr/http-message": "^1.0"
-            },
-            "require-dev": {
-                "friends-of-phpspec/phpspec-code-coverage": "^4.1",
-                "phpspec/phpspec": "^5.1 || ^6.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Client\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric GELOEN",
-                    "email": "geloen.eric@gmail.com"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com",
-                    "homepage": "https://sagikazarmark.hu"
-                }
-            ],
-            "description": "HTTPlug, the HTTP client abstraction for PHP",
-            "homepage": "http://httplug.io",
-            "keywords": [
-                "client",
-                "http"
-            ],
-            "support": {
-                "issues": "https://github.com/php-http/httplug/issues",
-                "source": "https://github.com/php-http/httplug/tree/2.3.0"
-            },
-            "time": "2022-02-21T09:52:22+00:00"
-        },
-        {
-            "name": "php-http/promise",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/promise.git",
-                "reference": "4c4c1f9b7289a2ec57cde7f1e9762a5789506f88"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/promise/zipball/4c4c1f9b7289a2ec57cde7f1e9762a5789506f88",
-                "reference": "4c4c1f9b7289a2ec57cde7f1e9762a5789506f88",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1 || ^8.0"
-            },
-            "require-dev": {
-                "friends-of-phpspec/phpspec-code-coverage": "^4.3.2",
-                "phpspec/phpspec": "^5.1.2 || ^6.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Promise\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Joel Wurtz",
-                    "email": "joel.wurtz@gmail.com"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com"
-                }
-            ],
-            "description": "Promise used for asynchronous HTTP requests",
-            "homepage": "http://httplug.io",
-            "keywords": [
-                "promise"
-            ],
-            "support": {
-                "issues": "https://github.com/php-http/promise/issues",
-                "source": "https://github.com/php-http/promise/tree/1.1.0"
-            },
-            "time": "2020-07-07T09:29:14+00:00"
         },
         {
             "name": "phpoption/phpoption",
