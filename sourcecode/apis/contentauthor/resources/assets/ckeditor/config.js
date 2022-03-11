@@ -36,7 +36,7 @@ CKEDITOR.editorConfig = function (config) {
     // Simplify the dialog windows.
     config.removeDialogTabs = 'image:advanced;link:advanced';
 
-    config.extraPlugins = 'widget,dialog,iframedialog,autogrow,edlib,uploadimage';
+    config.extraPlugins = 'widget,dialog,iframedialog,autogrow,uploadimage';
 
     config.autoGrow_bottomSpace = 50;
     config.autoGrow_onStartup = true;
