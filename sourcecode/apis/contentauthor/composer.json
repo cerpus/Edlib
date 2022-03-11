@@ -21,7 +21,6 @@
     "cerpus/jwtsupportlib": "^0.3.2",
     "cerpus/laravel-auth": "^1.0",
     "cerpus/laravel-rabbitmq-pubsub": "^2.0.1",
-    "cerpus/license-client": "^1.4",
     "cerpus/questionbank-client": "^0.2.0",
     "cerpus/version-client": "^1.2",
     "ckeditor/ckeditor": "^4.5",
