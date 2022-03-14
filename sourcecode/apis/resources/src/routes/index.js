@@ -133,6 +133,11 @@ export default async ({ pubSubConnection }) => {
         runAsync(resourceController.getPublicResources)
     );
 
+    apiRouter.post(
+        '/v1/resources',
+        runAsync(resourceController.saveResource),
+    );
+
     apiRouter.get(
         '/v1/admin/resources',
         runAsync(resourceController.adminGetAllResources)

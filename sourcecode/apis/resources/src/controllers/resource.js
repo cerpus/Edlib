@@ -112,6 +112,14 @@ export default {
     adminGetAllResources: async (req) => {
         return req.context.db.resource.getAllNotRemoved();
     },
+    saveResource: async (req, res) => {
+        await resourceService.saveResource(req.context, req.body, {
+            saveToSearchIndex: true,
+            waitForIndex: true,
+        });
+
+        res.status(201).send();
+    },
     getTenantResources: async (req) => {
         return resourceService.getResourcesFromRequest(
             req,
