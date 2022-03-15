@@ -8,7 +8,7 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import ResourceModal from '../../ResourceModal/ResourceModal.jsx';
 import useTranslation from '../../../hooks/useTranslation.js';
 
-const ViewContainer = ({ children, showDeleteButton }) => {
+const ViewContainer = ({ children, showDeleteButton, resources }) => {
     const { t } = useTranslation();
     const { getPath } = useIframeStandaloneContext();
     const { onInsert, onRemove } = useResourceCapabilities();
@@ -54,6 +54,9 @@ const ViewContainer = ({ children, showDeleteButton }) => {
                     };
                 },
                 setSelectedResource,
+                resources: resources.filter(
+                    (resource) => !idsToHide.has(resource.id)
+                ),
             })}
             <ResourceModal
                 isOpen={!!selectedResource}

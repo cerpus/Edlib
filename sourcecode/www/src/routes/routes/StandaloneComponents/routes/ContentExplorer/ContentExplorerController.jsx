@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
-import appConfig from '../../../../../config/app';
 import ContentExplorer from '../../components/ContentExplorer';
 import useIframeIntegration from '../../../../../hooks/useIframeIntegration';
 import { IframeStandaloneProvider } from '../../../../../contexts/IframeStandalone';
@@ -18,11 +17,10 @@ const ContentExplorerController = ({ match }) => {
     return (
         <IframeStandaloneProvider basePath={match.url}>
             <EdlibComponentsProvider
-                edlibUrl={appConfig.apiUrl}
-                getJwt={async () => ({
+                externalJwt={{
                     type: 'external',
                     token: queryParams.jwt,
-                })}
+                }}
                 configuration={JSON.parse(queryParams.configuration)}
                 language={queryParams.language}
             >

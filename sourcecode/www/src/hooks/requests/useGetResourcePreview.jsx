@@ -1,13 +1,17 @@
 import React from 'react';
-import useConfig from '../useConfig';
 import useResourceSource from '../useResourceSource';
 import useFetchWithToken from '../useFetchWithToken';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
 export default (resource) => {
-    const { edlib } = useConfig();
+    const { edlibApi } = useConfigurationContext();
 
-    const { error, loading, response: preview } = useFetchWithToken(
-        edlib(
+    const {
+        error,
+        loading,
+        response: preview,
+    } = useFetchWithToken(
+        edlibApi(
             `/lti/v2/resources/${resource.id}/preview?resourceVersionId=${resource.version.id}`
         ),
         'GET'

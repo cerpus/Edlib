@@ -1,3 +1,4 @@
+import fetch from 'isomorphic-unfetch';
 import * as queryString from 'query-string';
 
 export class RequestError extends Error {
@@ -19,11 +20,18 @@ const request = async (url, method, options = {}) => {
         method,
         signal: options.signal,
         body: options.body ? JSON.stringify(options.body) : undefined,
+        credentials: 'include',
     });
 
     if (response.status >= 400) {
-        response.data = await response.json();
+        try {
+            response.data = await response.json();
+        } catch (e) {}
         throw new RequestError(response);
+    }
+
+    if (options.addCookiesFromSetCookie) {
+        options.addCookiesFromSetCookie(response.headers.get('set-cookie'));
     }
 
     if (options.json === false) {
@@ -38,6 +46,12 @@ const getHeaders = (options) => {
 
     if (options.body) {
         headers['Content-Type'] = 'application/json';
+    }
+
+    if (options.cookies) {
+        headers['cookie'] = Object.entries(options.cookies)
+            .map(([key, value]) => `${key}=${value}`)
+            .join(';');
     }
 
     return headers;

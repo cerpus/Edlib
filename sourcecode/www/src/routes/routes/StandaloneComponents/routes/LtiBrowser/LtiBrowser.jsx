@@ -1,8 +1,6 @@
 import React from 'react';
 import queryString from 'query-string';
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
-import appConfig from '../../../../../config/app.js';
-import axios from 'axios';
 import ContentExplorer from '../../components/ContentExplorer';
 
 const LtiBrowser = ({ match }) => {
@@ -15,30 +13,15 @@ const LtiBrowser = ({ match }) => {
             language: query.language || 'en',
         };
     }, []);
-    const [currentJwt, setCurrentJwt] = React.useState(jwt);
 
     return (
         <div style={{ height: '100vh' }}>
             <EdlibComponentsProvider
                 language={language}
-                getJwt={async () => {
-                    const { data } = await axios.post(
-                        `${appConfig.apiUrl}/auth/v3/jwt/refresh`,
-                        null,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${currentJwt}`,
-                            },
-                        }
-                    );
-
-                    setCurrentJwt(data.token);
-                    return {
-                        type: 'internal',
-                        token: data.token,
-                    };
+                externalJwt={{
+                    type: 'external',
+                    token: jwt,
                 }}
-                edlibUrl={appConfig.apiUrl}
                 configuration={{
                     returnLtiLinks: false,
                 }}

@@ -25,18 +25,22 @@ export default {
             extras.ext_preview = 'true';
         }
 
-        const { launchRequest } = await ltiService.viewResourceRequest(
-            req.context,
-            req.params.resourceId,
-            req.query.resourceVersionId,
-            req.authorizationJwt && {
-                jwt: req.authorizationJwt,
-                userId: req.user.id,
-            },
-            extras
-        );
+        const { launchRequest, resourceVersion } =
+            await ltiService.viewResourceRequest(
+                req.context,
+                req.params.resourceId,
+                req.query.resourceVersionId,
+                req.authorizationJwt && {
+                    jwt: req.authorizationJwt,
+                    userId: req.user.id,
+                },
+                extras
+            );
 
-        return launchRequest;
+        return {
+            ...launchRequest,
+            resourceVersion,
+        };
     },
     convertLaunchUrlV2: async (req, res, next) => {
         const uuidRegex =

@@ -6,8 +6,7 @@ import {
     Close,
 } from '@mui/icons-material';
 import { AppBar, Button, Menu, MenuItem, Toolbar } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import styled from 'styled-components';
+import { makeStyles } from 'tss-react/mui';
 import cn from 'classnames';
 import { useLocation, matchPath, useHistory } from 'react-router-dom';
 import { useConfigurationContext } from '../../contexts/Configuration';
@@ -16,21 +15,7 @@ import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import resourceEditors from '../../constants/resourceEditors';
 import logoUrl from '../../assets/edlib.png';
 
-const StyledClose = styled.div`
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: center;
-    padding-right: 15px;
-    color: white;
-
-    & > svg {
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-    }
-`;
-
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles()((theme) => {
     return {
         logo: {
             maxHeight: 60,
@@ -54,12 +39,24 @@ const useStyles = makeStyles((theme) => {
                 color: theme.palette.secondary.main,
             },
         },
+        close: {
+            display: 'flex',
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            paddingRight: 15,
+            color: 'white',
+            '& > svg': {
+                width: 40,
+                height: 40,
+                cursor: 'pointer',
+            },
+        },
     };
 });
 
 const ContentExplorerHeader = ({ onClose, getUrl }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
+    const { classes } = useStyles();
     const location = useLocation();
     const history = useHistory();
     const { enableDoku, inMaintenanceMode } = useConfigurationContext();
@@ -265,9 +262,9 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                     </div>
                 )}
                 {onClose ? (
-                    <StyledClose>
+                    <div className={classes.close}>
                         <Close onClick={onClose} />
-                    </StyledClose>
+                    </div>
                 ) : (
                     <div>&nbsp</div>
                 )}

@@ -3,10 +3,10 @@ import cn from 'classnames';
 import { AccountCircle } from '@mui/icons-material';
 import { FromSideModal, FromSideModalHeader } from './FromSideModal';
 import useFetchWithToken from '../hooks/useFetchWithToken';
-import useConfig from '../hooks/useConfig';
 import styled from 'styled-components';
 import { Spinner, Alert } from '@cerpus/ui';
 import ResourcePreviewContainer from '../containers/ResourcePreview';
+import { useConfigurationContext } from '../contexts/Configuration.jsx';
 
 const Content = styled.div`
     flex: 1;
@@ -67,16 +67,17 @@ const ResourceVersion = ({ resourceId }) => {
 };
 
 const ResourceVersions = ({ selectedResource, onClose }) => {
-    const { edlib } = useConfig();
-    const [selectedVersionEdlibId, setSelectedVersionEdlibId] = React.useState(
-        null
-    );
+    const { edlibApi } = useConfigurationContext();
+    const [selectedVersionEdlibId, setSelectedVersionEdlibId] =
+        React.useState(null);
     const {
         loading: loadingVersions,
         error: errorLoadingVersions,
         response: versions,
     } = useFetchWithToken(
-        edlib(`/resources/v1/resources/${selectedResource.edlibId}/versions`),
+        edlibApi(
+            `/resources/v1/resources/${selectedResource.edlibId}/versions`
+        ),
         'GET'
     );
 

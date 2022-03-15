@@ -6,9 +6,9 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     checkboxRoot: {
         height: 20,
         boxSizing: 'border-box',
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Alphabetical = ({ allH5ps, contentTypes }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     return (
         <List dense component="div" disablePadding>

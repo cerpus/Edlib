@@ -1,20 +1,17 @@
 import React from 'react';
-import appConfig from '../../config/app';
 import useRequestWithToken from '../useRequestWithToken';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
 export const useEdlibResource = () => {
     const request = useRequestWithToken();
+    const { edlibApi } = useConfigurationContext();
 
     return (resourceId, resourceVersionId) =>
-        request(
-            `${appConfig.apiUrl}/lti/v2/resources/${resourceId}/lti-links`,
-            'POST',
-            {
-                body: {
-                    resourceVersionId,
-                },
-            }
-        );
+        request(edlibApi(`/lti/v2/resources/${resourceId}/lti-links`), 'POST', {
+            body: {
+                resourceVersionId,
+            },
+        });
 };
 
 export const withUseResource = (Component) => (props) => {

@@ -7,9 +7,9 @@ import {
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     nested: {
         paddingLeft: theme.spacing(1),
     },
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Licenses = ({ licenses, filterCount, licenseData }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     return (
         <List dense component="div" disablePadding className={classes.nested}>

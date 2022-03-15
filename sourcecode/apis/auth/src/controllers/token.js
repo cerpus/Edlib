@@ -148,19 +148,22 @@ export default {
             });
         }
 
+        const { token, expiresAt } = await jwksProviderService.encrypt(
+            req.context,
+            { type: 'user', user, roles },
+            1,
+            user.id
+        );
+
         return {
             user,
             roles,
-            token: await jwksProviderService.encrypt(
-                req.context,
-                { type: 'user', user, roles },
-                1,
-                user.id
-            ),
+            token,
+            expiresAt,
         };
     },
     refresh: async (req) => {
-        const { type, user } = await jwksProviderService.verify(
+        const { type, user, roles } = await jwksProviderService.verify(
             req.context,
             req.body.token
         );
@@ -169,14 +172,17 @@ export default {
             throw new UnauthorizedException();
         }
 
+        const { token, expiresAt } = await jwksProviderService.encrypt(
+            req.context,
+            { type: 'user', user, roles },
+            1,
+            user.id
+        );
+
         return {
             user,
-            token: await jwksProviderService.encrypt(
-                req.context,
-                { type: 'user', user },
-                1,
-                user.id
-            ),
+            token,
+            expiresAt,
         };
     },
     createForLtiUser: async (req) => {
@@ -232,16 +238,18 @@ export default {
 
         return {
             user: modifiedUser,
-            token: await jwksProviderService.encrypt(
-                req.context,
-                {
-                    type: 'user',
-                    userType: 'lti',
-                    user: modifiedUser,
-                },
-                1,
-                modifiedUser.id
-            ),
+            token: (
+                await jwksProviderService.encrypt(
+                    req.context,
+                    {
+                        type: 'user',
+                        userType: 'lti',
+                        user: modifiedUser,
+                    },
+                    1,
+                    modifiedUser.id
+                )
+            ).token,
         };
     },
 };

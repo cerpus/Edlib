@@ -9,6 +9,8 @@ describe('Middlewares', () => {
                 headers: {
                     authorization: 'Bearer test',
                 },
+                cookies: {},
+                query: {},
             };
 
             hasJwt(req, {}, next);
@@ -21,6 +23,8 @@ describe('Middlewares', () => {
             const next = jest.fn();
             const req = {
                 headers: {},
+                cookies: {},
+                query: {},
             };
 
             expect(() => {
@@ -34,6 +38,8 @@ describe('Middlewares', () => {
                 headers: {
                     authorization: 'asd',
                 },
+                cookies: {},
+                query: {},
             };
 
             expect(() => {

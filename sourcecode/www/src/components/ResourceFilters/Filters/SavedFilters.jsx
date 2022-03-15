@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Button, Checkbox, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../../hooks/useTranslation.js';
 import CreateSavedFilter from './components/CreateSavedFilter.jsx';
 import FilterUtils from './filterUtils.js';
 import DeleteSavedFilter from './components/DeleteSavedFilter.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     nested: {
         paddingLeft: theme.spacing(1),
     },
@@ -27,7 +27,7 @@ const SavedFilters = ({
     contentTypeData,
 }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [showCreate, setShowCreate] = React.useState(false);
     const [showDelete, setShowDelete] = React.useState(false);
     const filterUtils = FilterUtils(filters, {

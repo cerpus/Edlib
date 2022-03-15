@@ -1,14 +1,34 @@
 import { UnauthorizedException } from '@cerpus/edlib-node-utils';
 
-export default (req, res, next) => {
+const getToken = (req) => {
     const bearerString = 'Bearer';
     const authorization = req.headers.authorization;
+    const jwtCookie = req.cookies.jwt;
+    const jwtQuery = req.query.jwt;
 
-    if (!authorization || !authorization.startsWith(bearerString)) {
+    if (jwtQuery) {
+        return jwtQuery;
+    }
+
+    if (authorization && authorization.startsWith(bearerString)) {
+        return authorization.substring(bearerString.length).trim();
+    }
+
+    if (jwtCookie) {
+        return jwtCookie;
+    }
+
+    return null;
+};
+
+export default (req, res, next) => {
+    const token = getToken(req);
+
+    if (!token) {
         throw new UnauthorizedException();
     }
 
-    req.authorizationJwt = authorization.substring(bearerString.length).trim();
+    req.authorizationJwt = token;
 
     next();
 };

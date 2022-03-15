@@ -1,9 +1,9 @@
 import React from 'react';
-import useConfig from '../useConfig';
 import useFetchWithToken from '../useFetchWithToken';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
-export default (requestBody, wait) => {
-    const { edlib } = useConfig();
+export default (requestBody) => {
+    const { edlibApi } = useConfigurationContext();
 
     const options = React.useMemo(
         () => ({
@@ -13,12 +13,9 @@ export default (requestBody, wait) => {
     );
 
     const { error, loading, response, refetch } = useFetchWithToken(
-        edlib('/resources/v2/resources'),
+        edlibApi('/resources/v2/resources'),
         'GET',
-        options,
-        wait,
-        true,
-        false
+        options
     );
 
     return {

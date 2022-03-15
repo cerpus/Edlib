@@ -8,13 +8,13 @@ import {
     ListItemText,
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import _ from 'lodash';
 import useTranslation from '../../../../hooks/useTranslation.js';
 import contentAuthorConstants from '../../../../constants/contentAuthor.js';
 import useArray from '../../../../hooks/useArray.js';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     nested: {
         paddingLeft: theme.spacing(1),
     },
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Grouped = ({ allH5ps, contentTypes }) => {
     const { t } = useTranslation();
-    const classes = useStyles();
+    const { classes } = useStyles();
     const open = useArray();
 
     const categoriesObject = allH5ps.reduce((categories, h5p) => {

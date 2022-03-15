@@ -12,13 +12,13 @@ import {
     MenuItem,
     Box,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../../../hooks/useTranslation.js';
 import FilterChips from '../../../ResourcePage/components/FilterChips.jsx';
 import useRequestWithToken from '../../../../hooks/useRequestWithToken.jsx';
-import appConfig from '../../../../config/app.js';
+import { useConfigurationContext } from '../../../../contexts/Configuration.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     formControl: {
         marginBottom: theme.spacing(2),
     },
@@ -31,9 +31,10 @@ const DeleteSavedFilter = ({
     onDeleted,
     filterUtils,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { t } = useTranslation();
     const request = useRequestWithToken();
+    const { edlibApi } = useConfigurationContext();
 
     const [selected, setSelected] = React.useState(null);
     const selectedSavedFilter = React.useMemo(() => {
@@ -102,7 +103,7 @@ const DeleteSavedFilter = ({
                             return;
                         }
 
-                        let url = `${appConfig.apiUrl}/common/saved-filters/${selected}`;
+                        let url = edlibApi(`/common/saved-filters/${selected}`);
 
                         request(url, 'DELETE', {
                             json: false,

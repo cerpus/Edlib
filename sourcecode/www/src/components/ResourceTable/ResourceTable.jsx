@@ -105,14 +105,19 @@ const ResourceTable = ({
     showDeleteButton = false,
     sortingOrder,
     setSortingOrder,
+    refetch,
 }) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
     const hideResourceColumns = getUserConfig('hideResourceColumns');
 
     return (
-        <ViewContainer showDeleteButton={showDeleteButton}>
-            {({ cogProps, setSelectedResource }) => (
+        <ViewContainer
+            showDeleteButton={showDeleteButton}
+            refetch={refetch}
+            resources={resources}
+        >
+            {({ cogProps, setSelectedResource, resources }) => (
                 <>
                     <HeaderRow>
                         <div

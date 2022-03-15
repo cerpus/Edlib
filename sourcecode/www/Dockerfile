@@ -8,13 +8,9 @@ WORKDIR /app
 RUN yarn build
 RUN rm /app/build/static/**/*.map
 
-FROM nginx:alpine as prod
-RUN apk update; apk add bash
-COPY --from=build /app/build /usr/share/nginx/html
-COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./createEnvFile.sh /createEnvFile.sh
+FROM build as prod
 EXPOSE 80
-CMD bash /createEnvFile.sh /usr/share/nginx/html; nginx -g "daemon off;"
+CMD yarn start:prod
 
 FROM node:16.13 as dev
 WORKDIR /app

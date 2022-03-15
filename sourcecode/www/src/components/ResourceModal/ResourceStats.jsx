@@ -10,17 +10,17 @@ import {
 } from 'recharts';
 import { fillEmptyDays } from '../../helpers/chart.js';
 import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
-import useConfig from '../../hooks/useConfig.js';
 import { Box, CircularProgress } from '@mui/material';
 import moment from 'moment';
 import useTranslation from '../../hooks/useTranslation.js';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
 const ResourceStats = ({ resourceId }) => {
     const { t } = useTranslation();
-    const { edlib } = useConfig();
+    const { edlibApi } = useConfigurationContext();
 
     const { loading, response } = useFetchWithToken(
-        edlib(`/resources/v1/resources/${resourceId}/stats`)
+        edlibApi(`/resources/v1/resources/${resourceId}/stats`)
     );
 
     if (loading || !response) {
