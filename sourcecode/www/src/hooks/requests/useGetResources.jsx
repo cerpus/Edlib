@@ -15,9 +15,7 @@ export default (requestBody) => {
     const { error, loading, response, refetch } = useFetchWithToken(
         edlibApi('/resources/v2/resources'),
         'GET',
-        options,
-        true,
-        false
+        options
     );
 
     return {

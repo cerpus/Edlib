@@ -16,13 +16,25 @@ const ResourceFiltersContainer = (props) => {
             true
         );
     const { loading: loadingLicenses, response: licenseResponse } =
-        useFetchWithToken(edlibApi(`/resources/v1/filters/licenses`));
+        useFetchWithToken(
+            edlibApi(`/resources/v1/filters/licenses`),
+            'GET',
+            React.useMemo(() => ({}), []),
+            true,
+            true
+        );
 
     const {
         loading: loadingSavedFilters,
         response: savedFilterResponse,
         setResponse: setResponseSavedFilter,
-    } = useFetchWithToken(edlibApi(`/common/saved-filters`));
+    } = useFetchWithToken(
+        edlibApi(`/common/saved-filters`),
+        'GET',
+        React.useMemo(() => ({}), []),
+        true,
+        true
+    );
 
     if (loadingContentTypes || loadingLicenses || loadingSavedFilters) {
         return <CircularProgress />;

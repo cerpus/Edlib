@@ -17,7 +17,7 @@ const LanguageDropdown = ({ language, setLanguage }) => {
         'GET',
         React.useMemo(() => ({}), []),
         true,
-        false
+        true
     );
 
     return (

@@ -3,6 +3,7 @@ import ResourceView from './ResourceView';
 import useFetch from '../../hooks/useFetch';
 import DefaultFetcher from '../../containers/DefaultFetcher';
 import { useConfigurationContext } from '../../contexts/Configuration.jsx';
+import { Helmet } from 'react-helmet';
 
 const ResourceViewContainer = ({ resourceId }) => {
     const { edlibApi } = useConfigurationContext();
@@ -12,9 +13,17 @@ const ResourceViewContainer = ({ resourceId }) => {
     );
 
     return (
-        <DefaultFetcher useFetchData={getPreviewInfoFetch}>
-            {({ response: preview }) => <ResourceView preview={preview} />}
-        </DefaultFetcher>
+        <>
+            <Helmet>
+                <title>
+                    {getPreviewInfoFetch.response &&
+                        getPreviewInfoFetch.response.resourceVersion.title}
+                </title>
+            </Helmet>
+            <DefaultFetcher useFetchData={getPreviewInfoFetch}>
+                {({ response: preview }) => <ResourceView preview={preview} />}
+            </DefaultFetcher>
+        </>
     );
 };
 

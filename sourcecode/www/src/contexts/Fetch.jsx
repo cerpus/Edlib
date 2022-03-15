@@ -27,12 +27,17 @@ export const FetchProvider = ({
     ssrAddCookiesFromSetCookie = null,
 }) => {
     const [cache, setCache] = React.useState(initialState);
+    const liveCache = React.useRef(initialState);
 
     return (
         <FetchContext.Provider
             value={{
                 cache,
-                setCache,
+                liveCache,
+                setCache: (cache) => {
+                    liveCache.current = cache;
+                    setCache(cache);
+                },
                 promiseList,
                 ssrCookies,
                 ssrAddCookiesFromSetCookie,
@@ -46,6 +51,7 @@ export const FetchProvider = ({
 export const useFetchContext = (url, method, options, shouldCache = true) => {
     const {
         cache,
+        liveCache,
         setCache,
         promiseList,
         ssrCookies,
@@ -96,14 +102,14 @@ export const useFetchContext = (url, method, options, shouldCache = true) => {
         cachedDataWithStatus,
         setCachedData: (response) => {
             setCache({
-                ...cache,
+                ...liveCache.current,
                 [requestId]: { response },
             });
         },
-        clearCacheEntry: () => {
-            if (!actualShouldCache) {
+        clearCacheEntry: (ignoreIfCache = true) => {
+            if (!ignoreIfCache || !actualShouldCache) {
                 setCache({
-                    ...cache,
+                    ...liveCache.current,
                     [requestId]: undefined,
                 });
             }

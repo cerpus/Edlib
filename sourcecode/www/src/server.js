@@ -10,6 +10,7 @@ import { ServerStyleSheet } from 'styled-components';
 import { getTssDefaultEmotionCache } from 'tss-react';
 import cookieParser from 'cookie-parser';
 import { parse } from 'set-cookie-parser';
+import { Helmet } from 'react-helmet';
 
 import { createEmotionCache, muiTheme } from './muiSetup.js';
 import { addPromiseListToState, FetchProvider } from './contexts/Fetch.jsx';
@@ -95,6 +96,7 @@ export const renderApp = async (req, res) => {
     const { state } = await getStateFromTree();
 
     const markup = renderToString(sheet.collectStyles(SetupApp(state, [])));
+    const helmet = Helmet.renderStatic();
 
     // Grab the CSS from emotion
     const styleTagsAsStr = emotionServers
@@ -108,16 +110,19 @@ export const renderApp = async (req, res) => {
 
     const html = `<!doctype html>
     <html lang="">
-    <head>
+    <head ${helmet.htmlAttributes.toString()}>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta charset="utf-8" />
-        <title>Welcome to Razzle</title>
+        <title>Edlib</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         ${cssLinksFromAssets(assets, 'client')}
         ${styleTagsAsStr}
         ${styledComponentsTags}
+        ${helmet.title.toString()}
+        ${helmet.meta.toString()}
+        ${helmet.link.toString()}
     </head>
-    <body>
+    <body ${helmet.bodyAttributes.toString()}>
         <script>
             window.__FETCH_STATE__=${JSON.stringify(state).replace(
                 /</g,

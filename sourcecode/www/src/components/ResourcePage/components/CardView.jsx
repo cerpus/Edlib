@@ -34,13 +34,17 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
-const CardView = ({ resources, showDeleteButton = false, onResourceClick }) => {
+const CardView = ({ resources, showDeleteButton = false, refetch }) => {
     const { classes } = useStyles();
     const { t } = useTranslation();
 
     return (
-        <ViewContainer showDeleteButton={showDeleteButton}>
-            {({ cogProps, setSelectedResource }) => (
+        <ViewContainer
+            showDeleteButton={showDeleteButton}
+            refetch={refetch}
+            resources={resources}
+        >
+            {({ cogProps, setSelectedResource, resources }) => (
                 <Grid container spacing={1}>
                     {resources.map((resource) => (
                         <Grid

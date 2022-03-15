@@ -1,6 +1,7 @@
 import React from 'react';
 import request from '../helpers/request';
 import { useFetchContext } from '../contexts/Fetch.jsx';
+import useUnmount from './useUnmount.js';
 
 export default (url, method, options, wait = false, cache = false) => {
     const {
@@ -15,10 +16,13 @@ export default (url, method, options, wait = false, cache = false) => {
 
     const [loading, setLoading] = React.useState(cachedDataWithStatus.loading);
     const [error, setError] = React.useState(cachedDataWithStatus.error);
-    const [response, setResponse] = React.useState(
+    const [response, _setResponse] = React.useState(
         cachedDataWithStatus.response
     );
-    const [fetchId, setFetchId] = React.useState(1);
+    const setResponse = React.useCallback((response) => {
+        _setResponse(response);
+        setCachedData(response);
+    });
 
     if (!hasData && !wait && ssr) {
         addToPromiseList(request(url, method, ssrOptions));
@@ -40,10 +44,10 @@ export default (url, method, options, wait = false, cache = false) => {
 
         request(url, method, newOptions)
             .then((r) => {
-                setCachedData(r);
-                setResponse(r);
                 setLoading(false);
                 setError(false);
+                setResponse(r);
+                setCachedData(r);
             })
             .catch((e) => {
                 if (e.name !== 'AbortError') {
@@ -55,16 +59,11 @@ export default (url, method, options, wait = false, cache = false) => {
         return () => {
             abortController.abort();
         };
-    }, [url, method, options, wait, fetchId, hasData]);
+    }, [url, method, options, wait, hasData]);
 
-    const refetch = React.useCallback(
-        () => setFetchId(fetchId + 1),
-        [setFetchId, fetchId]
-    );
+    const refetch = React.useCallback(() => clearCacheEntry(false), []);
 
-    React.useEffect(() => {
-        return () => clearCacheEntry();
-    }, []);
+    useUnmount(clearCacheEntry);
 
     return {
         loading,
