@@ -4,11 +4,10 @@
   "license": "MIT",
   "scripts": {
     "start": "razzle start",
-    "build": "razzle build",
+    "build": "PORT=80 razzle build",
     "test": "razzle test --env=jsdom",
     "start:prod": "NODE_ENV=production node build/server.js",
-    "translate": "i18next-scanner --config i18n-scanner.config.js",
-    "lint": "eslint src --max-warnings=0"
+    "translate": "i18next-scanner --config i18n-scanner.config.js"
   },
   "dependencies": {
     "@cerpus/ui": "^2.1.0",

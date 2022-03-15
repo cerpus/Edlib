@@ -35,15 +35,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           tags: "build:latest"
-          outputs: "type=docker"
           context: ${{ env.workingDirectory }}
           target: base
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: "Run eslint"
-        run: docker run build yarn lint
-        shell: bash
 
       - name: Configure AWS Credentials
         if: ${{ inputs.versionToRelease }}
