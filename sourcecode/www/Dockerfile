@@ -6,7 +6,6 @@ RUN yarn
 FROM base as build
 WORKDIR /app
 RUN yarn build --noninteractive
-RUN rm /app/build/static/**/*.map
 
 FROM build as prod
 EXPOSE 80
