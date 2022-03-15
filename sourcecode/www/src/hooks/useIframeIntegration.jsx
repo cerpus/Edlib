@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import React from 'react';
 import queryString from 'query-string';
+import i18n from '../i18n';
 
 const useIframeIntegration = (requiredParams = []) => {
     const location = useLocation();
@@ -20,6 +21,8 @@ const useIframeIntegration = (requiredParams = []) => {
     if (invalid) {
         return null;
     }
+
+    i18n.changeLanguage(queryParams.language);
 
     return {
         queryParams,

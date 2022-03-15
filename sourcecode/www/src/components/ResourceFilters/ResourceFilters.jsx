@@ -13,7 +13,7 @@ import {
     ListItem,
     ListItemText,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import {
     ExpandLess,
     ExpandMore,
@@ -22,8 +22,9 @@ import {
 import useArray from '../../hooks/useArray.js';
 import SavedFilters from './Filters/SavedFilters.jsx';
 import viewTypes from './filterViewTypes';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     root: {
         width: '100%',
         maxWidth: 360,
@@ -48,15 +49,17 @@ const ResourceFilters = ({
 }) => {
     const { t } = useTranslation();
     const { getUserConfig } = useEdlibComponentsContext();
-    const classes = useStyles();
+    const { getConfigurationValue, setConfigurationValue } =
+        useConfigurationContext();
+    const { classes } = useStyles();
     const disabledFilters = getUserConfig('disabledFilters') || null;
     const [filterViewType, _setFilterViewType] = React.useState(() => {
-        return store.get('filterViewType', viewTypes.GROUPED);
+        return getConfigurationValue('filterViewType', viewTypes.GROUPED);
     });
     const setFilterViewType = React.useCallback(
         (value) => {
             _setFilterViewType(value);
-            store.set('filterViewType', value);
+            setConfigurationValue('filterViewType', value);
         },
         [_setFilterViewType]
     );

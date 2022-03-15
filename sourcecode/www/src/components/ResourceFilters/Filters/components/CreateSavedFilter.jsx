@@ -13,13 +13,13 @@ import {
     TextField,
     Box,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../../../hooks/useTranslation.js';
 import FilterChips from '../../../ResourcePage/components/FilterChips.jsx';
 import useRequestWithToken from '../../../../hooks/useRequestWithToken.jsx';
-import appConfig from '../../../../config/app.js';
+import { useConfigurationContext } from '../../../../contexts/Configuration.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     formControl: {
         marginBottom: theme.spacing(2),
     },
@@ -33,8 +33,9 @@ const CreateSavedFilter = ({
     onDone,
     filterUtils,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { t } = useTranslation();
+    const { edlibApi } = useConfigurationContext();
     const [selected, setSelected] = React.useState('new');
     const [newFilterName, setNewFilterName] = React.useState('My filter');
 
@@ -102,7 +103,7 @@ const CreateSavedFilter = ({
                     variant="contained"
                     style={{ marginLeft: 5 }}
                     onClick={() => {
-                        let url = `${appConfig.apiUrl}/common/saved-filters`;
+                        let url = edlibApi(`/common/saved-filters`);
 
                         if (selected !== 'new') {
                             url += `/` + selected;

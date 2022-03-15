@@ -1,16 +1,15 @@
 import React from 'react';
 import { Box, Chip } from '@mui/material';
+import { makeStyles } from 'tss-react/mui';
 
-import makeStyles from '@mui/styles/makeStyles';
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     chip: {
         margin: theme.spacing(0.5),
     },
 }));
 
 const FilterChips = ({ chips, color = 'secondary' }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
 
     return (
         <Box paddingY={1}>

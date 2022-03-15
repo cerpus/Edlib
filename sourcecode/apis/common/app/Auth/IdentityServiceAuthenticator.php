@@ -34,9 +34,24 @@ class IdentityServiceAuthenticator
         $this->logger = $logger;
     }
 
+    private function getJwt(Request $request)
+    {
+        $authorization = $request->bearerToken();
+        if (!is_null($authorization)) {
+            return $authorization;
+        }
+
+        $jwtCookie = $request->cookie("jwt");
+        if (!is_null($jwtCookie)) {
+            return $jwtCookie;
+        }
+
+        return null;
+    }
+
     public function __invoke(Request $request): ?User
     {
-        $token = $request->bearerToken();
+        $token = $this->getJwt($request);
 
         if ($token === null) {
             return null;

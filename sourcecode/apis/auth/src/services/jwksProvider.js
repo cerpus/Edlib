@@ -43,17 +43,22 @@ export const encrypt = async (context, payload, expireHours = 72, subject) => {
     const keyStore = await getKeyStore(context);
     const [key] = keyStore.all({ use: 'sig' });
 
+    const expiresAt = Math.floor(Date.now() / 1000) + 60 * 60 * expireHours;
+
     const opt = { compact: true, jwk: key, fields: { typ: 'jwt' } };
     const actualPayload = JSON.stringify({
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * expireHours,
+        exp: expiresAt,
         iat: Math.floor(Date.now() / 1000),
         sub: subject,
         payload,
     });
 
-    return await jose.JWS.createSign(opt, key)
-        .update(actualPayload, 'utf8')
-        .final();
+    return {
+        token: await jose.JWS.createSign(opt, key)
+            .update(actualPayload, 'utf8')
+            .final(),
+        expiresAt,
+    };
 };
 
 export const verify = async (context, token, options) => {

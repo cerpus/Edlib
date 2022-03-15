@@ -1,42 +1,58 @@
 {
   "name": "www",
-  "version": "0.1.0",
-  "private": true,
+  "version": "4.2.15",
+  "license": "MIT",
+  "scripts": {
+    "start": "razzle start",
+    "build": "razzle build",
+    "test": "razzle test --env=jsdom",
+    "start:prod": "NODE_ENV=production node build/server.js",
+    "translate": "i18next-scanner --config i18n-scanner.config.js",
+    "lint": "eslint src --max-warnings=0"
+  },
   "dependencies": {
-    "@cerpus/ui": "^2.0.3",
+    "@cerpus/ui": "^2.1.0",
+    "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.8.1",
+    "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.4.4",
     "@mui/lab": "^5.0.0-alpha.71",
     "@mui/material": "^5.4.4",
     "@mui/styles": "^5.4.4",
-    "@testing-library/jest-dom": "^5.16.2",
-    "@testing-library/react": "^12.1.3",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^0.26.0",
+    "axios": "^0.26.1",
+    "axios-hooks": "^3.0.1",
+    "cookie-parser": "^1.4.6",
+    "cookie-storage": "^6.1.0",
+    "express": "^4.17.1",
     "i18next": "^21.6.12",
     "iso-639-3": "^3.0.1",
+    "isomorphic-unfetch": "^3.1.0",
     "joi": "^17.6.0",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "prettier": "^2.5.1",
+    "razzle-plugin-svgr": "^2.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.15.5",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "5.0.0",
     "recharts": "^2.1.9",
+    "set-cookie-parser": "^2.4.8",
     "store": "^2.0.12",
     "styled-components": "^5.3.3",
+    "tss-react": "^3.5.2",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "translate": "i18next-scanner --config i18n-scanner.config.js",
-    "lint": "eslint src --max-warnings=0"
+  "devDependencies": {
+    "babel-preset-razzle": "4.2.15",
+    "html-webpack-plugin": "^4.5.2",
+    "i18next-scanner": "^3.1.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "razzle": "^4.2.16",
+    "razzle-dev-utils": "^4.2.16",
+    "webpack": "^4.44.1",
+    "webpack-dev-server": "^3.11.2"
   },
   "browserslist": {
     "production": [
@@ -49,8 +65,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "i18next-scanner": "^3.1.0"
   }
 }

@@ -1,29 +1,28 @@
 import React from 'react';
 import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
-import useConfig from '../../hooks/useConfig.js';
 import { CircularProgress } from '@mui/material';
 import ResourceFilters from './ResourceFilters.jsx';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
 const ResourceFiltersContainer = (props) => {
-    const { edlib } = useConfig();
+    const { edlibApi } = useConfigurationContext();
 
     const { loading: loadingContentTypes, response: contentTypeResponse } =
         useFetchWithToken(
-            edlib(`/resources/v2/content-types/contentauthor`),
+            edlibApi(`/resources/v2/content-types/contentauthor`),
             'GET',
             React.useMemo(() => ({}), []),
-            false,
             true,
             true
         );
     const { loading: loadingLicenses, response: licenseResponse } =
-        useFetchWithToken(edlib(`/resources/v1/filters/licenses`));
+        useFetchWithToken(edlibApi(`/resources/v1/filters/licenses`));
 
     const {
         loading: loadingSavedFilters,
         response: savedFilterResponse,
         setResponse: setResponseSavedFilter,
-    } = useFetchWithToken(edlib(`/common/saved-filters`));
+    } = useFetchWithToken(edlibApi(`/common/saved-filters`));
 
     if (loadingContentTypes || loadingLicenses || loadingSavedFilters) {
         return <CircularProgress />;
@@ -31,8 +30,10 @@ const ResourceFiltersContainer = (props) => {
 
     return (
         <ResourceFilters
-            contentTypeData={contentTypeResponse.data}
-            licenseData={licenseResponse}
+            contentTypeData={
+                contentTypeResponse ? contentTypeResponse.data : []
+            }
+            licenseData={licenseResponse ? licenseResponse : []}
             savedFilterData={savedFilterResponse}
             updateSavedFilter={(data, remove = false) => {
                 let values;

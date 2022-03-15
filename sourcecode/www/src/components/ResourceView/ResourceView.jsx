@@ -1,17 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
 import FrameWithResize from '../FrameWithResize';
 import PostingFrame from '../PostingFrame';
-
-const DangerousContent = styled.div`
-    display: flex;
-    justify-content: center;
-`;
+import { Box } from '@mui/material';
 
 const ResourceView = ({ preview }) => {
     if (preview.embedCode) {
         return (
-            <DangerousContent
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                }}
                 dangerouslySetInnerHTML={{ __html: preview.embedCode }}
             />
         );

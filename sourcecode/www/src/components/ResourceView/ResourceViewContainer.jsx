@@ -2,11 +2,12 @@ import React from 'react';
 import ResourceView from './ResourceView';
 import useFetch from '../../hooks/useFetch';
 import DefaultFetcher from '../../containers/DefaultFetcher';
-import appConfig from '../../config/app.js';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
 const ResourceViewContainer = ({ resourceId }) => {
+    const { edlibApi } = useConfigurationContext();
     const getPreviewInfoFetch = useFetch(
-        `${appConfig.apiUrl}/lti/v1/resources/${resourceId}/view`,
+        edlibApi(`/lti/v1/resources/${resourceId}/view`),
         'GET'
     );
 

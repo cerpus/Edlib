@@ -5,18 +5,17 @@ import useFetchWithToken from '../hooks/useFetchWithToken';
 import { CircularProgress, TextField } from '@mui/material';
 import { iso6393ToString } from '../helpers/language.js';
 import useTranslation from '../hooks/useTranslation.js';
-import useConfig from '../hooks/useConfig.js';
+import { useConfigurationContext } from '../contexts/Configuration.jsx';
 
 const LanguageDropdown = ({ language, setLanguage }) => {
     const { t } = useTranslation();
-    const { edlib } = useConfig();
+    const { edlibApi } = useConfigurationContext();
 
     const [open, setOpen] = React.useState(false);
     const { error, loading, response } = useFetchWithToken(
-        edlib('/resources/v1/languages'),
+        edlibApi('/resources/v1/languages'),
         'GET',
         React.useMemo(() => ({}), []),
-        false,
         true,
         false
     );

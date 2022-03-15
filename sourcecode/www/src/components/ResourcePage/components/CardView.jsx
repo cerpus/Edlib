@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, Grid, Paper } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import { getResourceName, ResourceIcon } from '../../Resource';
 import useTranslation from '../../../hooks/useTranslation.js';
 import PublishedTag from '../../PublishedTag.jsx';
@@ -8,7 +8,7 @@ import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import ResourceEditCog from '../../ResourceEditCog.jsx';
 import ViewContainer from './ViewContainer.jsx';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     gridItem: {
         display: 'flex',
     },
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CardView = ({ resources, showDeleteButton = false, onResourceClick }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { t } = useTranslation();
 
     return (

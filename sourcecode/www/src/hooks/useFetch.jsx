@@ -1,10 +1,17 @@
 import React from 'react';
 import request from '../helpers/request';
-import { useRequestCacheContext } from '../contexts/RequestCache';
+import { useFetchContext } from '../contexts/Fetch.jsx';
 
 export default (url, method, options, wait = false, cache = false) => {
-    const { cachedDataWithStatus, setCachedData, ignoreFirstFetch } =
-        useRequestCacheContext(url, method, options, cache);
+    const {
+        cachedDataWithStatus,
+        setCachedData,
+        clearCacheEntry,
+        hasData,
+        ssr,
+        addToPromiseList,
+        ssrOptions,
+    } = useFetchContext(url, method, options, cache);
 
     const [loading, setLoading] = React.useState(cachedDataWithStatus.loading);
     const [error, setError] = React.useState(cachedDataWithStatus.error);
@@ -13,8 +20,12 @@ export default (url, method, options, wait = false, cache = false) => {
     );
     const [fetchId, setFetchId] = React.useState(1);
 
+    if (!hasData && !wait && ssr) {
+        addToPromiseList(request(url, method, ssrOptions));
+    }
+
     React.useEffect(() => {
-        if (ignoreFirstFetch && fetchId === 1) {
+        if (hasData) {
             return;
         }
 
@@ -44,12 +55,16 @@ export default (url, method, options, wait = false, cache = false) => {
         return () => {
             abortController.abort();
         };
-    }, [url, method, options, wait, fetchId, ignoreFirstFetch]);
+    }, [url, method, options, wait, fetchId, hasData]);
 
     const refetch = React.useCallback(
         () => setFetchId(fetchId + 1),
         [setFetchId, fetchId]
     );
+
+    React.useEffect(() => {
+        return () => clearCacheEntry();
+    }, []);
 
     return {
         loading,

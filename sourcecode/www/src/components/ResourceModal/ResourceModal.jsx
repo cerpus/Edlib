@@ -5,7 +5,6 @@ import {
     Edit as EditIcon,
     Close as CloseIcon,
 } from '@mui/icons-material';
-import styled from 'styled-components';
 import _ from 'lodash';
 import { useResourceCapabilities } from '../../contexts/ResourceCapabilities';
 import useResourceCapabilitiesFlags from '../../hooks/useResourceCapabilities';
@@ -27,30 +26,14 @@ import {
     Dialog,
     Grid,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from 'tss-react/mui';
 import withStyles from '@mui/styles/withStyles';
 import { ResourceIcon } from '../Resource';
-import useConfig from '../../hooks/useConfig.js';
 import { useIframeStandaloneContext } from '../../contexts/IframeStandalone';
 import ResourceStats from './ResourceStats.jsx';
+import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
-const Footer = styled.div`
-    margin-top: 30px;
-    display: flex;
-`;
-
-const Meta = styled.div`
-    margin-right: 20px;
-    & > div {
-        &:first-child {
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-    }
-`;
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
     dialogTitle: {
         margin: 0,
         padding: theme.spacing(2),
@@ -64,6 +47,18 @@ const useStyles = makeStyles((theme) => ({
         // height: '100%',
         // maxHeight: '70vh',
     },
+    footer: {
+        marginTop: 30,
+        display: 'flex',
+    },
+    meta: {
+        marginRight: 20,
+        '& > div:first-child': {
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            marginBottom: 15,
+        },
+    },
 }));
 
 const DialogActions = withStyles((theme) => ({
@@ -74,13 +69,13 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 const ResourceModal = ({ isOpen, onClose, resource }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { t } = useTranslation();
     const history = useHistory();
     const { getUserConfig } = useEdlibComponentsContext();
     const { getPath } = useIframeStandaloneContext();
     const canReturnResources = getUserConfig('canReturnResources');
-    const { edlibFrontend } = useConfig();
+    const { www } = useConfigurationContext();
 
     const [actionStatus, setActionStatus] = React.useState({
         loading: false,
@@ -144,14 +139,10 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         <Box display="flex" marginLeft={1}>
                             <Typography>
                                 <a
-                                    href={edlibFrontend(
-                                        `/s/resources/${resource.id}`
-                                    )}
+                                    href={www(`/s/resources/${resource.id}`)}
                                     target="_blank"
                                 >
-                                    {edlibFrontend(
-                                        `/s/resources/${resource.id}`
-                                    )}
+                                    {www(`/s/resources/${resource.id}`)}
                                 </a>
                             </Typography>
                         </Box>
@@ -200,8 +191,8 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 return (
                                     <>
                                         <div>{frame}</div>
-                                        <Footer>
-                                            <Meta>
+                                        <div className={classes.footer}>
+                                            <div className={classes.meta}>
                                                 <div>
                                                     {_.capitalize(
                                                         t('publishing_date')
@@ -213,8 +204,8 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                             .createdAt
                                                     ).format('D. MMMM YYYY')}
                                                 </div>
-                                            </Meta>
-                                            <Meta>
+                                            </div>
+                                            <div className={classes.meta}>
                                                 <div>
                                                     {_.capitalize(t('license'))}
                                                 </div>
@@ -226,8 +217,8 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                         }
                                                     />
                                                 </div>
-                                            </Meta>
-                                        </Footer>
+                                            </div>
+                                        </div>
                                     </>
                                 );
                             }}

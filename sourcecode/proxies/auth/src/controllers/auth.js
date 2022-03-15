@@ -6,6 +6,16 @@ const loginValidation = Joi.object().keys({
     callbackUrl: Joi.string().min(1).required(),
 });
 
+const setCookie = (req, res, token, expiresAt) => {
+    res.cookie('jwt', token, {
+        expires: new Date(expiresAt * 1000),
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+        domain: req.host.replace('api.', ''),
+    });
+};
+
 export default {
     loginCallback: async (req, res, next) => {
         const { code, callbackUrl } = validateJoi(req.query, loginValidation);
@@ -16,21 +26,28 @@ export default {
         );
     },
     refresh: async (req, res, next) => {
-        const { token } = await req.context.services.edlibAuth.refreshToken(
-            req.authorizationJwt
-        );
+        const { token, expiresAt } =
+            await req.context.services.edlibAuth.refreshToken(
+                req.authorizationJwt
+            );
 
+        setCookie(req, res, token, expiresAt);
         return {
             token,
+            expiresAt,
         };
     },
     convert: async (req, res, next) => {
-        const { token } = await req.context.services.edlibAuth.convertToken(
-            req.body.externalToken
-        );
+        const { token, expiresAt } =
+            await req.context.services.edlibAuth.convertToken(
+                req.body.externalToken
+            );
+
+        setCookie(req, res, token, expiresAt);
 
         return {
             token,
+            expiresAt,
         };
     },
     me: async (req, res, next) => {

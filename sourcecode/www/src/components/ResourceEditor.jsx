@@ -1,11 +1,11 @@
 import React from 'react';
-import useConfig from '../hooks/useConfig';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import { Spinner } from '@cerpus/ui';
 import Lti from './Editors/Lti';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
+import { useConfigurationContext } from '../contexts/Configuration.jsx';
 
 const ResourceEditor = ({
     edlibId,
@@ -14,7 +14,7 @@ const ResourceEditor = ({
     type,
     loading = false,
 }) => {
-    const { edlib } = useConfig();
+    const { edlibApi } = useConfigurationContext();
     const { language } = useEdlibComponentsContext();
     const location = useLocation();
 
@@ -26,7 +26,7 @@ const ResourceEditor = ({
 
     const url = React.useMemo(() => {
         if (edlibId) {
-            return edlib(`/lti/v2/resources/${edlibId}`);
+            return edlibApi(`/lti/v2/resources/${edlibId}`);
         }
 
         let createPath = `/lti/v2/editors/${type}/launch`;
@@ -34,7 +34,7 @@ const ResourceEditor = ({
             createPath += `?group=${group}`;
         }
 
-        return edlib(createPath);
+        return edlibApi(createPath);
     }, [edlibId, type, group]);
 
     const { error, fetchLoading, response } = useFetchWithToken(

@@ -40,8 +40,7 @@ const PaginatedResources = ({
                 ...(filters && filters.requestData),
             }),
             [page, sortingOrder, filters && filters.requestData, pageSize]
-        ),
-        !pageSize
+        )
     );
 
     React.useEffect(() => {

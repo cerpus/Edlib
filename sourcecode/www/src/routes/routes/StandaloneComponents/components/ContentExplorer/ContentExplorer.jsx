@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import ContentExplorerHeader from '../../../../../components/ContentExplorerHeader';
 import { useEdlibComponentsContext } from '../../../../../contexts/EdlibComponents';
@@ -13,7 +13,6 @@ import SharedContent from './routes/SharedContent';
 import { ResourceCapabilitiesProvider } from '../../../../../contexts/ResourceCapabilities';
 import { useEdlibResource } from '../../../../../hooks/requests/useResource';
 import useRequestWithToken from '../../../../../hooks/useRequestWithToken';
-import appConfig from '../../../../../config/app';
 import contentExplorerLandingPages from '../../../../../constants/contentExplorerLandingPages';
 
 const getStartPage = (userConfiguredStartPage) => {
@@ -29,11 +28,13 @@ const getStartPage = (userConfiguredStartPage) => {
 
 const ContentExplorer = ({ baseUrl, basePath, onAction }) => {
     const { t } = useTranslation();
+    const { search } = useLocation();
     const { inMaintenanceMode } = useConfigurationContext();
     const createResourceLink = useEdlibResource();
     const { getUserConfig } = useEdlibComponentsContext();
     const request = useRequestWithToken();
     const startPage = getStartPage(getUserConfig('landingContentExplorerPage'));
+    const { edlibApi } = useConfigurationContext();
 
     return (
         <ResourceCapabilitiesProvider
@@ -68,7 +69,7 @@ const ContentExplorer = ({ baseUrl, basePath, onAction }) => {
                 },
                 onRemove: async (edlibId) => {
                     await request(
-                        `${appConfig.apiUrl}/resources/v2/resources/${edlibId}`,
+                        edlibApi(`/resources/v2/resources/${edlibId}`),
                         'DELETE'
                     );
                 },
@@ -125,7 +126,7 @@ const ContentExplorer = ({ baseUrl, basePath, onAction }) => {
                                 path={`${basePath}/shared-content`}
                                 component={SharedContent}
                             />
-                            <Redirect to={`${basePath}${startPage}`} />
+                            <Redirect to={`${basePath}${startPage}${search}`} />
                         </Switch>
                     )}
                 </div>

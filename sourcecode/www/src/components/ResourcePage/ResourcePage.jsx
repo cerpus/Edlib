@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cn from 'classnames';
 import styled from 'styled-components';
-import { Input, useIsDevice } from '@cerpus/ui';
 import { Tune as TuneIcon } from '@mui/icons-material';
 import { Spinner } from '@cerpus/ui';
 import _ from 'lodash';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import useTranslation from '../../hooks/useTranslation';
 import ResourceFilters from '../ResourceFilters';
 import ResourceTable from '../ResourceTable';
@@ -96,35 +97,6 @@ const StyledResourcePage = styled.div`
     }
 `;
 
-const MobileBackground = styled.div`
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-    cursor: pointer;
-`;
-
-const Filters = styled.div`
-    background-color: white;
-    box-shadow: 5px 0 5px 0 rgba(0, 0, 0, 0.16);
-    overflow-y: auto;
-
-    &.filtersMobile {
-        position: absolute;
-        right: 110%;
-        z-index: 2;
-
-        &.expanded {
-            width: 100vw;
-            right: unset;
-            left: 0;
-        }
-    }
-`;
-
 const PaginationWrapper = styled.div`
     margin-top: 40px;
     padding-bottom: 10px;
@@ -176,11 +148,11 @@ const useDefaultOrder = () => {
 
 const ResourcePage = ({ filters, showDeleteButton = false }) => {
     const { t } = useTranslation();
+    const theme = useTheme();
 
+    const forceGridView = useMediaQuery(theme.breakpoints.down('lg'));
     const [filtersExpanded, setFiltersExpanded] = React.useState(false);
     const [sortingOrder, setSortingOrder] = React.useState(useDefaultOrder());
-    const filterMobileView = useIsDevice('<', 'md');
-    const forceGridView = useIsDevice('<=', 'md');
     const [page, setPage] = React.useState(0);
     const [pageSize, setPageSize] = React.useState(40);
     const [_isGridView, setIsGridView] = React.useState(false);
@@ -251,17 +223,58 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
 
     return (
         <StyledResourcePage>
-            <Filters
-                className={cn({
-                    filtersMobile: filterMobileView,
-                    expanded: filtersExpanded,
-                })}
+            <Box
+                sx={[
+                    {
+                        backgroundColor: 'white',
+                        boxShadow: '5px 0 5px 0 rgba(0, 0, 0, 0.16)',
+                        overflowY: 'auto',
+                        position: {
+                            xs: 'absolute',
+                            md: 'initial',
+                        },
+                        right: {
+                            xs: '110%',
+                            md: 'initial',
+                        },
+                        zIndex: {
+                            xs: 2,
+                            md: 'initial',
+                        },
+                    },
+                    filtersExpanded && {
+                        width: '100vw',
+                        right: 'unset',
+                        left: 0,
+                    },
+                ]}
             >
                 <ResourceFilters filters={filters} filterCount={filterCount} />
-            </Filters>
-            {filterMobileView && filtersExpanded && (
-                <MobileBackground onClick={() => setFiltersExpanded(false)} />
-            )}
+            </Box>
+            <Box
+                onClick={() => setFiltersExpanded(false)}
+                sx={[
+                    {
+                        position: 'absolute',
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        zIndex: 1,
+                        cursor: 'pointer',
+                    },
+                    filtersExpanded && {
+                        display: {
+                            xs: 'block',
+                            md: 'none',
+                        },
+                    },
+                    !filtersExpanded && {
+                        display: 'none',
+                    },
+                ]}
+            />
             <div className="pageContent">
                 <div className="contentOptions">
                     <Box display="flex" paddingRight={1}>
@@ -309,18 +322,24 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                     </Box>
                     <div>{sortOrderDropDown}</div>
                 </div>
-                {filterMobileView && (
-                    <Box pt={1}>
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={() => setFiltersExpanded(!filtersExpanded)}
-                            startIcon={<TuneIcon />}
-                        >
-                            {t('filter', { count: 2 })}
-                        </Button>
-                    </Box>
-                )}
+                <Box
+                    pt={1}
+                    sx={{
+                        display: {
+                            xs: 'block',
+                            md: 'none',
+                        },
+                    }}
+                >
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => setFiltersExpanded(!filtersExpanded)}
+                        startIcon={<TuneIcon />}
+                    >
+                        {t('filter', { count: 2 })}
+                    </Button>
+                </Box>
                 <Box
                     display="flex"
                     flexDirection="row"

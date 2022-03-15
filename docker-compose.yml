@@ -408,7 +408,8 @@ services:
       dockerfile: Dockerfile
       target: dev
     environment:
-      WDS_SOCKET_PORT: 443
+      CLIENT_PUBLIC_PATH: https://www.edlib.local/
+      PUBLIC_PATH: https://www.edlib.local/
     env_file:
       - ./localSetup/.env
     healthcheck:
@@ -418,6 +419,7 @@ services:
       - ./sourcecode/www/src:/app/src
       - ./sourcecode/www/public:/app/public
       - ./sourcecode/www/package.json:/app/package.json
+      - ./sourcecode/www/razzle.config.js:/app/razzle.config.js
       - ./sourcecode/www/yarn.lock:/app/yarn.lock
 
   proxy-iframe:

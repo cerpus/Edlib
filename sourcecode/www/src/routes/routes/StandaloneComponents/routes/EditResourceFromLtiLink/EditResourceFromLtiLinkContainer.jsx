@@ -3,24 +3,24 @@ import _ from 'lodash';
 import { Spinner } from '@cerpus/ui';
 import ModalHeader from './ModalHeader';
 import useIframeIntegration from '../../../../../hooks/useIframeIntegration';
-import appConfig from '../../../../../config/app';
 import { useEdlibResource } from '../../../../../hooks/requests/useResource';
 import useFetchWithToken from '../../../../../hooks/useFetchWithToken';
 import ResourceEditor from '../../../../../components/ResourceEditor';
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
-import useConfig from '../../../../../hooks/useConfig.js';
 import useTranslation from '../../../../../hooks/useTranslation.js';
+import { useConfigurationContext } from '../../../../../contexts/Configuration.jsx';
 
 const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
     const createResourceLink = useEdlibResource();
-    const { edlibFrontend } = useConfig();
+    const { www } = useConfigurationContext();
     const { t } = useTranslation();
+    const { edlibApi } = useConfigurationContext();
     const {
         response,
         error: ltiError,
         loading: ltiLoading,
     } = useFetchWithToken(
-        `${appConfig.apiUrl}/lti/v2/lti/convert-launch-url`,
+        edlibApi(`/lti/v2/lti/convert-launch-url`),
         'GET',
         React.useMemo(
             () => ({
@@ -49,7 +49,7 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
     return (
         <>
             <ModalHeader onClose={() => onAction('onClose')}>
-                {edlibFrontend(`/s/resources/${response.id}`)}
+                {www(`/s/resources/${response.id}`)}
             </ModalHeader>
             <ResourceEditor
                 edlibId={response.id}
@@ -90,11 +90,10 @@ const EditResourceFromLtiLinkContainer = () => {
 
     return (
         <EdlibComponentsProvider
-            edlibUrl={appConfig.apiUrl}
-            getJwt={async () => ({
+            externalJwt={{
                 type: 'external',
                 token: jwt,
-            })}
+            }}
             configuration={JSON.parse(queryParams.configuration)}
             language={queryParams.language}
         >

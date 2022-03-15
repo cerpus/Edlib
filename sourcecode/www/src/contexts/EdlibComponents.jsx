@@ -1,5 +1,4 @@
 import React from 'react';
-import i18n from '../i18n';
 import urls from '../config/urls';
 import useToken from '../hooks/useToken';
 import _ from 'lodash';
@@ -50,30 +49,15 @@ const configurationValidationSchema = Joi.object({
 
 export const EdlibComponentsProvider = ({
     children,
-    getJwt = null,
+    externalJwt = null,
     language = 'nb',
-    dokuUrl = null,
-    edlibUrl = null,
     configuration = {},
 }) => {
-    const actualEdlibApiUrl =
-        !edlibUrl || edlibUrl.length === 0 ? urls.defaultEdlibUrl : edlibUrl;
-
-    const edlibFrontendUrl = actualEdlibApiUrl.replace('api', 'www');
-
-    const { token, error, loading, getToken } = useToken(
-        getJwt,
-        actualEdlibApiUrl
-    );
-
-    React.useEffect(() => {
-        i18n.changeLanguage(language);
-    }, [language]);
+    const tokenControllerData = useToken(externalJwt);
 
     const validatedConfiguration = React.useMemo(() => {
-        const { value, error } = configurationValidationSchema.validate(
-            configuration
-        );
+        const { value, error } =
+            configurationValidationSchema.validate(configuration);
 
         if (error) {
             console.error(
@@ -89,24 +73,7 @@ export const EdlibComponentsProvider = ({
     return (
         <EdlibComponentContext.Provider
             value={{
-                jwt: {
-                    value: token,
-                    loading: loading,
-                    error: error,
-                    getToken,
-                },
-                config: {
-                    urls: {
-                        edlibUrl: actualEdlibApiUrl,
-                        edlibFrontendUrl,
-                        dokuUrl:
-                            !dokuUrl || dokuUrl.length === 0
-                                ? urls.defaultDokuUrl
-                                : dokuUrl,
-                        ndlaUrl: urls.ndla,
-                        ndlaApiUrl: urls.ndlaApi,
-                    },
-                },
+                tokenControllerData,
                 language,
                 getUserConfig: (path) => _.get(validatedConfiguration, path),
             }}
