@@ -16,7 +16,7 @@
     "ext-zip": "*",
     "cerpus/cerpushelper": "^2.1",
     "cerpus/coreclient": "^1.4.0",
-    "cerpus/edlib-resource-kit-laravel": "^0.3.1",
+    "cerpus/edlib-resource-kit-laravel": "^0.4.1",
     "cerpus/imageservice-client": "^2.1",
     "cerpus/jwtsupportlib": "^0.3.2",
     "cerpus/laravel-auth": "^1.0",
