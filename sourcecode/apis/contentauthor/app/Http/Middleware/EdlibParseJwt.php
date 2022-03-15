@@ -50,7 +50,7 @@ class EdlibParseJwt extends AuthJwtParser
                 Session::put('authId', $payload->sub);
                 Session::put('userId', $payload->sub);
                 $user = $payload->payload->user;
-                $roles = $payload->payload->roles;
+                $roles = $payload->payload->roles ?? [];
                 Session::put('name', $this->getBestName($user));
                 Session::put('email', $this->getEmail($user));
                 Session::put('verifiedEmails', $this->getVerifiedEmails($user));
