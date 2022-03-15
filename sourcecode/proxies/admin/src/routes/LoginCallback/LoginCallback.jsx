@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import styles from './login.module.scss';
+import styles from './login.module.css';
 import {
     Box,
     CircularProgress,

@@ -19,7 +19,6 @@
     "font-awesome": "^4.7.0",
     "jwt-encode": "^1.0.1",
     "moment": "^2.29.1",
-    "node-sass": "^7.0.1",
     "prettier": "^2.5.1",
     "query-string": "^7.1.1",
     "react": "^17.0.2",
