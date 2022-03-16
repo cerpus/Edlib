@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use Exception;
+use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -171,7 +172,7 @@ class Article extends Content implements VersionableObject
 
                     $client = Client::getClient(OauthSetup::create(['coreUrl' => $decodedUrl]));
                     $response = $client->request("GET");
-                    $metadata = \GuzzleHttp\json_decode($response->getBody());
+                    $metadata = GuzzleUtils::jsonDecode($response->getBody());
                     if ($haltIfNotCalculated === true && is_null($metadata->resource->maxScore ?? null)) {
                         throw new Exception("Not calculated");
                     }

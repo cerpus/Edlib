@@ -7,6 +7,7 @@ namespace App\Libraries\H5P\TranslationServices;
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\Utils as GuzzleUtils;
 
 class NynorskrobotenAdapter implements TranslationServiceInterface
 {
@@ -26,7 +27,7 @@ class NynorskrobotenAdapter implements TranslationServiceInterface
         $response = $this->client->post(self::TRANSLATE_ENDPOINT, [
             'json' => $this->convertSourceToObject($translatable),
         ]);
-        $responseJSONData = \GuzzleHttp\json_decode($response->getBody()->getContents());
+        $responseJSONData = GuzzleUtils::jsonDecode($response->getBody()->getContents());
         $returnData = clone $translatable;
         $returnData->id = $responseJSONData->guid;
         $returnData->setFieldsFromArray((array)$responseJSONData->document);
