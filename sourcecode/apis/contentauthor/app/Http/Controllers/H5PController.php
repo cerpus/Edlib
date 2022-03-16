@@ -8,6 +8,7 @@ use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
+use App\Exceptions\H5PValidationFailureException;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
@@ -563,11 +564,7 @@ class H5PController extends Controller
 
         event(new ContentCreating($request));
 
-        try {
-            $content = $this->persistContent($request, Session::get('authId'));
-        } catch (Exception $e) {
-            return response($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $content = $this->persistContent($request, Session::get('authId'));
         $scoring = $this->getScoringForContent($content);
 
         Cache::forget($this->viewDataCacheName . $content->id);
@@ -603,7 +600,7 @@ class H5PController extends Controller
         $this->initH5P();
 
         if ($this->h5p->validateStoreInput($request, app(H5PContent::class)) !== true) {
-            throw new Exception($this->h5p->getErrorMessage());
+            throw new H5PValidationFailureException($this->h5p->getErrorMessage());
         }
 
         $this->h5p->setUserId($authId);
