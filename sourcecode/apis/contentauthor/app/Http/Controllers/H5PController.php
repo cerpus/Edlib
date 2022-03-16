@@ -563,11 +563,7 @@ class H5PController extends Controller
 
         event(new ContentCreating($request));
 
-        try {
-            $content = $this->persistContent($request, Session::get('authId'));
-        } catch (Exception $e) {
-            return response($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $content = $this->persistContent($request, Session::get('authId'));
         $scoring = $this->getScoringForContent($content);
 
         Cache::forget($this->viewDataCacheName . $content->id);
