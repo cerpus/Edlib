@@ -10,6 +10,7 @@ export default (externalJwt) => {
     const { edlibApi } = useConfigurationContext();
     const [expiresAt, setExpiresAt] = React.useState(null);
     const [jwtError, setJwtError] = React.useState(null);
+    const [currentToken, setCurrentToken] = React.useState(null);
 
     const initialConvertingRequest = useFetch(
         edlibApi(`/auth/v1/jwt/convert`),
@@ -29,6 +30,9 @@ export default (externalJwt) => {
         if (!expiresAt && initialConvertingRequest.response) {
             setExpiresAt(initialConvertingRequest.response.expiresAt);
         }
+        if (!currentToken && initialConvertingRequest.response) {
+            setCurrentToken(initialConvertingRequest.response.token);
+        }
     }, [initialConvertingRequest]);
 
     React.useEffect(() => {
@@ -44,8 +48,9 @@ export default (externalJwt) => {
 
         const getToken = (depth = 1) => {
             request(edlibApi(`/auth/v3/jwt/refresh`), 'POST', {})
-                .then(({ expiresAt: newExpiresAt }) => {
+                .then(({ expiresAt: newExpiresAt, token }) => {
                     setExpiresAt(newExpiresAt);
+                    setCurrentToken(token);
                 })
                 .catch((e) => {
                     log(e);
@@ -73,5 +78,6 @@ export default (externalJwt) => {
             : 'missing externalToken',
         ready: !!(externalJwt && initialConvertingRequest.response),
         reset: () => {},
+        currentToken,
     };
 };
