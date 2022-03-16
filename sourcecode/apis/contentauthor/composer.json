@@ -33,7 +33,6 @@
     "facade/ignition": "^2.16",
     "fideloper/proxy": "^4.0",
     "guzzlehttp/guzzle": "^7.4",
-    "guzzlehttp/oauth-subscriber": "^0.6.0",
     "h5p/h5p-core": "^1.24",
     "h5p/h5p-editor": "dev-master#1ae19fdb80839b32dad3846d6b0a5c745f8f6187",
     "laravel/framework": "^8.0",
