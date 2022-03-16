@@ -1,7 +1,9 @@
-import { iso6393 } from 'iso-639-3';
+import languages from '../constants/languages.js';
 
 export const iso6393ToString = (code) => {
-    const info = iso6393.find((languageInfo) => languageInfo.iso6393 === code);
+    const info = languages.find(
+        (languageInfo) => languageInfo.iso6393 === code
+    );
 
     if (info) {
         return info.name;
