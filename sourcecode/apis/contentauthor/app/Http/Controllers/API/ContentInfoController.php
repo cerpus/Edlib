@@ -75,7 +75,8 @@ class ContentInfoController extends Controller
                         return $email != "";
                     })
                     ->sort()
-                    ->all(),
+                    ->values()
+                    ->toArray(),
                 $modelResource->getAuthorOverwrite()
             );
         }
