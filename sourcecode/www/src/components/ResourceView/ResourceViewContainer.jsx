@@ -15,10 +15,19 @@ const ResourceViewContainer = ({ resourceId }) => {
     return (
         <>
             <Helmet>
-                <title>
-                    {getPreviewInfoFetch.response &&
-                        getPreviewInfoFetch.response.resourceVersion.title}
-                </title>
+                {getPreviewInfoFetch.response && (
+                    <title>
+                        {getPreviewInfoFetch.response.resourceVersion.title}
+                    </title>
+                )}
+                {getPreviewInfoFetch.response && (
+                    <meta
+                        property="og:title"
+                        content={
+                            getPreviewInfoFetch.response.resourceVersion.title
+                        }
+                    />
+                )}
             </Helmet>
             <DefaultFetcher useFetchData={getPreviewInfoFetch}>
                 {({ response: preview }) => <ResourceView preview={preview} />}

@@ -8,6 +8,7 @@ const Index = () => {
         <>
             <Helmet>
                 <title>Edlib</title>
+                <meta property="og:title" content="Edlib" />
             </Helmet>
             <Switch>
                 {/* "/s" paths are all standalone routes which can be integrated into iframes */}
