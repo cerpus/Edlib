@@ -13,7 +13,7 @@ const IFrame = styled.iframe`
 export default ({ onPostMessage = () => {}, ...props }) => {
     const [contentRef, setContentRef] = React.useState(null);
     const [height, setHeight] = React.useState(400);
-    const { jwt } = useEdlibComponentsContext();
+    const { tokenControllerData } = useEdlibComponentsContext();
 
     React.useEffect(() => {
         const onMessage = (event) => {
@@ -54,24 +54,14 @@ export default ({ onPostMessage = () => {}, ...props }) => {
                 event.data.type === 'jwtupdatemsg' &&
                 event.data.msg === 'update'
             ) {
-                jwt.getToken()
-                    .then((jwt) => {
-                        log(
-                            'Token request succeeded. Now sending the token back to CA',
-                            jwt
-                        );
-                        event.source.postMessage(
-                            {
-                                jwt,
-                                type: 'jwtupdatemsg',
-                                key: event.data.key,
-                            },
-                            event.origin
-                        );
-                    })
-                    .catch(() =>
-                        log('Token request for Content Author failed')
-                    );
+                event.source.postMessage(
+                    {
+                        jwt: tokenControllerData.currentToken,
+                        type: 'jwtupdatemsg',
+                        key: event.data.key,
+                    },
+                    event.origin
+                );
             }
         };
 
