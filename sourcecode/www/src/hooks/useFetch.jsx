@@ -1,7 +1,6 @@
 import React from 'react';
 import request from '../helpers/request';
 import { useFetchContext } from '../contexts/Fetch.jsx';
-import useUnmount from './useUnmount.js';
 
 export default (url, method, options, wait = false, cache = false) => {
     const {
@@ -12,6 +11,7 @@ export default (url, method, options, wait = false, cache = false) => {
         ssr,
         addToPromiseList,
         ssrOptions,
+        requestId,
     } = useFetchContext(url, method, options, cache);
 
     const [loading, setLoading] = React.useState(cachedDataWithStatus.loading);
@@ -61,9 +61,14 @@ export default (url, method, options, wait = false, cache = false) => {
         };
     }, [url, method, options, wait, hasData]);
 
-    const refetch = React.useCallback(() => clearCacheEntry(false), []);
+    const refetch = React.useCallback(
+        () => clearCacheEntry(requestId, false),
+        [requestId]
+    );
 
-    useUnmount(clearCacheEntry);
+    const fnRef = React.useRef(clearCacheEntry);
+    fnRef.current = clearCacheEntry;
+    React.useEffect(() => () => fnRef.current(requestId), [requestId, cache]);
 
     return {
         loading,

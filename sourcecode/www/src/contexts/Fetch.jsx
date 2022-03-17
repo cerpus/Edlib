@@ -94,6 +94,7 @@ export const useFetchContext = (url, method, options, shouldCache = true) => {
     );
 
     return {
+        requestId,
         ssrOptions: {
             ...options,
             cookies: ssrCookies,
@@ -106,7 +107,7 @@ export const useFetchContext = (url, method, options, shouldCache = true) => {
                 [requestId]: { response },
             });
         },
-        clearCacheEntry: (ignoreIfCache = true) => {
+        clearCacheEntry: (requestId, ignoreIfCache = true) => {
             if (!ignoreIfCache || !actualShouldCache) {
                 setCache({
                     ...liveCache.current,
