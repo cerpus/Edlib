@@ -3,7 +3,7 @@
 namespace Tests\Traits;
 
 use Cerpus\EdlibResourceKit\Resource\ResourceManagerInterface;
-use Cerpus\EdlibResourceKit\ResourceKit;
+use Cerpus\EdlibResourceKit\ResourceKitInterface;
 
 trait MockMQ
 {
@@ -12,8 +12,8 @@ trait MockMQ
         $manager = $this->createPartialMock(ResourceManagerInterface::class, ['save']);
         app()->instance(ResourceManagerInterface::class, $manager);
 
-        $resourceKit = $this->createMock(ResourceKit::class);
+        $resourceKit = $this->createMock(ResourceKitInterface::class);
         $resourceKit->method('getResourceManager')->willReturn($manager);
-        app()->instance(ResourceKit::class, $resourceKit);
+        app()->instance(ResourceKitInterface::class, $resourceKit);
     }
 }
