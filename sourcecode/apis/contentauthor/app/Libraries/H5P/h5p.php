@@ -133,12 +133,12 @@ class h5p
         $config->setH5pPlugin($this->plugin);
         $config->h5pCore = $config->getH5PCore() ?? $this->core;
 
-        // FIXME: this must be called, because some (all?) implementations have
-        // a side effect that initializes the 'assets' property.
-        $config->getConfig();
-
         if (!empty($config->id)) {
             $config->setContent($this->core->loadContent($config->id));
         }
+
+        // FIXME: this must be called here due to undocumented side effects that
+        // have to occur for the object to behave correctly
+        $config->getConfig();
     }
 }

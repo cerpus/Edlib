@@ -43,7 +43,6 @@ use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use H5peditor;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
