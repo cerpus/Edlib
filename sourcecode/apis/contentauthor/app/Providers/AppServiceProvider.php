@@ -9,7 +9,6 @@ use App\Http\Middleware\SignedOauth10Request;
 use App\Http\Requests\LTIRequest;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
-use App\Libraries\ImportOwner;
 use App\Observers\H5POptionObserver;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -49,10 +48,6 @@ class AppServiceProvider extends ServiceProvider
             ->when(SignedOauth10Request::class)
             ->needs('$consumerSecret')
             ->giveConfig('app.consumer-secret');
-
-        $this->app->bind(ImportOwner::class, function ($app) {
-            return new ImportOwner(config('ndla.userId'));
-        });
 
         $this->app->singletonIf(LTIRequest::class, function () {
             $request = request();
