@@ -8,6 +8,7 @@ use App\H5PContentLibrary;
 use App\H5PLibrary;
 use App\Http\Controllers\H5PController;
 use App\Http\Libraries\License;
+use App\Http\Requests\H5PStorageRequest;
 use Faker\Provider\Uuid;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,7 +35,7 @@ class H5PControllerTest extends TestCase
         $this->session([
             'authId' => Uuid::uuid(),
         ]);
-        $request = new Request([], [
+        $request = new H5PStorageRequest([], [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -105,5 +106,47 @@ class H5PControllerTest extends TestCase
         $this->assertArrayHasKey('state', $data);
         $state = json_decode($data['state'], true);
         $this->assertEquals(License::LICENSE_CC, $state['license']);
+    }
+
+    /**
+     * @dataProvider invalidRequestsProvider
+     */
+    public function testStoreRequiresParameters(array $jsonData, array $errorFields): void
+    {
+        $this
+            ->withAuthenticated($this->makeAuthUser())
+            ->postJson('/h5p', ['_token' => csrf_token(), ...$jsonData])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors($errorFields);
+    }
+
+    /**
+     * @dataProvider invalidRequestsProvider
+     */
+    public function testUpdateRequiresParameters(array $jsonData, array $errorFields): void
+    {
+        $content = H5PContent::factory()->create();
+
+        $this
+            ->withAuthenticated($this->makeAuthUser())
+            ->putJson('/h5p/'.$content->id, [
+                '_token' => csrf_token(),
+                ...$jsonData,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors($errorFields);
+    }
+
+    public function invalidRequestsProvider(): iterable
+    {
+        yield [[], ['title', 'parameters', 'library']];
+        yield [[
+            'title' => 'Resource title',
+            'parameters' => 'invalid json',
+            'library' => 'Some Library',
+        ], ['parameters']];
+        yield [['libraryid' => 999999], ['libraryid']];
+        yield [['library' => null], ['library']];
+        yield [['language_iso_639_3' => 'eeee'], ['language_iso_639_3']];
     }
 }

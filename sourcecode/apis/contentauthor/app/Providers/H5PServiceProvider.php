@@ -50,6 +50,27 @@ class H5PServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+    }
+
+    public function provides()
+    {
+        return [
+            H5PFileStorage::class,
+            H5PAdapterInterface::class,
+            H5PVideoInterface::class,
+            H5PLibraryAdmin::class,
+            H5peditorStorage::class,
+            H5Plugin::class,
+        ];
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
         $this->app->bind(H5PVideoInterface::class, function () {
             $adapter = app(H5PAdapterInterface::class);
             switch (strtolower($adapter->getAdapterName())) {
@@ -129,26 +150,7 @@ class H5PServiceProvider extends ServiceProvider
             }
             return null;
         });
-    }
 
-    public function provides()
-    {
-        return [
-            H5PFileStorage::class,
-            H5PAdapterInterface::class,
-            H5PVideoInterface::class,
-            H5PLibraryAdmin::class,
-            H5peditorStorage::class,
-        ];
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
         $this->app->singleton(H5PCerpusStorage::class, function ($app) {
             /** @var ContentAuthorStorage $contentAuthorStorage */
             $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
@@ -262,5 +264,7 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             return new H5PEditorAjax($app->make(H5PCore::class), $app->make(H5peditor::class), $app->make(H5peditorStorage::class));
         });
+
+        $this->app->bind(H5Plugin::class, fn() => H5Plugin::get_instance());
     }
 }

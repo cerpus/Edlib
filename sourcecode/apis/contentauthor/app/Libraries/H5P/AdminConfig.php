@@ -18,7 +18,7 @@ class AdminConfig implements ConfigInterface
     }
 
     /**
-     * @param null $id
+     * @param mixed $id
      * @return AdminConfig
      */
     public function setId($id)

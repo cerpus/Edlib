@@ -8,7 +8,6 @@ use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
-use App\Exceptions\H5PValidationFailureException;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
@@ -16,6 +15,7 @@ use App\H5PLibrary;
 use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
+use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
@@ -65,20 +65,11 @@ class H5PController extends Controller
     use ReturnToCore;
 
     private string $viewDataCacheName = 'viewData-';
-    private $errorMessage;
 
     protected H5Plugin $h5pPlugin;
-    protected H5pLti $lti;
     private bool $sendEmail = true;
 
-    private ?h5p $h5p = null;
-
-    /**
-     * Constructor.
-     *
-     * @param H5pLti $h5pLti
-     */
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private H5pLti $lti, private h5p $h5p)
     {
         $this->h5pPlugin = H5Plugin::get_instance(DB::connection()->getPdo());
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
@@ -87,28 +78,15 @@ class H5PController extends Controller
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
-        $this->lti = $h5pLti;
     }
 
-    private function initH5P()
-    {
-        if (is_null($this->h5p)) {
-            $this->h5p = resolve(h5p::class);
-        }
-    }
-
-    /**
-     * Handle index route.
-     *
-     * @return View|Factory
-     */
-    public function index()
+    public function index(): View
     {
         $title = "Viewing H5P content";
         return view('h5p.index', ['title' => $title, 'message' => trans('h5p-editor.need-id')]);
     }
 
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context, $preview = false): View
     {
         $styles = [];
         if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
@@ -119,10 +97,6 @@ class H5PController extends Controller
         if (!$h5pContent->canShow($preview)) {
             return view('layouts.draft-resource', compact('styles'));
         }
-        $h5p = new h5p(DB::connection()->getPdo());
-        if (Session::get('userId', false)) {
-            $h5p->setUserId(Session::get('userId', false));
-        }
         $viewConfig = (resolve(ViewConfig::class))
             ->setId($id)
             ->setUserId(Session::get('userId', false))
@@ -132,17 +106,17 @@ class H5PController extends Controller
             ->setContext($context);
         $viewConfig->setAlterParametersSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
 
-        $h5p->init($viewConfig);
-        $content = $h5p->getContents($id);
-        $settings = $h5p->getSettings();
-        $styles = array_merge($h5p->getStyles(), $styles);
+        $h5pView = $this->h5p->createView($viewConfig);
+        $content = $this->h5p->getContents($viewConfig, $id);
+        $settings = $h5pView->getSettings();
+        $styles = array_merge($h5pView->getStyles(), $styles);
 
         $viewData = [
             'id' => $id,
             'title' => $content['title'],
             'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
             'config' => $settings,
-            'jsScripts' => $h5p->getScripts(),
+            'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
             'inDraftState' => $h5pContent->inDraftState(),
@@ -170,7 +144,6 @@ class H5PController extends Controller
     {
         Log::info('[' . app('requestId') . '] ' . "Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
         $redirectToken = $request->input('redirectToken');
-        $h5p = new h5p(DB::connection()->getPdo());
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
@@ -189,8 +162,7 @@ class H5PController extends Controller
             ->setLanguage(Iso639p3::code2letters($language))
             ->hideH5pJS();
 
-        $h5p->init($editorConfig);
-
+        $h5pView = $this->h5p->createView($editorConfig);
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
@@ -239,9 +211,9 @@ class H5PController extends Controller
         return view('h5p.create',
             [
                 'jwtToken' => $jwtToken,
-                'config' => $h5p->getSettings(),
-                'jsScript' => $h5p->getScripts(false),
-                'styles' => $h5p->getStyles(false),
+                'config' => $h5pView->getSettings(),
+                'jsScript' => $h5pView->getScripts(false),
+                'styles' => $h5pView->getStyles(false),
                 'emails' => '',
                 'libName' => $contenttype,
                 'editorSetup' => $editorSetup->toJson(),
@@ -272,7 +244,6 @@ class H5PController extends Controller
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
 
-        $h5p = new h5p(DB::connection()->getPdo());
         $editorConfig = (resolve(EditorConfig::class))
             ->setId($id)
             ->setUserId(Session::get('authId', false))
@@ -283,8 +254,8 @@ class H5PController extends Controller
             ->setLanguage($h5pLanguage)
             ->hideH5pJS();
 
-        $h5p->init($editorConfig);
-        $content = $h5p->getContents($id);
+        $h5pView = $this->h5p->createView($editorConfig);
+        $content = $this->h5p->getContents($editorConfig, $id);
         if (empty($content)) {
             Log::error('[' . app('requestId') . '] ' . __METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),
@@ -308,7 +279,7 @@ class H5PController extends Controller
 
         $library = $h5pContent->library;
         $settings = [];
-        $scripts = $h5p->getScripts(false);
+        $scripts = $h5pView->getScripts(false);
 
         $editorSetup = H5PEditorConfigObject::create([
             'useDraft' => $adapter->enableDraftLogic(),
@@ -380,10 +351,10 @@ class H5PController extends Controller
                 'jwtToken' => $jwtToken,
                 'id' => $id,
                 'h5p' => $h5pContent,
-                'config' => $h5p->getSettings(),
+                'config' => $h5pView->getSettings(),
                 'adminConfig' => "<script>H5PAdminIntegration = " . json_encode($settings) . "</script>",
                 'jsScript' => $scripts,
-                'styles' => $h5p->getStyles(false),
+                'styles' => $h5pView->getStyles(false),
                 'libName' => $h5pCore->libraryToString($content['library']),
                 'emails' => $this->get_content_shares($id),
                 'hasUserProgress' => $this->hasUserProgress($h5pContent),
@@ -423,13 +394,8 @@ class H5PController extends Controller
      *
      * @throws Exception
      */
-    public function update(Request $request, H5PContent $h5p, H5PCore $core): Response|JsonResponse
+    public function update(H5PStorageRequest $request, H5PContent $h5p, H5PCore $core): Response|JsonResponse
     {
-        $this->initH5P();
-        if ($this->h5p->validateStoreInput($request, $h5p) !== true) {
-            return response($this->h5p->getErrorMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         event(new ContentUpdating($h5p, $request));
 
         $authId = Session::get('authId', false);
@@ -556,7 +522,7 @@ class H5PController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Response|JsonResponse
+    public function store(H5PStorageRequest $request): Response|JsonResponse
     {
         $request->merge([
             "parameters" => self::addAuthorToParameters($request->get("parameters"))
@@ -592,19 +558,9 @@ class H5PController extends Controller
         return response()->json($responseValues, Response::HTTP_CREATED);
     }
 
-    /**
-     * @throws Exception
-     */
     public function persistContent(Request $request, $authId): H5PContent
     {
-        $this->initH5P();
-
-        if ($this->h5p->validateStoreInput($request, app(H5PContent::class)) !== true) {
-            throw new H5PValidationFailureException($this->h5p->getErrorMessage());
-        }
-
-        $this->h5p->setUserId($authId);
-        $content = $this->h5p->storeContent($request);
+        $content = $this->h5p->storeContent($request, null, $authId);
         $this->storeContentLicense($request, $content['id']);
 
         /** @var H5PContent $newH5pContent */
@@ -800,7 +756,6 @@ class H5PController extends Controller
         /** @var H5PCore $core */
         $core = resolve(H5PCore::class);
         $oldContent = $core->loadContent($h5pContent->id);
-        $this->h5p->setUserId($authId);
 
         if ($versionPurpose === VersionData::COPY || $versionPurpose === VersionData::TRANSLATION) {
             $oldContent['user_id'] = null;
@@ -820,7 +775,7 @@ class H5PController extends Controller
 
         $makeNewVersion = $h5pContent->requestShouldBecomeNewVersion($request);
         $oldContent['useVersioning'] = $makeNewVersion;
-        $content = $this->h5p->storeContent($request, $oldContent);
+        $content = $this->h5p->storeContent($request, $oldContent, $authId);
 
         if ($makeNewVersion !== true && $h5pContent->useVersioning() === false) {
             /** @var \H5PExport $export */

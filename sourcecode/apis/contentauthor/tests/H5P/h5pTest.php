@@ -4,6 +4,7 @@ namespace Tests\H5P;
 
 use App\H5PContent;
 use Exception;
+use H5PCore;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Tests\TestCase;
@@ -34,7 +35,6 @@ class h5pTest extends TestCase
     {
         parent::setUp();
 
-        h5p::setUp();
         H5Plugin::setUp();
 
         $this->setUpContentAuthorStorage();
@@ -46,7 +46,6 @@ class h5pTest extends TestCase
             $this->deleteEditorFilesDirectory();
         }
         parent::tearDown();
-        h5p::setUp();
         H5Plugin::setUp();
     }
 
@@ -92,9 +91,9 @@ class h5pTest extends TestCase
                 throw new Exception("Could not delete the file/directory:" . $fileinfo->getRealPath());
             }
         }
-        if (!rmdir($this->editorFilesDirectory)) {
-            throw new Exception("Could not delete the editorFilesDirectory");
-        }
+
+        // TODO: figure out why "rmdir(/buckets/main_bucket): Resource busy" happens
+        @rmdir($this->editorFilesDirectory);
     }
 
     private function createUploadedFiles($files)
@@ -114,7 +113,6 @@ class h5pTest extends TestCase
         }
     }
 
-
     /**
      * @test
      */
@@ -122,7 +120,7 @@ class h5pTest extends TestCase
     {
         app()->instance('requestId', 123);
 
-        $request = new Request([
+        $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
@@ -131,11 +129,8 @@ class h5pTest extends TestCase
         $this->createUnitTestDirectories();
         $this->createUploadedFiles([$this->getEditorDirectory() . DIRECTORY_SEPARATOR . "images/image-5805bff7c5330.jpg" => "Test image"]);
 
-        $h5p = new h5p($this->getPDOConnection());
-        $h5p->setEditorFilesDir($this->editorFilesDirectory);
-        $h5p->setIsValidated(true);
-        $h5p->setUserId("createContentUserId");
-        $content = $h5p->storeContent($request);
+        $h5p = app(h5p::class);
+        $content = $h5p->storeContent($request, null, "createContentUserId");
         $this->assertNotFalse($content);
         $this->assertEquals(1, $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
@@ -151,15 +146,15 @@ class h5pTest extends TestCase
         $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, "license" => "U"]);
 
-        $request = new Request([
+        $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "Updated Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
         ]);
 
-        $core = $h5p->getH5pCore();
+        $core = app(H5PCore::class);
         $storedContent = $core->loadContent($content['id']);
-        $updatedContent = $h5p->storeContent($request, $storedContent);
+        $updatedContent = $h5p->storeContent($request, $storedContent, "createContentUserId");
         $this->assertNotFalse($updatedContent);
         $this->assertEquals(1, $updatedContent['id']);
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
@@ -187,7 +182,7 @@ class h5pTest extends TestCase
     {
         app()->instance('requestId', 123);
 
-        $request = new Request([
+        $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
@@ -196,11 +191,8 @@ class h5pTest extends TestCase
         $this->createUnitTestDirectories();
         $this->createUploadedFiles([$this->getEditorDirectory() . DIRECTORY_SEPARATOR . "images/image-5805bff7c5330.jpg" => "Test image"]);
 
-        $h5p = new h5p($this->getPDOConnection());
-        $h5p->setEditorFilesDir($this->editorFilesDirectory);
-        $h5p->setIsValidated(true);
-        $h5p->setUserId("createContentUserId");
-        $content = $h5p->storeContent($request);
+        $h5p = app(h5p::class);
+        $content = $h5p->storeContent($request, null, "createContentUserId");
         $this->assertNotFalse($content);
         $this->assertEquals(1, $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
@@ -216,16 +208,16 @@ class h5pTest extends TestCase
         $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, "license" => "U"]);
 
-        $request = new Request([
+        $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "Updated Test Title",
             'parameters' => '{"params": {"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
         ]);
 
-        $core = $h5p->getH5pCore();
+        $core = app(H5PCore::class);
         $storedContent = $core->loadContent($content['id']);
         $storedContent['useVersioning'] = true;
-        $updatedContent = $h5p->storeContent($request, $storedContent);
+        $updatedContent = $h5p->storeContent($request, $storedContent, "createContentUserId");
         $this->assertNotFalse($updatedContent);
         $this->assertEquals(2, $updatedContent['id']);
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
@@ -242,76 +234,5 @@ class h5pTest extends TestCase
         $this->assertDatabaseMissing("h5p_contents", ["id" => 3]);
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, 'license' => "U"]);
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 2, 'content_id' => 2, 'license' => "BY"]);
-    }
-
-    /**
-     * @test
-     */
-    public function contentNotValidated()
-    {
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Content must be validated before storing");
-
-        $request = new Request([
-            'library' => "H5P.Flashcards 1.1",
-            'title' => "My Test Title",
-            'parameters' => '{"cards":[{"image":{"path":"","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true}'
-        ]);
-
-        $h5p = new h5p($this->getPDOConnection());
-        $h5p->storeContent($request);
-    }
-
-    /**
-     * @test
-     */
-    public function invalidFields()
-    {
-        $h5p = new h5p($this->getPDOConnection());
-        $h5pContent = new H5PContent();
-        $request = new Request(['title' => null]);
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The title field is required.", $h5p->getErrorMessage());
-
-        $request->query->set('title', 'TestTitle');
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The library field is required when libraryid is not present.", $h5p->getErrorMessage());
-
-        $request->query->set('library', null);
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The library field is required when libraryid is not present.", $h5p->getErrorMessage());
-
-        $request->query->set('libraryid',100000);
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The selected libraryid is invalid.", $h5p->getErrorMessage());
-
-        $request->query->remove('libraryid');
-        $request->merge([
-            "library" => "H5P.TestLibrary",
-            "parameters" => null
-        ]);
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The parameters field is required.", $h5p->getErrorMessage());
-
-        $request->query->set('parameters',"NotJson");
-        $invalid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertFalse($invalid);
-        $this->assertEquals("The parameters must be a valid JSON string.", $h5p->getErrorMessage());
-
-        $h5p = new h5p($this->getPDOConnection());
-        $request->query->set('parameters', json_encode(["key" => "value"]));
-        $valid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertTrue($valid);
-        $this->assertNull($h5p->getErrorMessage());
-
-        $request->query->set('libraryid', 1);
-        $valid = $h5p->validateStoreInput($request, $h5pContent);
-        $this->assertTrue($valid);
-        $this->assertNull($h5p->getErrorMessage());
     }
 }

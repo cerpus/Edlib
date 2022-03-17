@@ -34,7 +34,7 @@ class EditorConfig implements ConfigInterface
     }
 
     /**
-     * @param null $id
+     * @param mixed $id
      * @return EditorConfig
      */
     public function setId($id): self
