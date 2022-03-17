@@ -12,7 +12,6 @@ const colorsPriority = [colors.DANGER, colors.WARNING, colors.SUCCESS];
 
 export default ({
     authApi,
-    licenseApi,
     coreExternalApi,
     idApi,
     versionApi,
@@ -47,36 +46,6 @@ export default ({
                 url: authApi.config.url,
             },
         };
-    };
-
-    const license = async () => {
-        if (!licenseApi) {
-            throw new ApiException(
-                'licenseApi is not passed to status service'
-            );
-        }
-
-        try {
-            await licenseApi.getAll();
-
-            return {
-                name: 'License service',
-                color: colors.SUCCESS,
-                statusMessage: `All good`,
-                parameters: {
-                    url: licenseApi.config.url,
-                },
-            };
-        } catch (e) {
-            return {
-                name: 'License service',
-                color: colors.DANGER,
-                statusMessage: `Noe skjedde (${e.message})`,
-                parameters: {
-                    url: licenseApi.config.url,
-                },
-            };
-        }
     };
 
     const version = async () => {
@@ -219,5 +188,5 @@ export default ({
         };
     };
 
-    return { auth, license, coreExternal, id, version, db, parser };
+    return { auth, coreExternal, id, version, db, parser };
 };

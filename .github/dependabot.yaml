@@ -24,10 +24,6 @@ updates:
     directory: "/sourcecode/apis/doku"
     schedule:
       interval: "monthly"
-  - package-ecosystem: "composer"
-    directory: "/sourcecode/apis/license"
-    schedule:
-      interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/sourcecode/apis/lti"
     schedule:
