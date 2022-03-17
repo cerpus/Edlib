@@ -137,5 +137,6 @@
     "filter": "filter",
     "filter_plural": "filters",
     "resource_view": "resource view",
-    "resource_view_plural": "resource views"
+    "resource_view_plural": "resource views",
+    "save_filter": " save filter"
 }

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Box, Button, Checkbox, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+    Box,
+    Button,
+    Checkbox,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+} from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../../hooks/useTranslation.js';
 import CreateSavedFilter from './components/CreateSavedFilter.jsx';
@@ -25,10 +33,11 @@ const SavedFilters = ({
     updateSavedFilter,
     licenseData,
     contentTypeData,
+    showCreateFilter,
+    setShowCreateFilter,
 }) => {
     const { t } = useTranslation();
     const { classes } = useStyles();
-    const [showCreate, setShowCreate] = React.useState(false);
     const [showDelete, setShowDelete] = React.useState(false);
     const filterUtils = FilterUtils(filters, {
         contentTypes: contentTypeData,
@@ -79,19 +88,7 @@ const SavedFilters = ({
                     );
                 })}
                 <ListItem dense>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={() => setShowCreate(true)}
-                        size="small"
-                        disabled={
-                            filters.contentTypes.value.length === 0 &&
-                            filters.licenses.value.length === 0
-                        }
-                    >
-                        {t('save')}
-                    </Button>
-                    <Box ml={1}>
+                    <Box>
                         <Button
                             color="primary"
                             variant="outlined"
@@ -105,12 +102,12 @@ const SavedFilters = ({
                 </ListItem>
             </List>
             <CreateSavedFilter
-                show={showCreate}
-                onClose={() => setShowCreate(false)}
+                show={showCreateFilter}
+                onClose={() => setShowCreateFilter(false)}
                 savedFilterData={savedFilterData}
                 filters={filters}
                 onDone={(savedFilter) => {
-                    setShowCreate(false);
+                    setShowCreateFilter(false);
                     updateSavedFilter(savedFilter);
                 }}
                 filterUtils={filterUtils}

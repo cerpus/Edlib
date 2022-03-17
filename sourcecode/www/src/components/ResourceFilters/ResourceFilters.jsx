@@ -63,6 +63,7 @@ const ResourceFilters = ({
         },
         [_setFilterViewType]
     );
+    const [showCreateFilter, setShowCreateFilter] = React.useState(false);
 
     const filterBlocks = [
         {
@@ -75,6 +76,8 @@ const ResourceFilters = ({
                     contentTypeData={contentTypeData}
                     filters={filters}
                     updateSavedFilter={updateSavedFilter}
+                    showCreateFilter={showCreateFilter}
+                    setShowCreateFilter={setShowCreateFilter}
                 />
             ),
         },
@@ -108,7 +111,19 @@ const ResourceFilters = ({
 
     return (
         <>
-            <Box pr={1} display="flex" justifyContent="end">
+            <Box px={1} pb={1} display="flex" justifyContent="space-between">
+                <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => setShowCreateFilter(true)}
+                    size="small"
+                    disabled={
+                        filters.contentTypes.value.length === 0 &&
+                        filters.licenses.value.length === 0
+                    }
+                >
+                    {t('save_filter')}
+                </Button>
                 <Button
                     onClick={() =>
                         setFilterViewType(
