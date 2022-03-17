@@ -11,15 +11,14 @@ use App\Events\ContentUpdating;
 use App\H5PContent;
 use App\H5pLti;
 use App\Http\Controllers\H5PController;
+use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\h5p;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
 use stdClass;
@@ -91,17 +90,13 @@ class h5pControllerFunctionalTest extends TestCase
     {
         Event::fake($this->fakedEvents);
 
-        $request = new Request([
+        $request = new H5PStorageRequest([], [
             'title' => "H5P Title",
             "library" => "H5P.Flashcards 1.1",
             "parameters" => '{"params":{"cards":[{"image":{"path":"","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"title": "H5P Title"}}',
             "license" => 'BY-NC',
         ]);
 
-        $h5p = new h5p(DB::connection()->getPdo());
-        $h5p->setEditorFilesDir(sys_get_temp_dir().DIRECTORY_SEPARATOR."tmpTest");
-
-        app()->instance(h5p::class, $h5p);
         app()->instance('requestId', Uuid::uuid4()->toString());
 
         $versionClient = $this->getMockBuilder(VersionClient::class)
@@ -123,7 +118,7 @@ class h5pControllerFunctionalTest extends TestCase
 
         /** @var H5pLti $h5pLti */
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $h5pController = new H5PController($h5pLti);
+        $h5pController = new H5PController($h5pLti, app(h5p::class));
 
         $response = $h5pController->store($request);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
@@ -147,18 +142,13 @@ class h5pControllerFunctionalTest extends TestCase
         Event::fake($this->fakedEvents);
         $core = resolve(H5PCore::class);
 
-        $request = new Request([
+        $request = new H5PStorageRequest([], [
             'title' => "H5P Title",
             "library" => "H5P.Flashcards 1.1",
             "parameters" => '{"params":{"cards":[{"image":{"path":"","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"title": "H5P Title"}}',
             "license" => 'BY-NC-ND',
         ]);
 
-        app()->singleton(h5p::class, function () {
-            $h5p = new h5p(DB::connection()->getPdo());
-            $h5p->setEditorFilesDir(sys_get_temp_dir().DIRECTORY_SEPARATOR."tmpTest");
-            return $h5p;
-        });
         app()->instance('requestId', Uuid::uuid4()->toString());
 
         $versionClient = $this->getMockBuilder(VersionClient::class)
@@ -186,7 +176,7 @@ class h5pControllerFunctionalTest extends TestCase
 
         /** @var H5pLti $h5pLti */
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $h5pController = new H5PController($h5pLti);
+        $h5pController = new H5PController($h5pLti, app(h5p::class));
 
         $response = $h5pController->store($request);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
@@ -197,7 +187,7 @@ class h5pControllerFunctionalTest extends TestCase
         $h5pContent = H5PContent::find(1);
         $this->assertEquals("AAAAAAAAAA", $h5pContent->version_id);
 
-        $request = new Request([
+        $request = new H5PStorageRequest([], [
             'title' => "Updated H5P Title",
             "library" => "H5P.Flashcards 1.1",
             "parameters" => '{"params":{"cards":[{"image":{"path":"","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"title": "Updated H5P Title"}}',

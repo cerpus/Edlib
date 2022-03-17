@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Handler;
 
 
 use App\Content;
+use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\H5P\Packages\QuestionSet;
@@ -38,7 +39,7 @@ class ContentTypeHandler
             'isPublished' => Content::isDraftLogicEnabled() && array_key_exists('published', $questionsetData) ? $questionsetData['published'] : 1,
         ];
 
-        $request = app(Request::class);
+        $request = new H5PStorageRequest();
         $request->merge($parameters);
 
         return $this->storeContentType($request, $questionsetData['authId']);

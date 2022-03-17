@@ -10,7 +10,6 @@ trait ResetH5PStatics
 {
     public function setupResetH5PStatics()
     {
-        h5p::setUp();
         H5Plugin::setUp();
     }
 }

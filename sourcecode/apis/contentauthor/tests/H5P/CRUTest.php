@@ -435,7 +435,7 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->post(route('h5p.store'), [
+            ->postJson(route('h5p.store'), [
                 '_token' => csrf_token(),
                 'title' => 'New resource',
                 'action' => 'create',
@@ -469,7 +469,7 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->post(route('h5p.store'), [
+            ->postJson(route('h5p.store'), [
                 '_token' => csrf_token(),
                 'title' => 'New resource',
                 'action' => 'create',

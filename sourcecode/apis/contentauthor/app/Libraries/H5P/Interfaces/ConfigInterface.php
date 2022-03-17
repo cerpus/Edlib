@@ -5,6 +5,10 @@ namespace App\Libraries\H5P\Interfaces;
 
 use App\H5PLibrary;
 
+/**
+ * @property mixed $id
+ * @property array $assets
+ */
 interface ConfigInterface
 {
     public function getConfig();
