@@ -59,6 +59,7 @@ const ResourceStats = ({ resourceId }) => {
                     <Tooltip />
                     {datasets.map((dataset) => (
                         <Line
+                            key={dataset.name}
                             dot={false}
                             name={dataset.name}
                             type="monotone"
