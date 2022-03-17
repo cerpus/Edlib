@@ -74,7 +74,7 @@
                                                                                             target="_blank">Keepass</a>)
                             </p>
                             <input type="text" class="form-control" id="password" name="password"
-                                   value="{{ str_random(18) }}"
+                                   value=""
                                    placeholder="Password">
                         </div>
 
