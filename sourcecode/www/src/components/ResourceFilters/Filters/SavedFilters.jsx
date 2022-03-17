@@ -27,22 +27,9 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
-const SavedFilters = ({
-    savedFilterData,
-    filters,
-    updateSavedFilter,
-    licenseData,
-    contentTypeData,
-    showCreateFilter,
-    setShowCreateFilter,
-}) => {
+const SavedFilters = ({ savedFilterData, setShowDelete, filterUtils }) => {
     const { t } = useTranslation();
     const { classes } = useStyles();
-    const [showDelete, setShowDelete] = React.useState(false);
-    const filterUtils = FilterUtils(filters, {
-        contentTypes: contentTypeData,
-        licenses: licenseData,
-    });
 
     return (
         <>
@@ -101,28 +88,6 @@ const SavedFilters = ({
                     </Box>
                 </ListItem>
             </List>
-            <CreateSavedFilter
-                show={showCreateFilter}
-                onClose={() => setShowCreateFilter(false)}
-                savedFilterData={savedFilterData}
-                filters={filters}
-                onDone={(savedFilter) => {
-                    setShowCreateFilter(false);
-                    updateSavedFilter(savedFilter);
-                }}
-                filterUtils={filterUtils}
-            />
-            <DeleteSavedFilter
-                show={showDelete}
-                onClose={() => setShowDelete(false)}
-                savedFilterData={savedFilterData}
-                filters={filters}
-                onDeleted={(id) => {
-                    setShowDelete(false);
-                    updateSavedFilter(id, true);
-                }}
-                filterUtils={filterUtils}
-            />
         </>
     );
 };

@@ -23,6 +23,9 @@ import useArray from '../../hooks/useArray.js';
 import SavedFilters from './Filters/SavedFilters.jsx';
 import viewTypes from './filterViewTypes';
 import { useConfigurationContext } from '../../contexts/Configuration.jsx';
+import CreateSavedFilter from './Filters/components/CreateSavedFilter.jsx';
+import FilterUtils from './Filters/filterUtils.js';
+import DeleteSavedFilter from './Filters/components/DeleteSavedFilter.jsx';
 
 const useStyles = makeStyles()((theme) => ({
     root: {
@@ -48,10 +51,13 @@ const ResourceFilters = ({
     updateSavedFilter,
 }) => {
     const { t } = useTranslation();
+    const { classes } = useStyles();
     const { getUserConfig } = useEdlibComponentsContext();
     const { getConfigurationValue, setConfigurationValue } =
         useConfigurationContext();
-    const { classes } = useStyles();
+
+    const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
+
     const disabledFilters = getUserConfig('disabledFilters') || null;
     const [filterViewType, _setFilterViewType] = React.useState(() => {
         return getConfigurationValue('filterViewType', viewTypes.GROUPED);
@@ -63,7 +69,13 @@ const ResourceFilters = ({
         },
         [_setFilterViewType]
     );
+
+    const filterUtils = FilterUtils(filters, {
+        contentTypes: contentTypeData,
+        licenses: licenseData,
+    });
     const [showCreateFilter, setShowCreateFilter] = React.useState(false);
+    const [showDelete, setShowDelete] = React.useState(false);
 
     const filterBlocks = [
         {
@@ -72,12 +84,8 @@ const ResourceFilters = ({
             content: (
                 <SavedFilters
                     savedFilterData={savedFilterData}
-                    licenseData={licenseData}
-                    contentTypeData={contentTypeData}
-                    filters={filters}
-                    updateSavedFilter={updateSavedFilter}
-                    showCreateFilter={showCreateFilter}
-                    setShowCreateFilter={setShowCreateFilter}
+                    setShowDelete={setShowDelete}
+                    filterUtils={filterUtils}
                 />
             ),
         },
@@ -107,7 +115,6 @@ const ResourceFilters = ({
             ),
         },
     ];
-    const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
 
     return (
         <>
@@ -190,6 +197,29 @@ const ResourceFilters = ({
             >
                 {_.capitalize(t('reset'))}
             </Button>
+            <CreateSavedFilter
+                show={showCreateFilter}
+                onClose={() => setShowCreateFilter(false)}
+                savedFilterData={savedFilterData}
+                filters={filters}
+                onDone={(savedFilter) => {
+                    setShowCreateFilter(false);
+                    updateSavedFilter(savedFilter);
+                }}
+                filterUtils={filterUtils}
+            />
+            <DeleteSavedFilter
+                show={showDelete}
+                onClose={() => setShowDelete(false)}
+                savedFilterData={savedFilterData}
+                filters={filters}
+                onDeleted={(id) => {
+                    setShowDelete(false);
+                    updateSavedFilter(id, true);
+                }}
+                filterUtils={filterUtils}
+                setShowDelete={setShowDelete}
+            />
         </>
     );
 };
