@@ -1,13 +1,10 @@
 <?php
 
-
 namespace App\Traits;
-
 
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 trait Versionable
 {
@@ -22,14 +19,10 @@ trait Versionable
         if (!$this->versionData) {
             if (!$versionData = Cache::get($cacheKey)) {
                 if ($this->version_id) {
-                    try {
-                        $vc = app(VersionClient::class);
-                        $versionData = $vc->getVersion($this->version_id);
-                        if ($versionData instanceof VersionData) {
-                            Cache::put($cacheKey, $versionData, now()->addSeconds($cacheTime));
-                        }
-                    } catch (\Throwable $t) {
-                        Log::error("Unable to fetch version data for id: {$this->id}", $this->toArray());
+                    $vc = app(VersionClient::class);
+                    $versionData = $vc->getVersion($this->version_id);
+                    if ($versionData instanceof VersionData) {
+                        Cache::put($cacheKey, $versionData, now()->addSeconds($cacheTime));
                     }
                 }
             }
