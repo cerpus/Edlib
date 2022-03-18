@@ -20,7 +20,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@popperjs/core": "^2.11.0",
     "@testing-library/jest-dom": "^5.15.1",
-    "@testing-library/react": "^12.1.2",
+    "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "babel-preset-react-app": "^10.0.1",
     "classnames": "^2.3.1",
