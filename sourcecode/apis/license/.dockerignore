@@ -1,7 +1,0 @@
-vendor/
-storage/*
-.env
-.idea/
-.run/
-bamboo_specs/
-.phpunit.result.cache

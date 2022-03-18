@@ -136,26 +136,6 @@ services:
       - "5504:5504"
     working_dir: /app
 
-  licenseapi:
-    build: ./sourcecode/apis/license
-    command: /bin/bash -c "set -eux;chown -R www-data:www-data /app/storage; /start-scripts/wait-for-multiple.sh mysql:3306;php /app/artisan migrate --force;/run-app.sh"
-    volumes:
-      - ./sourcecode/apis/license:/app
-      - ./localSetup/projects/licenseapi/apache.conf:/etc/apache2/sites-enabled/001-licenseapi.conf
-      - ./localSetup/helpers/start-scripts:/start-scripts
-      - ./data/licenseapi/storage:/app/storage
-    environment:
-      DB_CHARSET: utf8
-      DB_COLLATION: utf8_unicode_ci
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost/health]
-    ports:
-      - "8103:80"
-    env_file:
-      - ./localSetup/projects/licenseapi/.env
-    depends_on:
-      - mysql
-
   contentauthor:
     build:
       context: ./sourcecode/apis/contentauthor
