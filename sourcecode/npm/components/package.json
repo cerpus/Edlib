@@ -59,7 +59,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
-    "@babel/cli": "^7.16.0",
+    "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.5",
     "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/preset-react": "^7.16.7",
