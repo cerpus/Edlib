@@ -54,9 +54,9 @@ Edlib is continuously evolving with existing features being refined and new feat
 
 Documentation to help you install Edlib and start developing against it is currently being worked on. Check back for updates.
 
-## Developer Documentation
+## Documentation
 
-We are currently working on [developer-specific documentation](https://github.com/cerpus/Edlib/issues/1) and as soon as we have something meaningful we will make it available. Check back for updates.
+Visit [https:/docs.edlib.com](https:/docs.edlib.com) to view the documentation. We are continuously working on updating and improving the documentation. If you see any errors, or didn't find what you were looking for, check in [issues](https://github.com/cerpus/Edlib/issues) and [discussions](https://github.com/cerpus/Edlib/discussions) here on Github before creating a new.
 
 ## How to Contribute
 
@@ -69,6 +69,10 @@ In general, we follow the "fork-and-pull" Git workflow:
  3. **Commit** changes to your own branch
  4. **Push** your work back up to your fork
  5. Submit a **Pull request** so that we can review your changes. :) Make sure to add yourself to [AUTHORS](https://github.com/cerpus/Edlib/blob/master/AUTHORS.md).
+
+### Translation
+
+Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. See the [Translating Edlib](https://docs.edlib.com/docs/developers/translation) section in the documentation for more info.
 
 ### Issues
 
