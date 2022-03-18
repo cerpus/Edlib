@@ -37,7 +37,7 @@
     "laravelcollective/html": "^6.0",
     "league/flysystem-aws-s3-v3": "~1.0",
     "league/flysystem-ziparchive": "^1.0",
-    "league/fractal": "^0.18.0",
+    "league/fractal": "^0.20",
     "league/mime-type-detection": "^1.9",
     "lusitanian/oauth": "^0.8.11",
     "masterminds/html5": "^2.6",
