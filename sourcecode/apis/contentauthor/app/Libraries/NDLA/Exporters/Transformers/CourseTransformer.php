@@ -3,13 +3,14 @@
 namespace App\Libraries\NDLA\Exporters\Transformers;
 
 use App\NdlaIdMapper;
+use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use App\Libraries\NDLA\API\ImageApiClient;
 
 class CourseTransformer extends TransformerAbstract
 {
 
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'children'
     ];
 
@@ -24,7 +25,7 @@ class CourseTransformer extends TransformerAbstract
     }
 
 
-    public function transform($course)
+    public function transform($course): array
     {
         $imageUrl = $course->meta->metaImage->url ?? '';
         $imageType = '';
@@ -58,7 +59,7 @@ class CourseTransformer extends TransformerAbstract
 
     }
 
-    public function includeChildren($course)
+    public function includeChildren($course): Collection
     {
         if (!empty($course->subtopics)) {
             // Make modules out of each subtopic
@@ -79,7 +80,7 @@ class CourseTransformer extends TransformerAbstract
         }
     }
 
-    protected function getCollaborators()
+    protected function getCollaborators(): array
     {
         $collaborators = [];
         if (!empty(config('ndla.export.collaborators'))) {
@@ -90,7 +91,7 @@ class CourseTransformer extends TransformerAbstract
     }
 
     // Return the most "popular" language.
-    protected function getLanguage($course)
+    protected function getLanguage($course): string
     {
         $articlesToCheckLanguageIn = [];
         if (!empty($course->subtopics)) {

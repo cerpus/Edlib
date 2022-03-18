@@ -8,7 +8,7 @@ use League\Fractal\TransformerAbstract;
 
 class AnswerTransformer extends TransformerAbstract
 {
-    public function transform(AnswerDataObject $answer)
+    public function transform(AnswerDataObject $answer): array
     {
         return [
             'id' => $answer->id,

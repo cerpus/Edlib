@@ -9,7 +9,7 @@ use League\Fractal\TransformerAbstract;
 class DateTransformer extends TransformerAbstract
 {
 
-    public function transform(Carbon $date)
+    public function transform(Carbon $date): array
     {
         return [
             'timestamp' => $date->getTimestamp(),

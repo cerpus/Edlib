@@ -10,15 +10,16 @@ namespace App\Http\Controllers\API\Transformers;
 
 
 use Cerpus\QuestionBankClient\DataObjects\QuestionDataObject;
+use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 
 class QuestionTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'answers',
     ];
 
-    public function transform(QuestionDataObject $question)
+    public function transform(QuestionDataObject $question): array
     {
         return [
             'id' => $question->id,
@@ -28,7 +29,7 @@ class QuestionTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeAnswers(QuestionDataObject $question)
+    public function includeAnswers(QuestionDataObject $question): Collection
     {
         return $this->collection($question->getAnswers(), new AnswerTransformer);
     }

@@ -3,6 +3,7 @@
 namespace App\Libraries\NDLA\Exporters\Transformers;
 
 use App\NdlaIdMapper;
+use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use App\Libraries\NDLA\API\ImageApiClient;
 use App\Libraries\NDLA\Traits\FiltersArticles;
@@ -19,11 +20,11 @@ class SubtopicModuleTransformer extends TransformerAbstract
         $this->imageApi = resolve(ImageApiClient::class);
     }
 
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'resources'
     ];
 
-    public function transform($module)
+    public function transform($module): array
     {
         $imageUrl = $module->article->metaImage->url ?? $module->meta->metaImage->url ?? '';
         $imageType = '';
@@ -44,7 +45,7 @@ class SubtopicModuleTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeResources($module)
+    public function includeResources($module): Collection
     {
         $resources = array_merge(($module->coreResources ?? []), ($module->supplementaryResources ?? []));
 

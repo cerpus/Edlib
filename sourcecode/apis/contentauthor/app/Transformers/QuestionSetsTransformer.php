@@ -5,21 +5,23 @@ namespace App\Transformers;
 
 use App\QuestionSet;
 use Carbon\Carbon;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class QuestionSetsTransformer extends TransformerAbstract
 {
 
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'created',
         'updated',
     ];
 
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'questions'
     ];
 
-    public function transform(QuestionSet $questionSet)
+    public function transform(QuestionSet $questionSet): array
     {
         return [
             'id' => $questionSet->id,
@@ -32,22 +34,22 @@ class QuestionSetsTransformer extends TransformerAbstract
         ];
     }
 
-    private function getDate(QuestionSet $questionSet, $field)
+    private function getDate(QuestionSet $questionSet, $field): Item
     {
         return $this->item(Carbon::parse($questionSet->$field), new DateTransformer);
     }
 
-    public function includeCreated(QuestionSet $set)
+    public function includeCreated(QuestionSet $set): Item
     {
         return $this->getDate($set, $set->getCreatedAtColumn());
     }
 
-    public function includeUpdated(QuestionSet $set)
+    public function includeUpdated(QuestionSet $set): Item
     {
         return $this->getDate($set, $set->getUpdatedAtColumn());
     }
 
-    public function links(QuestionSet $questionSet)
+    public function links(QuestionSet $questionSet): array
     {
         return [
             'store' => route('questionset.store'),
@@ -56,7 +58,7 @@ class QuestionSetsTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeQuestions(QuestionSet $questionSet)
+    public function includeQuestions(QuestionSet $questionSet): Collection
     {
         return $this->collection($questionSet->questions, new QuestionSetsQuestionTransformer);
     }

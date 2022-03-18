@@ -3,12 +3,13 @@
 namespace App\Libraries\NDLA\Exporters\Transformers;
 
 use App\NdlaIdMapper;
+use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
 use App\Libraries\NDLA\API\ImageApiClient;
 
 class SubjectTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = [
+    protected array $defaultIncludes = [
         'courses'
     ];
 
@@ -19,7 +20,7 @@ class SubjectTransformer extends TransformerAbstract
         $this->imageApi = resolve(ImageApiClient::class);
     }
 
-    public function transform($subject)
+    public function transform($subject): array
     {
         $imageUrl = $subject->subjectpage->banner->desktopUrl ?? '';
         $imageType = '';
@@ -41,12 +42,12 @@ class SubjectTransformer extends TransformerAbstract
         ];
     }
 
-    public function includeCourses($subject)
+    public function includeCourses($subject): Collection
     {
         return $this->collection(($subject->topics ?? []), new CourseTransformer($subject));
     }
 
-    protected function getCollaborators()
+    protected function getCollaborators(): array
     {
         $collaborators = [];
         if (!empty(config('ndla.export.collaborators'))) {
