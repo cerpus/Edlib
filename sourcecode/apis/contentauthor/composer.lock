@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "722991f82db011f578c589cef75e5479",
+    "content-hash": "11c9e65cfbe83b0e0f6eea7cea74f330",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -3636,28 +3636,28 @@
         },
         {
             "name": "league/fractal",
-            "version": "0.18.0",
+            "version": "0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/fractal.git",
-                "reference": "4e553dae1a9402adbe11c81430a64675dc97b4fc"
+                "reference": "419b0cbf5c23a06886a583c2fc0530db2360a70f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/fractal/zipball/4e553dae1a9402adbe11c81430a64675dc97b4fc",
-                "reference": "4e553dae1a9402adbe11c81430a64675dc97b4fc",
+                "url": "https://api.github.com/repos/thephpleague/fractal/zipball/419b0cbf5c23a06886a583c2fc0530db2360a70f",
+                "reference": "419b0cbf5c23a06886a583c2fc0530db2360a70f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4"
+                "php": ">=7.4"
             },
             "require-dev": {
                 "doctrine/orm": "^2.5",
                 "illuminate/contracts": "~5.0",
-                "mockery/mockery": "~0.9",
+                "mockery/mockery": "^1.3",
                 "pagerfanta/pagerfanta": "~1.0.0",
-                "phpunit/phpunit": "^4.8.35 || ^7.5",
-                "squizlabs/php_codesniffer": "~1.5",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "~3.4",
                 "zendframework/zend-paginator": "~2.3"
             },
             "suggest": {
@@ -3668,7 +3668,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.13-dev"
+                    "dev-master": "0.20.x-dev"
                 }
             },
             "autoload": {
@@ -3698,9 +3698,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/fractal/issues",
-                "source": "https://github.com/thephpleague/fractal/tree/master"
+                "source": "https://github.com/thephpleague/fractal/tree/0.20"
             },
-            "time": "2019-05-10T02:16:43+00:00"
+            "time": "2022-03-07T23:12:17+00:00"
         },
         {
             "name": "league/mime-type-detection",
