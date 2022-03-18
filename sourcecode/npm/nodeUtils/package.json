@@ -51,7 +51,7 @@
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.3",
     "nock": "^13.2.4",
-    "prettier": "^2.5.1"
+    "prettier": "^2.6.0"
   },
   "peerDependencies": {
     "amqplib": "^0.8.0"
