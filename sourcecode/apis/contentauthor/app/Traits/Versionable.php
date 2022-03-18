@@ -5,6 +5,7 @@ namespace App\Traits;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Support\Facades\Cache;
+use RuntimeException;
 
 trait Versionable
 {
@@ -23,6 +24,11 @@ trait Versionable
                     $versionData = $vc->getVersion($this->version_id);
                     if ($versionData instanceof VersionData) {
                         Cache::put($cacheKey, $versionData, now()->addSeconds($cacheTime));
+                    } else {
+                        throw new RuntimeException(sprintf(
+                            'Versioning failed (%s)',
+                            json_encode($vc->getError()),
+                        ), $vc->getErrorCode());
                     }
                 }
             }
