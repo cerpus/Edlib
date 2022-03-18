@@ -16,7 +16,7 @@
     "@cerpus/edlib-node-utils": "0.0.0-0399a6f5472f8aa5e2a0d7edce3faf17df03c56c",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
-    "axios": "^0.26.0",
+    "axios": "^0.26.1",
     "babel-plugin-transform-default-import": "^1.0.0",
     "dataloader": "^2.0.0",
     "jest": "^27.5.1",
