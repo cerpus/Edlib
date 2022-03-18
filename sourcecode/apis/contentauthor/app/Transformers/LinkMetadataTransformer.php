@@ -8,7 +8,7 @@ use League\Fractal\TransformerAbstract;
 
 class LinkMetadataTransformer extends TransformerAbstract
 {
-    public function transform(Adapter $embed)
+    public function transform(Adapter $embed): array
     {
         return [
             'title' => $embed->getTitle(),

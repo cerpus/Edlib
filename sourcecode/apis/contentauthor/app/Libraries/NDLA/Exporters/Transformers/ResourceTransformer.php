@@ -6,7 +6,7 @@ use League\Fractal\TransformerAbstract;
 
 class ResourceTransformer extends TransformerAbstract
 {
-    public function transform($resource)
+    public function transform($resource): array
     {
         $title = $resource->name ?? "Resource: If you see this there is a bug in CA.";
         if ($modifiedTitle = $resource->prefix ?? null) {
