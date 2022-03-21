@@ -92,13 +92,8 @@ class H5P_Plugin_Admin {
     return FALSE;
   }
 
-  public static function flashErrorMessages($errorMessages)
-  {
-    $markup = '<ul>' . collect($errorMessages)
-            ->map(function ($message) {
-              return sprintf("<li>%s</li>", $message);
-            })->implode("") . '</ul>';
-    Session::flash("invalidMessage", $markup);
-  }
-
+    private static function flashErrorMessages(array $errorMessages)
+    {
+        Session::flash("invalidMessages", $errorMessages);
+    }
 }
