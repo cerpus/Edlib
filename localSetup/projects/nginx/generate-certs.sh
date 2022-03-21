@@ -31,7 +31,7 @@ if [ ! -f "$CA_DIR/ca.key" ]; then
     -nodes \
     -key "$CA_DIR/ca.key" \
     -sha256 \
-    -days 825 \
+    -days 3650 \
     -out "$CA_DIR/cacert.pem" \
     -subj '/C=NO/ST=Nordland/L=Alsvaag/O=Cerpus AS/OU=local/CN=cerpus.com/emailAddress=local@cerpus.com'
 fi
