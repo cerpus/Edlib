@@ -56,7 +56,7 @@ Documentation to help you install Edlib and start developing against it is curre
 
 ## Documentation
 
-Visit [https:/docs.edlib.com](https:/docs.edlib.com) to view the documentation. We are continuously working on updating and improving the documentation. If you see any errors, or didn't find what you were looking for, check in [issues](https://github.com/cerpus/Edlib/issues) and [discussions](https://github.com/cerpus/Edlib/discussions) here on Github before creating a new.
+Visit [Edlib Docs](https://docs.edlib.com) to view the documentation. We are continuously working on updating and improving the documentation. If you see any errors, or didn't find what you were looking for, check in [issues](https://github.com/cerpus/Edlib/issues) and [discussions](https://github.com/cerpus/Edlib/discussions) here on Github before creating a new.
 
 ## How to Contribute
 
