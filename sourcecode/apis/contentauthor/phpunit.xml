@@ -59,7 +59,6 @@
         <env name="OER_LICENSES_URL" value=""/>
         <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <env name="FEATURE_ENABLE_DRAFT_LOGIC" value="false"/>
-        <env name="FEATURE_ENABLE_RECOMMENDATION_ENGINE" value="false"/>
         <env name="FILESYSTEM_CLOUD" value="tmp"/>
     </php>
 </phpunit>

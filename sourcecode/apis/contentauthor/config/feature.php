@@ -11,7 +11,6 @@ return [
     'allow-mode-switch' => env('FEATURE_MODE_SWITCH', false),
     'use-add-link-resource' => env('FEATURE_USE_ADD_LINK_RESOURCE', true),
     'enableDraftLogic' => env('FEATURE_ENABLE_DRAFT_LOGIC', true),
-    "enable-recommendation-engine" => env("FEATURE_ENABLE_RECOMMENDATION_ENGINE", true),
     "export_h5p_on_save" => env("FEATURE_EXPORT_H5P_ON_SAVE", false),
     "export_h5p_with_local_files" => env("FEATURE_EXPORT_H5P_WITH_LOCAL_FILES", true),
     "lock-max-hours" => env("FEATURE_MAX_LOCKING_HOURS", 24),
