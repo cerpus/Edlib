@@ -90,13 +90,11 @@ services:
 
   nginx:
     build: ./localSetup/projects/nginx
-    command: ["nginx", "-g", "daemon off;"]
-    entrypoint: ["/docker-entrypoint.sh"]
     healthcheck:
       test: [CMD, curl, -fk, https://localhost]
     volumes:
       - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
-      - ./localSetup/projects/nginx/entrypoint.sh:/docker-entrypoint.sh
+      - ./localSetup/projects/nginx/generate-certs.sh:/docker-entrypoint.d/generate-certs.sh:ro
       - ./data/nginx/ca:/etc/ca
       - ./data/nginx/certs:/etc/ssl/private
       - ./sourcecode/apis/common/public:/var/www/edlibcommon/public
