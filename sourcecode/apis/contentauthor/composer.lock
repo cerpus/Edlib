@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11c9e65cfbe83b0e0f6eea7cea74f330",
+    "content-hash": "c3aa76052a2122c118cf80dc5266bae6",
     "packages": [
         {
             "name": "auth0/auth0-php",
-            "version": "7.9.2",
+            "version": "7.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "95cdd4f09122f14d0b0246fe8c51287ece63f98a"
+                "reference": "0611fbabcb802ac63533f1c0ff5bd765e22f4aa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/95cdd4f09122f14d0b0246fe8c51287ece63f98a",
-                "reference": "95cdd4f09122f14d0b0246fe8c51287ece63f98a",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/0611fbabcb802ac63533f1c0ff5bd765e22f4aa3",
+                "reference": "0611fbabcb802ac63533f1c0ff5bd765e22f4aa3",
                 "shasum": ""
             },
             "require": {
@@ -25,7 +25,6 @@
                 "ext-json": "*",
                 "ext-openssl": "*",
                 "guzzlehttp/guzzle": "^6.0|^7.0",
-                "guzzlehttp/psr7": "^1.8",
                 "php": "^7.3 | ^8.0",
                 "psr/simple-cache": "^1.0"
             },
@@ -61,9 +60,9 @@
             "homepage": "https://github.com/auth0/auth0-PHP",
             "support": {
                 "issues": "https://github.com/auth0/auth0-PHP/issues",
-                "source": "https://github.com/auth0/auth0-PHP/tree/7.9.2"
+                "source": "https://github.com/auth0/auth0-PHP/tree/7.9.0"
             },
-            "time": "2021-08-04T13:08:48+00:00"
+            "time": "2021-05-04T00:30:48+00:00"
         },
         {
             "name": "auth0/php-jwt",
@@ -185,16 +184,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.213.0",
+            "version": "3.214.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "61875282d6ec1c441ca0af94fc00a5f516db12ef"
+                "reference": "a2eacf8c1b55de4733f4cfc315da38f1d4c66501"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/61875282d6ec1c441ca0af94fc00a5f516db12ef",
-                "reference": "61875282d6ec1c441ca0af94fc00a5f516db12ef",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a2eacf8c1b55de4733f4cfc315da38f1d4c66501",
+                "reference": "a2eacf8c1b55de4733f4cfc315da38f1d4c66501",
                 "shasum": ""
             },
             "require": {
@@ -270,9 +269,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.213.0"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.214.0"
             },
-            "time": "2022-03-14T18:26:52+00:00"
+            "time": "2022-03-16T19:00:00+00:00"
         },
         {
             "name": "brick/math",
@@ -504,16 +503,16 @@
         },
         {
             "name": "cerpus/edlib-resource-kit",
-            "version": "v0.3.0",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit.git",
-                "reference": "3e2c30850b03bd9d396edfb1ef9a122358559bef"
+                "reference": "b3dfcaca30d54dadd016154317ac5ea0a5ac0fcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/3e2c30850b03bd9d396edfb1ef9a122358559bef",
-                "reference": "3e2c30850b03bd9d396edfb1ef9a122358559bef",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/b3dfcaca30d54dadd016154317ac5ea0a5ac0fcd",
+                "reference": "b3dfcaca30d54dadd016154317ac5ea0a5ac0fcd",
                 "shasum": ""
             },
             "require": {
@@ -550,26 +549,26 @@
             "homepage": "https://edlib.com/",
             "support": {
                 "issues": "https://github.com/cerpus/php-edlib-resource-kit/issues",
-                "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/v0.3.0"
+                "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/v0.4.0"
             },
-            "time": "2022-03-15T12:28:56+00:00"
+            "time": "2022-03-18T08:47:51+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
-            "version": "v0.4.1",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit-laravel.git",
-                "reference": "5b4575409b7750eb85c00ae813e059e7a4340278"
+                "reference": "7494b2182c106cddba8c40a2d90f0efc510235fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/5b4575409b7750eb85c00ae813e059e7a4340278",
-                "reference": "5b4575409b7750eb85c00ae813e059e7a4340278",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/7494b2182c106cddba8c40a2d90f0efc510235fd",
+                "reference": "7494b2182c106cddba8c40a2d90f0efc510235fd",
                 "shasum": ""
             },
             "require": {
-                "cerpus/edlib-resource-kit": "^0.3.0",
+                "cerpus/edlib-resource-kit": "^0.4.0",
                 "cerpus/pubsub": "^1.0",
                 "illuminate/support": "^8.0|^9.0",
                 "php": "8.0.*|8.1.*",
@@ -608,9 +607,9 @@
             "homepage": "https://edlib.com/",
             "support": {
                 "issues": "https://github.com/cerpus/php-edlib-resource-kit-laravel/issues",
-                "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/v0.4.1"
+                "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/v0.5.0"
             },
-            "time": "2022-03-15T13:11:34+00:00"
+            "time": "2022-03-18T11:24:28+00:00"
         },
         {
             "name": "cerpus/imageservice-client",
@@ -2408,29 +2407,32 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.8.3",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "1afdd860a2566ed3c2b0b4a3de6e23434a79ec85"
+                "reference": "089edd38f5b8abba6cb01567c2a8aaa47cec4c72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/1afdd860a2566ed3c2b0b4a3de6e23434a79ec85",
-                "reference": "1afdd860a2566ed3c2b0b4a3de6e23434a79ec85",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/089edd38f5b8abba6cb01567c2a8aaa47cec4c72",
+                "reference": "089edd38f5b8abba6cb01567c2a8aaa47cec4c72",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0",
-                "psr/http-message": "~1.0",
-                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0",
+                "ralouphie/getallheaders": "^3.0"
             },
             "provide": {
+                "psr/http-factory-implementation": "1.0",
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
+                "bamarni/composer-bin-plugin": "^1.4.1",
+                "http-interop/http-factory-tests": "^0.9",
+                "phpunit/phpunit": "^8.5.8 || ^9.3.10"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
@@ -2438,13 +2440,10 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7-dev"
+                    "dev-master": "2.1-dev"
                 }
             },
             "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
                 "psr-4": {
                     "GuzzleHttp\\Psr7\\": "src/"
                 }
@@ -2483,6 +2482,11 @@
                     "name": "Tobias Schultze",
                     "email": "webmaster@tubo-world.de",
                     "homepage": "https://github.com/Tobion"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://sagikazarmark.hu"
                 }
             ],
             "description": "PSR-7 message implementation that also provides common utility methods",
@@ -2498,7 +2502,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.8.3"
+                "source": "https://github.com/guzzle/psr7/tree/2.1.0"
             },
             "funding": [
                 {
@@ -2514,7 +2518,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-05T13:56:00+00:00"
+            "time": "2021-10-06T17:43:30+00:00"
         },
         {
             "name": "h5p/h5p-core",
@@ -2638,64 +2642,6 @@
                 "source": "https://github.com/h5p/h5p-editor-php-library/tree/master"
             },
             "time": "2022-03-03T15:21:14+00:00"
-        },
-        {
-            "name": "http-interop/http-factory-guzzle",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/http-interop/http-factory-guzzle.git",
-                "reference": "8f06e92b95405216b237521cc64c804dd44c4a81"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/http-interop/http-factory-guzzle/zipball/8f06e92b95405216b237521cc64c804dd44c4a81",
-                "reference": "8f06e92b95405216b237521cc64c804dd44c4a81",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/psr7": "^1.7||^2.0",
-                "php": ">=7.3",
-                "psr/http-factory": "^1.0"
-            },
-            "provide": {
-                "psr/http-factory-implementation": "^1.0"
-            },
-            "require-dev": {
-                "http-interop/http-factory-tests": "^0.9",
-                "phpunit/phpunit": "^9.5"
-            },
-            "suggest": {
-                "guzzlehttp/psr7": "Includes an HTTP factory starting in version 2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Http\\Factory\\Guzzle\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "An HTTP Factory using Guzzle PSR7",
-            "keywords": [
-                "factory",
-                "http",
-                "psr-17",
-                "psr-7"
-            ],
-            "support": {
-                "issues": "https://github.com/http-interop/http-factory-guzzle/issues",
-                "source": "https://github.com/http-interop/http-factory-guzzle/tree/1.2.0"
-            },
-            "time": "2021-07-21T13:50:14+00:00"
         },
         {
             "name": "kamermans/guzzle-oauth2-subscriber",
@@ -10808,5 +10754,5 @@
         "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }

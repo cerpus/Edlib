@@ -35,6 +35,7 @@ class QuestionSetHandler
         $questionSet->language_code = $request->session()->get('locale', '');
         $questionSet->is_published = $questionSet::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
         $questionSet->license = $request->get('license', '');
+        $questionSet->is_draft = $request->input('isDraft', 0);
         if ($questionSet->save() !== true) {
             throw new \Exception("Could not store Question Set");
         };
@@ -116,6 +117,7 @@ class QuestionSetHandler
     {
         $questionSet->title = $values['title'];
         $questionSet->is_published = $questionSet::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $questionSet->is_draft = $request->input('isDraft', 0);
         $questionSet->license = $request->input('license', $questionSet->license);
         $questionSet->save();
 

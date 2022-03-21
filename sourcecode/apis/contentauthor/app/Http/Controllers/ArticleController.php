@@ -139,6 +139,7 @@ class ArticleController extends Controller
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
 
         $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_draft = $request->input('isDraft', 0);
 
         $article->save();
 
@@ -334,6 +335,7 @@ class ArticleController extends Controller
         $article->max_score = $article->getMaxScoreHelper($article->content);
         $article->license = $request->input('license', $oldLicense);
         $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_draft = $request->input('isDraft', 0);
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();

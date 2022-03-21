@@ -5,27 +5,25 @@ import { FormActions, useForm } from '../../contexts/FormContext';
 import Sidebar from '../Sidebar';
 
 const QuestionContentContainer = () => {
-
     const {
-        state: {
-            links,
-            contentTypes,
-            questionset,
-        },
+        state: { links, contentTypes, questionset },
         state: formState,
         dispatch,
     } = useForm();
 
     const [saveCallback, setSaveCallback] = useState();
 
-    const submit = () => {
+    const submit = (isDraft) => {
         try {
-            const values = Object.assign({}, formState);
-            values.questionSetJsonData = JSON.stringify(formState.questionSetJsonData);
-
             saveCallback({
                 isValid: true,
-                values,
+                values: {
+                    ...formState,
+                    questionSetJsonData: JSON.stringify(
+                        formState.questionSetJsonData
+                    ),
+                    isDraft,
+                },
             });
         } catch (error) {
             saveCallback({
@@ -37,18 +35,24 @@ const QuestionContentContainer = () => {
 
     const isFormDataReady = () => {
         const jsonParams = formState.questionSetJsonData;
-        const questionsNotReady = jsonParams.cards.filter(card => !card.question.readyForSubmit);
-        const answersNotReady = jsonParams.cards.filter(card => card.answers.filter(answer => !answer.readyForSubmit).length > 0);
+        const questionsNotReady = jsonParams.cards.filter(
+            (card) => !card.question.readyForSubmit
+        );
+        const answersNotReady = jsonParams.cards.filter(
+            (card) =>
+                card.answers.filter((answer) => !answer.readyForSubmit).length >
+                0
+        );
 
         return questionsNotReady.length === 0 && answersNotReady.length === 0;
     };
 
-    const onSave = () => {
+    const onSave = (isDraft) => {
         let attempts = 0;
         const loaderInterval = setInterval(() => {
             if (isFormDataReady() === true || attempts >= 20) {
                 clearInterval(loaderInterval);
-                submit();
+                submit(isDraft);
             }
             attempts++;
         }, 50);
@@ -56,10 +60,22 @@ const QuestionContentContainer = () => {
 
     return (
         <EditorContainer
-            sidebar={<Sidebar onSave={onSave} onSaveCallback={callback => setSaveCallback(() => callback)} />}
+            sidebar={
+                <Sidebar
+                    onSave={onSave}
+                    onSaveCallback={(callback) =>
+                        setSaveCallback(() => callback)
+                    }
+                />
+            }
         >
             <QuestionContentType
-                onChange={data => dispatch({ type: FormActions.setQuestionSetData, payload: { content: data } })}
+                onChange={(data) =>
+                    dispatch({
+                        type: FormActions.setQuestionSetData,
+                        payload: { content: data },
+                    })
+                }
                 links={links}
                 contentTypes={contentTypes}
                 questionset={questionset}

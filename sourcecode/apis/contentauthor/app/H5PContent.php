@@ -63,6 +63,7 @@ class H5PContent extends Content implements VersionableObject
     protected $casts = [
         'library_id' => "int",
         'is_published' => 'boolean',
+        'is_draft' => 'boolean',
     ];
 
     public function collaborators(): HasMany
@@ -188,6 +189,14 @@ class H5PContent extends Content implements VersionableObject
 
     public function requestShouldBecomeNewVersion(Request $request): bool
     {
+        if ($this->isDraft()) {
+            return false;
+        }
+
+        if ($request->get('isDraft')) {
+            return true;
+        }
+
         if ($this->useVersioning() !== true) {
             return false;
         }

@@ -195,6 +195,7 @@ const ResourceTable = ({
                             <Cell vc secondary>
                                 <PublishedTag
                                     isPublished={resource.version.isPublished}
+                                    isDraft={resource.version.isDraft}
                                 />
                             </Cell>
                             <Cell vc secondary>

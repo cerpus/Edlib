@@ -634,6 +634,7 @@ class Framework implements \H5PFrameworkInterface, Result
             $H5PContent->content_create_mode = $adapter->getAdapterName();
             $H5PContent->is_published = $content['is_published'] ?? !$adapter->enableDraftLogic();
             $H5PContent->is_private =  $content['is_private'] ?? 1;
+            $H5PContent->is_draft =  $content['is_draft'] ?? 1;
             $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
             $H5PContent->save();
@@ -682,6 +683,7 @@ class Framework implements \H5PFrameworkInterface, Result
             $H5PContent->slug = $content['slug'];
             $H5PContent->max_score = (int)$content['max_score'];
             $H5PContent->is_published = $content['is_published'];
+            $H5PContent->is_draft = $content['is_draft'];
             $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
             $H5PContent->update();

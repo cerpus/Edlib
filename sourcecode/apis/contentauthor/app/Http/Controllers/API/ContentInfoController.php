@@ -60,6 +60,7 @@ class ContentInfoController extends Controller
                 $modelResource->title,
                 $modelResource->getContentOwnerId(),
                 !$modelResource->inDraftState(),
+                $modelResource->isDraft(),
                 $modelResource->isPublished(),
                 $modelResource->getISO6393Language(),
                 $modelResource->getContentType(true),

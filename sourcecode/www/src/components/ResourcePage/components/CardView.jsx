@@ -94,6 +94,7 @@ const CardView = ({ resources, showDeleteButton = false, refetch }) => {
                                             isPublished={
                                                 resource.version.isPublished
                                             }
+                                            isDraft={resource.version.isDraft}
                                         />
                                     </Box>
                                     <Box className={classes.buttons}>

@@ -69,6 +69,7 @@ abstract class Content extends Model implements RecommendableInterface
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_draft' => 'boolean',
     ];
 
     public const RESOURCE_TYPE_CSS = '%s-resource';
@@ -245,6 +246,14 @@ abstract class Content extends Model implements RecommendableInterface
      */
     public function requestShouldBecomeNewVersion(Request $request): bool
     {
+        if ($this->isDraft()) {
+            return false;
+        }
+
+        if ($request->get('isDraft')) {
+            return true;
+        }
+
         if ($this->useVersioning() === true) {
             $ct = $this->getContentTitle();
             $rt = $this->getRequestTitle($request);
@@ -352,6 +361,11 @@ abstract class Content extends Model implements RecommendableInterface
         return !$this->is_private;
     }
 
+    public function isDraft(): bool
+    {
+        return $this->is_draft;
+    }
+
     public static function isDraftLogicEnabled()
     {
         $adapter = app(H5PAdapterInterface::class);
@@ -443,6 +457,7 @@ abstract class Content extends Model implements RecommendableInterface
             $this->title,
             $this->getContentOwnerId(),
             !$this->inDraftState(),
+            $this->isDraft(),
             $this->isPublished(),
             $this->getISO6393Language(),
             $this->getContentType(true),

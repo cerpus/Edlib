@@ -12,13 +12,20 @@ import FileUploadProgress from '../FileUploadProgress';
 import { Fade } from '@material-ui/core';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { useForm } from '../../contexts/FormContext';
-import Sidebar, { AdapterSelector, DisplayOptions, ContentUpgradeContainer } from '../Sidebar';
+import Sidebar, {
+    AdapterSelector,
+    DisplayOptions,
+    ContentUpgradeContainer,
+} from '../Sidebar';
 import { getLanguageStringFromCode } from '../../utils/Helper';
 import { NewReleases } from '@material-ui/icons';
 import { useTheme } from '@cerpus/ui';
 
 const H5PEditorContainer = ({ intl, editorSetup }) => {
-    const { state: formState, state: { parameters: formParameters, max_score: maxScore } } = useForm();
+    const {
+        state: formState,
+        state: { parameters: formParameters, max_score: maxScore },
+    } = useForm();
     const [currentView, setCurrentView] = React.useState(views.H5P);
     const [parameters, setParameters] = React.useState({
         ...formState,
@@ -29,12 +36,17 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
     const [isSaved, setIsSaved] = React.useState(false);
     const [isH5PReady, setIsH5PReady] = React.useState(false);
     const h5PRef = React.createRef();
-    const [fileStatus, setFileStatus] = React.useState({ total: 10, inProgress: 0, failed: 0, done: 0 });
+    const [fileStatus, setFileStatus] = React.useState({
+        total: 10,
+        inProgress: 0,
+        failed: 0,
+        done: 0,
+    });
     const [showFileProgress, toggleShowFileProgress] = React.useState(false);
     const [librarySelected, setLibrarySelected] = useState(false);
     const theme = useTheme();
 
-    const onParamsChange = newParameters => {
+    const onParamsChange = (newParameters) => {
         setParameters({
             ...parameters,
             ...newParameters,
@@ -59,7 +71,10 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
         return currentView === views.H5P ? getParams() : parameters.parameters;
     }, [currentView, parameters, getParams]);
 
-    const getLibraryCache = () => h5pEditor && !iframeLoading ? h5pEditor.iframeWindow.H5PEditor.libraryCache : {};
+    const getLibraryCache = () =>
+        h5pEditor && !iframeLoading
+            ? h5pEditor.iframeWindow.H5PEditor.libraryCache
+            : {};
 
     const shouldConfirmClose = React.useCallback(() => {
         if (isSaved) {
@@ -68,8 +83,13 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
 
         const currentParams = getCurrentParams();
 
-        return JSON.stringify(removeKeys(startupParameters.parameters, ['metadata'])) !== JSON.stringify(removeKeys(currentParams, ['metadata']))
-            || currentParams.metadata.title !== startupParameters.parameters.metadata.title;
+        return (
+            JSON.stringify(
+                removeKeys(startupParameters.parameters, ['metadata'])
+            ) !== JSON.stringify(removeKeys(currentParams, ['metadata'])) ||
+            currentParams.metadata.title !==
+                startupParameters.parameters.metadata.title
+        );
     }, [getCurrentParams, startupParameters, isSaved]);
 
     useConfirmWindowClose(shouldConfirmClose);
@@ -108,7 +128,10 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
             const H5PLibraryInterval = setInterval(() => {
                 try {
                     const selectedLibrary = getLibrary();
-                    if (typeof selectedLibrary === 'string' && selectedLibrary.length > 0) {
+                    if (
+                        typeof selectedLibrary === 'string' &&
+                        selectedLibrary.length > 0
+                    ) {
                         const { creatorName } = editorSetup;
                         if (creatorName !== null) {
                             setAuthor(creatorName, 'Author');
@@ -117,17 +140,19 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
                         setLibrarySelected(true);
                     }
                     // eslint-disable-next-line no-empty
-                } catch (ignore) {
-                }
+                } catch (ignore) {}
             }, 1000);
         }
     }, [h5pEditor, getCurrentParams, getFormState]);
 
-    const save = () => {
+    const save = (isDraft = false) => {
         try {
             const params = getCurrentParams();
             const { h5pLanguage } = editorSetup;
-            if (!(params || params.params) || typeof params.params === 'undefined') {
+            if (
+                !(params || params.params) ||
+                typeof params.params === 'undefined'
+            ) {
                 return false;
             }
 
@@ -138,12 +163,17 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
                 return false;
             }
 
-            if (params.metadata && h5pLanguage && !params.metadata.defaultLanguage) {
+            if (
+                params.metadata &&
+                h5pLanguage &&
+                !params.metadata.defaultLanguage
+            ) {
                 params.metadata.defaultLanguage = h5pLanguage;
             }
 
             const formValues = getFormState();
             formValues.title = params.metadata.title || '';
+            formValues.isDraft = isDraft;
             formValues.library = getLibrary();
             formValues.parameters = JSON.stringify(params);
             formValues.max_score = getMaxScore(params);
@@ -161,14 +191,18 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
                 return [responseData];
             };
 
-            const statusHandler = status => {
+            const statusHandler = (status) => {
                 toggleShowFileProgress(true);
                 setFileStatus(status);
                 if (status.total === status.inProgress) {
                     toggleShowFileProgress(false);
                 } else if (status.failed > 0) {
                     toggleShowFileProgress(false);
-                    errorHandler({ responseText: intl.formatMessage({ id: 'H5P_EDITOR.UPLOAD_OF_MEDIAFILE_FAILED' }) });
+                    errorHandler({
+                        responseText: intl.formatMessage({
+                            id: 'H5P_EDITOR.UPLOAD_OF_MEDIAFILE_FAILED',
+                        }),
+                    });
                 }
             };
 
@@ -205,7 +239,9 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
         if (showDisplayOptions === true) {
             components.push({
                 id: 'displayOptions',
-                title: intl.formatMessage({ id: 'DISPLAYOPTIONS.DISPLAYOPTIONS' }),
+                title: intl.formatMessage({
+                    id: 'DISPLAYOPTIONS.DISPLAYOPTIONS',
+                }),
                 component: (
                     <DisplayOptions
                         displayButtons={frame}
@@ -216,25 +252,40 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
             });
         }
 
-        if (editorSetup.libraryUpgradeList && editorSetup.libraryUpgradeList.length > 0) {
+        if (
+            editorSetup.libraryUpgradeList &&
+            editorSetup.libraryUpgradeList.length > 0
+        ) {
             components.push({
                 id: 'upgradeContent',
-                title: intl.formatMessage({ id: 'H5PCONTENTUPGRADE.UPDATECONTENT' }),
-                info: (<NewReleases htmlColor={theme.colors.tertiary} fontSize="large"/>),
+                title: intl.formatMessage({
+                    id: 'H5PCONTENTUPGRADE.UPDATECONTENT',
+                }),
+                info: (
+                    <NewReleases
+                        htmlColor={theme.colors.tertiary}
+                        fontSize="large"
+                    />
+                ),
                 component: (
                     <ContentUpgradeContainer
                         libraries={editorSetup.libraryUpgradeList}
                         onStageUpgrade={stageUpgrade}
-                        onBeforeUpgrade={() => onBeforeUpgrade(getCurrentParams())}
-                    />),
+                        onBeforeUpgrade={() =>
+                            onBeforeUpgrade(getCurrentParams())
+                        }
+                    />
+                ),
             });
         }
 
         const languageText = getLanguageStringFromCode(languageISO6393);
         components.push({
             id: 'language',
-            title: intl.formatMessage({ id: 'H5P_EDITOR.LANGUAGE_PICKER.LANGUAGE' }),
-            info: languageText !== null ? (<div>({languageText})</div>) : null,
+            title: intl.formatMessage({
+                id: 'H5P_EDITOR.LANGUAGE_PICKER.LANGUAGE',
+            }),
+            info: languageText !== null ? <div>({languageText})</div> : null,
             component: (
                 <LanguagePicker
                     getParameters={() => getCurrentParams()}
@@ -244,7 +295,7 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
                     autoTranslateTo={editorSetup.autoTranslateTo}
                     value={languageISO6393}
                     libraryCache={getLibraryCache}
-                    setParams={newParameters => {
+                    setParams={(newParameters) => {
                         onParamsChange({ parameters: newParameters });
                         nextTick(() => {
                             if (currentView === views.H5P) {
@@ -263,7 +314,7 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
             components.push({
                 id: 'adapterSelect',
                 title: 'Adapter',
-                info: (<div>({adapterName})</div>),
+                info: <div>({adapterName})</div>,
                 component: (
                     <AdapterSelector
                         current={adapterName}
@@ -278,40 +329,44 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
 
     return (
         <EditorContainer
-            tabs={[{
-                label: intl.formatMessage({ id: 'H5P_EDITOR.TAB.H5P_VIEW' }),
-                onClick: () => setCurrentView(views.H5P),
-                selected: currentView === views.H5P,
-            }, {
-                label: intl.formatMessage({ id: 'H5P_EDITOR.TAB.LIST_VIEW' }),
-                onClick: () => setCurrentView(views.LIST),
-                selected: currentView === views.LIST,
-            }]}
-            sidebar={(librarySelected === true && (
-                <Fade
-                    in={librarySelected}
-                >
-                    <Sidebar
-                        customComponents={getSidebarComponents()}
-                        onSave={save}
-                    />
-                </Fade>
-            ))}
+            tabs={[
+                {
+                    label: intl.formatMessage({
+                        id: 'H5P_EDITOR.TAB.H5P_VIEW',
+                    }),
+                    onClick: () => setCurrentView(views.H5P),
+                    selected: currentView === views.H5P,
+                },
+                {
+                    label: intl.formatMessage({
+                        id: 'H5P_EDITOR.TAB.LIST_VIEW',
+                    }),
+                    onClick: () => setCurrentView(views.LIST),
+                    selected: currentView === views.LIST,
+                },
+            ]}
+            sidebar={
+                librarySelected === true && (
+                    <Fade in={librarySelected}>
+                        <Sidebar
+                            customComponents={getSidebarComponents()}
+                            onSave={save}
+                        />
+                    </Fade>
+                )
+            }
             containerClassname="h5p-container"
         >
             <div className="h5p-editor-container">
-                {(currentView === views.LIST && (
+                {currentView === views.LIST && (
                     <List
                         parameters={parameters}
                         onUpdate={setParameters}
                         startupParameters={startupParameters}
                         libraryCache={getLibraryCache}
                     />
-                ))}
-                <H5P
-                    visible={currentView === views.H5P}
-                    ref={h5PRef}
-                />
+                )}
+                <H5P visible={currentView === views.H5P} ref={h5PRef} />
                 <FileUploadProgress
                     total={fileStatus.total}
                     inProgress={fileStatus.inProgress}

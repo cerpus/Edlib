@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button } from '@cerpus/ui';
+import { Box, Button } from '@material-ui/core';
 import { FormActions, useForm } from '../../../../contexts/FormContext';
 import Axios from '../../../../utils/axiosSetup';
 
 const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
-    const {
-        dispatch,
-    } = useForm();
+    const { dispatch } = useForm();
 
     const [processing, setProcessing] = useState(false);
     let pulseLockInterval;
 
-    const pollStatus = () => Axios
-        .post(pulseUrl);
+    const pollStatus = () => Axios.post(pulseUrl);
 
     useEffect(() => {
         if (onSaveCallback) {
@@ -32,23 +29,26 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
     }, []);
 
     const resetErrors = () => dispatch({ type: FormActions.resetError });
-    const setErrors = errors => dispatch({
-        type: FormActions.setError,
-        payload: {
-            messages: errors,
-            messageTitle: intl.formatMessage({ id: 'SAVEBOX.ERROR' }),
-        },
-    });
+    const setErrors = (errors) =>
+        dispatch({
+            type: FormActions.setError,
+            payload: {
+                messages: errors,
+                messageTitle: intl.formatMessage({ id: 'SAVEBOX.ERROR' }),
+            },
+        });
 
-    const onClick = () => {
-        const result = onSave();
-        if (typeof result === 'object') {
-            saveForm(result);
-        }
-        return result;
-    };
+    const onClick =
+        (isDraft = false) =>
+        () => {
+            const result = onSave(isDraft);
+            if (typeof result === 'object') {
+                saveForm(result);
+            }
+            return result;
+        };
 
-    const saveForm = params => {
+    const saveForm = (params) => {
         setProcessing(true);
         resetErrors();
         if (params === false) {
@@ -85,7 +85,7 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
                     storingComplete(data.url);
                 }
             })
-            .catch(response => {
+            .catch((response) => {
                 setProcessing(false);
                 let errorMessages;
                 if (typeof customErrorHandler !== 'undefined') {
@@ -97,7 +97,8 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
             });
     };
 
-    const storingComplete = redirectUrl => window.location.replace(redirectUrl);
+    const storingComplete = (redirectUrl) =>
+        window.location.replace(redirectUrl);
 
     const errorHandler = ({ response }) => {
         let responseData;
@@ -132,20 +133,44 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
     };
 
     return (
-        <Button
-            id="ca-form-submit-btn"
-            onClick={onClick}
-            type={'tertiary'}
-            disabled={processing}
-            data-loading-text={'<span><i class=\'fa fa-spinner fa-spin \' /> ' + intl.formatMessage({ id: 'SAVEBOX.PROCESSING' }) + '</span>'}
-        >
-            {!processing && (
-                intl.formatMessage({ id: 'SAVEBOX.SAVEANDCLOSE' })
-            )}
-            {processing && (
-                <span><i className="fa fa-spinner fa-spin " />{intl.formatMessage({ id: 'SAVEBOX.PROCESSING' })}</span>
-            )}
-        </Button>
+        <>
+            <Box pb={1}>
+                <Button
+                    id="ca-form-submit-btn"
+                    onClick={onClick(false)}
+                    variant="contained"
+                    color="primary"
+                    disabled={processing}
+                >
+                    {!processing &&
+                        intl.formatMessage({ id: 'SAVEBOX.SAVEANDCLOSE' })}
+                    {processing && (
+                        <span>
+                            <i className="fa fa-spinner fa-spin " />
+                            {intl.formatMessage({ id: 'SAVEBOX.PROCESSING' })}
+                        </span>
+                    )}
+                </Button>
+            </Box>
+            <Box>
+                <Button
+                    id="ca-form-submit-btn"
+                    onClick={onClick(true)}
+                    variant="contained"
+                    color="gray"
+                    disabled={processing}
+                >
+                    {!processing &&
+                        intl.formatMessage({ id: 'SAVEBOX.SAVEDRAFTANDCLOSE' })}
+                    {processing && (
+                        <span>
+                            <i className="fa fa-spinner fa-spin " />
+                            {intl.formatMessage({ id: 'SAVEBOX.PROCESSING' })}
+                        </span>
+                    )}
+                </Button>
+            </Box>
+        </>
     );
 };
 

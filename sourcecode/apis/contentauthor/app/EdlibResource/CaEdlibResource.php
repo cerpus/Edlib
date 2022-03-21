@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\EdlibResource;
 
-use Cerpus\EdlibResourceKit\Contract\EdlibResource;
+use Cerpus\EdlibResourceKit\Contract\DraftAwareResource;
 use DateTimeImmutable;
 
-class CaEdlibResource implements EdlibResource
+class CaEdlibResource implements DraftAwareResource
 {
     /**
      * @param array<string> $collaborators
@@ -18,6 +18,7 @@ class CaEdlibResource implements EdlibResource
         private string $title,
         private string $ownerId,
         private bool $published,
+        private bool $isDraft,
         private bool $listed,
         private string|null $language,
         private string|null $contentType,
@@ -107,5 +108,10 @@ class CaEdlibResource implements EdlibResource
     public function getAuthorOverwrite(): string|null
     {
         return $this->authorOverwrite;
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->isDraft;
     }
 }

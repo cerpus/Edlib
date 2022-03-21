@@ -551,8 +551,8 @@ const saveResourceToDb = async (context, validatedData) => {
         emailCollaborators.length === 0
             ? []
             : await context.services.edlibAuth.getUsersByEmail(
-                emailCollaborators
-            );
+                  emailCollaborators
+              );
 
     collaboratorIdMap = usersFromEmail.reduce(
         (collaboratorIdMap, user) => ({
@@ -575,9 +575,10 @@ const saveResourceToDb = async (context, validatedData) => {
         ...emailWithoutUsers.map((email) => ({ email })),
     ];
 
-    const resourceVersionCollaborators = await context.db.resourceVersionCollaborator.getForResourceVersion(
-        resourceVersion.id
-    );
+    const resourceVersionCollaborators =
+        await context.db.resourceVersionCollaborator.getForResourceVersion(
+            resourceVersion.id
+        );
 
     const toDelete = resourceVersionCollaborators.filter(
         (resourceVersionCollaborator) => {
@@ -741,10 +742,11 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
         return await context.db.resourceVersion.create(dbResourceVersionData);
     } catch (e) {
         if (e.code === 'ER_DUP_ENTRY') {
-            const resourceVersion = await context.db.resourceVersion.getByExternalId(
-                resourceVersionValidatedData.externalSystemName,
-                resourceVersionValidatedData.externalSystemId
-            );
+            const resourceVersion =
+                await context.db.resourceVersion.getByExternalId(
+                    resourceVersionValidatedData.externalSystemName,
+                    resourceVersionValidatedData.externalSystemId
+                );
 
             if (resourceVersion) {
                 if (createdResource) {
@@ -782,12 +784,13 @@ const findResourceFromParentVersions = async (context, version) => {
         return;
     }
 
-    const resourceVersion = await context.db.resourceVersion.getFirstFromExternalSytemReference(
-        versionParents.map((vp) => ({
-            externalSystemName: vp.externalSystem,
-            externalSystemId: vp.externalReference,
-        }))
-    );
+    const resourceVersion =
+        await context.db.resourceVersion.getFirstFromExternalSytemReference(
+            versionParents.map((vp) => ({
+                externalSystemName: vp.externalSystem,
+                externalSystemId: vp.externalReference,
+            }))
+        );
 
     if (!resourceVersion) {
         logger.error(
@@ -814,11 +817,8 @@ const validateResource = (data) => {
                 .default(null),
             isPublished: Joi.boolean().required(),
             isListed: Joi.boolean().required(),
-            language: Joi.string()
-                .min(1)
-                .allow(null)
-                .optional()
-                .default(null),
+            isDraft: Joi.boolean().required(),
+            language: Joi.string().min(1).allow(null).optional().default(null),
             contentType: Joi.string().min(1).optional(),
             license: Joi.string().allow(null).optional().default(null),
             maxScore: Joi.number()
@@ -846,12 +846,13 @@ const validateResource = (data) => {
                 .default(null),
         })
     );
-}
+};
 
-export const saveResource = async (context, data, {
-    saveToSearchIndex = true,
-    waitForIndex = false,
-}) => {
+export const saveResource = async (
+    context,
+    data,
+    { saveToSearchIndex = true, waitForIndex = false }
+) => {
     const validatedData = validateResource(data);
 
     if (validatedData.license) {
@@ -865,8 +866,9 @@ export const saveResource = async (context, data, {
     }
 
     if (saveToSearchIndex) {
-        const resource = await context.db.resource
-            .getById(resourceVersion.resourceId);
+        const resource = await context.db.resource.getById(
+            resourceVersion.resourceId
+        );
 
         await syncResource(context, resource, waitForIndex);
     }

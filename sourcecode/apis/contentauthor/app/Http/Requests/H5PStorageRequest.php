@@ -27,6 +27,7 @@ class H5PStorageRequest extends FormRequest
             'parameters' => 'required|json',
             'language_iso_639_3' => 'nullable|string|min:3|max:3',
             'isNewLanguageVariant' => 'nullable|boolean',
+            'isDraft' => 'required|boolean',
             'isPublished' => [
                 Rule::requiredIf(Content::isDraftLogicEnabled()),
                 'boolean',
