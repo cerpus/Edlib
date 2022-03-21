@@ -6,35 +6,21 @@ use App\H5PLibrariesHubCache;
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
-use App\Libraries\H5P\H5Plugin;
+use H5PCore;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class LibraryUpgradeController extends Controller
 {
-    /**
-     * @var H5Plugin
-     */
-    private $h5pPlugin;
-
-    /**
-     * @var \H5PCore
-     */
-    private $core;
-
-    public function __construct(\H5PCore $core)
-    {
+    public function __construct(
+        private H5PCore $core,
+        private H5PLibraryAdmin $h5pLibraryAdmin,
+    ) {
         $this->middleware('auth');
-
-        $this->h5pPlugin = H5Plugin::get_instance(DB::connection()->getPdo());
-        $this->core = $core;
     }
 
     public function index(Request $request, \H5PFrameworkInterface $framework)
     {
-        $library_admin = new H5PLibraryAdmin();
-
-        $library_admin->process_libraries(); // Upgrades the libraries if we have a a .h5p file
+        $this->h5pLibraryAdmin->process_libraries(); // Upgrades the libraries if we have a .h5p file
         if ($request->method() === 'POST' && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error'] === 0) { //
             (new Capability())->refresh();
         }
@@ -42,7 +28,6 @@ class LibraryUpgradeController extends Controller
         $storedLibraries = $framework->loadLibraries();
 
         $config = resolve(AdminConfig::class);
-        $config->h5plugin = $this->h5pPlugin;
         $config->getConfig();
 
         /** @var H5PLibrariesHubCache $hubCacheLibraries */
@@ -55,7 +40,7 @@ class LibraryUpgradeController extends Controller
                 'minorVersion' => $library->minor_version,
                 'patchVersion' => $library->patch_version,
             ])) {
-                return [\H5PCore::libraryVersion($library)];
+                return [H5PCore::libraryVersion($library)];
             }
             return [];
         };

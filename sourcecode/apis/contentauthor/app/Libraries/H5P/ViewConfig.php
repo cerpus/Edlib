@@ -13,6 +13,7 @@ use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\SessionKeys;
 use App\Traits\H5PBehaviorSettings;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -151,7 +152,6 @@ class ViewConfig implements ConfigInterface
     private function initContentConfig()
     {
         $core = $this->h5pCore;
-        $pdo = $this->h5plugin->getPdo();
 
         $content = $this->getContent();
         if (!array_key_exists("slug", $content)) {
@@ -179,7 +179,7 @@ class ViewConfig implements ConfigInterface
         $contentConfig->displayOptions = $core->getDisplayOptionsForView($disable === false ? $content['disable'] : $disable, $author_id);
         $state = false;
         if( is_null($this->behaviorSettings) || $this->behaviorSettings->includeAnswers === true){
-            $progress = new H5PProgress($pdo, $this->userId);
+            $progress = new H5PProgress(DB::connection()->getPdo(), $this->userId);
             $state = $progress->getState($content['id'], $this->context);
         }
         $contentConfig->contentUserData = $state !== false ? $state : ['state' => false];

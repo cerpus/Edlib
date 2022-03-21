@@ -25,12 +25,11 @@ use stdClass;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\MockMQ;
-use Tests\Traits\ResetH5PStatics;
 
 
 class h5pControllerFunctionalTest extends TestCase
 {
-    use RefreshDatabase, ResetH5PStatics, MockMQ;
+    use RefreshDatabase, MockMQ;
 
     protected array $fakedEvents = [
         ContentCreating::class,

@@ -5,6 +5,8 @@ namespace App\Libraries\H5P;
 use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use H5PCore;
+use H5peditor;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
@@ -17,11 +19,7 @@ use Illuminate\Http\Request;
 class AjaxRequest extends \H5PEditorEndpoints
 {
 
-    private $h5pPlugin;
-    private $core;
     private $returnType;
-    private $editor;
-    private ContentAuthorStorage $contentAuthorStorage;
 
     const CONTENT_UPGRADE_PROCESS = 'content_upgrade_progress';
     const CONTENT_SETFINISHED = 'setFinished';
@@ -33,16 +31,10 @@ class AjaxRequest extends \H5PEditorEndpoints
     const LIBRARY_REBUILD = 'rebuild';
 
     public function __construct(
-        H5Plugin             $plugin,
-        \H5PCore             $core,
-        \H5peditor           $editor,
-        ContentAuthorStorage $contentAuthorStorage
-    )
-    {
-        $this->h5pPlugin = $plugin;
-        $this->core = $core;
-        $this->editor = $editor;
-        $this->contentAuthorStorage = $contentAuthorStorage;
+        private H5PCore $core,
+        private H5peditor $editor,
+        private ContentAuthorStorage $contentAuthorStorage
+    ) {
     }
 
     public function getReturnType()
@@ -66,7 +58,6 @@ class AjaxRequest extends \H5PEditorEndpoints
                 break;
             case self::FILES:
                 $this->returnType = "json";
-                $plugin = $this->h5pPlugin;
 
                 $contentId = filter_input(INPUT_POST, 'contentId', FILTER_SANITIZE_NUMBER_INT);
 
@@ -107,8 +98,8 @@ class AjaxRequest extends \H5PEditorEndpoints
                     'libraries' => $this->editor->getLatestGlobalLibrariesData(),
                     'recentlyUsed' => $this->editor->ajaxInterface->getAuthorsRecentlyUsedLibraries(),
                     'apiVersion' => array(
-                        'major' => \H5PCore::$coreApi['majorVersion'],
-                        'minor' => \H5PCore::$coreApi['minorVersion']
+                        'major' => H5PCore::$coreApi['majorVersion'],
+                        'minor' => H5PCore::$coreApi['minorVersion']
                     ),
                     'details' => $this->core->h5pF->getMessages('info')
                 );
@@ -170,7 +161,7 @@ class AjaxRequest extends \H5PEditorEndpoints
     {
         // Verify h5p upload
         if (!$request->hasFile('h5p')) {
-            \H5PCore::ajaxError($this->core->h5pF->t('Could not get posted H5P.'), 'NO_CONTENT_TYPE');
+            H5PCore::ajaxError($this->core->h5pF->t('Could not get posted H5P.'), 'NO_CONTENT_TYPE');
             exit;
         }
 
@@ -231,7 +222,7 @@ class AjaxRequest extends \H5PEditorEndpoints
     {
         $libraryParameters = json_decode($libraryParameters);
         if (!$libraryParameters) {
-            \H5PCore::ajaxError($this->core->h5pF->t('Could not parse post data.'), 'NO_LIBRARY_PARAMETERS');
+            H5PCore::ajaxError($this->core->h5pF->t('Could not parse post data.'), 'NO_LIBRARY_PARAMETERS');
             exit;
         }
         $validator = new \H5PContentValidator($this->core->h5pF, $this->core);

@@ -1,8 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Libraries\H5P\H5Plugin;
-use Illuminate\Support\Facades\DB;
 use H5PStorage;
 use Illuminate\Support\Facades\Session;
 

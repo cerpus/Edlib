@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\AdminConfig;
-use App\Libraries\H5P\H5Plugin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class ContentUpgradeController extends Controller
 {
     /** @var \H5PCore $core */
-    protected $h5pPlugin, $core, $interface;
+    protected $core, $interface;
 
     /**
      * Upgrades content
@@ -24,7 +23,6 @@ class ContentUpgradeController extends Controller
         $this->core = $core;
         $configuration = new \stdClass();
         try {
-            $plugin = H5Plugin::get_instance(DB::connection()->getPdo());
             $interface = $core->h5pF;
 
             $library = (object)$interface->loadLibraryInfo($libraryId);
@@ -32,7 +30,6 @@ class ContentUpgradeController extends Controller
             $configuration = $this->getUpgradeConfiguration($library);
 
             $config = resolve(AdminConfig::class);
-            $config->h5plugin = $plugin;
             $config->getConfig();
             $config->addUpdateScripts();
 

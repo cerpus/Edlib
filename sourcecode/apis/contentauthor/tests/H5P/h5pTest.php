@@ -12,14 +12,12 @@ use Tests\TestHelpers;
 use App\Libraries\H5P\h5p;
 use Tests\db\TestH5PSeeder;
 use Illuminate\Http\Request;
-use App\Libraries\H5P\H5Plugin;
 use Tests\Traits\ContentAuthorStorageTrait;
-use Tests\Traits\ResetH5PStatics;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class h5pTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, ResetH5PStatics, ContentAuthorStorageTrait;
+    use RefreshDatabase, TestHelpers, ContentAuthorStorageTrait;
 
     const testContentDirectory = "content";
     const testEditorDirectory = "editor";
@@ -35,8 +33,6 @@ class h5pTest extends TestCase
     {
         parent::setUp();
 
-        H5Plugin::setUp();
-
         $this->setUpContentAuthorStorage();
     }
 
@@ -46,7 +42,6 @@ class h5pTest extends TestCase
             $this->deleteEditorFilesDirectory();
         }
         parent::tearDown();
-        H5Plugin::setUp();
     }
 
     private function getTempDirectory()

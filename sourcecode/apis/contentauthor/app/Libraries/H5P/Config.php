@@ -17,8 +17,6 @@ trait Config
 {
     public $config;
     public $content;
-    /** @var  H5Plugin $h5plugin */
-    public $h5plugin;
     /** @var \H5PCore */
     public $h5pCore;
     public $assets;
@@ -158,7 +156,7 @@ trait Config
                 $prefix = "/h5p-editor-php-library/";
                 break;
         }
-        return $prefix.$script."?ver=".$this->h5plugin::VERSION;
+        return $prefix.$script."?ver=".$this->getCacheBustingVersionString();
     }
 
     protected function addCoreAssets()
@@ -192,11 +190,6 @@ trait Config
     public function getContent()
     {
         return $this->content;
-    }
-
-    public function setH5pPlugin($h5Plugin)
-    {
-        $this->h5plugin = $h5Plugin;
     }
 
     public function getContentUserDataUrl()
@@ -288,7 +281,7 @@ trait Config
         $config->crossoriginRegex = config('h5p.crossOriginRegexp');
         $config->locale = Session::get('locale', config('app.fallback_locale'));
         $config->localeConverted = LtiToH5PLanguage::convert($config->locale);
-        $config->pluginCacheBuster = '?v='.$this->h5plugin::VERSION;
+        $config->pluginCacheBuster = '?v='.$this->getCacheBustingVersionString();
         $config->libraryUrl = url('/h5p-php-library/js');
 
         $this->config = $config;
@@ -382,5 +375,12 @@ trait Config
     public function getH5PCore()
     {
         return $this->h5pCore;
+    }
+
+    private function getCacheBustingVersionString(): string
+    {
+        // Previously from H5Plugin::VERSION
+        // TODO: figure out if this is important
+        return '2.0.2';
     }
 }

@@ -35,7 +35,6 @@ namespace Tests\H5P\API {
     use Tests\TestCase;
     use Tests\Traits\ContentAuthorStorageTrait;
     use Tests\Traits\MockVersioningTrait;
-    use Tests\Traits\ResetH5PStatics;
     use Tests\Traits\WithFaker;
 
     /**
@@ -44,7 +43,7 @@ namespace Tests\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, ResetH5PStatics, MockVersioningTrait, WithFaker, ContentAuthorStorageTrait;
+        use RefreshDatabase, MockVersioningTrait, WithFaker, ContentAuthorStorageTrait;
 
         protected function setUp(): void
         {
