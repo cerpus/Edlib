@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DokuController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/v1/dokus', [DokuController::class, 'getPaginated']);
 Route::get('/v1/dokus/{doku}', [DokuController::class, 'get'])

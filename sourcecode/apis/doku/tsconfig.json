@@ -3,7 +3,8 @@
         "target": "ES6",
         "module": "ES2020",
         "moduleResolution": "Node",
-        "strict": true
+        "strict": true,
+        "jsx": "react"
     },
     "include": [
         "resources/js/**/*"

@@ -1,6 +1,7 @@
 import { useState, StrictMode } from 'react';
 import { render } from 'react-dom';
-import { createEmptyEditorState, Doku } from '@cerpus/edlib-components';
+import { BrowserRouter } from 'react-router-dom';
+import { createEmptyEditorState, default as Doku } from './Doku';
 
 const app = document.querySelector('#app');
 
@@ -13,4 +14,10 @@ const App = () => {
     />;
 };
 
-render(<StrictMode><App /></StrictMode>, app);
+render(
+    <StrictMode>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </StrictMode>
+, app);

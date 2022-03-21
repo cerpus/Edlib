@@ -57,7 +57,7 @@ FROM node:16-alpine AS webpack
 
 WORKDIR /var/www/doku
 
-COPY package.json package-lock.json webpack.mix.js ./
+COPY package.json package-lock.json webpack.mix.js tsconfig.json ./
 COPY resources/ ./resources
 
 RUN set -eux; \
@@ -91,7 +91,7 @@ FROM caddy:2-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=base /var/www/doku/public /var/www/doku/public
-COPY --from=webpack /var/www/doku/public/* /var/www/doku/public
+COPY --from=webpack /var/www/doku/public/* /var/www/doku/public/
 COPY docker/web/Caddyfile /etc/caddy/
 
 VOLUME /config
