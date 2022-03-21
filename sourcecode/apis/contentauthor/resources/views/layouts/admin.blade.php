@@ -50,15 +50,6 @@
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
-                            @if(config("feature.enable-recommendation-engine", false))
-                                <li>
-                                    <a href="{{ route('admin.recommendation-engine.index') }}">Recommendation Engine</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('admin.recommendation-engine.search') }}">Recommendation Engine
-                                        Search</a>
-                                </li>
-                            @endif
                             <li>
                                 <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
                             </li>

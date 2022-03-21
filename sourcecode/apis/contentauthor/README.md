@@ -28,23 +28,6 @@ To expose the permanent file storage
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
-## Recommendation Engine
-
-Currently reporting to the Recommendation Engine is disabled by default.
-You may enable reporting to the Recommendation Engine like so in the `.env` file:
-
-```
-FEATURE_ENABLE_RECOMMENDATION_ENGINE=true
-```
-
-and configure the Recommendation Engine address like so:
-
-```
-RE_CONTENT_INDEX_URL=https://re-content-index
-```
-
-The default is given and should work out of the box in a production environment.
-
 ## Configure Article Storage
 
 The default is to use the `public/h5pstorage` directory. It should not be neccessary to configure this unless you have a more production / scaled-up setup like using Amazon S3 for storage for instance.
