@@ -6,7 +6,8 @@ import {
 } from '../../../../components/FromSideModal';
 import useTranslation from '../../../../hooks/useTranslation';
 import { Box, FormControlLabel, Radio } from '@material-ui/core';
-import { Button, Alert } from '@cerpus/ui';
+import { Alert } from '@cerpus/ui';
+import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 
 export const licenses = {

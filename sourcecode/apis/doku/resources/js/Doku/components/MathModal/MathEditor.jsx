@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FormGroup } from '@cerpus/ui';
+import Button from '@material-ui/core/Button';
 import { useDebounce } from 'moment-hooks';
 import { addStyles, EditableMathField } from 'react-mathquill';
 import MathJax from '../../components/MathJax';

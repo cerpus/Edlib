@@ -1,5 +1,6 @@
 import React from 'react';
-import { Breadcrumb, BreadcrumbItem, Button } from '@cerpus/ui';
+import { Breadcrumb, BreadcrumbItem } from '@cerpus/ui';
+import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 import DokuComponent, {
     addEdlibResource,

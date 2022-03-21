@@ -91,6 +91,7 @@ const AuthWrapper = ({ children }) => {
                         >
                             {languages.map(lng =>
                                 <FormControlLabel
+                                    key={lng}
                                     value={lng}
                                     control={<Radio />}
                                     label={lng}

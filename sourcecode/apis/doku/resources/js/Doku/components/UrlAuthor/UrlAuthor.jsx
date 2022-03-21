@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, FormGroup, Button } from '@cerpus/ui';
+import { Input, FormGroup } from '@cerpus/ui';
+import Button from '@material-ui/core/Button';
 import UrlDisplay from './UrlDisplay';
 import useConfig from '../../hooks/useConfig';
 import atomicTypes from '../../config/atomicTypes';
