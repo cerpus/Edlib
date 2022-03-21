@@ -13,7 +13,6 @@ DNS:edlib.internal.doku.local, \
 DNS:edlib.internal.version.local, \
 DNS:edlibfacade.local, \
 DNS:test.edlibfacade.local, \
-DNS:localhost, \
 DNS:contentauthor.local, \
 DNS:ca.edlib.local, \
 DNS:api.edlib.local, \
@@ -32,7 +31,7 @@ if [ ! -f "$CA_DIR/ca.key" ]; then
     -nodes \
     -key "$CA_DIR/ca.key" \
     -sha256 \
-    -days 3650 \
+    -days 825 \
     -out "$CA_DIR/cacert.pem" \
     -subj '/C=NO/ST=Nordland/L=Alsvaag/O=Cerpus AS/OU=local/CN=cerpus.com/emailAddress=local@cerpus.com'
 fi
@@ -77,7 +76,7 @@ then
     -CAkey "$CA_DIR/ca.key" \
     -CAcreateserial \
     -out "$CERTS_DIR/cerpus.crt" \
-    -days 3649 \
+    -days 825 \
     -sha256 \
     -extfile "$EXTFILE"
   rm "$EXTFILE"
