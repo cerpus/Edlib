@@ -185,10 +185,6 @@ class H5PServiceProvider extends ServiceProvider
             return new NynorskrobotenAdapter($client, config('services.nynorskroboten.token'));
         });
 
-        $this->app->bind(H5PLibraryAdmin::class, function () {
-            return new H5PLibraryAdmin();
-        });
-
         $this->app->singletonIf(H5PAdapterInterface::class, function () {
             $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
             switch ($adapterTarget) {

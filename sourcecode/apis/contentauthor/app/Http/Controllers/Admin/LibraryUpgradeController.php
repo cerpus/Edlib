@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\H5pUpgradeRequest;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use H5PCore;
-use Illuminate\Http\Request;
+use H5PFrameworkInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
 
 class LibraryUpgradeController extends Controller
 {
     public function __construct(
         private H5PCore $core,
         private H5PLibraryAdmin $h5pLibraryAdmin,
+        private H5PFrameworkInterface $h5pFramework,
     ) {
         $this->middleware('auth');
     }
 
-    public function index(Request $request, \H5PFrameworkInterface $framework)
+    public function index(): View
     {
-        $this->h5pLibraryAdmin->process_libraries(); // Upgrades the libraries if we have a .h5p file
-        if ($request->method() === 'POST' && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error'] === 0) { //
-            (new Capability())->refresh();
-        }
+        (new Capability())->refresh();
 
-        $storedLibraries = $framework->loadLibraries();
+        $storedLibraries = $this->h5pFramework->loadLibraries();
 
         $config = resolve(AdminConfig::class);
         $config->getConfig();
@@ -33,8 +36,9 @@ class LibraryUpgradeController extends Controller
         /** @var H5PLibrariesHubCache $hubCacheLibraries */
         $hubCacheLibraries = H5PLibrariesHubCache::all();
 
-        $isPatchUpdate = function ($library) use ($framework) {
-            if ($framework->isPatchedLibrary([
+        $isPatchUpdate = function ($library) {
+            /** @noinspection PhpParamsInspection */
+            if ($this->h5pFramework->isPatchedLibrary([
                 'machineName' => $library->name,
                 'majorVersion' => $library->major_version,
                 'minorVersion' => $library->minor_version,
@@ -51,7 +55,7 @@ class LibraryUpgradeController extends Controller
             $lastVersion = end($versions);
             reset($versions);
             foreach ($versions as $library) {
-                $usage = $framework->getLibraryUsage($library->id, false);
+                $usage = $this->h5pFramework->getLibraryUsage($library->id);
                 $item = [
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
@@ -111,7 +115,34 @@ class LibraryUpgradeController extends Controller
         ]);
     }
 
-    public function checkForUpdates()
+    /**
+     * Handle an uploaded .h5p file.
+     */
+    public function upgrade(H5pUpgradeRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $file = $data['h5p_file'];
+        assert($file instanceof UploadedFile);
+
+        $errors = [];
+
+        try {
+            $this->h5pLibraryAdmin->handleUpload(
+                $file->getPathname(),
+                !empty($data['h5p_upgrade_only']),
+                !empty($data['h5p_disable_file_check']),
+            );
+        } catch (InvalidH5pPackageException $e) {
+            $errors = $e->errors;
+        }
+
+        return response()
+            ->redirectToRoute('admin.update-libraries')
+            ->withErrors($errors);
+    }
+
+    public function checkForUpdates(): RedirectResponse
     {
         $this->core->updateContentTypeCache();
 

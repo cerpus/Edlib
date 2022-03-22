@@ -3,12 +3,17 @@
 namespace App\Libraries\H5P;
 
 use App\Events\ResourceSaved;
+use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
-use App\Http\Controllers\H5P_Plugin_Admin;
 use App\Libraries\H5P\Packages\QuestionSet;
+use H5PCore;
+use H5PFrameworkInterface;
+use H5PStorage;
+use H5PValidator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class H5PLibraryAdmin
 {
@@ -16,36 +21,40 @@ class H5PLibraryAdmin
     const BULK_UPDATED = 1;
     const BULK_FAILED = 2;
 
+    public function __construct(
+        private H5PCore $core,
+        private H5PValidator $validator,
+        private H5PFrameworkInterface $framework,
+        private H5PStorage $storage,
+    ) {
+    }
+
     /**
-     * Handles upload of H5P libraries.
-     *
-     * @since 1.1.0
+     * Handles uploading of an .h5p file.
+     * @return mixed The content ID
+     * @throws InvalidH5pPackageException
      */
-    public function process_libraries()
+    public function handleUpload(string $path, bool $upgradeOnly, bool $disableFileCheck): mixed
     {
-        $post = ($_SERVER['REQUEST_METHOD'] === 'POST');
+        // Make it possible to disable file extension check
+        $this->core->disableFileCheck = $disableFileCheck;
 
-        if ($post && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error'] === 0) {
-            H5P_Plugin_Admin::handle_upload(null, filter_input(INPUT_POST, 'h5p_upgrade_only') ? true : false);
-            return;
-        }
+        $newPath = $this->framework->getUploadedH5pPath();
 
-        if ($post && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error']) {
-            $phpFileUploadErrors = array(
-                1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-                2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-                3 => 'The uploaded file was only partially uploaded',
-                4 => 'No file was uploaded',
-                6 => 'Missing a temporary folder',
-                7 => 'Failed to write file to disk.',
-                8 => 'A PHP extension stopped the file upload.',
+        // Move so core can validate the file extension.
+        rename($path, $newPath);
+
+        if (!$this->validator->isValidPackage(true, $upgradeOnly)) {
+            @unlink($this->framework->getUploadedH5pPath());
+
+            throw new InvalidH5pPackageException(
+                (array) $this->validator->h5pF->getErrorMessages(),
             );
-
-            $errorMessage = $phpFileUploadErrors[$_FILES['h5p_file']['error']];
-            echo $errorMessage;
-            // TODO: H5P_Plugin_Admin::set_error(__($errorMessage, $this->plugin_slug));
-            return;
         }
+
+        $this->storage->savePackage(null, null, true, $upgradeOnly);
+
+        return $this->storage->contentId;
     }
 
     public function upgradeProgress(Request $request)
@@ -60,7 +69,7 @@ class H5PLibraryAdmin
         $params = filter_input(INPUT_POST, 'params');
         if ($params !== null) {
             if (!$request->filled('libraryId')) {
-                throw new \HttpInvalidParamException("Missing library to update to");
+                throw new BadRequestHttpException("Missing library to update to");
             }
 
             collect(json_decode($params))
@@ -126,7 +135,6 @@ class H5PLibraryAdmin
     /**
      * @param Request $request
      * @return \stdClass
-     * @throws \HttpInvalidParamException
      */
     public function upgradeMaxscore($libraries, $scores = null)
     {

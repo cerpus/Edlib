@@ -8,9 +8,9 @@
                 <input type="file" name="h5p_file" id="h5p-file"/>
                 <br>
                 <div class="h5p-disable-file-check">
-                    <label><input type="checkbox" name="h5p_upgrade_only" id="h5p-upgrade-only"/> Only update existing libraries</label>
+                    <label><input type="checkbox" name="h5p_upgrade_only" id="h5p-upgrade-only" /> Only update existing libraries</label>
                     <br>
-                    <label><input type="checkbox" name="h5p_disable_file_check" id="h5p-disable-file-check"/> Disable file extension check</label>
+                    <label><input type="checkbox" name="h5p_disable_file_check" id="h5p-disable-file-check" /> Disable file extension check</label>
                 </div>
                 <br>
                 <input type="hidden" id="lets_upgrade_that" name="lets_upgrade_that" value="228e7591a1">
