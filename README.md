@@ -1,6 +1,6 @@
 # Edlib
 
-Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing, and using rich interactive learning resources in the cloud.
+Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing, and using rich interactive learning resources.
 
 > The individual learner is at the center of everything we do, and our vision is to provide first-class open learning tools and content to as many of those individuals as possible. &mdash; Tommy W. Nordeng (co-founder of Cerpus)
 

@@ -29,8 +29,8 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`The intelligent option to manage your interactive learning resources in the cloud | ${siteConfig.title}`}
-      description="Edlib, the intelligent option to manage your interactive learning resources in the cloud">
+      title={`The intelligent option to manage your interactive learning resources | ${siteConfig.title}`}
+      description="Edlib, the intelligent option to manage your interactive learning resources">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
