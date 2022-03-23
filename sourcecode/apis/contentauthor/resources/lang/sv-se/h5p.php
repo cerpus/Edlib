@@ -1,6 +1,6 @@
 <?php
 return [
-    'title' => 'Title',
+    'title' => 'Titel',
     'reuse' => 'Reuse',
     'reuseContent' => 'Reuse Content',
     'reuseDescription' => 'Reuse this content.',
