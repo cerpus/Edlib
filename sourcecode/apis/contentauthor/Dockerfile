@@ -44,9 +44,11 @@ RUN chown -R www-data:www-data .
 
 
 FROM php_base as test
-COPY docker/run-phpunit.sh /run-phpunit.sh
-RUN composer install
-CMD /run-phpunit.sh
+RUN set -eux; \
+    install-php-extensions \
+        pcov; \
+    composer install;
+CMD ["vendor/bin/phpunit"]
 
 FROM node:16-alpine AS jsbuild
 WORKDIR /app

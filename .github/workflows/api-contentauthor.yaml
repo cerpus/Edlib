@@ -44,7 +44,15 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run contentauthor-test
+          docker run --rm -v "$PWD/test-results:/test-results" contentauthor-test
+            vendor/bin/phpunit --coverage-clover=/test-results/clover.xml
+
+      - name: Publish coverage
+        uses: slavcodev/coverage-monitor-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_path: test-results/clover.xml
+          comment_context: Content Author code coverage report
 
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'
