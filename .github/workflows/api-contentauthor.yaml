@@ -44,8 +44,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm -v "$PWD/test-results:/test-results" contentauthor-test
-            vendor/bin/phpunit -d memory_limit=256M --coverage-clover=/test-results/clover.xml
+          docker run --rm -v "$PWD/test-results:/test-results" contentauthor-test vendor/bin/phpunit -d memory_limit=256M --coverage-clover=/test-results/clover.xml
 
       - name: Publish coverage
         uses: slavcodev/coverage-monitor-action@v1
