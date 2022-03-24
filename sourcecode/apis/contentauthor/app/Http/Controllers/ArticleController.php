@@ -194,7 +194,7 @@ class ArticleController extends Controller
 
         $article->convertToCloudPaths();
         $ndlaArticle = $article->isImported();
-        $inDraftState = !$article->isPublished() || $article->isDraft();
+        $inDraftState = !$article->isActuallyPublished();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
         return view('article.show')->with(compact('article', 'customCSS', 'preview', 'ndlaArticle', 'inDraftState', 'resourceType'));

@@ -118,7 +118,7 @@ class H5PController extends Controller
             'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-            'inDraftState' => !$h5pContent->isPublished() || $h5pContent->isDraft(),
+            'inDraftState' => !$h5pContent->isActuallyPublished(),
             'preview' => $preview,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ];

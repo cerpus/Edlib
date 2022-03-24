@@ -351,6 +351,15 @@ abstract class Content extends Model implements RecommendableInterface
         return $id;
     }
 
+    /**
+     * The reason we have this function is that the isPublished function only returns the db value.
+     * We need a way to evaluate if a resource actually is published by using both the isPublished and isDraft flags
+     */
+    public function isActuallyPublished(): bool
+    {
+        return $this->isPublished() && !$this->isDraft();
+    }
+
     public function isPublished(): bool
     {
         return $this->is_published;
@@ -400,7 +409,7 @@ abstract class Content extends Model implements RecommendableInterface
      */
     public function canShow($preview = false)
     {
-        return $preview === true || $this->isPublished();
+        return $preview === true || $this->isActuallyPublished();
     }
 
     /**
