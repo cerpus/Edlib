@@ -72,6 +72,7 @@ class h5p
         // Get title
         $content['title'] = $request->get("title");
         $content['params'] = $request->get('parameters');
+        $content['is_draft'] = $request->input('isDraft');
         $content['is_published'] = Content::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
         $content['language_iso_639_3'] = $request->get('language_iso_639_3');
         $content['license'] = $request->get('license');

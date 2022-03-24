@@ -14,20 +14,22 @@ import { messagesNbNo as Article } from '../components/Article';
 
 export default {
     locale: 'nb-NO',
-    messages: Object.assign(
-        {},
-        AudioBrowser,
-        LicenseChooser,
-        LicenseIcon,
-        LicenseText,
-        Owner,
-        QuestionContentType,
-        TagsManager,
-        VideoBrowser,
-        EmbedContentType,
-        H5pEditor,
-        FileUploadProgress,
-        Sidebar,
-        Article
-    ),
+    messages: {
+        ...AudioBrowser,
+        ...LicenseChooser,
+        ...LicenseIcon,
+        ...LicenseText,
+        ...Owner,
+        ...QuestionContentType,
+        ...TagsManager,
+        ...VideoBrowser,
+        ...EmbedContentType,
+        ...H5pEditor,
+        ...FileUploadProgress,
+        ...Sidebar,
+        ...Article,
+        unpublished_changes: 'Upubliserte endringer',
+        unpublished_changes_explain:
+            'Lagre og lukk for legge til endringene til den publiserte versjonen',
+    },
 };

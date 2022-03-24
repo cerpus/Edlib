@@ -1,16 +1,39 @@
 import React from 'react';
+import _ from 'lodash';
 import useTranslation from '../hooks/useTranslation.js';
 import { Chip } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, WarningAmber } from '@mui/icons-material';
 
-const PublishedTag = ({ isPublished }) => {
+const PublishedTag = ({ isPublished, isDraft }) => {
     const { t } = useTranslation();
+
     return (
         <div>
             <Chip
-                icon={isPublished ? <Visibility /> : <VisibilityOff />}
-                label={isPublished ? t('Publisert') : t('Avpublisert')}
+                icon={
+                    isDraft ? (
+                        <WarningAmber />
+                    ) : isPublished ? (
+                        <Visibility />
+                    ) : (
+                        <VisibilityOff />
+                    )
+                }
+                label={_.capitalize(
+                    isDraft
+                        ? t('draft')
+                        : isPublished
+                        ? t('published')
+                        : t('unpublished')
+                )}
                 size="small"
+                sx={{
+                    backgroundColor: isDraft
+                        ? '#FFECB3'
+                        : isPublished
+                        ? '#A8E994'
+                        : null,
+                }}
             />
         </div>
     );

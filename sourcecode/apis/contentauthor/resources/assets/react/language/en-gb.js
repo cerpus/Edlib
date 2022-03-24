@@ -14,20 +14,22 @@ import { messagesEnGb as Article } from '../components/Article';
 
 export default {
     locale: 'en-GB',
-    messages: Object.assign(
-        {},
-        AudioBrowser,
-        LicenseChooser,
-        LicenseIcon,
-        LicenseText,
-        Owner,
-        QuestionContentType,
-        TagsManager,
-        VideoBrowser,
-        EmbedContentType,
-        H5pEditor,
-        FileUploadProgress,
-        Sidebar,
-        Article
-    ),
+    messages: {
+        ...AudioBrowser,
+        ...LicenseChooser,
+        ...LicenseIcon,
+        ...LicenseText,
+        ...Owner,
+        ...QuestionContentType,
+        ...TagsManager,
+        ...VideoBrowser,
+        ...EmbedContentType,
+        ...H5pEditor,
+        ...FileUploadProgress,
+        ...Sidebar,
+        ...Article,
+        unpublished_changes: 'Unpublished changes',
+        unpublished_changes_explain:
+            'Save and close to add the changes to the published version',
+    },
 };

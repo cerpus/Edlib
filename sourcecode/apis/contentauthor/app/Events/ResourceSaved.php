@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use Cerpus\EdlibResourceKit\Contract\EdlibResource;
+use Cerpus\EdlibResourceKit\Contract\DraftAwareResource;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -13,11 +13,11 @@ class ResourceSaved extends Event
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(private EdlibResource $resource)
+    public function __construct(private DraftAwareResource $resource)
     {
     }
 
-    public function getResource(): EdlibResource
+    public function getResource(): DraftAwareResource
     {
         return $this->resource;
     }

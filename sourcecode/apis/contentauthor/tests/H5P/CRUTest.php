@@ -98,6 +98,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0,
                 'maxScore' => 3
             ])
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
@@ -125,7 +126,8 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com',
                 'license' => "PRIVATE",
-                'maxScore' => 2
+                'maxScore' => 2,
+                'isDraft' => 0
             ]);
 
         $h5p->refresh();
@@ -151,6 +153,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0
             ]);
 
         $this->assertCount(2, H5PContent::all());
@@ -177,6 +180,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0
             ])
             ->assertStatus(Response::HTTP_OK);
         $this->assertCount(3, H5PContent::all());
@@ -201,6 +205,7 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Tittel 4","title":"Tittel 4"}}',
                 'frame' => "1",
                 'copyright' => "1",
+                'isDraft' => 0
                 //'col_email' => '',
                 //'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 //'license' => "PRIVATE",
@@ -280,6 +285,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK); // Redirects after save
         $all = H5PContent::all();
@@ -328,6 +334,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK); // Redirects after save
         $all = H5PContent::all();
@@ -385,6 +392,7 @@ class CRUTest extends TestCase
                 'redirectToken' => $this->faker->unique()->uuid,
                 'ext_use_draft_logic' => 1,
                 'isPublished' => 0,
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
 
@@ -409,6 +417,7 @@ class CRUTest extends TestCase
                 'redirectToken' => $this->faker->unique()->uuid,
                 'ext_use_draft_logic' => 1,
                 'isPublished' => 1,
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'New resource', 'is_published' => 0]);
@@ -554,6 +563,7 @@ class CRUTest extends TestCase
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
                 'isPublished' => '1',
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('h5p_contents', ['id' => ++$newContent->id, 'title' => $newContent->title, 'is_published' => 1]);

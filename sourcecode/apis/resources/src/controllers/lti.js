@@ -12,9 +12,10 @@ export default {
         }
 
         if (!resourceVersion) {
-            resourceVersion = await req.context.db.resourceVersion.getLatestNonDraftResourceVersion(
-                req.params.resourceId
-            );
+            resourceVersion =
+                await req.context.db.resourceVersion.getLatestNonDraftResourceVersion(
+                    req.params.resourceId
+                );
         }
 
         if (
@@ -39,9 +40,10 @@ export default {
         }
 
         if (!resourceVersion) {
-            resourceVersion = await req.context.db.resourceVersion.getLatestNonDraftResourceVersion(
-                req.params.resourceId
-            );
+            resourceVersion =
+                await req.context.db.resourceVersion.getLatestResourceVersion(
+                    req.params.resourceId
+                );
         }
 
         if (!resourceVersion) {
@@ -52,7 +54,7 @@ export default {
             !(await resourceAccessService.isResourceVersionViewableByTenant(
                 req.context,
                 resourceVersion,
-                req.params.tenantId
+                String(req.params.tenantId)
             ))
         ) {
             throw new NotFoundException('resource');

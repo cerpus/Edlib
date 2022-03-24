@@ -27,9 +27,8 @@ const isResourceVersionViewableByTenant = async (
 };
 
 const hasResourceAccess = async (context, resource, tenantId) => {
-    let resourceVersion = await context.db.resourceVersion.getLatestResourceVersion(
-        resource.id
-    );
+    let resourceVersion =
+        await context.db.resourceVersion.getLatestResourceVersion(resource.id);
 
     if (!resourceVersion) {
         return false;
@@ -39,9 +38,10 @@ const hasResourceAccess = async (context, resource, tenantId) => {
         return true;
     }
 
-    const collaborators = await context.db.resourceVersionCollaborator.getForResourceVersion(
-        resourceVersion.id
-    );
+    const collaborators =
+        await context.db.resourceVersionCollaborator.getForResourceVersion(
+            resourceVersion.id
+        );
 
     if (collaborators.some((c) => c.tenantId === tenantId)) {
         return true;

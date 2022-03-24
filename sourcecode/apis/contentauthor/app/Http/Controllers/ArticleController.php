@@ -139,6 +139,7 @@ class ArticleController extends Controller
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
 
         $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_draft = $request->input('isDraft', 0);
 
         $article->save();
 
@@ -193,7 +194,7 @@ class ArticleController extends Controller
 
         $article->convertToCloudPaths();
         $ndlaArticle = $article->isImported();
-        $inDraftState = $article->inDraftState();
+        $inDraftState = !$article->isActuallyPublished();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
         return view('article.show')->with(compact('article', 'customCSS', 'preview', 'ndlaArticle', 'inDraftState', 'resourceType'));
@@ -276,8 +277,9 @@ class ArticleController extends Controller
             'title' => $article->title,
             'content' => $article->content,
             'license' => $article->license,
-            'isPublished' => !$article->inDraftState(),
-            'share' => !$article->isPublished() ? 'private' : 'share',
+            'isPublished' => $article->isPublished(),
+            'isDraft' => $article->isDraft(),
+            'share' => !$article->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.update', ['article' => $id]),
             '_method' => "PUT",
@@ -334,6 +336,7 @@ class ArticleController extends Controller
         $article->max_score = $article->getMaxScoreHelper($article->content);
         $article->license = $request->input('license', $oldLicense);
         $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_draft = $request->input('isDraft', false);
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));
         $article->save();

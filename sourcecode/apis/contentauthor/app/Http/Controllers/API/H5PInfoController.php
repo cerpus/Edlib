@@ -27,7 +27,7 @@ class H5PInfoController extends Controller
                     }),
                     'scoreable' => !is_null($h5p->max_score) && $h5p->max_score > 0,
                     'maxScore' => $h5p->max_score,
-                    'inDraftState' => $h5p->inDraftState(),
+                    'inDraftState' => !$h5p->isPublished(),
                     'language' => Iso639p3::code2letters($h5p->getISO6393Language()),
                     'title' => $h5p->title,
                 ];

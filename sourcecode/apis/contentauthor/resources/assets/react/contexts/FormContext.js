@@ -4,9 +4,13 @@ import form, { actions as FormActions } from '../stores/form';
 const FormContext = createContext();
 
 function FormProvider({ children, value: initialState }) {
-    const [state, dispatch] = useReducer(form, { messages: [], messageTitle: '', ...initialState });
+    const [state, dispatch] = useReducer(form, {
+        messages: [],
+        messageTitle: '',
+        ...initialState,
+    });
     return (
-        <FormContext.Provider value={{ state, dispatch }}>
+        <FormContext.Provider value={{ state, dispatch, initialState }}>
             {children}
         </FormContext.Provider>
     );
@@ -20,8 +24,4 @@ function useForm() {
     return context;
 }
 
-export {
-    FormProvider,
-    useForm,
-    FormActions,
-};
+export { FormProvider, useForm, FormActions };

@@ -71,6 +71,7 @@ const getLatestNonDraftResourceVersion = async (resourceId) =>
     db(table)
         .select('*')
         .where('resourceId', resourceId)
+        .where('isDraft', false)
         .orderBy('createdAt', 'DESC')
         .first();
 

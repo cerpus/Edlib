@@ -67,6 +67,7 @@ abstract class Content extends Model
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_draft' => 'boolean',
     ];
 
     public const RESOURCE_TYPE_CSS = '%s-resource';
@@ -243,6 +244,14 @@ abstract class Content extends Model
      */
     public function requestShouldBecomeNewVersion(Request $request): bool
     {
+        if ($this->isDraft()) {
+            return false;
+        }
+
+        if ($request->get('isDraft')) {
+            return true;
+        }
+
         if ($this->useVersioning() === true) {
             $ct = $this->getContentTitle();
             $rt = $this->getRequestTitle($request);
@@ -340,14 +349,28 @@ abstract class Content extends Model
         return $id;
     }
 
-    public function inDraftState(): bool
+    /**
+     * The reason we have this function is that the isPublished function only returns the db value.
+     * We need a way to evaluate if a resource actually is published by using both the isPublished and isDraft flags
+     */
+    public function isActuallyPublished(): bool
     {
-        return !$this->is_published;
+        return $this->isPublished() && !$this->isDraft();
     }
 
     public function isPublished(): bool
     {
+        return $this->is_published;
+    }
+
+    public function isListed(): bool
+    {
         return !$this->is_private;
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->is_draft;
     }
 
     public static function isDraftLogicEnabled()
@@ -384,7 +407,7 @@ abstract class Content extends Model
      */
     public function canShow($preview = false)
     {
-        return $preview === true || $this->inDraftState() !== true;
+        return $preview === true || $this->isActuallyPublished();
     }
 
     /**
@@ -440,8 +463,9 @@ abstract class Content extends Model
             (string) $this->id,
             $this->title,
             $this->getContentOwnerId(),
-            !$this->inDraftState(),
             $this->isPublished(),
+            $this->isDraft(),
+            $this->isListed(),
             $this->getISO6393Language(),
             $this->getContentType(true),
             $this->getContentLicense(),

@@ -94,8 +94,6 @@
     "reset": "reset",
     "Sortering": "Sorting",
     "Denne ressursen er nå publisert": "This resource is now published",
-    "Publisert": "Published",
-    "Avpublisert": "Unpublished",
     "Innholdstype": "Content type",
     "license": "license",
     "license_plural": "licenses",
@@ -138,5 +136,8 @@
     "filter_plural": "filters",
     "resource_view": "resource view",
     "resource_view_plural": "resource views",
-    "save_filter": "save filter"
+    "save_filter": "save filter",
+    "draft": "draft",
+    "published": "published",
+    "unpublished": "unpublished"
 }

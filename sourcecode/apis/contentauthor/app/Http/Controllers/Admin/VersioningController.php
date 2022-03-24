@@ -59,8 +59,8 @@ class VersioningController extends Controller
                 'created' => $content->created_at->toIso8601String(),
                 'update' => $content->updated_at->toIso8601String(),
                 'version_id' => $content->version_id,
-                'isDraftState' => $content->inDraftState(),
-                'isPublished' => !$content->isPublished(),
+                'isDraftState' => !$content->isPublished(),
+                'isPublished' => !$content->isListed(),
                 'contentType' => $content->getContentType(),
             ];
         }

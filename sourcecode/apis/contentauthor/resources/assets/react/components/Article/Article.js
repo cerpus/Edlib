@@ -8,10 +8,14 @@ import { FormActions, useForm } from '../../contexts/FormContext';
 import CKEditor from 'ckeditor4-react';
 import { injectIntl, intlShape } from 'react-intl';
 
-const editorMessageHandler = event => {
+const editorMessageHandler = (event) => {
     const originalEvent = event.data.$;
 
-    if (originalEvent.data && originalEvent.data.context && originalEvent.data.context === 'h5p') {
+    if (
+        originalEvent.data &&
+        originalEvent.data.context &&
+        originalEvent.data.context === 'h5p'
+    ) {
         const action = originalEvent.data.action || '';
 
         switch (action) {
@@ -37,26 +41,26 @@ const editorMessageHandler = event => {
     }
 };
 
-const Article = props => {
+const Article = (props) => {
     const { dispatch, state: formState } = useForm();
-    const {
-        articleSetup,
-        uploadUrl,
-        intl,
-    } = props;
+    const { articleSetup, uploadUrl, intl } = props;
 
-    let title, content = '';
+    let title,
+        content = '';
     if (typeof articleSetup.article === 'object') {
         title = articleSetup.article.title;
         content = articleSetup.article.content;
     }
 
-    const getFormState = () => formState;
+    const getFormState = (isDraft) => ({
+        ...formState,
+        isDraft,
+    });
 
-    const save = () => {
+    const save = (isDraft) => {
         try {
             return {
-                values: getFormState(),
+                values: getFormState(isDraft),
                 isValid: true,
             };
         } catch (error) {
@@ -68,48 +72,75 @@ const Article = props => {
     };
 
     return (
-        <EditorContainer
-            sidebar={(
-                <Sidebar
-                    onSave={save}
-                />
-            )}
-        >
+        <EditorContainer sidebar={<Sidebar onSave={save} />}>
             <FormGroup>
                 <Label>{intl.formatMessage({ id: 'ARTICLE.TITLE' })}</Label>
                 <Input
-                    placeholder={intl.formatMessage({ id: 'ARTICLE.TITLEPLACEHOLDER' })}
-                    value={title}
-                    onChange={event => dispatch({
-                        type: FormActions.setTitle,
-                        payload: { title: event.target.value },
+                    placeholder={intl.formatMessage({
+                        id: 'ARTICLE.TITLEPLACEHOLDER',
                     })}
+                    value={title}
+                    onChange={(event) =>
+                        dispatch({
+                            type: FormActions.setTitle,
+                            payload: { title: event.target.value },
+                        })
+                    }
                 />
             </FormGroup>
             <FormGroup>
                 <Label>{intl.formatMessage({ id: 'ARTICLE.CONTENT' })}</Label>
                 <CKEditor
                     data={content}
-                    onChange={e => dispatch({ type: FormActions.setContent, payload: { content: e.editor.getData() } })}
-                    onNamespaceLoaded={CKEDITOR => {
-                        if (typeof articleSetup.editor.wirisPath !== 'undefined') {
+                    onChange={(e) =>
+                        dispatch({
+                            type: FormActions.setContent,
+                            payload: { content: e.editor.getData() },
+                        })
+                    }
+                    onNamespaceLoaded={(CKEDITOR) => {
+                        if (
+                            typeof articleSetup.editor.wirisPath !== 'undefined'
+                        ) {
                             // Add wiris plugin
-                            CKEDITOR.plugins.addExternal('ckeditor_wiris', articleSetup.editor.wirisPath);
+                            CKEDITOR.plugins.addExternal(
+                                'ckeditor_wiris',
+                                articleSetup.editor.wirisPath
+                            );
                         }
 
-                        if (articleSetup.hasOwnProperty('editor') && articleSetup.editor.hasOwnProperty('extraAllowedContent')) {
-                            if (CKEDITOR.hasOwnProperty('extraAllowedContent') !== true) {
+                        if (
+                            articleSetup.hasOwnProperty('editor') &&
+                            articleSetup.editor.hasOwnProperty(
+                                'extraAllowedContent'
+                            )
+                        ) {
+                            if (
+                                CKEDITOR.hasOwnProperty(
+                                    'extraAllowedContent'
+                                ) !== true
+                            ) {
                                 CKEDITOR.config.extraAllowedContent = '';
                             }
-                            CKEDITOR.config.extraAllowedContent += articleSetup.editor.extraAllowedContent;
+                            CKEDITOR.config.extraAllowedContent +=
+                                articleSetup.editor.extraAllowedContent;
                         }
 
-                        if (articleSetup.hasOwnProperty('editor') && articleSetup.editor.hasOwnProperty('editorBodyClass')) {
-                            CKEDITOR.config.bodyClass = articleSetup.editor.editorBodyClass;
+                        if (
+                            articleSetup.hasOwnProperty('editor') &&
+                            articleSetup.editor.hasOwnProperty(
+                                'editorBodyClass'
+                            )
+                        ) {
+                            CKEDITOR.config.bodyClass =
+                                articleSetup.editor.editorBodyClass;
                         }
                         CKEDITOR.config.uploadUrl = uploadUrl;
-                        CKEDITOR.on('instanceReady', event => {
-                            event.editor.window.on('message', editorMessageHandler);
+                        CKEDITOR.on('instanceReady', (event) => {
+                            event.editor.window.on(
+                                'message',
+                                editorMessageHandler
+                            );
                         });
                     }}
                 />
