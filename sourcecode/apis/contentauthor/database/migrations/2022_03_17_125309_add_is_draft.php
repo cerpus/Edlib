@@ -14,23 +14,23 @@ class AddIsDraft extends Migration
     public function up()
     {
         Schema::table('h5p_contents', function (Blueprint $table) {
-            $table->boolean('is_draft')->default(0);
+            $table->boolean('is_draft')->default(false);
         });
 
         Schema::table('articles', function (Blueprint $table) {
-            $table->boolean('is_draft')->default(0);
+            $table->boolean('is_draft')->default(false);
         });
 
         Schema::table('games', function (Blueprint $table) {
-            $table->boolean('is_draft')->default(0);
+            $table->boolean('is_draft')->default(false);
         });
 
         Schema::table('links', function (Blueprint $table) {
-            $table->boolean('is_draft')->default(0);
+            $table->boolean('is_draft')->default(false);
         });
 
         Schema::table('question_sets', function (Blueprint $table) {
-            $table->boolean('is_draft')->default(0);
+            $table->boolean('is_draft')->default(false);
         });
     }
 

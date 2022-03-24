@@ -137,7 +137,6 @@ const editResourceRequest = async (
     reqProtoHost,
     language
 ) => {
-    console.log('asdf');
     const {
         url: ltiResourceUrl,
         consumerSecret,
@@ -148,8 +147,6 @@ const editResourceRequest = async (
         resourceId,
         resourceVersionId
     );
-
-    console.log('asdf 2');
 
     let launch_presentation_locale;
 
