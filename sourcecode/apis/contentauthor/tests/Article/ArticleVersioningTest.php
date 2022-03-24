@@ -65,6 +65,7 @@ class ArticleVersioningTest extends TestCase
         $originalArticle = Article::factory()->create([
             'owner_id' => $authId,
             'license' => 'BY',
+            'is_draft' => false
         ]);
         $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
         $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);

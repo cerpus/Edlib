@@ -98,6 +98,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 1,
                 'maxScore' => 3
             ])
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
@@ -280,6 +281,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK); // Redirects after save
         $all = H5PContent::all();
@@ -328,6 +330,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK); // Redirects after save
         $all = H5PContent::all();
@@ -385,6 +388,7 @@ class CRUTest extends TestCase
                 'redirectToken' => $this->faker->unique()->uuid,
                 'ext_use_draft_logic' => 1,
                 'isPublished' => 0,
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
 
@@ -554,6 +558,7 @@ class CRUTest extends TestCase
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
                 'isPublished' => '1',
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('h5p_contents', ['id' => ++$newContent->id, 'title' => $newContent->title, 'is_published' => 1]);
