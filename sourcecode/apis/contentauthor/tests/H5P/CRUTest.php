@@ -21,12 +21,11 @@ use Tests\Traits\MockH5PAdapterInterface;
 use Tests\Traits\MockMQ;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\ResetH5PStatics;
 use Tests\Traits\WithFaker;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockVersioningTrait, WithFaker, MockMQ, ResetH5PStatics, MockH5PAdapterInterface, MockResourceApi;
+    use RefreshDatabase, TestHelpers, MockVersioningTrait, WithFaker, MockMQ, MockH5PAdapterInterface, MockResourceApi;
 
     const testDirectory = "h5pstorage";
     const testContentDirectory = "content";

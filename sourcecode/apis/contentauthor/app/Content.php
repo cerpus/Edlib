@@ -9,7 +9,6 @@ use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Models\Traits\RecommendableInterface;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
@@ -46,7 +45,7 @@ use Illuminate\Support\Facades\Session;
  * @method static int count($columns = '*')
  * @method static Builder where($column, $operator = null, $value = null, $boolean = 'and')
  */
-abstract class Content extends Model implements RecommendableInterface
+abstract class Content extends Model
 {
     public const TYPE_ARTICLE = 'article';
     public const TYPE_GAME = 'game';
@@ -55,7 +54,6 @@ abstract class Content extends Model implements RecommendableInterface
     public const TYPE_QUESTIONSET = 'questionset';
 
     use HasLanguage, HasTranslations, Attributable, Versionable;
-    //use Recommendable;
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable

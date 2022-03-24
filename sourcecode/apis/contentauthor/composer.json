@@ -13,6 +13,7 @@
         "ext-libxml": "*",
         "ext-memcached": "*",
         "ext-oauth": "*",
+        "ext-pdo": "*",
         "ext-zip": "*",
         "cerpus/cerpushelper": "^2.1",
         "cerpus/coreclient": "^1.4.0",

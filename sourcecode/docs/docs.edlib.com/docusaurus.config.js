@@ -1,7 +1,7 @@
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'Edlib',
-  tagline: 'Edlib is the intelligent option to manage your interactive learning resources in the cloud',
+  tagline: 'Edlib is the intelligent option to manage your interactive learning resources',
   url: 'https://docs.edlib.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',

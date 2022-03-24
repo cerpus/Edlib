@@ -13,6 +13,7 @@ use App\H5pLti;
 use App\Http\Controllers\H5PController;
 use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PLibraryAdmin;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
 use Exception;
@@ -25,12 +26,11 @@ use stdClass;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\MockMQ;
-use Tests\Traits\ResetH5PStatics;
 
 
 class h5pControllerFunctionalTest extends TestCase
 {
-    use RefreshDatabase, ResetH5PStatics, MockMQ;
+    use RefreshDatabase, MockMQ;
 
     protected array $fakedEvents = [
         ContentCreating::class,
@@ -118,7 +118,7 @@ class h5pControllerFunctionalTest extends TestCase
 
         /** @var H5pLti $h5pLti */
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $h5pController = new H5PController($h5pLti, app(h5p::class));
+        $h5pController = new H5PController($h5pLti, app(h5p::class), app(H5PLibraryAdmin::class));
 
         $response = $h5pController->store($request);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
@@ -176,7 +176,7 @@ class h5pControllerFunctionalTest extends TestCase
 
         /** @var H5pLti $h5pLti */
         $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $h5pController = new H5PController($h5pLti, app(h5p::class));
+        $h5pController = new H5PController($h5pLti, app(h5p::class), app(H5PLibraryAdmin::class));
 
         $response = $h5pController->store($request);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());

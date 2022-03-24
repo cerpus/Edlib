@@ -30,7 +30,6 @@ use App\Libraries\H5P\h5p;
 use App\Libraries\H5P\H5PCopyright;
 use App\Libraries\H5P\H5PExport;
 use App\Libraries\H5P\H5PLibraryAdmin;
-use App\Libraries\H5P\H5Plugin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
@@ -65,12 +64,13 @@ class H5PController extends Controller
 
     private string $viewDataCacheName = 'viewData-';
 
-    protected H5Plugin $h5pPlugin;
     private bool $sendEmail = true;
 
-    public function __construct(private H5pLti $lti, private h5p $h5p)
-    {
-        $this->h5pPlugin = H5Plugin::get_instance(DB::connection()->getPdo());
+    public function __construct(
+        private H5pLti $lti,
+        private h5p $h5p,
+        private H5PLibraryAdmin $h5pLibraryAdmin,
+    ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
@@ -294,7 +294,6 @@ class H5PController extends Controller
         if ($h5pContent->canList($request)) {
             $config = (resolve(AdminConfig::class))
                 ->setId($id);
-            $config->h5plugin = $this->h5pPlugin;
             $config->getConfig();
             $config->addUpdateScripts(true);
             $settings = $config->getSettings($library);
@@ -712,7 +711,7 @@ class H5PController extends Controller
      */
     public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
     {
-        $ajaxRequest = new AjaxRequest($this->h5pPlugin, $core, $editor, $contentAuthorStorage);
+        $ajaxRequest = new AjaxRequest($core, $editor, $contentAuthorStorage);
         $returnValue = $ajaxRequest->handleAjaxRequest($request);
         switch ($ajaxRequest->getReturnType()) {
             case "json":
@@ -742,7 +741,7 @@ class H5PController extends Controller
     public function contentUpgradeLibrary(Request $request, H5PCore $core)
     {
         try {
-            return response()->json((new H5PLibraryAdmin)->upgradeLibrary($core, $request->get('library')));
+            return response()->json($this->h5pLibraryAdmin->upgradeLibrary($core, $request->get('library')));
         } catch (Exception $exception) {
             return response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }

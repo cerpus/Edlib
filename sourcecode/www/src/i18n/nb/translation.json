@@ -201,5 +201,6 @@
     "filter_plural": "filtre",
     "resource_view": "visninger av ressurs",
     "resource_view_plural": "ressursvisninger",
-    "grouped": "gruppert"
+    "grouped": "gruppert",
+    "save_filter": "lagre filter"
 }

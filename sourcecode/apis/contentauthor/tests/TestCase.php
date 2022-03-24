@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Foundation\Mix;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\HtmlString;
-use Tests\Traits\ResetH5PStatics;
 use Tests\Traits\WithFaker;
 use Tests\Traits\MockMQ;
 
@@ -35,10 +34,6 @@ abstract class TestCase extends BaseTestCase
 
         if (isset($uses[MockMQ::class])) {
             $this->setUpMockMQ();
-        }
-
-        if (isset($uses[ResetH5PStatics::class])) {
-            $this->setupResetH5PStatics();
         }
     }
 

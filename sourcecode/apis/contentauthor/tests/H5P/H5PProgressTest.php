@@ -7,14 +7,13 @@ use Tests\TestCase;
 use Tests\TestHelpers;
 use Illuminate\Http\Request;
 use Tests\db\TestProgressSeeder;
-use Tests\Traits\ResetH5PStatics;
 use App\Libraries\H5P\H5PProgress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use TypeError;
 
 class H5PProgressTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, ResetH5PStatics;
+    use RefreshDatabase, TestHelpers;
 
     public function assertPreConditions(): void
     {

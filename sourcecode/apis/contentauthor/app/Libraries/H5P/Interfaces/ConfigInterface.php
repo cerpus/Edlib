@@ -17,8 +17,6 @@ interface ConfigInterface
 
     public function getStyleAssets();
 
-    public function setH5pPlugin($plugin);
-
     public function setContent($content);
 
     public function setLibrary(H5PLibrary $library);

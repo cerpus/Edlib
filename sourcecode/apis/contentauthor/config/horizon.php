@@ -2,8 +2,6 @@
 
 $horizonQueues = [
     "default",
-    "re-content",
-    "re-content-bulk",
     "streamps_messages",
     "norgesfilm",
     "ndla",

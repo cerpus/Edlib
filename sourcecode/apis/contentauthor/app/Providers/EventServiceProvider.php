@@ -81,7 +81,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         ContentUpdated::class => [
-//            UpdateContentInRecommendationEngine::class,
         ],
 
         ContentDeleting::class => [
@@ -89,7 +88,6 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         ContentDeleted::class => [
-//            RemoveContentFromRecommendationEngine::class,
         ],
     ];
 

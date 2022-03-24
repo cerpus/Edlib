@@ -13,7 +13,6 @@ use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\NDLAReplaceRefController;
 use App\Http\Controllers\Admin\NorgesfilmController;
-use App\Http\Controllers\Admin\RecommendationEngineController;
 use App\Http\Controllers\Admin\VersioningController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -30,8 +29,9 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         /*
          * Update H5P libraries
          */
-        Route::match(['get', 'post'], '/update-libraries',
-            [LibraryUpgradeController::class, 'index'])->name('admin.update-libraries');
+        Route::get('/update-libraries', [LibraryUpgradeController::class, 'index'])
+            ->name('admin.update-libraries');
+        Route::post('/update-libraries', [LibraryUpgradeController::class, 'upgrade']);
         Route::post('/check-for-updates', [LibraryUpgradeController::class, 'checkForUpdates'])
             ->name('admin.check-for-updates');
         Route::post('/update-library', [LibraryUpgradeController::class, 'upgradeLibrary'])
@@ -101,12 +101,5 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         Route::get("video/ndla/doreplaceref", [NDLAReplaceRefController::class, 'doReplaceRef'])->name("admin.video.ndla.doreplaceref");
         Route::get("video/ndla/populatetargets", [NDLAReplaceRefController::class, 'populateTable'])->name("admin.video.ndla.populatetargets");
         Route::get("video/ndla/reindexrefs", [NDLAReplaceRefController::class, 'reindex'])->name("admin.video.ndla.reindexrefs");
-
-        // Recommendation engine
-        Route::get("recommendation-engine", [RecommendationEngineController::class, "index"])->name("admin.recommendation-engine.index");
-        Route::get("recommendation-engine/doIndex", [RecommendationEngineController::class, "doIndex"])->name("admin.recommendation-engine.doIndex");
-        Route::get("recommendation-engine/index-ndla-articles", [RecommendationEngineController::class, "indexNdlaArticles"])->name("admin.recommendation-engine.index-ndla-articles");
-        Route::get("recommendation-engine/search" , [RecommendationEngineController::class, "search"])->name("admin.recommendation-engine.search");
-        Route::get("recommendation-engine/{id}/remove/{query}" , [RecommendationEngineController::class, "remove"])->name("admin.recommendation-engine.remove");
     }
 );
