@@ -10,7 +10,6 @@ use App\Libraries\H5P\EditorAjax;
 use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
-use App\Libraries\H5P\H5Plugin;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -60,7 +59,6 @@ class H5PServiceProvider extends ServiceProvider
             H5PVideoInterface::class,
             H5PLibraryAdmin::class,
             H5peditorStorage::class,
-            H5Plugin::class,
         ];
     }
 
@@ -187,10 +185,6 @@ class H5PServiceProvider extends ServiceProvider
             return new NynorskrobotenAdapter($client, config('services.nynorskroboten.token'));
         });
 
-        $this->app->bind(H5PLibraryAdmin::class, function () {
-            return new H5PLibraryAdmin(H5Plugin::get_instance());
-        });
-
         $this->app->singletonIf(H5PAdapterInterface::class, function () {
             $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
             switch ($adapterTarget) {
@@ -264,7 +258,5 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             return new H5PEditorAjax($app->make(H5PCore::class), $app->make(H5peditor::class), $app->make(H5peditorStorage::class));
         });
-
-        $this->app->bind(H5Plugin::class, fn() => H5Plugin::get_instance());
     }
 }

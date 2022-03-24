@@ -15,13 +15,12 @@ use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\ResetH5PStatics;
 use Tests\Traits\WithFaker;
 
 class ContentTypeHandlerTest extends TestCase
 {
 
-    use RefreshDatabase, MockVersioningTrait, WithFaker, ResetH5PStatics, MockResourceApi;
+    use RefreshDatabase, MockVersioningTrait, WithFaker, MockResourceApi;
 
     public function setUp(): void
     {

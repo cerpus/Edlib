@@ -3,143 +3,58 @@
 namespace App\Libraries\H5P;
 
 use App\Events\ResourceSaved;
+use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
-use App\Http\Controllers\H5P_Plugin_Admin;
 use App\Libraries\H5P\Packages\QuestionSet;
-use Illuminate\Support\Facades\DB;
+use H5PCore;
+use H5PFrameworkInterface;
+use H5PStorage;
+use H5PValidator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-/**
- * H5P Plugin.
- *
- * @package   H5P
- * @author    Joubel <contact@joubel.com>
- * @license   MIT
- * @link      http://joubel.com
- * @copyright 2014 Joubel
- */
-
-/**
- * H5P Library Admin class
- *
- * @package H5P_Plugin_Admin
- * @author Joubel <contact@joubel.com>
- */
 class H5PLibraryAdmin
 {
-
     const BULK_UNTOUCHED = 0;
     const BULK_UPDATED = 1;
     const BULK_FAILED = 2;
 
-    /**
-     * @since 1.1.0
-     */
-
-    /**
-     * Keep track of the current library.
-     *
-     * @since 1.1.0
-     */
-    private $library = null;
-    protected $h5pPlugin;
-
-    /**
-     * Initialize library admin
-     *
-     * @since 1.1.0
-     * @param string $plugin_slug
-     */
-    public function __construct(H5Plugin $h5pPlugin = null)
-    {
-        $this->h5pPlugin = is_null($h5pPlugin) ? H5Plugin::get_instance(DB::connection()->getPdo()) : $h5pPlugin;
+    public function __construct(
+        private H5PCore $core,
+        private H5PValidator $validator,
+        private H5PFrameworkInterface $framework,
+        private H5PStorage $storage,
+    ) {
     }
 
     /**
-     * Load library
-     *
-     * @since 1.1.0
-     * @param int $id optional
+     * Handles uploading of an .h5p file.
+     * @return mixed The content ID
+     * @throws InvalidH5pPackageException
      */
-    private function get_library($id = null)
+    public function handleUpload(string $path, bool $upgradeOnly, bool $disableFileCheck): mixed
     {
-        //global $wpdb;
+        // Make it possible to disable file extension check
+        $this->core->disableFileCheck = $disableFileCheck;
 
-        $db = DB::connection()->getPdo();
+        $newPath = $this->framework->getUploadedH5pPath();
 
-        if ($this->library !== null) {
-            return $this->library; // Return the current loaded library.
-        }
+        // Move so core can validate the file extension.
+        rename($path, $newPath);
 
-        if ($id === null) {
-            $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-        }
+        if (!$this->validator->isValidPackage(true, $upgradeOnly)) {
+            @unlink($this->framework->getUploadedH5pPath());
 
-        $query = "SELECT id, title, name, major_version, minor_version, patch_version, runnable, fullscreen
-              FROM h5p_libraries
-              WHERE id = :id";
-
-        $params = [':id' => $id];
-
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        $row = $stmt->fetchObject();
-
-        $this->library = $row;
-
-        /* Try to find content with $id.
-        $this->library = $wpdb->get_row($wpdb->prepare(
-            "SELECT id, title, name, major_version, minor_version, patch_version, runnable, fullscreen
-              FROM {$wpdb->prefix}h5p_libraries
-              WHERE id = %d",
-            $id
-          )
-        );*/
-
-        if (!$this->library) {
-            //H5P_Plugin_Admin::set_error(sprintf(__('Cannot find library with id: %d.', $this->plugin_slug), $id));
-        }
-
-        return $this->library;
-    }
-
-    /**
-     * Handles upload of H5P libraries.
-     *
-     * @since 1.1.0
-     */
-    public function process_libraries()
-    {
-        $post = ($_SERVER['REQUEST_METHOD'] === 'POST');
-
-        if ($post && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error'] === 0) {
-            //check_admin_referer('h5p_library', 'lets_upgrade_that'); // Verify form
-            //$plugin_admin = H5P_Plugin_Admin::get_instance();
-            //$plugin_admin->handle_upload(NULL, filter_input(INPUT_POST, 'h5p_upgrade_only') ? TRUE : FALSE);
-            //$plugin_admin = H5P_Plugin_Admin::get_instance(); // PROBLEM HERE
-            H5P_Plugin_Admin::handle_upload(null, filter_input(INPUT_POST, 'h5p_upgrade_only') ? true : false);
-            //\App\Http\Controllers\H5P_Plugin_Admin::handle_upload(NULL, filter_input(INPUT_POST, 'h5p_upgrade_only') ? TRUE : FALSE);
-            return;
-        }
-
-        if ($post && isset($_FILES['h5p_file']) && $_FILES['h5p_file']['error']) {
-            $phpFileUploadErrors = array(
-                1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-                2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-                3 => 'The uploaded file was only partially uploaded',
-                4 => 'No file was uploaded',
-                6 => 'Missing a temporary folder',
-                7 => 'Failed to write file to disk.',
-                8 => 'A PHP extension stopped the file upload.',
+            throw new InvalidH5pPackageException(
+                (array) $this->validator->h5pF->getErrorMessages(),
             );
-
-            $errorMessage = $phpFileUploadErrors[$_FILES['h5p_file']['error']];
-            echo $errorMessage;
-            // TODO: H5P_Plugin_Admin::set_error(__($errorMessage, $this->plugin_slug));
-            return;
         }
+
+        $this->storage->savePackage(null, null, true, $upgradeOnly);
+
+        return $this->storage->contentId;
     }
 
     public function upgradeProgress(Request $request)
@@ -154,7 +69,7 @@ class H5PLibraryAdmin
         $params = filter_input(INPUT_POST, 'params');
         if ($params !== null) {
             if (!$request->filled('libraryId')) {
-                throw new \HttpInvalidParamException("Missing library to update to");
+                throw new BadRequestHttpException("Missing library to update to");
             }
 
             collect(json_decode($params))
@@ -220,7 +135,6 @@ class H5PLibraryAdmin
     /**
      * @param Request $request
      * @return \stdClass
-     * @throws \HttpInvalidParamException
      */
     public function upgradeMaxscore($libraries, $scores = null)
     {

@@ -29,8 +29,9 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         /*
          * Update H5P libraries
          */
-        Route::match(['get', 'post'], '/update-libraries',
-            [LibraryUpgradeController::class, 'index'])->name('admin.update-libraries');
+        Route::get('/update-libraries', [LibraryUpgradeController::class, 'index'])
+            ->name('admin.update-libraries');
+        Route::post('/update-libraries', [LibraryUpgradeController::class, 'upgrade']);
         Route::post('/check-for-updates', [LibraryUpgradeController::class, 'checkForUpdates'])
             ->name('admin.check-for-updates');
         Route::post('/update-library', [LibraryUpgradeController::class, 'upgradeLibrary'])

@@ -12,7 +12,6 @@ use App\H5PLibrary;
 use App\ContentLock;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Libraries\H5P\H5Plugin;
 use Illuminate\Http\JsonResponse;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\AdminConfig;
@@ -22,9 +21,9 @@ use App\Libraries\DataObjects\ResourceUserDataObject;
 
 class AdminController extends Controller
 {
-
-    public function __construct()
-    {
+    public function __construct(
+        private H5PLibraryAdmin $h5pLibraryAdmin,
+    ) {
         $this->middleware('auth');
     }
 
@@ -36,11 +35,7 @@ class AdminController extends Controller
 
     public function contentUpgrade(Request $request)
     {
-        try {
-            return response()->json((new H5PLibraryAdmin)->upgradeProgress($request));
-        } catch (\Exception $exception) {
-            return response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return response()->json($this->h5pLibraryAdmin->upgradeProgress($request));
     }
 
     public function viewMaxScoreOverview()
@@ -66,7 +61,6 @@ class AdminController extends Controller
             ->where('bulk_calculated', H5PLibraryAdmin::BULK_FAILED)
             ->count();
         $config = resolve(AdminConfig::class);
-        $config->h5plugin = H5Plugin::get_instance(DB::connection()->getPdo());
         $config->addPresaveScripts();
         $scripts = $config->getScriptAssets();
         $settings = json_encode($config->getMaxScoreSettings());
@@ -82,11 +76,7 @@ class AdminController extends Controller
 
     public function updateMaxScore(Request $request)
     {
-        try {
-            return response()->json((new H5PLibraryAdmin)->upgradeMaxscore($request->get('libraries'), $request->get('scores')));
-        } catch (\Exception $exception) {
-            return response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return response()->json($this->h5pLibraryAdmin->upgradeMaxscore($request->get('libraries'), $request->get('scores')));
     }
 
     public function viewFailedCalculations()
@@ -112,9 +102,7 @@ class AdminController extends Controller
      */
     public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
     {
-        $h5pPlugin = H5Plugin::get_instance(DB::connection()->getPdo());
-
-        $ajaxRequest = new AjaxRequest($h5pPlugin, $core, $editor, $contentAuthorStorage);
+        $ajaxRequest = new AjaxRequest($core, $editor, $contentAuthorStorage);
         $returnValue = $ajaxRequest->handleAjaxRequest($request);
         switch ($ajaxRequest->getReturnType()) {
             case "json":

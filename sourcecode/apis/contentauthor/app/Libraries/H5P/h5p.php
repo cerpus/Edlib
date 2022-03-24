@@ -16,7 +16,6 @@ class h5p
 {
     public function __construct(
         private H5PCore $core,
-        private H5Plugin $plugin,
         private H5PStorage $storage,
         private H5pEditor $editor,
     ) {
@@ -130,7 +129,6 @@ class h5p
 
     private function initConfig(ConfigInterface $config): void
     {
-        $config->setH5pPlugin($this->plugin);
         $config->h5pCore = $config->getH5PCore() ?? $this->core;
 
         if (!empty($config->id)) {
