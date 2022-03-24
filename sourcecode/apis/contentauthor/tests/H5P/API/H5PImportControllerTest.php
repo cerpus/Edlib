@@ -136,7 +136,7 @@ namespace Tests\H5P\API {
                     $this->assertJsonStringEqualsJsonString($expectedParameterStructure, $h5pContent->parameters);
                     $this->assertEquals('U', $h5pContent->metadata->license);
                     $this->assertTrue($h5pContent->is_published);
-                    $this->assertFalse($h5pContent->isPublished());
+                    $this->assertFalse($h5pContent->isListed());
 
                     $responseData = $response->json();
                     $this->assertEquals($title, $responseData['title']);
@@ -196,7 +196,7 @@ namespace Tests\H5P\API {
                 $h5pContent->parameters);
             $this->assertEquals('U', $h5pContent->metadata->license);
             $this->assertFalse($h5pContent->is_published);
-            $this->assertTrue($h5pContent->isPublished());
+            $this->assertTrue($h5pContent->isListed());
 
             $imagePath = 'content/%s/images/file-5edde9091ebe0.jpg';
             $this->assertFileExists($fakeDisk->path(sprintf($imagePath, $h5pContent->id)));
@@ -254,7 +254,7 @@ namespace Tests\H5P\API {
             $this->assertJsonStringEqualsJsonString('{"taskDescription":"Drag the words into the correct boxes","overallFeedback":[{"from":0,"to":100}],"checkAnswer":"Check","tryAgain":"Retry","showSolution":"Show solution","dropZoneIndex":"Drop Zone @index.","empty":"Drop Zone @index is empty.","contains":"Drop Zone @index contains draggable @draggable.","ariaDraggableIndex":"@index of @count draggables.","tipLabel":"Show tip","correctText":"Correct!","incorrectText":"Incorrect!","resetDropTitle":"Reset drop","resetDropDescription":"Are you sure you want to reset this drop zone?","grabbed":"Draggable is grabbed.","cancelledDragging":"Cancelled dragging.","correctAnswer":"Correct answer:","feedbackHeader":"Feedback","behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"instantFeedback":false},"scoreBarLabel":"You got :num out of :total points","textField":"*PhpUnit* is an *awesome* tool"}',
                 $h5pContent->parameters);
             $this->assertFalse($h5pContent->is_published);
-            $this->assertTrue($h5pContent->isPublished());
+            $this->assertTrue($h5pContent->isListed());
 
             $this->assertDatabaseHas('h5p_contents_metadata', [
                 'content_id' => $h5pContent->id,

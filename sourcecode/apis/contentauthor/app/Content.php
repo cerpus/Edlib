@@ -351,12 +351,12 @@ abstract class Content extends Model implements RecommendableInterface
         return $id;
     }
 
-    public function inDraftState(): bool
+    public function isPublished(): bool
     {
-        return !$this->is_published;
+        return $this->is_published;
     }
 
-    public function isPublished(): bool
+    public function isListed(): bool
     {
         return !$this->is_private;
     }
@@ -400,7 +400,7 @@ abstract class Content extends Model implements RecommendableInterface
      */
     public function canShow($preview = false)
     {
-        return $preview === true || $this->inDraftState() !== true;
+        return $preview === true || $this->isPublished();
     }
 
     /**
@@ -456,9 +456,9 @@ abstract class Content extends Model implements RecommendableInterface
             (string) $this->id,
             $this->title,
             $this->getContentOwnerId(),
-            !$this->inDraftState(),
-            $this->isDraft(),
             $this->isPublished(),
+            $this->isDraft(),
+            $this->isListed(),
             $this->getISO6393Language(),
             $this->getContentType(true),
             $this->getContentLicense(),

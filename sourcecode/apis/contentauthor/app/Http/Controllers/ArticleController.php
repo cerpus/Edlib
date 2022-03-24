@@ -194,7 +194,7 @@ class ArticleController extends Controller
 
         $article->convertToCloudPaths();
         $ndlaArticle = $article->isImported();
-        $inDraftState = $article->inDraftState();
+        $inDraftState = !$article->isPublished() || $article->isDraft();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
         return view('article.show')->with(compact('article', 'customCSS', 'preview', 'ndlaArticle', 'inDraftState', 'resourceType'));
@@ -277,8 +277,9 @@ class ArticleController extends Controller
             'title' => $article->title,
             'content' => $article->content,
             'license' => $article->license,
-            'isPublished' => !$article->inDraftState(),
-            'share' => !$article->isPublished() ? 'private' : 'share',
+            'isPublished' => $article->isPublished(),
+            'isDraft' => $article->isDraft(),
+            'share' => !$article->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.update', ['article' => $id]),
             '_method' => "PUT",

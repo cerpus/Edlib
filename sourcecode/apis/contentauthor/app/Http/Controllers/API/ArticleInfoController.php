@@ -26,7 +26,7 @@ class ArticleInfoController extends Controller
                     }),
                     'scoreable' => !is_null($article->max_score) && $article->max_score > 0,
                     'maxScore' => $article->max_score,
-                    'inDraftState' => $article->inDraftState(),
+                    'inDraftState' => !$article->isPublished(),
                     'title' => $article->title,
                 ];
             })->toArray();
