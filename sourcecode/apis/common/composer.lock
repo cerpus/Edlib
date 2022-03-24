@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ae6517cc2a47742162967864e094fee",
+    "content-hash": "5bde71b16eb3a6c17b9801fc2851256b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -124,30 +124,27 @@
         },
         {
             "name": "cerpus/laravel-rabbitmq-pubsub",
-            "version": "1.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub.git",
-                "reference": "6e52d74512539301e841c0a3266d58e409d3ecbb"
+                "reference": "65129f0496aa6d01d21ffce394ea81a29f3c236b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/6e52d74512539301e841c0a3266d58e409d3ecbb",
-                "reference": "6e52d74512539301e841c0a3266d58e409d3ecbb",
+                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/65129f0496aa6d01d21ffce394ea81a29f3c236b",
+                "reference": "65129f0496aa6d01d21ffce394ea81a29f3c236b",
                 "shasum": ""
             },
             "require": {
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.3.3|^7.0",
-                "guzzlehttp/promises": "^1.4",
+                "cerpus/pubsub": "^1.0.0",
                 "illuminate/console": "^8.73",
                 "illuminate/support": "^8.73",
-                "php": ">=7.4",
-                "php-amqplib/php-amqplib": "3.0.*"
+                "php": "^8.0"
             },
             "require-dev": {
                 "orchestra/testbench": "^6.23",
-                "phpunit/phpunit": "9.5.10"
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "extra": {
@@ -178,9 +175,58 @@
             "description": "Client for RabbitMQ pubsub in a laravel project",
             "support": {
                 "issues": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/issues",
-                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/1.0.0"
+                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/v2.0.1"
             },
-            "time": "2021-11-30T13:55:43+00:00"
+            "time": "2022-02-28T11:19:11+00:00"
+        },
+        {
+            "name": "cerpus/pubsub",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cerpus/php-pubsub.git",
+                "reference": "c15e2eb7b999f7081cbcdf96b061db3fd7f59e89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cerpus/php-pubsub/zipball/c15e2eb7b999f7081cbcdf96b061db3fd7f59e89",
+                "reference": "c15e2eb7b999f7081cbcdf96b061db3fd7f59e89",
+                "shasum": ""
+            },
+            "require": {
+                "php": "8.0.* || 8.1.*",
+                "php-amqplib/php-amqplib": "^3.1",
+                "psr/log": "^1.0|^2.0|^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Cerpus\\PubSub\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Max Moeschinger",
+                    "email": "max.moeschinger@cerpus.com"
+                },
+                {
+                    "name": "Emma Cecilie Hughes",
+                    "email": "emma.hughes@cerpus.com"
+                }
+            ],
+            "description": "Client for RabbitMQ pub-sub",
+            "support": {
+                "issues": "https://github.com/cerpus/php-pubsub/issues",
+                "source": "https://github.com/cerpus/php-pubsub/tree/v1.0.0"
+            },
+            "time": "2022-02-15T10:33:37+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -2350,22 +2396,22 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v3.0.0",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "c0a8eade209b7e43d6a405303d8de716dfd02749"
+                "reference": "0bec5b392428e0ac3b3f34fbc4e02d706995833e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/c0a8eade209b7e43d6a405303d8de716dfd02749",
-                "reference": "c0a8eade209b7e43d6a405303d8de716dfd02749",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/0bec5b392428e0ac3b3f34fbc4e02d706995833e",
+                "reference": "0bec5b392428e0ac3b3f34fbc4e02d706995833e",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
                 "ext-sockets": "*",
-                "php": "^7.0|~8.0.0",
+                "php": "^7.1||^8.0",
                 "phpseclib/phpseclib": "^2.0|^3.0"
             },
             "conflict": {
@@ -2377,8 +2423,8 @@
             "require-dev": {
                 "ext-curl": "*",
                 "nategood/httpful": "^0.2.20",
-                "phpunit/phpunit": "^6.5|^7.0|^9.5",
-                "squizlabs/php_codesniffer": "^3.5"
+                "phpunit/phpunit": "^7.5|^9.5",
+                "squizlabs/php_codesniffer": "^3.6"
             },
             "type": "library",
             "extra": {
@@ -2425,9 +2471,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-amqplib/php-amqplib/issues",
-                "source": "https://github.com/php-amqplib/php-amqplib/tree/v3.0.0"
+                "source": "https://github.com/php-amqplib/php-amqplib/tree/v3.2.0"
             },
-            "time": "2021-03-16T15:00:23+00:00"
+            "time": "2022-03-10T19:16:00+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -2502,16 +2548,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.35",
+            "version": "2.0.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "4e16cf3f5f927a7d3f5317820af795c0366c0420"
+                "reference": "a97547126396548c224703a267a30af1592be146"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/4e16cf3f5f927a7d3f5317820af795c0366c0420",
-                "reference": "4e16cf3f5f927a7d3f5317820af795c0366c0420",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/a97547126396548c224703a267a30af1592be146",
+                "reference": "a97547126396548c224703a267a30af1592be146",
                 "shasum": ""
             },
             "require": {
@@ -2591,7 +2637,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.35"
+                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.36"
             },
             "funding": [
                 {
@@ -2607,7 +2653,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-28T23:30:39+00:00"
+            "time": "2022-01-30T08:48:36+00:00"
         },
         {
             "name": "predis/predis",
