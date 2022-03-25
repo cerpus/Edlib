@@ -25,7 +25,6 @@ use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -215,7 +214,7 @@ class H5PServiceProvider extends ServiceProvider
             $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
 
             return new Framework(
-                $this->app->make(ClientInterface::class),
+                new Client(),
                 $pdoConnection,
                 $contentAuthorStorage->getH5pTmpDisk(),
             );
