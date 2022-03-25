@@ -14,7 +14,6 @@ volumes:
   proxy-admin_nodemodules:
   proxy-auth_nodemodules:
   proxy-doku_nodemodules:
-  proxy-iframe_nodemodules:
   proxy-lti_nodemodules:
   proxy-resource_nodemodules:
   www_nodemodules:
@@ -399,24 +398,6 @@ services:
       - ./sourcecode/www/package.json:/app/package.json
       - ./sourcecode/www/razzle.config.js:/app/razzle.config.js
       - ./sourcecode/www/yarn.lock:/app/yarn.lock
-
-  proxy-iframe:
-    build:
-      context: ./sourcecode/proxies/iframe
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
-    environment:
-      WDS_SOCKET_PATH: /iframe/sockjs-node
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:3000]
-    volumes:
-      - proxy-iframe_nodemodules:/app/node_modules
-      - ./sourcecode/proxies/iframe/src:/app/src
-      - ./sourcecode/proxies/iframe/public:/app/public
-      - ./sourcecode/proxies/iframe/package.json:/app/package.json
-      - ./sourcecode/proxies/iframe/yarn.lock:/app/yarn.lock
 
   proxy-admin:
     build:
