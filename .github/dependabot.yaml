@@ -68,10 +68,6 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/iframe"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
     directory: "/sourcecode/proxies/lti"
     schedule:
       interval: "monthly"
