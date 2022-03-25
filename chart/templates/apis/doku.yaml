@@ -1,0 +1,89 @@
+{{- template "helpers.initJob" (dict "name" "doku" "image" "public.ecr.aws/f0t8l9h1/api-doku-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "doku-config") "envFromSecret" (list "doku-secret") ) }}
+---
+{{- template "helpers.service" (dict "name" "doku") }}
+---
+{{- template "helpers.horizontalPodAutoscaler" (dict "name" "doku" "minReplicaCount" .Values.minReplicaCount ) }}
+---
+{{- template "helpers.podDisruptionBudget" (dict "name" "doku" ) }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doku
+spec:
+  selector:
+    matchLabels:
+      app: doku
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: doku
+        fluentd-parser: laravel-json
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - doku
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+      containers:
+        - name: web
+          image: "public.ecr.aws/f0t8l9h1/api-doku-web:{{ .Chart.AppVersion }}"
+          envFrom:
+            - secretRef:
+                name: doku-secret
+                optional: true
+            - configMapRef:
+                name: doku-config
+                optional: true
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            periodSeconds: 3
+            failureThreshold: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1500Mi
+            requests:
+              cpu: 20m
+              memory: 200Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - name: fpm
+          image: "public.ecr.aws/f0t8l9h1/api-doku-prod:{{ .Chart.AppVersion }}"
+          envFrom:
+            - secretRef:
+                name: doku-secret
+                optional: true
+            - configMapRef:
+                name: doku-config
+                optional: true
+            - configMapRef:
+                name: common-config
+                optional: false
+            - secretRef:
+                name: common-secret
+                optional: false
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      serviceAccount: doku
+---

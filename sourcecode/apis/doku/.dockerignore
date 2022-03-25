@@ -1,2 +1,7 @@
-node_modules/
-bamboo-specs/
+bootstrap/cache
+node_modules
+public/storage
+storage
+vendor
+.env
+*.cache

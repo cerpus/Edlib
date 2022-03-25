@@ -61,24 +61,35 @@ jobs:
         shell: bash
         run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
-      - name: Build and push app
+      - name: Build and push FPM container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-doku-app:${{ inputs.versionToRelease }}
+          tags: public.ecr.aws/f0t8l9h1/api-doku-prod:${{ inputs.versionToRelease }}
           context: sourcecode/apis/doku
           target: prod
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push migration container
+      - name: Build and push web container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: public.ecr.aws/f0t8l9h1/api-doku-migration:${{ inputs.versionToRelease }}
+          tags: public.ecr.aws/f0t8l9h1/api-doku-web:${{ inputs.versionToRelease }}
           context: sourcecode/apis/doku
-          target: migrations
+          target: web
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push deploy container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/api-doku-deploy:${{ inputs.versionToRelease }}
+          context: sourcecode/apis/doku
+          target: deploy
           cache-from: type=gha
           cache-to: type=gha,mode=max

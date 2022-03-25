@@ -1,0 +1,32 @@
+import React from 'react';
+import FrameWithResize from '../components/FrameWithResize';
+import styled from 'styled-components';
+import PostingFrame from '../components/PostingFrame';
+
+const StyledPostingFrame = styled(PostingFrame)`
+    width: 100%;
+    height: 100%;
+    display: block;
+`;
+
+const Lti = ({ data, onResourceReturned }) => {
+    return (
+        <StyledPostingFrame
+            frame={FrameWithResize}
+            method="POST"
+            url={data.url}
+            params={data.params}
+            onPostMessage={(event) => {
+                if (
+                    event.data &&
+                    event.data.resourceId &&
+                    event.data.resourceVersionId
+                ) {
+                    onResourceReturned(event.data);
+                }
+            }}
+        />
+    );
+};
+
+export default Lti;

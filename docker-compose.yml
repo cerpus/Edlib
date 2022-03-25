@@ -2,6 +2,8 @@ version: "3.7"
 
 volumes:
   dokuapi_nodemodules:
+  dokuapi-caddy-config:
+  dokuapi-caddy-data:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
@@ -223,25 +225,38 @@ services:
   dokuapi:
     build:
       context: ./sourcecode/apis/doku
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
+      target: web
     environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+      PHP_FPM_HOST: dokuapi-fpm:9000
     healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
+      test: [CMD, nc, -z, localhost, '80']
     volumes:
-      - dokuapi_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/doku/src:/var/www/app/src
-      - ./sourcecode/apis/doku/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/doku/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/doku/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
+      - ./sourcecode/apis/doku/public:/var/www/doku/public:ro
+      - dokuapi-caddy-config:/config
+      - dokuapi-caddy-data:/data
+
+  dokuapi-fpm:
+    build:
+      context: ./sourcecode/apis/doku
+      target: dev
     depends_on:
       - mysql
+    env_file:
+      - ./localSetup/.env
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '9000']
+    volumes:
+      - ./sourcecode/apis/doku:/var/www/doku
+      - dokuapi_nodemodules:/app/node_modules
+
+  dokuapi-watch:
+    build:
+      context: ./sourcecode/apis/doku
+      target: webpack
+    command: [sh, -c, 'npm i && npm run watch']
+    volumes:
+      - ./sourcecode/apis/doku:/var/www/doku
+      - dokuapi_nodemodules:/app/node_modules
 
   resourceapi:
     build:
