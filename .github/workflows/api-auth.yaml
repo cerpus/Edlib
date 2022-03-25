@@ -37,7 +37,7 @@ jobs:
         with:
           tags: "test:latest"
           outputs: "type=docker"
-          context: sourcecode/apis/doku
+          context: sourcecode/apis/auth
           target: test
           cache-from: type=gha
           cache-to: type=gha,mode=max
