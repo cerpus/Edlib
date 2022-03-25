@@ -18,7 +18,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@sentry/node": "^6.18.2",
-    "@sentry/tracing": "^6.18.2",
+    "@sentry/tracing": "^6.19.2",
     "@vscode/sqlite3": "^5.0.7",
     "await-lock": "^2.1.0",
     "axios": "^0.26.1",
