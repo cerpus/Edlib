@@ -59,25 +59,5 @@ describe('Api Clients', () => {
             expect(response.id).toBe(id);
             expect(response.externalSystemId).toBe(externalSystemId);
         });
-        it('adds trace header if necessary', async () => {
-            axios.mockImplementation(() => {
-                return {
-                    data: {
-                        externalSystemName: 'doku',
-                    },
-                };
-            });
-            const id = 'some-id';
-            const config = {
-                url: 'http://test',
-            };
-            const idApi = idApiClient({ __trace: 'some-trace' }, config);
-            await idApi.getForId(id);
-
-            expect(axios).toBeCalledTimes(1);
-            expect(axios.mock.calls[0][0].headers['sentry-trace']).toBe(
-                `some-trace`
-            );
-        });
     });
 });
