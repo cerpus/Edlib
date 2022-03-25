@@ -1,5 +1,4 @@
 import router from './routes/index.js';
-import errorReportingConfig from './config/errorReporting.js';
 import { pubsub, setupApi } from '@cerpus/edlib-node-utils';
 import gdprDeleteRequest from './subscribers/gdprDeleteRequest.js';
 import authMigrationGetFeedback from './subscribers/authMigrationGetFeedback.js';
@@ -36,9 +35,7 @@ const start = async () => {
         })
     );
 
-    setupApi(() => router({ pubSubConnection }), {
-        errorReportingConfig,
-    });
+    setupApi(() => router({ pubSubConnection }));
 };
 
 start();
