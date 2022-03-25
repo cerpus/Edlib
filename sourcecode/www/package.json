@@ -39,7 +39,7 @@
     "recharts": "^2.1.9",
     "set-cookie-parser": "^2.4.8",
     "store": "^2.0.12",
-    "styled-components": "^5.3.3",
+    "styled-components": "^5.3.5",
     "tss-react": "^3.5.2",
     "web-vitals": "^2.1.4"
   },
