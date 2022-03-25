@@ -13,7 +13,6 @@ volumes:
   npm-components-storybook_nodemodules:
   proxy-admin_nodemodules:
   proxy-auth_nodemodules:
-  proxy-doku_nodemodules:
   proxy-lti_nodemodules:
   proxy-resource_nodemodules:
   www_nodemodules:
@@ -456,24 +455,6 @@ services:
       - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
       - ./localSetup/helpers/start-scripts:/start-scripts
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  proxy-doku:
-    build:
-      context: ./sourcecode/proxies/doku
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - proxy-doku_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/doku/src:/var/www/app/src
-      - ./sourcecode/proxies/doku/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/doku/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/doku/yarn.lock:/var/www/app/yarn.lock
 
   proxy-resource:
     build:
