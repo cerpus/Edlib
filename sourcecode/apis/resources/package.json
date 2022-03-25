@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.11",
-    "@cerpus/edlib-node-utils": "0.0.0-0399a6f5472f8aa5e2a0d7edce3faf17df03c56c",
+    "@cerpus/edlib-node-utils": "1.11.0",
     "@elastic/elasticsearch": "7.12.x",
     "amqplib": "^0.8.0",
     "axios-mock-adapter": "^1.20.0",
