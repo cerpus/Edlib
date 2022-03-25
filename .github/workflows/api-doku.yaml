@@ -42,10 +42,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: "Run tests"
-        run: docker run test
-        shell: bash
-
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'
         uses: aws-actions/configure-aws-credentials@v1
