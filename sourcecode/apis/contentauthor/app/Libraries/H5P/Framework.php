@@ -14,14 +14,15 @@ use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\Result;
-use GuzzleHttp;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
 use H5PCore;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Storage;
+use PDO;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Process\Exception\RuntimeException;
 
 class Framework implements \H5PFrameworkInterface, Result
@@ -29,16 +30,12 @@ class Framework implements \H5PFrameworkInterface, Result
     private $errorMessages;
     private $infoMessage;
     private $adminUrl;
-    private $db;
-    private $disk;
 
-    public function __construct($db = null, Filesystem $disk)
-    {
-        if (get_class($db) !== 'Doctrine\DBAL\Driver\PDOConnection') {
-            throw new \InvalidArgumentException(__METHOD__ . ": You must insert a PDO connection.");
-        }
-        $this->db = $db;
-        $this->disk = $disk;
+    public function __construct(
+        private ClientInterface $httpClient,
+        private PDO $db,
+        private Filesystem $disk
+    ) {
     }
 
     // Implements result Interface
@@ -129,36 +126,24 @@ class Framework implements \H5PFrameworkInterface, Result
         ];
     }
 
-    /**
-     * Fetches a file from a remote server using HTTP GET
-     *
-     * @param string $url Where you want to get or send data.
-     * @param array $data Data to post to the URL.
-     * @param bool $blocking Set to 'FALSE' to instantly time out (fire and forget).
-     * @param string $stream Path to where the file should be saved.
-     * @return string The content (response body). NULL if something went wrong
-     */
-    public function fetchExternalData($url, $data = null, $blocking = true, $stream = null)
+    public function fetchExternalData($url, $data = null, $blocking = true, $stream = null): string|null
     {
-        try {
-            set_time_limit(0);
-            $client = new GuzzleHttp\Client();
-            $method = $data ? 'POST' : 'GET';
-            $options = [
-                GuzzleHttp\RequestOptions::FORM_PARAMS => $data,
-                GuzzleHttp\RequestOptions::TIMEOUT => !empty($blocking) ? 30 : 0.01,
-            ];
-            if (!empty($stream)) {
-                $options[GuzzleHttp\RequestOptions::SINK] = $stream;
-            }
-            $response = $client->request($method, $url, $options);
-
-            return $response->getBody()->getContents();
-        } catch (GuzzleException $e) {
-            Log::error(sprintf('[%s] Error: %s', __METHOD__, $e->getMessage()), ['exception' => $e]);
+        $method = $data ? 'POST' : 'GET';
+        $options = [RequestOptions::FORM_PARAMS => $data];
+        if ($stream !== null) {
+            $options[RequestOptions::SINK] = $stream;
         }
 
-        return null;
+        return $this->httpClient->requestAsync($method, $url, $options)
+            ->then(static function (ResponseInterface $response) use ($blocking) {
+                if (!$blocking) {
+                    return null;
+                }
+
+                return $response->getBody()->getContents();
+            })
+            ->otherwise(fn($e) => $e instanceof GuzzleException ? null : throw $e)
+            ->wait();
     }
 
     /**
@@ -945,7 +930,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
         $libraryStatement = $this->db->prepare($sql);
         $libraryStatement->execute([$machineName, $majorVersion, $minorVersion]);
-        $library = $libraryStatement->fetch(\PDO::FETCH_ASSOC);
+        $library = $libraryStatement->fetch(PDO::FETCH_ASSOC);
 
         $dependenciesStatement = $this->db->prepare(
             "SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
@@ -953,7 +938,7 @@ class Framework implements \H5PFrameworkInterface, Result
         JOIN h5p_libraries hl ON hll.required_library_id = hl.id
         WHERE hll.library_id = ?");
         $dependenciesStatement->execute([$library['libraryId']]);
-        $dependencies = $dependenciesStatement->fetchAll(\PDO::FETCH_OBJ);
+        $dependencies = $dependenciesStatement->fetchAll(PDO::FETCH_OBJ);
         foreach ($dependencies as $dependency) {
             $library[$dependency->dependencyType . 'Dependencies'][] = array(
                 'machineName' => $dependency->machineName,
@@ -987,7 +972,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
         $libraryStatement = $this->db->prepare($sql);
         $libraryStatement->execute([':id' => $id]);
-        $library = $libraryStatement->fetch(\PDO::FETCH_ASSOC);
+        $library = $libraryStatement->fetch(PDO::FETCH_ASSOC);
         return $library;
 
     }
@@ -1013,7 +998,7 @@ class Framework implements \H5PFrameworkInterface, Result
             and minor_version = ?";
         $statement = $this->db->prepare($sql);
         $statement->execute([$machineName, $majorVersion, $minorVersion]);
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         return $row['semantics'];
     }
@@ -1192,7 +1177,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
         $cstmt = $this->db->prepare($sql);
         $cstmt->execute($queryArgs);
-        $content = $cstmt->fetchAll(\PDO::FETCH_ASSOC);
+        $content = $cstmt->fetchAll(PDO::FETCH_ASSOC);
         return $content;
     }
 
@@ -1309,7 +1294,7 @@ class Framework implements \H5PFrameworkInterface, Result
     public function isContentSlugAvailable($slug)
     {
         $sql = "select slug from h5p_contents where slug=?";
-        $res = $this->db->prepare($sql)->execute([$slug])->fetch(\PDO::FETCH_ASSOC);
+        $res = $this->db->prepare($sql)->execute([$slug])->fetch(PDO::FETCH_ASSOC);
         if (sizeof($res) > 0) {
             return false;
         }
@@ -1331,9 +1316,9 @@ class Framework implements \H5PFrameworkInterface, Result
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
         if ($returnFirst === true) {
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         }
-        $all = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $all = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $all;
     }
 

@@ -25,6 +25,7 @@ use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -208,14 +209,16 @@ class H5PServiceProvider extends ServiceProvider
             return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
         });
 
-        $this->app->singletonIf(H5PFrameworkInterface::class, function ($app) {
-            /** @var App $app */
+        $this->app->singletonIf(H5PFrameworkInterface::class, function () {
             $pdoConnection = DB::connection()->getPdo();
             /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            $framework = new Framework($pdoConnection, $contentAuthorStorage->getH5pTmpDisk());
-            $app->instance(H5PFrameworkInterface::class, $framework);
-            return $framework;
+            $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
+
+            return new Framework(
+                $this->app->make(ClientInterface::class),
+                $pdoConnection,
+                $contentAuthorStorage->getH5pTmpDisk(),
+            );
         });
 
         $this->app->singleton(H5PCore::class, function ($app) {
