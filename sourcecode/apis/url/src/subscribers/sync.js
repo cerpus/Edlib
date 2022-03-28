@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import { logger } from '@cerpus/edlib-node-utils';
 import moment from 'moment';
@@ -67,6 +66,5 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             failedAt: new Date(),
             doneAt: new Date(),
         });
-        Sentry.captureException(e);
     }
 };

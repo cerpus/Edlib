@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import { logger } from '@cerpus/edlib-node-utils';
 import apiConfig from '../config/apis.js';
@@ -128,7 +127,6 @@ export default ({ pubSubConnection }) =>
 
             if (!(e instanceof JobKilledException)) {
                 logger.error(e);
-                Sentry.captureException(e);
             }
         }
     };

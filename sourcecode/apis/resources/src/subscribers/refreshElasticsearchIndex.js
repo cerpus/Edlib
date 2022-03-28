@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import * as elasticSearchService from '../services/elasticSearch.js';
 import { logger } from '@cerpus/edlib-node-utils';
@@ -52,6 +51,5 @@ export default ({ pubSubConnection }) => async ({ jobId }) => {
             failedAt: new Date(),
             doneAt: new Date(),
         });
-        Sentry.captureException(e);
     }
 };
