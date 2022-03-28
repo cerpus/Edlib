@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { buildRawContext } from '../context/index.js';
 import { logger, validateJoi } from '@cerpus/edlib-node-utils';
 import JobKilledException from '../exceptions/JobKilledException.js';
@@ -82,7 +81,6 @@ export default ({ pubSubConnection }) =>
 
             if (!(e instanceof JobKilledException)) {
                 logger.error(e);
-                Sentry.captureException(e);
             }
         }
     };
