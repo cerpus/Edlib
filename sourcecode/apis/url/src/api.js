@@ -1,5 +1,4 @@
 import router from './routes/index.js';
-import errorReportingConfig from './config/errorReporting.js';
 import { pubsub, setupApi } from '@cerpus/edlib-node-utils';
 import sync from './subscribers/sync.js';
 
@@ -27,9 +26,7 @@ const start = async () => {
         })
     );
 
-    setupApi(() => router({ pubSubConnection }), {
-        errorReportingConfig,
-    });
+    setupApi(() => router({ pubSubConnection }));
 };
 
 start();
