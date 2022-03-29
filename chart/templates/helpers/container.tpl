@@ -38,10 +38,10 @@
 {{ end }}
   envFrom:
     - configMapRef:
-        name: common-config
+        name: common-v2
         optional: false
     - secretRef:
-        name: common-secret
+        name: common-v2
         optional: false
 {{ if .envFromConfig }}
 {{- range .envFromConfig }}
