@@ -51,11 +51,7 @@ class QuestionSetController extends Controller
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
         $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
-
-        // This middleware is used to test the pre filling of the question set with values from the LTI request. Uncomment if you need to test.
-        // Will only work when APP_ENV=local
-        // Enable in .env "FEATURE_EXT_QUESTION_SET_TO_REQUEST=true"
-        //$this->middleware('lti.qs-to-request')->only(['create']);
+        $this->middleware('lti.qs-to-request')->only(['create']);
     }
 
     private function getQuestionsetContentTypes()
