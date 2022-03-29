@@ -48,10 +48,10 @@ spec:
                 name: ca-config
                 optional: true
             - configMapRef:
-                name: common-config
+                name: common-v2
                 optional: false
             - secretRef:
-                name: common-secret
+                name: common-v2
                 optional: false
           livenessProbe:
             httpGet:
@@ -78,10 +78,10 @@ spec:
                 name: ca-config
                 optional: true
             - configMapRef:
-                name: common-config
+                name: common-v2
                 optional: false
             - secretRef:
-                name: common-secret
+                name: common-v2
                 optional: false
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
@@ -117,10 +117,10 @@ spec:
                 name: ca-config
                 optional: true
             - configMapRef:
-                name: common-config
+                name: common-v2
                 optional: false
             - secretRef:
-                name: common-secret
+                name: common-v2
                 optional: false
           resources:
             limits:
@@ -161,10 +161,10 @@ spec:
                 name: ca-config
                 optional: true
             - configMapRef:
-                name: common-config
+                name: common-v2
                 optional: false
             - secretRef:
-                name: common-secret
+                name: common-v2
                 optional: false
           resources:
             limits:
@@ -207,10 +207,10 @@ spec:
                     name: ca-config
                     optional: true
                 - configMapRef:
-                    name: common-config
+                    name: common-v2
                     optional: false
                 - secretRef:
-                    name: common-secret
+                    name: common-v2
                     optional: false
               resources:
                 limits:
