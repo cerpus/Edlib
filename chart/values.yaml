@@ -1,2 +1,56 @@
 minReplicaCount: 1
 enableDocs: false
+deploymentEnvironment: "prod"
+urls:
+  api: "https://api.edlib.local"
+  www: "https://www.edlib.local"
+masterAuth:
+  adapter: "auth0"
+  wellKnownEndpoint: "https://auth0.com/.well-known/jwks.json"
+  issuer: "issuer"
+  propertyPaths:
+    id: "id"
+    name: "name"
+    email: "email"
+  auth0:
+    domain: "domain"
+    clientId: "clientId"
+    audience: "audience"
+  cerpusAuth:
+    url: "url"
+    clientId: "clientId"
+    secret: "secret"
+features:
+  enableAutoLinking: "false"
+contentauthor:
+  url: "https://ca.edlib.local"
+  key: "key"
+  secret: "secret"
+  internalKey: "internalKey"
+services:
+  mysql:
+    host: "mysql"
+    user: "mysql"
+    password: "mysql"
+    port: 3306
+    charset: "utf8mb4"
+  postgres:
+    host: "postgres"
+    user: "postgres"
+    password: "postgres"
+    port: 5432
+  redis:
+    url: "redis://redis"
+    host: "redis"
+    port: 6379
+  elasticsearch:
+    url: "https://elasticsearch"
+  rabbitmq:
+    url: "http://rabbitmq"
+    host: "rabbitmq"
+    port: 5671
+    user: "rabbitmq"
+    password: "rabbitmq"
+    secure: "true"
+  embedly:
+    key: "key"
