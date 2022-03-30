@@ -3,7 +3,6 @@
 <head>
 </head>
 <body>
-    @include('fragments/header')
     <h2>{{ $message }}</h2>
 </body>
 </html>
