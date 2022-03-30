@@ -10,10 +10,11 @@
     "Noe skjedde": "Something happened",
     "Fant ingen ressurser": "Didn't find any resources",
     "source": {
-        "h5p": "H5P",
+        "H5P": "H5P",
         "article": "Edlib Article",
-        "questionSet": "Question Set",
-        "game": "Game"
+        "QuestionSet": "Question Set",
+        "game": "Game",
+        "URL_RESOURCE": "URL Resource"
     },
     "licenses": {
         "CC0": "CC0: Creative Commons",
@@ -99,8 +100,10 @@
     "Sortering": "Sorting",
     "Denne ressursen er nå publisert": "This resource is now published",
     "Publisert": "Published",
+    "Utkast": "Draft",
     "Avpublisert": "Unpublished",
     "Status": "Status",
 
-    "Your text here": "Your text here…"
+    "Your text here": "Your text here…",
+    "Alle endringer er lagret": "All changes are saved"
 }

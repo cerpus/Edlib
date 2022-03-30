@@ -1,6 +1,7 @@
 import React from 'react';
 import useFetchWithToken from '../../hooks/useFetchWithToken';
-import { Alert, Spinner } from '@cerpus/ui';
+import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Doku from './Doku';
 import useConfig from '../../hooks/useConfig';
 
@@ -12,11 +13,11 @@ const DokuEdit = ({ dokuId }) => {
     );
 
     if (error) {
-        return <Alert color="danger">Noe skjedde</Alert>;
+        return <Alert severity="error">Noe skjedde</Alert>;
     }
 
     if (loading || !response) {
-        return <Spinner />;
+        return <CircularProgress />;
     }
 
     return <Doku doku={response} />;

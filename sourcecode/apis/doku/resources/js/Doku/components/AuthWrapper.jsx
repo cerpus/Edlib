@@ -50,7 +50,7 @@ const AuthWrapper = ({ children }) => {
 
     if (!jwtToken) {
         return (
-            <div style={{ maxWidth: 500 }}>
+            <div style={{ maxWidth: 500, padding: '2rem' }}>
                 <div>
                     <TextField
                         label="First name"

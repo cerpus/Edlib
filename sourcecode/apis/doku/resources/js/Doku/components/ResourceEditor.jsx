@@ -1,7 +1,7 @@
 import React from 'react';
 import useConfig from '../hooks/useConfig';
 import useFetchWithToken from '../hooks/useFetchWithToken';
-import { Spinner } from '@cerpus/ui';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Lti from '../Editors/Lti';
 import Doku from '../Editors/Doku';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
@@ -31,12 +31,14 @@ const ResourceEditor = ({
             return edlib(`/lti/v2/resources/${edlibId}`);
         }
 
-        let createPath = `/lti/v2/editors/${type}/launch`;
-        if (group) {
-            createPath += `?group=${group}`;
-        }
+        let createPath;
         if (type !== resourceTypes.URL) {
             createPath = `/lti/v2/editors/contentauthor/launch?group=${type.toLowerCase()}`;
+        } else {
+            createPath = `/lti/v2/editors/${type}/launch`;
+            if (group) {
+                createPath += `?group=${group}`;
+            }
         }
 
         return edlib(createPath);
@@ -65,7 +67,7 @@ const ResourceEditor = ({
                     marginTop: 10,
                 }}
             >
-                <Spinner size={30} />
+                <CircularProgress size={30} />
             </div>
         );
 

@@ -3,7 +3,7 @@ import useConfig from '../hooks/useConfig';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import PostingFrame from './PostingFrame';
 import FrameWithResize from './FrameWithResize';
-import { Spinner } from '@cerpus/ui';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import useFetch from '../hooks/useFetch';
 
 const LtiLaunch = ({ launchUrl, usersForLti = null }) => {
@@ -31,7 +31,7 @@ const LtiLaunch = ({ launchUrl, usersForLti = null }) => {
     }
 
     if (loading || !preview) {
-        return <Spinner />;
+        return <CircularProgress />;
     }
     return (
         <PostingFrame

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
     font-size: ${(props) => props.theme.rem(1)};
     position: relative;
-    margin-top: ${(props) => (props.isEditing ? 60 : 0)}px;
+    margin-top: 0;
 
     & h1 {
         font-weight: bold;

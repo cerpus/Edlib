@@ -23,17 +23,14 @@ import {
 
 const Page = styled.div`
     display: flex;
-    height: 100%;
-    max-height: 100%;
+    height: 100vh;
     flex-direction: column;
 `;
 
 const Content = styled.div`
     display: flex;
-    flex: 1;
+    flex: 1 1 100%;
     overflow-y: auto;
-    max-height: 100%;
-    flex-basis: 0;
     padding: 15px 50px 15px 5px;
 
     > *:first-child {
@@ -43,11 +40,14 @@ const Content = styled.div`
 
 const DokuWrapper = styled.div`
     max-height: 100%;
+`;
+
+const PreviewDokuWrapper = styled.div`
     overflow-y: auto;
 `;
 
 const Header = styled.div`
-    flex: 0;
+    flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
     padding: 15px 50px;
@@ -141,17 +141,17 @@ const Doku = ({ doku }) => {
                 </div>
                 <div>
                     <Status>
-                        <StoredStatus>Alle endringer er lagret</StoredStatus>{' '}
+                        <StoredStatus>{t('Alle endringer er lagret')}</StoredStatus>{' '}
                         {isPublished ? (
-                            <strong>Publisert</strong>
+                            <strong>{t('Publisert')}</strong>
                         ) : (
-                            <strong>Utkast</strong>
+                            <strong>{t('Utkast')}</strong>
                         )}
                     </Status>
                     <Buttons>
                         {!isPublished && (
                             <Button
-                                size="l"
+                                size="large"
                                 disabled={!currentId}
                                 onClick={() => {
                                     if (!currentId) {
@@ -167,7 +167,7 @@ const Doku = ({ doku }) => {
                         )}
                         {isPublished && (
                             <Button
-                                size="l"
+                                size="large"
                                 disabled={!currentId}
                                 onClick={() => {
                                     if (!currentId) {
@@ -183,7 +183,7 @@ const Doku = ({ doku }) => {
                         <Button
                             style={{ marginRight: 5 }}
                             type="tertiary"
-                            size="l"
+                            size="large"
                             onClick={() => setShowPreview(true)}
                         >
                             {t('Forhåndsvis')}
@@ -217,7 +217,9 @@ const Doku = ({ doku }) => {
                         >
                             {t('Forhåndsvisning')}
                         </FromSideModalHeader>
-                        <DokuComponent editorState={dokuData.data} />
+                        <PreviewDokuWrapper>
+                            <DokuComponent editorState={dokuData.data} />
+                        </PreviewDokuWrapper>
                     </div>
                 )}
             </FromSideModal>

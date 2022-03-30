@@ -3,7 +3,8 @@ import cn from 'classnames';
 import useConfig from '../../hooks/useConfig';
 import NdlaUrl from './NdlaUrl';
 import useNdlaUrl from './useNdlaUrl';
-import { Spinner, Alert } from '@cerpus/ui';
+import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 import useTranslation from '../../hooks/useTranslation';
@@ -83,9 +84,9 @@ const UrlDisplay = ({ url, enableNDLA = true, onUse }) => {
 
     return (
         <>
-            {displayInfoLoading && <Spinner />}
+            {displayInfoLoading && <CircularProgress />}
             {displayInfoError && (
-                <Alert color="danger">
+                <Alert severity="error">
                     {displayInfoError.response &&
                     displayInfoError.response.status === 404 &&
                     displayInfoError.response.data.message

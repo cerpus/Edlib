@@ -99,7 +99,7 @@ const MathEditor = ({
                         selected={inputType === inputTypes.LATEX}
                         onClick={() => setInputType(inputTypes.LATEX)}
                     >
-                        Latex
+                        LaTeX
                     </InputType>
                 </InputTypes>
                 <Input>
@@ -133,8 +133,10 @@ const MathEditor = ({
             <div style={{ marginTop: 20 }}>
                 <Button
                     onClick={onInsert}
-                    size="l"
+                    size="large"
                     style={{ minWidth: 150, textAlign: 'center' }}
+                    variant="contained"
+                    color="primary"
                 >
                     {t('Sett inn')}
                 </Button>

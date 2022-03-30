@@ -14,6 +14,7 @@ import { useDokuContext } from '../../dokuContext';
 import getSelectedBlockNode from '../../draftJSHelpers/getSelectedBlockNode';
 import ResourceEditor from '../../components/ResourceEditor';
 import getDomElementForBlockKey from '../../draftJSHelpers/getDomElementForBlockKey';
+import useTranslation from '../../hooks/useTranslation';
 
 const offsetAddIconTop = -14;
 
@@ -21,17 +22,17 @@ const AddRow = styled.div`
     position: absolute;
     left: 0;
     display: flex;
-
     transition: top 0.3s ease 0s;
-
-    & > * {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
+    z-index: 1;
+    overflow: hidden;
 `;
 
 const ResourceTypes = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+
     > * {
         cursor: pointer;
         margin-left: 10px;
@@ -129,6 +130,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
         offsetTop: 0,
         shouldMoveCursorToEndOnInsert: true,
     });
+    const { t } = useTranslation();
 
     const selectedNode = getSelectedBlockNode(window);
 
@@ -136,8 +138,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
         const showButton = getShowButton(editorState);
         if (showButton && selectedNode) {
             return setPositionInfo({
-                offsetTop:
-                    offsetTop + selectedNode.offsetTop + offsetAddIconTop,
+                offsetTop: offsetTop + selectedNode.offsetTop + offsetAddIconTop,
             });
         }
 
@@ -157,20 +158,16 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
         <>
             <AddRow
                 style={{ top: positionInfo.offsetTop }}
-                onMouseDown={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
+                onClick={() => {
                     setShowResourceTypes(!showResourceTypes);
                 }}
             >
-                <div>
-                    <AddButton
-                        className={cn({
-                            selected: !!showResourceTypes,
-                        })}
-                    />
-                </div>
-                {showResourceTypes && (
+                <AddButton
+                    className={cn({
+                        selected: showResourceTypes,
+                    })}
+                />
+                {showResourceTypes &&
                     <ResourceTypes>
                         {[
                             {
@@ -188,9 +185,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                         ].map((link) => (
                             <TypeLink
                                 key={link.type}
-                                onMouseDown={(event) => {
-                                    event.preventDefault();
-                                    event.stopPropagation();
+                                onClick={() => {
                                     setSelectedResourceType(link.type);
                                 }}
                             >
@@ -198,7 +193,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                             </TypeLink>
                         ))}
                     </ResourceTypes>
-                )}
+                }
             </AddRow>
             <FromSideModal
                 isOpen={selectedResourceType !== null}
@@ -216,7 +211,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                         <FromSideModalHeader
                             onClose={() => setSelectedResourceType(null)}
                         >
-                            {selectedResourceType}
+                            {t('source.' + selectedResourceType)}
                         </FromSideModalHeader>
                         {[h5pTypes.H5P, h5pTypes.questionset].indexOf(
                             selectedResourceType

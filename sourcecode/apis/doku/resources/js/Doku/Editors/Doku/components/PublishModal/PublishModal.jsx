@@ -6,7 +6,7 @@ import {
 } from '../../../../components/FromSideModal';
 import useTranslation from '../../../../hooks/useTranslation';
 import { Box, FormControlLabel, Radio } from '@material-ui/core';
-import { Alert } from '@cerpus/ui';
+import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 
@@ -166,7 +166,7 @@ const PublishModal = ({ show, setShow, license, setLicense, unpublish }) => {
                         )}
                         {false && (
                             <Box mt={2}>
-                                <Alert color="danger">
+                                <Alert severity="error">
                                     {t('S.ERROR_PUBLISHING')}
                                 </Alert>
                             </Box>

@@ -11,7 +11,7 @@ import MathModal from './components/MathModal';
 import AddResource from './components/AddResource';
 import EditorStyles from './components/EditorStyles';
 import addAtomicBlock from './draftJSHelpers/addAtomicBlock';
-import { ThemeProvider, useTheme } from '@cerpus/ui';
+import { ThemeProvider, useTheme } from './contexts/theme';
 import TextToolbar from './components/TextToolbar';
 import { focusableBlocksStore } from './plugins/Focusable';
 import EditResourceModal from './components/EditResourceModal';
@@ -35,7 +35,7 @@ const Doku = ({ editorState, setEditorState, usersForLti = null }) => {
         null
     );
     const wrapperSize = useSize(wrapperRef);
-    const isEditing = !!setEditorState;
+    const isEditing = typeof setEditorState === 'function';
     const theme = useTheme();
     const { t } = useTranslation();
 

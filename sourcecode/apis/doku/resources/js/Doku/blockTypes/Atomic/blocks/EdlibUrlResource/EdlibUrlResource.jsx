@@ -3,7 +3,7 @@ import AlignmentWrapper from '../../../../containers/AlignmentWrapper/AlignmentW
 import useGetResourcePreview from '../../../../hooks/requests/useGetResourcePreview';
 import useConfig from '../../../../hooks/useConfig';
 import { Card, Embedly } from '../../../../components/UrlAuthor';
-import { Spinner } from '@cerpus/ui';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import useFetchWithToken from '../../../../hooks/useFetchWithToken';
 import { BaseToolbar } from '../../../../containers/AlignmentWrapper';
 import { useDokuContext } from '../../../../dokuContext';
@@ -98,7 +98,7 @@ const EdlibUrlResource = ({ data, onUpdate, block, entityKey }) => {
         >
             {(displayInfoLoading || displayInfoLoading) && (
                 <div>
-                    <Spinner />
+                    <CircularProgress />
                 </div>
             )}
             {(error || displayInfoError) && <div>error</div>}
