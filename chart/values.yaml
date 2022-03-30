@@ -1,6 +1,7 @@
 minReplicaCount: 1
 enableDocs: false
 deploymentEnvironment: "prod"
+enableDebug: false
 urls:
   api: "https://api.edlib.local"
   www: "https://www.edlib.local"
@@ -23,10 +24,16 @@ masterAuth:
 features:
   enableAutoLinking: "false"
 contentauthor:
+  appKey: "randomkey"
   url: "https://ca.edlib.local"
-  key: "key"
-  secret: "secret"
+  h5pConsumerKey: "key"
+  h5pConsumerSecret: "secret"
   internalKey: "internalKey"
+  cdnWithPrefix: false
+  awsStorage:
+    region: "eu-west-1"
+    bucket: "contentauthor"
+  extraEnvs: false
 services:
   mysql:
     host: "mysql"
