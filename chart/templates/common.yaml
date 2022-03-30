@@ -49,8 +49,8 @@ data:
   EDLIBCOMMON_EMBEDLY_KEY: {{ .Values.services.embedly.key | quote }}
 
   EDLIBCOMMON_CONTENTAUTHOR_URL: {{ .Values.contentauthor.url | quote }}
-  EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY: {{ .Values.contentauthor.key | quote }}
-  EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET: {{ .Values.contentauthor.secret | quote }}
+  EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY: {{ .Values.contentauthor.h5pConsumerKey | quote }}
+  EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET: {{ .Values.contentauthor.h5pConsumerSecret | quote }}
   EDLIBCOMMON_CONTENTAUTHOR_INTERNAL_KEY: {{ .Values.contentauthor.internalKey | quote }}
 
   {{/*  Features */}}
