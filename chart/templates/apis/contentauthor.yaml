@@ -132,6 +132,7 @@ spec:
           terminationMessagePolicy: File
         - name: phpfpm
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
+{{- include "apis.contentauthor.env" . | indent 10 }}
           envFrom:
             - configMapRef:
                 name: common-v2
