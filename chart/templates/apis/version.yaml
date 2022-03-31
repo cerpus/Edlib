@@ -1,8 +1,96 @@
-{{- template "helpers.initJob" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-migration" "imageTag" .Chart.AppVersion "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") ) }}
+{{- define "apis.version.env" }}
+env:
+  - name: "SPRING_DATASOURCE_USERNAME"
+    value: {{ .Values.services.postgres.user | quote }}
+  - name: "SPRING_DATASOURCE_PASSWORD"
+    value: {{ .Values.services.postgres.password | quote }}
+  - name: "SPRING_DATASOURCE_URL"
+    value: {{ (print "jdbc:postgresql://" .Values.services.postgres.host  "/version") | quote }}
+{{- include "common.envBlock" ( dict "Global" . "containerEnv" true ) | indent 2 }}
+{{- end }}
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: versionapi-startup
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: startup
+          image: "public.ecr.aws/f0t8l9h1/api-version-migration:{{ .Chart.AppVersion }}"
+{{- include "apis.version.env" . | indent 10 }}
 ---
 {{- template "helpers.service" (dict "name" "versionapi" ) }}
 ---
-{{- template "helpers.deployment" (dict "name" "versionapi" "image" "public.ecr.aws/f0t8l9h1/api-version-app" "imageTag" .Chart.AppVersion "env" (dict "SPRING_DATASOURCE_USERNAME" .Values.services.postgres.user "SPRING_DATASOURCE_PASSWORD" .Values.services.postgres.password "SPRING_DATASOURCE_URL" (print "jdbc:postgresql://" .Values.services.postgres.host  "/version") ) "envFromConfig" (list "versionapi-config") "envFromSecret" (list "versionapi-secret") "replicaCount" .Values.minReplicaCount "healthUrl" "/health" "slowStartMaxTimeSeconds" 300 "resources" (dict "memoryRequest" "300Mi" "memoryLimit" "500Mi" "cpuLimit" "300m" ) ) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: versionapi
+  labels:
+    app: versionapi
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: versionapi
+  template:
+    metadata:
+      labels:
+        app: versionapi
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - versionapi
+                topologyKey: 'kubernetes.io/hostname'
+      containers:
+        - name: "versionapi"
+          image: "public.ecr.aws/f0t8l9h1/api-version-app:{{ .Chart.AppVersion }}"
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "100m"
+            limits:
+              memory: "500Mi"
+              cpu: "300m"
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            failureThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 10
+            failureThreshold: 30
+{{- include "apis.version.env" . | indent 10 }}
 ---
 {{- template "helpers.horizontalPodAutoscaler" (dict "name" "versionapi" "minReplicaCount" .Values.minReplicaCount ) }}
 ---

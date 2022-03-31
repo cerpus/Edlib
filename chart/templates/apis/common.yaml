@@ -1,4 +1,19 @@
-{{- template "helpers.initJob" (dict "name" "commonapi" "image" "public.ecr.aws/f0t8l9h1/api-common-migration" "imageTag" .Chart.AppVersion ) }}
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: commonapi-startup
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: startup
+          image: "public.ecr.aws/f0t8l9h1/api-common-migration:{{ .Chart.AppVersion }}"
+          env:
+{{- include "common.envBlock" ( dict "Global" . "containerEnv" true ) | indent 12 }}
 ---
 {{- template "helpers.service" (dict "name" "commonapi") }}
 ---
