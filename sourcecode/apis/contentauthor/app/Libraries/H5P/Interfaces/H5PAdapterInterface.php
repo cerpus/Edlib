@@ -104,8 +104,6 @@ interface H5PAdapterInterface
     /** @return bool */
     public function enableEverybodyIsCollaborators():bool;
 
-    public function showNorgesfilmAdmin(): bool;
-
     public function getExternalProviders(): Collection;
 
     public function useMaxScore(): bool;

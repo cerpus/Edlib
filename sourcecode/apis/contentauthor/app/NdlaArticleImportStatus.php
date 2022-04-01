@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @todo remove
+ */
 class NdlaArticleImportStatus extends Model
 {
     // Log levels from Monolog

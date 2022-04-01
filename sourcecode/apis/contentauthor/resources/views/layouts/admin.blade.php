@@ -66,9 +66,6 @@
                                 <li>
                                     <a href="{{ route('admin.importexport.index') }}">Import / Export Settings</a>
                                 </li>
-                                <li>
-                                    <a href="{{ route('admin.norgesfilm.index') }}">Norgesfilm Admin</a>
-                                </li>
                             @endif
                         </ul>
                     </li>
