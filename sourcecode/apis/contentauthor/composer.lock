@@ -974,16 +974,16 @@
         },
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.17.2",
+            "version": "4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ckeditor/ckeditor4-releases.git",
-                "reference": "0a402ca86b1821418e90cef026910fc723a930a6"
+                "reference": "9335fb40486008aeec9f150574d53f35d3aba9c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/0a402ca86b1821418e90cef026910fc723a930a6",
-                "reference": "0a402ca86b1821418e90cef026910fc723a930a6",
+                "url": "https://api.github.com/repos/ckeditor/ckeditor4-releases/zipball/9335fb40486008aeec9f150574d53f35d3aba9c7",
+                "reference": "9335fb40486008aeec9f150574d53f35d3aba9c7",
                 "shasum": ""
             },
             "type": "library",
@@ -1018,7 +1018,7 @@
                 "source": "https://github.com/ckeditor/ckeditor4",
                 "wiki": "https://ckeditor.com/docs/ckeditor4/latest/"
             },
-            "time": "2022-02-09T12:00:32+00:00"
+            "time": "2022-03-16T10:52:12+00:00"
         },
         {
             "name": "composer/ca-bundle",
