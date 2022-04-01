@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\ImportExportSettingsController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\NDLAReplaceRefController;
-use App\Http\Controllers\Admin\NorgesfilmController;
 use App\Http\Controllers\Admin\VersioningController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -80,12 +79,6 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         Route::post('ndla-import-export/settings/reset-tracking', [ImportExportSettingsController::class, 'resetTracking'])->name('admin.importexport.reset-tracking');
         Route::post('ndla-import-export/settings/empty-article-import-log', [ImportExportSettingsController::class, 'emptyArticleImportLog'])->name('admin.importexport.empty-article-import-log');
         Route::post('ndla-import-export/settings/run-presave', [ImportExportSettingsController::class, 'runPresave'])->name('admin.importexport.run-presave');
-
-        Route::get('norgesfilm', [NorgesfilmController::class, 'index'])->name('admin.norgesfilm.index');
-        Route::get('norgesfilm/populate', [NorgesfilmController::class, 'populate'])->name('admin.norgesfilm.populate');
-        Route::get('norgesfilm/{norgesfilm}/compare', [NorgesfilmController::class, 'compare'])->name('admin.norgesfilm.compare');
-        Route::get('norgesfilm/{id}/replace', [NorgesfilmController::class, 'replace'])->name('admin.norgesfilm.replace');
-        Route::get('norgesfilm/ndla-url-not-found', [NorgesfilmController::class, 'ndlaUrlNotFound'])->name('admin.norgesfilm.ndla-url-not-found');
 
         // More general Admin Backend routes
         Route::resource('admin-users', 'AdminUserController')->only(['index', 'store', 'destroy']);

@@ -170,11 +170,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function showNorgesfilmAdmin(): bool
-    {
-        return true;
-    }
-
     public function getExternalProviders(): Collection
     {
         return collect();

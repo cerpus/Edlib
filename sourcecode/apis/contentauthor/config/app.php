@@ -135,7 +135,6 @@ return [
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\H5PServiceProvider::class,
-        App\Providers\NdlaApiClientProvider::class,
 
 
         Collective\Html\HtmlServiceProvider::class,

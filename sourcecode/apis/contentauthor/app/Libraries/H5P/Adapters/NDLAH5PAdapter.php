@@ -262,7 +262,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
-            'ndla.userId',
             'h5p.image.authDomain',
             'h5p.image.key',
             'h5p.image.secret',
@@ -323,11 +322,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function enableDraftLogic(): bool
     {
         return filter_var(config("feature.enableDraftLogic"), FILTER_VALIDATE_BOOLEAN);
-    }
-
-    public function showNorgesfilmAdmin(): bool
-    {
-        return false;
     }
 
     public function getExternalProviders(): Collection

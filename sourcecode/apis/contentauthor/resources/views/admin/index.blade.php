@@ -24,9 +24,6 @@
                             <a class="col-md-6 well well-lg text-center" href="{{ route('admin.importexport.index') }}">
                                 <i class="glyphicon glyphicon-edit"></i> Import / Export settings and management
                             </a>
-                            <a class="col-md-6 well well-lg text-center" href="{{ route('admin.norgesfilm.index') }}">
-                                <i class="glyphicon glyphicon-film"></i> Norgesvideo Admin
-                            </a>
                         @endif
                     </div>
 
