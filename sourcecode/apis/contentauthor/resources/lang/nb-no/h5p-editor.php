@@ -32,7 +32,7 @@ return [
     'advancedHelp' => 'Inkluder dette skriptet på nettsiden din om du ønsker dynamisk størrelse på det innbygde innholdet:',
     'copyrightInformation' => 'Bruksrett',
     'close' => 'Lukk',
-    'author' => 'Opphavsmann',
+    'author' => 'Opphaver',
     'year' => 'Årstall',
     'source' => 'Kilde',
     'license' => 'Lisens',
