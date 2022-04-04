@@ -26,13 +26,9 @@ class H5PImportController extends Controller
      */
     public function importH5P(H5PImportRequest $request, H5PImport $import, H5PStorage $storage, H5PAdapterInterface $adapter)
     {
-        try {
-            $uploadedFile = $request->file('h5p');
-            $response = $import->import($uploadedFile, $storage, $request->input('userId'), $request->input('isDraft'), !$request->input('isPublic', $adapter->getDefaultImportPrivacy()));
-        } catch (\Exception $exception){
-            Log::error($exception->getMessage());
-            abort(400, $exception->getMessage());
-        }
+        $uploadedFile = $request->file('h5p');
+        $response = $import->import($uploadedFile, $storage, $request->input('userId'), $request->input('isDraft'), !$request->input('isPublic', $adapter->getDefaultImportPrivacy()));
+
         $h5pContent = H5PContent::find($response->h5pId);
         if( $request->input('disablePublishMetadata', true) === true ){
             config([

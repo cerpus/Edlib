@@ -170,16 +170,12 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function setLibraryTutorialUrl($machineName, $tutorialUrl)
     {
-        try {
-            $sql = "update h5p_libraries set tutorial_url = ? where name= ?";
-            $params = [$tutorialUrl, $machineName];
-            $stmt = $this->db->prepare($sql);
-            $res = $stmt->execute($params);
-            if ($res === false) {
-                throw new RuntimeException(__METHOD__ . ": Could not set tutorial url for " . $machineName);
-            }
-        } catch (Exception $e) {
-            throw $e;
+        $sql = "update h5p_libraries set tutorial_url = ? where name= ?";
+        $params = [$tutorialUrl, $machineName];
+        $stmt = $this->db->prepare($sql);
+        $res = $stmt->execute($params);
+        if ($res === false) {
+            throw new RuntimeException(__METHOD__ . ": Could not set tutorial url for " . $machineName);
         }
     }
 
@@ -616,41 +612,37 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function insertContent($content, $contentMainId = null)
     {
-        try {
-            $adapter = app(H5PAdapterInterface::class);
-            $metadataRaw = (array)$content['metadata'] ?? [];
-            $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
+        $adapter = app(H5PAdapterInterface::class);
+        $metadataRaw = (array)$content['metadata'] ?? [];
+        $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
-            $H5PContent = H5PContent::make();
-            $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
-            $H5PContent->parameters = $content['params'];
-            $H5PContent->filtered = '';
-            $H5PContent->library_id = $content['library']['libraryId'];
-            $H5PContent->embed_type = $content['embed_type'];
-            $H5PContent->disable = $content['disable'];
-            $H5PContent->max_score = !is_null($content['max_score']) ? (int)$content['max_score'] : null;
-            $H5PContent->slug = !empty($content['slug']) ? $content['slug'] : '';
-            $H5PContent->user_id = $content['user_id'];
-            $H5PContent->content_create_mode = $adapter->getAdapterName();
-            $H5PContent->is_published = $content['is_published'] ?? !$adapter->enableDraftLogic();
-            $H5PContent->is_private =  $content['is_private'] ?? 1;
-            $H5PContent->is_draft =  $content['is_draft'] ?? 1;
-            $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
+        $H5PContent = H5PContent::make();
+        $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
+        $H5PContent->parameters = $content['params'];
+        $H5PContent->filtered = '';
+        $H5PContent->library_id = $content['library']['libraryId'];
+        $H5PContent->embed_type = $content['embed_type'];
+        $H5PContent->disable = $content['disable'];
+        $H5PContent->max_score = !is_null($content['max_score']) ? (int)$content['max_score'] : null;
+        $H5PContent->slug = !empty($content['slug']) ? $content['slug'] : '';
+        $H5PContent->user_id = $content['user_id'];
+        $H5PContent->content_create_mode = $adapter->getAdapterName();
+        $H5PContent->is_published = $content['is_published'] ?? !$adapter->enableDraftLogic();
+        $H5PContent->is_private =  $content['is_private'] ?? 1;
+        $H5PContent->is_draft =  $content['is_draft'] ?? 1;
+        $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
-            $H5PContent->save();
-            unset($metadata['title']);
+        $H5PContent->save();
+        unset($metadata['title']);
 
-            if (!empty($metadata)) {
-                $metadata['content_id'] = $H5PContent->id;
-                /** @var H5PContentsMetadata $H5PContentMetadata */
-                $H5PContentMetadata = H5PContentsMetadata::make($metadata);
-                $H5PContentMetadata->save();
-            }
-
-            return $H5PContent->id;
-        } catch (Exception $e) {
-            throw $e;
+        if (!empty($metadata)) {
+            $metadata['content_id'] = $H5PContent->id;
+            /** @var H5PContentsMetadata $H5PContentMetadata */
+            $H5PContentMetadata = H5PContentsMetadata::make($metadata);
+            $H5PContentMetadata->save();
         }
+
+        return $H5PContent->id;
     }
 
 
@@ -669,39 +661,35 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function updateContent($content, $contentMainId = null)
     {
-        try {
-            $metadataRaw = (array)$content['metadata'];
-            $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
+        $metadataRaw = (array)$content['metadata'];
+        $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
-            $H5PContent = H5PContent::find($content['id']);
-            $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
-            $H5PContent->parameters = $content['params'];
-            $H5PContent->filtered = '';
-            $H5PContent->library_id = $content['library']['libraryId'];
-            $H5PContent->embed_type = $content['embed_type'];
-            $H5PContent->disable = $content['disable'];
-            $H5PContent->slug = $content['slug'];
-            $H5PContent->max_score = (int)$content['max_score'];
-            $H5PContent->is_published = $content['is_published'];
-            $H5PContent->is_draft = $content['is_draft'];
-            $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
+        $H5PContent = H5PContent::find($content['id']);
+        $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
+        $H5PContent->parameters = $content['params'];
+        $H5PContent->filtered = '';
+        $H5PContent->library_id = $content['library']['libraryId'];
+        $H5PContent->embed_type = $content['embed_type'];
+        $H5PContent->disable = $content['disable'];
+        $H5PContent->slug = $content['slug'];
+        $H5PContent->max_score = (int)$content['max_score'];
+        $H5PContent->is_published = $content['is_published'];
+        $H5PContent->is_draft = $content['is_draft'];
+        $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 
-            $H5PContent->update();
-            unset($metadata['title']);
+        $H5PContent->update();
+        unset($metadata['title']);
 
-            if (!empty($metadata)) {
-                /** @var H5PContentsMetadata $H5PContentMetadata */
-                $H5PContentMetadata = H5PContentsMetadata::firstOrNew([
-                    'content_id' => $H5PContent->id
-                ]);
-                $H5PContentMetadata->fill($metadata);
-                $H5PContentMetadata->save();
-            }
-
-            return $H5PContent;
-        } catch (Exception $e) {
-            throw $e;
+        if (!empty($metadata)) {
+            /** @var H5PContentsMetadata $H5PContentMetadata */
+            $H5PContentMetadata = H5PContentsMetadata::firstOrNew([
+                'content_id' => $H5PContent->id
+            ]);
+            $H5PContentMetadata->fill($metadata);
+            $H5PContentMetadata->save();
         }
+
+        return $H5PContent;
     }
 
     /**

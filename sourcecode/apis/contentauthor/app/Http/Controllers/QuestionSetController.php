@@ -126,15 +126,9 @@ class QuestionSetController extends Controller
 
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
-        try {
-            /** @var QuestionSetHandler $questionsetHandler */
-            $questionsetHandler = app(QuestionSetHandler::class);
-            [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
-        } catch (Exception $exception) {
-            return response()->json([
-                'text' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        /** @var QuestionSetHandler $questionsetHandler */
+        $questionsetHandler = app(QuestionSetHandler::class);
+        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
 
         event(new ContentCreated(Content::findContentById($id)));
 
@@ -228,23 +222,10 @@ class QuestionSetController extends Controller
             abort(403);
         }
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
-        try {
-            /** @var QuestionSetHandler $questionsetHandler */
-            $questionsetHandler = app(QuestionSetHandler::class);
-            [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
-        } catch (Exception $exception) {
-            Log::error($exception->getFile() . ' (' . $exception->getLine() . '): ' . $exception->getMessage());
 
-            return response()->json([
-                'text' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $throwable) {
-            Log::error($throwable->getFile() . ' (' . $throwable->getLine() . '): ' . $throwable->getMessage());
-
-            return response()->json([
-                'text' => $throwable->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        /** @var QuestionSetHandler $questionsetHandler */
+        $questionsetHandler = app(QuestionSetHandler::class);
+        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
 
         $content = QuestionSet::find($id);
 

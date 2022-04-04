@@ -44,81 +44,68 @@ class QuestionsetController extends Controller
 
     public function getQuestionset($questionsetId)
     {
-        try {
-            $questionset = QuestionBankClient::getQuestionset($questionsetId);
-            $this->addIncludeParse('questions');
-            return $this->buildItemResponse($questionset, new QuestionsetTransformer);
-        } catch (\Exception $exception) {
-            return response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $questionset = QuestionBankClient::getQuestionset($questionsetId);
+        $this->addIncludeParse('questions');
+        return $this->buildItemResponse($questionset, new QuestionsetTransformer);
     }
 
     public function getQuestions($questionsetId)
     {
-        try {
-            $questionset = QuestionBankClient::getQuestions($questionsetId, true);
-            return $this->buildCollectionResponse($questionset, new QuestionTransformer());
-        } catch (\Exception $exception) {
-            return response($exception->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $questionset = QuestionBankClient::getQuestions($questionsetId, true);
+        return $this->buildCollectionResponse($questionset, new QuestionTransformer());
     }
 
     public function searchAnswers(Request $request)
     {
-        try {
-            $searchResults = collect();
-            if ($request->filled('title')) {
-                $titleResults = QuestionBankClient::searchAnswers(SearchDataObject::create('search', $request->get('title')));
-                $searchResults->prepend($titleResults);
-            }
-            if ($request->filled('tags')) {
-                $tagsResult = QuestionBankClient::searchAnswers(SearchDataObject::create('keyword', $request->get('tags')));
-                $searchResults->prepend($tagsResult);
-            }
-
-            if ($request->filled('include')) {
-                $this->addIncludeParse($request->get('include'));
-            }
-
-            $answers = $searchResults
-                ->flatten()
-                ->unique('id')
-                ->shuffle()
-                ->take(100);
-
-            if ($request->filled('onlyWrong')) {
-                $answers = $answers->filter(function ($answer) {
-                    return $answer->isCorrect === false;
-                });
-            }
-            return $this->buildCollectionResponse($answers, new AnswerTransformer);
-        } catch (\Exception $exception) {
+        $searchResults = collect();
+        if ($request->filled('title')) {
+            $titleResults = QuestionBankClient::searchAnswers(SearchDataObject::create('search', $request->get('title')));
+            $searchResults->prepend($titleResults);
         }
+        if ($request->filled('tags')) {
+            $tagsResult = QuestionBankClient::searchAnswers(SearchDataObject::create('keyword', $request->get('tags')));
+            $searchResults->prepend($tagsResult);
+        }
+
+        if ($request->filled('include')) {
+            $this->addIncludeParse($request->get('include'));
+        }
+
+        $answers = $searchResults
+            ->flatten()
+            ->unique('id')
+            ->shuffle()
+            ->take(100);
+
+        if ($request->filled('onlyWrong')) {
+            $answers = $answers->filter(function ($answer) {
+                return $answer->isCorrect === false;
+            });
+        }
+        return $this->buildCollectionResponse($answers, new AnswerTransformer);
     }
 
     public function searchQuestions(Request $request)
     {
-        try {
-            $searchResults = collect();
-            if ($request->filled('title')) {
-                $titleResults = QuestionBankClient::searchQuestions(SearchDataObject::create('search', $request->get('title')));
-                $searchResults->prepend($titleResults);
-            }
-            if ($request->filled('tags')) {
-                $tagsResult = QuestionBankClient::searchQuestions(SearchDataObject::create('keyword', $request->get('tags')));
-                $searchResults->prepend($tagsResult);
-            }
-
-            $questions = $searchResults
-                ->flatten()
-                ->unique('id')
-                ->shuffle()
-                ->take(100);
-
-            return $this->buildCollectionResponse($questions, new QuestionTransformer);
-        } catch (\Exception $exception) {
+        $searchResults = collect();
+        if ($request->filled('title')) {
+            $titleResults = QuestionBankClient::searchQuestions(SearchDataObject::create('search', $request->get('title')));
+            $searchResults->prepend($titleResults);
         }
+        if ($request->filled('tags')) {
+            $tagsResult = QuestionBankClient::searchQuestions(SearchDataObject::create('keyword', $request->get('tags')));
+            $searchResults->prepend($tagsResult);
+        }
+
+        $questions = $searchResults
+            ->flatten()
+            ->unique('id')
+            ->shuffle()
+            ->take(100);
+
+        return $this->buildCollectionResponse($questions, new QuestionTransformer);
     }
+}
 
 
 }

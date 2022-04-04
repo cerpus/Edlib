@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CollaboratorContext extends Model
 {
@@ -22,19 +21,10 @@ class CollaboratorContext extends Model
             return false;
         }
 
-        try {
-            self::where('system_id', $systemId)
-                ->where('context_id', $contextId)
-                ->where('timestamp', '>', Carbon::createFromTimestamp($timestamp))
-                ->firstOrFail();
-            $response = false;
-        } catch (ModelNotFoundException $e) {
-            $response = true;
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return $response;
+        return self::where('system_id', $systemId)
+            ->where('context_id', $contextId)
+            ->where('timestamp', '>', Carbon::createFromTimestamp($timestamp))
+            ->doesntExist();
     }
 
     public static function deleteContext($systemId, $contextId)
@@ -100,14 +90,9 @@ class CollaboratorContext extends Model
             return false;
         }
 
-        try {
-            self::where('collaborator_id', $collaboratorId)
-                ->where('content_id', $resourceId)
-                ->firstOrFail();
-            return true;
-        } catch (ModelNotFoundException $e) {
-            return false;
-        }
+        return self::where('collaborator_id', $collaboratorId)
+            ->where('content_id', $resourceId)
+            ->exists();
     }
 
     public static function getResourceContextCollaborators($resourceId): array

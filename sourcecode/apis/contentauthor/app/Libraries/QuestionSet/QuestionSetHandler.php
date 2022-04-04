@@ -121,78 +121,73 @@ class QuestionSetHandler
         $questionSet->license = $request->input('license', $questionSet->license);
         $questionSet->save();
 
-        try {
-            DB::transaction(function () use ($values, $questionSet) {
-                $storeQuestion = function ($question, $newValues) {
-                    $question->question_text = QuestionBankClient::stripMathContainer($newValues['question']['text']);
-                    $question->image = !empty($newValues['question']['image']['id']) ? $newValues['question']['image']['id'] : null;
-                    $question->order = $newValues['order'];
-                    $question->save();
-                };
+        DB::transaction(function () use ($values, $questionSet) {
+            $storeQuestion = function ($question, $newValues) {
+                $question->question_text = QuestionBankClient::stripMathContainer($newValues['question']['text']);
+                $question->image = !empty($newValues['question']['image']['id']) ? $newValues['question']['image']['id'] : null;
+                $question->order = $newValues['order'];
+                $question->save();
+            };
 
-                $storeAnswer = function ($answer, $newValues) {
-                    $answer->answer_text = QuestionBankClient::stripMathContainer($newValues['answerText']);
-                    $answer->correct = (bool)$newValues['isCorrect'];
-                    $answer->image = !empty($newValues['image']['id']) ? $newValues['image']['id'] : null;
-                    $answer->order = $newValues['order'];
-                    $answer->save();
-                };
+            $storeAnswer = function ($answer, $newValues) {
+                $answer->answer_text = QuestionBankClient::stripMathContainer($newValues['answerText']);
+                $answer->correct = (bool)$newValues['isCorrect'];
+                $answer->image = !empty($newValues['image']['id']) ? $newValues['image']['id'] : null;
+                $answer->order = $newValues['order'];
+                $answer->save();
+            };
 
-                $questions = collect($values['cards'])
-                    ->map(function ($question, $index) {
-                        $question['order'] = $index;
-                        $question['answers'] = collect($question['answers'])
-                            ->map(function ($answer, $index) {
-                                $answer['order'] = $index;
-                                return $answer;
-                            })
-                            ->toArray();
-                        return $question;
-                    })
-                    ->keyBy('id');
+            $questions = collect($values['cards'])
+                ->map(function ($question, $index) {
+                    $question['order'] = $index;
+                    $question['answers'] = collect($question['answers'])
+                        ->map(function ($answer, $index) {
+                            $answer['order'] = $index;
+                            return $answer;
+                        })
+                        ->toArray();
+                    return $question;
+                })
+                ->keyBy('id');
 
-                $existingQuestions = $questionSet
-                    ->questions()
-                    ->get()
-                    ->keyBy('id')
-                    ->each(function ($question) use ($questions, $storeQuestion, $storeAnswer) {
-                        if ($questions->has($question->id) !== true) {
-                            $question->answers()->delete();
-                            $question->delete();
+            $existingQuestions = $questionSet
+                ->questions()
+                ->get()
+                ->keyBy('id')
+                ->each(function ($question) use ($questions, $storeQuestion, $storeAnswer) {
+                    if ($questions->has($question->id) !== true) {
+                        $question->answers()->delete();
+                        $question->delete();
+                        return;
+                    }
+                    $storeQuestion($question, $questions[$question->id]);
+                    $providedAnswers = collect($questions[$question->id]['answers'])->keyBy('id');
+                    $existingAnswers = $question->answers()->get()->keyBy('id');
+                    $existingAnswers->each(function ($answer) use ($providedAnswers, $storeAnswer) {
+                        if ($providedAnswers->has($answer->id) !== true) {
+                            $answer->delete();
                             return;
                         }
-                        $storeQuestion($question, $questions[$question->id]);
-                        $providedAnswers = collect($questions[$question->id]['answers'])->keyBy('id');
-                        $existingAnswers = $question->answers()->get()->keyBy('id');
-                        $existingAnswers->each(function ($answer) use ($providedAnswers, $storeAnswer) {
-                            if ($providedAnswers->has($answer->id) !== true) {
-                                $answer->delete();
-                                return;
-                            }
-                            $storeAnswer($answer, $providedAnswers[$answer->id]);
-                        });
-                        $providedAnswers
-                            ->diffKeys($existingAnswers)
-                            ->each(function ($newAnswer) use ($question) {
-                                $answer = QuestionSetQuestionAnswer::make();
-                                $answer->answer_text = QuestionBankClient::stripMathContainer($newAnswer['answerText']);
-                                $answer->correct = $newAnswer['isCorrect'];
-                                $answer->image = !empty($newAnswer['image']['id']) ? $newAnswer['image']['id'] : null;
-                                $answer->order = $newAnswer['order'];
-                                $question->answers()->save($answer);
-                            });
+                        $storeAnswer($answer, $providedAnswers[$answer->id]);
                     });
+                    $providedAnswers
+                        ->diffKeys($existingAnswers)
+                        ->each(function ($newAnswer) use ($question) {
+                            $answer = QuestionSetQuestionAnswer::make();
+                            $answer->answer_text = QuestionBankClient::stripMathContainer($newAnswer['answerText']);
+                            $answer->correct = $newAnswer['isCorrect'];
+                            $answer->image = !empty($newAnswer['image']['id']) ? $newAnswer['image']['id'] : null;
+                            $answer->order = $newAnswer['order'];
+                            $question->answers()->save($answer);
+                        });
+                });
 
-                $newQuestions = $questions
-                    ->diffKeys($existingQuestions)
-                    ->toArray();
+            $newQuestions = $questions
+                ->diffKeys($existingQuestions)
+                ->toArray();
 
-                $this->storeNewQuestionsWithAnswers($questionSet, $newQuestions);
-            });
-        } catch (\Throwable $throwable) {
-            Log::error($throwable->getMessage());
-            throw $throwable;
-        }
+            $this->storeNewQuestionsWithAnswers($questionSet, $newQuestions);
+        });
 
         if ($questionSet->isOwner(Session::get('authId'))) {
             $collaborators = explode(',', $request->input('col-emails', ''));
