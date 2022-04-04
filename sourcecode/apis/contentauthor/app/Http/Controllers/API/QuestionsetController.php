@@ -106,6 +106,3 @@ class QuestionsetController extends Controller
         return $this->buildCollectionResponse($questions, new QuestionTransformer);
     }
 }
-
-
-}
