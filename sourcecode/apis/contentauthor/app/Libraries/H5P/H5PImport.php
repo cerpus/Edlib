@@ -4,10 +4,12 @@
 namespace App\Libraries\H5P;
 
 
+use App\Exceptions\H5pImportException;
 use App\Libraries\H5P\Dataobjects\H5PImportDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use H5PStorage;
 use Illuminate\Http\UploadedFile;
+use LogicException;
 
 class H5PImport
 {
@@ -32,11 +34,11 @@ class H5PImport
         $core = $this->editorAjax->core;
         $file = $this->saveFileTemporarily($uploadedFile);
         if (!$file) {
-            throw new \Exception("Could not save file");
+            throw new LogicException("Could not save file");
         };
 
         if (!$this->isPackageValid()) {
-            throw new \Exception($core->h5pF->getErrorMessage());
+            throw new H5pImportException($core->h5pF->getErrorMessage());
         }
 
         $displayOptions = $core->getDisplayOptionsForEdit();
@@ -59,7 +61,7 @@ class H5PImport
         // Install any required dependencies
         $storage->savePackage($content, NULL, false);
         if (empty($storage->contentId)) {
-            throw new \Exception("Can't find the id. Whaaat?");
+            throw new LogicException("Can't find the id. Whaaat?");
         }
         $content['id'] = $storage->contentId;
 
