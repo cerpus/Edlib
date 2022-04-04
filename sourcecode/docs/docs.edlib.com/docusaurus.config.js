@@ -19,7 +19,7 @@ module.exports = {
       items: [
         {to: '/docs/intro', label: 'Documentation', position: 'left'},
         {to: '/docs/developers/getting-started', label: 'Developers', position: 'left'},
-        {to: '/docs/product/faq', label: 'FAQs', position: 'left'},
+        {to: '/docs/support/faq', label: 'Support', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
         {to: '/careers', label: 'Careers', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
@@ -49,25 +49,8 @@ module.exports = {
               to: '/docs/product/ecosystem',
             },            
             {
-              label: 'Frequently asked questions',
-              to: '/docs/product/faq',
-            },
-            {
               label: 'Demos',
               to: '/docs/product/demos',
-            },
-          ],
-        },
-        {
-          title: 'Solutions',
-          items: [
-            {
-              label: 'Open source',
-              to: '/docs/solutions/open-source',
-            },
-            {
-              label: 'Custom development',
-              to: '/docs/solutions/custom-development',
             },
           ],
         },
@@ -79,8 +62,8 @@ module.exports = {
               to: '/docs/developers/getting-started',
             },
             {
-              label: 'Architecture',
-              to: '/docs/developers/architecture',
+              label: 'Contributing',
+              to: '/docs/developers/contributing',
             },
             {
               label: 'API documentation',
@@ -93,15 +76,19 @@ module.exports = {
           ],
         },
         {
-          title: 'Community',
+          title: 'Support',
           items: [
             {
-              label: 'Contributing',
-              to: '/docs/community/contributing',
+              label: 'FAQ',
+              to: '/docs/support/faq',
             },
             {
-              label: 'Support',
-              to: '/docs/community/support',
+              label: 'User guides',
+              to: '/docs/support/userGuides/create-content',
+            },
+            {
+              label: 'Contact support',
+              to: '/docs/support/contacting-support',
             },
           ],
         },
