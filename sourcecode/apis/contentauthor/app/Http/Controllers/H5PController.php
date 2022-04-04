@@ -740,11 +740,7 @@ class H5PController extends Controller
 
     public function contentUpgradeLibrary(Request $request, H5PCore $core)
     {
-        try {
-            return response()->json($this->h5pLibraryAdmin->upgradeLibrary($core, $request->get('library')));
-        } catch (Exception $exception) {
-            return response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return response()->json($this->h5pLibraryAdmin->upgradeLibrary($core, $request->get('library')));
     }
 
     /**

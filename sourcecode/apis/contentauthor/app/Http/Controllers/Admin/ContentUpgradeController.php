@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Libraries\H5P\AdminConfig;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,28 +16,20 @@ class ContentUpgradeController extends Controller
 
     /**
      * Upgrades content
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function upgrade(\H5PCore $core, $libraryId)
+    public function upgrade(\H5PCore $core, $libraryId): View
     {
         $this->core = $core;
-        $configuration = new \stdClass();
-        try {
-            $interface = $core->h5pF;
+        $interface = $core->h5pF;
 
-            $library = (object)$interface->loadLibraryInfo($libraryId);
+        $library = (object)$interface->loadLibraryInfo($libraryId);
 
-            $configuration = $this->getUpgradeConfiguration($library);
+        $configuration = $this->getUpgradeConfiguration($library);
 
-            $config = resolve(AdminConfig::class);
-            $config->getConfig();
-            $config->addUpdateScripts();
+        $config = resolve(AdminConfig::class);
+        $config->getConfig();
+        $config->addUpdateScripts();
 
-        } catch (\Exception $e) {
-            Log::error(__METHOD__ . ". Trying to upgrade content for library id '$libraryId'. Got exception " . $e->getMessage() . $e->getTraceAsString());
-            abort(404);
-        }
         return view('admin/content-upgrade', [
             'contentTitle' => $library->title,
             'h5pAdminIntegration' => json_encode($configuration),

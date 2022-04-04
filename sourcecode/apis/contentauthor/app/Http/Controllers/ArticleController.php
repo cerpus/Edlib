@@ -387,24 +387,20 @@ class ArticleController extends Controller
         return $purifier->purify($content);
     }
 
-    protected function moveTempFiles($article)
+    protected function moveTempFiles(Article $article)
     {
-        try {
-            $files = collect(Session::get(Article::TMP_UPLOAD_SESSION_KEY), []);
+        $files = collect(Session::get(Article::TMP_UPLOAD_SESSION_KEY), []);
 
-            $files->each(function ($file) use ($article) {
-                if ($file->moveTempToArticle($article)) {
-                    $originalPath = $file->generateTempPath();
-                    $newPath = $file->generatePath();
-                    $article->rewriteUrls($originalPath, $newPath);
-                    $article->save();
-                }
-            });
+        $files->each(function ($file) use ($article) {
+            if ($file->moveTempToArticle($article)) {
+                $originalPath = $file->generateTempPath();
+                $newPath = $file->generatePath();
+                $article->rewriteUrls($originalPath, $newPath);
+                $article->save();
+            }
+        });
 
-            Session::forget(Article::TMP_UPLOAD_SESSION_KEY);
-        } catch (\Exception $e) {
-            Log::error('[' . app('requestId') . '] ' . __METHOD__ . ': ' . $e->getMessage());
-        }
+        Session::forget(Article::TMP_UPLOAD_SESSION_KEY);
     }
 
     protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
