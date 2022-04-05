@@ -8,7 +8,6 @@ use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\H5pPresave;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\FilesystemAdapter;
 
 class PublishPresave extends Command
 {
@@ -26,15 +25,11 @@ class PublishPresave extends Command
      */
     protected $description = 'Adds the presave.js script to H5P libraries to calculate the max score before saving';
 
-    private FilesystemAdapter $uploadDisk;
-
     public function __construct(
         private readonly H5pPresave $presave,
-        ContentAuthorStorage $cas,
+        private readonly ContentAuthorStorage $cas,
     ) {
         parent::__construct();
-
-        $this->uploadDisk = $cas->getBucketDisk();
     }
 
     /**
@@ -42,16 +37,18 @@ class PublishPresave extends Command
      */
     public function handle(): void
     {
+        $uploadDisk = $this->cas->getBucketDisk();
+
         H5PLibrary::whereIn('name', $this->presave->getAllLibrariesWithScripts())
             ->orderBy('name')
             ->get()
-            ->each(function (H5PLibrary $library): void {
+            ->each(function (H5PLibrary $library) use ($uploadDisk): void {
                 $contents = $this->presave->getScriptContents($library->name);
                 $destination = self::getDestination($library);
 
-                if (!$this->uploadDisk->exists($destination)) {
-                    $this->uploadDisk->put($destination, $contents);
-                    $this->uploadDisk->prepend($destination, '//PresaveArtisan');
+                if (!$uploadDisk->exists($destination)) {
+                    $uploadDisk->put($destination, $contents);
+                    $uploadDisk->prepend($destination, '//PresaveArtisan');
                     $this->info(sprintf("%s created.", $destination));
                 } else {
                     $this->line(sprintf("%s already exists. Skipping.", $destination));
