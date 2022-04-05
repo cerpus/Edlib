@@ -4,6 +4,7 @@ namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
+use H5PCore;
 
 class AdminConfig implements ConfigInterface
 {
@@ -11,8 +12,10 @@ class AdminConfig implements ConfigInterface
 
     private $id;
 
-    public function __construct(\H5PCore $core)
-    {
+    public function __construct(
+        private H5PCore $core,
+        private readonly H5pPresave $presave,
+    ) {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
     }
@@ -67,13 +70,11 @@ class AdminConfig implements ConfigInterface
         //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
         $this->addAsset('scripts', (string) mix('js/maxscore.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-pre-save.js'));
-        $h5pLibraryDisk = \Storage::disk('h5p-library');
+
         H5PLibrary::get()
-            ->each(function ($library) use ($h5pLibraryDisk){
-                $libraryLocation = sprintf('Presave/%s/presave.js', $library->name);
-                if ($h5pLibraryDisk->exists($libraryLocation)){
-                    $this->addAsset('scripts', $this->getAssetUrl(null, route('admin.maxscore.presave', ['library' => $library->name])));
-                }
+            ->filter(fn(H5PLibrary $library): bool => $this->presave->hasScript($library->name))
+            ->each(function (H5PLibrary $library): void {
+                $this->addAsset('scripts', $this->presave->getScriptUrl($library->name));
             });
     }
 

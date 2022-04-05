@@ -58,15 +58,6 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
 
         Route::get('maxscore', [AdminController::class, 'viewMaxScoreOverview'])->name('admin.maxscore.list');
         Route::post('maxscore', [AdminController::class, 'updateMaxScore'])->name('admin.maxscore.update');
-        Route::get('maxscore/presave/{library}', function ($library) {
-            if (\App\H5PLibrary::where('name', urlencode($library))->exists()) {
-                $disk = Storage::disk('h5p-library');
-                $location = sprintf('Presave/%s/presave.js', $library);
-                if ($disk->exists($location)) {
-                    return $disk->read($location);
-                }
-            }
-        })->name('admin.maxscore.presave');
         Route::get('maxscore/failed', [AdminController::class, 'viewFailedCalculations'])->name('admin.maxscore.failed');
 
         Route::get('article/maxscore', [AdminArticleController::class, 'index'])->name('admin.article.maxscore.list');

@@ -12,6 +12,7 @@ Homestead.json
 !/public/.htaccess
 !/public/graphical
 /public/js/*
+!/public/js/presave
 !/public/js/article-xapi.js
 !/public/js/cerpus.js
 !/public/js/editor-setup.js

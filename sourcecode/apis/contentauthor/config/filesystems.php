@@ -73,9 +73,10 @@ return [
             'driver' => 'local',
             'root' => '/tmp/h5p'
         ],
-        'h5p-library' => [ // folder containing extra information about some h5p packages such as if they have max scores.
+        'h5p-presave' => [
             'driver' => 'local',
-            'root' => app_path() . '/Libraries/H5P'
+            'root' => public_path('js/presave'),
+            'url' => '/js/presave',
         ],
     ],
 
