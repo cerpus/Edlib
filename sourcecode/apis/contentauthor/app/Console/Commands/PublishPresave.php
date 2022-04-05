@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
-use App\Libraries\H5P\H5PArtisan;
+use App\H5PLibrary;
+use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\H5pPresave;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\FilesystemAdapter;
 
 class PublishPresave extends Command
 {
@@ -22,14 +26,43 @@ class PublishPresave extends Command
      */
     protected $description = 'Adds the presave.js script to H5P libraries to calculate the max score before saving';
 
+    private FilesystemAdapter $uploadDisk;
+
+    public function __construct(
+        private readonly H5pPresave $presave,
+        ContentAuthorStorage $cas,
+    ) {
+        parent::__construct();
+
+        $this->uploadDisk = $cas->getBucketDisk();
+    }
+
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle(Storage $storage)
+    public function handle(): void
     {
-        $h5pArtisan = new H5PArtisan($storage, $this);
-        $h5pArtisan->addPresaveToLibraries();
+        H5PLibrary::whereIn('name', $this->presave->getAllLibrariesWithScripts())
+            ->orderBy('name')
+            ->get()
+            ->each(function (H5PLibrary $library): void {
+                $contents = $this->presave->getScriptContents($library->name);
+                $destination = self::getDestination($library);
+
+                if (!$this->uploadDisk->exists($destination)) {
+                    $this->uploadDisk->put($destination, $contents);
+                    $this->uploadDisk->prepend($destination, '//PresaveArtisan');
+                    $this->info(sprintf("%s created.", $destination));
+                } else {
+                    $this->line(sprintf("%s already exists. Skipping.", $destination));
+                }
+            });
+    }
+
+    private static function getDestination(H5PLibrary $library): string
+    {
+        $directory = $library->getLibraryString(true);
+
+        return "libraries/$directory/presave.js";
     }
 }
