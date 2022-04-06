@@ -4,15 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
+use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\H5pUpgradeRequest;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use Exception;
 use H5PCore;
 use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LibraryUpgradeController extends Controller
 {
@@ -147,5 +151,25 @@ class LibraryUpgradeController extends Controller
         $this->core->updateContentTypeCache();
 
         return response()->redirectToRoute('admin.update-libraries');
+    }
+
+    public function deleteLibrary(H5PLibrary $library): Response
+    {
+        if ($library->contents()->exists()) {
+            throw new BadRequestHttpException('Cannot delete libraries with existing content');
+        }
+
+        $this->core->deleteLibrary((object) [
+            'id' => $library->id,
+            'name' => $library->name,
+            'major_version' => $library->major_version,
+            'minor_version' => $library->minor_version,
+        ]);
+
+        if ($library->fresh()) {
+            throw new Exception("Library not deleted.");
+        }
+
+        return response()->noContent();
     }
 }

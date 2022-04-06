@@ -21,8 +21,8 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\RuntimeException;
+use TypeError;
 
 class Framework implements \H5PFrameworkInterface, Result
 {
@@ -1053,27 +1053,16 @@ class Framework implements \H5PFrameworkInterface, Result
     {
     }
 
-
-    /**
-     * Delete a library from database and file system
-     *
-     * @param stdClass $library
-     *   Library object with id, name, major version and minor version.
-     */
-    public function deleteLibrary($library)
+    public function deleteLibrary($library): void
     {
-        $success = false;
-        if (isset($library) && is_object($library)) {
-            /** @var H5PLibrary $library */
-            $success = $library->delete();
-            if ($success) {
-                $core = resolve(H5PCore::class);
-                $success = $core->fs->deleteLibrary($library);
-            }
+        if (!is_object($library)) {
+            throw new TypeError(sprintf('Expected object, %s given', get_debug_type($library)));
         }
-        return [
-            'success' => $success,
-        ];
+
+        $libraryModel = H5PLibrary::findOrFail($library->id);
+        $libraryModel->deleteOrFail();
+
+        app(CerpusStorageInterface::class)->deleteLibrary($libraryModel);
     }
 
     /**
