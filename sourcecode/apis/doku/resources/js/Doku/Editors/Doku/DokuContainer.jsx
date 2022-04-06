@@ -1,7 +1,6 @@
 import React from 'react';
 import useFetchWithToken from '../../hooks/useFetchWithToken';
-import Alert from '@material-ui/lab/Alert';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Alert, CircularProgress } from '@mui/material';
 import Doku from './Doku';
 import useConfig from '../../hooks/useConfig';
 

@@ -35,7 +35,7 @@ export default (evt, { editorState, setEditorState, focusableBlocksStore }) => {
         const beforeBlock = editorState
             .getCurrentContent()
             .getBlockBefore(selectionKey);
-        // only if the selection caret is a the left most position
+        // only if the selection caret is at the left most position
         if (
             beforeBlock &&
             selection.getAnchorOffset() === 0 &&
@@ -54,7 +54,7 @@ export default (evt, { editorState, setEditorState, focusableBlocksStore }) => {
         const beforeBlock = editorState
             .getCurrentContent()
             .getBlockBefore(selectionKey);
-        // only if the selection caret is a the left most position
+        // only if the selection caret is at the left most position
         if (
             beforeBlock &&
             selection.getAnchorOffset() === 0 &&

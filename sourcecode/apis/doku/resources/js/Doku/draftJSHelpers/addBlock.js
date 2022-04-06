@@ -25,7 +25,7 @@ export default function (
         'backward'
     );
 
-    // deciding on the postion to split the text
+    // deciding on the position to split the text
     const targetSelection = afterRemovalContentState.getSelectionAfter();
     const blockKeyForTarget = targetSelection.get('focusKey');
     const block = currentContentState.getBlockForKey(blockKeyForTarget);
@@ -34,7 +34,7 @@ export default function (
 
     // In case there are no characters or entity or the selection is at the start it
     // is safe to insert the block in the current block.
-    // Otherwise a new block is created (the block is always its own block)
+    // Otherwise, a new block is created (the block is always its own block)
     const isEmptyBlock =
         block.getLength() === 0 && block.getEntityAt(0) === null;
     const selectedFromStart = currentSelectionState.getStartOffset() === 0;
@@ -42,7 +42,7 @@ export default function (
         insertionTargetSelection = targetSelection;
         insertionTargetBlock = afterRemovalContentState;
     } else {
-        // the only way to insert a new seems to be by splitting an existing in to two
+        // the only way to insert a new block seems to be by splitting an existing in to two
         insertionTargetBlock = Modifier.splitBlock(
             afterRemovalContentState,
             targetSelection
@@ -77,7 +77,7 @@ export default function (
             characterList: List(Repeat(charData, text.length || 1)), // eslint-disable-line new-cap
         }),
 
-        // new contentblock so we can continue wrting right away after inserting the block
+        // new content-block so we can continue writing right away after inserting the block
         new ContentBlock({
             key: genKey(),
             type: 'unstyled',
@@ -89,7 +89,7 @@ export default function (
     // create fragment containing the two content blocks
     const fragment = BlockMapBuilder.createFromArray(fragmentArray);
 
-    // replace the contentblock we reserved for our insert
+    // replace the content-block we reserved for our insert
     return Modifier.replaceWithFragment(
         newContentStateAfterSplit,
         insertionTargetSelection,

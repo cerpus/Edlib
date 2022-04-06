@@ -4,10 +4,11 @@ import AlignmentWrapper from '../../../containers/AlignmentWrapper/AlignmentWrap
 import LtiLaunch from '../../../components/LtiLaunch';
 import { useDokuContext } from '../../../dokuContext';
 import { BaseToolbar } from '../../../containers/AlignmentWrapper';
+import { CircularProgress } from '@mui/material';
 
 const EdlibResource = ({ data, onUpdate, usersForLti, block, entityKey }) => {
     const { isEditing, setEditEdlibResourceData } = useDokuContext();
-console.log(data);
+
     return (
         <AlignmentWrapper
             data={data}
@@ -28,20 +29,20 @@ console.log(data);
                 />
             )}
         >
-            {!isEditing && (
-                <LtiLaunch
-                    launchUrl={data.launchUrl}
-                    usersForLti={usersForLti}
-                />
-            )}
-            {isEditing && (
+            {/*{!isEditing && (*/}
+            {/*    <LtiLaunch*/}
+            {/*        launchUrl={data.launchUrl}*/}
+            {/*        usersForLti={usersForLti}*/}
+            {/*    />*/}
+            {/*)}*/}
+            {/*{isEditing && (*/}
                 <ResourcePreviewContainer
                     key={data.align}
                     resource={{ id: data.edlibId, version: {id: data.resourceVersionId} }}
                 >
-                    {({ frame }) => frame || <div>loading</div>}
+                    {({ frame }) => frame || <div><CircularProgress/></div>}
                 </ResourcePreviewContainer>
-            )}
+            {/*)}*/}
         </AlignmentWrapper>
     );
 };

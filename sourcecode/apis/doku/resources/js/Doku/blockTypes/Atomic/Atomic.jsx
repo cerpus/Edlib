@@ -7,6 +7,7 @@ import NdlaImageResource from './blocks/NdlaImageResource';
 import Aside from './blocks/Aside';
 import Box from './blocks/Box';
 import NdlaH5pResource from './blocks/NdlaH5pResource';
+import InlineTex from '../../decorators/Maths/InlineTex';
 
 const DraggableWrapper = ({ children, block, draggable }) => {
     const { isEditing } = useDokuContext();
@@ -107,6 +108,9 @@ export default ({ block, ...props }) => {
             )}
             {type === atomicTypes.NDLA_EDLIB_RESOURCE && (
                 <NdlaH5pResource data={data} isEditing={isEditing} />
+            )}
+            {type === atomicTypes.MATH && (
+                <InlineTex entityKey={entityKey} />
             )}
         </DraggableWrapper>
     );

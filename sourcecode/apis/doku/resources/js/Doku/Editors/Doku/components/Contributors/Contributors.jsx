@@ -14,8 +14,8 @@ import {
     TableBody,
     Radio,
     Box,
-} from '@material-ui/core';
-import { Person as PersonIcon } from '@material-ui/icons';
+} from '@mui/material';
+import { Person as PersonIcon } from '@mui/icons-material';
 
 const Contributors = ({ show, setShow }) => {
     const { t } = useTranslation();
@@ -24,7 +24,6 @@ const Contributors = ({ show, setShow }) => {
         <FromSideModal
             isOpen={show}
             onClose={() => setShow(false)}
-            usePortal={false}
         >
             {show && (
                 <>

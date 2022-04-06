@@ -1,7 +1,6 @@
 import React from 'react';
 import store from 'store';
 import sign from 'jwt-encode';
-import { isTokenExpired } from '../helpers/token.js';
 import {
     Button,
     FormControl,
@@ -10,8 +9,9 @@ import {
     Radio,
     RadioGroup,
     TextField,
-} from '@material-ui/core';
-import i18n from '../i18n';
+} from '@mui/material';
+import { isTokenExpired } from '../Doku/helpers/token.js';
+import i18n from '../Doku/i18n';
 
 const AuthWrapper = ({ children }) => {
     const [jwtToken, setJwtToken] = React.useState(null);

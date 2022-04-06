@@ -3,7 +3,7 @@ import useConfig from '../hooks/useConfig';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import PostingFrame from './PostingFrame';
 import FrameWithResize from './FrameWithResize';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Alert, CircularProgress}  from '@mui/material';
 import useFetch from '../hooks/useFetch';
 
 const LtiLaunch = ({ launchUrl, usersForLti = null }) => {
@@ -27,7 +27,7 @@ const LtiLaunch = ({ launchUrl, usersForLti = null }) => {
     );
 
     if (error) {
-        return <div>Noe skjedde</div>;
+        return <Alert severity="error">Noe skjedde</Alert>;
     }
 
     if (loading || !preview) {

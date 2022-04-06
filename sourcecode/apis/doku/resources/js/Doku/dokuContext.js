@@ -6,6 +6,14 @@ const context = React.createContext({
     usersForLti: null,
     isEditing: false,
     isMobile: false,
+    wrapperSize: null,
+    subEditorHasFocus: false,
+    focusableBlocksStore: null,
+    onBlockUpdateData: () => {},
+    setSubEditorHasFocus: () => {},
+    openMathModal: () => {},
+    isBlockSelected: () => {},
+    setEditEdlibResourceData: () => {},
 });
 
 export const DokuContext = context.Provider;

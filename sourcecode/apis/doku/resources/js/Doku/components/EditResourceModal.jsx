@@ -10,7 +10,6 @@ const EditResourceModal = ({ updateEdlibResourceData = null, onClose }) => {
         <FromSideModal
             isOpen={updateEdlibResourceData}
             onClose={onClose}
-            usePortal={false}
         >
             {updateEdlibResourceData && (
                 <>

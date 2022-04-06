@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormatBold, FormatItalic, FormatUnderlined } from '@material-ui/icons';
+import { FormatBold, FormatItalic, FormatUnderlined } from '@mui/icons-material';
 import IconButtonContent from '../components/Controls/components/IconButtonContent';
 
 export default [

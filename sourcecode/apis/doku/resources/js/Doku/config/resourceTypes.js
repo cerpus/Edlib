@@ -22,4 +22,6 @@ export default {
     H5P: 'H5P_RESOURCE',
     URL: 'URL_RESOURCE',
     DOKU: 'DOKU_RESOURCE',
+    IMAGE: 'IMAGE_RESOURCE',
+    MATHJAX: 'MATHJAX_RESOURCE',
 };

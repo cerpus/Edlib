@@ -6,7 +6,7 @@ export default function (contentState, blockKey) {
     let targetRange;
 
     // Only if the following block the last with no text then the whole block
-    // should be removed. Otherwise the block should be reduced to an unstyled block
+    // should be removed. Otherwise, the block should be reduced to an unstyled block
     // without any characters.
     if (
         afterBlock &&
@@ -29,7 +29,7 @@ export default function (contentState, blockKey) {
         });
     }
 
-    // change the blocktype and remove the characterList entry with the block
+    // change the block-type and remove the characterList entry with the block
     const newContentState = Modifier.setBlockType(
         contentState,
         targetRange,

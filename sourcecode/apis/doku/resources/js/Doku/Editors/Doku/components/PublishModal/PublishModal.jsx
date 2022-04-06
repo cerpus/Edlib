@@ -5,9 +5,13 @@ import {
     FromSideModalBody,
 } from '../../../../components/FromSideModal';
 import useTranslation from '../../../../hooks/useTranslation';
-import { Box, FormControlLabel, Radio } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
+import {
+    Alert,
+    Box,
+    Button,
+    FormControlLabel,
+    Radio,
+} from '@mui/material';
 import styled from 'styled-components';
 
 export const licenses = {
@@ -41,7 +45,6 @@ const PublishModal = ({ show, setShow, license, setLicense, unpublish }) => {
         <FromSideModal
             isOpen={show}
             onClose={() => setShow(false)}
-            usePortal={false}
         >
             {show && (
                 <>

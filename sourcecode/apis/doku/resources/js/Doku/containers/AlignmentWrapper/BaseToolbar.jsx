@@ -3,9 +3,10 @@ import { StyleButton, Toolbar } from '../../components/Toolbar';
 import { LeftAlignImage } from '../../components/Icons/Custom';
 import MaterialIcon from '../../components/Icons/Material';
 import Splitter from '../../components/Toolbar/Splitter';
-import { Edit } from '@material-ui/icons';
+import { Edit } from '@mui/icons-material';
 import { alignment } from './AlignmentWrapper';
 import styled from 'styled-components';
+import useTranslation from '../../hooks/useTranslation';
 
 const EditWrapper = styled.div`
     display: flex;
@@ -35,6 +36,7 @@ const BaseToolbar = React.forwardRef(
         },
         ref
     ) => {
+        const { t } = useTranslation();
         return (
             <Toolbar top={-50} left={left} hidden={!isFocused} ref={ref}>
                 <StyleButton
@@ -90,7 +92,7 @@ const BaseToolbar = React.forwardRef(
                         <div>
                             <Edit />
                         </div>
-                        <div className="text">Edit</div>
+                        <div className="text">{t('Edit')}</div>
                     </EditWrapper>
                 </StyleButton>
             </Toolbar>

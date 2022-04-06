@@ -10,11 +10,13 @@
     "Noe skjedde": "Noe skjedde",
     "Fant ingen ressurser": "Fant ingen ressurser",
     "source": {
-        "H5P": "H5P",
+        "H5P": "H5P ressurs",
         "article": "Edlib Article",
         "QuestionSet": "Spørsmålssett",
         "game": "Spill",
-        "URL_RESOURCE": "URL Ressurs"
+        "URL_RESOURCE": "URL ressurs",
+        "MATHJAX_RESOURCE": "Matematisk formel",
+        "IMAGE_RESOURCE": "Bilde"
     },
     "licenses": {
         "CC0": "CC0: Creative Commons",
@@ -170,5 +172,9 @@
     "Status": "Status",
 
     "Your text here": "Din tekst her…",
-    "Alle endringer er lagret": "Alle endringer er lagret"
+    "Alle endringer er lagret": "Alle endringer er lagret",
+    "Lagrer": "Lagrer…",
+    "Lagring feilet": "Lagring feilet",
+    "Title": "Tittel",
+    "Edit": "Rediger"
 }

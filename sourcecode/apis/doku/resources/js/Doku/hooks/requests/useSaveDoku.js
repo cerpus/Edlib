@@ -12,7 +12,7 @@ export default (
     hasBeenModified = false,
     defaultTitle = 'Untitled doku'
 ) => {
-    const { edlib } = useConfig();
+    const { doku: dokuApi } = useConfig();
     const request = useRequestWithToken();
     const [currentDoku, setCurrentDoku] = React.useState(initialDoku);
     const [loading, setLoading] = React.useState(false);
@@ -54,7 +54,7 @@ export default (
             setError(false);
 
             request(
-                edlib(
+                dokuApi(
                     `/dokus/v1/dokus${currentDoku ? `/${currentDoku.id}` : ''}`
                 ),
                 'POST',
@@ -105,7 +105,7 @@ export default (
             setError(false);
 
             request(
-                edlib(
+                dokuApi(
                     `/dokus/v1/dokus${currentDoku ? `/${currentDoku.id}` : ''}`
                 ),
                 'POST',
@@ -143,7 +143,7 @@ export default (
 
         try {
             const doku = await request(
-                edlib(`/dokus/v1/dokus/${currentDoku.id}/publish`),
+                dokuApi(`/dokus/v1/dokus/${currentDoku.id}/publish`),
                 'POST'
             );
 
@@ -164,7 +164,7 @@ export default (
 
         try {
             const doku = await request(
-                edlib(`/dokus/v1/dokus/${currentDoku.id}/unpublish`),
+                dokuApi(`/dokus/v1/dokus/${currentDoku.id}/unpublish`),
                 'POST'
             );
 
@@ -176,7 +176,7 @@ export default (
     }, [currentDoku]);
 
     return {
-        loading,
+        saving: loading,
         error,
         savedDoku: currentDoku,
         currentId: currentDoku && currentDoku.id,

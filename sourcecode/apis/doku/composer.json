@@ -2,8 +2,8 @@
     "type": "project",
     "require": {
         "php": "8.1.*",
-        "cerpus/edlib-resource-kit": "^0.2.0",
-        "cerpus/edlib-resource-kit-laravel": "^0.4.0",
+        "cerpus/edlib-resource-kit": "^0.4.0",
+        "cerpus/edlib-resource-kit-laravel": "^0.5.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^9.0",

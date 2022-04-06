@@ -5,7 +5,7 @@ import { EditorState } from 'draft-js';
 import convertNdlaArticle from '../../helpers/convertNdlaArticle';
 import DokuComponent from '../../Doku';
 import { default as decorators } from '../../decorators/';
-import Alert from '@material-ui/lab/Alert';
+import { Alert } from '@mui/material';
 import useTranslation from '../../hooks/useTranslation';
 
 const NdlaEditor = ({ html }) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import useConfig from '../hooks/useConfig';
 import useFetchWithToken from '../hooks/useFetchWithToken';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { CircularProgress } from '@mui/material';
 import Lti from '../Editors/Lti';
 import Doku from '../Editors/Doku';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';

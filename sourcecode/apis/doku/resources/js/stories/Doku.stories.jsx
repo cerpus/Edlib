@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 import { createEmptyEditorState, default as DokuEditor } from '../Doku';
-import AuthWrapper from '../Doku/components/AuthWrapper';
+import AuthWrapper from './AuthWrapper';
 import { EdlibComponentsProvider } from '../Doku/contexts/EdlibComponents';
 import DokuContainer from '../Doku/Editors/Doku';
-import { ThemeProvider, useTheme } from '../Doku/contexts/theme';
+import { ThemeProvider } from '../Doku/contexts/theme';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -15,7 +15,6 @@ export default {
 
 export const Doku = () => {
     const edlibApiUrl = 'https://api.edlib.local';
-    const theme = useTheme();
 
     return (
         <AuthWrapper edlibApiUrl={edlibApiUrl}>
@@ -26,14 +25,7 @@ export const Doku = () => {
                         getJwt={getJwt}
                         language={getLanguage()}
                     >
-                        <ThemeProvider
-                            theme={{
-                                ...theme,
-                                doku: {
-                                    defaultSpacing: 24,
-                                },
-                            }}
-                        >
+                        <ThemeProvider>
                             <DokuContainer />
                         </ThemeProvider>
                     </EdlibComponentsProvider>

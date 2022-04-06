@@ -1,3 +1,6 @@
+const path = require('path');
+const toPath = (filePath) => path.join(process.cwd(), filePath);
+
 module.exports = {
   "stories": [
     "../resources/js/stories/**/*.stories.mdx",
@@ -20,9 +23,18 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
-  webpackFinal: async (config, { configType }) => {
-      config.devtool = "eval-source-map";
-
-      return config;
+  webpackFinal: async (config) => {
+      return {
+          ...config,
+          devtool: 'eval-source-map',
+          resolve: {
+              ...config.resolve,
+              alias: {
+                  ...config.resolve.alias,
+                  '@emotion/core': toPath('node_modules/@emotion/react'),
+                  'emotion-theming': toPath('node_modules/@emotion/react'),
+              },
+          },
+      };
   },
 }

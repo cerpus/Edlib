@@ -1,5 +1,5 @@
 export default {
     typography: {
-        fontFamily: "'Lato', sans-serif",
+        fontFamily: '"Lato", sans-serif',
     },
 };

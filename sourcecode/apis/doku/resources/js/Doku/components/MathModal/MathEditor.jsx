@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import { Button } from '@mui/material';
 import { useDebounce } from 'moment-hooks';
 import { addStyles, EditableMathField } from 'react-mathquill';
 import MathJax from '../../components/MathJax';
@@ -60,6 +60,7 @@ const Input = styled.div`
 `;
 
 const Preview = styled.div`
+    min-height: 50px;
     padding: 20px;
     border: 2px solid ${(props) => props.theme.colors.border};
 `;
@@ -85,7 +86,6 @@ const MathEditor = ({
 
     return (
         <>
-            <h2>{t('Matematikkverktøyet')}</h2>
             <Header>{t('Skriv formelen')}:</Header>
             <MathInputWrapper>
                 <InputTypes>
@@ -113,14 +113,14 @@ const MathEditor = ({
                     )}
                     {inputType === inputTypes.LATEX && (
                         <textarea
-                            style={{ width: '100%' }}
+                            style={{ width: 'calc(100% - 20px)' }}
                             value={currentValue}
                             onChange={(e) => setValue(e.target.value)}
                         />
                     )}
                 </Input>
             </MathInputWrapper>
-            <Header style={{ marginTop: 20 }}>Slik vil formelen se ut:</Header>
+            <Header style={{ marginTop: 20 }}>{t('Forhåndsvisning')}</Header>
             <Preview>
                 {displayValue !== '' && (
                     <MathJax.Node

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import blockTypes from '../../draftJSHelpers/blockTypes';
 import StyleButton from './components/StyleButton';
 import inlineStyles from '../../draftJSHelpers/inlineStyles';
-import { Functions } from '@material-ui/icons';
+import { Functions } from '@mui/icons-material';
 import IconButtonContent from './components/IconButtonContent';
 
 const StyledControls = styled.div`

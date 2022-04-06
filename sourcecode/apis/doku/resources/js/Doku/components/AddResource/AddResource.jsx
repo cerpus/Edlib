@@ -1,8 +1,14 @@
 import React from 'react';
-import { Add, Link, QuestionAnswer } from '@material-ui/icons';
-import styled from 'styled-components';
-import { lighten, darken } from 'polished';
 import cn from 'classnames';
+import { lighten, darken } from 'polished';
+import {
+    Add,
+    Link,
+    QuestionAnswer,
+    InsertPhoto,
+    Functions,
+} from '@mui/icons-material';
+import { Tooltip } from '@mui/material';import styled from 'styled-components';
 import resourceTypes, { h5pTypes } from '../../config/resourceTypes';
 import {
     FromSideModal,
@@ -15,6 +21,7 @@ import getSelectedBlockNode from '../../draftJSHelpers/getSelectedBlockNode';
 import ResourceEditor from '../../components/ResourceEditor';
 import getDomElementForBlockKey from '../../draftJSHelpers/getDomElementForBlockKey';
 import useTranslation from '../../hooks/useTranslation';
+import MathAuthor from '../MathAuthor';
 
 const offsetAddIconTop = -14;
 
@@ -139,6 +146,7 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
         if (showButton && selectedNode) {
             return setPositionInfo({
                 offsetTop: offsetTop + selectedNode.offsetTop + offsetAddIconTop,
+                shouldMoveCursorToEndOnInsert: true,
             });
         }
 
@@ -162,35 +170,52 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                     setShowResourceTypes(!showResourceTypes);
                 }}
             >
-                <AddButton
-                    className={cn({
-                        selected: showResourceTypes,
-                    })}
-                />
+                <Tooltip title={showResourceTypes ? t('Lukk') : t('Sett inn')}>
+                    <AddButton
+                        className={cn({
+                            selected: showResourceTypes,
+                        })}
+                    />
+                </Tooltip>
                 {showResourceTypes &&
                     <ResourceTypes>
                         {[
                             {
                                 type: h5pTypes.H5P,
                                 body: 'H5P',
+                                description: t('source.H5P'),
                             },
                             {
                                 type: resourceTypes.URL,
                                 body: <Link />,
+                                description: t('source.URL_RESOURCE'),
                             },
                             {
                                 type: h5pTypes.questionset,
                                 body: <QuestionAnswer />,
+                                description: t('source.QuestionSet'),
+                            },
+                            {
+                                type: resourceTypes.IMAGE,
+                                body: <InsertPhoto />,
+                                description: t('source.IMAGE_RESOURCE'),
+                            },
+                            {
+                                type: resourceTypes.MATHJAX,
+                                body: <Functions />,
+                                description: t('source.MATHJAX_RESOURCE'),
                             },
                         ].map((link) => (
-                            <TypeLink
-                                key={link.type}
-                                onClick={() => {
-                                    setSelectedResourceType(link.type);
-                                }}
-                            >
-                                {link.body}
-                            </TypeLink>
+                            <Tooltip title={link.description}>
+                                <TypeLink
+                                    key={link.type}
+                                    onClick={() => {
+                                        setSelectedResourceType(link.type);
+                                    }}
+                                >
+                                    {link.body}
+                                </TypeLink>
+                            </Tooltip>
                         ))}
                     </ResourceTypes>
                 }
@@ -198,7 +223,6 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
             <FromSideModal
                 isOpen={selectedResourceType !== null}
                 onClose={() => setSelectedResourceType(null)}
-                usePortal={false}
             >
                 {selectedResourceType && (
                     <div
@@ -240,6 +264,23 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                                         positionInfo.shouldMoveCursorToEndOnInsert
                                     );
                                     setSelectedResourceType(null);
+                                }}
+                            />
+                        )}
+                        {selectedResourceType === resourceTypes.MATHJAX && (
+                            <MathAuthor
+                                currentValue=''
+                                onInsert={(value) => {
+                                    setSelectedResourceType(null);
+                                    setShowResourceTypes(false);
+                                    onAddResource(
+                                        atomicTypes.MATH,
+                                        null,
+                                        {
+                                            tex: value,
+                                        },
+                                        positionInfo.shouldMoveCursorToEndOnInsert
+                                    );
                                 }}
                             />
                         )}

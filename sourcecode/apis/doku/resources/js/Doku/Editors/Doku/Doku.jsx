@@ -1,25 +1,15 @@
 import React from 'react';
-import { Breadcrumb, BreadcrumbItem } from '@cerpus/ui';
-import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
-import DokuComponent, {
-    addEdlibResource,
-    decorators,
-} from '../../index';
+import { Button, TextField, Alert, Typography, CircularProgress } from '@mui/material';
+import DokuComponent, { addEdlibResource, decorators } from '../../index';
 import useSaveDoku from '../../hooks/requests/useSaveDoku';
-import {
-    FromSideModal,
-    FromSideModalHeader,
-} from '../../components/FromSideModal';
+import { FromSideModal, FromSideModalHeader } from '../../components/FromSideModal';
 import useTranslation from '../../hooks/useTranslation';
 import { useEdlibResource } from '../../hooks/requests/useResource';
 import PublishModal from './components/PublishModal';
 import Contributors from './components/Contributors';
 import { licenses } from './components/PublishModal/PublishModal';
-import {
-    createFromRaw,
-    createEmptyEditorState,
-} from '../../draftJSHelpers/createEditorState.js';
+import { createFromRaw, createEmptyEditorState } from '../../draftJSHelpers/createEditorState.js';
 
 const Page = styled.div`
     display: flex;
@@ -54,6 +44,12 @@ const Header = styled.div`
     border-bottom: 1px solid #83df66;
 `;
 
+const TitleContainer = styled.div`
+    flex: 1 1 100%;
+    display: flex;
+    margin-right: 50px;
+`;
+
 const Title = styled.input`
     font-weight: bold;
     font-size: 1.3em;
@@ -68,11 +64,14 @@ const Buttons = styled.div`
 
 const Status = styled.div`
     margin-bottom: 5px;
+    display: flex;
+    flex-wrap: nowrap;
 `;
 
 const StoredStatus = styled.span`
     color: #545454;
     margin-right: 10px;
+    flex: 1 1 100%;
 `;
 
 const Doku = ({ doku }) => {
@@ -110,47 +109,90 @@ const Doku = ({ doku }) => {
 
     const useResource = useEdlibResource();
 
-    const { currentId, savedDoku, publish, unpublish } = useSaveDoku(
+    const { currentId, savedDoku, publish, unpublish, error, saving } = useSaveDoku(
         dokuData,
         license,
         doku,
         hasBeenModified
     );
 
+    const renderStatus = () => {
+        const style = {pt:0, pb: 0};
+
+        if (saving) {
+            return (
+                <Alert
+                    severity="info"
+                    sx={style}
+                    icon={<CircularProgress variant="indeterminate" size="20px" />}
+                >
+                    {t('Lagrer')}
+                </Alert>
+            );
+        } else if (error) {
+            return (
+                <Alert
+                    severity="error"
+                    sx={style}
+                >
+                    {t('Lagring feilet')}
+                </Alert>
+            );
+        } else if (savedDoku) {
+            return (
+                <Alert
+                    severity="success"
+                    sx={style}
+                >
+                    {t('Alle endringer er lagret')}
+                </Alert>
+            );
+        }
+
+        return '';
+    };
+
     const isPublished = savedDoku && !savedDoku.isDraft;
 
     return (
         <Page>
             <Header>
-                <div>
-                    <Breadcrumb>
-                        <BreadcrumbItem to="/test">Edlib</BreadcrumbItem>
-                        <BreadcrumbItem to="/my-content" active>
-                            {t('Mitt innhold')}
-                        </BreadcrumbItem>
-                    </Breadcrumb>
-                    <Title
-                        onChange={(e) =>
-                            setDokuData({
-                                title: e.target.value,
-                            })
-                        }
+                <TitleContainer>
+                    <TextField
+                        id="title-input"
+                        label={t('Title')}
                         value={dokuData.title}
+                        onChange={(e) =>
+                            setDokuData({title: e.target.value})
+                        }
                         placeholder="Untitled doku"
+                        variant="standard"
+                        inputProps={{
+                            sx: {
+                                fontWeight: 'bold',
+                                fontSize: '1.3em',
+                            }
+                        }}
+                        fullWidth={true}
                     />
-                </div>
+                </TitleContainer>
                 <div>
                     <Status>
-                        <StoredStatus>{t('Alle endringer er lagret')}</StoredStatus>{' '}
-                        {isPublished ? (
-                            <strong>{t('Publisert')}</strong>
-                        ) : (
-                            <strong>{t('Utkast')}</strong>
-                        )}
+                        <StoredStatus>
+                            {renderStatus()}
+                        </StoredStatus>
+                        {' '}
+                        <Typography
+                            variant="h5"
+                            sx={{m: '2px 0'}}
+                        >
+                            {isPublished ? t('Publisert') :t('Utkast')}
+                        </Typography>
                     </Status>
                     <Buttons>
                         {!isPublished && (
                             <Button
+                                variant="outlined"
                                 size="large"
                                 disabled={!currentId}
                                 onClick={() => {
@@ -167,6 +209,7 @@ const Doku = ({ doku }) => {
                         )}
                         {isPublished && (
                             <Button
+                                variant="outlined"
                                 size="large"
                                 disabled={!currentId}
                                 onClick={() => {
@@ -181,6 +224,7 @@ const Doku = ({ doku }) => {
                             </Button>
                         )}
                         <Button
+                            variant="outlined"
                             style={{ marginRight: 5 }}
                             type="tertiary"
                             size="large"
@@ -202,7 +246,6 @@ const Doku = ({ doku }) => {
             <FromSideModal
                 isOpen={showPreview}
                 onClose={() => setShowPreview(false)}
-                usePortal={false}
             >
                 {showPreview && (
                     <div
