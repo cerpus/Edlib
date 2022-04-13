@@ -8,6 +8,7 @@ import Aside from './blocks/Aside';
 import Box from './blocks/Box';
 import NdlaH5pResource from './blocks/NdlaH5pResource';
 import InlineTex from '../../decorators/Maths/InlineTex';
+import { ImageResource } from '../../components/ImageAuthor';
 
 const DraggableWrapper = ({ children, block, draggable }) => {
     const { isEditing } = useDokuContext();
@@ -32,6 +33,14 @@ export default ({ block, ...props }) => {
     const { isEditing, onBlockUpdateData, usersForLti } = useDokuContext();
 
     let entityKey = block.getEntityAt(0);
+
+    // Empty atomic blocks causes the editor to crash. They should already be handled,
+    // but in case an empty atomic block still exist, this prevents crashing.
+    if (entityKey === null) {
+        console.error('Editor has a block without entities.', block);
+        return null;
+    }
+
     let entity = props.contentState.getEntity(entityKey);
     let data = entity.getData();
     let type = entity.getType();
@@ -74,6 +83,20 @@ export default ({ block, ...props }) => {
                 <NdlaImageResource
                     isEditing={isEditing}
                     data={data}
+                    onUpdate={(newData) =>
+                        onBlockUpdateData(entityKey, {
+                            ...data,
+                            ...newData,
+                        })
+                    }
+                />
+            )}
+            {type === atomicTypes.IMAGE && data.type !== 'ndla' && (
+                <ImageResource
+                    data={data}
+                    isEditing={isEditing}
+                    block={block}
+                    entityKey={entityKey}
                     onUpdate={(newData) =>
                         onBlockUpdateData(entityKey, {
                             ...data,

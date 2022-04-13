@@ -14,6 +14,7 @@ const context = React.createContext({
     openMathModal: () => {},
     isBlockSelected: () => {},
     setEditEdlibResourceData: () => {},
+    openImageModal: () => {},
 });
 
 export const DokuContext = context.Provider;

@@ -73,7 +73,7 @@ const EdlibUrlResource = ({ data, onUpdate, block, entityKey }) => {
                     isFocused={isFocused}
                     left={left}
                     onUpdate={onUpdate}
-                    setEditEdlibResourceData={setEditEdlibResourceData}
+                    onEdit={setEditEdlibResourceData}
                     ref={ref}
                     extraButtons={[
                         {

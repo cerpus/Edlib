@@ -29,7 +29,7 @@ const BaseToolbar = React.forwardRef(
             left,
             isFocused,
             onUpdate,
-            setEditEdlibResourceData,
+            onEdit,
             entityKey,
             data,
             extraButtons,
@@ -82,7 +82,7 @@ const BaseToolbar = React.forwardRef(
                 <StyleButton
                     active={false}
                     onClick={() =>
-                        setEditEdlibResourceData({
+                        onEdit({
                             data,
                             entityKey,
                         })

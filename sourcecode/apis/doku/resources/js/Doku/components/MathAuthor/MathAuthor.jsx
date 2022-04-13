@@ -1,5 +1,5 @@
 import React from 'react';
-import MathEditor from '../MathModal/MathEditor';
+import MathEditor from './MathEditor';
 
 export default ({ onInsert, currentValue }) => {
     const [value, setValue] = React.useState('');

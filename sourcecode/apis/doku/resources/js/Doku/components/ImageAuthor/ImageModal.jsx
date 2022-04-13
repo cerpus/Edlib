@@ -1,19 +1,17 @@
 import React from 'react';
-import { MathAuthor } from '../MathAuthor';
 import { FromSideModal } from '../FromSideModal';
+import { ImageAuthor } from './';
 
-const MathModal = ({ isOpen, onClose, onInsert, currentValue }) => {
+export default ({ isOpen, onClose, onInsert, currentData }) => {
     return (
         <FromSideModal
             isOpen={isOpen}
             onClose={onClose}
         >
-            <MathAuthor
-                currentValue={currentValue}
+            <ImageAuthor
+                currentData={currentData}
                 onInsert={onInsert}
             />
         </FromSideModal>
     );
 };
-
-export default MathModal;

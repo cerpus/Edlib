@@ -16,6 +16,7 @@ import TextToolbar from './components/TextToolbar';
 import { focusableBlocksStore } from './plugins/Focusable';
 import EditResourceModal from './components/EditResourceModal';
 import useTranslation from './hooks/useTranslation';
+import { ImageModal } from './components/ImageAuthor';
 
 const DokuWrapper = styled.div`
     position: relative;
@@ -31,6 +32,7 @@ const Doku = ({ editorState, setEditorState, usersForLti = null }) => {
     const wrapperRef = React.useRef();
     const [subEditorHasFocus, setSubEditorHasFocus] = React.useState(false);
     const [mathEditor, setMathEditor] = React.useState(false);
+    const [imageEditor, setImageEditor] = React.useState(false);
     const [updateEdlibResourceData, setEditEdlibResourceData] = React.useState(
         null
     );
@@ -98,6 +100,7 @@ const Doku = ({ editorState, setEditorState, usersForLti = null }) => {
                         return blockKey === selectedBlock.getKey();
                     },
                     setEditEdlibResourceData,
+                    openImageModal: (data) => setImageEditor(data)
                 }}
             >
                 <MathJax.Provider>
@@ -204,6 +207,24 @@ const Doku = ({ editorState, setEditorState, usersForLti = null }) => {
                     <EditResourceModal
                         updateEdlibResourceData={updateEdlibResourceData}
                         onClose={() => setEditEdlibResourceData(false)}
+                    />
+                    <ImageModal
+                        isOpen={imageEditor !== false}
+                        onClose={() => setImageEditor(false)}
+                        currentData={imageEditor?.data}
+                        onInsert={data => {
+                            if (data && imageEditor && imageEditor.entityKey) {
+                                setEditorState(
+                                    EditorState.set(editorState, {
+                                        currentContent: editorState.getCurrentContent().replaceEntityData(
+                                            imageEditor.entityKey,
+                                            data
+                                        )
+                                    })
+                                );
+                            }
+                            setImageEditor(false);
+                        }}
                     />
                 </MathJax.Provider>
             </DokuContext>

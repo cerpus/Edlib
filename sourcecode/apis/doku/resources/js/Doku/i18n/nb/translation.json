@@ -176,5 +176,16 @@
     "Lagrer": "Lagrer…",
     "Lagring feilet": "Lagring feilet",
     "Title": "Tittel",
-    "Edit": "Rediger"
+    "Edit": "Rediger",
+    "Select image": "Velg bilde",
+    "Filesize": "Filstørrelse",
+    "Size (W x H)": "Størrelse (B x H)",
+    "filesize_format": "{{value, number(maximumFractionDigits: 1)}} {{postfix}}",
+    "Caption": "Bildetekst",
+    "AltText": "Alternativ tekst",
+    "Photo": "Foto",
+    "Photographer": "Fotograf",
+    "License": "Lisens",
+    "Update": "Oppdater",
+    "Cancel": "Avbryt"
 }

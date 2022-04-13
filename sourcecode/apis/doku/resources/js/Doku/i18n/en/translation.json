@@ -111,5 +111,16 @@
     "Lagrer": "Saving…",
     "Lagring feilet": "Saving failed",
     "Title": "Title",
-    "Edit": "Edit"
+    "Edit": "Edit",
+    "Select image": "Select image",
+    "Filesize": "Filesize",
+    "Size (W x H)": "Size (W x H)",
+    "filesize_format": "{{value, number(maximumFractionDigits: 1)}} {{postfix}}",
+    "Caption": "Image caption",
+    "AltText": "Alt text",
+    "Photo": "Photo",
+    "Photographer": "Photographer",
+    "License": "License",
+    "Update": "Update",
+    "Cancel": "Cancel"
 }

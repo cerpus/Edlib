@@ -1,10 +1,10 @@
 import React from 'react';
 import { Editor as DraftEditor, getDefaultKeyBinding } from 'draft-js';
 import { blockRenderer, blockRenderMap } from '../blockTypes';
-import { RichUtils } from 'draft-js';
 import { useDokuContext } from '../dokuContext';
 import blockStyleFn from '../draftJSHelpers/blockStyleFn';
 import { keyBindingFn } from '../plugins/Focusable';
+import handleKeyCommand from '../draftJSHelpers/handleKeyCommand';
 
 const Editor = (
     { setEditorState, editorState, focusableBlocksStore, ...props },
@@ -22,10 +22,7 @@ const Editor = (
             blockRenderMap={blockRenderMap}
             blockStyleFn={blockStyleFn}
             handleKeyCommand={(command, editorState) => {
-                const newState = RichUtils.handleKeyCommand(
-                    editorState,
-                    command
-                );
+                const newState = handleKeyCommand(editorState, command);
 
                 if (newState) {
                     setEditorState(newState);

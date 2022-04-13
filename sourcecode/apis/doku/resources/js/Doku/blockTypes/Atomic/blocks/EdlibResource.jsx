@@ -24,7 +24,7 @@ const EdlibResource = ({ data, onUpdate, usersForLti, block, entityKey }) => {
                     isFocused={isFocused}
                     left={left}
                     onUpdate={onUpdate}
-                    setEditEdlibResourceData={setEditEdlibResourceData}
+                    onEdit={setEditEdlibResourceData}
                     ref={ref}
                 />
             )}

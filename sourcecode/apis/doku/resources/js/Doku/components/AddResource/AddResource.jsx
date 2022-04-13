@@ -8,7 +8,8 @@ import {
     InsertPhoto,
     Functions,
 } from '@mui/icons-material';
-import { Tooltip } from '@mui/material';import styled from 'styled-components';
+import { Tooltip } from '@mui/material';
+import styled from 'styled-components';
 import resourceTypes, { h5pTypes } from '../../config/resourceTypes';
 import {
     FromSideModal,
@@ -21,7 +22,8 @@ import getSelectedBlockNode from '../../draftJSHelpers/getSelectedBlockNode';
 import ResourceEditor from '../../components/ResourceEditor';
 import getDomElementForBlockKey from '../../draftJSHelpers/getDomElementForBlockKey';
 import useTranslation from '../../hooks/useTranslation';
-import MathAuthor from '../MathAuthor';
+import { MathAuthor } from '../MathAuthor';
+import { ImageAuthor } from '../ImageAuthor';
 
 const offsetAddIconTop = -14;
 
@@ -206,9 +208,11 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                                 description: t('source.MATHJAX_RESOURCE'),
                             },
                         ].map((link) => (
-                            <Tooltip title={link.description}>
+                            <Tooltip
+                                key={link.type}
+                                title={link.description}
+                            >
                                 <TypeLink
-                                    key={link.type}
                                     onClick={() => {
                                         setSelectedResourceType(link.type);
                                     }}
@@ -279,6 +283,20 @@ const AddResource = ({ onAddResource, offsetTop = 0 }) => {
                                         {
                                             tex: value,
                                         },
+                                        positionInfo.shouldMoveCursorToEndOnInsert
+                                    );
+                                }}
+                            />
+                        )}
+                        {selectedResourceType === resourceTypes.IMAGE && (
+                            <ImageAuthor
+                                onInsert={(data) => {
+                                    setSelectedResourceType(null);
+                                    setShowResourceTypes(false);
+                                    onAddResource(
+                                        atomicTypes.IMAGE,
+                                        null,
+                                        data,
                                         positionInfo.shouldMoveCursorToEndOnInsert
                                     );
                                 }}

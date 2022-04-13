@@ -37,4 +37,7 @@ module.exports = {
           },
       };
   },
+  features: {
+      modernInlineRender: true,
+  },
 }
