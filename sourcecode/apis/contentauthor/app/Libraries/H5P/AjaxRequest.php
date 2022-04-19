@@ -7,7 +7,6 @@ use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use H5PCore;
 use H5peditor;
-use Illuminate\Support\Facades\Storage;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
@@ -27,7 +26,6 @@ class AjaxRequest extends \H5PEditorEndpoints
     const H5P_BEHAVIOR_SETTINGS = 'cache/%s.css';
     const H5P_IMAGE_MANIPULATION = 'imageManipulation';
 
-    const LIBRARY_DELETE = 'delete';
     const LIBRARY_REBUILD = 'rebuild';
 
     public function __construct(
@@ -129,16 +127,6 @@ class AjaxRequest extends \H5PEditorEndpoints
                 }
                 $library = $request->input('libraryId');
                 return $this->libraryRebuild(H5PLibrary::findOrFail($library));
-            case self::LIBRARY_DELETE:
-                /** @var \H5PEditorAjaxInterface $editorAjax */
-                $editorAjax = $this->editor->ajaxInterface;
-                $canDelete = $this->core->mayUpdateLibraries();
-                if (!$canDelete || !$editorAjax->validateEditorToken($request->bearerToken())) {
-                    throw new \Exception("Not logged in");
-                }
-                $this->returnType = "json";
-                $library = $request->input('libraryId');
-                return $this->libraryDelete($library);
             case self::H5P_IMAGE_MANIPULATION:
                 $imageId = $request->get('imageId');
 
@@ -293,19 +281,5 @@ class AjaxRequest extends \H5PEditorEndpoints
             }
         }
         return $affectedLibraries;
-    }
-
-    private function libraryDelete($libraryId)
-    {
-        $library = H5PLibrary::findOrFail($libraryId);
-        $this->core->deleteLibrary($library);
-
-        $library->refresh();
-        if ($library->exists) {
-            throw new \Exception("Library not deleted.");
-        }
-        return [
-            'success' => true,
-        ];
     }
 }
