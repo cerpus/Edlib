@@ -19,15 +19,14 @@ import {
     Box,
     Button,
     DialogContent,
-    DialogActions as MuiDialogActions,
-    DialogTitle as MuiDialogTitle,
+    DialogActions,
+    DialogTitle,
     IconButton,
     Typography,
     Dialog,
     Grid,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
-import withStyles from '@mui/styles/withStyles';
 import { ResourceIcon } from '../Resource';
 import { useIframeStandaloneContext } from '../../contexts/IframeStandalone';
 import ResourceStats from './ResourceStats.jsx';
@@ -39,6 +38,10 @@ const useStyles = makeStyles()((theme) => ({
         padding: theme.spacing(2),
         display: 'flex',
         justifyContent: 'space-between',
+    },
+    dialogActions: {
+        margin: 0,
+        padding: theme.spacing(1),
     },
     closeButton: {
         color: theme.palette.grey[500],
@@ -60,13 +63,6 @@ const useStyles = makeStyles()((theme) => ({
         },
     },
 }));
-
-const DialogActions = withStyles((theme) => ({
-    root: {
-        margin: 0,
-        padding: theme.spacing(1),
-    },
-}))(MuiDialogActions);
 
 const ResourceModal = ({ isOpen, onClose, resource }) => {
     const { classes } = useStyles();
@@ -113,7 +109,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                 paperScrollPaper: classes.dialog,
             }}
         >
-            <MuiDialogTitle disableTypography className={classes.dialogTitle}>
+            <DialogTitle disableTypography className={classes.dialogTitle}>
                 <Box display="flex">
                     <Box
                         display="flex"
@@ -164,7 +160,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         </IconButton>
                     </Box>
                 ) : null}
-            </MuiDialogTitle>
+            </DialogTitle>
             <DialogContent dividers>
                 <Grid container spacing={1}>
                     <Grid item lg={7} xs={12}>
@@ -229,7 +225,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                     </Grid>
                 </Grid>
             </DialogContent>
-            <DialogActions>
+            <DialogActions classes={{ root: classes.dialogActions }}>
                 {capabilities[resourceCapabilities.EDIT] && (
                     <Button
                         color="primary"
