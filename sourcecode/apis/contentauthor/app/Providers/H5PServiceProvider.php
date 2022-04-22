@@ -26,6 +26,7 @@ use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -42,6 +43,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use RuntimeException;
 
 class H5PServiceProvider extends ServiceProvider
 {
@@ -77,85 +79,97 @@ class H5PServiceProvider extends ServiceProvider
             ->needs(Cloud::class)
             ->give(fn() => Storage::disk('h5p-presave'));
 
+        $this->app
+            ->when(NDLAVideoAdapter::class)
+            ->needs(ClientInterface::class)
+            ->give(static fn() => Oauth2Client::getClient(OauthSetup::create([
+                'authUrl' => config('h5p.video.authUrl'),
+                'coreUrl' => config('h5p.video.url'),
+                'key' => config('h5p.video.key'),
+                'secret' => config('h5p.video.secret'),
+            ])));
+
+        $this->app
+            ->when(NDLAVideoAdapter::class)
+            ->needs('$accountId')
+            ->giveConfig('h5p.video.accountId');
+
+        $this->app
+            ->when(StreampsAdapter::class)
+            ->needs(ClientInterface::class)
+            ->give(static fn() => new Client([
+                'base_uri' => config('h5p.video.url'),
+            ]));
+
+        $this->app
+            ->when(StreampsAdapter::class)
+            ->needs('$appId')
+            ->giveConfig('h5p.video.key');
+
+        $this->app
+            ->when(StreampsAdapter::class)
+            ->needs('$appKey')
+            ->giveConfig('h5p.video.secret');
+
         $this->app->bind(H5PVideoInterface::class, function () {
+            /** @var H5PAdapterInterface $adapter */
             $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    $client = Oauth2Client::getClient(OauthSetup::create([
-                        'authUrl' => config('h5p.video.authUrl'),
-                        'coreUrl' => config('h5p.video.url'),
-                        'key' => config('h5p.video.key'),
-                        'secret' => config('h5p.video.secret'),
-                    ]));
 
-                    $adapter = new NDLAVideoAdapter($client, config('h5p.video.accountId'));
-                    break;
-                case "cerpus":
-                default:
-                    $client = new Client([
-                        'base_uri' => config('h5p.video.url'),
-                    ]);
-                    $appId = config('h5p.video.key');
-                    $appKey = config('h5p.video.secret');
-
-                    $adapter = new StreampsAdapter($client, $appId, $appKey);
-                    break;
-            }
-
-
-            return $adapter;
+            return match (strtolower($adapter->getAdapterName())) {
+                'ndla' => $this->app->make(NDLAVideoAdapter::class),
+                default => $this->app->make(StreampsAdapter::class),
+            };
         });
 
+        $this->app
+            ->when(NDLAContentBrowser::class)
+            ->needs(ClientInterface::class)
+            ->give(static fn() => Auth0Client::getClient(OauthSetup::create([
+                'key' => config('h5p.image.key'),
+                'secret' => config('h5p.image.secret'),
+                'authUrl' => config('h5p.image.authDomain'),
+                'coreUrl' => config('h5p.image.url'),
+                'audience' => config('h5p.image.audience'),
+            ])));
+
         $this->app->bind(H5PImageAdapterInterface::class, function () {
+            /** @var H5PAdapterInterface $adapter */
             $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    $client = Auth0Client::getClient(OauthSetup::create([
-                        'key' => config('h5p.image.key'),
-                        'secret' => config('h5p.image.secret'),
-                        'authUrl' => config('h5p.image.authDomain'),
-                        'coreUrl' => config('h5p.image.url'),
-                        'audience' => config('h5p.image.audience'),
-                    ]));
-                    return new NDLAContentBrowser($client);
-                case "cerpus":
-                default:
-                    // None supported at the moment
-                    break;
-            }
-            return null;
+
+            return match (strtolower($adapter->getAdapterName())) {
+                "ndla" => $this->app->make(NDLAContentBrowser::class),
+                default => throw new RuntimeException('Cannot resolve '.H5PImageAdapterInterface::class),
+            };
         });
 
         $this->app->bind(H5PAudioInterface::class, function () {
-            $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    if (!is_null(config('h5p.audio.url'))) {
-                        $authSetup = OauthSetup::create([
-                            'key' => config('h5p.audio.key'),
-                            'secret' => config('h5p.audio.secret'),
-                            'authUrl' => config('h5p.audio.authDomain'),
-                            'coreUrl' => config('h5p.audio.url'),
-                            'audience' => config('h5p.audio.audience'),
-                        ]);
-                    } else {
-                        $authSetup = OauthSetup::create([
-                            'key' => config('h5p.image.key'),
-                            'secret' => config('h5p.image.secret'),
-                            'authUrl' => config('h5p.image.authDomain'),
-                            'coreUrl' => config('h5p.image.url'),
-                            'audience' => config('h5p.image.audience'),
-                        ]);
-                    }
-                    $client = Auth0Client::getClient($authSetup);
-                    return new NDLAAudioBrowser($client);
-                case "cerpus":
-                default:
-                    // None supported at the moment
-                    break;
-            }
-            return null;
+            /** @var H5PAdapterInterface $adapter */
+            $adapter = $this->app->make(H5PAdapterInterface::class);
+
+            return match (strtolower($adapter->getAdapterName())) {
+                'ndla' => $this->app->make(NDLAAudioBrowser::class),
+                default => throw new RuntimeException('Cannot resolve '.H5PAudioInterface::class),
+            };
         });
+
+        $this->app
+            ->when(NDLAAudioBrowser::class)
+            ->needs(ClientInterface::class)
+            ->give(static fn() => Auth0Client::getClient(
+                config('h5p.audio.url') !== null ? OauthSetup::create([
+                    'key' => config('h5p.audio.key'),
+                    'secret' => config('h5p.audio.secret'),
+                    'authUrl' => config('h5p.audio.authDomain'),
+                    'coreUrl' => config('h5p.audio.url'),
+                    'audience' => config('h5p.audio.audience'),
+                ]) : OauthSetup::create([
+                    'key' => config('h5p.image.key'),
+                    'secret' => config('h5p.image.secret'),
+                    'authUrl' => config('h5p.image.authDomain'),
+                    'coreUrl' => config('h5p.image.url'),
+                    'audience' => config('h5p.image.audience'),
+                ]),
+            ));
 
         $this->app->singleton(H5PCerpusStorage::class, function ($app) {
             /** @var ContentAuthorStorage $contentAuthorStorage */

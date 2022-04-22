@@ -24,18 +24,14 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
 
     const VIDEO_URL = 'https://bc/%s';
 
-    private ClientInterface $client;
-    private string $accountId;
-    private CerpusStorageInterface $storage;
-
-    public function __construct(Client $client, string $accountId)
-    {
-        if ($accountId === '') {
+    public function __construct(
+        private readonly ClientInterface $client,
+        private readonly CerpusStorageInterface $storage,
+        private readonly string $accountId,
+    ) {
+        if ($this->accountId === '') {
             throw new InvalidArgumentException('$accountId cannot be an empty string');
         }
-
-        $this->client = $client;
-        $this->accountId = $accountId;
     }
 
     public function upload($file, $fileHash)
@@ -188,10 +184,5 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     public function getType(): string
     {
         return "video";
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }
