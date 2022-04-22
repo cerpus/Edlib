@@ -52,12 +52,12 @@ const CreateSavedFilter = ({
                         className={classes.formControl}
                     >
                         <InputLabel>
-                            {_.capitalize(t('choose_group'))}
+                            {_.capitalize(t('choose_filter'))}
                         </InputLabel>
                         <Select
                             value={selected}
                             onChange={(e) => setSelected(e.target.value)}
-                            label={_.capitalize(t('choose_group'))}
+                            label={_.capitalize(t('choose_filter'))}
                         >
                             <MenuItem value="new">
                                 <em>{_.capitalize(t('create_new'))}</em>
@@ -75,7 +75,7 @@ const CreateSavedFilter = ({
                     {selected === 'new' && (
                         <TextField
                             required
-                            label={_.capitalize('name')}
+                            label={_.capitalize(t('name'))}
                             variant="outlined"
                             className={classes.formControl}
                             fullWidth

@@ -56,12 +56,12 @@ const DeleteSavedFilter = ({
                         className={classes.formControl}
                     >
                         <InputLabel>
-                            {_.capitalize(t('choose_group'))}
+                            {_.capitalize(t('choose_filter'))}
                         </InputLabel>
                         <Select
                             value={selected}
                             onChange={(e) => setSelected(e.target.value)}
-                            label={_.capitalize(t('choose_group'))}
+                            label={_.capitalize(t('choose_filter'))}
                         >
                             {savedFilterData.map((savedFilter) => (
                                 <MenuItem
