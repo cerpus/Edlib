@@ -216,14 +216,16 @@ class H5PServiceProvider extends ServiceProvider
             return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
         });
 
-        $this->app->singletonIf(H5PFrameworkInterface::class, function ($app) {
-            /** @var App $app */
+        $this->app->singletonIf(H5PFrameworkInterface::class, function () {
             $pdoConnection = DB::connection()->getPdo();
             /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            $framework = new Framework($pdoConnection, $contentAuthorStorage->getH5pTmpDisk());
-            $app->instance(H5PFrameworkInterface::class, $framework);
-            return $framework;
+            $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
+
+            return new Framework(
+                new Client(),
+                $pdoConnection,
+                $contentAuthorStorage->getH5pTmpDisk(),
+            );
         });
 
         $this->app->singleton(H5PCore::class, function ($app) {
