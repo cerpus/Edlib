@@ -36,12 +36,19 @@
     failureThreshold: {{ ceil (add (div .slowStartMaxTimeSeconds 10) (mod .slowStartMaxTimeSeconds 10)) }}
 {{ end }}
 {{ end }}
+{{ if .env }}
+  env:
+{{- range $k, $v := .env }}
+    - name: {{ $k | quote }}
+      value: {{ $v | quote }}
+{{- end }}
+{{- end }}
   envFrom:
     - configMapRef:
-        name: common-config
+        name: common-v2
         optional: false
     - secretRef:
-        name: common-secret
+        name: common-v2
         optional: false
 {{ if .envFromConfig }}
 {{- range .envFromConfig }}

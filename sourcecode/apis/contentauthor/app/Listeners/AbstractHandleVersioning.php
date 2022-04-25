@@ -23,45 +23,41 @@ abstract class AbstractHandleVersioning
     protected abstract function getExternalUrl(VersionableObject $object);
 
     protected function handleSave(VersionableObject $object, $reason) {
-        try {
-            if (!empty(config('feature.versioning'))) {
-                $linearVersioning = config('feature.linear-versioning') ? true : false;
-                $parentVersionId = $this->getParentVersionId();
-                if ($parentVersionId !== null) {
-                    if ($object->setParentVersionId($parentVersionId)) {
-                        $object->save();
-                    }
-                }
-
-                $versionData = $this->createVersion(
-                    $object,
-                    $parentVersionId,
-                    $reason,
-                    $linearVersioning
-                );
-
-                if ($versionData && $versionData->getParent()) {
-                    $parent = $versionData->getParent();
-                    if ($parent instanceof VersionData) {
-                        $parent = $parent->getId();
-                    }
-                    if ($object->setParentVersionId($parent)) {
-                        $object->save();
-                    }
-                }
-
-                if (!$versionData) {
-                    Log::error('Versioning failed: ' . $this->versionClient->getErrorCode() . ': ' . $this->versionClient->getMessage());
-                    //Maybe do something more constructive...add to queue to try again?
-                } else {
-                    $object->setVersionId($versionData->getId());
+        if (!empty(config('feature.versioning'))) {
+            $linearVersioning = config('feature.linear-versioning') ? true : false;
+            $parentVersionId = $this->getParentVersionId();
+            if ($parentVersionId !== null) {
+                if ($object->setParentVersionId($parentVersionId)) {
                     $object->save();
                 }
-            } else {
-                Log::debug(__METHOD__ . ' Versioning not enabled. Set "FEATURE_VERSIONING=true" in .env to enable');
             }
-        } catch (\Exception $e) {
-            Log::error(__METHOD__ . ': Unable to add Versioning to object ' . $object->getId() . '. ' . $e->getCode() . ': ' . $e->getMessage());
+
+            $versionData = $this->createVersion(
+                $object,
+                $parentVersionId,
+                $reason,
+                $linearVersioning
+            );
+
+            if ($versionData && $versionData->getParent()) {
+                $parent = $versionData->getParent();
+                if ($parent instanceof VersionData) {
+                    $parent = $parent->getId();
+                }
+                if ($object->setParentVersionId($parent)) {
+                    $object->save();
+                }
+            }
+
+            if (!$versionData) {
+                Log::error('Versioning failed: ' . $this->versionClient->getErrorCode() . ': ' . $this->versionClient->getMessage());
+                //Maybe do something more constructive...add to queue to try again?
+            } else {
+                $object->setVersionId($versionData->getId());
+                $object->save();
+            }
+        } else {
+            Log::debug(__METHOD__ . ' Versioning not enabled. Set "FEATURE_VERSIONING=true" in .env to enable');
         }
     }
 

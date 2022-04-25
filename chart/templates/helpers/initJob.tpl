@@ -15,10 +15,10 @@ spec:
           image: "{{ .image }}:{{ .imageTag }}"
           envFrom:
             - configMapRef:
-                name: common-config
+                name: common-v2
                 optional: true
             - secretRef:
-                name: common-secret
+                name: common-v2
                 optional: true
 {{ if .envFromConfig }}
 {{- range .envFromConfig }}

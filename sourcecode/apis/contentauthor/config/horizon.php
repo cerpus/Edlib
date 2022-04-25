@@ -3,7 +3,6 @@
 $horizonQueues = [
     "default",
     "streamps_messages",
-    "norgesfilm",
     "ndla",
     "ca-multimedia",
     "remove-refid"
@@ -94,7 +93,6 @@ return [
     "waits" => [
         "redis:default" => 120,
         "redis:streamps_messages" => 600,
-        "redis:norgesfilm" => 60,
         "redis:ndla" => 3600,
         "redis:ca-multimedia" => 600,
     ],

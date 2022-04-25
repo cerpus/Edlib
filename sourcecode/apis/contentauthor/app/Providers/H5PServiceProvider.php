@@ -10,6 +10,7 @@ use App\Libraries\H5P\EditorAjax;
 use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use App\Libraries\H5P\H5pPresave;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -35,9 +36,11 @@ use H5PExport;
 use H5PFileStorage;
 use H5PFrameworkInterface;
 use H5PValidator;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Foundation\Application as App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class H5PServiceProvider extends ServiceProvider
@@ -69,6 +72,11 @@ class H5PServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app
+            ->when(H5pPresave::class)
+            ->needs(Cloud::class)
+            ->give(fn() => Storage::disk('h5p-presave'));
+
         $this->app->bind(H5PVideoInterface::class, function () {
             $adapter = app(H5PAdapterInterface::class);
             switch (strtolower($adapter->getAdapterName())) {

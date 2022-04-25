@@ -1,0 +1,83 @@
+{{- define "common.envBlock" }}
+{{- $commonEnvConfig := dict -}}
+{{- $_ := set $commonEnvConfig "NODE_ENV" "production" -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_API_URL" .Global.Values.urls.api -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_WWW_URL" .Global.Values.urls.www -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RESOURCE_EMBED_URL" (print .Global.Values.urls.www "/s/resources/<resourceId>") -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER" .Global.Values.masterAuth.adapter -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_JWKS_ENDPOINT" .Global.Values.masterAuth.wellKnownEndpoint -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ISSUER" .Global.Values.masterAuth.issuer -}}
+{{ if eq .Global.Values.masterAuth.adapter "auth0" }}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_DOMAIN" .Global.Values.masterAuth.auth0.domain -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_CLIENTID" .Global.Values.masterAuth.auth0.clientId -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_AUTH0_AUDIENCE" .Global.Values.masterAuth.auth0.audience -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_ID" .Global.Values.masterAuth.propertyPaths.id -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_NAME" .Global.Values.masterAuth.propertyPaths.name -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_PROPERTYPATH_EMAIL" .Global.Values.masterAuth.propertyPaths.email -}}
+{{ end }}
+{{ if eq .Global.Values.masterAuth.adapter "cerpusAuth" }}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_CERPUSAUTH_URL" .Global.Values.masterAuth.cerpusAuth.url -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_CERPUSAUTH_CLIENTID" .Global.Values.masterAuth.cerpusAuth.clientId -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER_CERPUSAUTH_SECRET" .Global.Values.masterAuth.cerpusAuth.secret -}}
+{{ end }}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_DB_HOST" .Global.Values.services.mysql.host -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_DB_USER" .Global.Values.services.mysql.user -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_DB_PORT" .Global.Values.services.mysql.port -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_DB_CHARSET" .Global.Values.services.mysql.charset -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_DB_PASSWORD" .Global.Values.services.mysql.password -}}
+
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_REDIS_URL" .Global.Values.services.redis.url -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_REDIS_HOST" .Global.Values.services.redis.host -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_REDIS_PORT" .Global.Values.services.redis.port -}}
+
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_ELASTICSEARCH_URL" .Global.Values.services.elasticsearch.url -}}
+
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_URL" .Global.Values.services.rabbitmq.url -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_HOST" .Global.Values.services.rabbitmq.host -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_PORT" .Global.Values.services.rabbitmq.port -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_USER" .Global.Values.services.rabbitmq.user -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_PASSWORD" .Global.Values.services.rabbitmq.password -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_SECURE" .Global.Values.services.rabbitmq.secure -}}
+
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EMBEDLY_KEY" .Global.Values.services.embedly.key -}}
+
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_URL" .Global.Values.contentauthor.url -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY" .Global.Values.contentauthor.h5pConsumerKey -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET" .Global.Values.contentauthor.h5pConsumerSecret -}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_INTERNAL_KEY" .Global.Values.contentauthor.internalKey -}}
+
+{{/*  Features */}}
+{{- $_ := set $commonEnvConfig "EDLIBCOMMON_FEATURE_AUTO_UPDATE_LTI_USAGE" .Global.Values.features.enableAutoLinking -}}
+
+{{/*  @todo try to remove below variables. They are either useless, or we should find alternatives */}}
+{{- $_ := set $commonEnvConfig "DEPLOYMENT_ENVIRONMENT" .Global.Values.deploymentEnvironment -}}
+{{- $_ := set $commonEnvConfig "REACT_APP_API_URL" .Global.Values.urls.api -}}
+{{ if .containerEnv }}
+{{- range $k, $v := $commonEnvConfig }}
+- name: {{ $k | quote }}
+  value: {{ $v | quote }}
+{{- end }}
+{{ else }}
+{{- range $k, $v := $commonEnvConfig }}
+{{ $k }}: {{ $v | quote }}
+{{- end }}
+{{ end }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "common-v2"
+data:
+{{- include "common.envBlock" ( dict "Global" . "containerEnv" false )  | indent 2 }}
+{{- range $k, $v := $.commonEnvConfig }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "common-v2"
+type: Opaque
+data:
+  EDLIBCOMMON_DB_PASSWORD: {{ .Values.services.mysql.password | b64enc | quote }}

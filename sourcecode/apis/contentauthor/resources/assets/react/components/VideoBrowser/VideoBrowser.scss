@@ -1,5 +1,19 @@
-@import "~@ndla/core/scss/core";
+@import '~@ndla/core/scss/global/settings/settings.config';
+@import '~inuitcss/settings/_settings.core';
+@import '~@ndla/core/scss/global/settings/settings.global';
+@import '~@ndla/core/scss/global/settings/settings.colors';
+@import '~@ndla/core/scss/global/settings/settings.animations';
+@import '~@ndla/core/scss/global/settings/settings.breakpoints';
+
 @import '~@ndla/video-search/scss/video-search.scss';
+
+.c-video-search {
+  // hack to work around lack of @ndla/core/scss/core import
+  // see https://github.com/cerpus/Edlib/issues/943
+  &, button, input, textarea, option, optgroup, select {
+    font-size: 14px;
+  }
+}
 
 .c-video-search .c-tabs__list {
   display: none;

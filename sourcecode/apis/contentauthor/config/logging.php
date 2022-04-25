@@ -1,6 +1,5 @@
 <?php
 
-use App\LogstashLogger;
 use Monolog\Handler\StreamHandler;
 
 return [

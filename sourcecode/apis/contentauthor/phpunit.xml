@@ -20,9 +20,6 @@
         <include>
             <directory suffix=".php">app</directory>
         </include>
-        <exclude>
-            <directory>app/Libraries/oauth-php/</directory>
-        </exclude>
     </coverage>
     <testsuites>
         <testsuite name="Application Test Suite">

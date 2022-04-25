@@ -1,4 +1,66 @@
-{{- template "helpers.initJob" (dict "name" "contentauthor" "image" "public.ecr.aws/f0t8l9h1/api-contentauthor-deploy" "imageTag" .Chart.AppVersion "envFromConfig" (list "ca-config") "envFromSecret" (list "ca-secret") ) }}
+{{- define "apis.contentauthor.env" }}
+env:
+  - name: "APP_KEY"
+    value: {{ .Values.contentauthor.appKey | quote }}
+  - name: "APP_ENV"
+    value: "production"
+  - name: "MAIL_DRIVER"
+    value: "smtp"
+  - name: "MAIL_HOST"
+    value: "smtpout-dkim.cerpus.net"
+  - name: "MAIL_ENCRYPTION"
+    value: "none"
+  - name: "APP_DEBUG"
+    value: {{ .Values.enableDebug | quote }}
+  - name: "AWS_DEFAULT_REGION"
+    value: {{ .Values.contentauthor.awsStorage.region | quote }}
+  - name: "AWS_BUCKET"
+    value: {{ .Values.contentauthor.awsStorage.bucket | quote }}
+{{ if .Values.contentauthor.cdnWithPrefix }}
+  - name: "CDN_WITH_PREFIX"
+    value: {{ .Values.contentauthor.cdnWithPrefix | quote }}
+{{ end }}
+  - name: "QUESTIONBANK_SERVICE_URL"
+    value: "http://questionbankservice:8080"
+  - name: "IMAGESERVICE_URL"
+    value: "http://imagestorageservice:8080"
+  - name: "CERPUS_JWT_CONTEXTS"
+    value: "edlib"
+  - name: "CERPUS_JWT_EDLIB_PUBKEY"
+    value: "http://authapi/.well-known/jwks.json"
+  - name: "CERPUS_JWT_EDLIB_TYPE"
+    value: "edlib"
+  - name: "CERPUS_JWT_EDLIB_EXPIRATION_LEEWAY_SECONDS"
+    value: "36000"
+  - name: "H5P_CONSUMER_KEY"
+    value: {{ .Values.contentauthor.h5pConsumerKey | quote }}
+  - name: "H5P_CONSUMER_SECRET"
+    value: {{ .Values.contentauthor.h5pConsumerSecret | quote }}
+{{ if .Values.contentauthor.extraEnvs }}
+{{- range $k, $v := .Values.contentauthor.extraEnvs }}
+  - name: {{ $k | quote }}
+    value: {{ $v | quote }}
+{{- end }}
+{{- end }}
+{{- include "common.envBlock" ( dict "Global" . "containerEnv" true ) | indent 2 }}
+{{- end }}
+
+---
+kind: Job
+apiVersion: batch/v1
+metadata:
+  name: contentauthor-startup
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: startup
+          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:{{ .Chart.AppVersion }}"
+{{- include "apis.contentauthor.env" . | indent 10 }}
 ---
 {{- template "helpers.service" (dict "name" "contentauthor") }}
 ---
@@ -40,19 +102,7 @@ spec:
       containers:
         - name: nginx
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-app:{{ .Chart.AppVersion }}"
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
+{{- include "apis.contentauthor.env" . | indent 10 }}
           livenessProbe:
             httpGet:
               path: /health
@@ -70,19 +120,7 @@ spec:
           terminationMessagePolicy: File
         - name: phpfpm
           image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
+{{- include "apis.contentauthor.env" . | indent 10 }}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
       serviceAccount: contentauthor
@@ -109,19 +147,7 @@ spec:
             - php
             - artisan
             - horizon
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
+{{- include "apis.contentauthor.env" . | indent 10 }}
           resources:
             limits:
               cpu: 500m
@@ -153,19 +179,7 @@ spec:
             - php
             - artisan
             - laravel-rabbitmq-pubsub:consumer
-          envFrom:
-            - secretRef:
-                name: ca-secret
-                optional: true
-            - configMapRef:
-                name: ca-config
-                optional: true
-            - configMapRef:
-                name: common-config
-                optional: false
-            - secretRef:
-                name: common-secret
-                optional: false
+{{- include "apis.contentauthor.env" . | indent 10 }}
           resources:
             limits:
               cpu: 500m
@@ -199,19 +213,7 @@ spec:
                 - /app/artisan
                 - schedule:run
                 - -q
-              envFrom:
-                - secretRef:
-                    name: ca-secret
-                    optional: true
-                - configMapRef:
-                    name: ca-config
-                    optional: true
-                - configMapRef:
-                    name: common-config
-                    optional: false
-                - secretRef:
-                    name: common-secret
-                    optional: false
+{{- include "apis.contentauthor.env" . | indent 14 }}
               resources:
                 limits:
                   cpu: 500m

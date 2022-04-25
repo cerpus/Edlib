@@ -1,9 +1,3 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 import './bootstrap';
 import $ from 'jquery';
 
@@ -33,13 +27,23 @@ $('.delete-btn')
         element.on('click', deleteLibrary);
     });
 
-function sendRequest(element, url, params, onDone, fail) {
+function sendRequest(element, optionsOrUrl, params, onDone, fail) {
+    let url, method;
+
+    if (typeof optionsOrUrl === 'string') {
+        url = optionsOrUrl;
+        method = 'POST';
+    } else {
+        url = optionsOrUrl.url;
+        method = optionsOrUrl.method || 'POST';
+    }
+
     const onFail = fail ? fail : function (response) {
         console.log(response.responseText);
         alert(response.responseJSON.message);
     };
     $.ajax(url, {
-        method: "post",
+        method,
         data: params,
         dataType: "json",
     })
@@ -91,16 +95,13 @@ function rebuildLibrary(event) {
 }
 
 function deleteLibrary(event) {
+    event.preventDefault();
+
     const element = $(event.currentTarget);
     const url = element.data('ajax-url')
-    const action = element.data('ajax-action');
-    const libraryId = element.data('libraryid');
 
     element.prop('disabled', true);
-    sendRequest(element, url, {
-        action,
-        libraryId,
-    }, function (response) {
+    sendRequest(element, { method: 'DELETE', url }, null, function () {
         alert('Library deleted');
         window.location.reload();
     });

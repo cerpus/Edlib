@@ -1,6 +1,5 @@
 import { setupApi, pubsub } from '@cerpus/edlib-node-utils';
 import router from './routes/index.js';
-import errorReportingConfig from './config/errorReporting.js';
 import { buildRawContext } from './context/index.js';
 
 const start = async () => {
@@ -8,9 +7,7 @@ const start = async () => {
     const context = await buildRawContext({}, {}, { pubSubConnection });
     await context.services.elasticsearch.createOrIgnoreIndex();
 
-    setupApi(() => router({ pubSubConnection }), {
-        errorReportingConfig,
-    });
+    setupApi(() => router({ pubSubConnection }));
 };
 
 start();

@@ -1,6 +1,6 @@
 {
   "name": "@cerpus/edlib-node-utils",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "private": false,
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -17,15 +17,13 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
-    "@sentry/node": "^6.18.2",
-    "@sentry/tracing": "^6.18.2",
-    "@vscode/sqlite3": "^5.0.7",
+    "@vscode/sqlite3": "^5.0.8",
     "await-lock": "^2.1.0",
     "axios": "^0.26.1",
     "body-parser": "^1.19.2",
     "cookie-parser": "^1.4.5",
     "dotenv": "^15.0.0",
-    "dotenv-expand": "^8.0.2",
+    "dotenv-expand": "^8.0.3",
     "express": "^4.17.3",
     "helmet": "^5.0.2",
     "http-status-codes": "^2.2.0",
@@ -36,13 +34,13 @@
     "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
     "on-finished": "^2.4.1",
-    "redis": "^4.0.4",
+    "redis": "^4.0.6",
     "redis-mock": "^0.56.3",
     "winston": "^3.6.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",
-    "@babel/core": "^7.17.7",
+    "@babel/core": "^7.17.8",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "amqplib": "^0.8.0",
@@ -51,7 +49,7 @@
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.3",
     "nock": "^13.2.4",
-    "prettier": "^2.6.0"
+    "prettier": "^2.6.1"
   },
   "peerDependencies": {
     "amqplib": "^0.8.0"

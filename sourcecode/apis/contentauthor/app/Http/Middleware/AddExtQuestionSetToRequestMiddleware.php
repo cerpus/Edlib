@@ -4,11 +4,75 @@ namespace App\Http\Middleware;
 
 use App;
 use Closure;
-use Illuminate\Support\Facades\Session;
 use App\SessionKeys;
 
+/**
+ * This middleware is used to test the pre-filling of the question set with
+ * values from the LTI request.
+ *
+ * Will only work in non-production environments with
+ * `config('feature.add-ext-question-set-to-request', true)`
+ */
 class AddExtQuestionSetToRequestMiddleware
 {
+    public const QUESTION_SET_DATA = [
+        'title' => 'QuestionSet created at 2018-07-10T07:26:24+02:00',
+        'sharing' => false,
+        'license' => 'BY',
+        'authId' => 'some-auth-id',
+        'tags' => ['tag1', 'tag2'],
+        'questions' => [
+            [
+                'text' => 'How are you?',
+                'answers' => [
+                    [
+                        'text' => 'Fine',
+                        'correct' => true,
+                        'order' => 0,
+                    ],
+                    [
+                        'text' => 'So, so...',
+                        'correct' => false,
+                        'order' => 1,
+                    ],
+                    [
+                        'text' => 'Horrible!',
+                        'correct' => false,
+                        'order' => 2,
+                    ],
+                ],
+                'order' => 0,
+            ],
+            [
+                'text' => 'Where are you?',
+                'answers' => [
+                    [
+                        'text' => 'At work',
+                        'correct' => true,
+                        'order' => 0,
+                    ],
+                    [
+                        'text' => 'Home',
+                        'correct' => false,
+                        'order' => 1,
+                    ],
+                    [
+                        'text' => 'On the bus',
+                        'correct' => false,
+                        'order' => 2,
+                    ],
+                ],
+                'order' => 1,
+            ],
+        ],
+    ];
+
+    public function __construct(
+        private string $environment,
+        private bool $enabled,
+    ) {
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -18,28 +82,13 @@ class AddExtQuestionSetToRequestMiddleware
      */
     public function handle($request, Closure $next)
     {
-
-        if (App::environment('local') && config('feature.add-ext-question-set-to-request')) {
-            $extQuestionSet = json_decode(base64_decode("eyJ0aXRsZSI6IlF1ZXN0aW9uU2V0IGNyZWF0ZWQgYXQgMjAxOC0wNy0xMFQwNzoyNjoyNCswMjowMCIsInNoYXJpbmciOmZhbHNlLCJsaWNlbnNlIjoiQlkiLCJhdXRoSWQiOiJzb21lLWF1dGgtaWQiLCJ0YWdzIjpbInRhZzEiLCJ0YWcyIl0sInF1ZXN0aW9ucyI6W3sidGV4dCI6IkhvdyBhcmUgeW91PyIsImFuc3dlcnMiOlt7InRleHQiOiJGaW5lIiwiY29ycmVjdCI6dHJ1ZX0seyJ0ZXh0IjoiU28sIHNvLi4uIiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6IkhvcnJpYmxlISIsImNvcnJlY3QiOmZhbHNlfV19LHsidGV4dCI6IldoZXJlIGFyZSB5b3U/IiwiYW5zd2VycyI6W3sidGV4dCI6IkF0IHdvcmsiLCJjb3JyZWN0Ijp0cnVlfSx7InRleHQiOiJIb21lIiwiY29ycmVjdCI6ZmFsc2V9LHsidGV4dCI6Ik9uIHRoZSBidXMiLCJjb3JyZWN0IjpmYWxzZX1dfV19"));
-            $extQuestionSet = $this->addRequiredFieldsToQuestionSet($extQuestionSet);
-            Session::put(SessionKeys::EXT_QUESTION_SET, json_encode($extQuestionSet));
+        if ($this->environment !== 'production' && $this->enabled) {
+            $request->getSession()->put(
+                SessionKeys::EXT_QUESTION_SET,
+                json_encode(self::QUESTION_SET_DATA, JSON_THROW_ON_ERROR),
+            );
         }
+
         return $next($request);
-    }
-
-    private function addRequiredFieldsToQuestionSet($extQuestionSet)
-    {
-        $questionOrder = 0;
-
-        foreach ($extQuestionSet->questions as $question) {
-            $question->order = $questionOrder++;
-
-            $answerOrder = 0;
-            foreach ($question->answers as $answer) {
-                $answer->order = $answerOrder++;
-            }
-        }
-
-        return $extQuestionSet;
     }
 }

@@ -51,11 +51,7 @@ class QuestionSetController extends Controller
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
         $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
-
-        // This middleware is used to test the pre filling of the question set with values from the LTI request. Uncomment if you need to test.
-        // Will only work when APP_ENV=local
-        // Enable in .env "FEATURE_EXT_QUESTION_SET_TO_REQUEST=true"
-        //$this->middleware('lti.qs-to-request')->only(['create']);
+        $this->middleware('lti.qs-to-request')->only(['create']);
     }
 
     private function getQuestionsetContentTypes()
@@ -130,15 +126,9 @@ class QuestionSetController extends Controller
 
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
-        try {
-            /** @var QuestionSetHandler $questionsetHandler */
-            $questionsetHandler = app(QuestionSetHandler::class);
-            [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
-        } catch (Exception $exception) {
-            return response()->json([
-                'text' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        /** @var QuestionSetHandler $questionsetHandler */
+        $questionsetHandler = app(QuestionSetHandler::class);
+        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
 
         event(new ContentCreated(Content::findContentById($id)));
 
@@ -232,23 +222,10 @@ class QuestionSetController extends Controller
             abort(403);
         }
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
-        try {
-            /** @var QuestionSetHandler $questionsetHandler */
-            $questionsetHandler = app(QuestionSetHandler::class);
-            [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
-        } catch (Exception $exception) {
-            Log::error($exception->getFile() . ' (' . $exception->getLine() . '): ' . $exception->getMessage());
 
-            return response()->json([
-                'text' => $exception->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (Throwable $throwable) {
-            Log::error($throwable->getFile() . ' (' . $throwable->getLine() . '): ' . $throwable->getMessage());
-
-            return response()->json([
-                'text' => $throwable->getMessage(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
+        /** @var QuestionSetHandler $questionsetHandler */
+        $questionsetHandler = app(QuestionSetHandler::class);
+        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
 
         $content = QuestionSet::find($id);
 

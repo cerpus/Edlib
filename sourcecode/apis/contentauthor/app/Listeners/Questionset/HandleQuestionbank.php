@@ -31,13 +31,9 @@ class HandleQuestionbank
         }
 
         $this->tags = $request->get('tags');
-        try {
-            $this->questionset = $event->questionset->fresh(['questions.answers']);
-            $this->storeQuestionset();
-            $this->storeQuestionsWithAnswers();
-        } catch (Exception $e) {
-            Log::error(__METHOD__ . ': Unable to add questionset ' . $this->questionset->id . ' to the Questionbank. ' . $e->getCode() . ': ' . $e->getMessage());
-        }
+        $this->questionset = $event->questionset->fresh(['questions.answers']);
+        $this->storeQuestionset();
+        $this->storeQuestionsWithAnswers();
     }
 
     private function storeQuestionset()

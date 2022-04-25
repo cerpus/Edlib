@@ -22,7 +22,7 @@
                                 class="btn btn-info btn-xs"
                                 title="Upgrade"
                         >
-                            <span class="fa fa-refresh" />
+                            <span class="fa fa-refresh"></span>
                         </button>
                     </a>
                 @elseif ($library['hubUpgrade'] !== null)
@@ -34,7 +34,7 @@
                             data-ajax-action="{{H5PEditorEndpoints::LIBRARY_INSTALL}}"
                             title="Install version {{ $library['hubUpgrade'] }}"
                     >
-                        <span class="fa fa-cloud-download" />
+                        <span class="fa fa-cloud-download"></span>
                     </button>
                 @endif
                 @if(!empty($library['libraryId']))
@@ -46,19 +46,17 @@
                             data-ajax-action="{{\App\Libraries\H5P\AjaxRequest::LIBRARY_REBUILD}}"
                             title="Rebuild"
                     >
-                        <span class="fa fa-history" />
+                        <span class="fa fa-history"></span>
                     </button>
                 @endif
                 @if(empty($library['numLibraryDependencies']) && !empty($library['libraryId']))
                     <button
                             type="button"
                             class="btn btn-danger btn-xs delete-btn"
-                            data-libraryId="{{$library['libraryId'] ?? null}}"
-                            data-ajax-url="{{route('admin.ajax')}}"
-                            data-ajax-action="{{\App\Libraries\H5P\AjaxRequest::LIBRARY_DELETE}}"
+                            data-ajax-url="{{ route('admin.delete-library', [$library['libraryId']]) }}"
                             title="Delete"
                     >
-                         <span class="fa fa-trash" />
+                        <span class="fa fa-trash"></span>
                     </button>
                 @endif
             </td>

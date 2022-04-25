@@ -13,16 +13,16 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.11",
-    "@cerpus/edlib-node-utils": "0.0.0-0399a6f5472f8aa5e2a0d7edce3faf17df03c56c",
+    "@cerpus/edlib-node-utils": "1.11.0",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
     "axios": "^0.26.1",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^27.5.1",
-    "prettier": "^2.6.0",
+    "prettier": "^2.6.1",
     "pug": "^3.0.2",
     "supertest": "^6.2.2",
-    "swagger-jsdoc": "^6.0.2",
+    "swagger-jsdoc": "^6.2.0",
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {

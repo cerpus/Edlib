@@ -53,7 +53,7 @@ WORKDIR /app
 RUN apk add --no-cache build-base python2
 RUN npm i -g npm node-gyp
 COPY package.json package-lock.json ./
-RUN npm i
+RUN npm i --legacy-peer-deps
 COPY webpack.mix.js ./
 COPY --from=php_base /app/vendor/ckeditor/ckeditor ./vendor/ckeditor/ckeditor
 COPY --from=php_base /app/vendor/h5p ./vendor/h5p
