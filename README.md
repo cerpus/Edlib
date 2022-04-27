@@ -70,20 +70,21 @@ In general, we follow the "fork-and-pull" Git workflow:
  4. **Push** your work back up to your fork
  5. Submit a **Pull request** so that we can review your changes. :) Make sure to add yourself to [AUTHORS](https://github.com/cerpus/Edlib/blob/master/AUTHORS.md).
 
-### Translation
-
-Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. See the [Translating Edlib](https://docs.edlib.com/docs/developers/translation) section in the documentation for more info.
-
 ### Issues
 
 If something isn't working the way you expected, please look at [previously logged issues](https://github.com/cerpus/Edlib/issues?q=is%3Aissue+is%3Aclosed) to resolve common problems first.  Have you found a new bug? Want to request a new feature? We'd love to hear from you.  Please let us know by submitting an [issue](https://github.com/cerpus/Edlib/issues).
 
-## Translation status
+### Translation
+
+Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. See the [Translating Edlib](https://docs.edlib.com/docs/developers/translation) section in the documentation for more info.
+
+### Translation status
 
 | API Name             | Status                                         |
 |----------------------|------------------------------------------------|
-| API - Content author | [![Translation status](https://weblate.edlib.com/widgets/content-author/-/svg-badge.svg)](https://weblate.edlib.com/engage/content-author/)                 |
-| NPM - Components     | [![Translation status](https://weblate.edlib.com/widgets/npm-components/-/svg-badge.svg)](https://weblate.edlib.com/engage/npm-components/) |
+| API - Content author | [![Translation status](https://weblate.edlib.com/widgets/content-author/-/multi-auto.svg)](https://weblate.edlib.com/engage/content-author/) |
+| NPM - Components     | [![Translation status](https://weblate.edlib.com/widgets/npm-components/-/multi-auto.svg)](https://weblate.edlib.com/engage/npm-components/) |
+| WWW -                | [![Translation status](https://weblate.edlib.com/widgets/www/-/www/multi-auto.svg)](https://weblate.edlib.com/engage/www/) |
 
 ## Miscellaneous
 
