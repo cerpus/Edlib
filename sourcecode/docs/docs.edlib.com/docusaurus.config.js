@@ -10,6 +10,30 @@ module.exports = {
   organizationName: 'cerpus',
   projectName: 'Edlib',
   themeConfig: {
+    algolia: {
+      // The application ID provided by Algolia
+      appId: 'LP932E7C3J',
+
+      // Public API key: it is safe to commit it
+      apiKey: 'b9e7b7df4d07385dedfe816e1f554cc0',
+
+      indexName: 'edlib',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+      externalUrlRegex: 'external\\.com|domain\\.com',
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
+      //... other Algolia params
+      placeholder: 'Search Edlib docs'
+    },
     navbar: {
       title: 'Edlib',
       logo: {
