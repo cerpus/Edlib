@@ -22,7 +22,7 @@
     "prettier": "^2.6.2",
     "pug": "^3.0.2",
     "supertest": "^6.2.2",
-    "swagger-jsdoc": "^6.2.0",
+    "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
