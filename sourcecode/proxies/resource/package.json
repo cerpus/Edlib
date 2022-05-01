@@ -21,7 +21,7 @@
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "pug": "^3.0.2",
-    "supertest": "^6.2.2",
+    "supertest": "^6.2.3",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
     "winston": "^3.7.2"
