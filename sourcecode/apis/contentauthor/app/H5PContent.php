@@ -189,7 +189,7 @@ class H5PContent extends Content implements VersionableObject
 
     public function requestShouldBecomeNewVersion(Request $request): bool
     {
-        if ($this->isDraft()) {
+        if ($this->isDraft() && !$request->get("isNewLanguageVariant", false)) {
             return false;
         }
 
