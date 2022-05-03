@@ -33,6 +33,7 @@ use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\ViewConfig;
@@ -42,6 +43,7 @@ use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use H5peditor;
+use H5PFileStorage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -56,6 +58,7 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -804,23 +807,30 @@ class H5PController extends Controller
         return array($oldContent, $content, $newH5pContent);
     }
 
-    public function downloadContent(H5PContent $h5p)
-    {
-        /** @var H5PCore $core */
-        $core = resolve(H5PCore::class);
+    public function downloadContent(
+        H5PContent $h5p,
+        H5PCore $core,
+        H5PFileStorage $fs,
+        H5PDownloadInterface $downloader,
+        H5PExport $export,
+    ): StreamedResponse {
         $displayOptions = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
         if (!array_key_exists('export', $displayOptions) || $displayOptions['export'] !== true) {
-            return trans('h5p-editor.download-not-available');
+            abort(403, trans('h5p-editor.download-not-available'));
         }
 
         $fileName = sprintf("%s-%d.h5p", $h5p->slug, $h5p->id);
-        /** @var H5PExport $export */
-        $export = resolve(H5PExport::class, ['content' => $h5p]);
-        if ($core->fs->hasExport($fileName) || $export->generateExport(config('feature.export_h5p_with_local_files'))) {
-            return $core->fs->downloadContent($fileName, $h5p->title);
+
+        if ($fs->hasExport($fileName) || $export->generateExport(config('feature.export_h5p_with_local_files'))) {
+            $stream = $downloader->downloadContent($fileName);
+
+            return new StreamedResponse(function () use ($stream) {
+                fpassthru($stream);
+                fclose($stream);
+            });
         }
 
-        return response(trans('h5p-editor.could-not-find-content'));
+        return abort(404, trans('h5p-editor.could-not-find-content'));
     }
 
     public function browseImages(Request $request)
