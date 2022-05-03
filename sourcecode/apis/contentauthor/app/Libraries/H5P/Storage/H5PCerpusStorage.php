@@ -508,12 +508,14 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $this->filesystem->exists($path) ? "/$path" : null;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function saveFileFromZip($path, $file, $stream)
+    public function saveFileFromZip($path, $file, $stream): bool
     {
         $filePath = Str::after($path, $this->uploadDisk->path("")) . "/" . $file;
+
+        if (str_ends_with($filePath, '/')) {
+            return $this->uploadDisk->createDir($filePath);
+        }
+
         $upload = $this->uploadDisk->putStream($filePath, $stream);
 
         if (preg_match('/^content\/(?:images|videos|audios|files)/', $file, $matches)) {
