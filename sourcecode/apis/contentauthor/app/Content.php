@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Session;
  * @property string license
  * @property string node_id
  * @property Collection $collaborators
+ * @property bool is_draft
  *
  * @method static Collection findMany($ids, $columns = ['*'])
  * @method static Builder select($columns = ['*'])
