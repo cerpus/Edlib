@@ -3,7 +3,7 @@ return [
     'title' => 'Tittel',
     'reuse' => 'Gjenbruk',
     'reuseContent' => 'Gjenbruk innhold',
-    'reuseDescription' => 'Gjenbruk dette innholded.',
+    'reuseDescription' => 'Gjenbruk dette innholdet.',
     'by' => 'av',
     'showMore' => 'Vis mer',
     'showLess' => 'Vis mindre',
