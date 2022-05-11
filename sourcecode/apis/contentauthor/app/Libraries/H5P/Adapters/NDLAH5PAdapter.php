@@ -278,7 +278,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'h5p.defaultExportOption',
             'h5p.defaultShareSetting',
             'h5p.showDisplayOptions',
-            'feature.enableDraftLogic',
         ])
             ->mapWithKeys(function ($configKey) {
                 return [$configKey => config('ndla-mode.' . $configKey, config($configKey))];
