@@ -38,7 +38,7 @@ runs:
     - name: Install kubectl
       uses: azure/setup-kubectl@v2.0
       with:
-        version: 'v1.23.6'
+        version: 'v1.21.12'
       id: install-kubectl
 
     - uses: actions/checkout@v2
@@ -87,11 +87,8 @@ runs:
         echo "::set-output name=helm-values::$HELM_VALUES"
 
     - name: helm deploy
-      uses: koslib/helm-eks-action@master
-      env:
-        KUBE_CONFIG_DATA: '${{ steps.kube.outputs.config }}'
-      with:
-        command: helm upgrade ${{ steps.helm-values.outputs.helm-values }} --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
+      shell: bash
+      run: helm upgrade ${{ steps.helm-values.outputs.helm-values }} --wait --timeout 60m --cleanup-on-fail --install edlib --namespace edlib ./chart
 
     - name: Create slack message
       uses: actions/github-script@v5
