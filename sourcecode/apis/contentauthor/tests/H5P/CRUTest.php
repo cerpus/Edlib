@@ -12,6 +12,7 @@ use App\User;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Tests\db\TestH5PSeeder;
@@ -21,7 +22,6 @@ use Tests\Traits\MockH5PAdapterInterface;
 use Tests\Traits\MockMQ;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\WithFaker;
 
 class CRUTest extends TestCase
 {

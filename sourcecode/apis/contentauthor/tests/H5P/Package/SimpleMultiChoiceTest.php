@@ -4,8 +4,8 @@ namespace Tests\H5P\Package;
 
 
 use App\Libraries\H5P\Packages\SimpleMultiChoice;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\WithFaker;
 
 class SimpleMultiChoiceTest extends TestCase
 {

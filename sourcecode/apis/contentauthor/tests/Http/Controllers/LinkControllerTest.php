@@ -13,11 +13,11 @@ use App\Http\Libraries\License;
 use App\Link;
 use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Tests\TestCase;
 use Tests\Traits\MockAuthApi;
-use Tests\Traits\WithFaker;
 
 class LinkControllerTest extends TestCase
 {

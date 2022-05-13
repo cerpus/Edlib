@@ -7,9 +7,9 @@ use App\H5PContentsMetadata;
 use App\H5PLibrary;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Tests\TestCase;
-use Tests\Traits\WithFaker;
 
 /**
  * @covers \App\H5PContent::requestShouldBecomeNewVersion

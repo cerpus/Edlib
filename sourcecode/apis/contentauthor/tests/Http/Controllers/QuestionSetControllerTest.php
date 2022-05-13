@@ -21,6 +21,7 @@ use App\QuestionSetQuestionAnswer;
 use Faker\Provider\Uuid;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -28,7 +29,6 @@ use Illuminate\View\View;
 use Tests\TestCase;
 use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\WithFaker;
 
 class QuestionSetControllerTest extends TestCase
 {

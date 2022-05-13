@@ -3,10 +3,10 @@
 namespace Tests\Feature\Gdpr\Handlers;
 
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\ContentLock;
 use Tests\Traits\MockRabbitMQPubsub;
-use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\ContentLockProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

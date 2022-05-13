@@ -8,6 +8,7 @@ use App\Listeners\Article\HandleCollaborationInviteEmails;
 use App\User;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -16,7 +17,6 @@ use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\WithFaker;
 
 class ArticleVersioningTest extends TestCase
 {

@@ -4,9 +4,9 @@ namespace Tests\Feature\Gdpr\Handlers;
 
 use App\H5PResult;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\MockRabbitMQPubsub;
-use Tests\Traits\WithFaker;
 use App\Gdpr\Handlers\H5PResultProcessor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
