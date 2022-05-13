@@ -98,8 +98,7 @@ interface H5PAdapterInterface
     /** @return void */
     public function setConfig(ConfigInterface $config);
 
-    /** @return bool */
-    public function enableDraftLogic():bool;
+    public function isUserPublishEnabled(): bool;
 
     /** @return bool */
     public function enableEverybodyIsCollaborators():bool;

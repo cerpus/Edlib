@@ -47,7 +47,7 @@ class EmbedController extends Controller
         /** @var Link $link */
         $link = app(Link::class);
         $redirectToken = $request->get('redirectToken');
-        $useDraft = false;
+        $userPublishEnabled = false;
         $canPublish = true;
         $canList = true;
 
@@ -64,7 +64,7 @@ class EmbedController extends Controller
             'emails',
             'link',
             'redirectToken',
-            'useDraft',
+            'userPublishEnabled',
             'canPublish',
             'canList',
             'state',

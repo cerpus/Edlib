@@ -76,7 +76,7 @@ class GameHandler
 
         $game->title = $request->get('title');
         $game->game_settings = $gametype->createGameSettings($request->all());
-        $game->is_published = $game::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $game->is_published = $game::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $game->license = $request->input('license');
 
         $game->save();

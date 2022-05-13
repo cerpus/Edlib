@@ -40,7 +40,7 @@ class canPublishContent implements Rule
      */
     public function passes($attribute, $value)
     {
-        return !Content::isDraftLogicEnabled() || !!$value === false || $this->content->canPublish($this->request);
+        return !Content::isUserPublishEnabled() || !!$value === false || $this->content->canPublish($this->request);
     }
 
     /**

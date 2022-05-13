@@ -38,7 +38,7 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
     Route::post('lti-content/create', [LtiContentController::class, 'create']);
     Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
-    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.ownership','core.behavior-settings:editor','draftaction']);
+    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.ownership','core.behavior-settings:editor','userpublish']);
 
     Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view'])->name('h5p.ltishow');
     Route::post('/game/{id}', [GameController::class, 'ltiShow']);
@@ -53,13 +53,13 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
     Route::post('questionset/{id}', [QuestionSetController::class,'ltiShow']);
     Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
 
-    Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor', 'draftaction']);
+    Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor', 'userpublish']);
     Route::post('/article/{id}', [ArticleController::class, 'ltiShow'])->middleware('core.behavior-settings:view');
-    Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','draftaction']);
+    Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','userpublish']);
 
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
 
-    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["core.auth", "lti.question-set", 'core.behavior-settings:editor', 'draftaction'])->name('create');
+    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["core.auth", "lti.question-set", 'core.behavior-settings:editor', 'userpublish'])->name('create');
 
     Route::resource('questionset', 'QuestionSetController', ['except' => ['destroy']]);
     Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
@@ -68,7 +68,7 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
     Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
 
     Route::group(['middleware' => ['core.ownership']], function () {
-        Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','draftaction'])->name('h5p.ltiedit');
+        Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor','userpublish'])->name('h5p.ltiedit');
         Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
     });
 

@@ -36,7 +36,7 @@ class ContentTypeHandler
             'share' => $questionsetData['sharing'] === true || $questionsetData['sharing'] === "share" ? "share" : "private",
             'license' => $questionsetData['license'],
             'max_score' => array_key_exists('score', $questionsetData) ? $questionsetData['score'] : null,
-            'isPublished' => Content::isDraftLogicEnabled() && array_key_exists('published', $questionsetData) ? $questionsetData['published'] : 1,
+            'isPublished' => Content::isUserPublishEnabled() && array_key_exists('published', $questionsetData) ? $questionsetData['published'] : 1,
         ];
 
         $request = new H5PStorageRequest();

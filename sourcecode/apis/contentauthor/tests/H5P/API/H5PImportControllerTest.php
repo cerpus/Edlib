@@ -62,10 +62,10 @@ namespace Tests\H5P\API {
             ]);
         }
 
-        private function setupAdapter($enableDraftLogic, $isPublic)
+        private function setupAdapter($isUserPublishEnabled, $isPublic)
         {
             $testAdapter = $this->createStub(H5PAdapterInterface::class);
-            $testAdapter->method('enableDraftLogic')->willReturn($enableDraftLogic);
+            $testAdapter->method('isUserPublishEnabled')->willReturn($isUserPublishEnabled);
             $testAdapter->method('getAdapterName')->willReturn("UnitTest");
             $testAdapter->method('getDefaultImportPrivacy')->willReturn($isPublic);
             app()->instance(H5PAdapterInterface::class, $testAdapter);

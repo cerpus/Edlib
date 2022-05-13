@@ -318,9 +318,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
-    public function enableDraftLogic(): bool
+    public function isUserPublishEnabled(): bool
     {
-        return filter_var(config("feature.enableDraftLogic"), FILTER_VALIDATE_BOOLEAN);
+        return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
     }
 
     public function getExternalProviders(): Collection

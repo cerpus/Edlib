@@ -50,7 +50,7 @@ class ArticleController extends Controller
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
-        $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
+        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
 
         $this->lti = $h5pLti;
     }
@@ -89,10 +89,11 @@ class ArticleController extends Controller
             ],
         ]);
 
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
         $editorSetup = EditorConfigObject::create([
-                'useDraft' => $adapter->enableDraftLogic(),
+                'userPublishEnabled' => $adapter->isUserPublishEnabled(),
                 'canPublish' => true,
                 'canList' => true,
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
@@ -138,7 +139,7 @@ class ArticleController extends Controller
         // next line commented out in anticipation of permanently deciding if attribution for Articles is no longer maintained
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
 
-        $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', 0);
 
         $article->save();
@@ -241,7 +242,7 @@ class ArticleController extends Controller
         ]);
 
         $editorSetup = EditorConfigObject::create([
-                'useDraft' => Content::isDraftLogicEnabled(),
+                'userPublishEnabled' => Content::isUserPublishEnabled(),
                 'canPublish' => $article->canPublish($request),
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
@@ -335,7 +336,7 @@ class ArticleController extends Controller
         }
         $article->max_score = $article->getMaxScoreHelper($article->content);
         $article->license = $request->input('license', $oldLicense);
-        $article->is_published = $article::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', false);
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));

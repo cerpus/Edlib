@@ -24,6 +24,11 @@ class LTIRequest extends Oauth10Request
         return $this->params['launch_presentation_return_url'] ?? null;
     }
 
+    public function hasParam($name): bool
+    {
+        return array_key_exists($name, $this->params);
+    }
+
     public function param($name, $default = null)
     {
         return $this->params[$name] ?? $default;
@@ -144,9 +149,15 @@ class LTIRequest extends Oauth10Request
         return $this->param('ext_behavior_settings');
     }
 
-    public function getExtUseDraftLogic()
+    public function getExtEnableUserPublish()
     {
-        return $this->param('ext_use_draft_logic');
+        if ($this->hasParam('ext_use_draft_logic')) {
+            trigger_error(
+                "Parameter 'ext_use_draft_logic' is deprecated, replace with 'ext_enable_user_publish'",
+                E_USER_DEPRECATED
+            );
+        }
+        return $this->param('ext_enable_user_publish') ??  $this->param('ext_use_draft_logic');
     }
 
     public function getExtTranslationLanguage()

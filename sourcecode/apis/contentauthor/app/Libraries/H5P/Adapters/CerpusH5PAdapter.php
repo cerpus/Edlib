@@ -164,9 +164,9 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
-    public function enableDraftLogic(): bool
+    public function isUserPublishEnabled(): bool
     {
-        $isEnabled = config("feature.enableDraftLogic");
+        $isEnabled = config("feature.enableUserPublish");
         return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
     }
 

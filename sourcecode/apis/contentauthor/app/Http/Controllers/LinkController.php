@@ -46,6 +46,7 @@ class LinkController extends Controller
             abort(403);
         }
 
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
         $ltiRequest = $this->lti->getLtiRequest();
 
@@ -55,12 +56,12 @@ class LinkController extends Controller
         $emails = '';
         $link = app(Link::class);
         $redirectToken = $request->get('redirectToken');
-        $useDraft = $adapter->enableDraftLogic();
+        $userPublishEnabled = $adapter->isUserPublishEnabled();
         $canPublish = true;
         $isPublished = false;
         $canList = true;
 
-        return view('link.create')->with(compact('licenses', 'license', 'emails', 'link', 'redirectToken', 'useDraft', 'canPublish', 'isPublished', 'canList'));
+        return view('link.create')->with(compact('licenses', 'license', 'emails', 'link', 'redirectToken', 'userPublishEnabled', 'canPublish', 'isPublished', 'canList'));
     }
 
     /**
@@ -85,7 +86,7 @@ class LinkController extends Controller
         $link->link_text = !empty($inputs['linkText']) ? $inputs['linkText'] : null;
         $link->title = $metadata->title;
         $link->metadata = !empty($inputs['linkMetadata']) ? $inputs['linkMetadata'] : null;
-        $link->is_published = $link::isDraftLogicEnabled() ? $request->input('isPublished', 1) : 1;
+        $link->is_published = $link::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $link->license = $inputs['license'] ?? '';
         $link->save();
 
@@ -111,6 +112,7 @@ class LinkController extends Controller
     public function edit(Request $request, $id)
     {
         $link = Link::findOrFail($id);
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
         $isOwner = $link->isOwner(Session::get('authId', 'qawsed'));
@@ -140,12 +142,12 @@ class LinkController extends Controller
         $licenses = License::getLicenses($ltiRequest);
         $license = $link->license;
         $redirectToken = $request->get('redirectToken');
-        $useDraft = $adapter->enableDraftLogic();
+        $userPublish = $adapter->isUserPublishEnabled();
         $canPublish = $link->canPublish($request);
         $isPublished = $link->is_published;
         $canList = $link->canList($request);
 
-        return view('link.edit')->with(compact('link', 'isOwner', 'emails', 'license', 'licenses', 'id', 'redirectToken', 'useDraft', 'canPublish', 'canList', 'isPublished'));
+        return view('link.edit')->with(compact('link', 'isOwner', 'emails', 'license', 'licenses', 'id', 'redirectToken', 'userPublish', 'canPublish', 'canList', 'isPublished'));
     }
 
     public function update(LinksRequest $request, $id)
@@ -193,8 +195,7 @@ class LinkController extends Controller
         $link->link_text = !empty($inputs['linkText']) ? $inputs['linkText'] : null;
         $link->title = $metadata->title;
         $link->metadata = !empty($inputs['linkMetadata']) ? $inputs['linkMetadata'] : null;
-        $isDraftLogicEnabled = $link::isDraftLogicEnabled();
-        $link->is_published = $isDraftLogicEnabled ? $request->input('isPublished', 1) : 1;
+        $link->is_published = $link::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $link->license = $inputs['license'] ?? $oldLink->license;
 
         $link->save();

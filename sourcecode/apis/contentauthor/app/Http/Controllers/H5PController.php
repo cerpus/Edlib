@@ -72,7 +72,7 @@ class H5PController extends Controller
         private H5PLibraryAdmin $h5pLibraryAdmin,
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
-        $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
+        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
@@ -168,6 +168,7 @@ class H5PController extends Controller
         $displayOptions = $core->getDisplayOptionsForEdit();
         $core->getStorableDisplayOptions($displayOptions, null);
 
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
         if (!is_null($contenttype) && !H5PCore::libraryFromString($contenttype)) {
@@ -183,7 +184,7 @@ class H5PController extends Controller
         }
 
         $editorSetup = H5PEditorConfigObject::create([
-            'useDraft' => $adapter->enableDraftLogic(),
+            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
             'canPublish' => true,
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
@@ -281,7 +282,7 @@ class H5PController extends Controller
         $scripts = $h5pView->getScripts(false);
 
         $editorSetup = H5PEditorConfigObject::create([
-            'useDraft' => $adapter->enableDraftLogic(),
+            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
             'canPublish' => $h5pContent->canPublish($request),
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
@@ -289,7 +290,7 @@ class H5PController extends Controller
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
-            ]);
+        ]);
 
         if ($h5pContent->canList($request)) {
             $config = (resolve(AdminConfig::class))
