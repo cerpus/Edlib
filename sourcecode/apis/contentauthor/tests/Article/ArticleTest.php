@@ -23,12 +23,6 @@ class ArticleTest extends TestCase
 {
     use RefreshDatabase, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->refreshDatabase();
-    }
-
     public function testEditArticleAccessDenied()
     {
         $this->setUpResourceApi();

@@ -26,7 +26,6 @@ class ArticleVersioningTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->refreshDatabase();
         $versionData = new VersionData();
         $this->setupVersion([
             'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
