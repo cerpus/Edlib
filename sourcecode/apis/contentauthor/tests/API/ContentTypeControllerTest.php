@@ -20,7 +20,6 @@ class ContentTypeControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->refreshDatabase();
         $this->seed(TestH5PSeeder::class);
         $this->setUpFaker();
     }

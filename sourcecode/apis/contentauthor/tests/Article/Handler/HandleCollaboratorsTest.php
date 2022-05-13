@@ -14,12 +14,6 @@ class HandleCollaboratorsTest extends TestCase
 {
     use RefreshDatabase, WithoutMiddleware;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->refreshDatabase();
-    }
-
     public function testHandleCollaboratorsOnSave()
     {
         $authId = Str::uuid();

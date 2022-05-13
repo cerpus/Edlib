@@ -14,12 +14,6 @@ class HandlePrivacyTest extends TestCase
 {
     use RefreshDatabase, WithoutMiddleware;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->refreshDatabase();
-    }
-
     public function testHandlePrivacyOnSave()
     {
         $authId = Str::uuid();
