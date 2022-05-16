@@ -705,21 +705,13 @@ class H5PController extends Controller
         //
     }
 
-    /**
-     * @return array|JsonResponse|void
-     * @throws Exception
-     */
-    public function ajaxLoading(Request $request, H5PCore $core, H5peditor $editor, ContentAuthorStorage $contentAuthorStorage)
+    public function ajaxLoading(Request $request, AjaxRequest $ajaxRequest): object|array|string|null
     {
-        $ajaxRequest = new AjaxRequest($core, $editor, $contentAuthorStorage);
         $returnValue = $ajaxRequest->handleAjaxRequest($request);
-        switch ($ajaxRequest->getReturnType()) {
-            case "json":
-                return response()->json($returnValue);
-                break;
-            default:
-                return $returnValue;
-        }
+        return match ($ajaxRequest->getReturnType()) {
+            "json" => response()->json($returnValue),
+            default => $returnValue,
+        };
     }
 
     /**

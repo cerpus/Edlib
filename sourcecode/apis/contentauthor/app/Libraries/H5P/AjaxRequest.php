@@ -4,148 +4,138 @@ namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use H5PContentValidator;
 use H5PCore;
 use H5peditor;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\SessionKeys;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use H5PEditorAjaxInterface;
+use H5PEditorEndpoints;
+use H5PValidator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-class AjaxRequest extends \H5PEditorEndpoints
+/**
+ * @todo Split stuff into separate controllers
+ * @todo Investigate and remove exit() statements
+ */
+class AjaxRequest
 {
+    public const H5P_IMAGE_MANIPULATION = 'imageManipulation';
+    public const LIBRARY_REBUILD = 'rebuild';
 
-    private $returnType;
-
-    const CONTENT_UPGRADE_PROCESS = 'content_upgrade_progress';
-    const CONTENT_SETFINISHED = 'setFinished';
-    const CONTENTS_USER_DATA = 'contents_user_data';
-    const H5P_BEHAVIOR_SETTINGS = 'cache/%s.css';
-    const H5P_IMAGE_MANIPULATION = 'imageManipulation';
-
-    const LIBRARY_REBUILD = 'rebuild';
+    private string|null $returnType = null;
 
     public function __construct(
-        private H5PCore $core,
-        private H5peditor $editor,
-        private ContentAuthorStorage $contentAuthorStorage
+        private readonly H5PCore $core,
+        private readonly H5peditor $editor,
+        private readonly ContentAuthorStorage $contentAuthorStorage,
     ) {
     }
 
-    public function getReturnType()
+    public function getReturnType(): string|null
     {
         return $this->returnType;
     }
 
-    /**
-     * @param Request $request
-     * @return array|bool|mixed|\stdClass|void
-     * @throws \Exception
-     */
-    public function handleAjaxRequest(Request $request)
+    public function handleAjaxRequest(Request $request): string|array|null|object
     {
-        switch (filter_var($request->get("action"), FILTER_SANITIZE_STRING)) {
-            case self::CONTENT_SETFINISHED:
-            case self::CONTENTS_USER_DATA:
-                /** @var H5PProgress $progress */
-                $progress = app(H5PProgress::class, [DB::connection()->getPdo(), Session::get('userId', false)]);
-                return $progress->storeProgress($request);
-                break;
-            case self::FILES:
-                $this->returnType = "json";
+        $action = $request->input('action');
 
-                $contentId = filter_input(INPUT_POST, 'contentId', FILTER_SANITIZE_NUMBER_INT);
+        switch ($action) {
+            case H5PEditorEndpoints::FILES:
+                return $this->files($request);
 
-                $this->editor->ajax->action(\H5PEditorEndpoints::FILES, null, $contentId);
-                exit;
-                break;
-            case self::LIBRARIES:
-                $this->returnType = "json";
-                $name = filter_input(INPUT_GET, 'machineName', FILTER_SANITIZE_STRING);
-                $major_version = filter_input(INPUT_GET, 'majorVersion', FILTER_SANITIZE_NUMBER_INT);
-                $minor_version = filter_input(INPUT_GET, 'minorVersion', FILTER_SANITIZE_NUMBER_INT);
+            case H5PEditorEndpoints::LIBRARIES:
+                return $this->libraries($request);
 
-                if ($name) {
-                    $libraryData = $this->editor->getLibraryData($name, $major_version, $minor_version,
-                        $request->get('language'),
-                        $this->core->fs->getAjaxPath(),
-                        null,
-                        $request->get('default-language'));
-                    $settings = $this->handleEditorBehaviorSettings($request, $name);
-                    if (!empty($settings) && !empty($settings['file']) && isset($libraryData->css) && is_array($libraryData->css)) {
-                        array_push($libraryData->css, $settings['file']);
-                    }
-                    return !is_string($libraryData) ? $libraryData : json_decode($libraryData);
-                } else {
-                    $libraries = $this->editor->getLibraries();
-                    return !is_string($libraries) ? $libraries : json_decode($libraries);
-                }
-                break;
-            case self::CONTENT_UPGRADE_PROCESS:
-                $libraryId = $_POST["libraryId"];
-                $token = $_POST["token"];
-                echo 'libraryId: ' . $libraryId . '<br>token: ' . $token;
-                echo $this->ajax_upgrade_progress();
-                break;
-            case self::CONTENT_TYPE_CACHE:
-                return array(
-                    'outdated' => false,
-                    'libraries' => $this->editor->getLatestGlobalLibrariesData(),
-                    'recentlyUsed' => $this->editor->ajaxInterface->getAuthorsRecentlyUsedLibraries(),
-                    'apiVersion' => array(
-                        'major' => H5PCore::$coreApi['majorVersion'],
-                        'minor' => H5PCore::$coreApi['minorVersion']
-                    ),
-                    'details' => $this->core->h5pF->getMessages('info')
-                );
-                break;
-            case self::LIBRARY_UPLOAD:
-                return $this->libraryUpload($request);
-                break;
-            case self::LIBRARY_INSTALL:
-                set_time_limit(60);
-                return $this->libraryInstall($request->bearerToken(), $request->input('machineName'));
-            case self::TRANSLATIONS:
-                $this->returnType = "json";
+            case H5PEditorEndpoints::CONTENT_TYPE_CACHE:
+                return $this->contentTypeCache();
+
+            case H5PEditorEndpoints::LIBRARY_UPLOAD:
+                $this->libraryUpload($request);
+                return null;
+
+            case H5PEditorEndpoints::LIBRARY_INSTALL:
+                $this->libraryInstall($request->bearerToken(), $request->input('machineName'));
+                return null;
+
+            case H5PEditorEndpoints::TRANSLATIONS:
                 return $this->getTranslations($request);
-            case self::FILTER:
-                $this->returnType = "json";
-                $isLoggedIn = $request->session()->get('authId');
-                if (!$isLoggedIn) {
-                    throw new \Exception("Not logged in");
-                }
-                return $this->filter($request->get('libraryParameters'));
-            case self::LIBRARY_REBUILD:
-                /** @var \H5PEditorAjaxInterface $editorAjax */
-                $editorAjax = resolve(EditorAjax::class);
-                $canRebuild = $this->core->mayUpdateLibraries();
-                if (!$canRebuild || !$editorAjax->validateEditorToken($request->bearerToken())) {
-                    throw new \Exception("Not logged in");
-                }
-                $library = $request->input('libraryId');
-                return $this->libraryRebuild(H5PLibrary::findOrFail($library));
-            case self::H5P_IMAGE_MANIPULATION:
-                $imageId = $request->get('imageId');
 
-                /** @var H5PImageAdapterInterface $imageAdapter */
-                $imageAdapter = app(H5PImageAdapterInterface::class);
-                return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
+            case H5PEditorEndpoints::FILTER:
+                return $this->filter($request);
+
+            case self::LIBRARY_REBUILD:
+                return $this->libraryRebuild($request);
+
+            case self::H5P_IMAGE_MANIPULATION:
+                return $this->imageManipulation($request);
+
             default:
-                throw new \Exception("Unknown action: '" . $request->get('action') . "'");
+                throw new NotFoundHttpException("Unknown action: '$action'");
         }
+    }
+
+    private function files(Request $request): never
+    {
+        $this->returnType = "json";
+
+        $contentId = (int) $request->input('contentId');
+
+        $this->editor->ajax->action(H5PEditorEndpoints::FILES, null, $contentId);
+        exit;
+    }
+
+    private function libraries(Request $request): array
+    {
+        $this->returnType = "json";
+        $name = $request->input('machineName');
+        $major_version = $request->input('majorVersion');
+        $minor_version = $request->input('minorVersion');
+
+        if ($name) {
+            $libraryData = $this->editor->getLibraryData($name, $major_version, $minor_version,
+                $request->get('language'),
+                app(CerpusStorageInterface::class)->getAjaxPath(),
+                null,
+                $request->get('default-language'));
+            $settings = $this->handleEditorBehaviorSettings($request, $name);
+            if (!empty($settings['file']) && is_array($libraryData->css ?? null)) {
+                $libraryData->css[] = $settings['file'];
+            }
+            return !is_string($libraryData) ? $libraryData : json_decode($libraryData);
+        } else {
+            $libraries = $this->editor->getLibraries();
+            return !is_string($libraries) ? $libraries : json_decode($libraries);
+        }
+    }
+
+    private function contentTypeCache(): array
+    {
+        return [
+            'outdated' => false,
+            'libraries' => $this->editor->getLatestGlobalLibrariesData(),
+            'recentlyUsed' => $this->editor->ajaxInterface->getAuthorsRecentlyUsedLibraries(),
+            'apiVersion' => [
+                'major' => H5PCore::$coreApi['majorVersion'],
+                'minor' => H5PCore::$coreApi['minorVersion']
+            ],
+            'details' => $this->core->h5pF->getMessages('info')
+        ];
     }
 
     /**
      * Handles uploading libraries so they are ready to be modified or directly saved.
      *
      * Validates and saves any dependencies, then exposes content to the editor.
-     *
-     * @param {Request} $request Content id of library
      */
-    private function libraryUpload(Request $request)
+    private function libraryUpload(Request $request): void
     {
         // Verify h5p upload
         if (!$request->hasFile('h5p')) {
@@ -154,13 +144,14 @@ class AjaxRequest extends \H5PEditorEndpoints
         }
 
         $originalAjax = $this->editor->ajax;
-        $originalAjax->action(self::LIBRARY_UPLOAD, $request->bearerToken(), $request->file('h5p')->getRealPath(), "0");
+        $originalAjax->action(H5PEditorEndpoints::LIBRARY_UPLOAD, $request->bearerToken(), $request->file('h5p')->getRealPath(), "0");
     }
 
-    private function libraryInstall($token, $library)
+    private function libraryInstall($token, $library): void
     {
+        set_time_limit(60);
         $originalAjax = $this->editor->ajax;
-        $originalAjax->action(self::LIBRARY_INSTALL, $token, $library);
+        $originalAjax->action(H5PEditorEndpoints::LIBRARY_INSTALL, $token, $library);
     }
 
     private function handleEditorBehaviorSettings(Request $request, $library): array
@@ -175,13 +166,13 @@ class AjaxRequest extends \H5PEditorEndpoints
             $package = H5PPackageProvider::make($library);
             $package->applyEditorBehaviorSettings($settings);
             $styles = $package->getCSS(true);
-        } catch (UnknownH5PPackageException $exception) {
+        } catch (UnknownH5PPackageException) {
             $editorConfig = resolve(EditorConfig::class);
             $editorConfig->applyEditorBehaviorSettings($settings);
             $styles = $editorConfig->getCSS(true);
         }
 
-        $fileName = sprintf(self::H5P_BEHAVIOR_SETTINGS, md5($library . '|' . $styles));
+        $fileName = sprintf('cache/%s.css', md5($library . '|' . $styles));
 
         if (!$this->contentAuthorStorage->getBucketDisk()->has($fileName)) {
             $this->contentAuthorStorage->getBucketDisk()->put($fileName, $styles);
@@ -194,26 +185,32 @@ class AjaxRequest extends \H5PEditorEndpoints
 
     }
 
-    private function getTranslations(Request $request)
+    private function getTranslations(Request $request): array
     {
+        $this->returnType = "json";
         $languageCode = $request->get('language');
         $libraries = $request->get('libraries', []);
-        return ['success' => true, 'data' => $this->editor->getTranslations($libraries, $languageCode)];
+        return [
+            'success' => true,
+            'data' => $this->editor->getTranslations($libraries, $languageCode),
+        ];
     }
 
     /**
      * End-point for filter parameter values according to semantics.
-     *
-     * @param {string} $libraryParameters
      */
-    private function filter($libraryParameters)
+    private function filter(Request $request)
     {
-        $libraryParameters = json_decode($libraryParameters);
+        if (!$request->session()->get('authId')) {
+            throw new UnauthorizedHttpException("Not logged in");
+        }
+        $this->returnType = "json";
+        $libraryParameters = json_decode($request->get('libraryParameters'));
         if (!$libraryParameters) {
             H5PCore::ajaxError($this->core->h5pF->t('Could not parse post data.'), 'NO_LIBRARY_PARAMETERS');
             exit;
         }
-        $validator = new \H5PContentValidator($this->core->h5pF, $this->core);
+        $validator = new H5PContentValidator($this->core->h5pF, $this->core);
         $validator->validateLibrary($libraryParameters, (object)array('options' => array($libraryParameters->library)));
         return [
             'success' => true,
@@ -221,8 +218,16 @@ class AjaxRequest extends \H5PEditorEndpoints
         ];
     }
 
-    private function libraryRebuild(H5PLibrary $H5PLibrary)
+    private function libraryRebuild(Request $request): array
     {
+        /** @var H5PEditorAjaxInterface $editorAjax */
+        $editorAjax = resolve(EditorAjax::class);
+        $canRebuild = $this->core->mayUpdateLibraries();
+        if (!$canRebuild || !$editorAjax->validateEditorToken($request->bearerToken())) {
+            throw new UnauthorizedHttpException("Not logged in");
+        }
+
+        $H5PLibrary = H5PLibrary::findOrFail($request->input('libraryId'));
         $framework = $this->core->h5pF;
 
         $libraries = collect();
@@ -250,7 +255,7 @@ class AjaxRequest extends \H5PEditorEndpoints
 
     private function getLibraryDetails(H5PLibrary $H5PLibrary, $affectedLibraries)
     {
-        $validator = resolve(\H5PValidator::class);
+        $validator = resolve(H5PValidator::class);
         $h5pDataFolderName = $H5PLibrary->getLibraryString(true);
         $tmpLibrariesRelative = 'libraries';
         $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
@@ -281,5 +286,14 @@ class AjaxRequest extends \H5PEditorEndpoints
             }
         }
         return $affectedLibraries;
+    }
+
+    private function imageManipulation(Request $request): string
+    {
+        $imageId = $request->get('imageId');
+
+        /** @var H5PImageAdapterInterface $imageAdapter */
+        $imageAdapter = app(H5PImageAdapterInterface::class);
+        return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
     }
 }
