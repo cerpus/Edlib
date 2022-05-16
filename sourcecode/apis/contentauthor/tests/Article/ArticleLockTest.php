@@ -8,6 +8,7 @@ use App\ArticleCollaborator;
 use App\ContentLock;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -15,7 +16,6 @@ use Tests\Traits\MockAuthApi;
 use Tests\Traits\MockMQ;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\WithFaker;
 
 class ArticleLockTest extends TestCase
 {

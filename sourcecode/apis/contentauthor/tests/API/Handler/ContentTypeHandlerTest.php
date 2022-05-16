@@ -11,11 +11,11 @@ use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\MockResourceApi;
 use Tests\Traits\MockVersioningTrait;
-use Tests\Traits\WithFaker;
 
 class ContentTypeHandlerTest extends TestCase
 {

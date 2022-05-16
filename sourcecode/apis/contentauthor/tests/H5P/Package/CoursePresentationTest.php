@@ -2,8 +2,8 @@
 
 namespace Tests\H5P\Package;
 
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\WithFaker;
 use App\Libraries\H5P\Packages\CoursePresentation;
 
 class CoursePresentationTest extends TestCase

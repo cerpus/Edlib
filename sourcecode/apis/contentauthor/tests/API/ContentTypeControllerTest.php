@@ -6,12 +6,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\H5P\Packages\MultiChoice;
 use App\Libraries\H5P\Packages\QuestionSet;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 
-use Tests\Traits\WithFaker;
 
 class ContentTypeControllerTest extends TestCase
 {
@@ -21,7 +21,6 @@ class ContentTypeControllerTest extends TestCase
     {
         parent::setUp();
         $this->seed(TestH5PSeeder::class);
-        $this->setUpFaker();
     }
 
     /**

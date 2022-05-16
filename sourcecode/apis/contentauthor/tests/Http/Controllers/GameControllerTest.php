@@ -10,21 +10,15 @@ use App\Http\Libraries\License;
 use App\Libraries\Games\Millionaire\Millionaire;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Tests\TestCase;
 use Tests\Traits\MockAuthApi;
-use Tests\Traits\WithFaker;
 
 class GameControllerTest extends TestCase
 {
     use RefreshDatabase, MockAuthApi, WithFaker;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpFaker();
-    }
 
     public function testEdit(): void
     {

@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Foundation\Mix;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\HtmlString;
-use Tests\Traits\WithFaker;
 use Tests\Traits\MockMQ;
 
 abstract class TestCase extends BaseTestCase
@@ -27,10 +26,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUpTraits();
 
         $uses = array_flip(class_uses_recursive(static::class));
-
-        if (isset($uses[WithFaker::class])) {
-            $this->setUpFaker();
-        }
 
         if (isset($uses[MockMQ::class])) {
             $this->setUpMockMQ();

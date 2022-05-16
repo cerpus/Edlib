@@ -3,8 +3,8 @@
 namespace Tests\H5P\Package;
 
 use App\Libraries\H5P\Packages\Column;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Traits\WithFaker;
 
 
 class ColumnTest extends TestCase
@@ -21,7 +21,6 @@ class ColumnTest extends TestCase
     public function alterSource_thenSuccess()
     {
         app()->instance('requestId', 123);
-        $this->setUpFaker();
 
         $columnSemantics = $this->structures['columnWithOneVideoOneTextAndOneCollage'];
         $column = new Column($columnSemantics);

@@ -28,6 +28,7 @@ namespace Tests\H5P\API {
     use App\User;
     use Cerpus\VersionClient\VersionData;
     use Illuminate\Foundation\Testing\RefreshDatabase;
+    use Illuminate\Foundation\Testing\WithFaker;
     use Illuminate\Http\Response;
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
@@ -35,7 +36,6 @@ namespace Tests\H5P\API {
     use Tests\TestCase;
     use Tests\Traits\ContentAuthorStorageTrait;
     use Tests\Traits\MockVersioningTrait;
-    use Tests\Traits\WithFaker;
 
     /**
      * Class H5PImportControllerTest

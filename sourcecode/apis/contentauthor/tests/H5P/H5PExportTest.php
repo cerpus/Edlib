@@ -13,12 +13,12 @@ use Exception;
 use H5PExport as H5PDefaultExport;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Tests\db\TestH5PSeeder;
 use Tests\TestCase;
 use Tests\Traits\ContentAuthorStorageTrait;
 use Tests\Traits\MockH5PAdapterInterface;
-use Tests\Traits\WithFaker;
 use ZipArchive;
 
 class H5PExportTest extends TestCase

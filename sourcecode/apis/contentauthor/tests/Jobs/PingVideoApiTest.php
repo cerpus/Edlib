@@ -5,6 +5,7 @@ namespace Tests\Jobs;
 use App\Libraries\ContentAuthorStorage;
 use Faker\Factory;
 use App\H5PContent;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\H5PContentsVideo;
 use App\Jobs\PingVideoApi;
@@ -19,7 +20,6 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
-use Tests\Traits\WithFaker;
 
 class PingVideoApiTest extends TestCase
 {

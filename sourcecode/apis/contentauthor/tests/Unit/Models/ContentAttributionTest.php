@@ -3,10 +3,10 @@
 namespace Tests\Unit\Models;
 
 use App\Article;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
 use App\ContentAttribution;
-use Tests\Traits\WithFaker;
 use Illuminate\Support\Facades\DB;
 use App\Libraries\DataObjects\Attribution;
 use Illuminate\Foundation\Testing\RefreshDatabase;
