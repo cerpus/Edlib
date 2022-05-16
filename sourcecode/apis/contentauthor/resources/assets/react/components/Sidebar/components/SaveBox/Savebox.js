@@ -152,24 +152,24 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
                     )}
                 </Button>
             </Box>
-            <Box>
-                <Button
-                    id="ca-form-submit-btn"
-                    onClick={onClick(true)}
-                    variant="contained"
-                    color="gray"
-                    disabled={processing}
-                >
-                    {!processing &&
-                        intl.formatMessage({ id: 'SAVEBOX.SAVEDRAFTANDCLOSE' })}
-                    {processing && (
-                        <span>
-                            <i className="fa fa-spinner fa-spin " />
-                            {intl.formatMessage({ id: 'SAVEBOX.PROCESSING' })}
-                        </span>
-                    )}
-                </Button>
-            </Box>
+            {/*<Box>*/}
+            {/*    <Button*/}
+            {/*        id="ca-form-submit-btn"*/}
+            {/*        onClick={onClick(true)}*/}
+            {/*        variant="contained"*/}
+            {/*        color="gray"*/}
+            {/*        disabled={processing}*/}
+            {/*    >*/}
+            {/*        {!processing &&*/}
+            {/*            intl.formatMessage({ id: 'SAVEBOX.SAVEDRAFTANDCLOSE' })}*/}
+            {/*        {processing && (*/}
+            {/*            <span>*/}
+            {/*                <i className="fa fa-spinner fa-spin " />*/}
+            {/*                {intl.formatMessage({ id: 'SAVEBOX.PROCESSING' })}*/}
+            {/*            </span>*/}
+            {/*        )}*/}
+            {/*    </Button>*/}
+            {/*</Box>*/}
         </>
     );
 };
