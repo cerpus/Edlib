@@ -124,7 +124,7 @@ Route::group(['middleware' => ['core.auth']], function () {
 Route::post('api/progress', 'Progress@storeProgress')->name("setProgress");
 Route::get('api/progress', 'Progress@getProgress')->name("getProgress");
 
-Route::match(['GET', 'POST'], '/ajax', 'H5PController@ajaxLoading')->middleware("adaptermode"); // TODO: Refactor into its own controller
+Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->middleware("adaptermode"); // TODO: Refactor into its own controller
 
 Route::post('v1/sessiontest/{id}', 'API\SessionTestController@setValue');
 Route::get('v1/sessiontest/{id}', 'API\SessionTestController@getValue');
