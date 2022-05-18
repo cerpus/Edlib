@@ -43,7 +43,7 @@ class AjaxRequest
         return $this->returnType;
     }
 
-    public function handleAjaxRequest(Request $request): string|array|null|object
+    public function handleAjaxRequest(Request $request): mixed
     {
         $action = $request->input('action');
 
@@ -92,7 +92,7 @@ class AjaxRequest
         exit;
     }
 
-    private function libraries(Request $request): array
+    private function libraries(Request $request): mixed
     {
         $this->returnType = "json";
         $name = $request->input('machineName');
