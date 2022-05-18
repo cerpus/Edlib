@@ -34,11 +34,11 @@ class QuestionSetConverterTest extends TestCase
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
-        $resourceMetaObject = ResourceMetadataDataObject::create([
-            'license' => License::LICENSE_BY_NC,
-            'share' => true,
-            'tags' => ['List', 'of', 'tags'],
-        ]);
+        $resourceMetaObject = new ResourceMetadataDataObject(
+            license: License::LICENSE_BY_NC,
+            share: true,
+            tags: ['List', 'of', 'tags'],
+        );
 
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
@@ -81,11 +81,11 @@ class QuestionSetConverterTest extends TestCase
         QuestionSetQuestionAnswer::factory()->count(4)->create([
             'question_id' => $question->id,
         ]);
-        $resourceMetaObject = ResourceMetadataDataObject::create([
-            'license' => License::LICENSE_BY_NC,
-            'share' => true,
-            'tags' => ['List', 'of', 'tags'],
-        ]);
+        $resourceMetaObject = new ResourceMetadataDataObject(
+            license: License::LICENSE_BY_NC,
+            share: true,
+            tags: ['List', 'of', 'tags'],
+        );
 
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
