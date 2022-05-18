@@ -176,7 +176,7 @@ class Millionaire extends GameBase
         $ownerName = $game->getOwnerName($game->owner);
 
         $editorSetup = EditorConfigObject::create([
-                'useDraft' => Game::isDraftLogicEnabled(),
+                'userPublishEnabled' => Game::isUserPublishEnabled(),
                 'canPublish' => $game->canPublish($request),
                 'canList' => $game->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',

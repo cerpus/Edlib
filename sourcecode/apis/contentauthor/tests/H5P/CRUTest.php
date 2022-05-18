@@ -51,17 +51,6 @@ class CRUTest extends TestCase
         app()->instance(H5pLti::class, $h5pLti);
     }
 
-    private function buildLtiMock($draftAction)
-    {
-        $ltiRequest = $this
-            ->getMockBuilder(LTIRequest::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $ltiRequest->method('getExtUseDraftLogic')->willReturn($draftAction);
-        $ltiRequest->method('getToolConsumerInfoProductFamilyCode')->willReturn("TestTool");
-        return $ltiRequest;
-    }
-
     /** @test */
     public function create_and_update_h5p_using_web_request()
     {
@@ -76,7 +65,7 @@ class CRUTest extends TestCase
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
         $this->setupH5PAdapter([
-            'enableDraftLogic' => false,
+            'isUserPublishEnabled' => false,
             'getAdapterName' => "UnitTest",
         ]);
 
@@ -352,7 +341,7 @@ class CRUTest extends TestCase
     /**
      * @test
      */
-    public function enabledDraftActionAndLTISupport()
+    public function enabledUserPublishActionAndLTISupport()
     {
         $this->expectsEvents(ResourceSaved::class);
         $this->seed(TestH5PSeeder::class);
@@ -367,7 +356,7 @@ class CRUTest extends TestCase
 
         $this->mockH5pLti();
         $this->setupH5PAdapter([
-            'enableDraftLogic' => true,
+            'isUserPublishEnabled' => true,
             'getAdapterName' => "UnitTest"
         ]);
 
@@ -390,7 +379,7 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'isDraft' => 0,
             ])
@@ -415,7 +404,7 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
                 'isDraft' => 0,
             ])
@@ -427,14 +416,14 @@ class CRUTest extends TestCase
     /**
      * @test
      */
-    public function enabledDraftActionAndLTISupport_invalidPublishFlag_thenFails()
+    public function enabledUserPublishActionAndLTISupport_invalidPublishFlag_thenFails()
     {
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
 
         $this->setupH5PAdapter([
-            'enableDraftLogic' => true,
+            'isUserPublishEnabled' => true,
         ]);
 
         $this->withSession([
@@ -452,7 +441,7 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 'invalidValue',
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -461,14 +450,14 @@ class CRUTest extends TestCase
     /**
      * @test
      */
-    public function disabledDraftAction_invalidPublishFlag_thenFails()
+    public function disabledUserPublishAction_invalidPublishFlag_thenFails()
     {
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->mockH5pLti();
 
         $this->setupH5PAdapter([
-            'enableDraftLogic' => false,
+            'isUserPublishEnabled' => false,
         ]);
 
         $this->withSession([
@@ -495,7 +484,7 @@ class CRUTest extends TestCase
     /**
      * @test
      */
-    public function enabledDraftAction_NotOwner()
+    public function enabledUserPublish_NotOwner()
     {
         $owner = User::factory()->make();
         $me = User::factory()->make();
@@ -520,7 +509,7 @@ class CRUTest extends TestCase
         $library = $newContent->library()->first();
 
         $this->setupH5PAdapter([
-            'enableDraftLogic' => true,
+            'isUserPublishEnabled' => true,
             'getAdapterName' => "UnitTest"
         ]);
 

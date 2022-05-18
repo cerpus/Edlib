@@ -374,18 +374,19 @@ abstract class Content extends Model
         return $this->is_draft;
     }
 
-    public static function isDraftLogicEnabled()
+    public static function isUserPublishEnabled(): bool
     {
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        return $adapter->enableDraftLogic();
-//        $sessionKey = sprintf(SessionKeys::EXT_DRAFT_SETTING, $request->get('redirectToken'));
-//        $ltiDraftSetting = $request->hasSession() && $request->session()->get($sessionKey) === true;
-//        return $adapter->enableDraftLogic() === true && $ltiDraftSetting === true;
+        return $adapter->isUserPublishEnabled();
+//        $sessionKey = sprintf(SessionKeys::EXT_USER_PUBLISH_SETTING, $request->get('redirectToken'));
+//        $ltiUserPublishSetting = $request->hasSession() && $request->session()->get($sessionKey) === true;
+//        return $adapter->isUserPublishEnabled() === true && $ltiUserPublishSetting === true;
     }
 
     public function canList(Request $request)
     {
-        if (self::isDraftLogicEnabled() !== true || $this->exists === false) {
+        if (self::isUserPublishEnabled() !== true || $this->exists === false) {
             return true;
         }
 
@@ -395,7 +396,7 @@ abstract class Content extends Model
 
     public function canPublish(Request $request)
     {
-        if (self::isDraftLogicEnabled() !== true || $this->exists === false || $request->importRequest ?? false === true) {
+        if (self::isUserPublishEnabled() !== true || $this->exists === false || $request->importRequest ?? false === true) {
             return true;
         }
 

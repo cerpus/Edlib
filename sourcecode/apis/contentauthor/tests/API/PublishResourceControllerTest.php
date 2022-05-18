@@ -24,7 +24,7 @@ class PublishResourceControllerTest extends TestCase
         $this->withoutMiddleware();
         config([
             'feature' => [
-                'enableDraftLogic' => 'true'
+                'enableUserPublish' => 'true'
             ]
         ]);
 
@@ -39,7 +39,7 @@ class PublishResourceControllerTest extends TestCase
         $this->withoutMiddleware();
         config([
             'feature' => [
-                'enableDraftLogic' => 'true'
+                'enableUserPublish' => 'true'
             ]
         ]);
 

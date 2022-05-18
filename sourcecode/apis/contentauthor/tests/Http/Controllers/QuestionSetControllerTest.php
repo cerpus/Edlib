@@ -498,7 +498,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(false);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -576,7 +576,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(true);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -613,7 +613,7 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
@@ -628,7 +628,7 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
             ])
             ->assertStatus(Response::HTTP_OK);
@@ -641,7 +641,7 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);

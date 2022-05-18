@@ -14,8 +14,9 @@ class PublishResourceController extends Controller
 {
     public function publishResource($resourceId)
     {
+        /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        if ($adapter->enableDraftLogic()) {
+        if ($adapter->isUserPublishEnabled()) {
             $resource = Content::findContentById($resourceId);
             if ($resource && !$resource->is_published) {
                 $resource->is_published = true;

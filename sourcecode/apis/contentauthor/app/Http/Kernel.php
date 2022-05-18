@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use App\Http\Middleware\DraftAction;
+use App\Http\Middleware\UserPublishAction;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
@@ -102,7 +102,7 @@ class Kernel extends HttpKernel
         'game-access' => GameAccess::class,
         'questionset-access' => QuestionSetAccess::class,
         'adaptermode' => AdapterMode::class,
-        'draftaction' => DraftAction::class,
+        'userpublish' => UserPublishAction::class,
     ];
 
     /**

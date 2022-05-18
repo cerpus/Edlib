@@ -105,12 +105,12 @@ class ContentTypeHandlerTest extends TestCase
      *
      * Uses a manually created array for values to test older structures
      */
-    public function createNewQuestionSetFromArrayWithDraftLogic_validData_thenSuccess()
+    public function createNewQuestionSetFromArrayWithUserPublish_validData_thenSuccess()
     {
         $this->setUpResourceApi();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(true);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 

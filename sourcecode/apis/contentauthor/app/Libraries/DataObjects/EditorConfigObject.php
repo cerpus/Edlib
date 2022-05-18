@@ -16,7 +16,7 @@ class EditorConfigObject
 {
     use CreateTrait;
 
-    public $useDraft, $canPublish, $canList, $useLicense = false;
+    public $userPublishEnabled, $canPublish, $canList, $useLicense = false;
 
     protected $contentProperties;
 

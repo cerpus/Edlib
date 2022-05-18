@@ -50,7 +50,7 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(false);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -70,7 +70,7 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(false);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -97,7 +97,7 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(false);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -148,7 +148,7 @@ class ArticleTest extends TestCase
         ]);
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(false);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -184,7 +184,7 @@ class ArticleTest extends TestCase
 
         $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('enableDraftLogic')->willReturn(true);
+        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -196,7 +196,7 @@ class ArticleTest extends TestCase
                 'content' => "New content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'license' => 'BY',
             ])
@@ -215,7 +215,7 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'license' => 'BY-ND',
             ])->assertStatus(Response::HTTP_CREATED);
@@ -233,7 +233,7 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_use_draft_logic' => 1,
+                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
             ])->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);

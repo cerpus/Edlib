@@ -111,7 +111,7 @@ class ApiQuestionsetRequest extends FormRequest
             'questionSetJsonData' => 'sometimes|json',
             'title' => 'required|string',
             'tags' => 'present|array',
-            'isPublished' => [Rule::requiredIf(Content::isDraftLogicEnabled()), 'boolean', new canPublishContent($this->contentModel, $this)],
+            'isPublished' => [Rule::requiredIf(Content::isUserPublishEnabled()), 'boolean', new canPublishContent($this->contentModel, $this)],
             'share' => ['sometimes', new shareContent(), new canPublishContent($this->contentModel, $this, 'list')],
         ];
     }

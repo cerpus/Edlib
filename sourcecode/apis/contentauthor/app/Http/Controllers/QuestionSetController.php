@@ -50,7 +50,7 @@ class QuestionSetController extends Controller
         $this->middleware('core.auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
-        $this->middleware('draftaction', ['only' => ['edit', 'update', 'store', 'create']]);
+        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
         $this->middleware('lti.qs-to-request')->only(['create']);
     }
 
@@ -87,7 +87,7 @@ class QuestionSetController extends Controller
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
         $editorSetup = EditorConfigObject::create([
-                'useDraft' => true,
+                'userPublishEnabled' => true,
                 'canPublish' => true,
                 'canList' => true,
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
@@ -173,10 +173,9 @@ class QuestionSetController extends Controller
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $useDraft = $adapter->enableDraftLogic();
 
         $editorSetup = EditorConfigObject::create([
-                'useDraft' => $useDraft,
+                'userPublishEnabled' => $adapter->isUserPublishEnabled(),
                 'canPublish' => $questionset->canPublish($request),
                 'canList' => $questionset->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',

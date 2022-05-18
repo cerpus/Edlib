@@ -29,7 +29,7 @@ class H5PStorageRequest extends FormRequest
             'isNewLanguageVariant' => 'nullable|boolean',
             'isDraft' => 'required|boolean',
             'isPublished' => [
-                Rule::requiredIf(Content::isDraftLogicEnabled()),
+                Rule::requiredIf(Content::isUserPublishEnabled()),
                 'boolean',
                 new canPublishContent($content, $this, 'publish'),
             ],
