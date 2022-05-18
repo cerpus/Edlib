@@ -30,14 +30,13 @@ class GameHandler
 
         $game->save();
 
-        event(new GameWasSaved($game, ResourceMetadataDataObject::create([
-            'license' => $values['license'],
-            'share' => $values['share'],
-            'reason' => VersionData::CREATE,
-            'owner' => $values['authId'],
-            'session' => Session::all(),
-            'tags' => $values['tags'],
-        ])));
+        event(new GameWasSaved($game, new ResourceMetadataDataObject(
+            license: $values['license'],
+            share: $values['share'],
+            reason: VersionData::CREATE,
+            owner: $values['authId'],
+            tags: $values['tags'],
+        )));
 
         return $game;
     }
@@ -81,17 +80,15 @@ class GameHandler
 
         $game->save();
 
-        event(new GameWasSaved($game, ResourceMetadataDataObject::create([
-            'license' => $request->get('license'),
-            'share' => $request->get('share'),
-            'reason' => $reason,
-            'owner' => Session::get('authId'),
-            'session' => Session::all(),
-            'tags' => $request->get('tags'),
-        ])));
+        event(new GameWasSaved($game, new ResourceMetadataDataObject(
+            license: $request->get('license'),
+            share: $request->get('share'),
+            reason: $reason,
+            owner: Session::get('authId'),
+            tags: $request->get('tags'),
+        )));
 
         return $game;
-
     }
 
     private function handleCopy(Game $game, Request $request)

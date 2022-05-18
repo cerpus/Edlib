@@ -96,11 +96,16 @@ class QuestionSetHandler
     {
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
-        list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter->convert($selectedPresentation, $questionSet, ResourceMetadataDataObject::create([
-            'license' => $request->get('license'),
-            'share' => $request->get('share'),
-            'tags' => $request->get('tags'),
-        ]));
+        list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter
+            ->convert(
+                $selectedPresentation,
+                $questionSet,
+                new ResourceMetadataDataObject(
+                    license: $request->get('license'),
+                    share: $request->get('share'),
+                    tags: $request->get('tags'),
+                ),
+            );
 
         return [$id, $title, $machineName, true, $route, $resourceType];
     }

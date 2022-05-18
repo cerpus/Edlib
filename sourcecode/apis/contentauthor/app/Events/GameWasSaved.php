@@ -10,11 +10,12 @@ class GameWasSaved extends Event
 {
     use SerializesModels;
 
-    public $game, $metadata;
+    public $game;
 
-    public function __construct(Game $game, ResourceMetadataDataObject $metadata)
-    {
+    public function __construct(
+        Game $game,
+        public readonly ResourceMetadataDataObject $metadata,
+    ) {
         $this->game = $game;
-        $this->metadata = $metadata;
     }
 }
