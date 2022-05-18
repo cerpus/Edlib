@@ -13,9 +13,8 @@ class HandlePrivacy
     {
         /** @var \App\Game $game */
         $game = $event->game->fresh();
-        $metadata = $event->metadata;
-        $isPrivate = (mb_strtoupper($metadata->get('share', "PRIVATE")) === 'PRIVATE');
-        $game->is_private = $isPrivate;
+        $game->is_private = !$event->metadata->share;
+
         return $game->save();
     }
 }

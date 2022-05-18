@@ -82,7 +82,7 @@ class GameHandler
 
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $request->get('license'),
-            share: $request->get('share', false),
+            share: $request->get('share'),
             reason: $reason,
             owner: Session::get('authId'),
             tags: $request->get('tags', []),

@@ -13,7 +13,7 @@ class ResourceMetadataDataObject
      */
     public function __construct(
         public readonly mixed $license,
-        public readonly bool $share,
+        public readonly string|null $share = null,
         public readonly string|null $reason = null,
         public readonly int|string|null $owner = null,
         public readonly array $tags = [],
