@@ -13,9 +13,7 @@
          beStrictAboutCoversAnnotation="false"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
-         verbose="true"
-         processIsolation="false"
-         stopOnFailure="false">
+         verbose="true">
     <coverage processUncoveredFiles="true">
         <include>
             <directory suffix=".php">app</directory>
@@ -25,15 +23,16 @@
         <testsuite name="Application Test Suite">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+        <testsuite name="Integration tests">
+            <directory suffix="Test.php">./tests/Integration</directory>
         </testsuite>
-        <testsuite name="Unit">
+        <testsuite name="Unit tests">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_DEBUG" value="true" force="true"/>
         <env name="APP_URL" value="http://localhost"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
