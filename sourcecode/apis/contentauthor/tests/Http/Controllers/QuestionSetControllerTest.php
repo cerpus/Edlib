@@ -608,14 +608,13 @@ class QuestionSetControllerTest extends TestCase
 
         $authId = Str::uuid();
         $this->withSession(["authId" => $authId])
-            ->postJson(route('questionset.store'), [
+            ->post(route('questionset.store'), [
                 'license' => "BY",
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
                 'isPublished' => 0,
             ])
-            ->dump()
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('question_sets', ['title' => "New title", "tags" => "", "is_published" => 0]);
 
