@@ -379,9 +379,6 @@ abstract class Content extends Model
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
         return $adapter->isUserPublishEnabled();
-//        $sessionKey = sprintf(SessionKeys::EXT_USER_PUBLISH_SETTING, $request->get('redirectToken'));
-//        $ltiUserPublishSetting = $request->hasSession() && $request->session()->get($sessionKey) === true;
-//        return $adapter->isUserPublishEnabled() === true && $ltiUserPublishSetting === true;
     }
 
     public function canList(Request $request)

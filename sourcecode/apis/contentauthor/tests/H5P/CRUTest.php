@@ -379,7 +379,6 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'isDraft' => 0,
             ])
@@ -404,7 +403,6 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
                 'isDraft' => 0,
             ])
@@ -441,7 +439,6 @@ class CRUTest extends TestCase
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
                 'redirectToken' => $this->faker->unique()->uuid,
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 'invalidValue',
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);

@@ -27,7 +27,6 @@ class GameController extends Controller
         $this->lti = $h5pLti;
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('game-access', ['only' => ['ltiEdit']]);
-        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
     }
 
     public function show($id)

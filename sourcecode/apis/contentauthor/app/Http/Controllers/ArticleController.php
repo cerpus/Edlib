@@ -50,7 +50,6 @@ class ArticleController extends Controller
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
-        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
 
         $this->lti = $h5pLti;
     }

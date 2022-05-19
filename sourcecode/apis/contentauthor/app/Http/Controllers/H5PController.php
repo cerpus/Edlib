@@ -72,7 +72,6 @@ class H5PController extends Controller
         private H5PLibraryAdmin $h5pLibraryAdmin,
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
-        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
