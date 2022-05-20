@@ -150,7 +150,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
     const { t } = useTranslation();
     const theme = useTheme();
 
-    const forceGridView = useMediaQuery(theme.breakpoints.down('lg'));
+    const forceGridView = useMediaQuery(theme.breakpoints.down(1400));
     const [filtersExpanded, setFiltersExpanded] = React.useState(false);
     const [sortingOrder, setSortingOrder] = React.useState(useDefaultOrder());
     const [page, setPage] = React.useState(0);
