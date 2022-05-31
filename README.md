@@ -76,7 +76,7 @@ If something isn't working the way you expected, please look at [previously logg
 
 ### Translation
 
-Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. See the [Translating Edlib](https://docs.edlib.com/docs/developers/translation) section in the documentation for more info.
+Edlib's user interface is multilingual. Support for new languages can be added without extensive technical knowledge. See the [Translating Edlib](https://docs.edlib.com/docs/developers/contributing/translation) section in the documentation for more info.
 
 ### Translation status
 
