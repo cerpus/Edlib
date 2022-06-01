@@ -17,7 +17,7 @@
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.1.0",
     "prettier": "^2.6.2",
     "supertest": "^6.2.3",
     "swagger-jsdoc": "^6.2.1",
