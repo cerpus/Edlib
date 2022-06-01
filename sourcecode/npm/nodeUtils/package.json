@@ -34,7 +34,7 @@
     "moment-timezone": "^0.5.33",
     "mysql": "^2.18.1",
     "on-finished": "^2.4.1",
-    "redis": "^4.0.6",
+    "redis": "^4.1.0",
     "redis-mock": "^0.56.3",
     "winston": "^3.7.2"
   },
