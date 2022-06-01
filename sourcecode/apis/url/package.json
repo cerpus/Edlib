@@ -22,7 +22,7 @@
     "prettier": "^2.6.2",
     "supertest": "^6.2.3",
     "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.3.0"
+    "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
