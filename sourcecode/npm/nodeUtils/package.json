@@ -25,7 +25,7 @@
     "dotenv": "^15.0.0",
     "dotenv-expand": "^8.0.3",
     "express": "^4.18.1",
-    "helmet": "^5.0.2",
+    "helmet": "^5.1.0",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.1.0",
