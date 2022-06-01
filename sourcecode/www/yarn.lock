@@ -1077,10 +1077,10 @@
     "@babel/helper-validator-option" "^7.16.7"
     "@babel/plugin-transform-typescript" "^7.16.7"
 
-"@babel/runtime@7.17.2", "@babel/runtime@^7.1.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.13.10", "@babel/runtime@^7.14.0", "@babel/runtime@^7.14.5", "@babel/runtime@^7.17.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
-  version "7.17.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.2.tgz#66f68591605e59da47523c631416b18508779941"
-  integrity sha512-hzeyJyMA1YGdJTuWU0e/j4wKXrU4OMFvY2MSlaI9B7VQb0r5cxTE3EAIS2Q7Tn2RIcDkRvTA/v2JsAEhxe99uw==
+"@babel/runtime@7.18.3", "@babel/runtime@^7.1.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.13.10", "@babel/runtime@^7.14.0", "@babel/runtime@^7.14.5", "@babel/runtime@^7.17.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+  version "7.18.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.3.tgz#c7b654b57f6f63cf7f8b418ac9ca04408c4579f4"
+  integrity sha512-38Y8f7YUhce/K7RMwTp7m0uCumpv9hZkitCbBClqQIow1qSbCvGkcegKOXpEWCQLfWmevgRiWokZ1GkpfhbZug==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -2769,12 +2769,12 @@ autoprefixer@^10.2.3:
     picocolors "^1.0.0"
     postcss-value-parser "^4.2.0"
 
-axios-hooks@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/axios-hooks/-/axios-hooks-3.0.1.tgz#e9191814e60878bd1f84de22d44c1edecce7f8fe"
-  integrity sha512-DRsFC5dqZBIxZdLkrkYVg5TvLEudnIrB+PpkTYmGJ3CTab1eZkyHsHXl1ksqrk1IPFMx/feUOyAiNiUcuGaqXA==
+axios-hooks@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/axios-hooks/-/axios-hooks-3.1.0.tgz#0b6152aa3acee5bd9e24b16a15e64a7c53053093"
+  integrity sha512-5/Q7qdA4pzI+JAwt7emeEC+wA0WfHzwd6JS0ThtZae/56/MOPkglHRcYWnOInNZeiM+toEIVbwDKrJSSkqzffQ==
   dependencies:
-    "@babel/runtime" "7.17.2"
+    "@babel/runtime" "7.18.3"
     dequal "2.0.2"
     lru-cache "6.0.0"
 
