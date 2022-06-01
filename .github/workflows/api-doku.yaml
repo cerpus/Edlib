@@ -33,7 +33,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name: Build test image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           tags: "test:latest"
           outputs: "type=docker"
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build and push app
         if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-doku-app:${{ inputs.versionToRelease }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Build and push migration container
         if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-doku-migration:${{ inputs.versionToRelease }}

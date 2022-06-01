@@ -35,7 +35,7 @@ jobs:
           uses: docker/setup-buildx-action@v1
 
         - name: Build to ensure everything works
-          uses: docker/build-push-action@v2
+          uses: docker/build-push-action@v3
           with:
             tags: "build:latest"
             context: ${{ env.workingDirectory }}
@@ -61,7 +61,7 @@ jobs:
         - name: Build and push app
           if: env.shouldPublishImage == '1'
           id: docker_build_app
-          uses: docker/build-push-action@v2
+          uses: docker/build-push-action@v3
           with:
             push: true
             tags: public.ecr.aws/f0t8l9h1/docs-edlib-com:${{ inputs.versionToRelease }}
