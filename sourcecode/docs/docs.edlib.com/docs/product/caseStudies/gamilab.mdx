@@ -5,8 +5,8 @@ sidebar_position: 2
 # Gamilab
 
 ## About Gamilab
-[Gamilab](https://gamilab.com/) is an online platform where you can find and create fun and meaningful educational games. Gamilab uses game elements to motivate and engage players to learn faster and better, and to be more involved in their learning. By using elements like points, stars, highscores and badges Gamilab makes learning feel fun and motivates the player to learn while playing.
-In addition to motivating students, Gamilab offers a complete package for teachers to use in their lessons. Teachers are free to add instructions, tasks or a mix of both into their games. This makes Gamilab especially suited for use in online learning.
+[Gamilab](https://gamilab.com/) is an online platform where you can find and create fun and meaningful educational games. Gamilab uses game elements to motivate and engage players to learn faster and better and be more involved in their learning. Using ingredients like points, stars, high scores, and badges, Gamilab makes learning feel fun and motivates the player to learn while playing.
+In addition to motivating students, Gamilab offers a complete package for teachers to use in their lessons. Teachers are free to add instructions, tasks, or a mix of both into their games. All of the above mentioned make Gamilab especially suited for use in online learning.
 
 <div class="text--center">
     <img class="edlib-image" alt="Gameplay of an Explore game while opening an Edlib Resource" src="/gamilab-explorer-game.png" />
@@ -17,7 +17,7 @@ In addition to motivating students, Gamilab offers a complete package for teache
 ## Different approaches for different needs
 Gamilab currently supports two different game approaches; time-based games and score-based games. Today, the time-based games mainly use the QuestionBank for creating multiple-choice questions, but the creator can choose to create content using Edlib for the "King of the Mountain" game. 
 
-The score-based game type "Explore" is probably where most users utilize Edlib, but they are free to choose between QuestionBank and Edlib here as well. However, using Edlib will make a large number of content types that Edlib provides available. 
+The score-based game type "Explore" is probably where most users utilize Edlib, but they are free to choose between QuestionBank and Edlib here. However, using Edlib will make many content types that Edlib provides available. 
 
 :::info 
 
@@ -31,16 +31,13 @@ More info about the different game modes can be found in [Gamilab’s help artic
 ## How does Gamilab use Edlib?
 
 
-All of the game modes in Gamilab has different nodes where questions or Edlib resources can be added. Through Gamilab’s game editor, the creator has full access to both searching for and creating Edlib resources. 
+All of the game modes in Gamilab have different nodes where questions or Edlib resources can be added. Through Gamilab’s game editor, the creator has full access to searching for and creating Edlib resources. 
 
-
-### Creating content
-
-Currently, Edlib enpower the crator of games to create content the of the following kind
+Currently, Edlib empowers the creator of games to create content the of the following kind
 - Interactivity: H5Ps via the “H5P Hub”
-- Question: a simplified question set generator with two persentation outputs:
+- Question: a simplified question set generator with two presentation outputs:
     - Quiz (H5P)
-    - Millionaire - a minigame based on “Who want’s to become a millionaire?”
+    - Millionaire - a minigame based on “Who wants to become a millionaire?”
 - Text: a plain text document content type 
 
 :::info 
@@ -51,18 +48,41 @@ Learn more about these three ways of creating content and see examples in our us
 
 ### H5P
 
-Through the H5P Hub, the Gamilab user is able to make use of the chosen H5P types that is enabled for Gamilab. 
+#### Creating Content Via The H5P Hub
+The creation of resources starts by selecting the "Create Content" tab in Edlib's header bar. This brings the user to the H5P Hub where the preview and the supported H5P types are listed.
+
+<div class="text--center">
+    <img class="edlib-image" alt="Edlib uses the H5P hub for the purpose of content creation" src="/img/ndla-case-study7.png" />
+    <br/>
+    <em>Image: Edlib uses the H5P hub for the purpose of content creation</em>
+</div> 
+
 
 #### “Max score” - calculating and reporting the correct score to Gamilab
 
-When a user has created an H5P task, Edlib calculates the total score, aka "Max score", and returns it to Gamilab. "Max score" is used in the gameplay to calculate how many percent correct players get on each task. Gamilab also translates the max score into its own score range, meaning that an H5P with a max score of 2 points will result in 200 points in Gamilab.The game creator can also choose to override any score at any time. If overridden, a resource can be edited and questions added without changing the set score on the node. The default score on a node is 100 points when detected to return score. Resources without score will have the score setting deactivated in Gamilab. The game creator can control the player's progression by setting the percentage needed to proceed - a setting that can be found on the paths between each node in "Explore" games. 
+When a user has created an H5P task, Edlib calculates the total score, aka "Max score", and returns it to Gamilab. "Max score" is used in the gameplay to calculate how many percent correct players get on each task. Gamilab also translates the max score into its score range, meaning that an H5P with a max score of 2 points will result in 200 points in Gamilab. The game creator can also choose to override any score at any time. If overridden, a resource can be edited, and questions added without changing the set score on the node. The default score on a node is 100 points when detected to return score. Resources without a score will have the score setting deactivated in Gamilab. The game creator can control the player's progression by setting the percentage needed to proceed - a setting that can be found on the paths between each node in "Explore" games.  
 
+
+#### Customized display - clean H5Ps
+
+All resources launched from Edlib are displayed in a modal within the game. Gamilab has its CSS settings to ensure that the main focus is the content, not the resource wrapping. All H5Ps do, therefore, not have their familiar line "housing" and footer. 
+
+#### Behaviour
+
+When a result from the Edlib resources is received, the Gamilab nodes are set to close as soon as possible. This is to ensure the pace and flow of the game and maintain the gaming experience. If a user fails a task, they simply retry the task to complete and proceed.
 
 
 ### Question
-Question enables the user to create sets of multiple choice questions and finally choosing how these questions should be presented. 
-Currently the user can choose between output in form of an H5P Quiz or as the “Who wants to become a millionaire?” minigame. 
-In order to feed the questions into the two various presentation forms, the Question will go through the technical setup of the question set to verify that the correct amount of questions and answers are in place to convert it. If the set of questions has shortcomings, Edlib will prompt the user to adjust before proceeding is possible.
+Question enables the user to create sets of multiple-choice questions and finally choose a presentation for these questions  
+Currently, the user can choose between output in the form of an H5P Quiz or the “Who wants to become a millionaire?” minigame. 
+To feed the questions into the two various presentation forms, the Question will go through the technical setup of the question set to verify that the correct amount of questions and answers are in place to convert it. If the set of questions has shortcomings, Edlib will prompt the user to adjust before proceeding is possible.
+
+<div class="text--center">
+    <img class="edlib-image" alt="Fill out the question set with questions and answers and choose presentation below" src="/Edlib_questionset1.png" />
+    <br/>
+    <em>Fill out the question set with questions and answers and choose presentation below" minigame</em>
+</div>
+
 
 Example from a "Millionaire" minigame:
 
@@ -71,3 +91,58 @@ Example from a "Millionaire" minigame:
     <br/>
     <em>Gameplay of "Millionaire" minigame</em>
 </div>
+
+#### Text
+
+The Text content type enables the users to create articles consisting of text, links, and linked images that can be displayed embedded at a preferred size. The WYSIWYG editor uses a CKEditor to enrich the users with the desired tools for formatting and editing text.
+The different themes will ensure the article fits within the games.
+
+
+
+## Sharing and reuse
+
+### Copy a game, and all it’s content
+If a user copies a game in Gamilab, the belonging Edlib resources is copied as well, and th e resources are added to “My content” along with the rest of the resources she or he has already created in the context of other games.
+
+### Shared resources
+A user can also find and copy other Edlib resources made available by other users of Gamailb, through “Shared content”. All users can choose wheter they want their resources to be kept private or shared to the other users of Gamilab through the toggle “Show in shared content” while editing the resource.
+
+<div class="text--center">
+    <img class="edlib-image" alt="Shared content sorted by views" src="/Shared_content_sorted_by_views.png" />
+    <br/>
+    <em>Shared content sorted by views" minigame</em>
+</div>
+
+### Search and filter
+Through an intelligent search and a pratical filter, combined with smart sorting, the users should be able to find the resources they need for their games.
+As soon as the user searches for a term, the search general result filtering, changes from “Recently updated” to “Most relevant”. The user can then furthermore narrow down their search by adding filterin on a deciered content type in addition to a fitting license.
+
+We have also made it possible to for users to find the best resources, based on quatity. 
+
+Note: You can save you most used filters based on content types and license at any time. Just do you filtering and hit “Save filter” in the top of the left menu, and your all set.
+
+## Admin Features
+
+#### Version Control
+Gamilab has a vast number of resources and needs to maintain control over the upgrading of library versions. This means that the existing resources in Edlib won't be affected by a system upgrade/installation of a newer version on the same library (H5P content type). Each resource can be individually upgraded to either the next available version or directly to the latest version by the user. In addition, the admin panel enables the maintainers to do a controlled bulk upgrade of all resources from one version to another.
+
+<div class="text--center">
+    <img class="edlib-image" alt="Overview of installed libraries of Course Presentation with content and possibility for bulk upgrade" src="/img/ndla-case-study5.png" />
+    <br/>
+    <em>Image: Overview of installed libraries of Course Presentation with content and possibility for bulk upgrade</em>
+    <br/>
+    <br/>
+</div> 
+
+To ensure consistency regarding content type versions, Edlib will prohibit users from uploading resources with unsupported versions through the H5P hub, making upgrading a task for authorized users only.
+
+#### Enabled H5P Types
+Edlib supports all H5P content types, and Gamilab has chosen the varieties they want to keep in their H5P hub,  
+ensuring only suitable content types. 
+It's important to note that all former H5P content types with content will be visible for filtering and search purposes within Edlib even if the content type has been disabled to create new content.
+
+## Summary
+
+Edlib enriches Gamilab with a more widespread bouquet of content types and enables the creator of content to be more creative. Through different content types, the creator can deliver games adapted to its learners to diversify the tasks.
+
+Reusing own and others' resources is easy, and Edlib keeps it tidy for the user. 
