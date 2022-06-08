@@ -4,15 +4,11 @@
 namespace App\Libraries\H5P\Storage;
 
 use App\H5PLibrary;
-use App\Jobs\H5PFileUpload;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\H5P\Interfaces\H5PFileInterface;
 use App\H5PContentsVideo;
 use App\H5PFile;
 use App\Jobs\PingVideoApi;
-use App\Jobs\SyncRemoteLibraries;
-use App\Libraries\DataObjects\SyncRemoteLibrariesDataObject;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
@@ -24,6 +20,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use League\Flysystem\FileNotFoundException;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
@@ -535,18 +532,16 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $upload;
     }
 
-    /**
-     * @param $filename
-     * @param $title
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     * @throws Exception
-     */
-    public function downloadContent($filename, $title)
+    public function downloadContent(string $filename)
     {
-        return response()->streamDownload(function () use ($filename) {
-            $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
-            echo $this->filesystem->response($path)->sendContent();
-        }, $filename);
+        $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
+        $stream = $this->filesystem->readStream($path);
+
+        if ($stream === null) {
+            throw new RuntimeException('Could not stream '.$filename);
+        }
+
+        return $stream;
     }
 
     public function getDisplayPath(bool $fullUrl = true)
