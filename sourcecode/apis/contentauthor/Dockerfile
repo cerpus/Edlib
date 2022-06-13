@@ -50,7 +50,6 @@ CMD /run-phpunit.sh
 
 FROM node:16-alpine AS jsbuild
 WORKDIR /app
-RUN apk add --no-cache build-base python2
 RUN npm i -g npm node-gyp
 COPY package.json package-lock.json ./
 RUN npm i --legacy-peer-deps
