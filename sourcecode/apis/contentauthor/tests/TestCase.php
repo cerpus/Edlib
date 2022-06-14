@@ -5,7 +5,7 @@ namespace Tests;
 use Illuminate\Foundation\Mix;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\HtmlString;
-use Tests\Traits\MockMQ;
+use Tests\Helpers\MockMQ;
 
 abstract class TestCase extends BaseTestCase
 {
