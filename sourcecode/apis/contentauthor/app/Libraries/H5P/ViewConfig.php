@@ -170,7 +170,7 @@ class ViewConfig implements ConfigInterface
         $contentConfig->exportUrl = route('content-download', ['h5p' => $content['id']]);
         $contentConfig->embedCode = $this->getEmbedCode();
         $contentConfig->resizeCode = $contentConfig->embedCode
-            ? '<script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js"></script>'
+            ? sprintf('<script src="%s"></script>', htmlspecialchars(url('/h5p-php-library/js/h5p-resizer.js')))
             : '';
         $contentConfig->url = UrlHelper::getCurrentFullUrl();
         $contentConfig->title = $content['title'];
