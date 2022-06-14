@@ -224,14 +224,6 @@ If `ext_create_content_default_license` is set you can set the default license w
 
 Value is one of: `PRIVATE`, `CC0`, `BY`, `BY-SA`, `BY-NC`, `BY-ND`, `BY-NC-SA` or `BY-NC-ND`
 
-## `ext_use_draft_logic` (Deprecated)
-See `ext_enable_user_publish`
-
-## `ext_enable_user_publish`
-If `true` the user can set the published state by using a toggle in the UI. If `false` the resource is set as published.
-
-Default value is `true`.
-
 ## How to add params to your LTI request
 
 Example

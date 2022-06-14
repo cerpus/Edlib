@@ -613,7 +613,6 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
@@ -628,7 +627,6 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
             ])
             ->assertStatus(Response::HTTP_OK);
@@ -641,7 +639,6 @@ class QuestionSetControllerTest extends TestCase
                 'questionSetJsonData' => json_encode($json),
                 'share' => 'PRIVATE',
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);

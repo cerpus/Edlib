@@ -196,7 +196,6 @@ class ArticleTest extends TestCase
                 'content' => "New content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'license' => 'BY',
             ])
@@ -215,7 +214,6 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 0,
                 'license' => 'BY-ND',
             ])->assertStatus(Response::HTTP_CREATED);
@@ -233,7 +231,6 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'requestToken' => Str::uuid(),
                 'lti_message_type' => "ltirequest",
-                'ext_enable_user_publish' => 1,
                 'isPublished' => 1,
             ])->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);

@@ -50,7 +50,6 @@ class QuestionSetController extends Controller
         $this->middleware('core.auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
-        $this->middleware('userpublish', ['only' => ['edit', 'update', 'store', 'create']]);
         $this->middleware('lti.qs-to-request')->only(['create']);
     }
 

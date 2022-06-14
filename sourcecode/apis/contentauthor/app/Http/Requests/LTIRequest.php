@@ -149,17 +149,6 @@ class LTIRequest extends Oauth10Request
         return $this->param('ext_behavior_settings');
     }
 
-    public function getExtEnableUserPublish()
-    {
-        if ($this->hasParam('ext_use_draft_logic')) {
-            trigger_error(
-                "Parameter 'ext_use_draft_logic' is deprecated, replace with 'ext_enable_user_publish'",
-                E_USER_DEPRECATED
-            );
-        }
-        return $this->param('ext_enable_user_publish') ??  $this->param('ext_use_draft_logic');
-    }
-
     public function getExtTranslationLanguage()
     {
         return $this->param('ext_translation_language');
