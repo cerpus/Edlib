@@ -11,6 +11,4 @@ interface H5PExternalProviderInterface
     public function storeContent($source, $content);
 
     public function getType():string;
-
-    public function setStorage(CerpusStorageInterface $storage);
 }

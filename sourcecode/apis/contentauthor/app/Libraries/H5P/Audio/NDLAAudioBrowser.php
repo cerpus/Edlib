@@ -9,24 +9,19 @@ use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Http\File;
 
 class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterface
 {
-
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
     const FIND_AUDIOS_URL = '/audio-api/v1/audio';
     const GET_AUDIO_URL = '/audio-api/v1/audio/%s';
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private readonly ClientInterface $client,
+        private readonly CerpusStorageInterface $storage
+    ) {
     }
-
 
     public function findAudio($filterParameters)
     {
@@ -114,8 +109,4 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     {
         return "audio";
     }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
-    }}
+}

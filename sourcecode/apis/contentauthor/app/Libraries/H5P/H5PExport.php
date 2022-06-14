@@ -95,7 +95,6 @@ class H5PExport
         });
 
         if( !is_null($externalProvider)){
-            $externalProvider->setStorage($this->export->h5pC->fs);
             $fileDetails = $externalProvider->storeContent($values, $content);
             $values = array_merge($values, $fileDetails);
         }

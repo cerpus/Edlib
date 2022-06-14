@@ -8,18 +8,14 @@ use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 
 class NDLATextTrack implements H5PExternalProviderInterface
 {
-
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private readonly ClientInterface $client,
+        private readonly CerpusStorageInterface $storage,
+    ) {
     }
 
     public function isTargetType($mimeType, $pathToFile): bool
@@ -63,10 +59,5 @@ class NDLATextTrack implements H5PExternalProviderInterface
     public function getType(): string
     {
         return 'file';
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }

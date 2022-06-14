@@ -2,22 +2,16 @@
 
 namespace App\Libraries\H5P\Image;
 
-
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use Exception;
-use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Http\File;
 
 class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProviderInterface
 {
-
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
     private $mappings = [
         'startX' => 'cropStartX',
         'startY' => 'cropStartY',
@@ -32,14 +26,10 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     const GET_IMAGE_ID = '/image-api/raw/id/%s';
     const GET_IMAGE_NAME = '/image-api/raw/%s';
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
+    public function __construct(
+        private readonly ClientInterface $client,
+        private readonly CerpusStorageInterface $storage,
+    ) {
     }
 
     public function findImages($filterParameters)
