@@ -247,7 +247,7 @@ class QuestionContainer extends Component {
                 cardsComponents={this.getCards(this.props.currentContainer)}
                 onTitleChange={this.handleEditTitle}
                 title={this.props.title}
-                onQuestionBankSelect={this.handleQuestionBankSelection}
+                onQuestionBankSelect={null} // this.handleQuestionBankSelection
                 tags={this.props.tags}
                 onTagsChange={this.handleTagsChange}
                 displayDialog={this.state.displayDialog}

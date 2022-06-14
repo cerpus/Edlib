@@ -88,20 +88,19 @@ class TagsManager extends React.Component {
             return;
         }
 
-
-        Axios.get('/v1/questionsets/tags', {
-            params: {
-                search: searchText
-            }
-        })
-            .then((response) => {
-                this.setState({
-                    typeaheadValues: response.data.keywords,
-                });
-            })
-            .catch((error) => {
-                console.log('(' + error.response.data.request_id + ') ' + error.response.data.message);
-            });
+        // Axios.get('/v1/questionsets/tags', {
+        //     params: {
+        //         search: searchText
+        //     }
+        // })
+        //     .then((response) => {
+        //         this.setState({
+        //             typeaheadValues: response.data.keywords,
+        //         });
+        //     })
+        //     .catch((error) => {
+        //         console.log('(' + error.response.data.request_id + ') ' + error.response.data.message);
+        //     });
     }
 
     renderSuggestion({ suggestion, index, itemProps, highlightedIndex }) {

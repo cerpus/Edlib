@@ -2,13 +2,11 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 class DragText extends H5PBase
 {
-
-    public static $machineName = "H5P.DragText";
-    protected $majorVersion = 1;
-    protected $minorVersion = 8;
+    public static string $machineName = "H5P.DragText";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 8;
 
     public function getPackageSemantics()
     {

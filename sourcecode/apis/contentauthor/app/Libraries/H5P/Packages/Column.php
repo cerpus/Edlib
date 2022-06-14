@@ -2,17 +2,15 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 
 class Column extends H5PBase
 {
-
-    public static $machineName = "H5P.Column";
-    protected $composedComponent = true;
-    protected $majorVersion = 1;
-    protected $minorVersion = 4;
+    public static string $machineName = "H5P.Column";
+    protected bool $composedComponent = true;
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 4;
 
     public function getPackageSemantics()
     {
@@ -54,7 +52,6 @@ class Column extends H5PBase
                 }
             });
         return true;
-
     }
 
     private function getContent()

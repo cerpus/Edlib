@@ -2,13 +2,11 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 class DragQuestion extends H5PBase
 {
-
-    public static $machineName = "H5P.DragQuestion";
-    protected $majorVersion = 1;
-    protected $minorVersion = 11;
+    public static string $machineName = "H5P.DragQuestion";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 11;
 
     public function getPackageSemantics()
     {

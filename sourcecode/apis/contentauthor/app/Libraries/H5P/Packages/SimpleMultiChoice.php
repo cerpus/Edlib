@@ -2,11 +2,9 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 class SimpleMultiChoice extends H5PBase
 {
-
-    public static $machineName = "H5P.SimpleMultiChoice";
+    public static string $machineName = "H5P.SimpleMultiChoice";
 
     public function getElements(): array
     {
@@ -27,10 +25,12 @@ class SimpleMultiChoice extends H5PBase
 
     public function validate(): bool
     {
-        if (empty($this->packageStructure) ||
+        if (
+            empty($this->packageStructure) ||
             empty($this->packageStructure->library) ||
             strpos($this->packageStructure->library, self::$machineName) !== 0 ||
-            empty($this->packageStructure->params->question)) {
+            empty($this->packageStructure->params->question)
+        ) {
             return false;
         }
         return true;
@@ -41,7 +41,7 @@ class SimpleMultiChoice extends H5PBase
         return implode(", ", $this->getAnswersAsArray($index));
     }
 
-    public function getAnswersAsArray($index = null) : array
+    public function getAnswersAsArray($index = null): array
     {
         $alternatives = $this->getAlternatives();
 

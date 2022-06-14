@@ -22,7 +22,7 @@ class ContentTypeHandler
         $this->data = $questionsetData;
         $parsedData = $this->parseQuestionsetData();
 
-        /** @var H5PBase $questionset */
+        /** @var QuestionSet $questionset */
         $questionset = H5PPackageProvider::make(QuestionSet::$machineName);
         $questionsetSemantics = $questionset->populateSemanticsFromData($parsedData);
 

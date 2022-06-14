@@ -4,7 +4,7 @@ namespace App\Libraries\H5P\Packages;
 
 class OpenEndedQuestion extends H5PBase
 {
-    public static $machineName = 'H5P.OpenEndedQuestion';
+    public static string $machineName = 'H5P.OpenEndedQuestion';
 
     public function getElements(): array
     {
@@ -25,10 +25,12 @@ class OpenEndedQuestion extends H5PBase
 
     public function validate(): bool
     {
-        if (empty($this->packageStructure) ||
+        if (
+            empty($this->packageStructure) ||
             empty($this->packageStructure->library) ||
             strpos($this->packageStructure->library, self::$machineName) !== 0 ||
-            empty($this->packageStructure->params->question)) {
+            empty($this->packageStructure->params->question)
+        ) {
             return false;
         }
         return true;

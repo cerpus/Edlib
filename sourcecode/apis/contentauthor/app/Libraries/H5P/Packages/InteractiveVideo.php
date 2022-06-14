@@ -2,16 +2,14 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\PackageInterface;
 
 class InteractiveVideo extends H5PBase
 {
-    public static $machineName = "H5P.InteractiveVideo";
-    protected $composedComponent = true;
-
+    public static string $machineName = "H5P.InteractiveVideo";
+    protected bool $composedComponent = true;
 
     public function getElements(): array
     {
@@ -59,8 +57,10 @@ class InteractiveVideo extends H5PBase
 
     public function validate(): bool
     {
-        if (empty($this->packageStructure) ||
-            empty($this->packageStructure->interactiveVideo->assets->interactions)) {
+        if (
+            empty($this->packageStructure) ||
+            empty($this->packageStructure->interactiveVideo->assets->interactions)
+        ) {
             return false;
         }
         return true;
@@ -89,11 +89,11 @@ class InteractiveVideo extends H5PBase
     public function alterSource($sourceFile, array $newSource)
     {
         $files = $this->getSources();
-        if( empty($files) && !empty($sourceFile) && !empty($newSource) && count($newSource) === 2){
+        if (empty($files) && !empty($sourceFile) && !empty($newSource) && count($newSource) === 2) {
             $files = [(object)["path" => $sourceFile . "#tmp"]];
         }
 
-        if( empty($files)){
+        if (empty($files)) {
             return false;
         }
 
@@ -115,9 +115,9 @@ class InteractiveVideo extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->enableRetry === true){
+                if ($this->behaviorSettings->enableRetry === true) {
                     $values->retryButton = 'on';
-                } elseif( $this->behaviorSettings->enableRetry === false ) {
+                } elseif ($this->behaviorSettings->enableRetry === false) {
                     $values->retryButton = 'off';
                 }
                 return $values;
@@ -132,9 +132,9 @@ class InteractiveVideo extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->showSolution === true){
+                if ($this->behaviorSettings->showSolution === true) {
                     $values->showSolutionButton = 'on';
-                } elseif( $this->behaviorSettings->showSolution === false ) {
+                } elseif ($this->behaviorSettings->showSolution === false) {
                     $values->showSolutionButton = 'off';
                 }
                 return $values;
