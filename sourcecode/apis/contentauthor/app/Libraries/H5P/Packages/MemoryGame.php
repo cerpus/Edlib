@@ -4,11 +4,11 @@ namespace App\Libraries\H5P\Packages;
 
 class MemoryGame extends H5PBase
 {
-    public static $machineName = "H5P.MemoryGame";
-    protected $majorVersion = 1;
-    protected $minorVersion = 2;
+    public static string $machineName = "H5P.MemoryGame";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 2;
 
-    protected $canExtractAnswers = false;
+    protected bool $canExtractAnswers = false;
 
     public function getElements(): array
     {

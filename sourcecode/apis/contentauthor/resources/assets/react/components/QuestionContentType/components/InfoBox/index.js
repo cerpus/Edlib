@@ -27,7 +27,7 @@ function InfoBox(props) {
                     className="infoicon"
                 />
                 <Button
-                    variant="outlined"
+                    variant="contained"
                     onClick={onGenerateClick}
                     className="generate"
                     disabled={processingForm}

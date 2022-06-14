@@ -9,6 +9,7 @@ use App\Events\ContentCreating;
 use App\Events\ContentUpdated;
 use App\Events\ContentUpdating;
 use App\Gametype;
+use App\H5PLibrary;
 use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
@@ -18,20 +19,20 @@ use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\Libraries\QuestionSet\QuestionSetHandler;
 use App\QuestionSet;
 use App\SessionKeys;
 use App\Traits\FractalTransformer;
 use App\Traits\ReturnToCore;
 use App\Transformers\QuestionSetsTransformer;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
-use Throwable;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class QuestionSetController extends Controller
@@ -41,7 +42,7 @@ class QuestionSetController extends Controller
     use ArticleAccess;
     use FractalTransformer;
 
-    const QUESTIONSET_TMP_IMAGE_FOLDER = 'temp' . DIRECTORY_SEPARATOR . 'images';
+    public const QUESTIONSET_TMP_IMAGE_FOLDER = 'temp' . DIRECTORY_SEPARATOR . 'images';
     protected H5pLti $lti;
 
     public function __construct(H5pLti $h5pLti)
@@ -53,19 +54,26 @@ class QuestionSetController extends Controller
         $this->middleware('lti.qs-to-request')->only(['create']);
     }
 
-    private function getQuestionsetContentTypes()
+    private function getQuestionsetContentTypes(): Collection
     {
         $contentTypes = collect();
-        $contentTypes->push([
-            'img' => '/h5pstorage/libraries/H5P.QuestionSet-1.13/icon.svg',
-            "label" => 'Quiz',
-            "outcome" => \App\Libraries\H5P\Packages\QuestionSet::$machineName,
-        ]);
+        if (
+            H5PLibrary::fromMachineName(QuestionSetPackage::$machineName)
+            ->version(QuestionSetPackage::$majorVersion, QuestionSetPackage::$minorVersion)
+            ->get()
+            ->isNotEmpty()
+        ) {
+            $contentTypes->push([
+                'img' => '/graphical/QuizIcon.png',
+                'label' => 'Quiz',
+                'outcome' => QuestionSetPackage::$machineName,
+            ]);
+        }
         if (Gametype::ofName(Millionaire::$machineName)->get()->isNotEmpty()) {
             $contentTypes->push([
-                'img' => '/h5pstorage/libraries/H5P.QuestionSet-1.13/icon.svg',
-                "label" => 'Millionaire',
-                "outcome" => Millionaire::$machineName,
+                'img' => '/graphical/MillionaireIcon.png',
+                'label' => 'Millionaire',
+                'outcome' => Millionaire::$machineName,
             ]);
         }
         return $contentTypes;
@@ -86,26 +94,25 @@ class QuestionSetController extends Controller
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
         $editorSetup = EditorConfigObject::create([
-                'userPublishEnabled' => true,
-                'canPublish' => true,
-                'canList' => true,
-                'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
-        )->toJson();
+            'userPublishEnabled' => true,
+            'canPublish' => true,
+            'canList' => true,
+            'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+        ])->toJson();
 
         $state = QuestionSetStateDataObject::create([
-                'links' => (object)[
-                    "store" => route('questionset.store')
-                ],
-                'questionSetJsonData' => $extQuestionSetData,
-                'contentTypes' => $contenttypes,
-                'license' => License::getDefaultLicense(),
-                'isPublished' => false,
-                'share' => config('h5p.defaultShareSetting'),
-                'redirectToken' => $request->get('redirectToken'),
-                'route' => route('questionset.store'),
-                '_method' => "POST",
-            ])->toJson();
+            'links' => (object)[
+                "store" => route('questionset.store')
+            ],
+            'questionSetJsonData' => $extQuestionSetData,
+            'contentTypes' => $contenttypes,
+            'license' => License::getDefaultLicense(),
+            'isPublished' => false,
+            'share' => config('h5p.defaultShareSetting'),
+            'redirectToken' => $request->get('redirectToken'),
+            'route' => route('questionset.store'),
+            '_method' => "POST",
+        ])->toJson();
 
         return view('question.create')->with(compact([
             'jwtToken',
@@ -165,7 +172,7 @@ class QuestionSetController extends Controller
         ];
 
         $this->addIncludeParse('questions.answers');
-        $questionSetData = $this->buildItem($questionset, new QuestionSetsTransformer);
+        $questionSetData = $this->buildItem($questionset, new QuestionSetsTransformer());
         $contenttypes = $this->getQuestionsetContentTypes();
         $emails = $questionset->getCollaboratorEmails();
         $ownerName = $questionset->getOwnerName($questionset->owner);
@@ -174,12 +181,11 @@ class QuestionSetController extends Controller
         $adapter = app(H5PAdapterInterface::class);
 
         $editorSetup = EditorConfigObject::create([
-                'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-                'canPublish' => $questionset->canPublish($request),
-                'canList' => $questionset->canList($request),
-                'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
-        );
+            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
+            'canPublish' => $questionset->canPublish($request),
+            'canList' => $questionset->canList($request),
+            'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+        ]);
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $questionset->id,
             'createdAt' => $questionset->created_at->toIso8601String(),
@@ -223,7 +229,11 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
-        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update($questionset, $questionsetData, $request);
+        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update(
+            $questionset,
+            $questionsetData,
+            $request
+        );
 
         $content = QuestionSet::find($id);
 

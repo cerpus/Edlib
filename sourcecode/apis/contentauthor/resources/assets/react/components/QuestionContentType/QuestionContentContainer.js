@@ -47,7 +47,7 @@ const QuestionContentContainer = () => {
         return questionsNotReady.length === 0 && answersNotReady.length === 0;
     };
 
-    const onSave = (isDraft) => {
+    const onSave = (isDraft = false) => {
         let attempts = 0;
         const loaderInterval = setInterval(() => {
             if (isFormDataReady() === true || attempts >= 20) {

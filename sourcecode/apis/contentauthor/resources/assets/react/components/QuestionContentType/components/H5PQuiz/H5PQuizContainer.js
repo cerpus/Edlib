@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Answer, Card, Question, rerenderMathJax } from '../utils';
-import { injectIntl, intlShape } from 'react-intl';
+import { FormattedHTMLMessage, FormattedMessage, injectIntl, intlShape } from 'react-intl';
 import Axios from '../../../../utils/axiosSetup';
 import H5PQuizLayout from './H5PQuizLayout';
 
@@ -30,6 +30,7 @@ class H5PQuizContainer extends Component {
     state = {
         additionalAnswers: [],
         isProcessing: false,
+        infoText: '',
     };
 
     constructor(props) {
@@ -42,8 +43,21 @@ class H5PQuizContainer extends Component {
 
     componentDidMount() {
         if (this.needToLoadFromServer()) {
+            this.setState({
+                infoText: (
+                    <FormattedHTMLMessage
+                        id="H5PQUIZ.WE_HAVE_ADDED_SOME_WRONG_ALTERNATIVES"
+                        values={{
+                            'minAnswers': this.props.minimumNumberOfAnswers,
+                        }}
+                    />
+                ),
+            });
             this.loadAlternativesFromServer();
         } else {
+            this.setState({
+                infoText: <FormattedMessage id="H5PQUIZ.ALL_SET_AND_READY_TO_GO" />,
+            });
             this.props.onToggleDialog();
         }
         rerenderMathJax();
@@ -53,7 +67,6 @@ class H5PQuizContainer extends Component {
         return this.props.cards.filter(question => !Array.isArray(question.answers) || question.answers.length < this.props.minimumNumberOfAnswers)
             .length > 0;
     }
-
 
     handleProcessing(isProcessing) {
         this.setState({
@@ -155,11 +168,12 @@ class H5PQuizContainer extends Component {
                 onDeleteCard={this.props.handleDeleteCard}
                 onChange={this.props.onChange}
                 onAddCard={this.handleAddCard}
-                iconUrl="/h5pstorage/libraries/H5P.QuestionSet-1.13/icon.svg"
+                iconUrl="/graphical/QuizIcon.png"
                 onReturnToOriginal={this.props.onReturnToOriginal}
                 onGenerate={this.handleOnGenerate}
                 processingForm={this.state.isProcessing}
                 onChangeProcessing={this.handleProcessing}
+                infoText={this.state.infoText}
             />);
     }
 }

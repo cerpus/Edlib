@@ -1,15 +1,12 @@
 <?php
 
-
 namespace App\Libraries\H5P\Packages;
-
 
 class Video extends H5PBase
 {
-
-    public static $machineName = "H5P.Video";
-    protected $majorVersion = 1;
-    protected $minorVersion = 3;
+    public static string $machineName = "H5P.Video";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 3;
 
     public function getPackageSemantics()
     {
@@ -34,11 +31,11 @@ class Video extends H5PBase
     public function alterSource($sourceFile, array $newSource)
     {
         $files = $this->getSources();
-        if( empty($files) && !empty($sourceFile) && !empty($newSource)){
+        if (empty($files) && !empty($sourceFile) && !empty($newSource)) {
             $files = [(object)["path" => $sourceFile . "#tmp"]];
         }
 
-        if( empty($files)){
+        if (empty($files)) {
             return false;
         }
 

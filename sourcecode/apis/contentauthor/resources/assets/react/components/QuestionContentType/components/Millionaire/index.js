@@ -14,8 +14,6 @@ export { messages as messagesNbNo } from './language/nb-no';
 class MillionaireContainer extends Component {
     static defaultProps = {
         cards: [],
-        minimumNumberOfAnswers: 4,
-        minimumNumberOfQuestions: 15,
         tags: [],
         title: null,
         questionSearchUrl: '/v1/questionsets/search/questions',
@@ -24,8 +22,6 @@ class MillionaireContainer extends Component {
 
     static propTypes = {
         cards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
-        minimumNumberOfAnswers: PropTypes.number,
-        minimumNumberOfQuestions: PropTypes.number,
         handleDeleteCard: PropTypes.func,
         onChange: PropTypes.func,
         onReturnToOriginal: PropTypes.func,
@@ -38,6 +34,9 @@ class MillionaireContainer extends Component {
         questionSearchUrl: PropTypes.string,
         editMode: PropTypes.bool,
     };
+
+    REQUIRED_NUM_ALTERNATIVES = 4;
+    REQUIRED_NUM_QUESTIONS = 15;
 
     state = {
         additionalQuestions: [],
@@ -59,22 +58,94 @@ class MillionaireContainer extends Component {
         if (this.props.editMode === true) {
             return;
         }
-        if (this.needToLoadFromServer()) {
+
+        const messages = [];
+        const qCheck = this.checkQuestionCount();
+        const altCheck = this.checkAlternativesCount();
+
+        if (qCheck === -1 || altCheck.tooFew.length > 0) {
+            if (qCheck === -1) {
+                messages.push(<FormattedMessage id="MILLIONAIRE.TOO_FEW_QUESTIONS" tagName="div" />);
+            }
+            if (altCheck.tooFew.length > 0) {
+                messages.push(
+                    <FormattedMessage
+                        id="MILLIONAIRE.TOO_FEW_ALTERNATIVES"
+                        values={{
+                            'questionList': altCheck.tooFew.join(', '),
+                        }}
+                        tagName="div"
+                    />
+                );
+            }
             this.loadAlternativesFromServer();
+        }
+        if (qCheck === 1) {
+            messages.push(<FormattedMessage id="MILLIONAIRE.TOO_MANY_QUESTIONS" tagName="div" />);
+        }
+        if (altCheck.tooMany.length > 0) {
+            messages.push(
+                <FormattedMessage
+                    id="MILLIONAIRE.TOO_MANY_ALTERNATIVES"
+                    values={{
+                        'questionList': altCheck.tooMany.join(', '),
+                    }}
+                    tagName="div"
+                />
+            );
+        }
+
+        if (messages.length > 0) {
+            messages.unshift(
+                <FormattedMessage
+                    id="MILLIONAIRE.REQUIREMENT_INFO"
+                    values={{
+                        'questionCount': this.REQUIRED_NUM_QUESTIONS,
+                        'altCount': this.REQUIRED_NUM_ALTERNATIVES,
+                    }}
+                    tagName="div"
+                />
+            );
+            this.setState({
+                infoText: messages,
+            });
         } else {
             this.setState({
                 infoText: <FormattedMessage id="MILLIONAIRE.ALL_SET_AND_READY_TO_GO" />,
             });
-            this.props.onToggleDialog();
         }
+
+        this.props.onToggleDialog();
         rerenderMathJax();
     }
 
-    needToLoadFromServer() {
-        return this.props.cards.length < this.props.minimumNumberOfQuestions ||
-            this.props.cards.filter(question => !Array.isArray(question.answers) || question.answers.length < this.props.minimumNumberOfAnswers).length > 0;
+    checkQuestionCount() {
+        return this.props.cards.length === this.REQUIRED_NUM_QUESTIONS ?
+            0 :
+            this.props.cards.length < this.REQUIRED_NUM_QUESTIONS ? -1 : 1;
     }
 
+    checkAlternativesCount() {
+        const tooFew = [];
+        const tooMany = [];
+
+        this.props.cards.forEach(question => {
+            if (Array.isArray(question.answers)) {
+                if (question.answers.length < this.REQUIRED_NUM_ALTERNATIVES) {
+                    tooFew.push(question.order + 1);
+                } else if (question.answers.length > this.REQUIRED_NUM_ALTERNATIVES) {
+                    tooMany.push(question.order + 1);
+                }
+            } else {
+                tooFew.push(question.order + 1);
+            }
+        });
+
+        return {
+            'tooFew': tooFew,
+            'tooMany': tooMany,
+        };
+    }
 
     handleProcessing(isProcessing) {
         this.setState({
@@ -85,8 +156,6 @@ class MillionaireContainer extends Component {
     addQuestions() {
         const {
             cards,
-            minimumNumberOfQuestions,
-            minimumNumberOfAnswers,
             intl,
         } = this.props;
 
@@ -94,17 +163,17 @@ class MillionaireContainer extends Component {
             additionalAnswers,
             additionalQuestions,
         } = this.state;
-        const millionaireCards = cards.length < minimumNumberOfQuestions ? [].concat(cards, additionalQuestions).splice(0, minimumNumberOfQuestions) : [].concat(cards);
+        const millionaireCards = cards.length < this.REQUIRED_NUM_QUESTIONS ? [].concat(cards, additionalQuestions).splice(0, this.REQUIRED_NUM_QUESTIONS) : [].concat(cards);
 
-        if (millionaireCards.length < minimumNumberOfQuestions) {
-            for (let i = millionaireCards.length || 0; i < minimumNumberOfQuestions; i++) {
+        if (millionaireCards.length < this.REQUIRED_NUM_QUESTIONS) {
+            for (let i = millionaireCards.length || 0; i < this.REQUIRED_NUM_QUESTIONS; i++) {
                 millionaireCards.push(this.prepareCard());
             }
         }
 
         millionaireCards.forEach(card => {
-            if (!Array.isArray(card.answers) || card.answers.length < minimumNumberOfAnswers) {
-                for (let i = card.answers.length || 0; i < minimumNumberOfAnswers; i++) {
+            if (!Array.isArray(card.answers) || card.answers.length < this.REQUIRED_NUM_ALTERNATIVES) {
+                for (let i = card.answers.length || 0; i < this.REQUIRED_NUM_ALTERNATIVES; i++) {
                     let newAnswer = additionalAnswers.pop();
                     if (newAnswer === undefined) {
                         newAnswer = new Answer();
@@ -124,7 +193,6 @@ class MillionaireContainer extends Component {
 
 
         this.props.onBulkChange({ cards: millionaireCards });
-        this.props.onToggleDialog();
     }
 
     handleLoadedQuestions(loadedQuestions) {
@@ -166,7 +234,7 @@ class MillionaireContainer extends Component {
 
     prepareCard() {
         const answers = [];
-        for (let i = 0; i < this.props.minimumNumberOfAnswers; i++) {
+        for (let i = 0; i < this.REQUIRED_NUM_ALTERNATIVES; i++) {
             const answer = new Answer();
             answer.answerText = '';
             answer.isCorrect = i === 0;
@@ -206,7 +274,7 @@ class MillionaireContainer extends Component {
     }
 
     handleDisplayAddAnswerButton(answers) {
-        return answers.length < this.props.minimumNumberOfAnswers;
+        return answers.length < this.REQUIRED_NUM_ALTERNATIVES;
     }
 
     render() {
@@ -227,7 +295,7 @@ class MillionaireContainer extends Component {
                 cards={cards}
                 onDeleteCard={this.props.handleDeleteCard}
                 onChange={this.props.onChange}
-                iconUrl="/h5pstorage/libraries/H5P.QuestionSet-1.13/icon.svg"
+                iconUrl="/graphical/MillionaireIcon.png"
                 onReturnToOriginal={this.props.onReturnToOriginal}
                 onGenerate={this.handleOnGenerate}
                 processingForm={this.state.isProcessing}
@@ -235,7 +303,7 @@ class MillionaireContainer extends Component {
                 infoText={this.state.infoText}
                 editMode={this.props.editMode}
                 onAddCard={this.handleAddCard}
-                minimumNumberOfQuestions={this.props.minimumNumberOfQuestions}
+                minimumNumberOfQuestions={this.REQUIRED_NUM_QUESTIONS}
                 onDisplayAddAnswerButton={this.handleDisplayAddAnswerButton}
             />);
     }

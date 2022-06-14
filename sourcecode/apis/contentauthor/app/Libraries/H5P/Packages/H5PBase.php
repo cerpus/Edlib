@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\Libraries\H5P\Interfaces\PackageInterface;
 use App\Traits\H5PBehaviorSettings;
@@ -23,12 +22,13 @@ abstract class H5PBase implements PackageInterface, ContentTypeInterface
 {
     use H5PBehaviorSettings;
 
-    public static $machineName;
-    protected $majorVersion, $minorVersion;
+    public static string $machineName;
+    public static int $majorVersion;
+    public static int $minorVersion;
     protected $answers;
-    protected $composedComponent = false;
+    protected bool $composedComponent = false;
     protected $elements;
-    protected $canExtractAnswers = true;
+    protected bool $canExtractAnswers = true;
     protected $semantics;
 
     public function __construct(string $packageStructure = null)
@@ -38,7 +38,6 @@ abstract class H5PBase implements PackageInterface, ContentTypeInterface
         }
         $this->semantics = $this->getPackageSemantics();
     }
-
 
     public function setAnswers($answers)
     {
@@ -57,7 +56,7 @@ abstract class H5PBase implements PackageInterface, ContentTypeInterface
 
     public function getLibraryWithVersion(): string
     {
-        return sprintf("%s %d.%d", $this::$machineName, $this->majorVersion, $this->minorVersion);
+        return sprintf("%s %d.%d", static::$machineName, static::$majorVersion, static::$minorVersion);
     }
 
     public function alterSemantics(&$semantics)

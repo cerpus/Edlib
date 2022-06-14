@@ -981,14 +981,10 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
-        $sql = "select semantics from h5p_libraries
-          WHERE
-            name=?
-            and major_version = ?
-            and minor_version = ?";
-        $statement = $this->db->prepare($sql);
-        $statement->execute([$machineName, $majorVersion, $minorVersion]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        $row = H5PLibrary::fromLibraryName($machineName)
+            ->version($majorVersion, $minorVersion)
+            ->select('semantics')
+            ->first();
 
         return $row['semantics'];
     }
@@ -1472,4 +1468,3 @@ class Framework implements \H5PFrameworkInterface, Result
         return !is_null($h5pLibrary) && $h5pLibrary->isUpgradable();
     }
 }
-
