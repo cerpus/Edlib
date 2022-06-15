@@ -5,9 +5,6 @@ namespace App\Libraries\H5P;
 use App\H5PFile;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
-use App\Libraries\ContentAuthorStorage;
-use App\Libraries\DataObjects\ContentStorageSettings;
-use Illuminate\Http\UploadedFile;
 
 /**
  * Handles all communication with the database.
@@ -122,28 +119,17 @@ class EditorStorage implements \H5peditorStorage
         return $this->core->fs->alterLibraryFiles($files);
     }
 
-    /**
-     * Saves a file or moves it temporarily. This is often necessary in order to
-     * validate and store uploaded or fetched H5Ps.
-     *
-     * @param string $data Uri of data that should be saved as a temporary file
-     * @param boolean $move_file Can be set to TRUE to move the data instead of saving it
-     *
-     * @return bool|object Returns false if saving failed or the path to the file
-     *  if saving succeeded
-     */
-    public static function saveFileTemporarily($data, $move_file)
+    public static function saveFileTemporarily($data, $move_file): object|false
     {
-        /** @var ContentAuthorStorage $contentAuthorStorage */
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-
         $interface = resolve(\H5PFrameworkInterface::class);
         $path = $interface->getUploadedH5pPath();
 
         if ($move_file) {
+            // $data is a path when $move_file is true, apparently
             if (is_uploaded_file($data)){
-                $uploadedFile = new UploadedFile($data, $path);
-                $result = $uploadedFile->storeAs(ContentStorageSettings::TEMP_DIR, $uploadedFile->getClientOriginalName(), ['disk' => $contentAuthorStorage->getH5pTmpDiskName()]);
+                move_uploaded_file($data, $path);
+            } else {
+                return false;
             }
         } else {
             // Create file from data

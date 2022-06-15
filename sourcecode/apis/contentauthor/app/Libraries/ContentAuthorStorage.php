@@ -35,11 +35,6 @@ class ContentAuthorStorage
         return Storage::getDefaultCloudDriver();
     }
 
-    public function getH5pTmpDiskName(): string
-    {
-        return 'h5pTmp';
-    }
-
     public function getBucketDisk(): FilesystemAdapter
     {
         return Storage::disk($this->getBucketDiskName());
@@ -47,7 +42,7 @@ class ContentAuthorStorage
 
     public function getH5pTmpDisk(): FilesystemAdapter
     {
-        return Storage::disk($this->getH5pTmpDiskName());
+        return Storage::disk('h5pTmp');
     }
 
     public function copyFolder(
