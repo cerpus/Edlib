@@ -91,10 +91,10 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
             link: getUrl('/resources/new/contentauthor?group=questionset'),
             label: t('Spørsmål'),
         },
-        [resourceEditors.ARTICLE]: {
-            link: getUrl('/resources/new/contentauthor?group=article'),
-            label: t('Tekst'),
-        },
+        // [resourceEditors.ARTICLE]: {
+        //     link: getUrl('/resources/new/contentauthor?group=article'),
+        //     label: t('Tekst'),
+        // },
         // [resourceEditors.EMBED]: {
         //     link: '/resources/new/url',
         //     label: 'Link',
