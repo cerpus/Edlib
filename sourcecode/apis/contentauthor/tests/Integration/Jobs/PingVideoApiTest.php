@@ -37,7 +37,7 @@ class PingVideoApiTest extends TestCase
         parent::setUp();
         $this->setUpContentAuthorStorage();
 
-        $this->disk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+        $this->disk = Storage::fake();
         config(['h5p.storage.path' => $this->disk->path("")]);
     }
 

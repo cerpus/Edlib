@@ -4,15 +4,11 @@
 namespace App\Libraries\H5P\Storage;
 
 use App\H5PLibrary;
-use App\Jobs\H5PFileUpload;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\H5P\Interfaces\H5PFileInterface;
 use App\H5PContentsVideo;
 use App\H5PFile;
 use App\Jobs\PingVideoApi;
-use App\Jobs\SyncRemoteLibraries;
-use App\Libraries\DataObjects\SyncRemoteLibrariesDataObject;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
@@ -21,6 +17,7 @@ use Exception;
 use H5PFileStorage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\Flysystem\FileNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -34,8 +31,8 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
     public function __construct(ContentAuthorStorage $contentAuthorStorage)
     {
-        $this->filesystem = $contentAuthorStorage->getBucketDisk();
-        $this->diskName = $contentAuthorStorage->getBucketDiskName();
+        $this->filesystem = Storage::disk();
+        $this->diskName = Storage::getDefaultDriver();
         $this->uploadDisk = $contentAuthorStorage->getH5pTmpDisk();
         $this->contentAuthorStorage = $contentAuthorStorage;
     }

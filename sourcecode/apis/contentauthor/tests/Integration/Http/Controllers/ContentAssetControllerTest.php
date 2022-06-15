@@ -19,7 +19,7 @@ class ContentAssetControllerTest extends TestCase
         parent::setUp();
         $this->setUpContentAuthorStorage();
         $this->testDisk = Storage::disk('testDisk');
-        $this->fakedisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+        $this->fakedisk = Storage::fake();
         config([
             'h5p.storage.path' => $this->fakedisk->path(""),
         ]);

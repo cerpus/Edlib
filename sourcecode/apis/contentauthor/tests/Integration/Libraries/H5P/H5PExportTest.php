@@ -33,7 +33,7 @@ class H5PExportTest extends TestCase
         $this->setUpContentAuthorStorage();
 
         $this->testDisk = Storage::disk('testDisk');
-        $this->exportDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+        $this->exportDisk = Storage::fake();
         config(['h5p.storage.path' => $this->exportDisk->path("")]);
     }
 

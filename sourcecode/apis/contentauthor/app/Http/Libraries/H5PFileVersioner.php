@@ -3,6 +3,7 @@ namespace App\Http\Libraries;
 
 use App\Libraries\ContentAuthorStorage;
 use App\H5PContent;
+use Illuminate\Support\Facades\Storage;
 
 class H5PFileVersioner
 {
@@ -19,7 +20,7 @@ class H5PFileVersioner
         $originalPath = "/content/{$this->originalH5P->id}";
 
         $contentAuthorStorage = app(ContentAuthorStorage::class);
-        $storage = $contentAuthorStorage->getBucketDisk();
+        $storage = Storage::disk();
         $originalH5P = $this->originalH5P;
         $newH5P = $this->newH5P;
 

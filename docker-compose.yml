@@ -141,7 +141,6 @@ services:
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
@@ -162,7 +161,6 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - mysql
       - redis
@@ -182,7 +180,6 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -198,7 +195,6 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -214,7 +210,6 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 

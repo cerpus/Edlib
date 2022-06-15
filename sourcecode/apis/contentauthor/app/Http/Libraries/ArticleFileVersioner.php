@@ -6,6 +6,7 @@ use App\Article;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Traits\HTMLHelper;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleFileVersioner
 {
@@ -24,10 +25,10 @@ class ArticleFileVersioner
     public function copy()
     {
         $originalPath = sprintf(ContentStorageSettings::ARTICLE_PATH, $this->originalArticle->id);
-        $originalFiles = $this->contentAuthorStorage->getBucketDisk()->files($originalPath);
+        $originalFiles = Storage::disk()->files($originalPath);
         foreach ($originalFiles as $originalFile) {
             $newPath = str_replace($this->originalArticle->id, $this->newArticle->id, $originalFile);
-            $this->contentAuthorStorage->getBucketDisk()->copy($originalFile, $newPath);
+            Storage::disk()->copy($originalFile, $newPath);
         }
 
         return $this;

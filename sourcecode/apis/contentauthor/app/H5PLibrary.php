@@ -2,11 +2,11 @@
 
 namespace App;
 
-use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class H5PLibrary
@@ -208,10 +208,8 @@ class H5PLibrary extends Model
 
     public function supportsMaxScore(): bool
     {
-        /** @var ContentAuthorStorage $contentAuthorStorage */
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
         $libraryLocation = sprintf('libraries/%s/presave.js', self::getLibraryString(true));
-        if ($contentAuthorStorage->getBucketDisk()->exists($libraryLocation)){
+        if (Storage::disk()->exists($libraryLocation)){
             return true;
         }
         return false;

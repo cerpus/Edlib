@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Libraries\ContentAuthorStorage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -20,7 +21,7 @@ class ContentAssetController
 
     public function __invoke($path, Request $request)
     {
-        if (!$this->contentAuthorStorage->getBucketDisk()->exists($path)) {
+        if (!Storage::disk()->exists($path)) {
             throw new NotFoundHttpException('File not found');
         }
 
@@ -32,14 +33,14 @@ class ContentAssetController
             'ETag' => md5($path . request()->input('ver')),
             'Cache-Control' => 'public, max-age=604800, immutable',
             'Content-Type' => $detector->detectMimeTypeFromPath($path),
-            'Content-Length' => $this->contentAuthorStorage->getBucketDisk()->size($path),
+            'Content-Length' => Storage::disk()->size($path),
             'Content-Disposition' => $response->headers->makeDisposition(
                 'inline', $filename
             ),
         ]);
 
         $response->setCallback(function () use ($path) {
-            $stream = $this->contentAuthorStorage->getBucketDisk()->readStream($path);
+            $stream = Storage::disk()->readStream($path);
             fpassthru($stream);
             fclose($stream);
         });

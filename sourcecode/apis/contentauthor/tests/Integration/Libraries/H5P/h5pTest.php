@@ -8,6 +8,7 @@ use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Tests\Helpers\ContentAuthorStorageTrait;
@@ -46,17 +47,17 @@ class h5pTest extends TestCase
 
     private function getTempDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path('');
+        return Storage::disk()->path('');
     }
 
     private function getEditorDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path(self::testEditorDirectory);
+        return Storage::disk()->path(self::testEditorDirectory);
     }
 
     private function getContentDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path(self::testContentDirectory);
+        return Storage::disk()->path(self::testContentDirectory);
     }
 
     private function createUnitTestDirectories()

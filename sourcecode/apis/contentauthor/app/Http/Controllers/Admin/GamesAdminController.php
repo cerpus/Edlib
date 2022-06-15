@@ -53,7 +53,7 @@ class GamesAdminController extends Controller
         // Copy files to game uploads disk
         collect($extractedFiles)->each(function ($file) {
             $path = sprintf(ContentStorageSettings::GAMES_PATH, $file);
-            $this->contentAuthorStorage->getBucketDisk()->put($path, Storage::disk('tmp')->get($file));
+            Storage::disk()->put($path, Storage::disk('tmp')->get($file));
         });
 
         // update database

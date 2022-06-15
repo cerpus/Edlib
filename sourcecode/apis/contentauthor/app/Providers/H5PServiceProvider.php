@@ -175,11 +175,7 @@ class H5PServiceProvider extends ServiceProvider
             return $instance ?? null;
         });
 
-        $this->app->singletonIf('H5PFilesystem', function ($app) {
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            return $contentAuthorStorage->getBucketDisk();
-        });
+        $this->app->singletonIf('H5PFilesystem', fn() => Storage::disk());
 
         $this->app->bind(CerpusStorageInterface::class, function ($app, $config) {
             /** @var App $app */
