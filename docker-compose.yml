@@ -140,6 +140,7 @@ services:
       test: [CMD, curl, -f, http://localhost]
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
+      - ./sourcecode/apis/contentauthor/storage/app:/app/public/h5pstorage
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:9000"
