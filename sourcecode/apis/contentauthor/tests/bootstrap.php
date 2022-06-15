@@ -4,10 +4,7 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Artisan;
 
-$root = realpath(dirname(__DIR__));
-
-require $root . DIRECTORY_SEPARATOR . "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
-unset($root);
+require __DIR__.'/../vendor/autoload.php';
 
 class bootstrap
 {

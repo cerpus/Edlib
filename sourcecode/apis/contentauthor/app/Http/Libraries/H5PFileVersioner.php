@@ -16,7 +16,7 @@ class H5PFileVersioner
 
     public function copy()
     {
-        $originalPath = DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . $this->originalH5P->id;
+        $originalPath = "/content/{$this->originalH5P->id}";
 
         $contentAuthorStorage = app(ContentAuthorStorage::class);
         $storage = $contentAuthorStorage->getBucketDisk();
