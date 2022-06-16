@@ -28,7 +28,6 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Storage;
-    use Tests\Helpers\ContentAuthorStorageTrait;
     use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
 
@@ -38,13 +37,7 @@ namespace Tests\Integration\Libraries\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, MockVersioningTrait, WithFaker, ContentAuthorStorageTrait;
-
-        protected function setUp(): void
-        {
-            parent::setUp();
-            $this->setUpContentAuthorStorage();
-        }
+        use RefreshDatabase, MockVersioningTrait, WithFaker;
 
         private function _setUp(): void
         {
@@ -78,7 +71,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->_setUp();
             $this->setupAdapter(false, false);
 
-            $fakeDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+            $fakeDisk = Storage::fake();
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             collect([
@@ -150,7 +143,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->_setUp();
             $this->setupAdapter(false, true);
 
-            $fakeDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+            $fakeDisk = Storage::fake();
             config(['h5p.storage.path' => $fakeDisk->path("")]);
             app()->instance('requestId', 123);
             $user = User::factory()->make();
@@ -211,7 +204,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->_setUp();
             $this->setupAdapter(true, false);
 
-            $fakeDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+            $fakeDisk = Storage::fake();
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             $title = "Text about PhpUnit";
@@ -270,7 +263,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->withoutMiddleware();
             $_SERVER['REQUEST_METHOD'] = "POST";
 
-            $fakeDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+            $fakeDisk = Storage::fake();
             config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             $this

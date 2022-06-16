@@ -7,21 +7,15 @@ use App\File;
 use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Tests\Helpers\ContentAuthorStorageTrait;
 
 class ArticleFileVersionerTest extends TestCase
 {
-    use RefreshDatabase, ContentAuthorStorageTrait;
+    use RefreshDatabase;
 
     protected $originalArticle, $newArticle;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpContentAuthorStorage();
-    }
 
     public function setUpOriginal()
     {
@@ -38,12 +32,12 @@ class ArticleFileVersionerTest extends TestCase
         $originalFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $this->originalArticle->id, 'tree.jpg');
         $fromFile = base_path('tests/files/tree.jpg');
 
-        $this->contentAuthorStorage->getBucketDisk()->put($originalFile, file_get_contents($fromFile));
+        Storage::disk()->put($originalFile, file_get_contents($fromFile));
 
         $file = new File();
         $file->name = 'tree.jpg';
         $file->original_name = 'tree.jpg';
-        $file->size = $this->contentAuthorStorage->getBucketDisk()->size($originalFile);
+        $file->size = Storage::disk()->size($originalFile);
         $file->mime = 'image/jpeg';
 
         $this->originalArticle->files()->save($file);
@@ -52,9 +46,10 @@ class ArticleFileVersionerTest extends TestCase
     public function tearDown(): void
     {
         // Remove directories
-        $directories = $this->contentAuthorStorage->getBucketDisk()->directories('/');
-        collect($directories)->each(function ($directory) {
-            $this->contentAuthorStorage->getBucketDisk()->deleteDirectory($directory);
+        $disk = Storage::disk();
+        $directories = $disk->directories('/');
+        collect($directories)->each(function ($directory) use ($disk) {
+            $disk->deleteDirectory($directory);
         });
     }
 
@@ -69,7 +64,7 @@ class ArticleFileVersionerTest extends TestCase
         $originalFileCount = $this->originalArticle->files()->count();
         $this->assertEquals(1, $originalFileCount);
         $originalPath = '/article-uploads/' . $this->originalArticle->id;
-        $this->assertCount(1, $this->contentAuthorStorage->getBucketDisk()->files($originalPath));
+        $this->assertCount(1, Storage::disk()->files($originalPath));
     }
 
     public function testFileCopy()
@@ -81,8 +76,8 @@ class ArticleFileVersionerTest extends TestCase
         ]);
         $articleFileVersioner = new ArticleFileVersioner($this->originalArticle, $this->newArticle);
         $articleFileVersioner->copy();
-        $this->assertTrue($this->contentAuthorStorage->getBucketDisk()->has('/article-uploads/' . $this->originalArticle->id . '/tree.jpg'));
-        $this->assertTrue($this->contentAuthorStorage->getBucketDisk()->has('/article-uploads/' . $this->newArticle->id . '/tree.jpg'));
+        $this->assertTrue(Storage::disk()->has('/article-uploads/' . $this->originalArticle->id . '/tree.jpg'));
+        $this->assertTrue(Storage::disk()->has('/article-uploads/' . $this->newArticle->id . '/tree.jpg'));
     }
 
     public function testDatabaseUpdate()
@@ -112,7 +107,7 @@ class ArticleFileVersionerTest extends TestCase
         $newArticle = $articleFileVersioner->copy()->updateDatabase()->rewriteFilePath()->getNewArticle();
 
         $this->assertCount(1, $newArticle->files);
-        $this->assertTrue($this->contentAuthorStorage->getBucketDisk()->has('/article-uploads/' . $newArticle->id . '/tree.jpg'));
+        $this->assertTrue(Storage::disk()->has('/article-uploads/' . $newArticle->id . '/tree.jpg'));
         $this->assertNotEquals($newArticle->content, $this->originalArticle->content);
         $this->assertNotFalse(strstr($this->originalArticle->content, '/' . $this->originalArticle->id . '/'));
         $this->assertNotFalse(strstr($newArticle->content, '/' . $newArticle->id . '/'));

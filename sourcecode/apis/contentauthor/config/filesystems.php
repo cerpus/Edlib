@@ -19,19 +19,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Cloud Filesystem Disk
-    |--------------------------------------------------------------------------
-    |
-    | Many applications store files both locally and in the cloud. For this
-    | reason, you may specify a default "cloud" driver here. This driver
-    | will be bound as the Cloud disk implementation in the container.
-    |
-    */
-
-    'cloud' => env('FILESYSTEM_CLOUD', 's3'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -54,16 +41,18 @@ return [
             'driver' => 'local',
             'root'   => storage_path('logs'),
         ],
-        'localBucket' => [ // used when running on docker compose setup locally
-            'driver' => 'local',
-            'root' => '/buckets/main_bucket',
-        ],
         's3' => [ // used when running on AWS
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+        ],
+        // temporary directory for test files
+        // this has to be its own directory, or your files will go missing!
+        'test' => [
+            'driver' => 'local',
+            'root' => '/tmp/contentauthor-test',
         ],
         'tmp' => [ // temporary folder for contentauthor
             'driver' => 'local',

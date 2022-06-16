@@ -4,6 +4,8 @@ env:
     value: {{ .Values.contentauthor.appKey | quote }}
   - name: "APP_ENV"
     value: "production"
+  - name: "FILESYSTEM_DRIVER"
+    value: "s3"
   - name: "MAIL_DRIVER"
     value: "smtp"
   - name: "MAIL_HOST"

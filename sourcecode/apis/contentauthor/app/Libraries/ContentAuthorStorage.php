@@ -7,6 +7,10 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * @deprecated Please don't add more stuff, we want to migrate to using
+ *     Laravel's filesystem abstraction directly.
+ */
 class ContentAuthorStorage
 {
     private string $assetsBaseUrl;
@@ -30,19 +34,9 @@ class ContentAuthorStorage
         return $this->assetsBaseUrl;
     }
 
-    public function getBucketDiskName(): string
-    {
-        return Storage::getDefaultCloudDriver();
-    }
-
     public function getH5pTmpDiskName(): string
     {
         return 'h5pTmp';
-    }
-
-    public function getBucketDisk(): FilesystemAdapter
-    {
-        return Storage::disk($this->getBucketDiskName());
     }
 
     public function getH5pTmpDisk(): FilesystemAdapter

@@ -2,7 +2,7 @@
 
 namespace Tests\Helpers;
 
-use App\Libraries\ContentAuthorStorage;
+use Illuminate\Support\Facades\Storage;
 
 trait VersionedH5PTrait
 {
@@ -18,7 +18,7 @@ trait VersionedH5PTrait
         collect(['audios', 'files', 'images', 'videos'])
             ->each(function ($dirName) use ($contentId) {
                 $directory = "/content/$contentId/$dirName";
-                app(ContentAuthorStorage::class)->getBucketDisk()->makeDirectory($directory);
+                Storage::disk()->makeDirectory($directory);
             });
 
     }
@@ -26,7 +26,7 @@ trait VersionedH5PTrait
     public function deleteDirectoriesAfterTest()
     {
         $this->beforeApplicationDestroyed(function () {
-            app(ContentAuthorStorage::class)->getBucketDisk()->deleteDirectory('content');
+            Storage::disk()->deleteDirectory('content');
         });
     }
 }

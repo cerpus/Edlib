@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\H5PLibrary;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\H5pPresave;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 
 class PublishPresave extends Command
 {
@@ -27,7 +27,6 @@ class PublishPresave extends Command
 
     public function __construct(
         private readonly H5pPresave $presave,
-        private readonly ContentAuthorStorage $cas,
     ) {
         parent::__construct();
     }
@@ -37,7 +36,7 @@ class PublishPresave extends Command
      */
     public function handle(): void
     {
-        $uploadDisk = $this->cas->getBucketDisk();
+        $uploadDisk = Storage::disk();
 
         H5PLibrary::whereIn('name', $this->presave->getAllLibrariesWithScripts())
             ->orderBy('name')
