@@ -11,14 +11,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Tests\Helpers\ContentAuthorStorageTrait;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
 class h5pTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, ContentAuthorStorageTrait;
+    use RefreshDatabase, TestHelpers;
 
     const testContentDirectory = "content";
     const testEditorDirectory = "editor";
@@ -28,13 +27,6 @@ class h5pTest extends TestCase
     public function assertPreConditions(): void
     {
         $this->seed(TestH5PSeeder::class);
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->setUpContentAuthorStorage();
     }
 
     public function tearDown(): void

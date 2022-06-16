@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
@@ -15,13 +14,6 @@ use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 
 class GamesAdminController extends Controller
 {
-    private ContentAuthorStorage $contentAuthorStorage;
-
-    public function __construct(ContentAuthorStorage $contentAuthorStorage)
-    {
-        $this->contentAuthorStorage = $contentAuthorStorage;
-    }
-
     public function index()
     {
         $gameTypes = Gametype::orderBy('name')

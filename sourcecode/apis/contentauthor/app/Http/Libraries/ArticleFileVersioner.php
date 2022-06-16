@@ -3,7 +3,6 @@
 namespace App\Http\Libraries;
 
 use App\Article;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Traits\HTMLHelper;
 use Illuminate\Support\Facades\Storage;
@@ -12,14 +11,12 @@ class ArticleFileVersioner
 {
     use HTMLHelper;
 
-    private ContentAuthorStorage $contentAuthorStorage;
     protected $originalArticle, $newArticle;
 
     public function __construct(Article $originalArticle, Article $newArticle)
     {
         $this->originalArticle = $originalArticle;
         $this->newArticle = $newArticle;
-        $this->contentAuthorStorage = app(ContentAuthorStorage::class);
     }
 
     public function copy()

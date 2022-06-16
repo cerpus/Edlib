@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Libraries\ContentAuthorStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
@@ -12,13 +11,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ContentAssetController
 {
-    private ContentAuthorStorage $contentAuthorStorage;
-
-    public function __construct(ContentAuthorStorage $contentAuthorStorage)
-    {
-        $this->contentAuthorStorage = $contentAuthorStorage;
-    }
-
     public function __invoke($path, Request $request)
     {
         if (!Storage::disk()->exists($path)) {

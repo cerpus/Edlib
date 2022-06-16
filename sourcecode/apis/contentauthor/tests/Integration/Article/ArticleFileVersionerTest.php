@@ -10,19 +10,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Tests\Helpers\ContentAuthorStorageTrait;
 
 class ArticleFileVersionerTest extends TestCase
 {
-    use RefreshDatabase, ContentAuthorStorageTrait;
+    use RefreshDatabase;
 
     protected $originalArticle, $newArticle;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->setUpContentAuthorStorage();
-    }
 
     public function setUpOriginal()
     {

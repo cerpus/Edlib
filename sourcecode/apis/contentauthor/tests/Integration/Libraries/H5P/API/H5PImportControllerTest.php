@@ -28,7 +28,6 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Storage;
-    use Tests\Helpers\ContentAuthorStorageTrait;
     use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
 
@@ -38,13 +37,7 @@ namespace Tests\Integration\Libraries\H5P\API {
      */
     class H5PImportControllerTest extends TestCase
     {
-        use RefreshDatabase, MockVersioningTrait, WithFaker, ContentAuthorStorageTrait;
-
-        protected function setUp(): void
-        {
-            parent::setUp();
-            $this->setUpContentAuthorStorage();
-        }
+        use RefreshDatabase, MockVersioningTrait, WithFaker;
 
         private function _setUp(): void
         {

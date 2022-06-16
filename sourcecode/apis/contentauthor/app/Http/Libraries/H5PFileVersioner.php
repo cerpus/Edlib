@@ -18,8 +18,6 @@ class H5PFileVersioner
     public function copy()
     {
         $originalPath = "/content/{$this->originalH5P->id}";
-
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
         $storage = Storage::disk();
         $originalH5P = $this->originalH5P;
         $newH5P = $this->newH5P;
