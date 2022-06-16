@@ -9,6 +9,8 @@ use App\Libraries\H5P\Dataobjects\H5PCopyrightAuthorDataObject;
 use App\Libraries\H5P\Dataobjects\H5PCopyrightDataObject;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use Illuminate\Support\Collection;
+use JsonException;
+use const JSON_THROW_ON_ERROR;
 
 class H5PCopyright
 {
@@ -30,7 +32,7 @@ class H5PCopyright
     /**
      * @param H5PContent $content
      * @return array
-     * @throws \Exception
+     * @throws JsonException
      */
     public function getCopyrights(H5PContent $content)
     {
@@ -42,10 +44,7 @@ class H5PCopyright
             $contentCopy['library'] = $content->library->getLibraryH5PFriendly();
             $content->filtered = $this->h5pCore->filterParameters($contentCopy);
         }
-        $filtered = json_decode($content->filtered, true);
-        if( json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception(json_last_error_msg());
-        }
+        $filtered = json_decode($content->filtered, true, flags: JSON_THROW_ON_ERROR);
         $this->traverseFiltered(collect($filtered));
 
         return [
