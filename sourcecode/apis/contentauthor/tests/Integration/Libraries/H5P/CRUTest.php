@@ -224,12 +224,12 @@ class CRUTest extends TestCase
 
     private function getTempDirectory()
     {
-        return sys_get_temp_dir().'/'.self::testDirectory;
+        return sys_get_temp_dir() . '/' . self::testDirectory;
     }
 
     private function getEditorDirectory()
     {
-        return $this->getTempDirectory().'/'.self::testEditorDirectory;
+        return $this->getTempDirectory() . '/' . self::testEditorDirectory;
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Tests;
 
 use Illuminate\Support\Facades\Artisan;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 class bootstrap
 {
