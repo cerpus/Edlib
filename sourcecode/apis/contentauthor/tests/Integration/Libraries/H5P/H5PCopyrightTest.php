@@ -8,34 +8,25 @@ use App\H5PLibrary;
 use App\Libraries\H5P\Dataobjects\H5PCopyrightAuthorDataObject;
 use App\Libraries\H5P\Dataobjects\H5PCopyrightDataObject;
 use App\Libraries\H5P\H5PCopyright;
-use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
+use JsonException;
 use Tests\TestCase;
 
 class H5PCopyrightTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
+    public function testThrowsJsonExceptionOnInvalidData()
     {
-        parent::setUp();
+        $h5pContent = H5PContent::factory()
+            ->has(H5PLibrary::factory(), 'library')
+            ->create(['filtered' => 'invalid json']);
+        $h5pCopyright = new H5PCopyright(app(H5PCore::class));
 
-        Storage::fake('h5p-uploads');
-    }
+        $this->expectException(JsonException::class);
 
-    /**
-     * @test
-     */
-    public function invalidData()
-    {
-        $this->expectException(Exception::class);
-
-        $h5pContent = H5PContent::factory()->create([
-            'filtered' => null,
-        ]);
-        (new H5PCopyright())->getCopyrights($h5pContent);
+        $h5pCopyright->getCopyrights($h5pContent);
     }
 
     /**

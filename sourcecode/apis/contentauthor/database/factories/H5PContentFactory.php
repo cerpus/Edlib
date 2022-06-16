@@ -9,7 +9,6 @@ class H5PContentFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->numberBetween(),
             'created_at' => $this->faker->unixTime,
             'updated_at' => $this->faker->unixTime,
             'user_id' => $this->faker->uuid,
