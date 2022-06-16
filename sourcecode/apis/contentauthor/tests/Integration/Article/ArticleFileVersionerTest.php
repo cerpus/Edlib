@@ -36,7 +36,7 @@ class ArticleFileVersionerTest extends TestCase
 '
         ]);
         $originalFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $this->originalArticle->id, 'tree.jpg');
-        $fromFile = base_path() . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'tree.jpg';
+        $fromFile = base_path('tests/files/tree.jpg');
 
         $this->contentAuthorStorage->getBucketDisk()->put($originalFile, file_get_contents($fromFile));
 

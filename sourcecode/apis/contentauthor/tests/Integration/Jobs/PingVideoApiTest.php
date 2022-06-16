@@ -43,13 +43,8 @@ class PingVideoApiTest extends TestCase
 
     private function createVideo($contentId, $filename)
     {
-        $newFile = 'content' . DIRECTORY_SEPARATOR . $contentId . DIRECTORY_SEPARATOR . $filename;
-        $fromFile = implode(DIRECTORY_SEPARATOR, [
-            base_path(),
-            'tests',
-            'files',
-            'sample.mp4'
-        ]);
+        $newFile = "content/$contentId/$filename";
+        $fromFile = base_path('tests/files/sample.mp4');
 
         $this->disk->put($newFile, file_get_contents($fromFile));
         $this->disk->assertExists($newFile);
