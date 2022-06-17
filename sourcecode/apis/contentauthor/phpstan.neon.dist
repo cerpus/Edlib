@@ -1,0 +1,15 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - bootstrap/app.php
+        - config
+        - database
+        - public/index.php
+        - resources/lang
+        - routes
+        - tests
