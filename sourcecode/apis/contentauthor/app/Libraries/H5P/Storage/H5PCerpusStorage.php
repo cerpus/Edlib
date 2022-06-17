@@ -19,8 +19,10 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use League\Flysystem\FileNotFoundException;
 use Illuminate\Support\Facades\Log;
+use League\Flysystem\FilesystemException;
+use League\Flysystem\StorageAttributes;
+use Psr\Log\LoggerInterface;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
@@ -29,7 +31,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     private string $diskName;
     private ContentAuthorStorage $contentAuthorStorage;
 
-    public function __construct(ContentAuthorStorage $contentAuthorStorage)
+    public function __construct(
+        ContentAuthorStorage $contentAuthorStorage,
+        private readonly LoggerInterface $logger,
+    )
     {
         $this->filesystem = Storage::disk();
         $this->diskName = Storage::getDefaultDriver();
@@ -132,14 +137,14 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         $ignoredFiles = $this->getIgnoredFiles("{$source}/.h5pignore");
 
         collect($this->uploadDisk->listContents($source, true))
-            ->filter(function ($fileProperties) use ($ignoredFiles) {
-                $file = $fileProperties['basename'];
+            ->filter(function (StorageAttributes $fileProperties) use ($ignoredFiles) {
+                $file = basename($fileProperties->path());
                 return ($file != '.') && ($file != '..') && $file != '.git' && $file != '.gitignore' && !in_array($file, $ignoredFiles); //TODO check directories recursively
             })
-            ->each(function ($fileProperties) use ($destination, $source) {
-                if ($fileProperties['type'] !== 'dir') {
-                    $file = Str::after($fileProperties['path'], $source);
-                    $this->filesystem->putStream("{$destination}/{$file}", $this->uploadDisk->readStream("{$source}{$file}"));
+            ->each(function (StorageAttributes $fileProperties) use ($destination, $source) {
+                if (!$fileProperties->isDir()) {
+                    $file = Str::after($fileProperties->path(), $source);
+                    $this->filesystem->writeStream("{$destination}/{$file}", $this->uploadDisk->readStream("{$source}{$file}"));
                 }
             });
     }
@@ -152,16 +157,12 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     private function getIgnoredFiles($file)
     {
-        try {
-            $contents = $this->uploadDisk->read($file);
-            if ($contents === FALSE) {
-                return [];
-            }
-
-            return preg_split('/\s+/', $contents);
-        } catch (FileNotFoundException $fileNotFoundException) {
+        $contents = $this->uploadDisk->get($file);
+        if ($contents === null) {
             return [];
         }
+
+        return preg_split('/\s+/', $contents);
     }
 
     /**
@@ -171,13 +172,13 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     {
         $path = Str::after($source, $this->uploadDisk->path(""));
         collect($this->uploadDisk->listContents($path, true))
-            ->filter(function ($file) {
-                return $file['type'] === 'file' && !in_array($file['basename'], ['content.json']);
+            ->filter(function (StorageAttributes $file) {
+                return $file->isFile() && !in_array(basename($file->path()), ['content.json']);
             })
-            ->each(function ($file) use ($path, $content) {
-                $localPath = Str::after($file['path'], $path);
+            ->each(function (StorageAttributes $file) use ($path, $content) {
+                $localPath = Str::after($file->path(), $path);
                 $filePath = preg_replace('#/+#', '/', sprintf(ContentStorageSettings::CONTENT_PATH, $content['id']) . $localPath);
-                $this->filesystem->putStream($filePath, $this->uploadDisk->readStream($file['path']));
+                $this->filesystem->put($filePath, $this->uploadDisk->readStream($file->path()));
             });
     }
 
@@ -207,12 +208,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
     /**
      * @inheritDoc
+     * @throws FilesystemException
      */
     public function getTmpPath()
     {
-        if (!$this->uploadDisk->createDir(ContentStorageSettings::TEMP_DIR)) {
-            throw new Exception(sprintf("Could not create directory: %s", ContentStorageSettings::TEMP_DIR));
-        }
+        $this->uploadDisk->createDirectory(ContentStorageSettings::TEMP_DIR);
         $path = sprintf(ContentStorageSettings::TEMP_PATH, uniqid('h5p-'));
         return $this->uploadDisk->path($path);
     }
@@ -231,7 +231,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         collect($this->filesystem->allFiles($contentPath))
             ->each(function ($file) use ($contentPath, $target) {
                 $localPath = Str::after($target, $this->uploadDisk->path("")) . "/" . Str::after($file, $contentPath);
-                $this->uploadDisk->putStream($localPath, $this->filesystem->readStream($file));
+                $this->uploadDisk->put($localPath, $this->filesystem->readStream($file));
             });
     }
 
@@ -273,7 +273,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         collect($this->filesystem->allFiles($directory))
             ->each(function ($file) use ($target, $folder) {
                 $localPath = $target . Str::after($file, $folder);
-                $this->uploadDisk->putStream($localPath, $this->filesystem->readStream($file));
+                $this->uploadDisk->put($localPath, $this->filesystem->readStream($file));
             });
     }
 
@@ -447,10 +447,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
         collect($this->uploadDisk->listContents($contentSource, true))
             ->filter(function ($file) {
-                return $file['type'] === 'file' && !in_array($file['basename'], ['content.json']);
+                return $file->isFile() && !in_array(basename($file->path()), ['content.json']);
             })
             ->each(function ($file) use ($contentSource, $target) {
-                $this->filesystem->putStream($target . Str::after($file['path'], $contentSource), $this->uploadDisk->readStream($file['path']));
+                $this->filesystem->put($target . Str::after($file['path'], $contentSource), $this->uploadDisk->readStream($file['path']));
             });
     }
 
@@ -510,10 +510,18 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         $filePath = Str::after($path, $this->uploadDisk->path("")) . "/" . $file;
 
         if (str_ends_with($filePath, '/')) {
-            return $this->uploadDisk->createDir($filePath);
+            try {
+                $this->uploadDisk->createDirectory($filePath);
+                return true;
+            } catch (FilesystemException $e) {
+                $this->logger->error("Couldn't create directory while saving file from zip", [
+                    'exception' => $e,
+                ]);
+                return false;
+            }
         }
 
-        $upload = $this->uploadDisk->putStream($filePath, $stream);
+        $upload = $this->uploadDisk->put($filePath, $stream);
 
         if (preg_match('/^content\/(?:images|videos|audios|files)/', $file, $matches)) {
             $_tmpName = $path . "/" . $file;
@@ -613,7 +621,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
 
     public function storeContentOnDisk(string $filePath, $resource)
     {
-        return $this->filesystem->putStream($filePath, $resource);
+        return $this->filesystem->put($filePath, $resource);
     }
 
     public function getFileUrl(string $path)

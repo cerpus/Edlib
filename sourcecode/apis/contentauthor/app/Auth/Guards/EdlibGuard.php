@@ -60,6 +60,11 @@ class EdlibGuard implements StatefulGuard
         throw new AuthenticationException();
     }
 
+    public function hasUser(): bool
+    {
+        return Session::has('user');
+    }
+
     public function user(): ?GenericUser
     {
         return Session::get('user');

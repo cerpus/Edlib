@@ -8,8 +8,8 @@ use App\Libraries\H5P\H5pPresave;
 use Generator;
 use Illuminate\Filesystem\FilesystemAdapter;
 use InvalidArgumentException;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use PHPUnit\Framework\TestCase;
 
 final class H5pPresaveTest extends TestCase
@@ -18,12 +18,12 @@ final class H5pPresaveTest extends TestCase
 
     protected function setUp(): void
     {
+        $adapter = new LocalFilesystemAdapter(__DIR__.'/Stub/Presave');
+
         $this->presave = new H5pPresave(
-            new FilesystemAdapter(
-                new Filesystem(new Local(__DIR__.'/Stub/Presave'), [
-                    'url' => '/test'
-                ]),
-            ),
+            new FilesystemAdapter(new Filesystem($adapter), $adapter, [
+                'url' => '/test'
+            ]),
         );
     }
 
