@@ -31,7 +31,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        working-directory: ./
         with:
           fetch-depth: 0
 
