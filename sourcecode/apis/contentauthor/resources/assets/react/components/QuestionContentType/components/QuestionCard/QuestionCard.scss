@@ -80,16 +80,11 @@
 
 .presentationButton {
   width: 150px;
-  padding: 15px;
-  border-radius: 3px;
-  display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
 
   img {
     width: 60px;
+    height: auto;
   }
 
   &:hover {
@@ -98,8 +93,12 @@
 }
 
 .presentationLabel {
-  font-size: 30px;
+  font-size: 1.3em;
   font-weight: bold;
+}
+
+.presentationButtonLabel {
+    flex-direction: column;
 }
 
 .selectQuestionButton {
