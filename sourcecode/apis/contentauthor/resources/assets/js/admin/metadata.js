@@ -1,3 +1,6 @@
+import jQuery from 'jquery';
+window.$ = jQuery;
+
 (function ($) {
     const panelBody = $(".panel-body");
     const processSwitch = panelBody.find('#processSwitch');
