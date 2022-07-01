@@ -35,7 +35,7 @@
     "jwt-encode": "^1.0.1",
     "load-script": "^2.0.0",
     "lodash": "^4.17.21",
-    "moment": "^2.28.0",
+    "moment": "^2.29.3",
     "moment-hooks": "^1.2.1",
     "polished": "^4.2.2",
     "prop-types": "^15.8.1",
