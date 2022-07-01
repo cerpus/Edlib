@@ -870,16 +870,16 @@
         },
         {
             "name": "cerpus/questionbank-client",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-questionbank-client.git",
-                "reference": "2292a73cbf12722ba8ca947459d9a79c55d91b77"
+                "reference": "3363081d5c726d31498f85621f7374c8bd02144a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/2292a73cbf12722ba8ca947459d9a79c55d91b77",
-                "reference": "2292a73cbf12722ba8ca947459d9a79c55d91b77",
+                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/3363081d5c726d31498f85621f7374c8bd02144a",
+                "reference": "3363081d5c726d31498f85621f7374c8bd02144a",
                 "shasum": ""
             },
             "require": {
@@ -925,9 +925,9 @@
             "description": "Client to talk do the Cerpus Questionbank Service",
             "support": {
                 "issues": "https://github.com/cerpus/php-questionbank-client/issues",
-                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.1.0"
+                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.2.0"
             },
-            "time": "2022-02-25T13:04:13+00:00"
+            "time": "2022-06-30T10:41:11+00:00"
         },
         {
             "name": "cerpus/version-client",
