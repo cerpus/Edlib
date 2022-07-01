@@ -39,7 +39,7 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
+    "@babel/cli": "^7.18.6",
     "@babel/core": "^7.18.6",
     "@babel/node": "^7.18.6",
     "@babel/preset-env": "^7.18.2",
@@ -48,7 +48,7 @@
     "jest": "^27.5.1",
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.3",
-    "nock": "^13.2.4",
+    "nock": "^13.2.8",
     "prettier": "^2.7.1"
   },
   "peerDependencies": {
