@@ -764,26 +764,26 @@
         },
         {
             "name": "cerpus/laravel-rabbitmq-pubsub",
-            "version": "v2.0.1",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub.git",
-                "reference": "65129f0496aa6d01d21ffce394ea81a29f3c236b"
+                "reference": "cb3a4df48fb5222fe902010af59dd5cff85fb6fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/65129f0496aa6d01d21ffce394ea81a29f3c236b",
-                "reference": "65129f0496aa6d01d21ffce394ea81a29f3c236b",
+                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/cb3a4df48fb5222fe902010af59dd5cff85fb6fb",
+                "reference": "cb3a4df48fb5222fe902010af59dd5cff85fb6fb",
                 "shasum": ""
             },
             "require": {
                 "cerpus/pubsub": "^1.0.0",
-                "illuminate/console": "^8.73",
-                "illuminate/support": "^8.73",
+                "illuminate/console": "^8.73|^9.0",
+                "illuminate/support": "^8.73|^9.0",
                 "php": "^8.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^6.23",
+                "orchestra/testbench": "^6.23|^7.0",
                 "phpunit/phpunit": "^9.5"
             },
             "type": "library",
@@ -815,9 +815,9 @@
             "description": "Client for RabbitMQ pubsub in a laravel project",
             "support": {
                 "issues": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/issues",
-                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/v2.0.1"
+                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/v2.1.0"
             },
-            "time": "2022-02-28T11:19:11+00:00"
+            "time": "2022-06-17T08:48:19+00:00"
         },
         {
             "name": "cerpus/pubsub",
