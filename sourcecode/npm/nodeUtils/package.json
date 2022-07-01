@@ -45,7 +45,7 @@
     "@babel/preset-env": "^7.18.2",
     "amqplib": "^0.10.0",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.1.2",
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.3",
     "nock": "^13.2.8",
