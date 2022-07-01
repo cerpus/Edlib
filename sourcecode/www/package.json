@@ -35,7 +35,7 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.17.4",
     "react-router-dom": "^5.3.3",
-    "recharts": "^2.1.9",
+    "recharts": "^2.1.12",
     "set-cookie-parser": "^2.4.8",
     "store": "^2.0.12",
     "styled-components": "^5.3.5",
