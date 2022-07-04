@@ -14,7 +14,12 @@ H5PPresave['H5P.SortParagraphs'] = function (content, finished) {
     throw new presave.exceptions.InvalidContentSemanticsException('Invalid Sort Paragraphs Error');
   }
 
+  var mode = content.behaviour.scoringMode;
   var score = content.paragraphs.length;
+
+  if (mode === 'transitions') {
+      score = score - 1;
+  }
 
   presave.validateScore(score);
 
@@ -25,6 +30,8 @@ H5PPresave['H5P.SortParagraphs'] = function (content, finished) {
    * @return {boolean}
    */
   function isContentInvalid() {
-    return !presave.checkNestedRequirements(content, 'content.paragraphs') || !Array.isArray(content.paragraphs);
+    return !presave.checkNestedRequirements(content, 'content.paragraphs') ||
+        !Array.isArray(content.paragraphs) ||
+        !presave.checkNestedRequirements(content, 'content.behaviour.scoringMode');
   }
 };
