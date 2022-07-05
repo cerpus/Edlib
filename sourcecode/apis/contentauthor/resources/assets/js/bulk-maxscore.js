@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 window.H5PEditor = H5P.jQuery.extend({}, H5P, H5PEditor);
 
 var info, $container;
