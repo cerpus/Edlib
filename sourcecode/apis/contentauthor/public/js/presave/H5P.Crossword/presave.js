@@ -9,6 +9,7 @@ var H5PPresave = H5PPresave || {};
  */
 H5PPresave['H5P.Crossword'] = function (content, finished) {
     const presave = H5PEditor.Presave;
+    let score = 0;
 
     if (isContentInvalid()) {
         throw new presave.exceptions.InvalidContentSemanticsException('Invalid Crossword Error');
@@ -23,12 +24,11 @@ H5PPresave['H5P.Crossword'] = function (content, finished) {
     // Max score can only be calculated if score is number of correct words
     if (scoreWords) {
         const pool = fixedWords > poolSize ? fixedWords : poolSize;
-        const score = usesPool ? pool : words;
-        presave.validateScore(score);
-        finished({maxScore: score});
-    } else {
-        finished({});
+        score = usesPool ? pool : words;
     }
+
+    presave.validateScore(score);
+    finished({maxScore: score});
 
     /**
      * Check if required parameters is present
