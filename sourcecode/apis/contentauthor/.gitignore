@@ -4,6 +4,7 @@ Homestead.yaml
 Homestead.json
 .env
 .idea/
+
 /public/*
 !/public/vendor
 !/public/favicon.ico
@@ -11,12 +12,14 @@ Homestead.json
 !/public/robots.txt
 !/public/.htaccess
 !/public/graphical
+!public/js
 /public/js/*
 !/public/js/presave
 !/public/js/article-xapi.js
 !/public/js/cerpus.js
 !/public/js/editor-setup.js
 !/public/js/h5p
+/public/js/h5p/*
 !/public/js/h5p-editor.js
 !/public/js/jsrequestintercept.js
 !/public/js/jwtclient.js
@@ -26,6 +29,7 @@ Homestead.json
 !/public/js/resource-common.js
 !/public/js/videos/brightcove.js
 !/public/js/videos/streamps.js
+
 mix-manifest.json
 app/Libraries/oauth-php/example/server/cache/
 ca1.sql
