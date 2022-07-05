@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         padding: theme.spacing(1),
         backgroundColor: '#F6F6F7',
-        minHeight: '100vh',
+        height: 'calc(100vh - 80px)',
     },
 }));
 
