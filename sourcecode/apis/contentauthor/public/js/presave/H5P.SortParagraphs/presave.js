@@ -8,30 +8,30 @@ var H5PPresave = H5PPresave || {};
  * @constructor
  */
 H5PPresave['H5P.SortParagraphs'] = function (content, finished) {
-  var presave = H5PEditor.Presave;
+    const presave = H5PEditor.Presave;
 
-  if (isContentInvalid()) {
-    throw new presave.exceptions.InvalidContentSemanticsException('Invalid Sort Paragraphs Error');
-  }
+    if (isContentInvalid()) {
+        throw new presave.exceptions.InvalidContentSemanticsException('Invalid Sort Paragraphs Error');
+    }
 
-  var mode = content.behaviour.scoringMode;
-  var score = content.paragraphs.length;
+    const mode = content.behaviour.scoringMode;
+    let score = content.paragraphs.length;
 
-  if (mode === 'transitions') {
-      score = score - 1;
-  }
+    if (mode === 'transitions') {
+        score = score - 1;
+    }
 
-  presave.validateScore(score);
+    presave.validateScore(score);
 
-  finished({maxScore: score});
+    finished({maxScore: score});
 
-  /**
-   * Check if required parameters is present
-   * @return {boolean}
-   */
-  function isContentInvalid() {
-    return !presave.checkNestedRequirements(content, 'content.paragraphs') ||
-        !Array.isArray(content.paragraphs) ||
-        !presave.checkNestedRequirements(content, 'content.behaviour.scoringMode');
-  }
+    /**
+     * Check if required parameters is present
+     * @return {boolean}
+     */
+    function isContentInvalid() {
+        return !presave.checkNestedRequirements(content, 'content.paragraphs') ||
+            !Array.isArray(content.paragraphs) ||
+            !presave.checkNestedRequirements(content, 'content.behaviour.scoringMode');
+    }
 };
