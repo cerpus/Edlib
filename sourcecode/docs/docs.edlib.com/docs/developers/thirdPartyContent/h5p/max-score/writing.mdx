@@ -1,0 +1,133 @@
+---
+sidebar_position: 1
+---
+
+# The pre-save script
+
+The pre-save scripts are located in `/sourcecode/apis/contentauthor/public/js/presave`. There you will find a
+folder for each H5P library that Edlib has a pre-save script for. The folder name is the `machineName` of the
+H5P library, and the contents is a single `presave.js` file.
+If you are creating a new H5P library that can give score, you should include the `presave.js` in the H5P package.
+
+
+## H5P behavioural settings
+
+A H5P library can have settings that adjust the behaviour of the H5P. Like if the user is allowed to retry,
+or if there should be a "Show solution" button available. There are also settings that can affect the max-score,
+you will have to take these settings into account in the pre-save script. The [example](#example) below has two
+settings that affects the max-score. Some behaviour settings could, by itself or in combination with other settings,
+make the max score value impossible to calculate when the H5P is saved. In these cases `0` should be returned by
+the pre-save script.
+
+
+## Adding the script to the library
+
+In order to get the script to run, the `presave.js` file must be in the H5Ps library folder in Edlib. Content
+Author has an Artisan command to do the work, `php artisan h5p:addPresave`. After executing the command you should see
+a list of H5P libraries with the result. If the script already exist, it will not be overwritten. In order to
+replace the `presave.js` for a library, you must either delete the existing file before executing the Artisan command,
+or copy the file manually.
+
+
+## Max score in the database
+
+The `max_score` value is stored in the Content Author database in the table `h5p_contents`. The value will be a
+positive integer if the max score is calculated. A value of `null` means that the max score has not been calculated,
+or that a value was not returned, usually because of an error. And a value of `0` means that the calculation was
+done but max score is not supported by the H5P library, or that the value could not be calculated. There is also a
+column that indicates if the value was calculated by the
+[bulk calculation in Edlib Admin](./update-resources), if so `bulk_calculated` will be set to `1`.
+
+
+## Minimal pre-save script
+
+If we have a H5P library, let's call it `H5P.SingleScore`, that always has a max-score of `1`, the `presave.js`
+would be very simple.
+
+```js
+var H5PPresave = H5PPresave || {};
+
+// Machine name of the H5P library as array key
+H5PPresave['H5P.SingleScore'] = function (content, finished) {
+    const presave = H5PEditor.Presave;
+
+    // Not really necessary here, but validates that the score is
+    // a positive integer, throws an exception if not
+    presave.validateScore(1);
+
+    // Return object with `maxScore`
+    finished({maxScore: 1});
+}
+```
+
+:::info
+The function is called in the function `process` in
+`sourcecode/apis/contentauthor/public/h5p-editor-php-library/scripts/h5peditor-pre-save.js`. `maxScore` is added
+to the data sent to the server if the pre-save script returns an object where `maxScore` as an integer.
+:::
+
+
+## Example
+
+This is the `presave.js` for the `H5P.MultiChoice` library.
+
+```js
+var H5PPresave = H5PPresave || {};
+
+/**
+ * Resolve the presave logic for the content type Multi Choice
+ *
+ * @param {object} content
+ * @param finished
+ * @constructor
+ */
+H5PPresave['H5P.MultiChoice'] = function (content, finished) {
+  var presave = H5PEditor.Presave;
+  var score = 0;
+  var correctAnswers = 0;
+
+  if (isContentInvalid()) {
+    throw new presave.exceptions.InvalidContentSemanticsException('Invalid Multi Choice Error');
+  }
+
+  if (isSinglePoint()) {
+    score = 1;
+  }
+  else {
+    correctAnswers = content.answers.filter(function (answer) {
+      return answer.correct === true;
+    });
+    score = Math.max(correctAnswers.length, 1);
+  }
+
+  presave.validateScore(score);
+
+  finished({maxScore: score});
+
+  /**
+   * Check if required parameters is present
+   * @return {boolean}
+   */
+  function isContentInvalid() {
+    return !presave.checkNestedRequirements(content, 'content.answers') || !Array.isArray(content.answers);
+  }
+
+  /**
+   * Check if content gives one point for all
+   * @return {boolean}
+   */
+  function isSinglePoint() {
+    return (presave.checkNestedRequirements(content, 'content.behaviour.singlePoint') && content.behaviour.singlePoint === true) ||
+      (presave.checkNestedRequirements(content, 'content.behaviour.type') && content.behaviour.type === 'single');
+  }
+};
+```
+
+The default value of `score` is `0`, the script should always return an object with a `maxScore` property. If not the
+value in the database will be `null`, indicating that the score was not caclulated or an error occured.
+
+In the `isSinglePoint` function, we check for two behaviour settings that affect the max score. The `singlePoint`
+setting makes the H5P give one point for multiple correct answers. The other setting, `type`, controls whether the
+user can select multiple or a single alternative as their answer.
+
+If neither of these two are set, the alternatives are checked and the number of correct answers are counted.
