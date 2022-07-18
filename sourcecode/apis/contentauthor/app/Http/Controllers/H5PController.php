@@ -87,9 +87,9 @@ class H5PController extends Controller
     public function doShow($id, $context, $preview = false): View
     {
         $styles = [];
-        if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
-            $styles[] = $this->lti->getLtiRequest()->getLaunchPresentationCssUrl();
-            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
+        if (!empty($this->lti->getValidatedLtiRequest()) && !is_null($this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl())) {
+            $styles[] = $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl();
+            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl());
         }
         $h5pContent = H5PContent::findOrFail($id);
         if (!$h5pContent->canShow($preview)) {
@@ -379,7 +379,7 @@ class H5PController extends Controller
     private function getTargetLanguage(?string $language)
     {
         $contentLanguage = $language;
-        if (($ltiRequest = $this->lti->getLtiRequest()) !== null) {
+        if (($ltiRequest = $this->lti->getValidatedLtiRequest()) !== null) {
             $ltiLanguage = $ltiRequest->getExtTranslationLanguage();
             if( !empty($ltiLanguage) ){
                 $contentLanguage = $ltiLanguage;

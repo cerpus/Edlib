@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests;
 
 use App\Oauth10\Oauth10Request;
@@ -6,20 +7,27 @@ use Illuminate\Support\Facades\Session;
 
 class LTIRequest extends Oauth10Request
 {
-    private $params;
-
-    public function __construct($requestUri, $params)
+    public static function fromRequest(\Illuminate\Http\Request $request): self|null
     {
+        if (!$request->attributes->has('lti_request')) {
+            $ltiRequest = $request->has('lti_message_type')
+                ? new self($request->url(), $request->all())
+                : null;
+
+            $request->attributes->set('lti_request', $ltiRequest);
+        }
+
+        return $request->attributes->get('lti_request');
+    }
+
+    public function __construct(
+        string $requestUri,
+        private readonly array $params,
+    ) {
         parent::__construct("POST", $requestUri, $params, '');
-        $this->params = $params;
     }
 
-    public static function current()
-    {
-        return app(LTIRequest::class);
-    }
-
-    public function getLaunchPresentationReturnUrl()
+    public function getLaunchPresentationReturnUrl(): string|null
     {
         return $this->params['launch_presentation_return_url'] ?? null;
     }

@@ -20,7 +20,7 @@ class CoreReturnUrl
         if ($request->filled('return')) {
             $request->session()->put('returnUrl', $request->get('return'));
         } else {
-            $ltiRequest = LTIRequest::current();
+            $ltiRequest = LTIRequest::fromRequest($request);
             if ($ltiRequest != null) {
                 $returnUrl = $ltiRequest->getLaunchPresentationReturnUrl();
                 if ($returnUrl) {

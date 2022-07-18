@@ -16,7 +16,7 @@ class LtiQuestionSet
      */
     public function handle($request, Closure $next)
     {
-        $ltiRequest = LTIRequest::current();
+        $ltiRequest = LTIRequest::fromRequest($request);
 
         if ($ltiRequest && $ltiRequest->getExtQuestionSet()) {
             // In the LTI request the question set is a base64 encoded json string in the property "ext_question_set"
