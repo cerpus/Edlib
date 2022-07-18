@@ -22,6 +22,7 @@ namespace Tests\Integration\Libraries\H5P\API {
     use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
     use App\User;
     use Cerpus\VersionClient\VersionData;
+    use Illuminate\Contracts\Filesystem\Filesystem;
     use Illuminate\Foundation\Testing\RefreshDatabase;
     use Illuminate\Foundation\Testing\WithFaker;
     use Illuminate\Http\Response;
@@ -30,6 +31,8 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Support\Facades\Storage;
     use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
+    use function base_path;
+    use function fopen;
 
     /**
      * Class H5PImportControllerTest
@@ -38,6 +41,19 @@ namespace Tests\Integration\Libraries\H5P\API {
     class H5PImportControllerTest extends TestCase
     {
         use RefreshDatabase, MockVersioningTrait, WithFaker;
+
+        private Filesystem $fakeDisk;
+
+        protected function setUp(): void
+        {
+            parent::setUp();
+
+            $this->withoutMiddleware();
+            $_SERVER['REQUEST_METHOD'] = "POST";
+
+            $this->fakeDisk = Storage::fake();
+            config(['h5p.storage.path' => $this->fakeDisk->path("")]);
+        }
 
         private function _setUp(): void
         {
@@ -65,14 +81,8 @@ namespace Tests\Integration\Libraries\H5P\API {
          */
         public function importH5P()
         {
-            $this->withoutMiddleware();
-            $_SERVER['REQUEST_METHOD'] = "POST";
-
             $this->_setUp();
             $this->setupAdapter(false, false);
-
-            $fakeDisk = Storage::fake();
-            config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             collect([
                 [
@@ -90,7 +100,7 @@ namespace Tests\Integration\Libraries\H5P\API {
                     '{"media":{"disableImageZooming":false},"text":"<p>Unit tests fill in the missing blank<\/p>\n","overallFeedback":[{"from":0,"to":100}],"showSolutions":"Show solution","tryAgain":"Retry","checkAnswer":"Check","notFilledOut":"Please fill in all blanks to view solution","answerIsCorrect":"&#039;:ans&#039; is correct","answerIsWrong":"&#039;:ans&#039; is wrong","answeredCorrectly":"Answered correctly","answeredIncorrectly":"Answered incorrectly","solutionLabel":"Correct answer:","inputLabel":"Blank input @num of @total","inputHasTipLabel":"Tip available","tipLabel":"Tip","behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"autoCheck":false,"caseSensitive":true,"showSolutionsRequiresInput":true,"separateLines":false,"confirmCheckDialog":false,"confirmRetryDialog":false,"acceptSpellingErrors":false},"scoreBarLabel":"You got :num out of :total points","confirmCheck":{"header":"Finish ?","body":"Are you sure you wish to finish ?","cancelLabel":"Cancel","confirmLabel":"Finish"},"confirmRetry":{"header":"Retry ?","body":"Are you sure you wish to retry ?","cancelLabel":"Cancel","confirmLabel":"Confirm"},"questions":["<p>*Unittests* makes life more *easy*!<\/p>\n"]}',
                 ],
             ])
-                ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) use ($fakeDisk) {
+                ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) {
                     $machineName = "H5P.Blanks";
                     $file = new File('sample.h5p', fopen(base_path($path), 'r'));
                     $user = User::factory()->make();
@@ -113,7 +123,7 @@ namespace Tests\Integration\Libraries\H5P\API {
                         'title' => $title,
                         'library_id' => $library->id,
                     ]);
-                    $this->assertFileExists($fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+                    $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
 
                     /** @var H5PContent $h5pContent */
                     $h5pContent = H5PContent::with('metadata')
@@ -137,14 +147,9 @@ namespace Tests\Integration\Libraries\H5P\API {
          */
         public function importH5PWithImage()
         {
-            $this->withoutMiddleware();
-            $_SERVER['REQUEST_METHOD'] = "POST";
-
             $this->_setUp();
             $this->setupAdapter(false, true);
 
-            $fakeDisk = Storage::fake();
-            config(['h5p.storage.path' => $fakeDisk->path("")]);
             app()->instance('requestId', 123);
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
@@ -172,7 +177,7 @@ namespace Tests\Integration\Libraries\H5P\API {
                 'title' => $title,
                 'library_id' => $library->id,
             ]);
-            $this->assertFileExists($fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
 
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
@@ -186,7 +191,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->assertTrue($h5pContent->isListed());
 
             $imagePath = 'content/%s/images/file-5edde9091ebe0.jpg';
-            $this->assertFileExists($fakeDisk->path(sprintf($imagePath, $h5pContent->id)));
+            $this->assertFileExists($this->fakeDisk->path(sprintf($imagePath, $h5pContent->id)));
 
             $responseData = $response->json();
             $this->assertEquals($title, $responseData['title']);
@@ -199,13 +204,8 @@ namespace Tests\Integration\Libraries\H5P\API {
          */
         public function importH5PWithMetadata()
         {
-            $this->withoutMiddleware();
-            $_SERVER['REQUEST_METHOD'] = "POST";
             $this->_setUp();
             $this->setupAdapter(true, false);
-
-            $fakeDisk = Storage::fake();
-            config(['h5p.storage.path' => $fakeDisk->path("")]);
 
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
@@ -231,7 +231,7 @@ namespace Tests\Integration\Libraries\H5P\API {
                 'title' => $title,
                 'library_id' => $library->id,
             ]);
-            $this->assertFileExists($fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
 
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
@@ -255,31 +255,30 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->assertEquals($machineName, $responseData['h5pType']);
         }
 
-        /**
-         * @test
-         */
-        public function importH5P_invalidFile()
+        public function testFailsOnMissingPostData(): void
         {
-            $this->withoutMiddleware();
-            $_SERVER['REQUEST_METHOD'] = "POST";
-
-            $fakeDisk = Storage::fake();
-            config(['h5p.storage.path' => $fakeDisk->path("")]);
-
             $this
                 ->postJson(route('api.import.h5p'))
-                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJson(['message' => 'The given data was invalid.']);
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors(['h5p', 'userId']);
+        }
 
+        public function testFailsOnMissingUserId(): void
+        {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,
                 ])
-                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJson(['message' => 'The given data was invalid.']);
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors(['userId']);
+        }
 
+        public function testFailsOnInvalidH5pFile(): void
+        {
+            $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
             $user = User::factory()->make();
+
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,
@@ -287,24 +286,36 @@ namespace Tests\Integration\Libraries\H5P\API {
                 ])
                 ->assertStatus(Response::HTTP_BAD_REQUEST)
                 ->assertJson(['message' => 'The file you uploaded is not a valid HTML5 Package (We are unable to unzip it)']);
+        }
+
+        public function testFailsOnInvalidDisablePublishMetadataFlag(): void
+        {
+            $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
+            $user = User::factory()->make();
 
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,
                     'userId' => $user->auth_id,
-                    'disablePublishMetadata' => $this->faker->word,
+                    'disablePublishMetadata' => 'invalid',
                 ])
-                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJson(['message' => 'The given data was invalid.']);
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors(['disablePublishMetadata']);
+        }
+
+        public function testFailsOnInvalidIsPublicFlag(): void
+        {
+            $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
+            $user = User::factory()->make();
 
             $this
                 ->postJson(route('api.import.h5p'), [
                     'h5p' => $file,
                     'userId' => $user->auth_id,
-                    'isPublic' => $this->faker->word,
+                    'isPublic' => 'invalid',
                 ])
-                ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-                ->assertJson(['message' => 'The given data was invalid.']);
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors(['isPublic']);
         }
     }
 }

@@ -83,7 +83,7 @@ class AddExtQuestionSetToRequestMiddleware
     public function handle($request, Closure $next)
     {
         if ($this->environment !== 'production' && $this->enabled) {
-            $request->getSession()->put(
+            $request->getSession()->set(
                 SessionKeys::EXT_QUESTION_SET,
                 json_encode(self::QUESTION_SET_DATA, JSON_THROW_ON_ERROR),
             );

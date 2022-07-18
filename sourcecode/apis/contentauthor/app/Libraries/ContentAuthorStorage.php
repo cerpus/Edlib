@@ -6,6 +6,7 @@ namespace App\Libraries;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\StorageAttributes;
 
 /**
  * @deprecated Please don't add more stuff, we want to migrate to using
@@ -53,14 +54,14 @@ class ContentAuthorStorage
     )
     {
         collect($sourceDisk->listContents($sourceFolder, true))
-            ->filter(function ($fileProperties) use ($ignoredFiles) {
-                $file = $fileProperties['basename'];
+            ->filter(function (StorageAttributes $fileProperties) use ($ignoredFiles) {
+                $file = basename($fileProperties->path());
                 return !in_array($file, $ignoredFiles);
             })
-            ->each(function ($fileProperties) use ($destinationDisk, $destinationFolder, $sourceDisk, $sourceFolder) {
-                if ($fileProperties['type'] !== 'dir') {
-                    $file = Str::after($fileProperties['path'], Str::after($sourceFolder, '/'));
-                    $destinationDisk->putStream("{$destinationFolder}/{$file}", $sourceDisk->readStream("{$sourceFolder}/{$file}"));
+            ->each(function (StorageAttributes $fileProperties) use ($destinationDisk, $destinationFolder, $sourceDisk, $sourceFolder) {
+                if (!$fileProperties->isDir()) {
+                    $file = Str::after($fileProperties->path(), Str::after($sourceFolder, '/'));
+                    $destinationDisk->put("{$destinationFolder}/{$file}", $sourceDisk->readStream("{$sourceFolder}/{$file}"));
                 }
             });
     }

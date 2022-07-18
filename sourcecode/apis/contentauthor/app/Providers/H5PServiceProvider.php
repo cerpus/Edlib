@@ -157,14 +157,7 @@ class H5PServiceProvider extends ServiceProvider
             return null;
         });
 
-        $this->app->singleton(H5PCerpusStorage::class, function ($app) {
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-
-            return new H5PCerpusStorage(
-                $contentAuthorStorage
-            );
-        });
+        $this->app->singleton(H5PCerpusStorage::class);
 
         $this->app->singletonIf(H5PFileStorage::class, function ($app) {
             /** @var H5PCerpusStorage $instance */
