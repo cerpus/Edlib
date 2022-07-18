@@ -12,7 +12,7 @@
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.5",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.2.1",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
     "debug": "^4.3.4",
