@@ -43,7 +43,7 @@
         "lusitanian/oauth": "^0.8.11",
         "masterminds/html5": "^2.6",
         "matthiasmullie/minify": "^1.3",
-        "predis/predis": "^1.1",
+        "predis/predis": "^2.0",
         "ramsey/uuid": "^4.2",
         "spatie/laravel-ignition": "^1.0",
         "xemlock/htmlpurifier-html5": "^0.1.8"
