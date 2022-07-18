@@ -3,6 +3,8 @@
 namespace App\Libraries\H5P\Packages;
 
 
+use LogicException;
+
 class DragQuestion extends H5PBase
 {
 
@@ -23,6 +25,7 @@ class DragQuestion extends H5PBase
     public function getElements(): array
     {
         // TODO: Implement getElements() method.
+        throw new LogicException('This method is not implemented');
     }
 
     public function getAnswers($index = null)
