@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "127babeca770b2d0c3a24b4eb85e656b",
+    "content-hash": "eab7a2e80dbcf0fe1956118ec258a57f",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -440,20 +440,20 @@
         },
         {
             "name": "cerpus/coreclient",
-            "version": "v1.5.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-coreclient.git",
-                "reference": "a19d2d2b9fd95e19514adbb6ea2b753623af3697"
+                "reference": "6cc6513cd641af6507769da0a7c42f52afa37610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-coreclient/zipball/a19d2d2b9fd95e19514adbb6ea2b753623af3697",
-                "reference": "a19d2d2b9fd95e19514adbb6ea2b753623af3697",
+                "url": "https://api.github.com/repos/cerpus/php-coreclient/zipball/6cc6513cd641af6507769da0a7c42f52afa37610",
+                "reference": "6cc6513cd641af6507769da0a7c42f52afa37610",
                 "shasum": ""
             },
             "require": {
-                "cerpus/cerpushelper": "^1.0|^2.0",
+                "cerpus/cerpushelper": "^2.0",
                 "ext-json": "*",
                 "illuminate/http": "*",
                 "php": "^7.4 || ^8.0"
@@ -498,9 +498,9 @@
             ],
             "support": {
                 "issues": "https://github.com/cerpus/php-coreclient/issues",
-                "source": "https://github.com/cerpus/php-coreclient/tree/v1.5.0"
+                "source": "https://github.com/cerpus/php-coreclient/tree/v2.0.0"
             },
-            "time": "2022-01-21T14:54:46+00:00"
+            "time": "2021-12-03T13:53:01+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit",
@@ -10859,5 +10859,5 @@
         "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
