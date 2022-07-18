@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
+use App\H5pLti;
 use App\H5POption;
 use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
 use App\Http\Middleware\SignedOauth10Request;
-use App\Http\Requests\LTIRequest;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Observers\H5POptionObserver;
@@ -41,21 +41,14 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $this->app
-            ->when(SignedOauth10Request::class)
+            ->when([SignedOauth10Request::class, H5pLti::class])
             ->needs('$consumerKey')
             ->giveConfig('app.consumer-key');
 
         $this->app
-            ->when(SignedOauth10Request::class)
+            ->when([SignedOauth10Request::class, H5pLti::class])
             ->needs('$consumerSecret')
             ->giveConfig('app.consumer-secret');
-
-        $this->app->singletonIf(LTIRequest::class, function () {
-            $request = request();
-            if ($request->input('lti_message_type')) {
-                return new LTIRequest($request->url(), $request->all());
-            }
-        });
 
         $this->app->singleton(H5POptionsCache::class, function () {
             return new H5POptionsCache();

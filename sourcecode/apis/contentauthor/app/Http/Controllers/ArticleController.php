@@ -73,7 +73,7 @@ class ArticleController extends Controller
             abort(403);
         }
 
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
 
         $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
@@ -181,7 +181,7 @@ class ArticleController extends Controller
     {
         /** @var Article $article */
         $article = Article::findOrFail($id);
-        $customCSS = !empty($this->lti->getLtiRequest()) ? $this->lti->getLtiRequest()->getLaunchPresentationCssUrl() : null;
+        $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
         if (!$article->canShow($preview)) {
             return view('layouts.draft-resource', [
                 'styles' => !is_null($customCSS) ? [$customCSS] : [],

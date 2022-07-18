@@ -39,7 +39,7 @@ class EmbedController extends Controller
             abort(403);
         }
 
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
 
         $licenses = License::getLicenses($ltiRequest);
         $license = License::getDefaultLicense($ltiRequest);

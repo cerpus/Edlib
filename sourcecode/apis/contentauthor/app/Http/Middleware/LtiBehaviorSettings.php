@@ -20,7 +20,7 @@ class LtiBehaviorSettings
      */
     public function handle(Request $request, Closure $next, $context = null)
     {
-        $ltiRequest = LTIRequest::current();
+        $ltiRequest = LTIRequest::fromRequest($request);
         if ($ltiRequest && $ltiRequest->getExtBehaviorSettings()) {
             $extBehaviorSettings = json_decode($ltiRequest->getExtBehaviorSettings(), true);
 

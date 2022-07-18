@@ -6,10 +6,8 @@ use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Events\ContentCreated;
 use App\Events\ContentCreating;
-use App\H5pLti;
 use App\Http\Controllers\ArticleController;
 use App\Http\Libraries\License;
-use App\Http\Requests\LTIRequest;
 use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -22,14 +20,6 @@ class ArticleControllerTest extends TestCase
 
     public function testCreate(): void
     {
-        $ltiRequest = $this->createPartialMock(H5pLti::class, ['getLtiRequest']);
-        $ltiRequest->expects($this->once())->method('getLtiRequest')->willReturn(LTIRequest::current());
-        $this->instance(H5pLti::class, $ltiRequest);
-
-        $this->withSession([
-            'authId' => Uuid::uuid(),
-        ]);
-
         $request = new Request([], [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
@@ -37,6 +27,10 @@ class ArticleControllerTest extends TestCase
             'launch_presentation_return_url' => "https://api.edlib.local/lti/v2/editors/contentauthor/return",
             'ext_user_id' => "1",
             'launch_presentation_locale' => "nb",
+        ]);
+
+        $this->withSession([
+            'authId' => Uuid::uuid(),
         ]);
 
         /** @var ArticleController $articleController */
