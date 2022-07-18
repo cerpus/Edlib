@@ -20,7 +20,7 @@
     "amqplib": "^0.8.0",
     "axios-mock-adapter": "^1.21.1",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.5.1",
+    "jest": "^28.1.2",
     "joi": "^17.6.0",
     "lodash": "^4.17.21",
     "prettier": "^2.7.1",
