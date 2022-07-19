@@ -8,7 +8,6 @@ use App\Events\ContentCreated;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Game;
-use App\H5pLti;
 use App\Http\Controllers\QuestionSetController;
 use App\Http\Libraries\License;
 use App\Http\Requests\ApiQuestionsetRequest;
@@ -368,8 +367,8 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        $questionsetController = new QuestionSetController($h5pLti);
+        /** @var QuestionSetController $questionsetController */
+        $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 
         $this->assertDatabaseHas('question_sets', [
@@ -481,12 +480,6 @@ class QuestionSetControllerTest extends TestCase
             ]);
     }
 
-    private function mockH5pLti()
-    {
-        $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        app()->instance(H5pLti::class, $h5pLti);
-    }
-
     public function testUpdateFullRequest()
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
@@ -496,7 +489,6 @@ class QuestionSetControllerTest extends TestCase
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
-        $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
@@ -574,7 +566,6 @@ class QuestionSetControllerTest extends TestCase
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
-        $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
