@@ -11,7 +11,7 @@ trait LtiTrait
 {
     public function ltiShow($id)
     {
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
             return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
         } else {
@@ -28,7 +28,7 @@ trait LtiTrait
 
     public function ltiCreate(Request $request)
     {
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
             return $this->create($request);
         } else {
@@ -40,7 +40,7 @@ trait LtiTrait
 
     public function ltiEdit(Request $request, $id)
     {
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
             return $this->edit($request, $id);
         } else {

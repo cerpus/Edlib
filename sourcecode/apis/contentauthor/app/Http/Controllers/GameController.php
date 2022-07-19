@@ -38,8 +38,9 @@ class GameController extends Controller
     {
         $game = Game::findOrFail($id);
         if( !$game->canShow($preview)){
-            /** @var LTIRequest $ltiRequest */
-            $ltiRequest = LTIRequest::current();
+            /** @var Request $request */
+            $request = \Illuminate\Support\Facades\Request::instance();
+            $ltiRequest = LTIRequest::fromRequest($request);
             $styles = $ltiRequest && $ltiRequest->getLaunchPresentationCssUrl() ? [$ltiRequest->getLaunchPresentationCssUrl()] : [];
             return view('layouts.draft-resource', compact('styles'));
         }

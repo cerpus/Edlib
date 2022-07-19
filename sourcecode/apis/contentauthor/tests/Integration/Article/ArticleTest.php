@@ -7,7 +7,6 @@ use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Events\ContentCreated;
 use App\Events\ContentCreating;
-use App\H5pLti;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -182,7 +181,6 @@ class ArticleTest extends TestCase
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
 
-        $this->mockH5pLti();
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
@@ -241,12 +239,6 @@ class ArticleTest extends TestCase
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
             ->assertSee($article->content);
-    }
-
-    private function mockH5pLti()
-    {
-        $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        app()->instance(H5pLti::class, $h5pLti);
     }
 
     public function testViewArticle()
