@@ -461,11 +461,6 @@ parameters:
 			path: app/H5PLibrariesHubCache.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5pLti\\:\\:\\$ltiRequest\\.$#"
-			count: 1
-			path: app/H5pLti.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/ArticleInfoController.php
@@ -692,11 +687,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/GameController.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
 			count: 1
 			path: app/Http/Controllers/GameController.php
 

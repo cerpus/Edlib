@@ -28,7 +28,9 @@ class H5pLti
     public function getValidatedLtiRequest(): LTIRequest|null
     {
         // TODO: take request from parameter
-        $ltiRequest = LTIRequest::fromRequest(Request::instance());
+        /** @var \Illuminate\Http\Request $request */
+        $request = Request::instance();
+        $ltiRequest = LTIRequest::fromRequest($request);
         if ($ltiRequest?->validateOauth10($this->consumerKey, $this->consumerSecret)) {
             return $ltiRequest;
         }
