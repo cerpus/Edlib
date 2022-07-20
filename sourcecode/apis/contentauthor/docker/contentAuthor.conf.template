@@ -10,12 +10,10 @@ server {
     client_max_body_size 2G;
 
     location / {
-        access_log off;
         try_files $uri $uri/ /index.php$is_args$args;
     }
 
     location ~ \.php$ {
-        access_log on;
         include fastcgi.conf;
         fastcgi_pass php;
         fastcgi_param  HTTPS 'on';
