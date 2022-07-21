@@ -73,11 +73,13 @@ services:
 
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    depends_on:
+      - elasticsearch_password
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9200/_cat/health]
     volumes:
+      - ./data/elasticsearch/secrets:/run/secrets
       - elasticsearch:/usr/share/elasticsearch/data
-      - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
     ports:
       - "9200:9200"
     environment:
@@ -85,6 +87,14 @@ services:
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
+
+  elasticsearch_password:
+    image: alpine
+    command: ['generate-password', 'password.txt']
+    volumes:
+      - ./data/elasticsearch/secrets:/run/secrets
+      - ./scripts/generate-password.sh:/usr/local/bin/generate-password
+    working_dir: /run/secrets
 
   nginx:
     build: ./localSetup/projects/nginx
