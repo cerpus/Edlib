@@ -2132,16 +2132,6 @@ parameters:
 			path: app/User.php
 
 		-
-			message: "#^Class Chumper\\\\Zipper\\\\Zipper not found\\.$#"
-			count: 1
-			path: config/app.php
-
-		-
-			message: "#^Class Vinelab\\\\Bowler\\\\Facades\\\\Registrator not found\\.$#"
-			count: 1
-			path: config/app.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: database/factories/H5PContentsMetadataFactory.php
