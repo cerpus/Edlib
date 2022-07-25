@@ -116,6 +116,7 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
             } else {
                 onParamsChange({
                     parameters: getParams(),
+                    library: getLibrary(),
                 });
             }
         }
