@@ -14,7 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'ajax',
         'api/progress',
-        'admin/content/library/*/content',
         'admin/content/upgrade*',
         'api/v1/import',
         'content/upgrade',
@@ -37,6 +36,4 @@ class VerifyCsrfToken extends Middleware
         'game/*',
         "v1/content/*/unlock", // The unlock endpoint now responds to both GET and POST methods
     ];
-//'ajax', 'api/progress', 'admin/content/library/*/content'
-
 }
