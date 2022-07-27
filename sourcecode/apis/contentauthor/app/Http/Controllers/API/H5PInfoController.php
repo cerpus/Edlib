@@ -18,7 +18,7 @@ class H5PInfoController extends Controller
                 return [
                     'id' => $h5p->id,
                     'owner_id' => $h5p->user_id,
-                    'is_private' => (boolean)$h5p->is_private,
+                    'is_private' => $h5p->is_private,
                     'shares' => $h5p->collaborators->map(function ($collaborator) {
                         return [
                             'email' => $collaborator->email,

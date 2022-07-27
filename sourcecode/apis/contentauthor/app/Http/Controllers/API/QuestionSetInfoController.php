@@ -17,7 +17,7 @@ class QuestionSetInfoController extends Controller
                 return [
                     'id' => $questionset->id,
                     'owner_id' => $questionset->owner,
-                    'is_private' => (boolean)$questionset->is_private,
+                    'is_private' => $questionset->is_private,
 //                    'shares' => $questionset->collaborators->map(function ($collaborator) {
 //                        return [
 //                            'email' => $collaborator->email,

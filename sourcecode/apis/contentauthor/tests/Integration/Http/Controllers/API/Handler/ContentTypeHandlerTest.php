@@ -81,7 +81,7 @@ class ContentTypeHandlerTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'title' => $title,
             'user_id' => $authId,
-            'is_private' => 1,
+            'is_private' => true,
             'max_score' => null,
             'bulk_calculated' => 0,
         ]);
@@ -93,7 +93,7 @@ class ContentTypeHandlerTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'title' => $title,
             'user_id' => $authId,
-            'is_private' => 1,
+            'is_private' => true,
             'max_score' => null,
             'bulk_calculated' => 0,
         ]);
@@ -156,7 +156,7 @@ class ContentTypeHandlerTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'title' => $title,
             'user_id' => $authId,
-            'is_private' => 1,
+            'is_private' => true,
             'is_published' => 0,
             'max_score' => null,
             'bulk_calculated' => 0,
@@ -169,7 +169,7 @@ class ContentTypeHandlerTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'title' => $title,
             'user_id' => $authId,
-            'is_private' => 1,
+            'is_private' => true,
             'max_score' => null,
             'bulk_calculated' => 0,
             'is_published' => 0,
@@ -220,13 +220,13 @@ class ContentTypeHandlerTest extends TestCase
 
         $content = $handler->storeQuestionset($questionset->toArray());
         $this->assertNotEmpty($content);
-        $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => 1, 'max_score' => 2]);
+        $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => true, 'max_score' => 2]);
         $this->assertArrayHasKey("id", $content);
 
         $questionset->setSharing(true);
         $content = $handler->storeQuestionset($questionset->toArray());
         $this->assertNotEmpty($content);
-        $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => 0, 'max_score' => 2]);
+        $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => false, 'max_score' => 2]);
         $this->assertArrayHasKey("id", $content);
     }
 }

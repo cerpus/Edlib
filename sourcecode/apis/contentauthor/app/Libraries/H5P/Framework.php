@@ -576,7 +576,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $H5PContent->user_id = $content['user_id'];
         $H5PContent->content_create_mode = $adapter->getAdapterName();
         $H5PContent->is_published = $content['is_published'] ?? !$adapter->isUserPublishEnabled();
-        $H5PContent->is_private =  $content['is_private'] ?? 1;
+        $H5PContent->is_private = (bool) ($content['is_private'] ?? true);
         $H5PContent->is_draft =  $content['is_draft'] ?? 1;
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
 

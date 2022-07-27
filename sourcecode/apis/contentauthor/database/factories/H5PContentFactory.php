@@ -24,7 +24,7 @@ class H5PContentFactory extends Factory
             'license' => '',
             'keywords' => null,
             'description' => null,
-            'is_private' => 1,
+            'is_private' => true,
             'version_id' => null,
             'max_score' => 0,
             'content_create_mode' => 'unitTest',

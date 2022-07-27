@@ -17,7 +17,7 @@ class ArticleInfoController extends Controller
                 return [
                     'id' => $article->id,
                     'owner_id' => $article->owner_id,
-                    'is_private' => (boolean)$article->is_private,
+                    'is_private' => $article->is_private,
                     'shares' => $article->collaborators->map(function($collaborator){
                         return [
                             'email' => $collaborator->email,

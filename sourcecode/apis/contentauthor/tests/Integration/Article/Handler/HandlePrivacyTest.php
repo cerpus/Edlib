@@ -18,7 +18,7 @@ class HandlePrivacyTest extends TestCase
     {
         $authId = Str::uuid();
         $article = Article::factory()->create(['owner_id' => $authId]);
-        $this->assertNotEquals(1, $article->is_private);
+        $this->assertFalse($article->is_private);
 
         $request = new Request();
         $request->request->add(['share' => 'PRIVATE']);
@@ -26,7 +26,7 @@ class HandlePrivacyTest extends TestCase
         $privacyHandler = new HandlePrivacy();
         $privacyHandler->handle($articleSavedEvent);
         $article = $article->fresh();
-        $this->assertEquals(1, $article->is_private);
+        $this->assertTrue($article->is_private);
 
         $request = new Request();
         $request->request->add(['share' => 'share']);
@@ -34,6 +34,6 @@ class HandlePrivacyTest extends TestCase
         $privacyHandler = new HandlePrivacy();
         $privacyHandler->handle($articleSavedEvent);
         $article = $article->fresh();
-        $this->assertEquals(0, $article->is_private);
+        $this->assertFalse($article->is_private);
     }
 }

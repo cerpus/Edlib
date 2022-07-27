@@ -6,11 +6,6 @@ parameters:
 			path: app/Article.php
 
 		-
-			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
-			count: 1
-			path: app/Article.php
-
-		-
 			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
 			count: 1
 			path: app/Auth/Guards/EdlibGuard.php
@@ -137,11 +132,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, int\\<min, \\-1\\>\\|int\\<1, max\\> given\\.$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
 			count: 1
 			path: app/H5PContent.php
 
@@ -421,11 +411,6 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:get_content_privacy\\(\\) is unused\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Parameter \\#1 \\$config of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:createView\\(\\) expects App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface, App\\\\Libraries\\\\H5P\\\\Config given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -452,11 +437,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -1562,16 +1542,6 @@ parameters:
 			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
 
 		-
-			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandlePrivacy.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleVersioning.php
-
-		-
 			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
 			count: 1
 			path: app/Listeners/Article/HandleVersioning.php
@@ -1585,11 +1555,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
 			count: 1
 			path: app/Listeners/Article/HandleVersioning.php
-
-		-
-			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
-			count: 1
-			path: app/Listeners/Game/HandlePrivacy.php
 
 		-
 			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
@@ -1610,11 +1575,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
 			count: 1
 			path: app/Listeners/H5P/HandleVersioning.php
-
-		-
-			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
-			count: 1
-			path: app/Listeners/Questionset/HandlePrivacy.php
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:h5p\\(\\)\\.$#"
