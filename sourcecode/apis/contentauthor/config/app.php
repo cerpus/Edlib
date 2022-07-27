@@ -2,7 +2,6 @@
 
 return [
     'env' => env('APP_ENV', 'production'),
-    'enable_ndla_import' => env('ENABLE_NDLA_IMPORT', true),
     'enable_licensing' => env('ENABLE_LICENSING', false),
 
     /*
@@ -198,11 +197,8 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Registrator' => Vinelab\Bowler\Facades\Registrator::class,
         'QuestionBank' => \Cerpus\QuestionBankClient\QuestionBankClient::class,
         'ImageService' => \Cerpus\ImageServiceClient\ImageServiceClient::class,
-
-        'Zipper' => Chumper\Zipper\Zipper::class,
     ],
 
     'supported_locale' => [
