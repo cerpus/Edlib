@@ -626,11 +626,6 @@ parameters:
 			path: app/Http/Controllers/Admin/Capability.php
 
 		-
-			message: "#^Variable \\$upgrades might not be defined\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/ContentUpgradeController.php
-
-		-
 			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/GamesAdminController.php
