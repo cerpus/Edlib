@@ -6,10 +6,13 @@ use Illuminate\Support\Facades\App;
 use Closure;
 use Illuminate\Support\Facades\Session;
 use App\H5pLti;
-use App\Http\Requests\LTIRequest;
 
 class LtiLocale
 {
+    public function __construct(private readonly H5pLti $h5pLti)
+    {
+    }
+
     /**
      * Set locale based on lti param
      *
@@ -19,14 +22,10 @@ class LtiLocale
      */
     public function handle($request, Closure $next)
     {
-        $ltiRequest = LTIRequest::current();
+        $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
-            /** @var H5pLti $h5pLti */
-            $h5pLti = app(H5pLti::class);
-            if ($h5pLti->validatedLtiRequestOauth($ltiRequest)) {
-                if ($ltiRequest->getLocale()) {
-                    Session::put('locale', $ltiRequest->getLocale());
-                }
+            if ($ltiRequest->getLocale()) {
+                Session::put('locale', $ltiRequest->getLocale());
             }
         }
         App::setLocale(Session::get('locale', config('app.fallback_locale')));

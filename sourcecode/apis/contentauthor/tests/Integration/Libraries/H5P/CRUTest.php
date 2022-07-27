@@ -6,7 +6,6 @@ use App\Events\ResourceSaved;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PLibrary;
-use App\H5pLti;
 use App\User;
 use Cerpus\VersionClient\VersionData;
 use Exception;
@@ -42,12 +41,6 @@ class CRUTest extends TestCase
         $this->assertFileExists($dest, "File $dest does not exist");
         $this->assertTrue(unlink($dest), "Unable to remove file $dest");
         $this->assertFileDoesNotExist($dest, "File $dest still exist");
-    }
-
-    private function mockH5pLti()
-    {
-        $h5pLti = $this->getMockBuilder(H5pLti::class)->getMock();
-        app()->instance(H5pLti::class, $h5pLti);
     }
 
     /** @test */
@@ -353,7 +346,6 @@ class CRUTest extends TestCase
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
 
-        $this->mockH5pLti();
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => true,
             'getAdapterName' => "UnitTest"
@@ -417,7 +409,6 @@ class CRUTest extends TestCase
     {
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
-        $this->mockH5pLti();
 
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => true,
@@ -450,7 +441,6 @@ class CRUTest extends TestCase
     {
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
-        $this->mockH5pLti();
 
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => false,
@@ -490,8 +480,6 @@ class CRUTest extends TestCase
         $this->setupVersion([
             'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
         ]);
-
-        $this->mockH5pLti();
 
         $contents = H5PContent::factory()->create([
             'library_id' => H5PLibrary::factory()->create(),
