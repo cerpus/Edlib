@@ -940,33 +940,6 @@ class Framework implements \H5PFrameworkInterface, Result
         return $library;
     }
 
-    public function loadLibraryInfo($id)
-    {
-        $sql = "select
-            id as libraryId,
-            title as title,
-            name as machineName,
-            major_version as majorVersion,
-            minor_version as minorVersion,
-            patch_version as patchVersion,
-            runnable,
-            fullscreen,
-            embed_types as embedTypes,
-            preloaded_js as preloadedJs,
-            preloaded_css as preloadedCss,
-            drop_library_css as dropLibraryCss,
-            semantics
-        from h5p_libraries
-        where
-            id = :id";
-
-        $libraryStatement = $this->db->prepare($sql);
-        $libraryStatement->execute([':id' => $id]);
-        $library = $libraryStatement->fetch(PDO::FETCH_ASSOC);
-        return $library;
-
-    }
-
     /**
      * Loads library semantics.
      *

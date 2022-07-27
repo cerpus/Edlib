@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
 @push('js')
-    <script>H5PAdminIntegration ={!!  $h5pAdminIntegration !!}</script>
-    <script>H5PIntegration ={!!  $h5pIntegration !!}</script>
+    <script>H5PAdminIntegration ={!! json_encode($h5pAdminIntegration) !!}</script>
+    <script>H5PIntegration ={!! json_encode($h5pIntegration) !!}</script>
     @foreach($scripts as $script)
         <script src="{{$script}}"></script>
     @endforeach

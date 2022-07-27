@@ -78,7 +78,7 @@ class LibraryUpgradeController extends Controller
                     $item['upgradeUrl'] = empty($upgrades) || empty($usage['content']) ? false : route('admin.library', [
                         'task' => 'upgrade',
                         'destination' => route('admin.update-libraries'),
-                        'libraryId' => $library->id,
+                        'library' => $library->id,
                     ]);
 
                     $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);

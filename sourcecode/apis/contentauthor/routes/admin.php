@@ -38,7 +38,7 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         Route::delete('libraries/{library}', [LibraryUpgradeController::class, 'deleteLibrary'])
             ->name('admin.delete-library');
 
-        Route::get('libraries/{libraryId}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
+        Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
 
         Route::post('content/upgrade', [AdminController::class, 'contentUpgrade'])->name('admin.content-upgrade');
 
