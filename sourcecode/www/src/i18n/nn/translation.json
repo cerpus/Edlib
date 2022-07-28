@@ -7,10 +7,46 @@
     "Fant ingen ressurser": "Fann ingen ressursar",
     "source": {
         "h5p": "H5P",
-        "article": "Edlib-artikkel"
+        "article": "Edlib-artikkel",
+        "game": "Spel",
+        "questionSet": "Spørsmål-sett"
     },
     "Foreslått innhold": "Foreslått innhald",
     "recommendationEngine": {
         "explanation": "Her kan du sjå kva ressursar du kan bruke i kurset ditt. Dra og slepp ressursar i modulane dine."
-    }
+    },
+    "licenses": {
+        "CC0": "CC0: Fristatus-erklæring",
+        "BY": "CC Namngiving",
+        "BY-ND": "CC Namngiving - Ingen om­arbeidingar",
+        "BY-NC": "CC Namngiving - Ikkje-kommersiell",
+        "BY-NC-ND": "CC Namngiving - Ikkje-kommersiell - Ingen om­arbeidingar",
+        "SA": "Del på same vilkår",
+        "ND": "Ingen om­arbeidingar",
+        "NC": "Ikkje-kommersiell",
+        "PDM": "Fristatus-erklæring",
+        "EDLL": "Edlib-lisens",
+        "PRIVATE": "Privat",
+        "BY-SA": "CC Namngiving - Del på same vilkår",
+        "BY-NC-SA": "CC Namngiving - Ikkje-kommersiell - Del på same vilkår"
+    },
+    "Bruk ressurs": "Bruk ressurs",
+    "Rediger ressurs": "Rediger ressurs",
+    "Lukk": "Lukk",
+    "urlDisplayTypes": {
+        "ndla": "NDLA",
+        "card": "Kort",
+        "embedly": "Integrert"
+    },
+    "bruk": "Bruk",
+    "Mitt innhold": "Mitt innhald",
+    "Legg til samarbeidere": "Legg til samarbeidarar",
+    "Forhåndsvis": "Førehandsvisning",
+    "Publiser": "Publiser",
+    "Publiseringsinnstillinger": "Innstillingar for publisering",
+    "Privat": "Privat",
+    "Delt/offentlig": "Delt/offentleg",
+    "Alle kans se denne Doku": "Alle kan sjå denne Doku-en",
+    "Forhåndsvisning": "Førehandsvisning",
+    "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Berre du kan setje inn denne ressursen og berre du kan førhandsvise den i Edlib"
 }
