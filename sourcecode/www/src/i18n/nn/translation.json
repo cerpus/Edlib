@@ -1,1 +1,16 @@
-{}
+{
+    "avansert søk": "Avansert søk",
+    "Søk": "Søk",
+    "Foreslåtte ressurser": "Foreslåtte ressursar",
+    "Nyeste": "Nyaste",
+    "Noe skjedde": "Noko skjedde",
+    "Fant ingen ressurser": "Fann ingen ressursar",
+    "source": {
+        "h5p": "H5P",
+        "article": "Edlib-artikkel"
+    },
+    "Foreslått innhold": "Foreslått innhald",
+    "recommendationEngine": {
+        "explanation": "Her kan du sjå kva ressursar du kan bruke i kurset ditt. Dra og slepp ressursar i modulane dine."
+    }
+}
