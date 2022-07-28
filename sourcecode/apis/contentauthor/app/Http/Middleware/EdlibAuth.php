@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class EdlibAuth
@@ -17,7 +16,7 @@ class EdlibAuth
      */
     public function handle($request, Closure $next, $role)
     {
-        if (Session::get('user') == null && !in_array($role, Session::get('roles', []))) {
+        if (!in_array($role, $request->getSession()->get('roles', []), true)) {
             throw new UnauthorizedHttpException('User does not have necessary roles');
         }
 
