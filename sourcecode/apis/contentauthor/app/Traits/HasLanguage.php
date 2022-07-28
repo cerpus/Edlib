@@ -9,7 +9,7 @@ use App\ContentLanguage;
  * Trait HasLanguage
  * @package App\Traits
  *
- * @property string|int id
+ * @property string|int $id
  */
 trait HasLanguage
 {

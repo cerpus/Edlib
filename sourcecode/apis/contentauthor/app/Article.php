@@ -24,17 +24,17 @@ use Ramsey\Uuid\Uuid;
  * Class Article
  * @package App
  *
- * @property string id
- * @property string parent_id
- * @property string perent_version_id
- * @property string original_id
- * @property string owner_id
- * @property string content
- * @property Carbon deleted_at
- * @property string note_id
- * @property string ndla_url
+ * @property string $id
+ * @property string $parent_id
+ * @property string $parent_version_id
+ * @property string $original_id
+ * @property string $owner_id
+ * @property string $content
+ * @property Carbon $deleted_at
+ * @property string $note_id
+ * @property string $ndla_url
  *
- * @property Collection<Collaborator> collaborators
+ * @property Collection<Collaborator> $collaborators
  *
  * @method null|self noMaxScore()
  * @method null|self ofBulkCalculated($type)

@@ -14,11 +14,11 @@ use Iso639p3;
  * Class QuestionSet
  * @package App
  *
- * @property string language_code
- * @property string owner
- * @property string external_reference
- * @property string tags
- * @property Collection<QuestionSetQuestion> questions
+ * @property string $language_code
+ * @property string $owner
+ * @property string $external_reference
+ * @property string $tags
+ * @property Collection<QuestionSetQuestion> $questions
  *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])

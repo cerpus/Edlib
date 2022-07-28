@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string id
+ * @property string $id
  *
  * @see Gametype::scopeOfName()
  * @method static Builder ofName($machineName)
