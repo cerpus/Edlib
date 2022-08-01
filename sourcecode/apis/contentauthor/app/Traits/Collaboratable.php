@@ -9,7 +9,7 @@ use App\Collaborator;
 use App\Mail\AddedAsCollaboratorMail;
 
 /**
- * @property Collection<Collaborator> collaborators
+ * @property Collection<Collaborator> $collaborators
  */
 
 trait Collaboratable

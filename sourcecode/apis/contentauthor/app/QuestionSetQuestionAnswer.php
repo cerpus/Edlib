@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string id
- * @property string answer_text
- * @property int correct
+ * @property string $id
+ * @property string $answer_text
+ * @property int $correct
  */
 
 class QuestionSetQuestionAnswer extends Model

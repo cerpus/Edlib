@@ -6,52 +6,7 @@ parameters:
 			path: app/Article.php
 
 		-
-			message: "#^PHPDoc tag @property has invalid value \\(Carbon deleted_at\\)\\: Unexpected token \"deleted_at\", expected variable at offset 240$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<Collaborator\\> collaborators\\)\\: Unexpected token \"collaborators\", expected variable at offset 349$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string content\\)\\: Unexpected token \"content\", expected variable at offset 212$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 60$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string ndla_url\\)\\: Unexpected token \"ndla_url\", expected variable at offset 299$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string note_id\\)\\: Unexpected token \"note_id\", expected variable at offset 271$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string original_id\\)\\: Unexpected token \"original_id\", expected variable at offset 151$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string owner_id\\)\\: Unexpected token \"owner_id\", expected variable at offset 183$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string parent_id\\)\\: Unexpected token \"parent_id\", expected variable at offset 83$#"
-			count: 1
-			path: app/Article.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string perent_version_id\\)\\: Unexpected token \"perent_version_id\", expected variable at offset 113$#"
+			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
 			count: 1
 			path: app/Article.php
 
@@ -71,53 +26,8 @@ parameters:
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$created_at\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$id\\.$#"
-			count: 22
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$is_draft\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$is_private\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$is_published\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$license\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$ndlaMapper\\.$#"
 			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$title\\.$#"
-			count: 2
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$updated_at\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$version_id\\.$#"
-			count: 3
 			path: app/Content.php
 
 		-
@@ -146,66 +56,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^PHPDoc tag @property has invalid value \\(Carbon created_at\\)\\: Unexpected token \"created_at\", expected variable at offset 87$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Carbon updated_at\\)\\: Unexpected token \"updated_at\", expected variable at offset 118$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(bool is_draft\\)\\: Unexpected token \"is_draft\", expected variable at offset 423$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(bool is_published\\)\\: Unexpected token \"is_published\", expected variable at offset 297$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int bulk_calculated\\)\\: Unexpected token \"bulk_calculated\", expected variable at offset 263$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int is_private\\)\\: Unexpected token \"is_private\", expected variable at offset 172$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int\\|null max_score\\)\\: Unexpected token \"max_score\", expected variable at offset 236$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string license\\)\\: Unexpected token \"license\", expected variable at offset 330$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string node_id\\)\\: Unexpected token \"node_id\", expected variable at offset 358$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string title\\)\\: Unexpected token \"title\", expected variable at offset 149$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string version_id\\)\\: Unexpected token \"version_id\", expected variable at offset 203$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string\\|int id\\)\\: Unexpected token \"id\", expected variable at offset 64$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 1
 			path: app/Content.php
@@ -224,21 +74,6 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: app/Content.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int content_id\\)\\: Unexpected token \"content_id\", expected variable at offset 21$#"
-			count: 1
-			path: app/ContentLanguage.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string language_code\\)\\: Unexpected token \"language_code\", expected variable at offset 52$#"
-			count: 1
-			path: app/ContentLanguage.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Carbon updated_at\\)\\: Unexpected token \"updated_at\", expected variable at offset 24$#"
-			count: 1
-			path: app/ContentLock.php
 
 		-
 			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
@@ -281,57 +116,7 @@ parameters:
 			path: app/Game.php
 
 		-
-			message: "#^PHPDoc tag @property has invalid value \\(Gametype gameType\\)\\: Unexpected token \"gameType\", expected variable at offset 236$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int deleted_at\\)\\: Unexpected token \"deleted_at\", expected variable at offset 200$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(object game_settings\\)\\: Unexpected token \"game_settings\", expected variable at offset 169$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string gametype\\)\\: Unexpected token \"gametype\", expected variable at offset 80$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 57$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string language_code\\)\\: Unexpected token \"language_code\", expected variable at offset 109$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string owner\\)\\: Unexpected token \"owner\", expected variable at offset 143$#"
-			count: 1
-			path: app/Game.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 24$#"
-			count: 1
-			path: app/Gametype.php
-
-		-
 			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
-			count: 1
-			path: app/H5PCollaborator.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int h5p_id\\)\\: Unexpected token \"h5p_id\", expected variable at offset 21$#"
-			count: 1
-			path: app/H5PCollaborator.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string email\\)\\: Unexpected token \"email\", expected variable at offset 48$#"
 			count: 1
 			path: app/H5PCollaborator.php
 
@@ -351,82 +136,12 @@ parameters:
 			path: app/H5PContent.php
 
 		-
-			message: "#^Method App\\\\H5PContent\\:\\:getId\\(\\) should return string but returns int\\.$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<Collaborator\\> collaborators\\)\\: Unexpected token \"collaborators\", expected variable at offset 482$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(H5PLibrary library\\)\\: Unexpected token \"library\", expected variable at offset 520$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int disable\\)\\: Unexpected token \"disable\", expected variable at offset 232$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int library_id\\)\\: Unexpected token \"library_id\", expected variable at offset 88$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string author\\)\\: Unexpected token \"author\", expected variable at offset 293$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string content_create_mode\\)\\: Unexpected token \"content_create_mode\", expected variable at offset 381$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string content_type\\)\\: Unexpected token \"content_type\", expected variable at offset 260$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string description\\)\\: Unexpected token \"description\", expected variable at offset 349$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string embed_type\\)\\: Unexpected token \"embed_type\", expected variable at offset 204$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string filtered\\)\\: Unexpected token \"filtered\", expected variable at offset 150$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string keywords\\)\\: Unexpected token \"keywords\", expected variable at offset 320$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string parameters\\)\\: Unexpected token \"parameters\", expected variable at offset 119$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string slug\\)\\: Unexpected token \"slug\", expected variable at offset 179$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string user_id\\)\\: Unexpected token \"user_id\", expected variable at offset 63$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, int\\<min, \\-1\\>\\|int\\<1, max\\> given\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
 			count: 1
 			path: app/H5PContent.php
 
@@ -434,31 +149,6 @@ parameters:
 			message: "#^PHPDoc tag @param references unknown parameter\\: \\$context$#"
 			count: 1
 			path: app/H5PContentsUserData.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string description\\)\\: Unexpected token \"description\", expected variable at offset 78$#"
-			count: 1
-			path: app/H5PLibrariesHubCache.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string license\\)\\: Unexpected token \"license\", expected variable at offset 110$#"
-			count: 1
-			path: app/H5PLibrariesHubCache.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string screenshots\\)\\: Unexpected token \"screenshots\", expected variable at offset 138$#"
-			count: 1
-			path: app/H5PLibrariesHubCache.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string summary\\)\\: Unexpected token \"summary\", expected variable at offset 50$#"
-			count: 1
-			path: app/H5PLibrariesHubCache.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string title\\)\\: Unexpected token \"title\", expected variable at offset 24$#"
-			count: 1
-			path: app/H5PLibrariesHubCache.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
@@ -494,11 +184,6 @@ parameters:
 			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/H5PInfoController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$library\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/H5PTypeApi.php
 
 		-
 			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
@@ -686,16 +371,6 @@ parameters:
 			path: app/Http/Controllers/GameController.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$library\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\H5PContent\\>\\:\\:\\$library\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Call to method getCss\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -781,6 +456,11 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
 			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -799,6 +479,11 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: app/Http/Controllers/HealthController.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Controllers/LinkController.php
 
 		-
 			message: "#^Parameter \\#1 \\$view of function view expects view\\-string\\|null, string given\\.$#"
@@ -1011,16 +696,6 @@ parameters:
 			path: app/Libraries/Games/GameHandler.php
 
 		-
-			message: "#^Access to an undefined property App\\\\QuestionSet\\:\\:\\$questions\\.$#"
-			count: 2
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
-			message: "#^Access to an undefined property App\\\\QuestionSetQuestion\\:\\:\\$answers\\.$#"
-			count: 2
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Libraries/Games/Millionaire/Millionaire.php
@@ -1028,6 +703,26 @@ parameters:
 		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 3
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{answer\\: string, isCorrect\\: bool\\}, Closure\\(App\\\\QuestionSetQuestionAnswer\\)\\: array\\{answer\\: string, isCorrect\\: bool\\} given\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\}, Closure\\(App\\\\QuestionSetQuestion\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\} given\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Property App\\\\QuestionSet\\:\\:\\$questions \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestion\\>\\) does not accept Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), App\\\\QuestionSetQuestion\\>\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Property App\\\\QuestionSetQuestion\\:\\:\\$answers \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestionAnswer\\>\\) does not accept array\\<App\\\\QuestionSetQuestionAnswer\\>\\.$#"
+			count: 1
 			path: app/Libraries/Games/Millionaire/Millionaire.php
 
 		-
@@ -1311,11 +1006,6 @@ parameters:
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$library\\.$#"
-			count: 6
-			path: app/Libraries/H5P/Framework.php
-
-		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$count\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
@@ -1442,12 +1132,17 @@ parameters:
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$library\\.$#"
-			count: 3
+			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
+			count: 1
 			path: app/Libraries/H5P/H5PCopyright.php
 
 		-
-			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PCopyright.php
 
@@ -1857,11 +1552,6 @@ parameters:
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
 
 		-
-			message: "#^Access to an undefined property App\\\\QuestionSet\\:\\:\\$questions\\.$#"
-			count: 1
-			path: app/Libraries/QuestionSet/QuestionSetConvert.php
-
-		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 4
 			path: app/Libraries/QuestionSet/QuestionSetHandler.php
@@ -1880,46 +1570,6 @@ parameters:
 			message: "#^Access to an undefined property App\\\\LibraryDescription\\:\\:\\$library\\.$#"
 			count: 1
 			path: app/LibraryDescription.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<Collaborator\\> collaborators\\)\\: Unexpected token \"collaborators\", expected variable at offset 276$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int deleted_at\\)\\: Unexpected token \"deleted_at\", expected variable at offset 165$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 57$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string link_text\\)\\: Unexpected token \"link_text\", expected variable at offset 196$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string link_type\\)\\: Unexpected token \"link_type\", expected variable at offset 109$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string link_url\\)\\: Unexpected token \"link_url\", expected variable at offset 80$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string metadata\\)\\: Unexpected token \"metadata\", expected variable at offset 226$#"
-			count: 1
-			path: app/Link.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string owner_id\\)\\: Unexpected token \"owner_id\", expected variable at offset 139$#"
-			count: 1
-			path: app/Link.php
 
 		-
 			message: "#^PHPDoc tag @var has invalid value \\(\\$leafs VersionData\\[\\]\\)\\: Unexpected token \"\\$leafs\", expected type at offset 9$#"
@@ -1947,9 +1597,14 @@ parameters:
 			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
 
 		-
-			message: "#^Property App\\\\Article\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
 			count: 1
 			path: app/Listeners/Article/HandlePrivacy.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleVersioning.php
 
 		-
 			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
@@ -1967,12 +1622,17 @@ parameters:
 			path: app/Listeners/Article/HandleVersioning.php
 
 		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Listeners/Game/HandlePrivacy.php
+
+		-
 			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Listeners/H5P/Copy/HandleVersioning.php
 
 		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int given\\.$#"
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int\\|string given\\.$#"
 			count: 1
 			path: app/Listeners/H5P/HandleVersioning.php
 
@@ -1987,17 +1647,12 @@ parameters:
 			path: app/Listeners/H5P/HandleVersioning.php
 
 		-
-			message: "#^Property App\\\\QuestionSet\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
 			count: 1
 			path: app/Listeners/Questionset/HandlePrivacy.php
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:h5p\\(\\)\\.$#"
-			count: 1
-			path: app/NdlaIdMapper.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int\\|null metadata_fetch\\)\\: Unexpected token \"metadata_fetch\", expected variable at offset 67$#"
 			count: 1
 			path: app/NdlaIdMapper.php
 
@@ -2037,89 +1692,9 @@ parameters:
 			path: app/QuestionSet.php
 
 		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<QuestionSetQuestion\\> questions\\)\\: Unexpected token \"questions\", expected variable at offset 213$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string external_reference\\)\\: Unexpected token \"external_reference\", expected variable at offset 124$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string language_code\\)\\: Unexpected token \"language_code\", expected variable at offset 64$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string owner\\)\\: Unexpected token \"owner\", expected variable at offset 98$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string tags\\)\\: Unexpected token \"tags\", expected variable at offset 163$#"
-			count: 1
-			path: app/QuestionSet.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<QuestionSetQuestionAnswer\\> answers\\)\\: Unexpected token \"answers\", expected variable at offset 141$#"
-			count: 1
-			path: app/QuestionSetQuestion.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 24$#"
-			count: 1
-			path: app/QuestionSetQuestion.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string image\\)\\: Unexpected token \"image\", expected variable at offset 81$#"
-			count: 1
-			path: app/QuestionSetQuestion.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string question_text\\)\\: Unexpected token \"question_text\", expected variable at offset 47$#"
-			count: 1
-			path: app/QuestionSetQuestion.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(int correct\\)\\: Unexpected token \"correct\", expected variable at offset 76$#"
-			count: 1
-			path: app/QuestionSetQuestionAnswer.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string answer_text\\)\\: Unexpected token \"answer_text\", expected variable at offset 47$#"
-			count: 1
-			path: app/QuestionSetQuestionAnswer.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string id\\)\\: Unexpected token \"id\", expected variable at offset 24$#"
-			count: 1
-			path: app/QuestionSetQuestionAnswer.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(Collection\\<Collaborator\\> collaborators\\)\\: Unexpected token \"collaborators\", expected variable at offset 42$#"
-			count: 1
-			path: app/Traits/Collaboratable.php
-
-		-
-			message: "#^PHPDoc tag @property has invalid value \\(string\\|int id\\)\\: Unexpected token \"id\", expected variable at offset 75$#"
-			count: 1
-			path: app/Traits/HasLanguage.php
-
-		-
-			message: "#^Access to an undefined property App\\\\QuestionSetQuestion\\:\\:\\$answers\\.$#"
-			count: 1
-			path: app/Transformers/QuestionSetsQuestionTransformer.php
-
-		-
 			message: "#^Access to an undefined property App\\\\QuestionSetQuestion\\:\\:\\$questionset\\.$#"
 			count: 1
 			path: app/Transformers/QuestionSetsQuestionTransformer.php
-
-		-
-			message: "#^Access to an undefined property App\\\\QuestionSet\\:\\:\\$questions\\.$#"
-			count: 1
-			path: app/Transformers/QuestionSetsTransformer.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
@@ -2412,8 +1987,8 @@ parameters:
 			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$library\\.$#"
-			count: 4
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$type\\.$#"
+			count: 1
 			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
 
 		-

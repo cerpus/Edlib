@@ -23,22 +23,22 @@ use Iso639p3;
  * Class H5PContent
  * @package App
  *
- * @property string user_id
- * @property int library_id
- * @property string parameters
- * @property string filtered
- * @property string slug
- * @property string embed_type
- * @property int disable
- * @property string content_type
- * @property string author
- * @property string keywords
- * @property string description
- * @property string content_create_mode
+ * @property string $user_id
+ * @property int $library_id
+ * @property string $parameters
+ * @property string $filtered
+ * @property string $slug
+ * @property string $embed_type
+ * @property int $disable
+ * @property string $content_type
+ * @property string $author
+ * @property string $keywords
+ * @property string $description
+ * @property string $content_create_mode
  * @property string $language_iso_639_3
  *
- * @property Collection<Collaborator> collaborators
- * @property H5PLibrary library
+ * @property Collection<Collaborator> $collaborators
+ * @property H5PLibrary $library
  *
  * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()

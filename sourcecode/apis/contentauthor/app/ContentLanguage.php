@@ -6,8 +6,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int content_id
- * @property string language_code
+ * @property int $content_id
+ * @property string $language_code
  *
  * @method static firstOrCreate(array $attributes = [], array $values = [])
  */
