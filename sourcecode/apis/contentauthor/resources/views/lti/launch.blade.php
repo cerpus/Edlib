@@ -1,1 +1,0 @@
-<iframe src="{{ config('core.url') . '/lti/launch/' . $id }}" width="100%" height="300" id="popup_iframe"></iframe>
