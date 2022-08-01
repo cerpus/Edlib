@@ -24,7 +24,7 @@
     "lodash": "^4.17.21",
     "node-jose": "^2.1.1",
     "prettier": "^2.7.1",
-    "supertest": "^6.2.3",
+    "supertest": "^6.2.4",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.5.0",
     "uuid": "^8.3.2"
