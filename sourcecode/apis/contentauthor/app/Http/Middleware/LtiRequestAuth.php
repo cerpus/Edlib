@@ -38,10 +38,14 @@ class LtiRequestAuth
                 Session::put('email', $ltiRequest->getUserEmail(), 'noemail');
             }
             $jwt = $ltiRequest->getExtJwtToken();
-            try {
-                $this->jwtDecoder->getVerifiedPayload($jwt);
-                Session::put('jwtToken', ['raw' => $jwt]);
-            } catch (JwtException) {
+            if ($jwt !== null && $jwt !== '') {
+                try {
+                    $this->jwtDecoder->getVerifiedPayload($jwt);
+                    Session::put('jwtToken', ['raw' => $jwt]);
+                } catch (JwtException) {
+                    Session::remove('jwtToken');
+                }
+            } else {
                 Session::remove('jwtToken');
             }
             $allowedLicenses = implode(',', [
