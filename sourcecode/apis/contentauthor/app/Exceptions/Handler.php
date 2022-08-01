@@ -2,9 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Auth\Jwt\JwtException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -15,6 +18,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        \App\Auth\Jwt\JwtException::class,
         \Illuminate\Auth\AuthenticationException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
@@ -49,6 +53,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, \Throwable $e)
     {
+        if ($e instanceof JwtException) {
+            $e = new HttpException(Response::HTTP_UNAUTHORIZED, $e->getMessage(), $e);
+        }
+        
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }

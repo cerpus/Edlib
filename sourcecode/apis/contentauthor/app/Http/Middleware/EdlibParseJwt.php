@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Auth\Jwt\JwtDecoderInterface;
 use App\Http\Libraries\AuthJwtParser;
-use Cerpus\LaravelAuth\Service\JWTValidationService;
 use Closure;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Http\Request;
@@ -12,23 +12,8 @@ use Illuminate\Support\Facades\Session;
 
 class EdlibParseJwt extends AuthJwtParser
 {
-    private function getJwtFromRequest(Request $request): ?string
+    public function __construct(private readonly JwtDecoderInterface $jwtReader)
     {
-        $authorize = trim($request->header('Authorization', ''));
-        $prefix = 'Bearer';
-
-        if (str_starts_with($authorize, $prefix)) {
-            $token = trim(substr($authorize, strlen($prefix)));
-            if (!empty($token)) {
-                return $token;
-            }
-        }
-
-        if ($request->has('jwt')) {
-            return $request->get('jwt');
-        }
-
-        return null;
     }
 
     /**
@@ -40,29 +25,25 @@ class EdlibParseJwt extends AuthJwtParser
      */
     public function handle(Request $request, Closure $next)
     {
-        $jwtService = new JWTValidationService();
-        $jwt = $this->getJwtFromRequest($request);
+        $bearerToken = $request->bearerToken() ?? $request->get('jwt');
 
-        if ($jwt != null) {
-            $validJwt = $jwtService->validateJwt($jwt);
-            if ($validJwt !== null && $validJwt->getType() == 'edlib') {
-                $payload = $validJwt->getPayload();
-                Session::put('authId', $payload->sub);
-                Session::put('userId', $payload->sub);
-                $user = $payload->payload->user;
-                $roles = $payload->payload->roles ?? [];
-                Session::put('name', $this->getBestName($user));
-                Session::put('email', $this->getEmail($user));
-                Session::put('verifiedEmails', $this->getVerifiedEmails($user));
-                Session::put('isAdmin', in_array('superadmin', $roles));
-                Session::put('roles', $roles);
-                Auth::login(new GenericUser([
-                    'id' => $payload->sub,
-                    'name' => $this->getBestName($user),
-                    'email' => $this->getEmail($user)
-                ]));
-                return $next($request);
-            }
+        if ($bearerToken !== null) {
+            $payload = $this->jwtReader->getVerifiedPayload($bearerToken);
+            Session::put('authId', $payload->sub);
+            Session::put('userId', $payload->sub);
+            $user = $payload->payload->user;
+            $roles = $payload->payload->roles ?? [];
+            Session::put('name', $this->getBestName($user));
+            Session::put('email', $this->getEmail($user));
+            Session::put('verifiedEmails', $this->getVerifiedEmails($user));
+            Session::put('isAdmin', in_array('superadmin', $roles));
+            Session::put('roles', $roles);
+            Auth::login(new GenericUser([
+                'id' => $payload->sub,
+                'name' => $this->getBestName($user),
+                'email' => $this->getEmail($user)
+            ]));
+            return $next($request);
         }
 
         $isLoggedIn = Session::get('authId');

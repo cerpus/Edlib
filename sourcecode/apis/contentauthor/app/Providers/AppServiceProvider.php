@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
+use App\Auth\Jwt\JwtDecoder;
+use App\Auth\Jwt\JwtDecoderInterface;
 use App\H5pLti;
 use App\H5POption;
 use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
@@ -11,8 +13,12 @@ use App\Http\Middleware\SignedOauth10Request;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Observers\H5POptionObserver;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -81,5 +87,27 @@ class AppServiceProvider extends ServiceProvider
                 return new AuthApiService();
             }
         );
+
+        $this->app->singleton(JwtDecoderInterface::class, JwtDecoder::class);
+
+        $this->app
+            ->when(JwtDecoder::class)
+            ->needs('$publicKeyOrJwksUri')
+            ->giveConfig('auth.edlib-jwt-pubkey');
+
+        $this->app
+            ->when(JwtDecoder::class)
+            ->needs('$leewaySeconds')
+            ->giveConfig('auth.edlib-jwt-leeway-seconds');
+
+        $this->app
+            ->when(JwtDecoder::class)
+            ->needs(ClientInterface::class)
+            ->give(Client::class);
+
+        $this->app
+            ->when(JwtDecoder::class)
+            ->needs(RequestFactoryInterface::class)
+            ->give(HttpFactory::class);
     }
 }

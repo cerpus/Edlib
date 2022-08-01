@@ -2,18 +2,19 @@
 
 namespace App\Http\Middleware;
 
+use App\Auth\Jwt\JwtDecoderInterface;
+use App\Auth\Jwt\JwtException;
 use App\H5pLti;
 use App\Http\Libraries\License;
-use App\Http\Requests\LTIRequest;
-use Cerpus\LaravelAuth\Service\JWTValidationService;
 use Closure;
 use Illuminate\Support\Facades\Session;
 
 class LtiRequestAuth
 {
-    public function __construct(private readonly H5pLti $h5pLti)
-    {
-
+    public function __construct(
+        private readonly H5pLti $h5pLti,
+        private readonly JwtDecoderInterface $jwtDecoder,
+    ) {
     }
 
     /**
@@ -36,17 +37,12 @@ class LtiRequestAuth
                 }
                 Session::put('email', $ltiRequest->getUserEmail(), 'noemail');
             }
-            $jwtService = app(JWTValidationService::class);
             $jwt = $ltiRequest->getExtJwtToken();
-            $validJwt = $jwt ? $jwtService->validateJwt($jwt) : null;
-            if ($validJwt) {
-                Session::put('jwtToken', [
-                    'context' => $validJwt->getContextName(),
-                    'raw' => $validJwt->toString(),
-                    'payload' => $validJwt->getPayload()
-                ]);
-            } else {
-                Session::put('jwtToken', null);
+            try {
+                $this->jwtDecoder->getVerifiedPayload($jwt);
+                Session::put('jwtToken', ['raw' => $jwt]);
+            } catch (JwtException) {
+                Session::remove('jwtToken');
             }
             $allowedLicenses = implode(',', [
                 License::LICENSE_PRIVATE,

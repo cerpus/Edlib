@@ -143,7 +143,6 @@ return [
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
-        Cerpus\LaravelAuth\Providers\CerpusAuthServiceProvider::class,
         App\Providers\AuthenticationHandlerProvider::class,
 
         App\Providers\HTMLPurifierServiceProvider::class,
