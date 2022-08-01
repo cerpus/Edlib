@@ -20,7 +20,7 @@
     "babel-plugin-transform-default-import": "^1.0.0",
     "dataloader": "^2.1.0",
     "jest": "^27.5.1",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "prettier": "^2.7.1",
     "supertest": "^6.2.4",
     "swagger-jsdoc": "^6.2.1",
