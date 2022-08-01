@@ -6043,10 +6043,10 @@ i18next-scanner@^3.3.0:
     vinyl "^2.2.0"
     vinyl-fs "^3.0.1"
 
-i18next@*, i18next@^21.8.5:
-  version "21.8.5"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.5.tgz#b7615f107d9a1492c771dc0e0b8742a80c1d9bec"
-  integrity sha512-uI5LVG10SBHLVOclr6yY1aCimmrzeZ0dwD73Sio61E8gQEwRmKI7/M8RKM084mNNy7VscKtxzSwELrso8BKv1g==
+i18next@*, i18next@^21.8.16:
+  version "21.8.16"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.8.16.tgz#31fe4682e4e2077dbf229a88e5a58b7020e4ddc8"
+  integrity sha512-acJLCk38YMfEPjBR/1vS13SFY7rBQLs9E5m1tSRnWc9UW3f+SZszgH+NP1fZRA1+O+CdG2eLGGmuUMJW52EwzQ==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
@@ -11183,10 +11183,10 @@ tslib@^2.0.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
   integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
 
-tss-react@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/tss-react/-/tss-react-3.7.0.tgz#664b4259c36800eb5285a583f6d8c1d5d1d1a30f"
-  integrity sha512-thvJWR+sr3ZGMcV/Ryo1F5RzjXd1gMTzYV/ckfUEBhu701uTYE3KyL9DNxv827uRFPFSLYG7bKefuc7kmYMB9Q==
+tss-react@^3.7.1:
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/tss-react/-/tss-react-3.7.1.tgz#119647731490f9e7e62c7f6a38a78df981929a4b"
+  integrity sha512-dfWUoxBlKZfIG9UC1A2h02OmcE/Ni0itCmmZu94E9g+KyBhKMHKcsKvUm0bNlRqTmYjXiCgPJDmj5fyc8CSrLg==
   dependencies:
     "@emotion/cache" "*"
     "@emotion/serialize" "*"
