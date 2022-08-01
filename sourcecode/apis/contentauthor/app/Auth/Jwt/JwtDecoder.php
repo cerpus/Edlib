@@ -58,6 +58,8 @@ final class JwtDecoder implements JwtDecoderInterface
                 $this->client,
                 $this->requestFactory,
                 $this->cache,
+                null,
+                true,
             );
         }
 
