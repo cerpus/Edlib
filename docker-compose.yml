@@ -67,7 +67,6 @@ services:
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
-      - 5673:5673
       - 5672:5672
       - 15672:15672
 
@@ -138,8 +137,8 @@ services:
       - postgres
     healthcheck:
       test: [CMD, curl, -f, http://localhost/health]
-    ports:
-      - "5504:5504"
+    #ports:
+    #  - "5504:5504"  # debug port
     working_dir: /app
 
   contentauthor:
