@@ -170,9 +170,17 @@ abstract class Content extends Model
         return $isCollaborator;
     }
 
+    /**
+     * @deprecated This is flawed logic
+     */
     public function shouldCreateFork($userId): bool
     {
         return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
+    }
+    
+    public function canUpdateOriginalResource(mixed $userId): bool
+    {
+        return $this->isOwner($userId) || $this->isCollaborator();
     }
 
     public function shouldCreateForkBasedOnSession($username = 'authId')
