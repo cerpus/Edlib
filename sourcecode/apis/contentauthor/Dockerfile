@@ -77,7 +77,7 @@ CMD [ "php-fpm", "-R", "-F", "-O" ]
 
 FROM buildresult AS phpfpm-dev
 RUN install-php-extensions \
-        xdebug
+        xdebug-stable
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 CMD [ "php-fpm", "-R", "-F", "-O" ]
