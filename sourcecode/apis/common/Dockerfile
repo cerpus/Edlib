@@ -80,7 +80,7 @@ CMD ["php-fpm"]
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
     install-php-extensions \
-        xdebug \
+        xdebug-stable \
     ; \
     composer install \
         --apcu-autoloader \
