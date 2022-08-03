@@ -13,7 +13,7 @@ env:
   - name: "MAIL_ENCRYPTION"
     value: "none"
   - name: "APP_DEBUG"
-    value: {{ .Values.enableDebug | quote }}
+    value: "false"
   - name: "AWS_DEFAULT_REGION"
     value: {{ .Values.contentauthor.awsStorage.region | quote }}
   - name: "AWS_BUCKET"
