@@ -223,18 +223,3 @@ The tags property is optional.
 If `ext_create_content_default_license` is set you can set the default license when you create new content.
 
 Value is one of: `PRIVATE`, `CC0`, `BY`, `BY-SA`, `BY-NC`, `BY-ND`, `BY-NC-SA` or `BY-NC-ND`
-
-## How to add params to your LTI request
-
-Example
-
-```php
-    $lti = new BasicLTI();
-...
-    $lti->setExtraLti([
-        'ext_question_set' => base64_encode(json_encode($questionSet)),
-        'ext_create_content_default_license' => 'BY-SA'
-    ]);
-...
-    $form = $lti->getForm();
-```
