@@ -4,7 +4,7 @@
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
 RUN apk --no-cache add --virtual .builds-deps build-base python3 curl
-RUN ln -sf python3 /usr/bin/python
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 #
 # appbase container, contains app and dependencies
@@ -34,10 +34,3 @@ CMD [ "yarn", "migrate" ]
 FROM appbase as prod
 EXPOSE 80
 CMD [ "yarn", "start" ]
-
-#
-# Dev container for running dev with mounted app volume
-#
-FROM base as dev
-RUN yarn global add nodemon
-CMD update-ca-certificates; yarn; yarn migrate; yarn dev
