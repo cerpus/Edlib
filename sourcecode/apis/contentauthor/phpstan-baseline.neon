@@ -1112,6 +1112,11 @@ parameters:
 			path: app/Libraries/H5P/Framework.php
 
 		-
+			message: "#^Parameter \\#1 \\$relations of static method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:with\\(\\) expects array\\<int\\|string, Closure\\|string\\>\\|string, array\\{libraries\\: array\\{'requiredLibrary'\\}\\} given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
 			message: "#^Parameter \\#2 \\$replacements \\(App\\\\Libraries\\\\H5P\\\\type\\) of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:t\\(\\) should be compatible with parameter \\$replacements \\(array\\) of method H5PFrameworkInterface\\:\\:t\\(\\)$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
