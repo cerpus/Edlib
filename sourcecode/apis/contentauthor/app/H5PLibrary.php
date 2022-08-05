@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -71,7 +72,7 @@ class H5PLibrary extends Model
         return $this->hasMany(H5PLibraryLanguage::class, 'library_id');
     }
 
-    public function libraries()
+    public function libraries(): HasMany
     {
         return $this->hasMany(H5PLibraryLibrary::class, 'library_id');
     }
