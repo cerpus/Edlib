@@ -104,4 +104,38 @@ final class FrameworkTest extends TestCase
 
         $this->framework->fetchExternalData('http://www.example.com');
     }
+
+    public function testGetInfoMessages(): void
+    {
+        $this->assertSame([], $this->framework->getMessages('info'));
+    }
+
+    public function testAddInfoMessage(): void
+    {
+        $this->framework->setInfoMessage('this is some info');
+        $this->framework->setInfoMessage('this is more info');
+        $this->framework->setErrorMessage('this is not info');
+
+        $this->assertSame([
+            'this is some info',
+            'this is more info',
+        ], $this->framework->getMessages('info'));
+    }
+
+    public function testGetErrorMessages(): void
+    {
+        $this->assertSame([], $this->framework->getMessages('error'));
+    }
+
+    public function testAddErrorMessage(): void
+    {
+        $this->framework->setErrorMessage('this is an error');
+        $this->framework->setErrorMessage('this is another error');
+        $this->framework->setInfoMessage('this is not an error');
+
+        $this->assertSame([
+            'this is an error',
+            'this is another error',
+        ], $this->framework->getMessages('error'));
+    }
 }

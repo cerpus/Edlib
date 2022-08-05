@@ -38,7 +38,7 @@ class H5PImport
         };
 
         if (!$this->isPackageValid()) {
-            throw new H5pImportException($core->h5pF->getErrorMessage());
+            throw new H5pImportException(implode('; ', $core->h5pF->getMessages('error')));
         }
 
         $displayOptions = $core->getDisplayOptionsForEdit();

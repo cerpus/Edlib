@@ -48,7 +48,7 @@ class H5PLibraryAdmin
             @unlink($this->framework->getUploadedH5pPath());
 
             throw new InvalidH5pPackageException(
-                (array) $this->validator->h5pF->getErrorMessages(),
+                $this->validator->h5pF->getMessages('error'),
             );
         }
 
