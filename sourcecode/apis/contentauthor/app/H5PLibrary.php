@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class H5PLibrary
- * @package App
+ * @property-read Collection<array-key, H5PLibraryLibrary> $libraries
  *
  * @see H5PLibrary::scopeFromLibrary()
  * @method static Builder fromLibrary($value)
