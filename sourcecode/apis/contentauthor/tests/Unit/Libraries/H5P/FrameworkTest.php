@@ -14,6 +14,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -137,5 +138,12 @@ final class FrameworkTest extends TestCase
             'this is an error',
             'this is another error',
         ], $this->framework->getMessages('error'));
+    }
+
+    public function testGetMessagesOfUnknownType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->framework->getMessages('unknown');
     }
 }
