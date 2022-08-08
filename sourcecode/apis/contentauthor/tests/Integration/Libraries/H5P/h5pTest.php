@@ -8,16 +8,16 @@ use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Tests\Helpers\ContentAuthorStorageTrait;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
 class h5pTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, ContentAuthorStorageTrait;
+    use RefreshDatabase, TestHelpers;
 
     const testContentDirectory = "content";
     const testEditorDirectory = "editor";
@@ -27,13 +27,6 @@ class h5pTest extends TestCase
     public function assertPreConditions(): void
     {
         $this->seed(TestH5PSeeder::class);
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->setUpContentAuthorStorage();
     }
 
     public function tearDown(): void
@@ -46,17 +39,17 @@ class h5pTest extends TestCase
 
     private function getTempDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path('');
+        return Storage::disk()->path('');
     }
 
     private function getEditorDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path(self::testEditorDirectory);
+        return Storage::disk()->path(self::testEditorDirectory);
     }
 
     private function getContentDirectory()
     {
-        return $this->contentAuthorStorage->getBucketDisk()->path(self::testContentDirectory);
+        return Storage::disk()->path(self::testContentDirectory);
     }
 
     private function createUnitTestDirectories()
@@ -122,7 +115,7 @@ class h5pTest extends TestCase
         ]);
 
         $this->createUnitTestDirectories();
-        $this->createUploadedFiles([$this->getEditorDirectory() . DIRECTORY_SEPARATOR . "images/image-5805bff7c5330.jpg" => "Test image"]);
+        $this->createUploadedFiles(["{$this->getEditorDirectory()}/images/image-5805bff7c5330.jpg" => "Test image"]);
 
         $h5p = app(h5p::class);
         $content = $h5p->storeContent($request, null, "createContentUserId");
@@ -130,7 +123,7 @@ class h5pTest extends TestCase
         $this->assertEquals(1, $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
         $this->assertEquals("createContentUserId", $content['user_id']);
-        $this->assertFileExists($this->getContentDirectory() . DIRECTORY_SEPARATOR . $content['id'] . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "image-5805bff7c5330.jpg");
+        $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
         $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
@@ -161,7 +154,7 @@ class h5pTest extends TestCase
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
-        $this->assertFileExists($this->getContentDirectory() . DIRECTORY_SEPARATOR . $updatedContent['id'] . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "image-5805bff7c5330.jpg");
+        $this->assertFileExists("{$this->getContentDirectory()}/{$updatedContent['id']}/images/image-5805bff7c5330.jpg");
 
         $h5pContent = H5PContent::find(1);
         $this->assertEquals($h5pContent->id, $updatedContent['id']);
@@ -186,7 +179,7 @@ class h5pTest extends TestCase
         ]);
 
         $this->createUnitTestDirectories();
-        $this->createUploadedFiles([$this->getEditorDirectory() . DIRECTORY_SEPARATOR . "images/image-5805bff7c5330.jpg" => "Test image"]);
+        $this->createUploadedFiles(["{$this->getEditorDirectory()}/images/image-5805bff7c5330.jpg" => "Test image"]);
 
         $h5p = app(h5p::class);
         $content = $h5p->storeContent($request, null, "createContentUserId");
@@ -194,7 +187,7 @@ class h5pTest extends TestCase
         $this->assertEquals(1, $content['id']);
         $this->assertEquals("My Test Title", $content['title']);
         $this->assertEquals("createContentUserId", $content['user_id']);
-        $this->assertFileExists($this->getContentDirectory() . DIRECTORY_SEPARATOR . $content['id'] . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "image-5805bff7c5330.jpg");
+        $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
         $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
@@ -224,7 +217,7 @@ class h5pTest extends TestCase
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
-        $this->assertFileExists($this->getContentDirectory() . DIRECTORY_SEPARATOR . $updatedContent['id'] . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR . "image-5805bff7c5330.jpg");
+        $this->assertFileExists("{$this->getContentDirectory()}/{$updatedContent['id']}/images/image-5805bff7c5330.jpg");
 
         $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
         $this->assertDatabaseHas("h5p_contents", ["id" => 2]);

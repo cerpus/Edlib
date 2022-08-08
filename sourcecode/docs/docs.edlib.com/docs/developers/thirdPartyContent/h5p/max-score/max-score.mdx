@@ -1,0 +1,21 @@
+# Max Score
+
+## Overview
+When using an H5P from Edlib that gives a score in e.g. [Gamilab](/product/caseStudies/gamilab.mdx),
+the game designer can use the score to decide if the user can proceed to the next step, or to create different
+paths depending on the users score. To help the game designer create rules and paths, and avoid setting impossible
+requirements, Gamilab needs to know the maximum score that the H5P can give. Edlib can provide this information
+when the game designer selects an H5P to use.
+
+The max score is calculated on the client side when the H5P is saved in Content Author. This is done with a
+pre-save script that adds the max score to the data sent to the server. Some H5P libraries have this script included
+in the library package, like the
+[H5P.CoursePresentation](https://github.com/h5p/h5p-course-presentation/blob/master/presave.js) library.
+However, most H5P libraries do not have this file. Edlib lets you add this file to the library, after the library
+has been installed in Edlib.
+
+If you are creating a new H5P library that can give a score, you should include the pre-save script in the H5P package.
+
+
+ - [The pre-save script](./writing)
+ - [How to calculate max score for H5Ps created before the pre-save script was added](./update-resources)

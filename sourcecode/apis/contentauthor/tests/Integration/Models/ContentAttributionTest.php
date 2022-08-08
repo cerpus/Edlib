@@ -18,10 +18,7 @@ class ContentAttributionTest extends TestCase
 
     public function testModelWorks()
     {
-        $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
-        $article->id = Uuid::uuid4()->toString();
-        $article->owner_id = Uuid::uuid4()->toString();
-        $article->save();
+        $article = Article::factory()->create();
 
         $attribution = $article->getAttribution();
 
@@ -64,20 +61,14 @@ class ContentAttributionTest extends TestCase
     public function testWillThrowExceptionIfSetAttributionIsNotAnAttributionObject()
     {
         $this->expectException(TypeError::class);
-        $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
-        $article->id = Uuid::uuid4()->toString();
-        $article->owner_id = Uuid::uuid4()->toString();
-        $article->save();
+        $article = Article::factory()->create();
 
         $article->setAttribution("A string");
     }
 
     public function testRoleWillBeLowecasedAndFirstLetterUppercased()
     {
-        $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
-        $article->id = Uuid::uuid4()->toString();
-        $article->owner_id = Uuid::uuid4()->toString();
-        $article->save();
+        $article = Article::factory()->create();
 
         $article->addAttributionOriginator('User 1', 'rOLE');
 
@@ -88,10 +79,7 @@ class ContentAttributionTest extends TestCase
 
     public function testYouCanGetAnAttributionTextForAPieceOfContent()
     {
-        $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
-        $article->id = Uuid::uuid4()->toString();
-        $article->owner_id = Uuid::uuid4()->toString();
-        $article->save();
+        $article = Article::factory()->create();
 
         $this->assertEmpty($article->getAttributionAsString());
 
@@ -108,10 +96,7 @@ class ContentAttributionTest extends TestCase
 
     public function testDecodingNonEmptyAndNonJsonWillNotFail()
     {
-        $article = new Article(['title' => 'Title', 'content' => 'Content']); // Using article because they are so easy to work with!
-        $article->id = Uuid::uuid4()->toString();
-        $article->owner_id = Uuid::uuid4()->toString();
-        $article->save();
+        $article = Article::factory()->create();
 
         // Bypass the eloquent mutators
         DB::table('content_attributions')

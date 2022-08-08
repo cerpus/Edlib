@@ -16,14 +16,14 @@ use Iso639p3;
  * Class Game
  * @package App
  *
- * @property string id
- * @property string gametype
- * @property string language_code
- * @property string owner
- * @property object game_settings
- * @property int deleted_at
+ * @property string $id
+ * @property string $gametype
+ * @property string $language_code
+ * @property string $owner
+ * @property object $game_settings
+ * @property int $deleted_at
  *
- * @property Gametype gameType
+ * @property Gametype $gameType
  *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])

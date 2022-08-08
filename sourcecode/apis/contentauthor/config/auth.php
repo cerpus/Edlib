@@ -95,4 +95,11 @@ return [
             'expire' => 60,
         ],
     ],
+
+    /*
+     * This can be either a base64-encoded key or a URL to a key set.
+     */
+    'edlib-jwt-pubkey' => env('CERPUS_JWT_EDLIB_PUBKEY', 'http://authapi/.well-known/jwks.json'),
+
+    'edlib-jwt-leeway-seconds' => (int) env('CERPUS_JWT_EDLIB_EXPIRATION_LEEWAY_SECONDS', 0),
 ];

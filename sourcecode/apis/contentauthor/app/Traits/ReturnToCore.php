@@ -13,24 +13,7 @@ use Illuminate\Support\Facades\Session;
 
 trait ReturnToCore
 {
-
-    /**
-     * Redirect to core.
-     *
-     * @param  int $id , string $title, string $type, int $score
-     * @return Return
-     */
-    public function redirectToCore($id, $title, $type = '', $score = 0, $redirectToken)
-    {
-        $returnUrl = $this->getRedirectToCoreUrl($id, $title, $type, $score, $redirectToken);
-        if (!is_null($returnUrl)) {
-            header('Location: ' . $returnUrl);
-            die();
-        }
-        return;
-    }
-
-    public function getRedirectToCoreUrl($id, $title, $type = '', $score = 0, $redirectToken)
+    public function getRedirectToCoreUrl($id, $title, $type, $score, $redirectToken)
     {
         $returnUrl = $this->getCoreBaseUrl($redirectToken);
 

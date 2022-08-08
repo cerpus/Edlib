@@ -1,29 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\H5PLibrary;
 use App\Libraries\H5P\AdminConfig;
+use H5PCore;
+use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
-
-class ContentUpgradeController extends Controller
+final class ContentUpgradeController
 {
-    /** @var \H5PCore $core */
-    protected $core, $interface;
+    public function __construct(
+        private readonly H5PCore $core,
+        private readonly H5PFrameworkInterface $framework,
+    ) {
+    }
 
-    /**
-     * Upgrades content
-     */
-    public function upgrade(\H5PCore $core, $libraryId): View
+    public function upgrade(H5PLibrary $library): View
     {
-        $this->core = $core;
-        $interface = $core->h5pF;
-
-        $library = (object)$interface->loadLibraryInfo($libraryId);
-
         $configuration = $this->getUpgradeConfiguration($library);
 
         $config = resolve(AdminConfig::class);
@@ -32,96 +28,40 @@ class ContentUpgradeController extends Controller
 
         return view('admin/content-upgrade', [
             'contentTitle' => $library->title,
-            'h5pAdminIntegration' => json_encode($configuration),
-            'h5pIntegration' => json_encode($config->config),
+            'h5pAdminIntegration' => $configuration,
+            'h5pIntegration' => $config->config,
             'scripts' => $config->getScriptAssets(),
             'styles' => $config->getStyleAssets(),
         ]);
     }
 
-    protected function getCurrentLibraries($libraries = [])
+    private function getUpgradeConfiguration(H5PLibrary $library): array|null
     {
-        $currentLibs = [];
-        foreach ($libraries as $library) {
-            if (!property_exists($library, 'isOld')) {
-                $currentLibs[] = $library;
-            }
-        }
-        return $currentLibs;
-    }
+        $versions = H5PLibrary::where('name', $library->name)
+            ->orderBy('title')
+            ->orderBy('major_version')
+            ->orderBy('minor_version')
+            ->get()
+            ->all();
 
-    protected function getOldLibraries($libraries = [])
-    {
-        $oldLibs = [];
-        foreach ($libraries as $library) {
-            if (property_exists($library, 'isOld') && ($library->isOld === true)) {
-                $oldLibs[] = $library;
-            }
-        }
-        return $oldLibs;
-    }
-
-    protected function getContentForLibraries($libraries = [])
-    {
-        $oldContent = [];
-        $pdo = DB::connection()->getPdo();
-        $sql = "select c.id, c.title from h5p_contents as c join h5p_libraries as l on l.id = c.library_id  where library_id=:libraryId";
-        $stmt = $pdo->prepare($sql);
-        foreach ($libraries as $library) {
-            $params = [
-                ':libraryId' => $library->id
-            ];
-            $stmt->execute($params);
-            $res = $stmt->fetchAll(\PDO::FETCH_OBJ);
-            $library->content = $res;
-            $oldContent[$library->name] = $library;
-        }
-        return $oldContent;
-    }
-
-    protected function getUpgradeConfiguration($library)
-    {
-
-        $library->id = $library->libraryId;
-        $interface = $this->core->h5pF;
-
-        $sql = "SELECT hl2.id, hl2.name, hl2.title, hl2.major_version, hl2.minor_version, hl2.patch_version
-          FROM h5p_libraries hl1
-          JOIN h5p_libraries hl2
-            ON hl2.name = hl1.name
-          WHERE hl1.id = :libraryId
-          ORDER BY hl2.title ASC, hl2.major_version ASC, hl2.minor_version ASC";
-        $params = [
-            ':libraryId' => $library->id
-        ];
-
-        $pdo = DB::connection()->getPdo();
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $versions = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-        foreach ($versions as $version) {
-            if ($version->id === $library->id) {
-                $upgrades = $this->core->getUpgrades($version, $versions);
-                break;
-            }
-        }
+        $upgrades = $this->core->getUpgrades($library, $versions);
 
         if (count($versions) < 2) {
-            return NULL;
+            // TODO: what is the resulting behaviour when returning NULL?
+            return null;
         }
 
-        // Get num of contents that can be upgraded
-        $contents = $interface->getNumContent($library->id);
-        if (!$contents) {
-            return NULL;
+        $upgradableContentCount = $this->framework->getNumContent($library->id);
+        if ($upgradableContentCount < 1) {
+            return null;
         }
 
-        return array(
+        // FIXME: this looks super-broken with the stray $library->title
+        // elements, figure out what's going on here
+        return [
             'containerSelector' => '#h5p-admin-container',
-            'libraryInfo' => array(
-                'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->majorVersion, $library->minorVersion),
+            'libraryInfo' => [
+                'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->major_version, $library->minor_version),
                 'inProgress' => 'Upgrading to %ver...', $library->title,
                 'error' => 'An error occurred while processing parameters:', $library->title,
                 'errorData' => 'Could not load data for library %lib.', $library->title,
@@ -129,20 +69,20 @@ class ContentUpgradeController extends Controller
                 'errorScript' => 'Could not load upgrades script for %lib.', $library->title,
                 'errorParamsBroken' => 'Parameters are broken.', $library->title,
                 'done' => 'You have successfully upgraded ' . $library->title,
-                'library' => array(
-                    'name' => $library->machineName,
-                    'version' => $library->majorVersion . '.' . $library->minorVersion,
-                ),
+                'library' => [
+                    'name' => $library->name,
+                    'version' => $library->major_version . '.' . $library->minor_version,
+                ],
                 'libraryBaseUrl' => route('content-upgrade-library', ['library' => '']),
                 'scriptBaseUrl' => '/h5p-php-library/js',
                 'buster' => '?ver=11234',
                 'versions' => $upgrades,
-                'contents' => $contents,
+                'contents' => $upgradableContentCount,
                 'buttonLabel' => 'Upgrade', $library->title,
                 'infoUrl' => route('admin.content-upgrade', ['id' => $library->id]),
-                'total' => $contents,
+                'total' => $upgradableContentCount,
                 'token' => csrf_token()
-            )
-        );
+            ]
+        ];
     }
 }

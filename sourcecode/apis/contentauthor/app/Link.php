@@ -13,15 +13,15 @@ use Iso639p3;
  * Class Link
  * @package App
  *
- * @property string id
- * @property string link_url
- * @property string link_type
- * @property string owner_id
- * @property int deleted_at
- * @property string link_text
- * @property string metadata
+ * @property string $id
+ * @property string $link_url
+ * @property string $link_type
+ * @property string $owner_id
+ * @property int $deleted_at
+ * @property string $link_text
+ * @property string $metadata
  *
- * @property Collection<Collaborator> collaborators
+ * @property Collection<Collaborator> $collaborators
  *
  * @method Link replicate(array $except = null)
  *

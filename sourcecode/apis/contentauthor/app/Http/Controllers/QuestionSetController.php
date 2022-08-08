@@ -42,7 +42,6 @@ class QuestionSetController extends Controller
     use ArticleAccess;
     use FractalTransformer;
 
-    public const QUESTIONSET_TMP_IMAGE_FOLDER = 'temp' . DIRECTORY_SEPARATOR . 'images';
     protected H5pLti $lti;
 
     public function __construct(H5pLti $h5pLti)

@@ -116,6 +116,7 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
             } else {
                 onParamsChange({
                     parameters: getParams(),
+                    library: getLibrary(),
                 });
             }
         }
@@ -327,24 +328,35 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
         return components;
     };
 
-    return (
-        <EditorContainer
-            tabs={[
-                {
-                    label: intl.formatMessage({
-                        id: 'H5P_EDITOR.TAB.H5P_VIEW',
-                    }),
-                    onClick: () => setCurrentView(views.H5P),
-                    selected: currentView === views.H5P,
-                },
+    function getContainerTabs() {
+        const tabs = [
+            {
+                label: intl.formatMessage({
+                    id: 'H5P_EDITOR.TAB.H5P_VIEW',
+                }),
+                onClick: () => setCurrentView(views.H5P),
+                selected: currentView === views.H5P,
+            },
+        ];
+
+        if (librarySelected) {
+            tabs.push(
                 {
                     label: intl.formatMessage({
                         id: 'H5P_EDITOR.TAB.LIST_VIEW',
                     }),
                     onClick: () => setCurrentView(views.LIST),
                     selected: currentView === views.LIST,
-                },
-            ]}
+                }
+            );
+        }
+
+        return  tabs;
+    }
+
+    return (
+        <EditorContainer
+            tabs={getContainerTabs()}
             sidebar={
                 librarySelected === true && (
                     <Fade in={librarySelected}>

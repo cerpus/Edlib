@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property Carbon updated_at
+ * @property Carbon $updated_at
  */
 
 class ContentLock extends Model

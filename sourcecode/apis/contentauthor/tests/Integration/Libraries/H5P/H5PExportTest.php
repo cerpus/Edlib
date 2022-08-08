@@ -15,7 +15,6 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
-use Tests\Helpers\ContentAuthorStorageTrait;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -23,17 +22,16 @@ use ZipArchive;
 
 class H5PExportTest extends TestCase
 {
-    use DatabaseMigrations, RefreshDatabase, WithFaker, MockH5PAdapterInterface, ContentAuthorStorageTrait;
+    use DatabaseMigrations, RefreshDatabase, WithFaker, MockH5PAdapterInterface;
 
     private $testDisk, $exportDisk;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpContentAuthorStorage();
 
         $this->testDisk = Storage::disk('testDisk');
-        $this->exportDisk = Storage::fake($this->contentAuthorStorage->getBucketDiskName());
+        $this->exportDisk = Storage::fake();
         config(['h5p.storage.path' => $this->exportDisk->path("")]);
     }
 

@@ -17,6 +17,7 @@ use H5PEditorAjaxInterface;
 use H5PEditorEndpoints;
 use H5PValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -174,8 +175,8 @@ class AjaxRequest
 
         $fileName = sprintf('cache/%s.css', md5($library . '|' . $styles));
 
-        if (!$this->contentAuthorStorage->getBucketDisk()->has($fileName)) {
-            $this->contentAuthorStorage->getBucketDisk()->put($fileName, $styles);
+        if (!Storage::disk()->has($fileName)) {
+            Storage::disk()->put($fileName, $styles);
         }
 
         return [
@@ -261,7 +262,7 @@ class AjaxRequest
         $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
         // Download files from bucket to tmp folder
         $this->contentAuthorStorage->copyFolder(
-            $this->contentAuthorStorage->getBucketDisk(),
+            Storage::disk(),
             $this->contentAuthorStorage->getH5pTmpDisk(),
             $tmpLibraryRelative,
             $tmpLibraryRelative

@@ -27,19 +27,19 @@ use Illuminate\Support\Facades\Session;
  * Class Content
  * @package App
  *
- * @property string|int id
- * @property Carbon created_at
- * @property Carbon updated_at
- * @property string title
- * @property int is_private
- * @property string version_id
- * @property int|null max_score
- * @property int bulk_calculated
- * @property bool is_published
- * @property string license
- * @property string node_id
+ * @property string|int $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property string $title
+ * @property int $is_private
+ * @property string $version_id
+ * @property int|null $max_score
+ * @property int $bulk_calculated
+ * @property bool $is_published
+ * @property string $license
+ * @property string $node_id
  * @property Collection $collaborators
- * @property bool is_draft
+ * @property bool $is_draft
  *
  * @method static Collection findMany($ids, $columns = ['*'])
  * @method static Builder select($columns = ['*'])
@@ -170,9 +170,17 @@ abstract class Content extends Model
         return $isCollaborator;
     }
 
+    /**
+     * @deprecated This is flawed logic
+     */
     public function shouldCreateFork($userId): bool
     {
         return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
+    }
+    
+    public function canUpdateOriginalResource(mixed $userId): bool
+    {
+        return $this->isOwner($userId) || $this->isCollaborator();
     }
 
     public function shouldCreateForkBasedOnSession($username = 'authId')

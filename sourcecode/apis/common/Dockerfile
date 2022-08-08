@@ -65,7 +65,7 @@ ENV APP_ENV=production \
 FROM nginx:1.19-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 COPY --from=base /var/www/edlibcommon/public /var/www/edlibcommon/public
-COPY docker/nginx/common.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/nginx/common.conf.template /etc/nginx/templates/common.conf.template
 
 FROM prod AS deploy
 CMD [ "php", "artisan", "migrate", "--force" ]
@@ -80,7 +80,7 @@ CMD ["php-fpm"]
 RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
     install-php-extensions \
-        xdebug \
+        xdebug-stable \
     ; \
     composer install \
         --apcu-autoloader \

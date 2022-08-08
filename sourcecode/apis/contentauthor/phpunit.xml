@@ -31,6 +31,7 @@
         </testsuite>
     </testsuites>
     <php>
+        <ini name="memory_limit" value="256M" />
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_DEBUG" value="true" force="true"/>
         <env name="APP_URL" value="http://localhost"/>
@@ -55,6 +56,6 @@
         <env name="OER_LICENSES_URL" value=""/>
         <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <env name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
-        <env name="FILESYSTEM_CLOUD" value="tmp"/>
+        <env name="FILESYSTEM_DRIVER" value="test"/>
     </php>
 </phpunit>

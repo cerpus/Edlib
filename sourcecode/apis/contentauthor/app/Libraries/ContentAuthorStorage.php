@@ -6,7 +6,12 @@ namespace App\Libraries;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Flysystem\StorageAttributes;
 
+/**
+ * @deprecated Please don't add more stuff, we want to migrate to using
+ *     Laravel's filesystem abstraction directly.
+ */
 class ContentAuthorStorage
 {
     private string $assetsBaseUrl;
@@ -30,19 +35,9 @@ class ContentAuthorStorage
         return $this->assetsBaseUrl;
     }
 
-    public function getBucketDiskName(): string
-    {
-        return Storage::getDefaultCloudDriver();
-    }
-
     public function getH5pTmpDiskName(): string
     {
         return 'h5pTmp';
-    }
-
-    public function getBucketDisk(): FilesystemAdapter
-    {
-        return Storage::disk($this->getBucketDiskName());
     }
 
     public function getH5pTmpDisk(): FilesystemAdapter
@@ -59,14 +54,14 @@ class ContentAuthorStorage
     )
     {
         collect($sourceDisk->listContents($sourceFolder, true))
-            ->filter(function ($fileProperties) use ($ignoredFiles) {
-                $file = $fileProperties['basename'];
+            ->filter(function (StorageAttributes $fileProperties) use ($ignoredFiles) {
+                $file = basename($fileProperties->path());
                 return !in_array($file, $ignoredFiles);
             })
-            ->each(function ($fileProperties) use ($destinationDisk, $destinationFolder, $sourceDisk, $sourceFolder) {
-                if ($fileProperties['type'] !== 'dir') {
-                    $file = Str::after($fileProperties['path'], Str::after($sourceFolder, '/'));
-                    $destinationDisk->putStream("{$destinationFolder}/{$file}", $sourceDisk->readStream("{$sourceFolder}/{$file}"));
+            ->each(function (StorageAttributes $fileProperties) use ($destinationDisk, $destinationFolder, $sourceDisk, $sourceFolder) {
+                if (!$fileProperties->isDir()) {
+                    $file = Str::after($fileProperties->path(), Str::after($sourceFolder, '/'));
+                    $destinationDisk->put("{$destinationFolder}/{$file}", $sourceDisk->readStream("{$sourceFolder}/{$file}"));
                 }
             });
     }

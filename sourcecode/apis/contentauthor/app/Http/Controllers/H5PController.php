@@ -55,6 +55,7 @@ use Illuminate\View\View;
 use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -87,9 +88,9 @@ class H5PController extends Controller
     public function doShow($id, $context, $preview = false): View
     {
         $styles = [];
-        if (!empty($this->lti->getLtiRequest()) && !is_null($this->lti->getLtiRequest()->getLaunchPresentationCssUrl())) {
-            $styles[] = $this->lti->getLtiRequest()->getLaunchPresentationCssUrl();
-            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getLtiRequest()->getLaunchPresentationCssUrl());
+        if (!empty($this->lti->getValidatedLtiRequest()) && !is_null($this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl())) {
+            $styles[] = $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl();
+            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl());
         }
         $h5pContent = H5PContent::findOrFail($id);
         if (!$h5pContent->canShow($preview)) {
@@ -313,7 +314,7 @@ class H5PController extends Controller
             'ownerName' => !empty($ownerName) ? $ownerName : null,
         ]));
 
-        if (!$h5pContent->shouldCreateFork(Session::get('authId', false))) {
+        if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
             if (($locked = $h5pContent->hasLock())){
                 $editUrl = $h5pContent->getEditUrl();
                 $pollUrl = route('lock.status', $id);
@@ -369,7 +370,11 @@ class H5PController extends Controller
             return VersionData::TRANSLATION;
         }
 
-        if ($h5p->shouldCreateFork($authId)) {
+        if (!$h5p->canUpdateOriginalResource($authId)) {
+            if (!$h5p->isCopyable()) {
+                throw new AccessDeniedHttpException('Cannot copy this resource');
+            }
+
             return VersionData::COPY;
         }
 
@@ -379,7 +384,7 @@ class H5PController extends Controller
     private function getTargetLanguage(?string $language)
     {
         $contentLanguage = $language;
-        if (($ltiRequest = $this->lti->getLtiRequest()) !== null) {
+        if (($ltiRequest = $this->lti->getValidatedLtiRequest()) !== null) {
             $ltiLanguage = $ltiRequest->getExtTranslationLanguage();
             if( !empty($ltiLanguage) ){
                 $contentLanguage = $ltiLanguage;

@@ -48,7 +48,7 @@ class LinkController extends Controller
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
 
         $licenses = License::getLicenses($ltiRequest);
         $license = License::getDefaultLicense($ltiRequest);
@@ -138,7 +138,7 @@ class LinkController extends Controller
         }
 
         $emails = ""; //$this->getCollaboratorsEmails($link);
-        $ltiRequest = $this->lti->getLtiRequest();
+        $ltiRequest = $this->lti->getValidatedLtiRequest();
         $licenses = License::getLicenses($ltiRequest);
         $license = $link->license;
         $redirectToken = $request->get('redirectToken');
@@ -224,7 +224,7 @@ class LinkController extends Controller
      */
     public function doShow($id, $context, $preview = false): View
     {
-        $customCSS = !empty($this->lti->getLtiRequest()) ? $this->lti->getLtiRequest()->getLaunchPresentationCssUrl() : null;
+        $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
         /** @var Link $link */
         $link = Link::findOrFail($id);
         if (!$link->canShow($preview)) {

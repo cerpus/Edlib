@@ -43,14 +43,9 @@ class H5pPresave
      */
     public function getScriptContents(string $library): string
     {
-        try {
-            return $this->fs->get("$library/presave.js");
-        } catch (FileNotFoundException $e) {
-            throw new InvalidArgumentException(
-                "The library $library does not have a presave script",
-                previous: $e,
-            );
-        }
+        return $this->fs->get("$library/presave.js") ?? throw new InvalidArgumentException(
+            "The library $library does not have a presave script",
+        );
     }
 
     /**

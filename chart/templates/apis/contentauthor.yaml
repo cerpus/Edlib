@@ -4,6 +4,8 @@ env:
     value: {{ .Values.contentauthor.appKey | quote }}
   - name: "APP_ENV"
     value: "production"
+  - name: "FILESYSTEM_DRIVER"
+    value: "s3"
   - name: "MAIL_DRIVER"
     value: "smtp"
   - name: "MAIL_HOST"
@@ -11,7 +13,7 @@ env:
   - name: "MAIL_ENCRYPTION"
     value: "none"
   - name: "APP_DEBUG"
-    value: {{ .Values.enableDebug | quote }}
+    value: "false"
   - name: "AWS_DEFAULT_REGION"
     value: {{ .Values.contentauthor.awsStorage.region | quote }}
   - name: "AWS_BUCKET"
@@ -24,12 +26,6 @@ env:
     value: "http://questionbankservice:8080"
   - name: "IMAGESERVICE_URL"
     value: "http://imagestorageservice:8080"
-  - name: "CERPUS_JWT_CONTEXTS"
-    value: "edlib"
-  - name: "CERPUS_JWT_EDLIB_PUBKEY"
-    value: "http://authapi/.well-known/jwks.json"
-  - name: "CERPUS_JWT_EDLIB_TYPE"
-    value: "edlib"
   - name: "CERPUS_JWT_EDLIB_EXPIRATION_LEEWAY_SECONDS"
     value: "36000"
   - name: "H5P_CONSUMER_KEY"

@@ -4,6 +4,7 @@ namespace App\Libraries\H5P\Packages;
 
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
+use LogicException;
 
 class Column extends H5PBase
 {
@@ -25,6 +26,7 @@ class Column extends H5PBase
     public function getElements(): array
     {
         // TODO: Implement getElements() method.
+        throw new LogicException('This method is not implemented');
     }
 
     public function getAnswers($index = null)

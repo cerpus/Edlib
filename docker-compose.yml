@@ -67,17 +67,18 @@ services:
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     ports:
-      - 5673:5673
       - 5672:5672
       - 15672:15672
 
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    depends_on:
+      - elasticsearch_password
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9200/_cat/health]
     volumes:
+      - ./data/elasticsearch/secrets:/run/secrets
       - elasticsearch:/usr/share/elasticsearch/data
-      - ./localSetup/projects/elasticsearch/password.txt:/run/secrets/password.txt
     ports:
       - "9200:9200"
     environment:
@@ -85,6 +86,14 @@ services:
       discovery.type: single-node
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
+
+  elasticsearch_password:
+    image: alpine
+    command: ['generate-password', 'password.txt']
+    volumes:
+      - ./data/elasticsearch/secrets:/run/secrets
+      - ./scripts/generate-password.sh:/usr/local/bin/generate-password
+    working_dir: /run/secrets
 
   nginx:
     build: ./localSetup/projects/nginx
@@ -128,8 +137,8 @@ services:
       - postgres
     healthcheck:
       test: [CMD, curl, -f, http://localhost/health]
-    ports:
-      - "5504:5504"
+    #ports:
+    #  - "5504:5504"  # debug port
     working_dir: /app
 
   contentauthor:
@@ -140,8 +149,8 @@ services:
       test: [CMD, curl, -f, http://localhost]
     volumes:
       - ./sourcecode/apis/contentauthor/public:/app/public
+      - ./sourcecode/apis/contentauthor/storage/app:/app/public/h5pstorage
       - ./sourcecode/apis/contentauthor/vendor:/app/vendor
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
@@ -162,7 +171,6 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - mysql
       - redis
@@ -182,7 +190,6 @@ services:
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -198,7 +205,6 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -214,7 +220,6 @@ services:
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/contentauthor:/app
-      - api_contentauthor-main_bucket:/buckets/main_bucket
     depends_on:
       - contentauthor-fpm
 
@@ -334,12 +339,12 @@ services:
     build:
       context: ./sourcecode/apis/auth
       dockerfile: Dockerfile
-      target: dev
+      target: base
     env_file:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: "/bin/sh -c 'wait-for mysql:3306 && wait-for rabbitmq:5672 && wait-for redis:6379 && update-ca-certificates && yarn && yarn migrate && yarn dev'"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -348,10 +353,12 @@ services:
       - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
       - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./localSetup/helpers/start-scripts/wait-for.sh:/usr/local/bin/wait-for
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - mysql
+      - rabbitmq
+      - redis
 
   urlapi:
     build:

@@ -2,6 +2,64 @@
 sidebar_position: 1
 ---
 
-# Getting Started
+# Getting started
 
-Documentation describing how to get quickly up and running with Edlib is currently being worked on. Check back for updates.
+The goal of this guide is to get you up and running with a **development** environment for Edlib.
+
+We are still working on documentation for setting up Edlib on-premise and in the cloud. Be sure to check back later if you are interested in this.
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and docker-compose
+- Ports 80, 443, 3306, 5432, 5672, 6379, 9200, and 15672 on the host machine must be unoccupied
+
+## Install
+
+1. Clone the Edlib directory and navigate there
+
+   ```sh
+   git clone https://github.com/cerpus/Edlib.git
+   cd Edlib
+   ```
+
+2. Copy `localSetup/.env.example` to `localSetup/.env`
+
+   ```sh
+   cp localSetup/.env.example localSetup/.env
+   ```
+
+3. Start Edlib via Docker Compose
+
+   ```sh
+   docker-compose up -d
+   ```
+
+   This step might take a while. You can check the status of services with
+
+   ```sh
+   docker-compose ps
+   ```
+
+4. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux,
+   you can update your hosts file with `scripts/update-host-file.sh`. On
+   Windows, you will have to update the file manually with the values found in
+   the script.
+
+   ```sh
+   scripts/update-host-file.sh
+   ```
+
+5. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
+   system. The exact procedure will vary depending on your operating system.
+
+## What's next?
+
+* **To access the user-facing side of Edlib:**
+
+  https://npm.components.edlib.local/
+
+* **To access the admin interface:**
+
+  https://api.edlib.local/admin
+
+Documentation describing how to get quickly up and running with Edlib is currently being worked on.

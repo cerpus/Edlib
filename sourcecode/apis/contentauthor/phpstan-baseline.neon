@@ -1,0 +1,2347 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method GuzzleHttp\\\\ClientInterface\\:\\:request\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
+			count: 1
+			path: app/Article.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
+			count: 1
+			path: app/Article.php
+
+		-
+			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
+			count: 1
+			path: app/Auth/Guards/EdlibGuard.php
+
+		-
+			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Console/Commands/RemoveOldContentLocks.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
+			count: 2
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$ndlaMapper\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$main_content_id\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\DataObjects\\\\ResourceUserDataObject\\:\\:\\$lastName\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 3
+			path: app/Content.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
+			count: 1
+			path: app/Events/ArticleWasCopied.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$reason\\.$#"
+			count: 1
+			path: app/Events/ArticleWasCopied.php
+
+		-
+			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:render\\(\\) should return Illuminate\\\\Http\\\\Response but returns Symfony\\\\Component\\\\HttpFoundation\\\\Response\\.$#"
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:report\\(\\) with return type void returns void but should not return anything\\.$#"
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\Exceptions\\\\Handler\\:\\:\\$dontReport is not covariant with PHPDoc type array\\<int, class\\-string\\<Throwable\\>\\> of overridden property Illuminate\\\\Foundation\\\\Exceptions\\\\Handler\\:\\:\\$dontReport\\.$#"
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: "#^Result of method Illuminate\\\\Foundation\\\\Exceptions\\\\Handler\\:\\:report\\(\\) \\(void\\) is used\\.$#"
+			count: 1
+			path: app/Exceptions/Handler.php
+
+		-
+			message: "#^Access to an undefined property App\\\\File\\:\\:\\$article\\.$#"
+			count: 1
+			path: app/File.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/Game.php
+
+		-
+			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
+			count: 1
+			path: app/H5PCollaborator.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$contentLibraries\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with App\\\\H5PContentsMetadata will always evaluate to false\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 2
+			path: app/H5PContent.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, int\\<min, \\-1\\>\\|int\\<1, max\\> given\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$version_id \\(string\\) does not accept null\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$context$#"
+			count: 1
+			path: app/H5PContentsUserData.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/ArticleInfoController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/ArticleInfoController.php
+
+		-
+			message: "#^Relation 'collaborators' is not found in App\\\\Article model\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/ArticleInfoController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/ContentInfoController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/H5PInfoController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/H5PInfoController.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/H5PInfoController.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/H5PTypeApi.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\LinkInfoController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: "#^Relation 'collaborators' is not found in App\\\\Link model\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LinkInfoController.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/LockStatusController.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\QuestionsetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchAnswers\\(\\) expects null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
+			count: 2
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchQuestions\\(\\) expects Illuminate\\\\Support\\\\Collection\\|null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
+			count: 2
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: "#^Static method Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject\\:\\:create\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 6
+			path: app/Http/Controllers/API/QuestionsetController.php
+
+		-
+			message: "#^Called 'first' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/UnlockController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\UnlockController\\:\\:index\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/API/UnlockController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Article\\:\\:\\$ownerName\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminArticleController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$ownerName\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$contents_count\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminController.php
+
+		-
+			message: "#^Called 'count' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminController.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
+			count: 2
+			path: app/Http/Controllers/Admin/AdminController.php
+
+		-
+			message: "#^Static call to instance method App\\\\H5PContent\\:\\:noMaxScoreScope\\(\\)\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminController.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminUserController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:destroy\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminUserController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:index\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\View\\\\View\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminUserController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:store\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminUserController.php
+
+		-
+			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/Capability.php
+
+		-
+			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/GamesAdminController.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:resetNdlaIdTracking\\(\\) invoked with 0 parameters, 1 required\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$hubCacheLibraries\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
+
+		-
+			message: "#^Parameter \\#1 \\$library of method H5PFrameworkInterface\\:\\:isPatchedLibrary\\(\\) expects object, array\\<string, mixed\\> given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/LocksController.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/VersioningController.php
+
+		-
+			message: "#^Function collect invoked with 2 parameters, 0\\-1 required\\.$#"
+			count: 1
+			path: app/Http/Controllers/ArticleController.php
+
+		-
+			message: "#^Cannot access property \\$resource on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
+			count: 1
+			path: app/Http/Controllers/ArticleCopyrightController.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:doShow\\(\\)\\.$#"
+			count: 1
+			path: app/Http/Controllers/EmbedController.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:edit\\(\\)\\.$#"
+			count: 1
+			path: app/Http/Controllers/EmbedController.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
+			count: 1
+			path: app/Http/Controllers/GameController.php
+
+		-
+			message: "#^Call to method getCss\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setAlterParametersSettings\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setContext\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setEmail\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 3
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setName\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 2
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setPreview\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setRedirectToken\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 2
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Call to method setUserName\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 3
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:create\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:getContentLicense\\(\\) should return Illuminate\\\\Http\\\\Response but returns int\\|string\\|false\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:get_content_privacy\\(\\) is unused\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#1 \\$config of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:createView\\(\\) expects App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface, App\\\\Libraries\\\\H5P\\\\Config given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#1 \\$config of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:getContents\\(\\) expects App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface, App\\\\Libraries\\\\H5P\\\\Config given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method H5PExport\\:\\:deleteExport\\(\\) expects array, object given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, object given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, object given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Variable \\$emails in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Variable \\$library in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: app/Http/Controllers/HealthController.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Controllers/LinkController.php
+
+		-
+			message: "#^Parameter \\#1 \\$view of function view expects view\\-string\\|null, string given\\.$#"
+			count: 1
+			path: app/Http/Controllers/LinkController.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Controllers/QuestionSetController.php
+
+		-
+			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Http/Controllers/QuestionSetController.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			count: 1
+			path: app/Http/Controllers/QuestionSetController.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Foundation\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority\\.$#"
+			count: 1
+			path: app/Http/Kernel.php
+
+		-
+			message: "#^Variable \\$names might not be defined\\.$#"
+			count: 1
+			path: app/Http/Libraries/AuthJwtParser.php
+
+		-
+			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/ArticleContentType.php
+
+		-
+			message: "#^Return type \\(array\\) of method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ArticleContentType\\:\\:getContentTypes\\(\\) should be compatible with return type \\(App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\) of method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentTypeInterface\\:\\:getContentTypes\\(\\)$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/ArticleContentType.php
+
+		-
+			message: "#^Property App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\:\\:\\$guarded is never read, only written\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/ContentType.php
+
+		-
+			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/H5PContentType.php
+
+		-
+			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 2
+			path: app/Http/Libraries/ContentTypes/H5PContentType.php
+
+		-
+			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/H5PContentType.php
+
+		-
+			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/InteractivityContentType.php
+
+		-
+			message: "#^PHPDoc tag @return with type array is incompatible with native type App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/LinkContentType.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$newH5P\\.$#"
+			count: 1
+			path: app/Http/Libraries/H5PFileVersioner.php
+
+		-
+			message: "#^Property App\\\\Http\\\\Middleware\\\\CheckOwnership\\:\\:\\$content is unused\\.$#"
+			count: 1
+			path: app/Http/Middleware/CheckOwnership.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\GameAccess\\:\\:\\$request\\.$#"
+			count: 1
+			path: app/Http/Middleware/GameAccess.php
+
+		-
+			message: "#^Call to static method debug\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
+			count: 1
+			path: app/Http/Middleware/GameAccess.php
+
+		-
+			message: "#^Call to static method error\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
+			count: 1
+			path: app/Http/Middleware/GameAccess.php
+
+		-
+			message: "#^Variable \\$registerSettings might not be defined\\.$#"
+			count: 1
+			path: app/Http/Middleware/LtiBehaviorSettings.php
+
+		-
+			message: "#^Variable \\$validator might not be defined\\.$#"
+			count: 2
+			path: app/Http/Middleware/LtiBehaviorSettings.php
+
+		-
+			message: "#^Static method Illuminate\\\\Session\\\\Store\\:\\:put\\(\\) invoked with 3 parameters, 1\\-2 required\\.$#"
+			count: 1
+			path: app/Http/Middleware/LtiRequestAuth.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\QuestionSetAccess\\:\\:\\$request\\.$#"
+			count: 1
+			path: app/Http/Middleware/QuestionSetAccess.php
+
+		-
+			message: "#^Call to static method debug\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
+			count: 1
+			path: app/Http/Middleware/QuestionSetAccess.php
+
+		-
+			message: "#^Call to static method error\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
+			count: 1
+			path: app/Http/Middleware/QuestionSetAccess.php
+
+		-
+			message: "#^Method App\\\\Content\\:\\:isExternalCollaborator\\(\\) invoked with 0 parameters, 1 required\\.$#"
+			count: 1
+			path: app/Http/Middleware/QuestionSetAccess.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Http/Middleware/SignedOauth10Request.php
+
+		-
+			message: "#^Using nullsafe method call on non\\-nullable type Symfony\\\\Component\\\\HttpFoundation\\\\InputBag\\. Use \\-\\> instead\\.$#"
+			count: 1
+			path: app/Http/Middleware/SignedOauth10Request.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers is not covariant with PHPDoc type int of overridden property Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers\\.$#"
+			count: 1
+			path: app/Http/Middleware/TrustProxies.php
+
+		-
+			message: "#^Property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers \\(array\\) does not accept default value of type int\\.$#"
+			count: 1
+			path: app/Http/Middleware/TrustProxies.php
+
+		-
+			message: "#^Call to an undefined static method object\\|string\\:\\:isUserPublishEnabled\\(\\)\\.$#"
+			count: 1
+			path: app/Http/Requests/ArticleRequest.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: app/Http/Requests/H5PStorageRequest.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with App\\\\H5PFile will always evaluate to false\\.$#"
+			count: 1
+			path: app/Jobs/H5PFileUpload.php
+
+		-
+			message: "#^Property App\\\\Jobs\\\\H5PFileUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
+			count: 1
+			path: app/Jobs/H5PFileUpload.php
+
+		-
+			message: "#^Property App\\\\Jobs\\\\H5PFilesUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
+			count: 2
+			path: app/Jobs/H5PFilesUpload.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with App\\\\H5PContent will always evaluate to false\\.$#"
+			count: 1
+			path: app/Jobs/PingVideoApi.php
+
+		-
+			message: "#^Variable \\$h5pcontent in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: app/Jobs/PingVideoApi.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
+			count: 1
+			path: app/Jobs/ReplaceVideoRefId.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\DataObjects\\\\Attribution\\:\\:getOrigin\\(\\) should return null but returns string\\.$#"
+			count: 1
+			path: app/Libraries/DataObjects/Attribution.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
+			count: 1
+			path: app/Libraries/Games/GameBase.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\Games\\\\GameBase\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
+			count: 1
+			path: app/Libraries/Games/GameBase.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: app/Libraries/Games/GameHandler.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 3
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{answer\\: string, isCorrect\\: bool\\}, Closure\\(App\\\\QuestionSetQuestionAnswer\\)\\: array\\{answer\\: string, isCorrect\\: bool\\} given\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\}, Closure\\(App\\\\QuestionSetQuestion\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\} given\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Property App\\\\QuestionSet\\:\\:\\$questions \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestion\\>\\) does not accept Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), App\\\\QuestionSetQuestion\\>\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Property App\\\\QuestionSetQuestion\\:\\:\\$answers \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestionAnswer\\>\\) does not accept array\\<App\\\\QuestionSetQuestionAnswer\\>\\.$#"
+			count: 1
+			path: app/Libraries/Games/Millionaire/Millionaire.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Adapters/CerpusH5PAdapter.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Adapters/NDLAH5PAdapter.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PImageAdapterInterface\\:\\:isTargetType\\(\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Adapters/NDLAH5PAdapter.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$majorVersion\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 2
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:\\$core is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:\\$id is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AdminConfig.php
+
+		-
+			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
+			count: 2
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: "#^Cannot access property \\$css on array\\.$#"
+			count: 2
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: "#^Parameter \\#6 \\$fileDir of method H5peditor\\:\\:getLibraryData\\(\\) expects string, null given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ContentType/BaseH5PContent.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrariesHubCache\\:\\:\\$libraries\\.$#"
+			count: 2
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$capability\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibraryLanguage\\:\\:\\$library\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Relation 'libraries' is not found in App\\\\H5PLibrariesHubCache model\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PLibraryLanguage model\\.$#"
+			count: 2
+			path: app/Libraries/H5P/EditorAjax.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 2
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\CerpusStorageInterface\\:\\:getEditorDisplayPath\\(\\) invoked with 1 parameter, 0 required\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
+			count: 3
+			path: app/Libraries/H5P/EditorConfig.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$majorVersion\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$metadataSettings\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$uberName\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(H5peditorFile\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 185$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Property App\\\\H5PLibrary\\:\\:\\$restricted \\(int\\) does not accept false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between int and '1' will always evaluate to false\\.$#"
+			count: 2
+			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$count\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$key\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Cannot call method fetch\\(\\) on bool\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Default value of the parameter \\#2 \\$replacements \\(array\\) of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:t\\(\\) is incompatible with type App\\\\Libraries\\\\H5P\\\\type\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Iterating over an object of an unknown class App\\\\Libraries\\\\H5P\\\\type\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getAdminUrl\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getLibraryId\\(\\) should return int but returns false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getNumAuthors\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getUnsupportedLibraries\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:hasPermission\\(\\) should return bool but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: """
+				#^PHPDoc tag @param has invalid value \\(array
+				  A list of unsupported libraries\\. Each list entry contains\\:
+				  \\- name\\: MachineName for the library
+				  \\- downloadUrl\\: URL to a location a new version of the library may be downloaded from
+				  \\- currentVersion\\: The unsupported version of the library installed on the system\\.
+				    This is an associative array containing\\:
+				    \\- major\\: The major version of the library
+				    \\- minor\\: The minor version of the library
+				    \\- patch\\: The patch version of the library
+				TODO\\: Check if Drupal impl has something here\\.\\)\\: Unexpected token "\\\\n     \\* ", expected variable at offset 73$#
+			"""
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$libraryData$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$libraryId$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$message$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,App\\\\H5PLibrary\\>\\:\\:transform\\(\\) expects callable\\(App\\\\H5PLibrary, int\\)\\: App\\\\H5PLibrary, Closure\\(mixed\\)\\: stdClass given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Parameter \\#1 \\$library of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:pathsToCsv\\(\\) expects array, object given\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Parameter \\#1 \\$relations of static method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:with\\(\\) expects array\\<int\\|string, Closure\\|string\\>\\|string, array\\{libraries\\: array\\{'requiredLibrary'\\}\\} given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Parameter \\#2 \\$replacements \\(App\\\\Libraries\\\\H5P\\\\type\\) of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:t\\(\\) should be compatible with parameter \\$replacements \\(array\\) of method H5PFrameworkInterface\\:\\:t\\(\\)$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Parameter \\$replacements of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:t\\(\\) has invalid type App\\\\Libraries\\\\H5P\\\\type\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\H5P\\\\Framework\\:\\:\\$adminUrl is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PCopyright.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PExport.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PExternalProviderInterface will always evaluate to false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PExport.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PExport\\:\\:\\$adapter is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PExport.php
+
+		-
+			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PImport.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method H5PStorage\\:\\:savePackage\\(\\) expects null, array given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PImport.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) expects \\(int\\|string\\), array\\<string, string\\> given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PImport.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$request$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^Parameter \\#4 \\$options of method H5PStorage\\:\\:savePackage\\(\\) expects array, bool given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^Undefined variable\\: \\$dev_lib$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^Variable \\$dev_lib in isset\\(\\) is never defined\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PLibraryAdmin.php
+
+		-
+			message: "#^Call to an undefined method H5PFrameworkInterface\\:\\:handleResult\\(\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Call to method execute\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Call to method fetchAll\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Dead catch \\- Exception is never thrown in the try block\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:getProgress\\(\\) should return bool\\|string but returns null\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$stmt contains unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$db PDO\\)\\: Unexpected token \"\\$db\", expected type at offset 16$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:\\$request is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 3
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Helper/H5PPackageProvider.php
+
+		-
+			message: "#^PHPDoc tag @return with type bool is incompatible with native type void\\.$#"
+			count: 2
+			path: app/Libraries/H5P/Interfaces/H5PAdapterInterface.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$slide\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface will always evaluate to false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Call to method canExtractAnswers\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Call to method getElements\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Call to method setAnswers\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Call to method validate\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^PHPDoc tag @var for variable \\$item contains unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
+			count: 2
+			path: app/Libraries/H5P/Packages/CoursePresentation.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Packages/H5PBase.php
+
+		-
+			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Packages/InteractiveVideo.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with stdClass will always evaluate to false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Reports/H5PPackage.php
+
+		-
+			message: "#^Access to an undefined property H5peditorFile\\:\\:\\$hash\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:createDirectory\\(\\)\\.$#"
+			count: 2
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:has\\(\\)\\.$#"
+			count: 5
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\:\\:listContents\\(\\)\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 2
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:getContent\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:moveContentDirectory\\(\\) should return object but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage\\:\\:moveContentDirectory\\(\\) should return object but returns null\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Static call to instance method App\\\\H5PFile\\:\\:deleteContentPendingUpload\\(\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Variable \\$filePath might not be defined\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
+
+		-
+			message: "#^Cannot access property \\$document on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
+			count: 1
+			path: app/Libraries/H5P/TranslationServices/NynorskrobotenAdapter.php
+
+		-
+			message: "#^Cannot access property \\$guid on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
+			count: 1
+			path: app/Libraries/H5P/TranslationServices/NynorskrobotenAdapter.php
+
+		-
+			message: "#^Call to an undefined method GuzzleHttp\\\\ClientInterface\\:\\:get\\(\\)\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Video/NDLAVideoAdapter.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Call to an undefined method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface\\:\\:alterConfig\\(\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with Cerpus\\\\CoreClient\\\\DataObjects\\\\BehaviorSettingsDataObject will always evaluate to false\\.$#"
+			count: 2
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 2
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
+			count: 3
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Parameter \\#1 \\$parameters of method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:alterParameters\\(\\) expects string, object given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Parameter \\#2 \\$type of method H5PCore\\:\\:loadContentDependencies\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/ViewConfig.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$h5pCore\\.$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:getContents\\(\\) should return array but returns object\\.$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method H5peditor\\:\\:processParameters\\(\\) expects stdClass, int given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Undefined variable\\: \\$library$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Variable \\$library in empty\\(\\) is never defined\\.$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Access to an undefined property HTMLPurifier_Definition\\:\\:\\$manager\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
+
+		-
+			message: "#^Parameter \\#1 \\$config of static method App\\\\Libraries\\\\HTMLPurify\\\\Config\\\\MathMLConfig\\:\\:create\\(\\) expects array\\|HTMLPurifier_Config\\|string, null given\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
+
+		-
+			message: "#^Parameter \\#1 \\$config of static method HTMLPurifier_HTML5Config\\:\\:create\\(\\) expects array\\|HTMLPurifier_Config\\|string, HTMLPurifier_ConfigSchema given\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
+
+		-
+			message: "#^Parameter \\#3 \\$type of method HTMLPurifier_ConfigSchema\\:\\:add\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/Config/MathMLConfig.php
+
+		-
+			message: "#^Property App\\\\Libraries\\\\HTMLPurify\\\\HTMLModule\\\\MathML\\:\\:\\$mathml_prefix is never read, only written\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/HTMLModule/MathML.php
+
+		-
+			message: "#^Access to property \\$data on an unknown class App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
+			count: 3
+			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
+
+		-
+			message: "#^Parameter \\$token of method App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\MathMLSpaceNormalize\\:\\:handleText\\(\\) has invalid type App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
+			count: 1
+			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 4
+			path: app/Libraries/QuestionSet/QuestionSetHandler.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\oAuthLTI\\\\OAuthConsumer\\:\\:\\$callback_url\\.$#"
+			count: 1
+			path: app/Libraries/oAuthLTI/OAuthConsumer.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(mixed\\)\\: mixed\\)\\|null, array\\{'self', 'urlencode_rfc3986'\\} given\\.$#"
+			count: 1
+			path: app/Libraries/oAuthLTI/OAuthUtil.php
+
+		-
+			message: "#^Access to an undefined property App\\\\LibraryDescription\\:\\:\\$library\\.$#"
+			count: 1
+			path: app/LibraryDescription.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$leafs VersionData\\[\\]\\)\\: Unexpected token \"\\$leafs\", expected type at offset 9$#"
+			count: 1
+			path: app/Listeners/AbstractHandleVersioning.php
+
+		-
+			message: "#^PHPDoc tag @var has invalid value \\(\\$mostRecentLeaf VersionData\\)\\: Unexpected token \"\\$mostRecentLeaf\", expected type at offset 9$#"
+			count: 1
+			path: app/Listeners/AbstractHandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Listeners/AbstractHandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Listeners/AbstractHandleVersioning.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$mailer\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandlePrivacy.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Listeners/Article/HandleVersioning.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Listeners/Game/HandlePrivacy.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
+			count: 1
+			path: app/Listeners/H5P/Copy/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int\\|string given\\.$#"
+			count: 1
+			path: app/Listeners/H5P/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
+			count: 1
+			path: app/Listeners/H5P/HandleVersioning.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Listeners/H5P/HandleVersioning.php
+
+		-
+			message: "#^Property App\\\\Content\\:\\:\\$is_private \\(int\\) does not accept bool\\.$#"
+			count: 1
+			path: app/Listeners/Questionset/HandlePrivacy.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:h5p\\(\\)\\.$#"
+			count: 1
+			path: app/NdlaIdMapper.php
+
+		-
+			message: "#^Method Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:registerPolicies\\(\\) invoked with 1 parameter, 0 required\\.$#"
+			count: 1
+			path: app/Providers/AuthServiceProvider.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"
+			count: 1
+			path: app/Providers/AuthServiceProvider.php
+
+		-
+			message: "#^Access to an undefined property H5PCore\\:\\:\\$aggregateAssets\\.$#"
+			count: 1
+			path: app/Providers/H5PServiceProvider.php
+
+		-
+			message: "#^Class App\\\\Libraries\\\\H5P\\\\EditorStorage constructor invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: app/Providers/H5PServiceProvider.php
+
+		-
+			message: "#^Variable \\$instance in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: app/Providers/H5PServiceProvider.php
+
+		-
+			message: "#^Variable \\$instance on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: app/Providers/H5PServiceProvider.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 1
+			path: app/QuestionSet.php
+
+		-
+			message: "#^Access to an undefined property App\\\\QuestionSetQuestion\\:\\:\\$questionset\\.$#"
+			count: 1
+			path: app/Transformers/QuestionSetsQuestionTransformer.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/User.php
+
+		-
+			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$hidden is not covariant with PHPDoc type array\\<int, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$hidden\\.$#"
+			count: 1
+			path: app/User.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: database/factories/H5PContentsMetadataFactory.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function md5 expects string, int\\<1, max\\> given\\.$#"
+			count: 1
+			path: database/migrations/2014_10_12_104748_create_administrators_table.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 2
+			path: database/migrations/2015_09_25_092958_create_h5p_contents_table.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: database/migrations/2015_09_25_092958_create_h5p_libraries_languages_table.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 4
+			path: database/migrations/2015_09_25_092958_create_h5p_libraries_table.php
+
+		-
+			message: "#^Method ChangeDefaultPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			count: 1
+			path: database/migrations/2015_12_08_073717_change_default_password.php
+
+		-
+			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: database/migrations/2015_12_15_081807_create_content_sharing_table.php
+
+		-
+			message: "#^Method ChangeAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			count: 1
+			path: database/migrations/2016_04_19_073909_ChangeAdminPassword.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: database/migrations/2018_04_05_083016_add_h5p_hub_cache.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: database/migrations/2019_04_24_103853_update_hub_cache.php
+
+		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 1
+			path: database/migrations/2019_05_21_121648_add_cerpus_video_and_image_to_cache.php
+
+		-
+			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
+			count: 1
+			path: database/migrations/2020_12_07_133958_set_admin_password.php
+
+		-
+			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: database/migrations/2020_12_07_133958_set_admin_password.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$files\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleFileVersionerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleFileVersionerTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:files\\(\\)\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleFileVersionerTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$newArticle of class App\\\\Http\\\\Libraries\\\\ArticleFileVersioner constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			count: 3
+			path: tests/Integration/Article/ArticleFileVersionerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 11
+			path: tests/Integration/Article/ArticleLockTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleLockTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleLockTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 3
+			path: tests/Integration/Article/ArticleTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 10
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content\\.$#"
+			count: 9
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 11
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 9
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$license\\.$#"
+			count: 1
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			count: 6
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			count: 3
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
+			count: 5
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Called 'count' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 2
+			path: tests/Integration/Article/ArticleVersioningTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			count: 1
+			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			count: 1
+			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$is_private\\.$#"
+			count: 3
+			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			count: 1
+			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
+			count: 1
+			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
+			count: 12
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 3
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			count: 21
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getCollaboratorEmails\\(\\)\\.$#"
+			count: 3
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:newCollaborators\\(\\)\\.$#"
+			count: 10
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
+			count: 8
+			path: tests/Integration/CollaboratableTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 2
+			path: tests/Integration/Content/ContentTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 2
+			path: tests/Integration/Content/ContentTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 10
+			path: tests/Integration/Content/LockStatusTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
+			count: 5
+			path: tests/Integration/Content/LockStatusTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
+			count: 2
+			path: tests/Integration/Content/LockStatusTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 6
+			path: tests/Integration/Content/LockStatusTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$updated_at\\.$#"
+			count: 3
+			path: tests/Integration/Content/LockStatusTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 5
+			path: tests/Integration/Content/UnlockTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
+			count: 2
+			path: tests/Integration/Content/UnlockTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
+			count: 10
+			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 4
+			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
+			count: 3
+			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$type\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
+			count: 2
+			path: tests/Integration/Http/Controllers/GameControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/H5PControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/H5PControllerTest.php
+
+		-
+			message: "#^Variable \\$h5pContentLibs in PHPDoc tag @var does not exist\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/H5PControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
+			count: 2
+			path: tests/Integration/Http/Controllers/LinkControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:\\$id\\.$#"
+			count: 4
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:questions\\(\\)\\.$#"
+			count: 2
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:each\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\)\\: mixed, Closure\\(App\\\\QuestionSet, mixed\\)\\: void given\\.$#"
+			count: 2
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
+			count: 2
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$questionset of method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:update\\(\\) expects App\\\\QuestionSet, Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
+			count: 8
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Variable \\$questionSetController in PHPDoc tag @var does not match assigned variable \\$questionsetController\\.$#"
+			count: 1
+			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$filtered\\.$#"
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 38
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 5
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:\\$id\\.$#"
+			count: 4
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:contentVideos\\(\\)\\.$#"
+			count: 5
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:contentVideos\\(\\)\\.$#"
+			count: 2
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:createVideoData\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:createVideoData\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Property Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:\\$disk \\(Illuminate\\\\Filesystem\\\\FilesystemAdapter\\) does not accept Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\.$#"
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
+			count: 4
+			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 7
+			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
+
+		-
+			message: "#^Relation 'metadata' is not found in App\\\\H5PContent model\\.$#"
+			count: 3
+			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 18
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 27
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
+			count: 14
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Tests\\\\Integration\\\\Libraries\\\\H5P\\\\CRUTest\\:\\:\\$editorFilesDirectory\\.$#"
+			count: 1
+			path: tests/Integration/Libraries/H5P/CRUTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 7
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:content\\(\\)\\.$#"
+			count: 5
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
+			count: 4
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of method App\\\\Libraries\\\\H5P\\\\H5PCopyright\\:\\:getCopyrights\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			count: 13
+			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 13
+			path: tests/Integration/Libraries/H5P/H5PExportTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$slug\\.$#"
+			count: 7
+			path: tests/Integration/Libraries/H5P/H5PExportTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$content of class App\\\\Libraries\\\\H5P\\\\H5PExport constructor expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			count: 7
+			path: tests/Integration/Libraries/H5P/H5PExportTest.php
+
+		-
+			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
+			count: 1
+			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php
+
+		-
+			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
+			count: 3
+			path: tests/Integration/Libraries/H5P/Package/CoursePresentationTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
+
+		-
+			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
+			count: 1
+			path: tests/Integration/Libraries/H5P/Package/VideoTest.php
+
+		-
+			message: "#^Class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor invoked with 4 parameters, 2 required\\.$#"
+			count: 3
+			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
+
+		-
+			message: "#^Parameter \\#1 \\$contentAuthorStorage of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects App\\\\Libraries\\\\ContentAuthorStorage, Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem given\\.$#"
+			count: 3
+			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
+
+		-
+			message: "#^Parameter \\#2 \\$logger of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects Psr\\\\Log\\\\LoggerInterface, string given\\.$#"
+			count: 3
+			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
+
+		-
+			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, object given\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/H5P/h5pTest.php
+
+		-
+			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"
+			count: 2
+			path: tests/Integration/Libraries/QuestionSetConverterTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 4
+			path: tests/Integration/Models/CollaboratorContextTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 3
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:addAttributionOriginator\\(\\)\\.$#"
+			count: 4
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttribution\\(\\)\\.$#"
+			count: 6
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttributionAsString\\(\\)\\.$#"
+			count: 5
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttribution\\(\\)\\.$#"
+			count: 3
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttributionOrigin\\(\\)\\.$#"
+			count: 2
+			path: tests/Integration/Models/ContentAttributionTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
+			count: 3
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$major_version\\.$#"
+			count: 1
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$minor_version\\.$#"
+			count: 1
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 3
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
+			count: 1
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
+			count: 1
+			path: tests/Integration/Models/GametypeTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 2
+			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 2
+			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			count: 6
+			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getContentLicense\\(\\)\\.$#"
+			count: 9
+			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
+			count: 14
+			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
+
+		-
+			message: "#^Call to an undefined method Tests\\\\TestCase\\:\\:setUpMockMQ\\(\\)\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Method Tests\\\\TestCase\\:\\:setUpTraits\\(\\) should return array but return statement is missing\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
+			count: 3
+			path: tests/Unit/Traits/H5PBehaviorSettingsTest.php

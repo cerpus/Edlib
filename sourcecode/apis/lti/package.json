@@ -14,20 +14,20 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-env": "^7.18.10",
     "@cerpus/edlib-node-utils": "1.11.0",
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^27.5.1",
     "joi": "^17.6.0",
     "js-yaml": "^4.1.0",
-    "prettier": "^2.6.2",
-    "supertest": "^6.2.3",
+    "prettier": "^2.7.1",
+    "supertest": "^6.2.4",
     "swagger-jsdoc": "^6.2.1",
-    "swagger-ui-express": "^4.4.0",
+    "swagger-ui-express": "^4.5.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.19"
   }
 }

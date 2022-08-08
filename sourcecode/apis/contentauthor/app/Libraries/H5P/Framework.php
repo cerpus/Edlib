@@ -856,115 +856,46 @@ class Framework implements \H5PFrameworkInterface, Result
         return $usage;
     }
 
-    /**
-     * Loads a library
-     *
-     * @param string $machineName
-     *   The library's machine name
-     * @param int $majorVersion
-     *   The library's major version
-     * @param int $minorVersion
-     *   The library's minor version
-     * @return array|FALSE
-     *   FALSE if the library doesn't exist.
-     *   Otherwise an associative array containing:
-     *   - libraryId: The id of the library if it is an existing library.
-     *   - title: The library's name
-     *   - machineName: The library machineName
-     *   - majorVersion: The library's majorVersion
-     *   - minorVersion: The library's minorVersion
-     *   - patchVersion: The library's patchVersion
-     *   - runnable: 1 if the library is a content type, 0 otherwise
-     *   - fullscreen(optional): 1 if the library supports fullscreen, 0 otherwise
-     *   - embedTypes(optional): list of supported embed types
-     *   - preloadedJs(optional): comma separated string with js file paths
-     *   - preloadedCss(optional): comma separated sting with css file paths
-     *   - dropLibraryCss(optional): list of associative arrays containing:
-     *     - machineName: machine name for the librarys that are to drop their css
-     *   - semantics(optional): Json describing the content structure for the library
-     *   - preloadedDependencies(optional): list of associative arrays containing:
-     *     - machineName: Machine name for a library this library is depending on
-     *     - majorVersion: Major version for a library this library is depending on
-     *     - minorVersion: Minor for a library this library is depending on
-     *   - dynamicDependencies(optional): list of associative arrays containing:
-     *     - machineName: Machine name for a library this library is depending on
-     *     - majorVersion: Major version for a library this library is depending on
-     *     - minorVersion: Minor for a library this library is depending on
-     *   - editorDependencies(optional): list of associative arrays containing:
-     *     - machineName: Machine name for a library this library is depending on
-     *     - majorVersion: Major version for a library this library is depending on
-     *     - minorVersion: Minor for a library this library is depending on
-     * TODO: handle dependencies too...
-     */
-    public function loadLibrary($machineName, $majorVersion, $minorVersion)
+    public function loadLibrary($machineName, $majorVersion, $minorVersion): array|false
     {
-        $sql = "select
-            id as libraryId,
-            title as title,
-            name as machineName,
-            major_version as majorVersion,
-            minor_version as minorVersion,
-            patch_version as patchVersion,
-            runnable,
-            fullscreen,
-            embed_types as embedTypes,
-            preloaded_js as preloadedJs,
-            preloaded_css as preloadedCss,
-            drop_library_css as dropLibraryCss,
-            semantics
-        from h5p_libraries
-        where
-            name = ?
-            and major_version = ?
-            and minor_version = ?";
+        $h5pLibrary = H5PLibrary::with(['libraries' => ['requiredLibrary']])
+            ->where([
+                'name' => $machineName,
+                'major_version' => $majorVersion,
+                'minor_version' => $minorVersion,
+            ])
+            ->orderBy('patch_version', 'desc')
+            ->first();
 
-        $libraryStatement = $this->db->prepare($sql);
-        $libraryStatement->execute([$machineName, $majorVersion, $minorVersion]);
-        $library = $libraryStatement->fetch(PDO::FETCH_ASSOC);
+        if (!$h5pLibrary instanceof H5PLibrary) {
+            return false;
+        }
 
-        $dependenciesStatement = $this->db->prepare(
-            "SELECT hl.name as machineName, hl.major_version as majorVersion, hl.minor_version as minorVersion, hll.dependency_type as dependencyType
-        FROM h5p_libraries_libraries hll
-        JOIN h5p_libraries hl ON hll.required_library_id = hl.id
-        WHERE hll.library_id = ?");
-        $dependenciesStatement->execute([$library['libraryId']]);
-        $dependencies = $dependenciesStatement->fetchAll(PDO::FETCH_OBJ);
-        foreach ($dependencies as $dependency) {
-            $library[$dependency->dependencyType . 'Dependencies'][] = array(
-                'machineName' => $dependency->machineName,
-                'majorVersion' => $dependency->majorVersion,
-                'minorVersion' => $dependency->minorVersion,
-            );
+        $library = [
+            'libraryId' => $h5pLibrary->id,
+            'title' => $h5pLibrary->title,
+            'machineName' => $h5pLibrary->name,
+            'majorVersion' => $h5pLibrary->major_version,
+            'minorVersion' => $h5pLibrary->minor_version,
+            'patchVersion' => $h5pLibrary->patch_version,
+            'runnable' => $h5pLibrary->runnable,
+            'fullscreen' => $h5pLibrary->fullscreen,
+            'embedTypes' => $h5pLibrary->embed_types,
+            'preloadedJs' => $h5pLibrary->preloaded_js,
+            'preloadedCss' => $h5pLibrary->preloaded_css,
+            'dropLibraryCss' => $h5pLibrary->drop_library_css,
+            'semantics' => $h5pLibrary->semantics,
+        ];
+
+        foreach ($h5pLibrary->libraries as $dependency) {
+            $library[$dependency->dependency_type . 'Dependencies'][] = [
+                'machineName' => $dependency->requiredLibrary->name,
+                'majorVersion' => $dependency->requiredLibrary->major_version,
+                'minorVersion' => $dependency->requiredLibrary->minor_version,
+            ];
         }
 
         return $library;
-    }
-
-    public function loadLibraryInfo($id)
-    {
-        $sql = "select
-            id as libraryId,
-            title as title,
-            name as machineName,
-            major_version as majorVersion,
-            minor_version as minorVersion,
-            patch_version as patchVersion,
-            runnable,
-            fullscreen,
-            embed_types as embedTypes,
-            preloaded_js as preloadedJs,
-            preloaded_css as preloadedCss,
-            drop_library_css as dropLibraryCss,
-            semantics
-        from h5p_libraries
-        where
-            id = :id";
-
-        $libraryStatement = $this->db->prepare($sql);
-        $libraryStatement->execute([':id' => $id]);
-        $library = $libraryStatement->fetch(PDO::FETCH_ASSOC);
-        return $library;
-
     }
 
     /**

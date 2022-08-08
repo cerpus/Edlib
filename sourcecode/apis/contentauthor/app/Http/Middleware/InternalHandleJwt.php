@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Auth\Jwt\JwtDecoderInterface;
 use App\Http\Libraries\AuthJwtParser;
-use Cerpus\LaravelAuth\Service\JWTValidationService;
 use Closure;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Session;
@@ -12,6 +13,11 @@ use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class InternalHandleJwt extends AuthJwtParser
 {
+    public function __construct(
+        private readonly JwtDecoderInterface $jwtDecoder,
+    ) {
+    }
+
     /*
      * Extract Behavior settings from a LTI request, validate and add to Session if valid
      */
@@ -21,18 +27,11 @@ class InternalHandleJwt extends AuthJwtParser
             return response("Unauthorized", ResponseAlias::HTTP_UNAUTHORIZED);
         }
 
-        $data = JWT::decode($request->get('jwt'), config('internal.toolKey'), ['HS256']);
+        $data = JWT::decode($request->get('jwt'), new Key(config('internal.toolKey'), 'HS256'));
 
-        $jwtService = new JWTValidationService();
-        $validJwt = $jwtService->validateJwt($data->userToken);
-
-        if ($validJwt === null || $validJwt->getType() !== 'edlib') {
-            return response("Unauthorized", ResponseAlias::HTTP_UNAUTHORIZED);
-        }
+        $payload = $this->jwtDecoder->getVerifiedPayload($data->userToken);
 
         $request->merge((array) $data);
-
-        $payload = $validJwt->getPayload();
         $authId = $payload->sub;
         Session::put('authId', $authId);
         $user = $payload->payload->user;
