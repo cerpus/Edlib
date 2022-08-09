@@ -14,13 +14,19 @@ use Illuminate\Support\Facades\Storage;
  * @property-read Collection<array-key, H5PLibraryLibrary> $libraries
  *
  * @see H5PLibrary::scopeFromLibrary()
- * @method static Builder fromLibrary($value)
-
+ * @method static Builder|static fromLibrary($value)
+ *
  * @see H5PLibrary::scopeFromLibraryName()
- * @method static Builder fromLibraryName($value)
-
+ * @method static Builder|static fromLibraryName($value)
+ *
+ * @see H5PLibrary::scopeFromMachineName()
+ * @method static Builder|static fromMachineName($machineName)
+ *
  * @see H5PLibrary::scopeLatestVersion()
- * @method static Builder latestVersion()
+ * @method static Builder|static latestVersion()
+ *
+ * @see H5PLibrary::scopeVersion()
+ * @method static Builder|static version($majorVersion, $minorVersion)
  *
  * @method static find($id, $columns = ['*'])
  */
@@ -36,7 +42,7 @@ class H5PLibrary extends Model
     {
         parent::boot();
 
-        self::deleting(function($library){
+        self::deleting(function ($library) {
             $library->languages()->delete();
             $library->libraries()->delete();
         });
@@ -82,11 +88,23 @@ class H5PLibrary extends Model
         return $query->where('name', 'LIKE', '%' . strtolower($value) . '%');
     }
 
+    public function scopeFromMachineName($query, $machineName)
+    {
+        return $query->where('name', $machineName);
+    }
+
     public function scopeLatestVersion($query)
     {
         return $query->orderBy('major_version', 'DESC')
             ->orderBy('minor_version', 'DESC')
             ->limit(1);
+    }
+
+    public function scopeVersion($query, $majorVersion, $minorVersion)
+    {
+        return $query
+            ->where('major_version', $majorVersion)
+            ->where('minor_version', $minorVersion);
     }
 
     public function scopeRunnable($query)
@@ -177,12 +195,11 @@ class H5PLibrary extends Model
     public function getAddons()
     {
         return DB::table("h5p_libraries as l1")
-            ->leftJoin('h5p_libraries as l2', function($join){
+            ->leftJoin('h5p_libraries as l2', function ($join) {
                 $join->on('l1.name', 'l2.name');
-                $join->on(function($query)
-                {
+                $join->on(function ($query) {
                     $query->on('l1.major_version', '<', 'l2.major_version');
-                    $query->on(function ($query){
+                    $query->on(function ($query) {
                         $query->on('l1.major_version', 'l2.major_version')
                             ->orOn('l1.minor_version', '<', 'l2.minor_version');
                     });
@@ -201,7 +218,7 @@ class H5PLibrary extends Model
             ->whereNull('l2.name')
             ->whereNotNull('l1.add_to')
             ->get()
-            ->map(function($addon){
+            ->map(function ($addon) {
                 return (array)$addon;
             })
             ->toArray();

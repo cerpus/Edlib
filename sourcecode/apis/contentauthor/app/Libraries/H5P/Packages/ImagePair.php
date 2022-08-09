@@ -6,10 +6,10 @@ use LogicException;
 
 class ImagePair extends H5PBase
 {
-    public static $machineName = "H5P.ImagePair";
-    protected $composedComponent = false;
-    protected $majorVersion = 1;
-    protected $minorVersion = 4;
+    public static string $machineName = "H5P.ImagePair";
+    protected bool $composedComponent = false;
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 4;
 
     /**
      * Only the retry functionality seems to be enabled/used in ImagePair and is controlled

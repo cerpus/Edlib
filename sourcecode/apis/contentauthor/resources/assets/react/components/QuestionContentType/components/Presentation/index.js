@@ -28,9 +28,9 @@ class PresentationContainer extends Component {
     handleRenderIcon(iconType) {
         switch (iconType) {
             case 'H5P.QuestionSet':
-                return <i className="fa fa-3x h5p-icon h5p-icon-Quiz" />;
+                return <img src="/graphical/QuizIcon.png" width="226" height="226" alt="" aria-hidden="true" />;
             case 'CERPUS.MILLIONAIRE':
-                return <i className="material-icons" style={{fontSize: "3.1em"}}>attach_money</i>;
+                return <img src="/graphical/MillionaireIcon.png" width="128" height="128" alt="" aria-hidden="true" />;
             default:
                 return <i className="fa resourceicon-3x h5p-icon h5p-icon-Quiz" />;
         }

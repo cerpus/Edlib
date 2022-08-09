@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: tsivert
@@ -13,10 +14,10 @@ use LogicException;
 
 class Dialogcards extends H5PBase
 {
-    public static $machineName = "H5P.Dialogcards";
-    protected $majorVersion = 1;
-    protected $minorVersion = 6;
-    protected $canExtractAnswers = false;
+    public static string $machineName = "H5P.Dialogcards";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 6;
+    protected bool $canExtractAnswers = false;
 
     public function getPackageSemantics()
     {
@@ -46,7 +47,7 @@ class Dialogcards extends H5PBase
 
     public function alterSemantics(&$semantics)
     {
-        if( config('h5p.H5P_Dialogcards.useRichText') === true){
+        if (config('h5p.H5P_Dialogcards.useRichText') === true) {
             $this->addRichTextEditor($semantics);
         }
     }

@@ -8,11 +8,14 @@ use App\Events\ContentCreated;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Game;
+use App\Gametype;
+use App\H5PLibrary;
 use App\Http\Controllers\QuestionSetController;
 use App\Http\Libraries\License;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\Libraries\QuestionSet\QuestionSetConvert;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
@@ -22,16 +25,20 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Helpers\MockAuthApi;
 use Tests\Helpers\MockVersioningTrait;
 use Tests\TestCase;
 
 class QuestionSetControllerTest extends TestCase
 {
-    use RefreshDatabase, MockAuthApi, WithFaker, MockVersioningTrait;
+    use RefreshDatabase;
+    use MockAuthApi;
+    use WithFaker;
+    use MockVersioningTrait;
 
     public function setUp(): void
     {
@@ -125,6 +132,13 @@ class QuestionSetControllerTest extends TestCase
         $this->setupAuthApi([
             'getUser' => $user,
         ]);
+        H5PLibrary::factory()->create([
+            'name' => QuestionSetPackage::$machineName,
+            'major_version' => QuestionSetPackage::$majorVersion,
+            'minor_version' => QuestionSetPackage::$minorVersion,
+        ]);
+        Gametype::factory()->create(['name' => Millionaire::$machineName]);
+
         /** @var QuestionSet $qs */
         $qs = QuestionSet::factory()->create(['owner' => $user->getId()]);
         $request = new Request([], [
@@ -159,12 +173,19 @@ class QuestionSetControllerTest extends TestCase
         $this->assertIsArray($state);
         $this->assertArrayHasKey('license', $state);
         $this->assertEquals('', $state['license']);
+
+        $this->assertArrayHasKey('contentTypes', $state);
+        $this->assertCount(2, $state['contentTypes']);
+        $this->assertArrayHasKey('img', $state['contentTypes'][0]);
+        $this->assertArrayHasKey('label', $state['contentTypes'][0]);
+        $this->assertArrayHasKey('outcome', $state['contentTypes'][0]);
     }
 
     public function testUpdate()
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
+        /** @var Collection $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
@@ -179,6 +200,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->withSession(["authId" => "user_1"]);
 
+        /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
         $question = $questionset->questions()->first();
         $answer = $question->answers()->first();
@@ -324,6 +346,7 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
+        /** @var Collection $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
@@ -338,6 +361,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->withSession(["authId" => "user_1"]);
 
+        /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
         $question = $questionset->questions()->first();
         $answer = $question->answers()->first();
@@ -351,7 +375,9 @@ class QuestionSetControllerTest extends TestCase
                     'order' => $question->order,
                     'canDelete' => false,
                     'image' => null,
-                    'question' => ['text' => '<p>Albert Einstein formula: <span class="math_container">\(E=mc^2\)</span></p>'],
+                    'question' => [
+                        'text' => '<p>Albert Einstein formula: <span class="math_container">\(E=mc^2\)</span></p>',
+                    ],
                     'answers' => [
                         (object)[
                             'id' => $answer->id,
@@ -537,6 +563,7 @@ class QuestionSetControllerTest extends TestCase
             'license' => 'BY',
         ]);
 
+        /** @var QuestionSet $storedQuestionSet */
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
@@ -609,6 +636,7 @@ class QuestionSetControllerTest extends TestCase
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('question_sets', ['title' => "New title", "tags" => "", "is_published" => 0]);
 
+        /** @var QuestionSet $storedQuestionSet */
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
@@ -636,6 +664,5 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 0]);
         $this->assertCount(1, QuestionSet::all());
-
     }
 }

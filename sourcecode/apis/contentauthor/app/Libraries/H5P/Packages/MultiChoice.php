@@ -2,18 +2,17 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use App\H5PLibrary;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use LogicException;
 
 class MultiChoice extends H5PBase
 {
-    public static $machineName = "H5P.MultiChoice";
-    protected $majorVersion = 1;
-    protected $minorVersion = 9;
+    public static string $machineName = "H5P.MultiChoice";
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 9;
 
-    protected $canExtractAnswers = false;
+    protected bool $canExtractAnswers = false;
 
     public function getElements(): array
     {
@@ -63,7 +62,8 @@ class MultiChoice extends H5PBase
         // TODO: Implement getPackageAnswers() method.
     }
 
-    private function getMedia(){
+    private function getMedia()
+    {
         return $this->packageStructure->media ?? [];
     }
 
@@ -78,11 +78,11 @@ class MultiChoice extends H5PBase
     {
         $media = $this->getMedia();
 
-        if( empty($media) ){
+        if (empty($media)) {
             return true;
         }
 
-        if( !empty($media->type) ){
+        if (!empty($media->type)) {
             $package = H5PPackageProvider::make($media->type->library, $media->type->params);
             if ($package->alterSource($sourceFile, $newSource) !== true) {
                 throw new \Exception("Could not update source");

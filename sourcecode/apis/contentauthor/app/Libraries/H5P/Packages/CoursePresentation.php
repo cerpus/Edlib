@@ -2,16 +2,16 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
+use App\Libraries\H5P\Interfaces\PackageInterface;
 
 class CoursePresentation extends H5PBase
 {
-    public static $machineName = "H5P.CoursePresentation";
-    protected $composedComponent = true;
-    protected $majorVersion = 1;
-    protected $minorVersion = 16;
+    public static string $machineName = "H5P.CoursePresentation";
+    protected bool $composedComponent = true;
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 16;
 
     public function getElements(): array
     {
@@ -82,8 +82,10 @@ class CoursePresentation extends H5PBase
 
     public function validate(): bool
     {
-        if (empty($this->packageStructure) ||
-            empty($this->packageStructure->presentation->slides)) {
+        if (
+            empty($this->packageStructure) ||
+            empty($this->packageStructure->presentation->slides)
+        ) {
             return false;
         }
         return true;
@@ -130,9 +132,9 @@ class CoursePresentation extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->enableRetry === true){
+                if ($this->behaviorSettings->enableRetry === true) {
                     $values->retryButton = 'on';
-                } elseif( $this->behaviorSettings->enableRetry === false ) {
+                } elseif ($this->behaviorSettings->enableRetry === false) {
                     $values->retryButton = 'off';
                 }
                 return $values;
@@ -147,9 +149,9 @@ class CoursePresentation extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->showSolution === true){
+                if ($this->behaviorSettings->showSolution === true) {
                     $values->showSolutionButton = 'on';
-                } elseif( $this->behaviorSettings->showSolution === false ) {
+                } elseif ($this->behaviorSettings->showSolution === false) {
                     $values->showSolutionButton = 'off';
                 }
                 return $values;

@@ -6,6 +6,6 @@ module.exports = {
         'PRESENTATION.CANCEL': 'Cancel',
         'PRESENTATION.PROCEED': 'Proceed',
         'PRESENTATION.ARE_YOU_SURE': 'Are you sure?',
-        'PRESENTATION.WE_ARE_TWEAKING_YOUR_QUESTION_SET': 'We are tweaking your Question set to work as a',
+        'PRESENTATION.WE_ARE_TWEAKING_YOUR_QUESTION_SET': 'We are checking and tweaking your Question set to work as a',
     }
 };

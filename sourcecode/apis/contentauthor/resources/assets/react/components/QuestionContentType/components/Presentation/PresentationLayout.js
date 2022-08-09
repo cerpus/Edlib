@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import Button from '@material-ui/core/Button';
 
 function PresentationLayout(props) {
     const {
@@ -16,19 +17,23 @@ function PresentationLayout(props) {
             </p>
             <div className="presentationList">
                 {actions.map(action => (
-                    <div
+                    <Button
                         key={action.label}
                         className="presentationButton"
+                        size="large"
                         onClick={() => onDisplayToggle({
                             presentation: action.outcome,
                             icon: action.img,
                             title: action.label,
                             text: <FormattedMessage id="PRESENTATION.WE_ARE_TWEAKING_YOUR_QUESTION_SET" />,
                         })}
+                        classes={{
+                            label: "presentationButtonLabel",
+                        }}
                     >
                         {handleRenderIcon(action.outcome)}
-                        <div className="presentationLabel">{action.label}</div>
-                    </div>
+                        <span className="presentationLabel">{action.label}</span>
+                    </Button>
                 ))}
             </div>
         </div>

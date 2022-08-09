@@ -82,7 +82,7 @@ H5PQuizLayout.defaultProps = {
     cards: [],
     backButtonText: <FormattedMessage id="H5PQUIZ.GO_BACK_TO_ORIGINAL_QUESTION_SET" />,
     generateButtonText: <FormattedMessage id="H5PQUIZ.GENERATE_QUIZ" />,
-    infoText: <FormattedHTMLMessage id="H5PQUIZ.WE_HAVE_ADDED_SOME_WRONG_ALTERNATIVES" />,
+    infoText: '',
     processingForm: false,
 };
 

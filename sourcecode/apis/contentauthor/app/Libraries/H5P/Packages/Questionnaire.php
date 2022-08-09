@@ -7,8 +7,8 @@ use App\Libraries\H5P\Interfaces\PackageInterface;
 
 class Questionnaire extends H5PBase
 {
-    public static $machineName = "H5P.Questionnaire";
-    protected $composedComponent = true;
+    public static string $machineName = "H5P.Questionnaire";
+    protected bool $composedComponent = true;
 
     public function getElements(): array
     {
@@ -37,8 +37,10 @@ class Questionnaire extends H5PBase
 
     public function validate(): bool
     {
-        if (empty($this->packageStructure) ||
-            empty($this->packageStructure->questionnaireElements)) {
+        if (
+            empty($this->packageStructure) ||
+            empty($this->packageStructure->questionnaireElements)
+        ) {
             return false;
         }
         return true;

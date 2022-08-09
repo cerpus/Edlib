@@ -6,12 +6,11 @@ use LogicException;
 
 class QuestionSet extends H5PBase
 {
+    public static string $machineName = "H5P.QuestionSet";
+    protected bool $canExtractAnswers = false;
 
-    public static $machineName = "H5P.QuestionSet";
-    protected $canExtractAnswers = false;
-
-    protected $majorVersion = 1;
-    protected $minorVersion = 12;
+    public static int $majorVersion = 1;
+    public static int $minorVersion = 12;
 
     public function getElements(): array
     {
@@ -55,9 +54,9 @@ class QuestionSet extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->enableRetry === true){
+                if ($this->behaviorSettings->enableRetry === true) {
                     $values->retryButton = 'on';
-                } elseif( $this->behaviorSettings->enableRetry === false ) {
+                } elseif ($this->behaviorSettings->enableRetry === false) {
                     $values->retryButton = 'off';
                     $this->addCss('.h5p-container .questionset-results .result-text, .buttons .h5p-button.qs-retrybutton {display:none;}');
                 }
@@ -73,9 +72,9 @@ class QuestionSet extends H5PBase
                 return strtolower($key) === "override";
             })
             ->transform(function ($values) {
-                if( $this->behaviorSettings->showSolution === true){
+                if ($this->behaviorSettings->showSolution === true) {
                     $values->showSolutionButton = 'on';
-                } elseif( $this->behaviorSettings->showSolution === false ) {
+                } elseif ($this->behaviorSettings->showSolution === false) {
                     $values->showSolutionButton = 'off';
                     $this->addCss('.buttons .h5p-button.qs-solutionbutton {display:none;}');
                 }
