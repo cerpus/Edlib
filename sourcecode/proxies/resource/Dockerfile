@@ -3,7 +3,7 @@
 #
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
-RUN apk --no-cache add --virtual .builds-deps build-base python3
+RUN apk --no-cache add --virtual .builds-deps build-base python3 curl
 RUN ln -sf python3 /usr/bin/python
 
 #
