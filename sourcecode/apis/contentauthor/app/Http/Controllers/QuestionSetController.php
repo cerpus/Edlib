@@ -59,8 +59,7 @@ class QuestionSetController extends Controller
         if (
             H5PLibrary::fromMachineName(QuestionSetPackage::$machineName)
             ->version(QuestionSetPackage::$majorVersion, QuestionSetPackage::$minorVersion)
-            ->get()
-            ->isNotEmpty()
+            ->count() > 0
         ) {
             $contentTypes->push([
                 'img' => '/graphical/QuizIcon.png',
@@ -68,7 +67,7 @@ class QuestionSetController extends Controller
                 'outcome' => QuestionSetPackage::$machineName,
             ]);
         }
-        if (Gametype::ofName(Millionaire::$machineName)->get()->isNotEmpty()) {
+        if (Gametype::ofName(Millionaire::$machineName)->count() > 0) {
             $contentTypes->push([
                 'img' => '/graphical/MillionaireIcon.png',
                 'label' => 'Millionaire',

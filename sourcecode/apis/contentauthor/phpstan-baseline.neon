@@ -496,11 +496,6 @@ parameters:
 			path: app/Http/Controllers/QuestionSetController.php
 
 		-
-			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 1
-			path: app/Http/Controllers/QuestionSetController.php
-
-		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
 			count: 1
 			path: app/Http/Controllers/QuestionSetController.php
@@ -1272,33 +1267,8 @@ parameters:
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface will always evaluate to false\\.$#"
+			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface will always evaluate to false\\.$#"
 			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
-			message: "#^Call to method canExtractAnswers\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
-			message: "#^Call to method getElements\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
-			message: "#^Call to method setAnswers\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
-			message: "#^Call to method validate\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$item contains unknown class App\\\\Libraries\\\\H5P\\\\Packages\\\\PackageInterface\\.$#"
-			count: 2
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
@@ -2027,16 +1997,6 @@ parameters:
 			path: tests/Integration/Http/Controllers/LinkControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:\\$id\\.$#"
-			count: 4
-			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
-
-		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:questions\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:each\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\)\\: mixed, Closure\\(App\\\\QuestionSet, mixed\\)\\: void given\\.$#"
 			count: 2
 			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
@@ -2044,11 +2004,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
 			count: 2
-			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$questionset of method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:update\\(\\) expects App\\\\QuestionSet, Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\> given\\.$#"
-			count: 8
 			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
 
 		-
