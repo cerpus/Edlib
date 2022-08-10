@@ -26,7 +26,12 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         padding: theme.spacing(1),
         backgroundColor: '#F6F6F7',
-        minHeight: '100vh',
+        height: 'calc(100vh - ' + theme.spacing(2) + 'px)',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    children: {
+        flex: '1 1 100%',
     },
 }));
 
@@ -50,7 +55,9 @@ const Page = ({ children }) => {
             </Drawer>
             <main className={classes.content}>
                 <Toolbar />
-                {children}
+                <div className={classes.children}>
+                    {children}
+                </div>
             </main>
         </div>
     );
