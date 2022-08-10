@@ -117,12 +117,7 @@ services:
 
   versionapi:
     image: maven:3-openjdk-11
-    command:
-      [
-        sh,
-        -c,
-        '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
-      ]
+    command: [sh, -c, '/start-scripts/wait-for-it.sh postgres:5432 && mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"']
     volumes:
       - maven_cache:/root/.m2
       - ./sourcecode/apis/version/:/app
@@ -184,7 +179,7 @@ services:
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000 && php artisan laravel-rabbitmq-pubsub:consumer']
     volumes:
       - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
@@ -198,7 +193,7 @@ services:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: phpfpm-dev
-    command: /bin/bash -c "set -eu;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;while true; do php /app/artisan schedule:run -q; sleep 60; done"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000 && while true; do php /app/artisan schedule:run -q && sleep 60; done']
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
@@ -213,7 +208,7 @@ services:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: phpfpm-dev
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000; php /app/artisan horizon"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000 && php /app/artisan horizon']
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
@@ -230,9 +225,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 && update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -253,9 +246,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200 && update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -276,9 +267,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh resourceapi:80;update-ca-certificates; yarn dev:subscribers'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh resourceapi:80 && update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources/src:/var/www/app/src
@@ -297,9 +286,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 && update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -321,9 +308,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh ltiapi:80;update-ca-certificates; yarn dev:subscribers'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh ltiapi:80 && update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/lti/src:/var/www/app/src
@@ -339,12 +324,10 @@ services:
     build:
       context: ./sourcecode/apis/auth
       dockerfile: Dockerfile
-      target: base
+      target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c 'wait-for mysql:3306 && wait-for rabbitmq:5672 && wait-for redis:6379 && update-ca-certificates && yarn && yarn migrate && yarn dev'"
+    command: [sh, -c, 'wait-on tcp:mysql:3306 tcp:rabbitmq:5672 tcp:redis:6379 && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -353,7 +336,6 @@ services:
       - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
       - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts/wait-for.sh:/usr/local/bin/wait-for
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - mysql
@@ -367,9 +349,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, 'wait-on tcp:mysql:3306 tcp:rabbitmq:5672 tcp:elasticsearch:9200 && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -378,10 +358,12 @@ services:
       - ./sourcecode/apis/url/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/url/package.json:/var/www/app/package.json
       - ./sourcecode/apis/url/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
+      - elasticsearch
       - mysql
+      - rabbitmq
 
   www:
     build:
@@ -428,8 +410,6 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -447,9 +427,7 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh rabbitmq:5672 && update-ca-certificates && yarn && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -466,11 +444,9 @@ services:
       context: ./sourcecode/proxies/resource
       dockerfile: Dockerfile
       target: dev
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672 authapi:80;update-ca-certificates; yarn; yarn dev'"
+    command: [sh, -c, 'wait-on tcp:rabbitmq:5672 tcp:authapi:80 && yarn dev']
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -479,7 +455,6 @@ services:
       - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
       - ./sourcecode/proxies/resource/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - authapi
@@ -542,7 +517,7 @@ services:
     build:
       context: ./sourcecode/apis/common
       target: dev
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: [sh, -c, '/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672 && php artisan laravel-rabbitmq-pubsub:consumer']
     env_file:
       - ./localSetup/.env
     volumes:
@@ -569,7 +544,7 @@ services:
   #    build:
   #      context: ./localSetup/projects/edlibfacade
   #    entrypoint: /before-start.sh
-  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
+  #    command: [sh, -c, '/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80 && /start-app.sh']
   #    depends_on:
   #      - nginx
   #    volumes:

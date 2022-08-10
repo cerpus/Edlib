@@ -5,3 +5,4 @@
 /localSetup/.env
 node_modules
 /phpunit.phar
+docker-compose.override.yml
