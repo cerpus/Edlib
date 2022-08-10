@@ -21,6 +21,7 @@ use H5PCore;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use InvalidArgumentException;
 use PDO;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Process\Exception\RuntimeException;
@@ -28,8 +29,12 @@ use TypeError;
 
 class Framework implements \H5PFrameworkInterface, Result
 {
-    private $errorMessages;
-    private $infoMessage;
+    /** @var array<string> */
+    private array $errorMessages = [];
+
+    /** @var array<string> */
+    private array $infoMessages = [];
+
     private $adminUrl;
 
     public function __construct(
@@ -165,68 +170,24 @@ class Framework implements \H5PFrameworkInterface, Result
         }
     }
 
-    /**
-     * Show the user an error message
-     *
-     * @param string $message
-     *   The error message
-     *
-     */
-    public function setErrorMessage($message, $code = null)
+    public function setErrorMessage($message, $code = null): void
     {
+        // It isn't clear how $code should be used, so we just ignore it.
         $this->errorMessages[] = $message;
     }
 
-    /**
-     * Get error message
-     *
-     * @return string The error message, empty string if no message exist
-     *
-     */
-
-    public function getErrorMessage($asString = true)
+    public function setInfoMessage($message): void
     {
-        return $asString === true ? implode(" ", $this->errorMessages) : $this->errorMessages;
+        $this->infoMessages[] = $message;
     }
 
-    /**
-     * Get error message
-     *
-     * @return string The error message, empty string if no message exist
-     *
-     */
-
-    public function getErrorMessages()
+    public function getMessages($type): array
     {
-        return $this->getErrorMessage(false);
-    }
-
-    /**
-     * Show the user an information message
-     *
-     * @param string $message
-     *  The error message
-     */
-    public function setInfoMessage($message)
-    {
-        $this->infoMessage = $message;
-    }
-
-    /**
-     * Get info message
-     *
-     * @return string The info message, empty string if no message exist
-     *
-     */
-
-    public function getInfoMessage()
-    {
-        return $this->infoMessage;
-    }
-
-    public function getMessages($type)
-    {
-        return $this->infoMessage;
+        return match ($type) {
+            'info' => $this->infoMessages,
+            'error' => $this->errorMessages,
+            default => throw new InvalidArgumentException('Unknown message type'),
+        };
     }
 
     /**
