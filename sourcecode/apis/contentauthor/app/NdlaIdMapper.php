@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
 /**
- * Class NdlaIdMapper
- * @package App
- *
  * @property int|null $metadata_fetch
  *
  * @method static Builder withH5PMetadata()

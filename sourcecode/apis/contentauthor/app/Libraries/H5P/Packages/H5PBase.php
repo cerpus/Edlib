@@ -9,9 +9,6 @@ use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
 
 /**
- * Class H5PBase
- * @package App\Libraries\H5P\Packages
- *
  * @method applyEditorBehaviorSettings(EditorBehaviorSettingsDataObject $settingsDataObject)
  * @method applyBehaviorSettings(BehaviorSettingsDataObject $settingsDataObject)
  * @method getPackageStructure($asJson = false)

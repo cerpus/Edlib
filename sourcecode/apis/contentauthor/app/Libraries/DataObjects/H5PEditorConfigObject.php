@@ -7,9 +7,6 @@ namespace App\Libraries\DataObjects;
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
- * Class H5PEditorConfigObject
- * @package App\Libraries\DataObjects
- *
  * @method static H5PEditorConfigObject create($attributes = null)
  */
 class H5PEditorConfigObject extends EditorConfigObject

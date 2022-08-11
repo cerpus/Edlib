@@ -3,9 +3,6 @@
 namespace App;
 
 /**
- * Class SessionKeys
- * @package App
- *
  * A central place to name session keys, use if one key is used in more than one source file.
  */
 class SessionKeys

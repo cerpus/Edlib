@@ -11,9 +11,6 @@ use App\Libraries\H5P\Interfaces\H5PFileInterface;
 use Carbon\Carbon;
 
 /**
- * Trait FileUploadTrait
- * @package App\Traits
- *
  * @method release($delay = 0)
  */
 trait FileUploadTrait

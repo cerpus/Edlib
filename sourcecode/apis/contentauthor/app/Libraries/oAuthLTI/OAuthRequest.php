@@ -1,10 +1,6 @@
 <?php
 namespace App\Libraries\oAuthLTI;
 
-/**
- * Class OAuthRequest
- * @package App\Http\Controllers\oAuthLTI
- */
 class OAuthRequest
 {
     /**

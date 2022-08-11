@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class H5PFile
- * @package App
- *
  * @method static null|Builder ofFileUploadFromRequestId($requestId)
  * @method static null|Builder ofFileUploadFromContent($contentId)
  */

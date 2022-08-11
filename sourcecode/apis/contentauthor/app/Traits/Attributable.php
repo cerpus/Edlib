@@ -6,9 +6,7 @@ use App\ContentAttribution;
 use App\Libraries\DataObjects\Attribution;
 
 /**
- * Trait HasAttribution
  * Provides easy access to our current implementation of Attributions.
- * @package App\Traits
  */
 trait Attributable
 {

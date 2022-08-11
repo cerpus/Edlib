@@ -13,9 +13,6 @@ use Illuminate\Http\Request;
 use Iso639p3;
 
 /**
- * Class Game
- * @package App
- *
  * @property string $id
  * @property string $gametype
  * @property string $language_code

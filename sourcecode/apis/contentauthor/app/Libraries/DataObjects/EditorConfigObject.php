@@ -7,9 +7,6 @@ namespace App\Libraries\DataObjects;
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
- * Class EditorConfigObject
- * @package App\Libraries\DataObjects
- *
  * @method static EditorConfigObject create($attributes = null)
  */
 class EditorConfigObject

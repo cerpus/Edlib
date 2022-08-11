@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Session;
 use App\ContentLanguage;
 
 /**
- * Trait HasLanguage
- * @package App\Traits
- *
  * @property string|int $id
  */
 trait HasLanguage

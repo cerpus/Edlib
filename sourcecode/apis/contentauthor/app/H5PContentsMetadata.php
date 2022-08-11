@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class H5PContentsMetadata
- * @package App
- *
  * @method static self make(array $attributes = [])
  */
 class H5PContentsMetadata extends Model

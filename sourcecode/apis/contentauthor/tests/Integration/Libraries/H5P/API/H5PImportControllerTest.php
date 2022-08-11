@@ -34,10 +34,6 @@ namespace Tests\Integration\Libraries\H5P\API {
     use function base_path;
     use function fopen;
 
-    /**
-     * Class H5PImportControllerTest
-     * @package Tests\H5P\API
-     */
     class H5PImportControllerTest extends TestCase
     {
         use RefreshDatabase, MockVersioningTrait, WithFaker;
