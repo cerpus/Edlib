@@ -10,9 +10,6 @@ use Illuminate\Http\Request;
 use Iso639p3;
 
 /**
- * Class Link
- * @package App
- *
  * @property string $id
  * @property string $link_url
  * @property string $link_type

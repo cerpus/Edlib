@@ -6,9 +6,6 @@ namespace App\Http\Libraries\ContentTypes;
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
- * Class ContentType
- * @package App\Http\Libraries\ContentTypes
- *
  * @method static ContentType create($title, $createUrl, $id, $description, $icon, $mainContentType)
  */
 class ContentType

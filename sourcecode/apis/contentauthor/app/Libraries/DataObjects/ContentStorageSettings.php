@@ -2,11 +2,6 @@
 
 namespace App\Libraries\DataObjects;
 
-/**
- * Class ContentStorageSettings
- * @package App\Libraries\DataObjects
- *
- */
 class ContentStorageSettings
 {
     const STORAGE_PREFIX = 'h5p/';

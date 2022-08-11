@@ -6,9 +6,6 @@ namespace App\Libraries\DataObjects;
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
- * Class ResourceUserDataObject
- * @package App\Libraries\DataObjects
- *
  * @method static ResourceUserDataObject create($attributes = null)
  */
 class ResourceUserDataObject

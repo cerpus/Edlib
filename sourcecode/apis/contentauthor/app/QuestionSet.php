@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 use Iso639p3;
 
 /**
- * Class QuestionSet
- * @package App
- *
  * @property string $language_code
  * @property string $owner
  * @property string $external_reference

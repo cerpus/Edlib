@@ -24,9 +24,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 /**
- * Class Content
- * @package App
- *
  * @property string|int $id
  * @property Carbon $created_at
  * @property Carbon $updated_at

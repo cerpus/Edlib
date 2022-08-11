@@ -20,9 +20,6 @@ use Illuminate\Support\Str;
 use Iso639p3;
 
 /**
- * Class H5PContent
- * @package App
- *
  * @property string $user_id
  * @property int $library_id
  * @property string $parameters

@@ -7,9 +7,6 @@ namespace App\Libraries\DataObjects;
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
- * Class H5PStateDataObject
- * @package App\Libraries\DataObjects
- *
  * @method static H5PStateDataObject create($attributes = null)
  */
 class H5PStateDataObject extends ContentStateDataObject

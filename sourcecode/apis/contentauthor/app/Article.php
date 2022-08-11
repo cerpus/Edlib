@@ -21,9 +21,6 @@ use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
 /**
- * Class Article
- * @package App
- *
  * @property string $id
  * @property string $parent_id
  * @property string $parent_version_id
