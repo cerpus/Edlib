@@ -59,7 +59,7 @@ class Article extends Content implements VersionableObject
 
     public function collaborators()
     {
-        return $this->hasMany('App\ArticleCollaborator');
+        return $this->hasMany(ArticleCollaborator::class);
     }
 
     public function files()

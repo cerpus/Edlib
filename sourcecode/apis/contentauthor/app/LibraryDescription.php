@@ -10,7 +10,7 @@ class LibraryDescription extends Model
 
     public function library()
     {
-        return $this->belongsTo('App\H5PLibrary');
+        return $this->belongsTo(H5PLibrary::class);
     }
 
     public function getCapabilityIdAttribute()

@@ -55,12 +55,12 @@ class H5PLibrary extends Model
 
     public function capability()
     {
-        return $this->hasOne('App\H5PLibraryCapability', 'library_id');
+        return $this->hasOne(H5PLibraryCapability::class, 'library_id');
     }
 
     public function description()
     {
-        return $this->hasOne('App\LibraryDescription', 'library_id');
+        return $this->hasOne(LibraryDescription::class, 'library_id');
     }
 
     public function contents()
