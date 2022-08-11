@@ -1,15 +1,16 @@
 <?php
 
-use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
-use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
+use App\Http\Controllers\API\QuestionsetController;
+use App\Http\Controllers\API\TranslationController;
+use App\Http\Controllers\API\H5PFileUploadController;
 
-Route::get('questionsets/', 'API\QuestionsetController@getQuestionsets')->name('api.get.questionsets');
-Route::get('questionsets/search/answers', 'API\QuestionsetController@searchAnswers')->name('api.search.answers');
-Route::get('questionsets/search/questions', 'API\QuestionsetController@searchQuestions')->name('api.search.questions');
-Route::get('questionsets/{questionsetId}', 'API\QuestionsetController@getQuestionset')->name('api.get.questionset');
-Route::get('questionsets/{questionsetId}/questions', 'API\QuestionsetController@getQuestions')->name('api.get.questions');
-Route::get('h5p-libraries/{id}', 'API\H5PLibraryController@getLibraryById');
+Route::get('questionsets/', [QuestionsetController::class, 'getQuestionsets'])->name('api.get.questionsets');
+Route::get('questionsets/search/answers', [QuestionsetController::class, 'searchAnswers'])->name('api.search.answers');
+Route::get('questionsets/search/questions', [QuestionsetController::class, 'searchQuestions'])->name('api.search.questions');
+Route::get('questionsets/{questionsetId}', [QuestionsetController::class, 'getQuestionset'])->name('api.get.questionset');
+Route::get('questionsets/{questionsetId}/questions', [QuestionsetController::class, 'getQuestions'])->name('api.get.questions');
+Route::get('h5p-libraries/{id}', [QuestionsetController::class, 'getLibraryById']);
 
-Route::post('translate', 'API\TranslationController')->name('translate');
+Route::post('translate', TranslationController::class)->name('translate');
 
-Route::get('status/{requestId}', 'API\H5PFileUploadController')->name("api.get.filestatus");
+Route::get('status/{requestId}', H5PFileUploadController::class)->name("api.get.filestatus");

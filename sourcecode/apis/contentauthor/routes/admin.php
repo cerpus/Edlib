@@ -5,6 +5,7 @@
 
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
@@ -75,7 +76,7 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         Route::post('ndla-import-export/settings/run-presave', [ImportExportSettingsController::class, 'runPresave'])->name('admin.importexport.run-presave');
 
         // More general Admin Backend routes
-        Route::resource('admin-users', 'AdminUserController')->only(['index', 'store', 'destroy']);
+        Route::resource('admin-users', AdminUserController::class)->only(['index', 'store', 'destroy']);
 
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
 
