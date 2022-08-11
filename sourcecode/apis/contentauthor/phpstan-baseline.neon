@@ -1532,16 +1532,6 @@ parameters:
 			path: app/Libraries/QuestionSet/QuestionSetHandler.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\oAuthLTI\\\\OAuthConsumer\\:\\:\\$callback_url\\.$#"
-			count: 1
-			path: app/Libraries/oAuthLTI/OAuthConsumer.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(mixed\\)\\: mixed\\)\\|null, array\\{'self', 'urlencode_rfc3986'\\} given\\.$#"
-			count: 1
-			path: app/Libraries/oAuthLTI/OAuthUtil.php
-
-		-
 			message: "#^Access to an undefined property App\\\\LibraryDescription\\:\\:\\$library\\.$#"
 			count: 1
 			path: app/LibraryDescription.php

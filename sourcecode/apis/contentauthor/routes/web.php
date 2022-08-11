@@ -89,11 +89,6 @@ Route::resource('/embed', 'EmbedController', ['except' => ['destroy']]);
 Route::post('/article/create/upload', 'ArticleUploadController@uploadToNewArticle')->name('article-upload.new');
 Route::post('/article/{id}/upload', 'ArticleUploadController@uploadToExistingArticle')->name('article-upload.existing');
 
-Route::get('/lti/insert-resource', 'ContentExplorerController@insertResource')->name('lti.insert-resource');
-Route::get('/lti/container', 'ContentExplorerController@container')->name('lti.container');
-Route::get('/lti/return/{resourceId}', 'ContentExplorerController@returnUrl')->name('lti.return');
-Route::get('/lti/launch', 'ContentExplorerController@launch')->name('lti.launch');
-
 
 // *************************
 // API Endpoints     TODO: clean up!
