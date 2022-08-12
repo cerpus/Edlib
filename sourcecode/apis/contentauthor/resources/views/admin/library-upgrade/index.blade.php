@@ -3,18 +3,17 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Update Libraries</div>
                     <div class="panel-body">
                         <div id="minor-publishing" class="panel panel-default">
                             <div class="panel-heading">
-                                <h3>Update H5P libraries</h3>
+                                <h3>Install or update H5P libraries</h3>
                             </div>
 
                             <div class="panel-body row">
                                 <form method="post" enctype="multipart/form-data" id="h5p-library-form" class="col-md-6">
-                                    <h4>Update by file upload</h4>
+                                    <h4>By file upload</h4>
                                     <p>File must be .h5p format.</p>
                                     <input type="file" name="h5p_file" id="h5p-file"/>
                                     <br>
@@ -34,13 +33,44 @@
 
                                 <form action="{{ route('admin.check-for-updates') }}" method="post">
                                     @csrf
-                                    <h4>Update from h5p.org</h4>
+                                    <h4>From h5p.org</h4>
                                     <button type="submit" class="btn btn-success">Check for updates</button>
                                 </form>
                             </div>
 
                             @include('fragments.invalidFlashMessage')
-                            @include('admin.fragments.library-table')
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3>Libraries installed</h3>
+                            </div>
+
+                            <div class="panel-body row">
+                                @include('admin.fragments.library-table', [
+                                    'libraries' => $installed,
+                                    'showCount' => 'true',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3>Install from H5P.org</h3>
+                            </div>
+
+                            <div class="panel-body row">
+                                @include('admin.fragments.library-table', [
+                                    'libraries' => $available,
+                                    'showSummary' => 'true',
+                                ])
+                            </div>
                         </div>
                     </div>
                 </div>

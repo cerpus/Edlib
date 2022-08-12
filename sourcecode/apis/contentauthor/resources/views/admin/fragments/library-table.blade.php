@@ -1,15 +1,27 @@
-<table class="table">
+<table class="table table-striped">
     <tr>
+        <th>Machine name</th>
         <th>Title</th>
-        <th>#contents</th>
-        <th>#libdependencies</th>
+        @isset($showCount)
+            <th>#contents</th>
+            <th>#libdependencies</th>
+        @endif
+        @isset($showSummary)
+            <th>Summary</th>
+        @endif
         <th>Actions</th>
     </tr>
     @forelse ( $libraries as $library)
         <tr>
+            <td>{{ $library['machineName'] }}</td>
             <td>{{ $library['title'] }}</td>
-            <td>{{ $library['numContent'] ?: '' }}</td>
-            <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
+            @isset($showCount)
+                <td>{{ $library['numContent'] ?: '' }}</td>
+                <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
+            @endif
+            @isset($showSummary)
+                <td>{{ $library['summary'] ?: '' }}
+            @endif
             <td
                 data-library-name="{{$library['machineName']}}"
                 data-library-major="{{$library['majorVersion']}}"
@@ -59,9 +71,19 @@
                         <span class="fa fa-trash"></span>
                     </button>
                 @endif
+                @if(!empty($library['external_link']))
+                    <a
+                        class="btn btn-warning btn-xs"
+                        target="_blank"
+                        href="{{ $library['external_link'] }}"
+                        title="View on H5P.org"
+                    >
+                        <span class="fa fa-external-link-square"></span>
+                    </a>
+                @endif
             </td>
         </tr>
     @empty
-        <td colspan="4"><p>No old content</p></td>
+        <td colspan="5"><p>No content</p></td>
     @endforelse
 </table>

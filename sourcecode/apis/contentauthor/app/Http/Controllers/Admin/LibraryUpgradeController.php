@@ -97,15 +97,18 @@ class LibraryUpgradeController extends Controller
             }
         }
 
+        $available = collect();
         $hubCacheLibraries
-            ->each(function ($hubCache) use ($libraries, $hubCacheLibraries) {
+            ->each(function ($hubCache) use ($libraries, $hubCacheLibraries, $available) {
                 $hasLast = $libraries->where('machineName', $hubCache->name)->firstWhere('isLast', true);
                 if (empty($hasLast)) {
-                    $libraries->push([
+                    $available->push([
                         'machineName' => $hubCache->name,
                         'majorVersion' => $hubCache->major_version,
                         'minorVersion' => $hubCache->minor_version,
                         'title' => $hubCache->title,
+                        'summary' => $hubCache->summary,
+                        'external_link' => $hubCache->example,
                         'numContent' => 0,
                         'numLibraryDependencies' => 0,
                         'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
@@ -115,7 +118,8 @@ class LibraryUpgradeController extends Controller
             });
 
         return view('admin.library-upgrade.index', [
-            'libraries' => $libraries->toArray(),
+            'installed' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
         ]);
     }
 
