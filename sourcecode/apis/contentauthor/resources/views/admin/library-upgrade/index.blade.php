@@ -52,7 +52,7 @@
                             <div class="panel-body row">
                                 @include('admin.fragments.library-table', [
                                     'libraries' => $installed,
-                                    'showCount' => 'true',
+                                    'showCount' => true,
                                 ])
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                             <div class="panel-body row">
                                 @include('admin.fragments.library-table', [
                                     'libraries' => $available,
-                                    'showSummary' => 'true',
+                                    'showSummary' => true,
                                 ])
                             </div>
                         </div>
