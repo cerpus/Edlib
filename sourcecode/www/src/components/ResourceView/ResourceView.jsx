@@ -26,6 +26,7 @@ const ResourceView = ({ preview }) => {
             method={preview.method}
             params={preview.params}
             url={preview.url}
+            allowFullscreen={true}
         />
     );
 };
