@@ -19,7 +19,7 @@ trait Collaboratable
 
     public function collaborators()
     {
-        return $this->morphMany('App\Collaborator', 'collaboratable');
+        return $this->morphMany(Collaborator::class, 'collaboratable');
     }
 
     public function setCollaborators($collaborators = [])

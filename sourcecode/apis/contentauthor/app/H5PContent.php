@@ -65,7 +65,7 @@ class H5PContent extends Content implements VersionableObject
 
     public function collaborators(): HasMany
     {
-        return $this->hasMany('App\H5PCollaborator', 'h5p_id');
+        return $this->hasMany(H5PCollaborator::class, 'h5p_id');
     }
 
     public function library()

@@ -21,46 +21,46 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => [
-            'App\Listeners\EventListener',
+        \App\Events\SomeEvent::class => [
+            \App\Listeners\EventListener::class,
         ],
 
-        'App\Events\ArticleWasSaved' => [
-            'App\Listeners\Article\HandleVersioning',
-            'App\Listeners\Article\HandleCollaborators',
-            'App\Listeners\Article\HandlePrivacy',
-            'App\Listeners\Article\HandleCollaborationInviteEmails',
+        \App\Events\ArticleWasSaved::class => [
+            \App\Listeners\Article\HandleVersioning::class,
+            \App\Listeners\Article\HandleCollaborators::class,
+            \App\Listeners\Article\HandlePrivacy::class,
+            \App\Listeners\Article\HandleCollaborationInviteEmails::class,
         ],
 
-        'App\Events\ArticleWasCopied' => [
-            'App\Listeners\Article\HandleVersioning',
+        \App\Events\ArticleWasCopied::class => [
+            \App\Listeners\Article\HandleVersioning::class,
         ],
 
-        'App\Events\H5PWasCopied' => [
-            'App\Listeners\H5P\Copy\HandleVersioning',
+        \App\Events\H5PWasCopied::class => [
+            \App\Listeners\H5P\Copy\HandleVersioning::class,
         ],
 
-        'App\Events\H5PWasSaved' => [
-            'App\Listeners\H5P\HandleVersioning',
+        \App\Events\H5PWasSaved::class => [
+            \App\Listeners\H5P\HandleVersioning::class,
             HandleExport::class,
         ],
 
-        'App\Events\LinkWasSaved' => [
-            'App\Listeners\Link\HandleVersioning',
+        \App\Events\LinkWasSaved::class => [
+            \App\Listeners\Link\HandleVersioning::class,
         ],
 
-        'App\Events\VideoSourceChanged' => [
-            'App\Listeners\H5P\HandleVideoSource',
+        \App\Events\VideoSourceChanged::class => [
+            \App\Listeners\H5P\HandleVideoSource::class,
         ],
 
-        'App\Events\QuestionsetWasSaved' => [
-            'App\Listeners\Questionset\HandlePrivacy',
-            'App\Listeners\Questionset\HandleQuestionbank',
+        \App\Events\QuestionsetWasSaved::class => [
+            \App\Listeners\Questionset\HandlePrivacy::class,
+            \App\Listeners\Questionset\HandleQuestionbank::class,
         ],
 
-        'App\Events\GameWasSaved' => [
-            'App\Listeners\Game\HandlePrivacy',
-            'App\Listeners\Game\HandleVersioning',
+        \App\Events\GameWasSaved::class => [
+            \App\Listeners\Game\HandlePrivacy::class,
+            \App\Listeners\Game\HandleVersioning::class,
 //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],
 

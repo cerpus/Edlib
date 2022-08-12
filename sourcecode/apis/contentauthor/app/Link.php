@@ -44,7 +44,7 @@ class Link extends Content implements VersionableObject
 
     public function collaborators()
     {
-        return $this->hasMany('App\ArticleCollaborator', 'article_id');
+        return $this->hasMany(ArticleCollaborator::class, 'article_id');
     }
 
     public function getContentOwnerId(): string
