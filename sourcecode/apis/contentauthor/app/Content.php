@@ -28,8 +28,8 @@ use Illuminate\Support\Facades\Session;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property string $title
- * @property int $is_private
- * @property string $version_id
+ * @property bool $is_private
+ * @property string|null $version_id
  * @property int|null $max_score
  * @property int $bulk_calculated
  * @property bool $is_published
@@ -64,8 +64,13 @@ abstract class Content extends Model
     public string $editRouteName;
 
     protected $casts = [
+        'is_private' => 'boolean',
         'is_published' => 'boolean',
         'is_draft' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'is_private' => false,
     ];
 
     public const RESOURCE_TYPE_CSS = '%s-resource';

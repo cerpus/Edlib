@@ -18,7 +18,7 @@ class GameInfoController extends Controller
                 return [
                     'id' => $game->id,
                     'owner_id' => $game->owner,
-                    'is_private' => (boolean)$game->is_private,
+                    'is_private' => $game->is_private,
 //                    'shares' => $questionset->collaborators->map(function ($collaborator) {
 //                        return [
 //                            'email' => $collaborator->email,

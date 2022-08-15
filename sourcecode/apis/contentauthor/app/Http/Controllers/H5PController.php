@@ -666,20 +666,6 @@ class H5PController extends Controller
     }
 
     /**
-     * Get content privacy status for h5p resource.
-     */
-    private function get_content_privacy(int $id): Response
-    {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT is_private FROM h5p_contents WHERE id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetch();
-        return $result['is_private'];
-    }
-
-    /**
      * Get content shares for h5p resource
      */
     private function get_content_shares(int $id): string
