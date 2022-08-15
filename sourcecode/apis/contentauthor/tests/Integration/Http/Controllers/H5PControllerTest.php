@@ -21,15 +21,6 @@ class H5PControllerTest extends TestCase
 {
     use RefreshDatabase, MockAuthApi;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        app()->singleton('requestId', function () {
-            return 'e5bcd269-f5c2-4025-86f6-66811dc51cdb';
-        });
-    }
-
     public function testCreate(): void
     {
         $this->session([

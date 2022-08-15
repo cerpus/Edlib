@@ -94,8 +94,6 @@ class h5pControllerFunctionalTest extends TestCase
             "license" => 'BY-NC',
         ]);
 
-        app()->instance('requestId', Uuid::uuid4()->toString());
-
         $versionClient = $this->getMockBuilder(VersionClient::class)
             ->onlyMethods(["createVersion"])
             ->getMock();
@@ -146,8 +144,6 @@ class h5pControllerFunctionalTest extends TestCase
             "license" => 'BY-NC-ND',
             "isDraft" => false
         ]);
-
-        app()->instance('requestId', Uuid::uuid4()->toString());
 
         $versionClient = $this->getMockBuilder(VersionClient::class)
             ->onlyMethods(["createVersion"])

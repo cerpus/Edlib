@@ -146,7 +146,6 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->_setUp();
             $this->setupAdapter(false, true);
 
-            app()->instance('requestId', 123);
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
 

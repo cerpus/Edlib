@@ -526,7 +526,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         if (preg_match('/^content\/(?:images|videos|audios|files)/', $file, $matches)) {
             $_tmpName = $path . "/" . $file;
             $fileInfo = pathinfo($_tmpName);
-            $requestId = resolve('requestId');
+            $requestId = request()->header('X-Request-Id');
             H5PFile::create([
                 'filename' => $fileInfo['basename'],
                 'content_id' => null,

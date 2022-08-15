@@ -8,7 +8,7 @@
 <div class="container">
     <div class="content">
         <div class="title">@yield('error')</div>
-        <div class="request-id">ID: {{ app('requestId') ?? 'undefined' }}</div>
+        <div class="request-id">ID: {{ request()->header('X-Request-Id') }}</div>
         @if(config("app.debug", false) === true)
             <div class="errormessage exception">{{ $exception->getMessage() }}</div>
         @endif

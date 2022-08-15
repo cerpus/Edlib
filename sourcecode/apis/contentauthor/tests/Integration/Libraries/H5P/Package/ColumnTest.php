@@ -20,8 +20,6 @@ class ColumnTest extends TestCase
      */
     public function alterSource_thenSuccess()
     {
-        app()->instance('requestId', 123);
-
         $columnSemantics = $this->structures['columnWithOneVideoOneTextAndOneCollage'];
         $column = new Column($columnSemantics);
 

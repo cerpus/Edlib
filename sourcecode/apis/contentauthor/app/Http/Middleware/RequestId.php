@@ -3,33 +3,37 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Response;
+use Illuminate\Log\Logger;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Adds a unique request ID to request & response headers and log context.
+ */
 class RequestId
 {
+    private const HEADER_NAME = 'X-Request-Id';
+
+    public function __construct(private readonly Logger $logger)
+    {
+    }
+
     /**
-     * Request ID
-     *
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next): mixed
     {
-        $headerName = 'X-Request-Id';
-        $requestId = $request->header($headerName, Uuid::uuid4()->toString());
+        $requestId = Uuid::uuid4();
+        $request->headers->set(self::HEADER_NAME, $requestId);
 
-        app()->singleton('requestId', function ($app) use ($requestId) {
-            return $requestId;
-        });
+        $this->logger->withContext(['requestId' => $requestId]);
 
-        /** @var Response|BinaryFileResponse $response */
         $response = $next($request);
 
-        if( method_exists($response, "header")){
-            $response->header($headerName, $requestId);
+        if ($response instanceof Response) {
+            $response->headers->set(self::HEADER_NAME, $requestId);
         }
 
         return $response;

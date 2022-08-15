@@ -106,8 +106,6 @@ class h5pTest extends TestCase
      */
     public function createWithOutVersioningContent()
     {
-        app()->instance('requestId', 123);
-
         $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
@@ -170,8 +168,6 @@ class h5pTest extends TestCase
      */
     public function createWithVersioningContent()
     {
-        app()->instance('requestId', 123);
-
         $request = new Request([], [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
