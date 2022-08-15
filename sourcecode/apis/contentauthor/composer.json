@@ -39,7 +39,6 @@
         "league/flysystem-ziparchive": "^3.0",
         "league/fractal": "^0.20",
         "league/mime-type-detection": "^1.9",
-        "lusitanian/oauth": "^0.8.11",
         "masterminds/html5": "^2.6",
         "matthiasmullie/minify": "^1.3",
         "predis/predis": "^1.1",
