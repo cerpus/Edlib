@@ -11,6 +11,7 @@ export default ({
     url,
     params,
     onPostMessage,
+    allowFullscreen = false,
 }) => {
     const ActualFrame = frame;
     const formRef = React.useRef();
@@ -27,6 +28,7 @@ export default ({
                 style={style}
                 name={formName}
                 onPostMessage={onPostMessage}
+                {...(allowFullscreen ? {allowFullScreen: "allowFullScreen"} : {})}
             />
             <form method={method} action={url} ref={formRef} target={formName}>
                 {(Array.isArray(params)
