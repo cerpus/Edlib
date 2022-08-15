@@ -1,0 +1,37 @@
+@import "~@fontsource/lato/100.css";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  color: #8c9aa1;
+  display: table;
+  font-weight: 100;
+  font-family: 'Lato', sans-serif;
+}
+
+.container {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.content {
+  text-align: center;
+  display: inline-block;
+}
+
+.title {
+  font-size: 72px;
+  margin-bottom: 40px;
+}
+
+.request-id {
+  color: #616b72;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
