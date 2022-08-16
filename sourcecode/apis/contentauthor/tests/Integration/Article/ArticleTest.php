@@ -185,7 +185,7 @@ class ArticleTest extends TestCase
 
         $this->get(route('article.show', $newArticle->id))
             ->assertSee($newArticle->title)
-            ->assertSee($newArticle->render());
+            ->assertSee($newArticle->render(), false);
     }
 
     public function testEditArticleWithDraftEnabled()
@@ -252,7 +252,7 @@ class ArticleTest extends TestCase
             ->first();
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
-            ->assertSee($article->render());
+            ->assertSee($article->render(), false);
     }
 
     public function testViewArticle()
@@ -267,7 +267,7 @@ class ArticleTest extends TestCase
 
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
-            ->assertSee($article->render());
+            ->assertSee($article->render(), false);
     }
 
     public function testMustBeLoggedInToCreateArticle()
