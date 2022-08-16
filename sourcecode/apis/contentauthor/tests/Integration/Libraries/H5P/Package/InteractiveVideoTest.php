@@ -45,8 +45,6 @@ class InteractiveVideoTest extends TestCase
      */
     public function getQuestions()
     {
-        app()->instance('requestId', 123);
-
         $interactiveVideo = new InteractiveVideo(json_encode([
             'interactiveVideo' => [
                 'assets' => [

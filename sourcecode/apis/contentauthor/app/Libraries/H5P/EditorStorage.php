@@ -8,6 +8,7 @@ use App\H5PLibraryLanguage;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Handles all communication with the database.
@@ -172,7 +173,7 @@ class EditorStorage implements \H5peditorStorage
             'user_id' => \Session::get('authId'),
             'file_hash' => $file->hash ?? null,
             'external_reference' => $file->name ?? null,
-            'requestId' => resolve('requestId'),
+            'requestId' => Request::header('X-Request-id'),
         ]);
     }
 

@@ -44,7 +44,6 @@ class QuestionSetControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->app->instance('requestId', $this->faker->uuid());
         $this->session([
             'authId' => Uuid::uuid(),
         ]);

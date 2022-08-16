@@ -9,13 +9,16 @@ use App\Auth\Jwt\JwtDecoderInterface;
 use App\H5pLti;
 use App\H5POption;
 use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
+use App\Http\Middleware\RequestId;
 use App\Http\Middleware\SignedOauth10Request;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Observers\H5POptionObserver;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
+use Illuminate\Log\Logger;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -109,5 +112,9 @@ class AppServiceProvider extends ServiceProvider
             ->when(JwtDecoder::class)
             ->needs(RequestFactoryInterface::class)
             ->give(HttpFactory::class);
+
+        $this->app->when(RequestId::class)
+            ->needs(Logger::class)
+            ->give(fn() => Log::channel());
     }
 }

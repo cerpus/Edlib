@@ -141,7 +141,7 @@ class H5PController extends Controller
      */
     public function create(Request $request, H5PCore $core, $contenttype = null): View
     {
-        Log::info('[' . app('requestId') . '] ' . "Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
+        Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
         $redirectToken = $request->input('redirectToken');
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
@@ -227,7 +227,7 @@ class H5PController extends Controller
      */
     public function edit(Request $request, int $id): View
     {
-        Log::info('[' . app('requestId') . '] ' . "Edit H5P: $id, user: " . Session::get('authId', 'not-logged-in-user'));
+        Log::info("Edit H5P: $id, user: " . Session::get('authId', 'not-logged-in-user'));
 
         $h5pCore = resolve(H5PCore::class);
 
@@ -257,7 +257,7 @@ class H5PController extends Controller
         $h5pView = $this->h5p->createView($editorConfig);
         $content = $this->h5p->getContents($editorConfig, $id);
         if (empty($content)) {
-            Log::error('[' . app('requestId') . '] ' . __METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
+            Log::error(__METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),
                 'url' => request()->url(),
                 'request' => request()->all()
@@ -444,7 +444,7 @@ class H5PController extends Controller
             });
         if ($filesToProcess->isNotEmpty()) {
             H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
-            $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => app('requestId')]);
+            $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
 
         return response()->json($responseValues, Response::HTTP_OK);
@@ -557,7 +557,7 @@ class H5PController extends Controller
         $filesToProcess = H5PFile::ofFileUploadFromContent($content->id)->get();
         if ($filesToProcess->isNotEmpty()) {
             H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
-            $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => app('requestId')]);
+            $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
         return response()->json($responseValues, Response::HTTP_CREATED);
     }

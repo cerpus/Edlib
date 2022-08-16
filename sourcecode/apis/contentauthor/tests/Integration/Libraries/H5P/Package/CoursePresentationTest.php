@@ -21,8 +21,6 @@ class CoursePresentationTest extends TestCase
      */
     public function alterSource()
     {
-        app()->instance('requestId', 123);
-
         $coursePresentationSemantics = $this->structure['twoSlidesWithThreeElements'];
         $coursePresentation = new CoursePresentation($coursePresentationSemantics);
         $sourceFile = 'videos/sources-5a37b375db9b1.mp4';

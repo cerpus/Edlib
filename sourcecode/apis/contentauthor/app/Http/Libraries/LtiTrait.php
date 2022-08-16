@@ -15,9 +15,8 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
         } else {
-            Log::error('[' . app('requestId') . '] ' . __METHOD__ . " Not a LTI request for showing H5P: $id.");
+            Log::error(__METHOD__ . " Not a LTI request for showing H5P: $id.");
             Log::error([
-                'requestId' => app('requestId'),
                 'user' => Session::get('userId', 'not-logged-in-user'),
                 'url' => request()->url(),
                 'request' => request()->all()
