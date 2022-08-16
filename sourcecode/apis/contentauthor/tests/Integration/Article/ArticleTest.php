@@ -24,6 +24,7 @@ class ArticleTest extends TestCase
 
     public function testRewriteUploadUrls(): void
     {
+        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
         ]);
@@ -152,6 +153,7 @@ class ArticleTest extends TestCase
         ]);
         Event::fake();
         $authId = Str::uuid();
+        /** @var Article $article */
         $article = Article::factory()->create([
             'owner_id' => $authId,
             'is_published' => 1,
@@ -256,6 +258,8 @@ class ArticleTest extends TestCase
     public function testViewArticle()
     {
         $this->setupVersion();
+
+        /** @var Article $article */
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
