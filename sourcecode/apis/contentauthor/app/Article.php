@@ -4,6 +4,7 @@ namespace App;
 
 use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use Carbon\Carbon;
@@ -20,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
+use function preg_replace_callback;
 use const LIBXML_HTML_NOIMPLIED;
 
 /**
@@ -263,15 +265,14 @@ class Article extends Content implements VersionableObject
 
         collect($dom->getElementsByTagName('img'))
             ->filter(fn(DOMElement $node) => $node->hasAttribute('src'))
-            ->each(function (DOMElement $node) use ($cas) {
-                $asset = preg_replace(
-                    '@^/h5pstorage/article-uploads/@',
-                    '',
+            ->each(fn(DOMElement $node) => $node->setAttribute(
+                'src',
+                preg_replace_callback(
+                    '@^/h5pstorage/article-uploads/(.*?)@',
+                    fn(array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
                     $node->getAttribute('src'),
-                );
-
-                $node->setAttribute('src', $cas->getAssetUrl($asset));
-            });
+                ),
+            ));
 
         return $dom->saveHTML();
     }

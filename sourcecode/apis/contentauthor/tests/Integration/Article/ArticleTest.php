@@ -30,7 +30,20 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://localhost/content/assets/foo.jpg\"></p>\n",
+            "<p>This is an image: <img src=\"http://localhost/content/assets/article-uploads/foo.jpg\"></p>\n",
+            $article->render(),
+        );
+    }
+
+    public function testLeavesNonUploadUrlsAlone(): void
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create([
+            'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
+        ]);
+
+        $this->assertSame(
+            "<p>This is an image: <img src=\"http://example.com/foo.jpg\"></p>\n",
             $article->render(),
         );
     }
