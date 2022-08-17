@@ -28,6 +28,7 @@ const ResourceFiltersContainer = (props) => {
         loading: loadingSavedFilters,
         response: savedFilterResponse,
         setResponse: setResponseSavedFilter,
+        error: savedFilterError,
     } = useFetchWithToken(
         edlibApi(`/common/saved-filters`),
         'GET',
@@ -35,6 +36,10 @@ const ResourceFiltersContainer = (props) => {
         true,
         true
     );
+
+    if (savedFilterError) {
+        throw savedFilterError;
+    }
 
     if (loadingContentTypes || loadingLicenses || loadingSavedFilters) {
         return <CircularProgress />;
