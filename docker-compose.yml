@@ -388,8 +388,10 @@ services:
       context: ./sourcecode/www
       dockerfile: Dockerfile
       target: dev
+    command: [sh, -c, 'yarn && yarn start']
     environment:
       CLIENT_PUBLIC_PATH: https://www.edlib.local/
+      NODE_EXTRA_CA_CERTS: '/usr/local/share/ca-certificates/cacert.pem'
       PUBLIC_PATH: https://www.edlib.local/
     env_file:
       - ./localSetup/.env
@@ -397,6 +399,7 @@ services:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
       - www_nodemodules:/app/node_modules
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/www/src:/app/src
       - ./sourcecode/www/public:/app/public
       - ./sourcecode/www/package.json:/app/package.json
