@@ -10,6 +10,8 @@ use App\Libraries\Versioning\VersionableObject;
 use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
+use DOMDocument;
+use DOMElement;
 use Exception;
 use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
+use function preg_replace_callback;
+use const LIBXML_HTML_NOIMPLIED;
 
 /**
  * @property string $id
@@ -56,6 +60,15 @@ class Article extends Content implements VersionableObject
 
     protected $dates = ['deleted_at', "updated_at", "created_at"];
     protected $fillable = ['title', 'content'];
+
+    public function render(): string
+    {
+        if (!$this->content) {
+            return '';
+        }
+
+        return self::rewriteUploadUrls($this->content);
+    }
 
     public function collaborators()
     {
@@ -237,14 +250,30 @@ class Article extends Content implements VersionableObject
         return false;
     }
 
-    public function convertToCloudPaths()
-    {
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-        $this->content = str_replace('/h5pstorage/article-uploads', $contentAuthorStorage->getAssetUrl(ContentStorageSettings::ARTICLE_DIR), $this->content);
-    }
-
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
     {
         return new ContentTypeDataObject('Article', $contentType, 'Article', "fa:newspaper-o");
+    }
+
+    private static function rewriteUploadUrls(string $content): string
+    {
+        $cas = app()->make(ContentAuthorStorage::class);
+        assert($cas instanceof ContentAuthorStorage);
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+
+        collect($dom->getElementsByTagName('img'))
+            ->filter(fn(DOMElement $node) => $node->hasAttribute('src'))
+            ->each(fn(DOMElement $node) => $node->setAttribute(
+                'src',
+                preg_replace_callback(
+                    '@^/h5pstorage/article-uploads/(.*?)@',
+                    fn(array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                    $node->getAttribute('src'),
+                ),
+            ));
+
+        return $dom->saveHTML();
     }
 }

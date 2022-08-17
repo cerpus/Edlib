@@ -9,7 +9,7 @@
 @section('title') {{ $article->title }} @endsection
 
 @section('content')
-    {!! $article->content  !!}
+    {!! $article->render() !!}
 @endsection
 
 @push('js')

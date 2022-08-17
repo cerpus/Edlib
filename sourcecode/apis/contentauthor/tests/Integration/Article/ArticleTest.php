@@ -22,6 +22,32 @@ class ArticleTest extends TestCase
 {
     use RefreshDatabase, MockVersioningTrait, MockResourceApi, MockAuthApi;
 
+    public function testRewriteUploadUrls(): void
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create([
+            'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
+        ]);
+
+        $this->assertSame(
+            "<p>This is an image: <img src=\"http://localhost/content/assets/article-uploads/foo.jpg\"></p>\n",
+            $article->render(),
+        );
+    }
+
+    public function testLeavesNonUploadUrlsAlone(): void
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create([
+            'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
+        ]);
+
+        $this->assertSame(
+            "<p>This is an image: <img src=\"http://example.com/foo.jpg\"></p>\n",
+            $article->render(),
+        );
+    }
+
     public function testEditArticleAccessDenied()
     {
         $this->setUpResourceApi();
@@ -140,6 +166,7 @@ class ArticleTest extends TestCase
         ]);
         Event::fake();
         $authId = Str::uuid();
+        /** @var Article $article */
         $article = Article::factory()->create([
             'owner_id' => $authId,
             'is_published' => 1,
@@ -171,7 +198,7 @@ class ArticleTest extends TestCase
 
         $this->get(route('article.show', $newArticle->id))
             ->assertSee($newArticle->title)
-            ->assertSee($newArticle->content);
+            ->assertSee($newArticle->render(), false);
     }
 
     public function testEditArticleWithDraftEnabled()
@@ -238,12 +265,14 @@ class ArticleTest extends TestCase
             ->first();
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
-            ->assertSee($article->content);
+            ->assertSee($article->render(), false);
     }
 
     public function testViewArticle()
     {
         $this->setupVersion();
+
+        /** @var Article $article */
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
@@ -251,7 +280,7 @@ class ArticleTest extends TestCase
 
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
-            ->assertSee($article->content);
+            ->assertSee($article->render(), false);
     }
 
     public function testMustBeLoggedInToCreateArticle()

@@ -192,7 +192,6 @@ class ArticleController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $customCSS);
         }
 
-        $article->convertToCloudPaths();
         $ndlaArticle = $article->isImported();
         $inDraftState = !$article->isActuallyPublished();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
@@ -224,8 +223,6 @@ class ArticleController extends Controller
         $originators = $article->getAttribution()->getOriginators();
 
         $ownerName = $article->getOwnerName($article->owner_id);
-
-        $article->convertToCloudPaths();
 
         $emails = $this->getCollaboratorsEmails($article);
 
@@ -275,7 +272,7 @@ class ArticleController extends Controller
         $state = ArticleStateDataObject::create([
             'id' => $article->id,
             'title' => $article->title,
-            'content' => $article->content,
+            'content' => $article->render(),
             'license' => $article->license,
             'isPublished' => $article->isPublished(),
             'isDraft' => $article->isDraft(),
