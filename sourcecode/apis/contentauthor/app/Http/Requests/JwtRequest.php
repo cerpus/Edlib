@@ -11,7 +11,9 @@ class JwtRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'jwt' => ['regex', '/^([A-Za-z0-9_-]+\.){2}[A-Za-z0-9_-]+$/'],
+            'jwt' => [
+                ['regex', '/^([A-Za-z0-9_-]+\.){2}[A-Za-z0-9_-]+$/'],
+            ],
         ];
     }
 }
