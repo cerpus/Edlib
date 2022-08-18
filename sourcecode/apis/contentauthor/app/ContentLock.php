@@ -15,7 +15,8 @@ class ContentLock extends Model
 {
     use HasFactory;
 
-    const EXPIRES = 90; // seconds
+    const EXPIRES_SECONDS = 90 * 60;
+
     public $incrementing = false;
     protected $primaryKey = 'content_id';
 
@@ -83,6 +84,6 @@ class ContentLock extends Model
 
     public function scopeActive($query)
     {
-       return $query->where('updated_at', '>', Carbon::now()->subSeconds(self::EXPIRES));
+       return $query->where('updated_at', '>', Carbon::now()->subSeconds(self::EXPIRES_SECONDS));
     }
 }

@@ -43,7 +43,7 @@ class RemoveOldContentLocks extends Command
         // The MySQL replication in test and prod can have problems
         // with transactions that does not use primary keys.
         $staleLocks = ContentLock::select('content_id')
-            ->where('updated_at', '<', Carbon::now()->subMinutes(ContentLock::EXPIRES))
+            ->where('updated_at', '<', Carbon::now()->subSeconds(ContentLock::EXPIRES_SECONDS))
             ->get()
             ->pluck('content_id')
             ->all();
