@@ -205,5 +205,6 @@
     "save_filter": "lagre filter",
     "draft": "utkast",
     "published": "publisert",
-    "unpublished": "upublisert"
+    "unpublished": "upublisert",
+    "created": "opprettet"
 }

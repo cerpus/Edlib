@@ -96,6 +96,7 @@ class QuestionSetController extends Controller
             'canPublish' => true,
             'canList' => true,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+            'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ])->toJson();
 
         $state = QuestionSetStateDataObject::create([
@@ -183,6 +184,7 @@ class QuestionSetController extends Controller
             'canPublish' => $questionset->canPublish($request),
             'canList' => $questionset->canList($request),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+            'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ]);
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $questionset->id,

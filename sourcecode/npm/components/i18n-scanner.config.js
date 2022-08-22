@@ -16,7 +16,7 @@ module.exports = {
                 return value;
             },
         },
-        lngs: ['en', 'nb'],
+        lngs: ['en', 'nb', 'ko', 'de', 'es'],
         ns: ['translation'],
         defaultLng: 'en',
         defaultNs: 'translation',

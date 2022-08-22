@@ -182,9 +182,7 @@ const ResourceTable = ({
                                 </UnderTitle>
                             </Cell>
                             <Cell vc secondary>
-                                {moment(resource.version.updatedAt).format(
-                                    'D. MMM YY'
-                                )}
+                                {moment(resource.version.updatedAt).format('l')}
                             </Cell>
                             <Cell vc secondary>
                                 {resource.version.authorOverwrite}

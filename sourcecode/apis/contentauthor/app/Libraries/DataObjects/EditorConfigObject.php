@@ -19,6 +19,7 @@ class EditorConfigObject
 
     public $locked = false;
     public $pulseUrl = null;
+    public $editorLanguage;
 
     protected $lockedProperties;
 

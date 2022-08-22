@@ -8,15 +8,24 @@ const i = i18n.createInstance();
 
 i.init({
     resources: {
-        en: {
+        'en-gb': {
             translation: require('./en/translation'),
         },
-        nb: {
+        'nb-no': {
             translation: require('./nb/translation'),
         },
+        'ko-kr': {
+            translation: require('./ko/translation'),
+        },
+        'de-de': {
+            translation: require('./de/translation'),
+        },
+        'es-es': {
+            translation: require('./es/translation'),
+        },
     },
-    fallbackLng: 'en',
-    lng: 'en',
+    fallbackLng: 'en-gb',
+    lng: 'en-gb',
     interpolation: {
         escapeValue: false,
     },

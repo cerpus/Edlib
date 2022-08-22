@@ -9,6 +9,7 @@ import Toggle from '../Toggle';
 import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
+import { useEditorSetupContext } from '../../../../../../contexts/EditorSetupContext';
 
 const AnswerLayout = props => {
     const {
@@ -29,14 +30,16 @@ const AnswerLayout = props => {
         multiline,
         richText,
     } = props;
-
+    const { editorLanguage } = useEditorSetupContext();
     let inputType;
+
     if ( onAnswerChange ) {
         if ( richText ) {
             inputType = (
                 <RichEditor
                     value={answerText}
                     onChange={onAnswerChange}
+                    language={editorLanguage}
                 />
             );
         } else {

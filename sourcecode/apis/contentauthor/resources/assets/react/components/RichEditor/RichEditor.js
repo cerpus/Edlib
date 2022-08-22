@@ -14,6 +14,7 @@ class RichEditor extends React.Component {
         onFocus: PropTypes.func,
         onBlur: PropTypes.func,
         customConfigFile: PropTypes.string,
+        language: PropTypes.string,
         intl: intlShape,
     };
 
@@ -27,6 +28,7 @@ class RichEditor extends React.Component {
         onFocus: () => {},
         onBlur: () => {},
         customConfigFile: '/js/ckeditor/inline-config.js',
+        language: null,
     };
 
     /**
@@ -110,7 +112,11 @@ class RichEditor extends React.Component {
                 if (this.props.name) {
                     config.title = this.props.name;
                 }
-                config.language = this.props.intl.locale.toLocaleLowerCase();
+                if (this.props.language && this.props.language !== '') {
+                    config.language = this.props.language;
+                } else {
+                    config.language = this.props.intl.locale.toLocaleLowerCase();
+                }
 
                 this._editorReference = window.CKEDITOR.inline(
                     this._inputReference,

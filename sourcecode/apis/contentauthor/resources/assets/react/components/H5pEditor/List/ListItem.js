@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 import HtmlEditor from './HtmlEditor';
 import { default as convertSemantics } from './CkEditorConfigFromSemantics';
+import { useEditorSetupContext } from '../../../contexts/EditorSetupContext';
 
 const prettifyPath = (path, glue = ' > ') =>
     path
@@ -21,6 +22,7 @@ const getInputType = (type, widget) => {
 const ListItem = ({ path, value, onChange, type, widget, startValue, shouldIndent, editorSemantics }) => {
     const [viewOldValue, setViewOldValue] = useState(false);
     const inputType = getInputType(type, widget);
+    const { editorLanguage } = useEditorSetupContext();
 
     return (
         <div
@@ -66,7 +68,10 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                             onChange(value);
                             setViewOldValue(true);
                         }}
-                        config={convertSemantics(editorSemantics)}
+                        config={{
+                            ...convertSemantics(editorSemantics),
+                            language: editorLanguage,
+                        }}
                         name={prettifyPath(path, ' ')}
                     />
                 )}

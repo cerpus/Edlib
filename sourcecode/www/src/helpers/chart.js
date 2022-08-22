@@ -19,7 +19,7 @@ export const fillEmptyDays = (data, from, to, { zeroFields }) => {
                 },
                 {
                     ...stored,
-                    date: date.format('DD. MMM.'),
+                    date: date.format('l'),
                 }
             )
         );

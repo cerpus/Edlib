@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: oddaj
@@ -8,21 +9,24 @@
 
 namespace App\Libraries\H5P;
 
-
 class LtiToH5PLanguage
 {
-    public static function convert($ltiLanguage = 'en-gb', $defaultLanguage = 'en-gb')
+    public static function convert($ltiLanguage = 'en-gb', $defaultLanguage = 'en-gb'): string
     {
-        $convertMatrix = [
-            'en-gb' => 'en',
-            'nb-no' => 'nb',
-            'nn-no' => 'nn',
-        ];
-
-        if (array_key_exists($ltiLanguage, $convertMatrix)) {
-            return $convertMatrix[$ltiLanguage];
+        if (strlen($ltiLanguage) === 2) {
+            return $ltiLanguage;
+        } elseif (strlen($ltiLanguage) > 2) {
+            $split = explode('-', $ltiLanguage);
+            return $split[0];
         }
 
-        return $convertMatrix[$defaultLanguage];
+        if (strlen($defaultLanguage) === 2) {
+            return $defaultLanguage;
+        } elseif (strlen($defaultLanguage) > 2) {
+            $split = explode('-', $defaultLanguage);
+            return $split[0];
+        }
+
+        return 'en';
     }
 }

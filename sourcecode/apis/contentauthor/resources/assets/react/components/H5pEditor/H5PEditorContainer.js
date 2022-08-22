@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import views from './views';
 import List from './List';
 import LanguagePicker from './LanguagePicker';
@@ -20,8 +19,9 @@ import Sidebar, {
 import { getLanguageStringFromCode } from '../../utils/Helper';
 import { NewReleases } from '@material-ui/icons';
 import { useTheme } from '@cerpus/ui';
+import { useEditorSetupContext } from '../../contexts/EditorSetupContext';
 
-const H5PEditorContainer = ({ intl, editorSetup }) => {
+const H5PEditorContainer = ({ intl }) => {
     const {
         state: formState,
         state: { parameters: formParameters, max_score: maxScore },
@@ -45,6 +45,7 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
     const [showFileProgress, toggleShowFileProgress] = React.useState(false);
     const [librarySelected, setLibrarySelected] = useState(false);
     const theme = useTheme();
+    const editorSetup = useEditorSetupContext();
 
     const onParamsChange = (newParameters) => {
         setParameters({
@@ -392,7 +393,6 @@ const H5PEditorContainer = ({ intl, editorSetup }) => {
 
 H5PEditorContainer.propTypes = {
     intl: intlShape,
-    editorSetup: PropTypes.object,
 };
 
 export default injectIntl(H5PEditorContainer);

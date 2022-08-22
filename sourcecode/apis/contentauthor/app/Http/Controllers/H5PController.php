@@ -35,6 +35,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\ViewConfig;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
@@ -195,6 +196,7 @@ class H5PController extends Controller
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
             'creatorName' => Session::get("name"),
+            'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
@@ -251,7 +253,7 @@ class H5PController extends Controller
             ->setEmail(Session::get('email', false))
             ->setName(Session::get('name', false))
             ->setRedirectToken($request->get('redirectToken'))
-            ->setLanguage($h5pLanguage)
+            ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
             ->hideH5pJS();
 
         $h5pView = $this->h5p->createView($editorConfig);
@@ -290,6 +292,7 @@ class H5PController extends Controller
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
+            'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ]);
 
         if ($h5pContent->canList($request)) {

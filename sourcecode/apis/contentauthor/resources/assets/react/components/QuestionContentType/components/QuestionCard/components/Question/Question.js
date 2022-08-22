@@ -7,6 +7,7 @@ import { TextField } from '@material-ui/core';
 import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
+import { useEditorSetupContext } from '../../../../../../contexts/EditorSetupContext';
 
 function Question(props) {
     const {
@@ -20,14 +21,16 @@ function Question(props) {
         intl,
         richText,
     } = props;
-
+    const { editorLanguage } = useEditorSetupContext();
     let questionText = null;
+
     if (onChange) {
         if (richText) {
             questionText = (
                 <RichEditor
                     value={question}
                     onChange={(data, submit) => onChange(data, 'text', submit)}
+                    language={editorLanguage}
                 />
             );
         } else {
