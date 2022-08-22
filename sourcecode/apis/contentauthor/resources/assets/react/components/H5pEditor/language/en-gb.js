@@ -17,4 +17,5 @@ export default {
     'H5P_EDITOR.ERROR': 'Whoops',
     'H5P_EDITOR.SAVED_TEXT': 'Saved text',
     'H5P_EDITOR.INFO_NEW_UNSAVED': 'New text, unsaved',
+    'H5P_EDITOR.FIELD_NAME': 'Field name',
 };

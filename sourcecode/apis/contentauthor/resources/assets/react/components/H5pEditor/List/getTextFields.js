@@ -53,6 +53,7 @@ const getPathsFromSementics = (
             path: currentPath,
             type: sementic.type,
             widget: sementic.widget,
+            label: sementic.label,
             filterTypes: getItemFilterType(sementic),
             editorSemantics: {
                 enterMode: sementic.enterMode ?? 'div',
@@ -201,7 +202,7 @@ const getTranslationJobs = async (parameters, libraryName, loadedLibraries) => {
 
     const translationJobs = [];
 
-    for (const { path, type, widget, filterTypes, editorSemantics } of pathsToTranslate) {
+    for (const { path, type, widget, filterTypes, editorSemantics, label } of pathsToTranslate) {
         const actualValuesAndPaths = getActualValuesAndPaths(
             parameters.params,
             [],
@@ -224,6 +225,7 @@ const getTranslationJobs = async (parameters, libraryName, loadedLibraries) => {
             } else {
                 translationJobs.push({
                     path,
+                    label,
                     originalValue: value,
                     type,
                     widget,
