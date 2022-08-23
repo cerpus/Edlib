@@ -109,7 +109,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                 paperScrollPaper: classes.dialog,
             }}
         >
-            <DialogTitle disableTypography className={classes.dialogTitle}>
+            <DialogTitle className={classes.dialogTitle}>
                 <Box display="flex">
                     <Box
                         display="flex"

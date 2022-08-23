@@ -171,7 +171,6 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
                                     id="menu-appbar"
                                     anchorEl={anchorEl}
                                     keepMounted
-                                    getContentAnchorEl={null}
                                     anchorOrigin={{
                                         vertical: 'bottom',
                                         horizontal: 'center',
