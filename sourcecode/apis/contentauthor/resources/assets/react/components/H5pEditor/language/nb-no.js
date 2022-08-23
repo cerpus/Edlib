@@ -17,4 +17,5 @@ export default {
     'H5P_EDITOR.ERROR': 'Oisann...',
     'H5P_EDITOR.SAVED_TEXT': 'Lagret tekst',
     'H5P_EDITOR.INFO_NEW_UNSAVED': 'Ny tekst, ikke lagret',
+    'H5P_EDITOR.FIELD_NAME': 'Feltnavn',
 };

@@ -105,6 +105,7 @@ const List = ({ parameters, onUpdate, startupParameters, libraryCache }) => {
                                 widget={job.widget}
                                 shouldIndent={isPreviousSameGroup}
                                 editorSemantics={job.editorSemantics}
+                                label={job.label}
                             />
                             {isNextNewGroup && <div className="splitter" />}
                         </React.Fragment>

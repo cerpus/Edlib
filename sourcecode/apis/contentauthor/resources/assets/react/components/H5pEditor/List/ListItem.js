@@ -18,7 +18,7 @@ const getInputType = (type, widget) => {
     return 'textarea';
 };
 
-const ListItem = ({ path, value, onChange, type, widget, startValue, shouldIndent, editorSemantics }) => {
+const ListItem = ({ path, value, onChange, type, widget, startValue, shouldIndent, editorSemantics, label }) => {
     const [viewOldValue, setViewOldValue] = useState(false);
     const inputType = getInputType(type, widget);
 
@@ -29,6 +29,7 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
             })}
         >
             <div className="path">{prettifyPath(path)}</div>
+            <div><strong><FormattedMessage id="H5P_EDITOR.FIELD_NAME" /></strong>: {label}</div>
             {viewOldValue && typeof startValue !== 'undefined' && (
                 <div className="start-value">
                     <i><FormattedMessage id="H5P_EDITOR.SAVED_TEXT" />: </i>
