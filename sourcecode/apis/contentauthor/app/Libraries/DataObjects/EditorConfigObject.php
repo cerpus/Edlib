@@ -19,6 +19,7 @@ class EditorConfigObject
 
     public $locked = false;
     public $pulseUrl = null;
+    /** @var string $editorLanguage IETF code (same as HTML 'lang' attribute), e.g. 'nb-no' for Norwegian Bokmål */
     public $editorLanguage;
 
     protected $lockedProperties;

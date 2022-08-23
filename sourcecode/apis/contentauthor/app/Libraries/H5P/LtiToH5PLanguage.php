@@ -1,32 +1,27 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: oddaj
- * Date: 12/5/16
- * Time: 8:15 AM
- */
-
 namespace App\Libraries\H5P;
 
 class LtiToH5PLanguage
 {
     public static function convert($ltiLanguage = 'en-gb', $defaultLanguage = 'en-gb'): string
     {
-        if (strlen($ltiLanguage) === 2) {
-            return $ltiLanguage;
-        } elseif (strlen($ltiLanguage) > 2) {
-            $split = explode('-', $ltiLanguage);
-            return $split[0];
+        return self::extractCode($ltiLanguage) ?: self::extractCode($defaultLanguage) ?: 'en';
+    }
+
+    private static function extractCode(?string $language): ?string
+    {
+        $code = str_replace('_', '-', strtolower($language));
+
+        if (strlen($code) === 2 && !strpos($code, '-')) {
+            return $code;
         }
 
-        if (strlen($defaultLanguage) === 2) {
-            return $defaultLanguage;
-        } elseif (strlen($defaultLanguage) > 2) {
-            $split = explode('-', $defaultLanguage);
-            return $split[0];
+        if (strlen($code) > 2 && strpos($code, '-')) {
+            $pieces = explode('-', $code);
+            return strlen($pieces[0]) === 2 ? $pieces[0] : null;
         }
 
-        return 'en';
+        return null;
     }
 }

@@ -112,7 +112,7 @@ class RichEditor extends React.Component {
                 if (this.props.name) {
                     config.title = this.props.name;
                 }
-                if (this.props.language && this.props.language !== '') {
+                if (this.props.language) {
                     config.language = this.props.language;
                 } else {
                     config.language = this.props.intl.locale.toLocaleLowerCase();
