@@ -4,6 +4,14 @@ import ltiService from '../services/lti.js';
 
 export default {
     previewLtiV2: async (req, res, next) => {
+        const extras = {
+            'ext_preview': 'true',
+        };
+
+        if (req.query.locale) {
+            extras.launch_presentation_locale = req.query.locale;
+        }
+
         const { launchRequest } = await ltiService.viewResourceRequest(
             req.context,
             req.params.resourceId,
@@ -12,9 +20,7 @@ export default {
                 jwt: req.authorizationJwt,
                 userId: req.user.id,
             },
-            {
-                ext_preview: 'true',
-            }
+            extras
         );
 
         return launchRequest;

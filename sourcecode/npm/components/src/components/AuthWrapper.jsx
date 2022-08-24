@@ -5,15 +5,16 @@ import { isTokenExpired } from '../helpers/token.js';
 import {
     Button,
     FormControl,
-    FormControlLabel,
-    FormLabel,
-    Radio,
-    RadioGroup,
+    InputLabel,
+    MenuItem,
+    Select,
     TextField,
 } from '@material-ui/core';
+import i18n from '../i18n';
 
 const AuthWrapper = ({ children }) => {
     const [jwtToken, setJwtToken] = React.useState(null);
+    const languages = Object.keys(i18n.options.resources);
 
     const [firstName, setFirstName] = React.useState(() => {
         const stored = store.get('firstName');
@@ -33,7 +34,7 @@ const AuthWrapper = ({ children }) => {
     });
     const [language, setLanguage] = React.useState(() => {
         const stored = store.get('language');
-        return stored ? stored : 'nb';
+        return stored && languages.includes(stored) ? stored : i18n.options.fallbackLng;
     });
 
     React.useEffect(() => {
@@ -53,6 +54,7 @@ const AuthWrapper = ({ children }) => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         margin="normal"
+                        style={{marginRight: 10}}
                     />
                     <TextField
                         label="Last name"
@@ -69,6 +71,8 @@ const AuthWrapper = ({ children }) => {
                         margin="normal"
                         fullWidth
                     />
+                </div>
+                <div>
                     <TextField
                         label="User ID"
                         value={id}
@@ -77,64 +81,65 @@ const AuthWrapper = ({ children }) => {
                         fullWidth
                     />
                 </div>
-                <div>
+                <div style={{marginTop: 20}}>
                     <FormControl component="fieldset">
-                        <FormLabel component="legend">Language</FormLabel>
-                        <RadioGroup
-                            name="language"
+                        <InputLabel id="language-input-label">Language</InputLabel>
+                        <Select
+                            labelId="language-input-label"
+                            id="language-input"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
                         >
-                            <FormControlLabel
-                                value="nb"
-                                control={<Radio />}
-                                label="Norsk"
-                            />
-                            <FormControlLabel
-                                value="en"
-                                control={<Radio />}
-                                label="English"
-                            />
-                        </RadioGroup>
+                            {languages.map(lng =>
+                                <MenuItem
+                                    key={lng}
+                                    value={lng}
+                                >
+                                    {lng}
+                                </MenuItem>
+                            )}
+                        </Select>
                     </FormControl>
                 </div>
-                <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                        setJwtToken(
-                            sign(
-                                {
-                                    exp:
-                                        Math.floor(Date.now() / 1000) + 60 * 60,
-                                    data: {
-                                        isFakeToken: true,
-                                        user: {
-                                            firstName:
-                                                firstName.length !== 0
-                                                    ? firstName
-                                                    : null,
-                                            lastName:
-                                                lastName.length !== 0
-                                                    ? lastName
-                                                    : null,
-                                            email:
-                                                email.length !== 0
-                                                    ? email
-                                                    : null,
-                                            id,
-                                            isAdmin: true,
+                <div style={{marginTop: 40}}>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => {
+                            setJwtToken(
+                                sign(
+                                    {
+                                        exp:
+                                            Math.floor(Date.now() / 1000) + 60 * 60,
+                                        data: {
+                                            isFakeToken: true,
+                                            user: {
+                                                firstName:
+                                                    firstName.length !== 0
+                                                        ? firstName
+                                                        : null,
+                                                lastName:
+                                                    lastName.length !== 0
+                                                        ? lastName
+                                                        : null,
+                                                email:
+                                                    email.length !== 0
+                                                        ? email
+                                                        : null,
+                                                id,
+                                                isAdmin: true,
+                                            },
                                         },
+                                        iss: 'fake',
                                     },
-                                    iss: 'fake',
-                                },
-                                'anything'
-                            )
-                        );
-                    }}
-                >
-                    Start new session
-                </Button>
+                                    'anything'
+                                )
+                            );
+                        }}
+                    >
+                        Start new session
+                    </Button>
+                </div>
             </div>
         );
     }

@@ -1,28 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: oddaj
- * Date: 12/5/16
- * Time: 8:15 AM
- */
 
 namespace App\Libraries\H5P;
 
-
 class LtiToH5PLanguage
 {
-    public static function convert($ltiLanguage = 'en-gb', $defaultLanguage = 'en-gb')
+    public static function convert($ltiLanguage = 'en-gb', $defaultLanguage = 'en-gb'): string
     {
-        $convertMatrix = [
-            'en-gb' => 'en',
-            'nb-no' => 'nb',
-            'nn-no' => 'nn',
-        ];
+        return self::extractCode($ltiLanguage) ?: self::extractCode($defaultLanguage) ?: 'en';
+    }
 
-        if (array_key_exists($ltiLanguage, $convertMatrix)) {
-            return $convertMatrix[$ltiLanguage];
+    private static function extractCode(?string $language): ?string
+    {
+        $code = str_replace('_', '-', strtolower($language));
+
+        if (strlen($code) === 2 && !strpos($code, '-')) {
+            return $code;
         }
 
-        return $convertMatrix[$defaultLanguage];
+        if (strlen($code) > 2 && strpos($code, '-')) {
+            $pieces = explode('-', $code);
+            return strlen($pieces[0]) === 2 ? $pieces[0] : null;
+        }
+
+        return null;
     }
 }

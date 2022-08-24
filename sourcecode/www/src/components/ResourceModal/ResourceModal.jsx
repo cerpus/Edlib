@@ -191,14 +191,11 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                             <div className={classes.meta}>
                                                 <div>
                                                     {_.capitalize(
-                                                        t('publishing_date')
+                                                        t('created')
                                                     )}
                                                 </div>
                                                 <div>
-                                                    {moment(
-                                                        resource.version
-                                                            .createdAt
-                                                    ).format('D. MMMM YYYY')}
+                                                    {moment(resource.version.createdAt).format('LL')}
                                                 </div>
                                             </div>
                                             <div className={classes.meta}>

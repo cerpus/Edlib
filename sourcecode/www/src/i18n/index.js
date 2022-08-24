@@ -1,9 +1,6 @@
 import i18n from 'i18next';
 import moment from 'moment';
 
-// Also import moment locals when creating a new language
-import 'moment/locale/nb';
-
 const i = i18n.createInstance();
 
 i.init({
@@ -16,13 +13,25 @@ i.init({
     react: {
         useSuspense: false,
     },
-    supportedLngs: ['en', 'nb'],
+    supportedLngs: ['en', 'nb', 'ko', 'de', 'es', 'nn',],
     resources: {
         en: {
             translation: require('./en/translation'),
         },
         nb: {
             translation: require('./nb/translation'),
+        },
+        ko: {
+            translation: require('./ko/translation'),
+        },
+        de: {
+            translation: require('./de/translation'),
+        },
+        es: {
+            translation: require('./es/translation'),
+        },
+        nn: {
+            translation: require('./nn/translation'),
         },
     },
 });
