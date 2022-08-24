@@ -143,8 +143,6 @@ return [
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
-        App\Providers\AuthenticationHandlerProvider::class,
-
         App\Providers\HTMLPurifierServiceProvider::class,
     ],
 
