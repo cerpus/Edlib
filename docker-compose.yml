@@ -223,6 +223,13 @@ services:
     depends_on:
       - contentauthor-fpm
 
+  docs:
+    image: node:16-alpine
+    command: [sh, -c, 'yarn && yarn run start --host=0.0.0.0 --port=80']
+    volumes:
+      - ./sourcecode/docs/docs.edlib.com:/app
+    working_dir: /app
+
   dokuapi:
     build:
       context: ./sourcecode/apis/doku
