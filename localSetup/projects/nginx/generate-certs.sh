@@ -16,6 +16,7 @@ DNS:test.edlibfacade.local, \
 DNS:contentauthor.local, \
 DNS:ca.edlib.local, \
 DNS:api.edlib.local, \
+DNS:docs.edlib.local, \
 DNS:www.edlib.local, \
 DNS:npm.components.edlib.local \
 "
