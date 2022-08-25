@@ -30,7 +30,7 @@
     "joi": "^17.6.0",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "moment-hooks": "^1.2.1",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
