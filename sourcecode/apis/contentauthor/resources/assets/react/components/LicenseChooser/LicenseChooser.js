@@ -231,12 +231,12 @@ class LicenseChooser extends Component {
                             selectedValue={this.state.publicDomainLicense}
                             onChange={this.handlePublicDomainLicenseChange}
                         >
-                            <label className="radio-inline">
-                                <Radio className="radio-inline" value="CC0"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio className="licensechooser-radio-inline" value="CC0"/>
                                 <FormattedMessage id="LICENSECHOOSER.PUBLICDOMAIN.CC0"/>
                             </label>
-                            <label className="radio-inline">
-                                <Radio className="radio-inline" value="PDM"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio className="licensechooser-radio-inline" value="PDM"/>
                                 <FormattedMessage id="LICENSECHOOSER.PUBLICDOMAIN.PDM"/>
                             </label>
                         </RadioGroup>
@@ -258,18 +258,18 @@ class LicenseChooser extends Component {
                             selectedValue={this.state.sharing}
                             onChange={this.handleSharingChange}
                         >
-                            <label className="radio-inline">
-                                <Radio className="radio-inline" value="-"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio className="licensechooser-radio-inline" value="-"/>
                                 <FormattedMessage id="LICENSECHOOSER.YES"/>
                             </label>
                             <br/>
-                            <label className="radio-inline">
-                                <Radio className="radio-inline" value="ND"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio className="licensechooser-radio-inline" value="ND"/>
                                 <FormattedMessage id="LICENSECHOOSER.NO"/>
                             </label>
                             <br/>
-                            <label className="radio-inline">
-                                <Radio className="radio-inline" value="SA"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio className="licensechooser-radio-inline" value="SA"/>
                                 <FormattedMessage id="LICENSECHOOSER.OPTION-SHAREALIKE"/>
                             </label>
                         </RadioGroup>
@@ -285,13 +285,13 @@ class LicenseChooser extends Component {
                             selectedValue={this.state.commercial}
                             onChange={this.handleCommercialChange}
                         >
-                            <label className="radio-inline">
-                                <Radio value="-" className="radio-inline"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio value="-" className="licensechooser-radio-inline"/>
                                 <FormattedMessage id="LICENSECHOOSER.YES"/>
                             </label>
                             <br/>
-                            <label className="radio-inline">
-                                <Radio value="NC" className="radio-inline"/>
+                            <label className="licensechooser-radio-inline">
+                                <Radio value="NC" className="licensechooser-radio-inline"/>
                                 <FormattedMessage id="LICENSECHOOSER.NO"/>
                             </label>
                         </RadioGroup>
@@ -359,18 +359,18 @@ class LicenseChooser extends Component {
                         selectedValue={this.state.licenseType}
                         onChange={this.handleLicenseTypeChange}
                     >
-                        <label className="radio-inline">
-                            <Radio className="radio-inline" value="PUBLICDOMAIN"/>
+                        <label className="licensechooser-radio-inline">
+                            <Radio className="licensechooser-radio-inline" value="PUBLICDOMAIN"/>
                             <FormattedMessage id="LICENSECHOOSER.PUBLIC-DOMAIN"/>
                         </label>
                         <br/>
-                        <label className="radio-inline">
-                            <Radio className="radio-inline" value="CC"/>
+                        <label className="licensechooser-radio-inline">
+                            <Radio className="licensechooser-radio-inline" value="CC"/>
                             <FormattedMessage id="LICENSECHOOSER.CREATIVE-COMMONS"/>
                         </label>
                         <br/>
-                        <label className="radio-inline">
-                            <Radio className="radio-inline" value="EDLL"/>
+                        <label className="licensechooser-radio-inline">
+                            <Radio className="licensechooser-radio-inline" value="EDLL"/>
                             <FormattedMessage id="LICENSECHOOSER.EDLL"/>
                         </label>
                     </RadioGroup>
