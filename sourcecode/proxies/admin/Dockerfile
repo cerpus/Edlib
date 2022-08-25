@@ -18,6 +18,7 @@ CMD bash /createEnvFile.sh /usr/share/nginx/html; nginx -g "daemon off;"
 
 FROM node:16.13 as dev
 WORKDIR /app
+RUN apk --no-cache add curl
 EXPOSE 3000
 EXPOSE 3001
 CMD yarn; yarn start
