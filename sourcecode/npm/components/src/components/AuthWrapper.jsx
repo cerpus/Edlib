@@ -34,7 +34,10 @@ const AuthWrapper = ({ children }) => {
     });
     const [language, setLanguage] = React.useState(() => {
         const stored = store.get('language');
-        return stored && languages.includes(stored) ? stored : i18n.options.fallbackLng;
+        const fallback = i18n.options.fallbackLng[0] && languages.includes(i18n.options.fallbackLng[0]) ?
+            i18n.options.fallbackLng[0] :
+            languages[0] ?? '';
+        return stored && languages.includes(stored) ? stored : fallback;
     });
 
     React.useEffect(() => {
