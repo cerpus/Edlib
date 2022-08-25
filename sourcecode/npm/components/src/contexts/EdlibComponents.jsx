@@ -10,7 +10,7 @@ const EdlibComponentContext = React.createContext({
 export const EdlibComponentsProvider = ({
     children,
     getJwt = null,
-    language = 'en',
+    language = 'en-gb',
     edlibUrl = null,
     configuration = {},
 }) => {
