@@ -4,15 +4,12 @@ import {
     Button,
     Checkbox,
     List,
-    ListItem,
+    ListItemButton,
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../../hooks/useTranslation.js';
-import CreateSavedFilter from './components/CreateSavedFilter.jsx';
-import FilterUtils from './filterUtils.js';
-import DeleteSavedFilter from './components/DeleteSavedFilter.jsx';
 
 const useStyles = makeStyles()((theme) => ({
     nested: {
@@ -41,9 +38,8 @@ const SavedFilters = ({ savedFilterData, setShowDelete, filterUtils }) => {
             >
                 {savedFilterData.map((savedFilter) => {
                     return (
-                        <ListItem
+                        <ListItemButton
                             key={savedFilter.id}
-                            button
                             dense
                             onClick={() =>
                                 filterUtils.setFilterFromChoices(
@@ -71,10 +67,10 @@ const SavedFilters = ({ savedFilterData, setShowDelete, filterUtils }) => {
                                 />
                             </ListItemIcon>
                             <ListItemText primary={savedFilter.name} />
-                        </ListItem>
+                        </ListItemButton>
                     );
                 })}
-                <ListItem dense>
+                <ListItemButton dense>
                     <Box>
                         <Button
                             color="primary"
@@ -86,7 +82,7 @@ const SavedFilters = ({ savedFilterData, setShowDelete, filterUtils }) => {
                             {t('delete')}
                         </Button>
                     </Box>
-                </ListItem>
+                </ListItemButton>
             </List>
         </>
     );

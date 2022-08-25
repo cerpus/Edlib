@@ -2,7 +2,7 @@ import React from 'react';
 import {
     Checkbox,
     List,
-    ListItem,
+    ListItemButton,
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
@@ -24,9 +24,8 @@ const Alphabetical = ({ allH5ps, contentTypes }) => {
     return (
         <List dense component="div" disablePadding>
             {allH5ps.map((h5p, index) => (
-                <ListItem
+                <ListItemButton
                     key={index}
-                    button
                     dense
                     onClick={() => contentTypes.toggle(h5p)}
                 >
@@ -50,7 +49,7 @@ const Alphabetical = ({ allH5ps, contentTypes }) => {
                     <ListItemText
                         primary={`${h5p.title} (${h5p.filteredCount})`}
                     />
-                </ListItem>
+                </ListItemButton>
             ))}
         </List>
     );

@@ -1,6 +1,5 @@
 import React from 'react';
 import _ from 'lodash';
-import store from 'store';
 import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
@@ -10,7 +9,7 @@ import {
     Button,
     Collapse,
     List,
-    ListItem,
+    ListItemButton,
     ListItemText,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
@@ -159,8 +158,7 @@ const ResourceFilters = ({
                     )
                     .map((filterBlock) => (
                         <React.Fragment key={filterBlock.type}>
-                            <ListItem
-                                button
+                            <ListItemButton
                                 onClick={() => open.toggle(filterBlock.type)}
                             >
                                 <ListItemText
@@ -175,7 +173,7 @@ const ResourceFilters = ({
                                 ) : (
                                     <ExpandMore />
                                 )}
-                            </ListItem>
+                            </ListItemButton>
                             <Collapse
                                 in={open.has(filterBlock.type)}
                                 timeout="auto"
