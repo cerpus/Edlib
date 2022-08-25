@@ -30,8 +30,6 @@ use App\Http\Controllers\LinkController;
 use App\Http\Controllers\LtiContentController;
 use App\Http\Controllers\Progress;
 use App\Http\Controllers\QuestionSetController;
-use App\Http\Controllers\SafariHackController;
-use App\Http\Controllers\SessionTestHostController;
 use App\Http\Controllers\SingleLogoutController;
 use Illuminate\Support\Facades\Route;
 
@@ -98,10 +96,6 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
 });
 
 Route::post('/jwt/update', [JWTUpdateController::class, 'updateJwtEndpoint']);
-
-Route::get('/hack/safari', [SafariHackController::class, 'index']);
-Route::get('/modern/safari/safari', [SafariHackController::class, 'jailBreakDialog']);
-Route::get('/modern/safari/sessiontest', [SessionTestHostController::class, 'sessionTestPage']);
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
 
