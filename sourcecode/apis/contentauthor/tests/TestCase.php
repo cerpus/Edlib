@@ -19,6 +19,9 @@ abstract class TestCase extends BaseTestCase
 
         // Enable testing without building manifests
         $this->instance(Mix::class, self::getFakeMix());
+        
+        $this->app['config']['auth.edlib-jwt-pubkey'] = 
+            file_get_contents(__DIR__ . '/jwt-test.key.pub');
     }
 
     public function setUpTraits()
