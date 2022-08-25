@@ -3,7 +3,6 @@ import { Manager, Popper, Reference } from 'react-popper';
 import {
     ArrowForward,
     Edit as EditIcon,
-    History as HistoryIcon,
     Delete as DeleteIcon,
 } from '@mui/icons-material';
 import MaterialIcon from './Icons/Material';

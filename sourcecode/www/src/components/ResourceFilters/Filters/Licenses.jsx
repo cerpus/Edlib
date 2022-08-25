@@ -3,7 +3,7 @@ import useTranslation from '../../../hooks/useTranslation.js';
 import {
     Checkbox,
     List,
-    ListItem,
+    ListItemButton,
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
@@ -48,9 +48,8 @@ const Licenses = ({ licenses, filterCount, licenseData }) => {
                     a.title < b.title ? -1 : a.title > b.title ? 1 : 0
                 )
                 .map((license) => (
-                    <ListItem
+                    <ListItemButton
                         key={license.value}
-                        button
                         dense
                         onClick={() => licenses.toggle(license)}
                     >
@@ -74,7 +73,7 @@ const Licenses = ({ licenses, filterCount, licenseData }) => {
                         <ListItemText
                             primary={`${license.title} (${license.filteredCount})`}
                         />
-                    </ListItem>
+                    </ListItemButton>
                 ))}
         </List>
     );

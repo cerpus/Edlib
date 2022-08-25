@@ -3,7 +3,7 @@ import {
     Checkbox,
     Collapse,
     List,
-    ListItem,
+    ListItemButton,
     ListItemIcon,
     ListItemText,
 } from '@mui/material';
@@ -73,8 +73,7 @@ const Grouped = ({ allH5ps, contentTypes }) => {
         <List dense component="div" disablePadding className={classes.nested}>
             {categories.map((category, index) => (
                 <React.Fragment key={index}>
-                    <ListItem
-                        button
+                    <ListItemButton
                         onClick={() => open.toggle(category.translationKey)}
                     >
                         <ListItemText>
@@ -91,7 +90,7 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                         ) : (
                             <ExpandMore />
                         )}
-                    </ListItem>
+                    </ListItemButton>
                     <Collapse
                         in={open.has(category.translationKey)}
                         timeout="auto"
@@ -99,9 +98,8 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                     >
                         <List dense component="div" disablePadding>
                             {category.contentTypes.map((h5p, index) => (
-                                <ListItem
+                                <ListItemButton
                                     key={index}
-                                    button
                                     dense
                                     onClick={() => contentTypes.toggle(h5p)}
                                 >
@@ -125,7 +123,7 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                                     <ListItemText
                                         primary={`${h5p.title} (${h5p.filteredCount})`}
                                     />
-                                </ListItem>
+                                </ListItemButton>
                             ))}
                         </List>
                     </Collapse>
