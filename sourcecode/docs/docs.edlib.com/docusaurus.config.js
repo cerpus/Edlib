@@ -45,7 +45,8 @@ module.exports = {
       placeholder: 'Search Edlib docs'
     },
     navbar: {
-      title: 'Edlib',
+      //title: 'Edlib',
+      hideOnScroll: true,
       logo: {
         alt: 'Edlib Logo',
         src: 'img/edlib-logo.png',
