@@ -15,8 +15,8 @@ use Firebase\JWT\JWT;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use IMSGlobal\LTI\JWKS_Endpoint;
-use IMSGlobal\LTI\LTI_Deep_Link_Resource;
+use Packback\Lti1p3\JwksEndpoint;
+use Packback\Lti1p3\LtiDeepLinkResource;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Throwable;
@@ -54,7 +54,7 @@ final class Lti13Controller extends Controller
             $jwksKeys["$key->id"] = $key->private_key;
         }
 
-        return new JsonResponse(JWKS_Endpoint::new($jwksKeys)->get_public_jwks());
+        return new JsonResponse((new JwksEndpoint($jwksKeys))->getPublicJwks());
     }
 
     /**
@@ -122,7 +122,7 @@ final class Lti13Controller extends Controller
                 ]
             );
 
-            $jwt = JWT::encode($jwtData, config('internal.toolKey'));
+            $jwt = JWT::encode($jwtData, config('internal.toolKey'), 'HS256');
 
             return view('lti.viewResourceLaunch', [
                 'iframeUrl' => $launchInfo->url . '?jwt=' . $jwt
@@ -144,10 +144,10 @@ final class Lti13Controller extends Controller
         $resources = [];
 
         foreach ($resourcesRaw as $resource) {
-            $resources[] = LTI_Deep_Link_Resource::new()
-                ->set_type($resource['type'])
-                ->set_url($resource['url'])
-                ->set_title($resource['title'] ?? null);
+            $resources[] = (new LtiDeepLinkResource())
+                ->setType($resource['type'])
+                ->setUrl($resource['url'])
+                ->setTitle($resource['title'] ?? null);
         }
 
         return view('lti.deepLinkingReturn', [

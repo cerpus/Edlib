@@ -1,11 +1,11 @@
-FROM php:8.0.14-fpm-alpine AS base
+FROM php:8.1-fpm-alpine AS base
 
 WORKDIR /var/www/edlibcommon
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin
 COPY docker/php/docker-entrypoint.sh /usr/local/bin
-COPY docker/php/zz-edlib.ini "$PHP_INI_DIR/"
+COPY docker/php/zz-edlib.ini "$PHP_INI_DIR/conf.d/"
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
 COPY . .
 COPY .env.example .
