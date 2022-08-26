@@ -9,7 +9,17 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'cerpus',
   projectName: 'Edlib',
+  plugins: [
+    'docusaurus-plugin-matomo',
+  ],
   themeConfig: {
+    matomo: {
+      // Matomo is for web analytics
+      matomoUrl: 'https://matomo.cerpus.com/',
+      siteId: '3',
+      phpLoader: 'matomo.php',
+      jsLoader: 'matomo.js',
+    },
     algolia: {
       // The application ID provided by Algolia
       appId: 'LP932E7C3J',
