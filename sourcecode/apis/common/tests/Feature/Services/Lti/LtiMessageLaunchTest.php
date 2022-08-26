@@ -8,8 +8,8 @@ use Firebase\JWT\JWT;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use IMSGlobal\LTI\JWKS_Endpoint;
 use JetBrains\PhpStorm\ArrayShape;
+use Packback\Lti1p3\JwksEndpoint;
 use Tests\TestCase;
 
 class LtiMessageLaunchTest extends TestCase
@@ -19,7 +19,7 @@ class LtiMessageLaunchTest extends TestCase
     #[ArrayShape(['cookies' => "mixed|string[]", 'jsonData' => "array", 'cache' => "mixed|string[]", 'setup' => "\Closure"])] private function buildLaunchRequest(array $overrides = []): array
     {
         openssl_pkey_export(openssl_pkey_new(), $privateKey);
-        $jwks = JWKS_Endpoint::new([
+        $jwks = new JwksEndpoint([
             '1' => $privateKey
         ]);
 
@@ -82,7 +82,7 @@ class LtiMessageLaunchTest extends TestCase
                 ]))->create();
 
                 Http::fake([
-                    $ltiDeployment->ltiRegistration->platform_key_set_endpoint => Http::response($jwks->get_public_jwks())
+                    $ltiDeployment->ltiRegistration->platform_key_set_endpoint => Http::response($jwks->getPublicJwks())
                 ]);
 
                 Http::fake([

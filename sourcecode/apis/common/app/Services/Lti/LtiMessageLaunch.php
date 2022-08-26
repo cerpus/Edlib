@@ -4,14 +4,15 @@ namespace App\Services\Lti;
 
 use App\Exceptions\NotFoundException;
 use App\Models\LtiRegistration;
-use App\Services\Lti\Validators\DeepLinkMessageValidator;
-use App\Services\Lti\Validators\ResourceMessageValidator;
 use Firebase\JWT\JWK;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use IMSGlobal\LTI\LTI_Exception;
+use Packback\Lti1p3\LtiException;
+use Packback\Lti1p3\MessageValidators\DeepLinkMessageValidator;
+use Packback\Lti1p3\MessageValidators\ResourceMessageValidator;
 
 class LtiMessageLaunch
 {
@@ -38,7 +39,7 @@ class LtiMessageLaunch
 
     /**
      * Load an LTI_Message_Launch from a Cache using a launch id.
-     * @throws LTI_Exception
+     * @throws LtiException
      */
     public static function fromRequest(Request $request = null): LtiMessageLaunch
     {
@@ -50,7 +51,7 @@ class LtiMessageLaunch
      * Validates all aspects of an incoming LTI message launch and caches the launch if successful.
      *
      * @return LtiMessageLaunch     Will return $this if validation is successful.
-     * @throws LTI_Exception Will throw an LTI_Exception if validation fails.
+     * @throws LtiException Will throw an LtiException if validation fails.
      * @throws NotFoundException
      */
     public function validate(Request $request = null): LtiMessageLaunch
@@ -111,22 +112,20 @@ class LtiMessageLaunch
 
         if (empty($public_key_set)) {
             // Failed to fetch public keyset from URL.
-            throw new LTI_Exception("Failed to fetch public key", 1);
+            throw new LtiException("Failed to fetch public key", 1);
         }
 
         // Find key used to sign the JWT (matches the KID in the header)
         foreach ($public_key_set['keys'] as $key) {
             if ($key['kid'] == $this->jwt['header']['kid']) {
-                try {
-                    return openssl_pkey_get_details(JWK::parseKey($key));
-                } catch (\Exception $e) {
-                    return false;
-                }
+                return openssl_pkey_get_details(
+                    JWK::parseKey($key)->getKeyMaterial(),
+                );
             }
         }
 
         // Could not find public key with a matching kid and alg.
-        throw new LTI_Exception("Unable to find public key", 1);
+        throw new LtiException("Unable to find public key", 1);
     }
 
     private function cacheLaunchData(): LtiMessageLaunch
@@ -136,15 +135,12 @@ class LtiMessageLaunch
         return $this;
     }
 
-    /**
-     * @throws LTI_Exception
-     */
     private function validateState(): LtiMessageLaunch
     {
         // Check State for OIDC.
         if (!$this->request->get('state') || $this->request->cookie('lti1p3_' . $this->request->get('state')) !== $this->request->get('state')) {
             // Error if state doesn't match
-            throw new LTI_Exception("State not found");
+            throw new LtiException("State not found");
         }
         return $this;
     }
@@ -154,7 +150,7 @@ class LtiMessageLaunch
         $jwt = $this->request->get('id_token');
 
         if (empty($jwt)) {
-            throw new LTI_Exception("Missing id_token", 1);
+            throw new LtiException("Missing id_token", 1);
         }
 
         // Get parts of JWT.
@@ -162,7 +158,7 @@ class LtiMessageLaunch
 
         if (count($jwt_parts) !== 3) {
             // Invalid number of parts in JWT.
-            throw new LTI_Exception("Invalid id_token, JWT must contain 3 parts", 1);
+            throw new LtiException("Invalid id_token, JWT must contain 3 parts", 1);
         }
 
         // Decode JWT headers.
@@ -178,7 +174,7 @@ class LtiMessageLaunch
         $nonce = Cache::get('nonce_' . $this->jwt['body']['nonce']);
 
         if (empty($nonce)) {
-            throw new LTI_Exception("Invalid Nonce");
+            throw new LtiException("Invalid Nonce");
         }
 
         return $this;
@@ -205,10 +201,10 @@ class LtiMessageLaunch
 
         // Validate JWT signature
         try {
-            JWT::decode($this->request->get('id_token'), $public_key['key'], array('RS256'));
+            JWT::decode($this->request->get('id_token'), new Key($public_key['key'], 'RS256'));
         } catch (\Exception $e) {
             // Error validating signature.
-            throw new LTI_Exception("Invalid signature on id_token", 1);
+            throw new LtiException("Invalid signature on id_token", 1);
         }
 
         return $this;
@@ -235,7 +231,7 @@ class LtiMessageLaunch
     {
         if (empty($this->jwt['body']['https://purl.imsglobal.org/spec/lti/claim/message_type'])) {
             // Unable to identify message type.
-            throw new LTI_Exception("Invalid message type", 1);
+            throw new LtiException("Invalid message type", 1);
         }
 
         $validators = [
@@ -245,21 +241,21 @@ class LtiMessageLaunch
 
         $message_validator = false;
         foreach ($validators as $validator) {
-            if ($validator->can_validate($this->jwt['body'])) {
+            if ($validator->canValidate($this->jwt['body'])) {
                 if ($message_validator !== false) {
                     // Can't have more than one validator apply at a time.
-                    throw new LTI_Exception("Validator conflict", 1);
+                    throw new LtiException("Validator conflict", 1);
                 }
                 $message_validator = $validator;
             }
         }
 
         if ($message_validator === false) {
-            throw new LTI_Exception("Unrecognized message type.", 1);
+            throw new LtiException("Unrecognized message type.", 1);
         }
 
         if (!$message_validator->validate($this->jwt['body'])) {
-            throw new LTI_Exception("Message validation failed.", 1);
+            throw new LtiException("Message validation failed.", 1);
         }
 
         return $this;
