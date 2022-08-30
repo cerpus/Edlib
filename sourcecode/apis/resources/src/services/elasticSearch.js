@@ -67,7 +67,7 @@ export const syncResource = async (context, resource, waitForIndex) => {
             ...latestVersionCollaborators.map((c) => c.tenantId),
             ...resourceCollaborators.map((rc) => rc.tenantId),
         ]),
-        views: viewCount.count,
+        views: viewCount,
     };
 
     await context.services.elasticsearch.updateOrCreate(
