@@ -387,13 +387,6 @@ const transformElasticResources = async (
         return capabilities;
     }
 
-    const esrViewCountMap = Object.fromEntries(await Promise.all(
-        elasticsearchResources.map(({ _source: { id }}) => (async () => [
-            id,
-            await context.db.trackingResourceVersion.getCountForResource(id),
-        ])()),
-    ));
-
     let results = elasticsearchResources
         .map((esr) => {
             return {
@@ -411,7 +404,7 @@ const transformElasticResources = async (
                       )
                     : [resourceCapabilities.VIEW, resourceCapabilities.EDIT],
                 analytics: {
-                    viewCount: esrViewCountMap[esr._source.id],
+                    viewCount: esr._source.views,
                 },
             };
         })
