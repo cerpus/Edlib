@@ -5,16 +5,19 @@ if (!window.Intl) {
     require('intl/locale-data/jsonp/en-GB.js');
     require('intl/locale-data/jsonp/nb-NO.js');
     require('intl/locale-data/jsonp/sv-SE.js');
+    require('intl/locale-data/jsonp/nn-NO.js');
 }
 
 import { addLocaleData } from 'react-intl';
 import localeEn from 'react-intl/locale-data/en';
 import localeNb from 'react-intl/locale-data/nb';
 import localeSv from 'react-intl/locale-data/sv';
+import localeNn from 'react-intl/locale-data/nn';
 
 import * as i18nDataEnGb from '../language/en-gb';
 import * as i18nDataNbNo from '../language/nb-no';
 import * as i18nDataSvSe from '../language/sv-se';
+import * as i18nDataNnNo from '../language/nn-no';
 
 const addLanguage = (languageCode) => {
     let i18nData;
@@ -28,6 +31,10 @@ const addLanguage = (languageCode) => {
                 i18nData = i18nDataNbNo;
                 addLocaleData(localeNb);
                 break;
+            case 'nn-no':
+                i18nData = i18nDataNnNo;
+                addLocaleData(localeNn);
+                break
             case 'sv-se':
                 i18nData = i18nDataSvSe;
                 addLocaleData(localeSv);

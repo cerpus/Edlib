@@ -5,10 +5,12 @@ import CardLayout from './QuestionCardLayout';
 import {
     messagesEnGb as QuestionCardComponentMessagesEnGb,
     messagesNbNo as QuestionCardComponentMessagesNbNo,
+    messagesNnNo as QuestionCardComponentMessagesNnNo,
 } from './components';
 
 import { messages as QuestionCardEnGb } from './language/en-gb';
 import { messages as QuestionCardNbNo } from './language/nb-no';
+import { messages as QuestionCardNnNo } from './language/nn-no';
 
 class CardContainer extends Component {
     static propTypes = {
@@ -74,10 +76,12 @@ class CardContainer extends Component {
 
 const messagesEnGb = Object.assign({}, QuestionCardComponentMessagesEnGb, QuestionCardEnGb);
 const messagesNbNo = Object.assign({}, QuestionCardComponentMessagesNbNo, QuestionCardNbNo);
+const messagesNnNo = Object.assign({}, QuestionCardComponentMessagesNnNo, QuestionCardNnNo);
 
 export {
     CardLayout as default,
     CardContainer,
     messagesEnGb,
     messagesNbNo,
+    messagesNnNo,
 };

@@ -1,10 +1,44 @@
-import { messagesEnGb as DisplayOptionsEnGb, messagesNbNo as DisplayOptionsNbNo } from './DisplayOptions';
-import { messagesEnGb as H5PContentUpgradeEnGb, messagesNbNo as H5PContentUpgradeNbNo } from './H5PContentUpgrade';
-import { messagesEnGb as LicenseIndicatorEnGb, messagesNbNo as LicenseIndicatorNbNo } from './LicenseIndicator';
-import { messagesEnGb as SharingEnGb, messagesNbNo as SharingNbNo } from './Sharing';
-import { messagesEnGb as ContentPropertiesEnGb, messagesNbNo as ContentPropertiesNbNo } from './ContentProperties';
-import { messagesEnGb as SaveBoxEnGb, messagesNbNo as SaveBoxNbNo } from './SaveBox';
-import { messagesEnGb as LockEnGb, messagesNbNo as LockNbNo } from './Lock';
+import {
+    messagesEnGb as DisplayOptionsEnGb,
+    messagesNbNo as DisplayOptionsNbNo,
+    messagesNnNo as DisplayOptionsNnNo,
+} from './DisplayOptions';
+
+import {
+    messagesEnGb as H5PContentUpgradeEnGb,
+    messagesNbNo as H5PContentUpgradeNbNo,
+    messagesNnNo as H5PContentUpgradeNnNo,
+} from './H5PContentUpgrade';
+
+import {
+    messagesEnGb as LicenseIndicatorEnGb,
+    messagesNbNo as LicenseIndicatorNbNo,
+    messagesNnNo as LicenseIndicatorNnNo,
+} from './LicenseIndicator';
+
+import {
+    messagesEnGb as SharingEnGb,
+    messagesNbNo as SharingNbNo,
+    messagesNnNo as SharingNnNo,
+} from './Sharing';
+
+import {
+    messagesEnGb as ContentPropertiesEnGb,
+    messagesNbNo as ContentPropertiesNbNo,
+    messagesNnNo as ContentPropertiesNnNo,
+} from './ContentProperties';
+
+import {
+    messagesEnGb as SaveBoxEnGb,
+    messagesNbNo as SaveBoxNbNo,
+    messagesNnNo as SaveBoxNnNo,
+} from './SaveBox';
+
+import {
+    messagesEnGb as LockEnGb,
+    messagesNbNo as LockNbNo,
+    messagesNnNo as LockNnNo,
+} from './Lock';
 
 const messagesEnGb = Object.assign(
     {},
@@ -14,8 +48,9 @@ const messagesEnGb = Object.assign(
     SharingEnGb,
     ContentPropertiesEnGb,
     SaveBoxEnGb,
-    LockEnGb
+    LockEnGb,
 );
+
 const messagesNbNo = Object.assign(
     {},
     DisplayOptionsNbNo,
@@ -24,7 +59,18 @@ const messagesNbNo = Object.assign(
     SharingNbNo,
     ContentPropertiesNbNo,
     SaveBoxNbNo,
-    LockNbNo
+    LockNbNo,
+);
+
+const messagesNnNo = Object.assign(
+    {},
+    DisplayOptionsNnNo,
+    H5PContentUpgradeNnNo,
+    LicenseIndicatorNnNo,
+    SharingNnNo,
+    ContentPropertiesNnNo,
+    SaveBoxNnNo,
+    LockNnNo,
 );
 
 export { default as AdapterSelector } from './AdapterSelector';
@@ -41,4 +87,5 @@ export { default as ContentProperties, ContentPropertiesContainer } from './Cont
 export {
     messagesEnGb,
     messagesNbNo,
+    messagesNnNo,
 };
