@@ -23,6 +23,9 @@ i.init({
         'es-es': {
             translation: require('./es/translation'),
         },
+        'nn-no': {
+            translation: require('./nn/translation'),
+        },
     },
     fallbackLng: 'en-gb',
     lng: 'en-gb',

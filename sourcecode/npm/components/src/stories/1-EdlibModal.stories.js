@@ -42,13 +42,14 @@ export const EdlibModal = () => {
 export const EdlibModalIframe = () => {
     return (
         <AuthWrapper edlibApiUrl={edlibApiUrl}>
-            {({ getJwt }) => {
+            {({ getJwt, getLanguage }) => {
                 return (
                     <EdlibComponentsProvider
                         edlibUrl={edlibApiUrl}
                         getJwt={getJwt}
+                        language={getLanguage()}
                     >
-                        <div style={{ height: '50vh' }}>
+                        <div style={{ height: '85vh', border: '1px solid black' }}>
                             <EdlibModalComponent
                                 contentOnly
                                 enableDoku
