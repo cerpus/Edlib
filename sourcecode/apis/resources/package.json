@@ -18,7 +18,7 @@
     "@cerpus/edlib-node-utils": "1.11.0",
     "@elastic/elasticsearch": "7.12.x",
     "amqplib": "^0.8.0",
-    "axios-mock-adapter": "^1.21.1",
+    "axios-mock-adapter": "^1.21.2",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^27.5.1",
     "joi": "^17.6.0",
