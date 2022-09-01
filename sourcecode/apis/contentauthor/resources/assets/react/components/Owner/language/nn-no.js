@@ -1,7 +1,4 @@
-module.exports = {
-    locale: 'nn-NO',
-    messages: {
-        'OWNERCOMPONENT.NAME': 'Name',
-        'OWNERCOMPONENT.EMAIL': 'E-mail',
-    }
+export default {
+    'OWNERCOMPONENT.NAME': 'Name',
+    'OWNERCOMPONENT.EMAIL': 'E-mail',
 };

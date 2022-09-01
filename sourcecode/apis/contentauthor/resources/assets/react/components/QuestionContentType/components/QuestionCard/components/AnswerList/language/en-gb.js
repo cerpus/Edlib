@@ -1,6 +1,3 @@
-module.exports = {
-    locale: 'en-GB',
-    messages: {
-        'ANSWERLIST.ADD_BUTTON': 'Answer',
-    }
+export default {
+    'ANSWERLIST.ADD_BUTTON': 'Answer',
 };

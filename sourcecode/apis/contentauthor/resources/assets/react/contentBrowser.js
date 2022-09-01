@@ -6,14 +6,6 @@ import { ImageBrowserContainer } from './components/ImageBrowser';
 import { VideoBrowserContainer } from './components/VideoBrowser';
 import { AudioBrowserContainer } from './components/AudioBrowser';
 
-if (!window.Intl) {
-    require('intl');
-    require('intl/locale-data/jsonp/en-US.js');
-    require('intl/locale-data/jsonp/en-GB.js');
-    require('intl/locale-data/jsonp/nb-NO.js');
-    require('intl/locale-data/jsonp/sv-SE.js');
-}
-
 function initImageBrowser(element, settings) {
     const {
         onSelectCallback,

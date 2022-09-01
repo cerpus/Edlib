@@ -5,13 +5,6 @@ import { ThemeProvider as CerpusThemeProvider } from '@cerpus/ui';
 import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
-if (!window.Intl) {
-    require('intl');
-    require('intl/locale-data/jsonp/en-US.js');
-    require('intl/locale-data/jsonp/en-GB.js');
-    require('intl/locale-data/jsonp/nb-NO.js');
-}
-
 const CerpusUI = ({ children }) => {
     const editorContainer = document.getElementById('theBody');
     const bodyLanguageCode =

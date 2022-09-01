@@ -1,9 +1,4 @@
-let enGB = {
-    locale: 'en-GB',
-    messages: {
-        'OWNERCOMPONENT.NAME': 'Name',
-        'OWNERCOMPONENT.EMAIL': 'E-mail',
-    }
+export default {
+    'OWNERCOMPONENT.NAME': 'Name',
+    'OWNERCOMPONENT.EMAIL': 'E-mail',
 };
-
-module.exports = enGB;

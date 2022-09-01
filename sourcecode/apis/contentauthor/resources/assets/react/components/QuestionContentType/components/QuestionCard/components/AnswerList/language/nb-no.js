@@ -1,6 +1,3 @@
-module.exports = {
-    locale: 'nb-NO',
-    messages: {
-        'ANSWERLIST.ADD_BUTTON': 'Svar',
-    }
+export default {
+    'ANSWERLIST.ADD_BUTTON': 'Svar',
 };
