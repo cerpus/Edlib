@@ -48,7 +48,7 @@
     "jest": "^27.5.1",
     "jest-bamboo-reporter": "^1.2.1",
     "mock-jwks": "^1.0.3",
-    "nock": "^13.2.8",
+    "nock": "^13.2.9",
     "prettier": "^2.7.1"
   },
   "peerDependencies": {
