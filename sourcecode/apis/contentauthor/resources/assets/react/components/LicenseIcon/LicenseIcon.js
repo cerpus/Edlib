@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * @external "react-intl"
  * @see {@link https://github.com/yahoo/react-intl/wiki/API#injectintl|React Intl Wiki: injectIntl}
  */
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Tooltip from '../Tooltip';
 import EDLLIcon from './Icons/EDLLIcon';
 
@@ -28,7 +28,6 @@ class LicenseIcon extends Component {
         size: PropTypes.oneOf([1, 2, 3, 4, 5]),
         className: PropTypes.string,
         addCCIcon: PropTypes.bool,
-        intl: intlShape
     };
 
     static defaultProps = {

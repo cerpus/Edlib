@@ -52,7 +52,7 @@ const AnswerLayout = props => {
                     className="answerText"
                     fullWidth={true}
                     multiline={multiline}
-                    rowsMax={maxRows}
+                    maxRows={maxRows}
                 />
             );
         }

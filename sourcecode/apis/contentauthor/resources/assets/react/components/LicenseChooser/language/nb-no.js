@@ -29,23 +29,23 @@ export default {
 
     'LICENSECHOOSER.ATTRIBUTION-HELP': 'Dette muliggjør brukere av dette verket å finne ut hvordan de kan kontakte deg for mer informasjon angående verket.',
 
-    'LICENSECHOOSER.ADAPTIONS-HELP': '<p><strong>Ja</strong><br>' +
+    'LICENSECHOOSER.ADAPTIONS-HELP': '<p><strong>Ja</strong>{nl}' +
         'Lisensgiver tillater andre å kopiere, distribuere, vise, skrive ut og fremføre verket/frembringelsen, samt å lage og distribuere bearbeidelser basert på dette.</p>' +
-        '<p><strong>Ja, så lenge andre deler på samme vilkår.</strong><br>' + saHelp + '</p>' +
-        '<p><strong>Nei</strong><br>' + ndHelp + '</p>',
+        '<p><strong>Ja, så lenge andre deler på samme vilkår.</strong>{nl}' + saHelp + '</p>' +
+        '<p><strong>Nei</strong>{nl}' + ndHelp + '</p>',
 
-    'LICENSECHOOSER.COMMERCIAL-USE-HELP': '<p><strong>Ja</strong><br>' +
+    'LICENSECHOOSER.COMMERCIAL-USE-HELP': '<p><strong>Ja</strong>{nl}' +
         'Lisensgiver tillater andre å kopiere, distribuere, vise, skrive ut og fremføre verket/frembringelsen, inklusive for kommersielle formål.</p>' +
-        '<p><strong>Nei</strong><br>' + ncHelp + '</p>',
+        '<p><strong>Nei</strong>{nl}' + ncHelp + '</p>',
 
-    'LICENSECHOOSER.RESTRICTION-LEVEL-HELP': '<p><strong>Ingen rettigheter forbeholdt</strong><br>Velg denne lisensen hvis du er rettighetsholder og vil fraside deg alle rettigheter, hvis noen, til innholdet på verdensomspennende nivå. Dette kan være tilfellet hvis du reproduserer innhold allerede i Public Domain og vil konnunisere at du ikke krever kopiretten selv om loven gir deg denne.</p>' +
-        '<p><strong>Noen rettigheter forbeholdt</strong><br>Velg denne lisensen hvis du vil bruke en Creative Commons lisens.<br>' + byHelp + '</p>' +
-        '<p><strong>Edlib lisens</strong><br>Du bestemmer over innholdet. Men innholdet kan brukes av Edlib til bl.a. markedsføring.</p>',
+    'LICENSECHOOSER.RESTRICTION-LEVEL-HELP': '<p><strong>Ingen rettigheter forbeholdt</strong>{nl}Velg denne lisensen hvis du er rettighetsholder og vil fraside deg alle rettigheter, hvis noen, til innholdet på verdensomspennende nivå. Dette kan være tilfellet hvis du reproduserer innhold allerede i Public Domain og vil konnunisere at du ikke krever kopiretten selv om loven gir deg denne.</p>' +
+        '<p><strong>Noen rettigheter forbeholdt</strong>{nl}Velg denne lisensen hvis du vil bruke en Creative Commons lisens.{nl}' + byHelp + '</p>' +
+        '<p><strong>Edlib lisens</strong>{nl}Du bestemmer over innholdet. Men innholdet kan brukes av Edlib til bl.a. markedsføring.</p>',
 
     'LICENSECHOOSER.PUBLICDOMAIN': 'Velg en Public Domain lisens',
-    'LICENSECHOOSER.PUBLICDOMAIN.HELP': '<p><strong>Creative Commons Zero</strong><br>' +
+    'LICENSECHOOSER.PUBLICDOMAIN.HELP': '<p><strong>Creative Commons Zero</strong>{nl}' +
         'Dette verktøyet kan benyttes utenfor Norge dersom du er rettighetshaver til et verk, og ønsker å dedikere verket til det fri utenfor Norge.</p>' +
-        '<p><strong>Public Domain Mark</strong><br>' +
+        '<p><strong>Public Domain Mark</strong>{nl}' +
         'Bruk dette verktøyet for å identifisere et verk som har falt i det fri.</p>',
 
     'LICENSECHOOSER.PUBLICDOMAIN.CC0': 'Creative Commons Zero',

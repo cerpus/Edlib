@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import QuestionContainerLayout from './QuestionContainerLayout';
 import { H5PQuizContainer } from '../H5PQuiz';
 import { QuestionsetContainer } from '../QuestionSet';
@@ -23,7 +23,6 @@ class QuestionContainer extends Component {
         minimumSecondsDisplaytime: PropTypes.number,
         contentTypes: PropTypes.array,
         editMode: PropTypes.bool,
-        intl: intlShape,
     };
 
     static defaultProps = {

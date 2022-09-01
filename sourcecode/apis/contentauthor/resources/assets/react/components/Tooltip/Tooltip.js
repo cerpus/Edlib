@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Tooltip as ToolTip, OverlayTrigger } from 'react-bootstrap';
-import { FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 
 export default class FieldContainer extends Component {
     static defaultProps = {
@@ -24,7 +24,7 @@ export default class FieldContainer extends Component {
         if (this.props.message) {
             message = this.props.message;
         } else if (this.props.messageId) {
-            message = <FormattedHTMLMessage id={this.props.messageId}/>;
+            message = <FormattedMessage id={this.props.messageId}/>;
         }
 
         return (

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Answer, Card, Question, rerenderMathJax } from '../utils';
-import { FormattedHTMLMessage, FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Axios from '../../../../utils/axiosSetup';
 import H5PQuizLayout from './H5PQuizLayout';
 
@@ -24,7 +24,6 @@ class H5PQuizContainer extends Component {
         onToggleDialog: PropTypes.func,
         tags: PropTypes.array,
         title: PropTypes.string,
-        intl: intlShape,
     };
 
     state = {
@@ -45,9 +44,10 @@ class H5PQuizContainer extends Component {
         if (this.needToLoadFromServer()) {
             this.setState({
                 infoText: (
-                    <FormattedHTMLMessage
+                    <FormattedMessage
                         id="H5PQUIZ.WE_HAVE_ADDED_SOME_WRONG_ALTERNATIVES"
                         values={{
+                            b: chunks => <b>{chunks}</b>,
                             'minAnswers': this.props.minimumNumberOfAnswers,
                         }}
                     />

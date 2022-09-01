@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { rerenderMathJax } from '../QuestionContentType/components/utils';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 class RichEditor extends React.Component {
     static propTypes = {
@@ -15,7 +15,6 @@ class RichEditor extends React.Component {
         onBlur: PropTypes.func,
         customConfigFile: PropTypes.string,
         language: PropTypes.string,
-        intl: intlShape,
     };
 
     static defaultProps = {

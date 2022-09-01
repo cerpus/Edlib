@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
  * @external "react-intl"
  * @see {@link https://github.com/yahoo/react-intl/wiki/API#injectintl|React Intl Wiki: injectIntl}
  */
-import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { RadioGroup, Radio } from 'react-radio-group';
 
@@ -22,7 +22,6 @@ class LicenseChooser extends Component {
         attributionName: PropTypes.string,
         attributionTitle: PropTypes.string,
         attributionUrl: PropTypes.string,
-        intl: intlShape
     };
 
     static defaultProps = {
@@ -211,6 +210,18 @@ class LicenseChooser extends Component {
         });
     }
 
+    getHelpMessage(messageId) {
+        return this.props.intl.formatMessage(
+            {
+                id: messageId,
+            }, {
+                p: chunks => <p>{chunks}</p>,
+                strong: chunks => <strong>{chunks}</strong>,
+                nl: <br/>,
+            }
+        );
+    }
+
     render() {
         let publicDomain = null;
         let createCommons = null;
@@ -225,7 +236,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.PUBLICDOMAIN"/>
                         </ControlLabel>
-                        <HelpIcon messageId="LICENSECHOOSER.PUBLICDOMAIN.HELP"/>
+                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.PUBLICDOMAIN.HELP')}/>
                         <RadioGroup
                             name="publicdomainlicense"
                             selectedValue={this.state.publicDomainLicense}
@@ -252,7 +263,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.ADAPTIONS"/>
                         </ControlLabel>
-                        <HelpIcon messageId="LICENSECHOOSER.ADAPTIONS-HELP"/>
+                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.ADAPTIONS-HELP')}/>
                         <RadioGroup
                             name="sharing"
                             selectedValue={this.state.sharing}
@@ -277,7 +288,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.COMMERCIAL-USE"/>
                         </ControlLabel>
-                        <HelpIcon messageId="LICENSECHOOSER.COMMERCIAL-USE-HELP"/>
+                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.COMMERCIAL-USE-HELP')}/>
                         <RadioGroup
                             name="commercial"
                             selectedValue={this.state.commercial}
@@ -303,7 +314,7 @@ class LicenseChooser extends Component {
                     <ControlLabel className="licensechooser-group-title">
                         <FormattedMessage id="LICENSECHOOSER.ATTRIBUTION-TITLE"/>
                     </ControlLabel>
-                    <HelpIcon messageId="LICENSECHOOSER.ATTRIBUTION-HELP"/>
+                    <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.ATTRIBUTION-HELP')}/>
 
                     <FormGroup>
                         <ControlLabel className="licensechooser-input-title">
@@ -349,7 +360,7 @@ class LicenseChooser extends Component {
                 <ControlLabel className="licensechooser-group-title">
                     <FormattedMessage id="LICENSECHOOSER.RESTRICTION-LEVEL"/>
                 </ControlLabel>
-                <HelpIcon messageId="LICENSECHOOSER.RESTRICTION-LEVEL-HELP"/>
+                <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.RESTRICTION-LEVEL-HELP')}/>
                 <FormGroup>
                     <RadioGroup
                         name="restriction"

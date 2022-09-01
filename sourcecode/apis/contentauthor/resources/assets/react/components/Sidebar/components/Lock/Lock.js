@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Alert, Button } from '@cerpus/ui';
 import Axios from '../../../../utils/axiosSetup';
@@ -80,7 +80,6 @@ const Lock = ({ intl, pollUrl, editor, lockReleased, editUrl: currentEditUrl }) 
 };
 
 Lock.propTypes = {
-    intl: intlShape,
     expires: PropTypes.number,
     pollUrl: PropTypes.string,
     editUrl: PropTypes.string,

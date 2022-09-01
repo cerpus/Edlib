@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { FormActions, useForm } from '../../contexts/FormContext';
 import CKEditor from 'ckeditor4-react';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 const editorMessageHandler = (event) => {
     const originalEvent = event.data.$;
@@ -150,7 +150,6 @@ const Article = (props) => {
 };
 
 Article.propTypes = {
-    intl: intlShape,
     uploadUrl: PropTypes.string,
     articleSetup: PropTypes.object,
 };

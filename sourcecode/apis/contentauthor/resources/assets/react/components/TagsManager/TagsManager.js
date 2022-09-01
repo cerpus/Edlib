@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Axios from 'axios';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { withStyles } from '@material-ui/core/styles';
 import { TextField, Paper, MenuItem, Chip, Button } from '@material-ui/core';
@@ -12,7 +12,6 @@ class TagsManager extends React.Component {
     static propTypes = {
         tags: PropTypes.array,
         onChange: PropTypes.func,
-        intl: intlShape,
     };
 
     static defaultProps = {

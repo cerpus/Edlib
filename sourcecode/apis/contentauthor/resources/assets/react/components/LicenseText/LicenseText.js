@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
  * @external "react-intl"
  * @see {@link https://github.com/yahoo/react-intl/wiki/API#injectintl|React Intl Wiki: injectIntl}
  */
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import HelpIcon from '../HelpIcon';
 
-export default class LicenseText extends Component {
+class LicenseText extends Component {
     static displayName = 'LicenseText';
 
     static propTypes = {
@@ -32,8 +32,19 @@ export default class LicenseText extends Component {
         return (
             <div className={'license-text-container'}>
                 {this.getLicenseString()}
-                <HelpIcon messageId={'LICENSE.' + this.props.license + '.HELP'}/>
+                <HelpIcon messageString={
+                    this.props.intl.formatMessage(
+                        {
+                            id: 'LICENSE.' + this.props.license + '.HELP',
+                        }, {
+                            p: chunks => <p>{chunks}</p>,
+                            strong: chunks => <strong>{chunks}</strong>,
+                        }
+                    )
+                }/>
             </div>
         );
     }
-};
+}
+
+export default injectIntl(LicenseText);

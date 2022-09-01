@@ -64,7 +64,7 @@
     "react-dropzone": "^4.2.10",
     "react-emotion": "^9.2.12",
     "react-event-listener": "^0.5.9",
-    "react-intl": "^2.9.0",
+    "react-intl": "^6.1.0",
     "react-radio-group": "^3.0.1",
     "react-router-dom": "^5.3.0",
     "react-rte": "^0.16.1",
