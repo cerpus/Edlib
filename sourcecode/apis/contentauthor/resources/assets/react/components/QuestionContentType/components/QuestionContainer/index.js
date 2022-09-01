@@ -8,9 +8,6 @@ import { Card, uniqueId } from '../utils';
 import { MillionaireContainer } from '../Millionaire';
 
 export default QuestionContainerLayout;
-export { messages as messagesEnGb } from './language/en-gb';
-export { messages as messagesNbNo } from './language/nb-no';
-export { messages as messagesNnNo } from './language/nn-no';
 
 class QuestionContainer extends Component {
     static propTypes = {

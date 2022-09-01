@@ -1,4 +1,3 @@
-
 if (!window.Intl) {
     require('intl');
     require('intl/locale-data/jsonp/en-US.js');
