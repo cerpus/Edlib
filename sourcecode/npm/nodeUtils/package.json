@@ -31,7 +31,7 @@
     "jwks-rsa": "^2.1.4",
     "knex": "^1.0.4",
     "lodash": "^4.17.21",
-    "moment-timezone": "^0.5.33",
+    "moment-timezone": "^0.5.37",
     "mysql": "^2.18.1",
     "on-finished": "^2.4.1",
     "redis": "^4.2.0",
