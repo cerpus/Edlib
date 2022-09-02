@@ -12,6 +12,7 @@ import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import { RadioGroup, Radio } from 'react-radio-group';
 
 import HelpIcon from '../HelpIcon';
+import { PublicDomainText, AdaptionsText, CommercialUseText, RestrictionLevelText } from './HelpTexts';
 
 class LicenseChooser extends Component {
     static propTypes = {
@@ -210,18 +211,6 @@ class LicenseChooser extends Component {
         });
     }
 
-    getHelpMessage(messageId) {
-        return this.props.intl.formatMessage(
-            {
-                id: messageId,
-            }, {
-                p: chunks => <p>{chunks}</p>,
-                strong: chunks => <strong>{chunks}</strong>,
-                nl: <br/>,
-            }
-        );
-    }
-
     render() {
         let publicDomain = null;
         let createCommons = null;
@@ -236,7 +225,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.PUBLICDOMAIN"/>
                         </ControlLabel>
-                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.PUBLICDOMAIN.HELP')}/>
+                        <HelpIcon messageString={<PublicDomainText/>}/>
                         <RadioGroup
                             name="publicdomainlicense"
                             selectedValue={this.state.publicDomainLicense}
@@ -263,7 +252,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.ADAPTIONS"/>
                         </ControlLabel>
-                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.ADAPTIONS-HELP')}/>
+                        <HelpIcon messageString={<AdaptionsText/>}/>
                         <RadioGroup
                             name="sharing"
                             selectedValue={this.state.sharing}
@@ -273,10 +262,12 @@ class LicenseChooser extends Component {
                                 <Radio className="radio-inline" value="-"/>
                                 <FormattedMessage id="LICENSECHOOSER.YES"/>
                             </label>
+                            <br/>
                             <label className="radio-inline">
                                 <Radio className="radio-inline" value="ND"/>
                                 <FormattedMessage id="LICENSECHOOSER.NO"/>
                             </label>
+                            <br/>
                             <label className="radio-inline">
                                 <Radio className="radio-inline" value="SA"/>
                                 <FormattedMessage id="LICENSECHOOSER.OPTION-SHAREALIKE"/>
@@ -288,7 +279,7 @@ class LicenseChooser extends Component {
                         <ControlLabel className="licensechooser-group-title">
                             <FormattedMessage id="LICENSECHOOSER.COMMERCIAL-USE"/>
                         </ControlLabel>
-                        <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.COMMERCIAL-USE-HELP')}/>
+                        <HelpIcon messageString={<CommercialUseText/>}/>
                         <RadioGroup
                             name="commercial"
                             selectedValue={this.state.commercial}
@@ -298,6 +289,7 @@ class LicenseChooser extends Component {
                                 <Radio value="-" className="radio-inline"/>
                                 <FormattedMessage id="LICENSECHOOSER.YES"/>
                             </label>
+                            <br/>
                             <label className="radio-inline">
                                 <Radio value="NC" className="radio-inline"/>
                                 <FormattedMessage id="LICENSECHOOSER.NO"/>
@@ -314,7 +306,7 @@ class LicenseChooser extends Component {
                     <ControlLabel className="licensechooser-group-title">
                         <FormattedMessage id="LICENSECHOOSER.ATTRIBUTION-TITLE"/>
                     </ControlLabel>
-                    <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.ATTRIBUTION-HELP')}/>
+                    <HelpIcon messageString={<FormattedMessage id="LICENSECHOOSER.ATTRIBUTION-HELP"/>}/>
 
                     <FormGroup>
                         <ControlLabel className="licensechooser-input-title">
@@ -360,7 +352,7 @@ class LicenseChooser extends Component {
                 <ControlLabel className="licensechooser-group-title">
                     <FormattedMessage id="LICENSECHOOSER.RESTRICTION-LEVEL"/>
                 </ControlLabel>
-                <HelpIcon messageString={this.getHelpMessage('LICENSECHOOSER.RESTRICTION-LEVEL-HELP')}/>
+                <HelpIcon messageString={<RestrictionLevelText/>}/>
                 <FormGroup>
                     <RadioGroup
                         name="restriction"
@@ -371,12 +363,12 @@ class LicenseChooser extends Component {
                             <Radio className="radio-inline" value="PUBLICDOMAIN"/>
                             <FormattedMessage id="LICENSECHOOSER.PUBLIC-DOMAIN"/>
                         </label>
-
+                        <br/>
                         <label className="radio-inline">
                             <Radio className="radio-inline" value="CC"/>
                             <FormattedMessage id="LICENSECHOOSER.CREATIVE-COMMONS"/>
                         </label>
-
+                        <br/>
                         <label className="radio-inline">
                             <Radio className="radio-inline" value="EDLL"/>
                             <FormattedMessage id="LICENSECHOOSER.EDLL"/>
