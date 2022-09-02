@@ -2,7 +2,7 @@ import './Question.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { TextField } from '@material-ui/core';
 import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
@@ -42,7 +42,7 @@ function Question(props) {
                     onChange={event => onChange(event.currentTarget.value, 'text')}
                     fullWidth={true}
                     multiline={multiline}
-                    rowsMax={maxRows}
+                    maxRows={maxRows}
                 />);
         }
     } else {
@@ -78,7 +78,6 @@ Question.propTypes = {
     useImage: PropTypes.bool,
     maxRows: PropTypes.number,
     multiline: PropTypes.bool,
-    intl: intlShape,
     richText: PropTypes.bool,
 };
 

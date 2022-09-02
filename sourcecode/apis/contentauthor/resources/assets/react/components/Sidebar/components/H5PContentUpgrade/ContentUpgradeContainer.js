@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useReducer } from 'react';
-import { FormattedHTMLMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import ContentUpgradeLayout, { ContentNoUpgrades } from './ContentUpgradeLayout';
 import PropTypes from 'prop-types';
 import store, { actions } from './store';
@@ -28,7 +28,14 @@ const ContentUpgradeContainer = ({
 }) => {
     const translations = useMemo(() => {
         const translations = getTranslations(intl);
-        translations.undoTextHTML = (<FormattedHTMLMessage id="H5PCONTENTUPGRADE.UNDO-TEXT" />);
+        translations.undoTextHTML = (
+            <FormattedMessage
+                id="H5PCONTENTUPGRADE.UNDO-TEXT"
+                values={{
+                    nl: <br/>,
+                }}
+            />
+        );
         return translations;
     }, [intl]);
 
@@ -156,7 +163,6 @@ ContentUpgradeContainer.propTypes = {
     onError: PropTypes.func,
     initIframeEditor: PropTypes.func,
     getIframeEditor: PropTypes.func,
-    intl: intlShape,
 };
 
 export default injectIntl(ContentUpgradeContainer);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MillionaireLayout from './MillionaireLayout';
 import { Answer, Card, Image, Question, rerenderMathJax } from '../utils';
 import Axios from '../../../../utils/axiosSetup';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { stripHTML } from '../../../../utils/Helper';
 
 export default MillionaireLayout;
@@ -27,7 +27,6 @@ class MillionaireContainer extends Component {
         onSave: PropTypes.func,
         tags: PropTypes.array,
         title: PropTypes.string,
-        intl: intlShape,
         questionSearchUrl: PropTypes.string,
         editMode: PropTypes.bool,
     };
@@ -62,11 +61,12 @@ class MillionaireContainer extends Component {
 
         if (qCheck === -1 || altCheck.tooFew.length > 0) {
             if (qCheck === -1) {
-                messages.push(<FormattedMessage id="MILLIONAIRE.TOO_FEW_QUESTIONS" tagName="div" />);
+                messages.push(<FormattedMessage key="TFQ" id="MILLIONAIRE.TOO_FEW_QUESTIONS" tagName="div" />);
             }
             if (altCheck.tooFew.length > 0) {
                 messages.push(
                     <FormattedMessage
+                        key="TFA"
                         id="MILLIONAIRE.TOO_FEW_ALTERNATIVES"
                         values={{
                             'questionList': altCheck.tooFew.join(', '),
@@ -78,11 +78,12 @@ class MillionaireContainer extends Component {
             this.loadAlternativesFromServer();
         }
         if (qCheck === 1) {
-            messages.push(<FormattedMessage id="MILLIONAIRE.TOO_MANY_QUESTIONS" tagName="div" />);
+            messages.push(<FormattedMessage key="TMQ" id="MILLIONAIRE.TOO_MANY_QUESTIONS" tagName="div" />);
         }
         if (altCheck.tooMany.length > 0) {
             messages.push(
                 <FormattedMessage
+                    key="TMA"
                     id="MILLIONAIRE.TOO_MANY_ALTERNATIVES"
                     values={{
                         'questionList': altCheck.tooMany.join(', '),
@@ -95,6 +96,7 @@ class MillionaireContainer extends Component {
         if (messages.length > 0) {
             messages.unshift(
                 <FormattedMessage
+                    key="RI"
                     id="MILLIONAIRE.REQUIREMENT_INFO"
                     values={{
                         'questionCount': this.REQUIRED_NUM_QUESTIONS,

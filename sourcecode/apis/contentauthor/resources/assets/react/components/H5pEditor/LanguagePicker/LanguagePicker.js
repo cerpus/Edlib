@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import iso6392 from 'iso-639-2';
 import { Dialog, CircularProgress } from '@material-ui/core';
 import { Checkbox } from '@cerpus/ui';
@@ -48,7 +48,6 @@ const LanguagePicker = ({ languageValue, intl, hideNewVariant, onChange, isUpdat
 };
 
 LanguagePicker.propTypes = {
-    intl: intlShape,
     languageValue: PropTypes.string,
     hideNewVariant: PropTypes.bool,
     isNewLanguageVariant: PropTypes.bool,

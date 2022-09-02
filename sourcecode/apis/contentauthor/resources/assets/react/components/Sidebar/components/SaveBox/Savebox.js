@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Box, Button } from '@material-ui/core';
 import { FormActions, useForm } from '../../../../contexts/FormContext';
@@ -177,7 +177,6 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
 SaveBox.propTypes = {
     onSave: PropTypes.func,
     onSaveCallback: PropTypes.func,
-    intl: intlShape,
     pulseUrl: PropTypes.string,
 };
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ContentPropertiesLayout from './ContentPropertiesLayout';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import Moment from 'moment';
 
 class ContentPropertiesContainer extends Component {
@@ -9,7 +9,6 @@ class ContentPropertiesContainer extends Component {
         id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         createdAt: PropTypes.string,
         format: PropTypes.string,
-        intl: intlShape,
         type: PropTypes.string,
         maxScore: PropTypes.number,
         customFields: PropTypes.array,

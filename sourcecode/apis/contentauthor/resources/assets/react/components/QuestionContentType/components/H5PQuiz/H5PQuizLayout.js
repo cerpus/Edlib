@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { CardContainer } from '../QuestionCard';
 import AddCard from '../QuestionCard/components/AddCard';
 import InfoBox from '../InfoBox';
@@ -73,7 +73,7 @@ H5PQuizLayout.propTypes = {
     iconUrl: PropTypes.string,
     backButtonText: PropTypes.object,
     generateButtonText: PropTypes.object,
-    infoText: PropTypes.object,
+    infoText: PropTypes.node,
     processingForm: PropTypes.bool,
     onChangeProcessing: PropTypes.func,
 };

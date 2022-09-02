@@ -15,7 +15,7 @@ const CerpusUI = ({ children }) => {
         bodyLanguageCode !== null ? addLanguage(bodyLanguageCode) : i18nDefault;
 
     return (
-        <IntlProvider {...i18nData}>
+        <IntlProvider {...i18nData} textComponent="span">
             <CerpusThemeProvider>
                 <ThemeProvider
                     theme={createTheme({

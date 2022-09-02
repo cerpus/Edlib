@@ -3,7 +3,7 @@ import { ExpandableBox, ExpandableBoxList } from '@cerpus/ui';
 import { AlertBox, SaveBox, Publish, Lock } from './components';
 import SidebarCommonComponents from './SidebarCommonComponents';
 import { useForm } from '../../contexts/FormContext';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { compare } from '../../utils/utils';
 import { Box, Paper } from '@material-ui/core';
@@ -124,7 +124,6 @@ const Sidebar = ({
 };
 
 Sidebar.propTypes = {
-    intl: intlShape,
     customSetup: PropTypes.object,
     customComponents: PropTypes.array,
     onSave: PropTypes.func,

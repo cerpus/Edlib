@@ -3,7 +3,7 @@ import views from './views';
 import List from './List';
 import LanguagePicker from './LanguagePicker';
 import H5P from '../H5P';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import useH5PEditor from '../H5P/useH5PEditor';
 import useConfirmWindowClose from './useConfirmWindowClose';
 import { nextTick, removeKeys } from '../../utils/utils';
@@ -392,7 +392,6 @@ const H5PEditorContainer = ({ intl }) => {
 };
 
 H5PEditorContainer.propTypes = {
-    intl: intlShape,
 };
 
 export default injectIntl(H5PEditorContainer);

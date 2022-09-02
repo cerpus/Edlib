@@ -6,7 +6,7 @@ export default class HelpIcon extends Component {
 
     static propTypes = {
         messageId: PropTypes.string,
-        messageString: PropTypes.string,
+        messageString: PropTypes.node,
         className: PropTypes.string
     };
 

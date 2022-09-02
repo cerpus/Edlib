@@ -50,7 +50,7 @@ function InfoBox(props) {
 }
 
 InfoBox.propTypes = {
-    infoText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    infoText: PropTypes.node,
     iconUrl: PropTypes.string,
     onBackClick: PropTypes.func,
     onGenerateClick: PropTypes.func,

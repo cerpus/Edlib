@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Axios from '../../utils/axiosSetup';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import AudioBrowserLayout from './AudioBrowserLayout';
 
 class AudioBrowserContainer extends Component {
@@ -10,7 +10,6 @@ class AudioBrowserContainer extends Component {
         onSelect: PropTypes.func.isRequired,
         locale: PropTypes.string,
         onToggle: PropTypes.func,
-        intl: intlShape,
     };
 
     static defaultProps = {

@@ -6,7 +6,7 @@ export default {
     'H5PCONTENTUPGRADE.NO': 'Nei',
     'H5PCONTENTUPGRADE.UPGRADE-CONFIRMATION': 'Er du sikker på at du vil oppgradere?',
     'H5PCONTENTUPGRADE.PROGRESS': 'Fremdrift',
-    'H5PCONTENTUPGRADE.UNDO-TEXT': 'Ikke som forventet?<br>Trykk på "Angre" for å omgjøre oppgraderingen',
+    'H5PCONTENTUPGRADE.UNDO-TEXT': 'Ikke som forventet?{nl}Trykk på "Angre" for å omgjøre oppgraderingen',
     'H5PCONTENTUPGRADE.UNDO': 'Angre',
     'H5PCONTENTUPGRADE.NOUPGRADESAVAILABLE': 'Ingen oppgraderinger tilgjengelig',
     'H5PCONTENTUPGRADE.SELECTVERSION': 'Velg versjon',

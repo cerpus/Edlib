@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Axios from '../../utils/axiosSetup';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import VideoBrowserLayout from './VideoBrowserLayout';
 import { getLicenseByNBTitle } from '@ndla/licenses';
 
@@ -14,7 +14,6 @@ class VideoBrowserContainer extends Component {
         searchButtonText: PropTypes.string,
         searchPlaceholder: PropTypes.string,
         onToggle: PropTypes.func,
-        intl: intlShape,
     };
 
     static defaultProps = {

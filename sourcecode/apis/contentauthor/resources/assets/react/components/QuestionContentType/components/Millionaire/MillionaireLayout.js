@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedHTMLMessage, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { CardContainer } from '../QuestionCard';
 import InfoBox from '../InfoBox';
 import FooterBox from '../FooterBox';
@@ -80,7 +80,7 @@ MillionaireLayout.propTypes = {
     iconUrl: PropTypes.string,
     backButtonText: PropTypes.object,
     generateButtonText: PropTypes.object,
-    infoText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+    infoText: PropTypes.node,
     processingForm: PropTypes.bool,
     onChangeProcessing: PropTypes.func,
     editMode: PropTypes.bool,
@@ -92,7 +92,7 @@ MillionaireLayout.defaultProps = {
     cards: [],
     backButtonText: <FormattedMessage id="MILLIONAIRE.GO_BACK_TO_ORIGINAL_QUESTION_SET" />,
     generateButtonText: <FormattedMessage id="MILLIONAIRE.GENERATE_GAME" />,
-    infoText: <FormattedHTMLMessage id="MILLIONAIRE.WE_HAVE_ADDED_SOME_WRONG_ALTERNATIVES" />,
+    infoText: '',
     processingForm: false,
     editMode: false,
 };

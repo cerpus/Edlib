@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { injectIntl, intlShape } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Checkbox } from '@cerpus/ui';
 import getTranslations from './language/translations';
@@ -55,7 +55,6 @@ DisplayOptions.propTypes = {
     displayButtons: PropTypes.bool.isRequired,
     displayCopyright: PropTypes.bool,
     displayDownload: PropTypes.bool,
-    intl: intlShape,
 };
 
 export default injectIntl(DisplayOptions);
