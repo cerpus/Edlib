@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useReducer } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { useEffect, useReducer } from 'react';
+import { FormattedMessage } from 'react-intl';
 import ContentUpgradeLayout, { ContentNoUpgrades } from './ContentUpgradeLayout';
 import PropTypes from 'prop-types';
 import store, { actions } from './store';
-import getTranslations from './language/translations';
 
 const initialState = {
     selectedVersion: null,
@@ -20,25 +19,11 @@ const initialState = {
 
 const ContentUpgradeContainer = ({
     libraries = [],
-    intl,
     onBeforeUpgrade,
     onStageUpgrade,
     initIframeEditor,
     getIframeEditor,
 }) => {
-    const translations = useMemo(() => {
-        const translations = getTranslations(intl);
-        translations.undoTextHTML = (
-            <FormattedMessage
-                id="H5PCONTENTUPGRADE.UNDO-TEXT"
-                values={{
-                    nl: <br/>,
-                }}
-            />
-        );
-        return translations;
-    }, [intl]);
-
     const [state, dispatch] = useReducer(store, null, () => {
         return Object.assign({}, initialState, { libraries });
     });
@@ -46,7 +31,7 @@ const ContentUpgradeContainer = ({
     if (libraries.length === 0) {
         return (
             <ContentNoUpgrades
-                noUpgradeAvailable={translations.noUpgradesAvailable}
+                noUpgradeAvailable={<FormattedMessage id="H5PCONTENTUPGRADE.NOUPGRADESAVAILABLE"/>}
             />
         );
     }
@@ -122,7 +107,6 @@ const ContentUpgradeContainer = ({
             onUndoUpgrade={handleUndoUpgrade}
             percentProgress={state.percentComplete}
             inProgress={state.inProgress}
-            translations={translations}
             readyForUpgrade={state.readyForUpgrade}
             selectedLibraryId={state.libraryId}
         />
@@ -165,4 +149,4 @@ ContentUpgradeContainer.propTypes = {
     getIframeEditor: PropTypes.func,
 };
 
-export default injectIntl(ContentUpgradeContainer);
+export default ContentUpgradeContainer;

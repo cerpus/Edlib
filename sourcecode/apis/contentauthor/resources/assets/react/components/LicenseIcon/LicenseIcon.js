@@ -178,9 +178,9 @@ class LicenseIcon extends Component {
             <div className={classes}>
                 {
                     this.geAsIcons(license).map(icon => {
-                        let displayIcon = (<i className={icon.className}/>);
-                        if( icon.id === "EDLL"){
-                            displayIcon = (<EDLLIcon className={icon.className} />);
+                        let displayIcon = <i className={icon.className}/>;
+                        if (icon.id === "EDLL") {
+                            displayIcon = <span><EDLLIcon className={icon.className} /></span>;
                         }
                         return (
                             <Tooltip key={icon.id} message={icon.title}>
@@ -192,6 +192,6 @@ class LicenseIcon extends Component {
             </div>
         );
     }
-};
+}
 
 export default injectIntl(LicenseIcon);
