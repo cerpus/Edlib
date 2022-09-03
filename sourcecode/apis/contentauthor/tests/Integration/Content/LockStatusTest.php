@@ -56,7 +56,7 @@ class LockStatusTest extends TestCase
 
         $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
-            'updated_at' => Carbon::now()->subSeconds(91)
+            'updated_at' => Carbon::now()->subMinutes(91)
         ]);
 
         $this->withSession(['authId' => $user->auth_id])
