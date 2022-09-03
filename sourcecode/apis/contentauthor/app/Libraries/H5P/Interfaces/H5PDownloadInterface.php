@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Libraries\H5P\Interfaces;
 
-
 interface H5PDownloadInterface
 {
-    public function downloadContent($filename, $title);
+    /**
+     * @return resource
+     */
+    public function downloadContent(string $filename);
 }

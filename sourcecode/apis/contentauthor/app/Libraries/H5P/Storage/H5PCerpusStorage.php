@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\StorageAttributes;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
@@ -540,18 +541,16 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $upload;
     }
 
-    /**
-     * @param $filename
-     * @param $title
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     * @throws Exception
-     */
-    public function downloadContent($filename, $title)
+    public function downloadContent(string $filename)
     {
-        return response()->streamDownload(function () use ($filename) {
-            $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
-            echo $this->filesystem->response($path)->sendContent();
-        }, $filename);
+        $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
+        $stream = $this->filesystem->readStream($path);
+
+        if ($stream === null) {
+            throw new RuntimeException('Could not stream '.$filename);
+        }
+
+        return $stream;
     }
 
     public function getDisplayPath(bool $fullUrl = true)
