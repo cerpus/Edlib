@@ -192,7 +192,7 @@ const getTranslationJobs = async (parameters, libraryName, loadedLibraries) => {
         .map(sementic => getPathsFromSementics(sementic, [
             {
                 type: 'text',
-                widgets: ['textarea', 'html', undefined],
+                widgets: ['textarea', 'html', undefined, 'showWhen', 'NDLAShowWhen'],
             },
             {
                 type: h5pFieldTypes.LIBRARY,
