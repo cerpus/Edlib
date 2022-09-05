@@ -8,7 +8,7 @@ import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material';
 import ResourceModal from '../../ResourceModal/ResourceModal.jsx';
 import useTranslation from '../../../hooks/useTranslation.js';
 
-const ViewContainer = ({ children, showDeleteButton, resources }) => {
+const ViewContainer = ({ children, showDeleteButton, resources, refetch }) => {
     const { t } = useTranslation();
     const { getPath } = useIframeStandaloneContext();
     const { onInsert, onRemove } = useResourceCapabilities();
@@ -64,7 +64,7 @@ const ViewContainer = ({ children, showDeleteButton, resources }) => {
                 resource={selectedResource}
             />
             <Dialog
-                open={showConfirmDeletionModal}
+                open={!!showConfirmDeletionModal}
                 onClose={() => setShowConfirmDeletionModal(false)}
                 maxWidth="sm"
                 fullWidth
@@ -86,6 +86,7 @@ const ViewContainer = ({ children, showDeleteButton, resources }) => {
                             onRemove(showConfirmDeletionModal).then(() => {
                                 idsToHide.push(showConfirmDeletionModal);
                                 setShowConfirmDeletionModal(false);
+                                refetch();
                             });
                         }}
                     >
