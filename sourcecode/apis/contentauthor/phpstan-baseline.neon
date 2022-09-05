@@ -421,7 +421,7 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method H5PExport\\:\\:deleteExport\\(\\) expects array, object given\\.$#"
+			message: "#^Parameter \\#1 \\$content of method H5PExport\\:\\:deleteExport\\(\\) expects array, ArrayAccess given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -431,7 +431,7 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, object given\\.$#"
+			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -1632,7 +1632,7 @@ parameters:
 			path: app/User.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: database/factories/H5PContentsMetadataFactory.php
 
@@ -1697,82 +1697,82 @@ parameters:
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$files\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$files\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleFileVersionerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleFileVersionerTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:files\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:files\\(\\)\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleFileVersionerTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$newArticle of class App\\\\Http\\\\Libraries\\\\ArticleFileVersioner constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			message: "#^Parameter \\#2 \\$newArticle of class App\\\\Http\\\\Libraries\\\\ArticleFileVersioner constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
 			count: 3
 			path: tests/Integration/Article/ArticleFileVersionerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 11
 			path: tests/Integration/Article/ArticleLockTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleLockTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleLockTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 10
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content\\.$#"
 			count: 9
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 11
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 9
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$license\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$license\\.$#"
 			count: 1
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
 			count: 6
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
 			count: 3
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
 			count: 5
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
@@ -1782,67 +1782,67 @@ parameters:
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
 			count: 1
 			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
 			count: 1
 			path: tests/Integration/Article/Handler/HandleCollaboratorsTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$is_private\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$is_private\\.$#"
 			count: 3
 			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
 			count: 1
 			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
+			message: "#^Parameter \\#1 \\$article of class App\\\\Events\\\\ArticleWasSaved constructor expects App\\\\Article, Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
 			count: 1
 			path: tests/Integration/Article/Handler/HandlePrivacyTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
 			count: 12
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 3
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:collaborators\\(\\)\\.$#"
 			count: 21
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getCollaboratorEmails\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getCollaboratorEmails\\(\\)\\.$#"
 			count: 3
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:newCollaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:newCollaborators\\(\\)\\.$#"
 			count: 10
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
 			count: 8
 			path: tests/Integration/CollaboratableTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 2
 			path: tests/Integration/Content/ContentTest.php
 
@@ -1852,52 +1852,52 @@ parameters:
 			path: tests/Integration/Content/ContentTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 10
 			path: tests/Integration/Content/LockStatusTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
 			count: 5
 			path: tests/Integration/Content/LockStatusTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
 			count: 2
 			path: tests/Integration/Content/LockStatusTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 6
 			path: tests/Integration/Content/LockStatusTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$updated_at\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$updated_at\\.$#"
 			count: 3
 			path: tests/Integration/Content/LockStatusTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 5
 			path: tests/Integration/Content/UnlockTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$content_id\\.$#"
 			count: 2
 			path: tests/Integration/Content/UnlockTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$collaborators\\.$#"
 			count: 10
 			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 4
 			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setCollaborators\\(\\)\\.$#"
 			count: 3
 			path: tests/Integration/Gdpr/Handlers/ShareProcessorTest.php
 
@@ -1907,7 +1907,7 @@ parameters:
 			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
 
@@ -1917,7 +1917,7 @@ parameters:
 			path: tests/Integration/Http/Controllers/GameControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 1
 			path: tests/Integration/Http/Controllers/H5PControllerTest.php
 
@@ -1952,43 +1952,23 @@ parameters:
 			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$filtered\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$filtered\\.$#"
 			count: 1
-			path: tests/Integration/Jobs/PingVideoApiTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 38
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 5
+			count: 47
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:\\$id\\.$#"
-			count: 4
-			path: tests/Integration/Jobs/PingVideoApiTest.php
-
-		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:contentVideos\\(\\)\\.$#"
-			count: 5
-			path: tests/Integration/Jobs/PingVideoApiTest.php
-
-		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\|Illuminate\\\\Support\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:contentVideos\\(\\)\\.$#"
-			count: 2
-			path: tests/Integration/Jobs/PingVideoApiTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$content of method Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:createVideoData\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
-			count: 1
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:contentVideos\\(\\)\\.$#"
+			count: 7
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$content of method Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:createVideoData\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null given\\.$#"
-			count: 1
+			count: 2
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
@@ -2002,7 +1982,7 @@ parameters:
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 7
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
@@ -2012,27 +1992,27 @@ parameters:
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 18
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 27
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
 			count: 14
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
@@ -2042,27 +2022,27 @@ parameters:
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 7
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:content\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:content\\(\\)\\.$#"
 			count: 5
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
@@ -2072,22 +2052,22 @@ parameters:
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method App\\\\Libraries\\\\H5P\\\\H5PCopyright\\:\\:getCopyrights\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			message: "#^Parameter \\#1 \\$content of method App\\\\Libraries\\\\H5P\\\\H5PCopyright\\:\\:getCopyrights\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
 			count: 13
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 13
 			path: tests/Integration/Libraries/H5P/H5PExportTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$slug\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$slug\\.$#"
 			count: 7
 			path: tests/Integration/Libraries/H5P/H5PExportTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of class App\\\\Libraries\\\\H5P\\\\H5PExport constructor expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
+			message: "#^Parameter \\#1 \\$content of class App\\\\Libraries\\\\H5P\\\\H5PExport constructor expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
 			count: 7
 			path: tests/Integration/Libraries/H5P/H5PExportTest.php
 
@@ -2127,8 +2107,13 @@ parameters:
 			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
 
 		-
+			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
+			count: 1
+			path: tests/Integration/Libraries/H5P/h5pTest.php
+
+		-
 			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, object given\\.$#"
-			count: 2
+			count: 1
 			path: tests/Integration/Libraries/H5P/h5pTest.php
 
 		-
@@ -2137,37 +2122,37 @@ parameters:
 			path: tests/Integration/Libraries/QuestionSetConverterTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 4
 			path: tests/Integration/Models/CollaboratorContextTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 3
 			path: tests/Integration/Models/ContentAttributionTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:addAttributionOriginator\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:addAttributionOriginator\\(\\)\\.$#"
 			count: 4
 			path: tests/Integration/Models/ContentAttributionTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttribution\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttribution\\(\\)\\.$#"
 			count: 6
 			path: tests/Integration/Models/ContentAttributionTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttributionAsString\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getAttributionAsString\\(\\)\\.$#"
 			count: 5
 			path: tests/Integration/Models/ContentAttributionTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttribution\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttribution\\(\\)\\.$#"
 			count: 3
 			path: tests/Integration/Models/ContentAttributionTest.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttributionOrigin\\(\\)\\.$#"
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttributionOrigin\\(\\)\\.$#"
 			count: 2
 			path: tests/Integration/Models/ContentAttributionTest.php
 
@@ -2187,28 +2172,23 @@ parameters:
 			path: tests/Integration/Models/GametypeTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
 			count: 3
 			path: tests/Integration/Models/GametypeTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
 			count: 1
 			path: tests/Integration/Models/GametypeTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
 			count: 1
 			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 2
-			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 2
+			count: 4
 			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
 
 		-
