@@ -4,7 +4,7 @@ import useToken from '../hooks/useToken';
 import _ from 'lodash';
 import Joi from 'joi';
 import resourceEditors from '../constants/resourceEditors';
-import resourceFilters from '../constants/resourceFilters';
+import * as resourceFilters from '../constants/resourceFilters';
 import nbTranslations from '../i18n/nb/translation.json';
 import resourceColumns from '../constants/resourceColumns';
 

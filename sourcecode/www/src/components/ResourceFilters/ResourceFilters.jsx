@@ -1,9 +1,13 @@
-import React from 'react';
-import _ from 'lodash';
+import React, { Fragment } from 'react';
+import { capitalize } from 'lodash';
 import { H5PTypes, Licenses } from './Filters';
 import useTranslation from '../../hooks/useTranslation';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
-import resourceFilters from '../../constants/resourceFilters';
+import {
+    H5P_TYPE,
+    LICENSE,
+    SAVED_FILTERS,
+} from '../../constants/resourceFilters';
 import {
     Box,
     Button,
@@ -18,13 +22,13 @@ import {
     ExpandMore,
     FilterList as FilterListIcon,
 } from '@mui/icons-material';
-import useArray from '../../hooks/useArray.js';
 import SavedFilters from './Filters/SavedFilters.jsx';
 import viewTypes from './filterViewTypes';
 import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 import CreateSavedFilter from './Filters/components/CreateSavedFilter.jsx';
 import FilterUtils from './Filters/filterUtils.js';
 import DeleteSavedFilter from './Filters/components/DeleteSavedFilter.jsx';
+import { useOpenFilters } from '../../contexts/FilterContext';
 
 const useStyles = makeStyles()((theme) => ({
     root: {
@@ -41,6 +45,28 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
+const FilterBlock = ({ children, disabled, onToggle, open, title }) => {
+    const { classes } = useStyles();
+
+    if (disabled) {
+        return null;
+    }
+
+    return (
+        <Fragment>
+            <ListItemButton onClick={onToggle}>
+                <ListItemText classes={{ primary: classes.mainCategories }}>
+                    <strong>{title}</strong>
+                </ListItemText>
+                {open ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+            <Collapse in={open} timeout="auto">
+                {children}
+            </Collapse>
+        </Fragment>
+    );
+};
+
 const ResourceFilters = ({
     filters,
     filterCount,
@@ -55,9 +81,8 @@ const ResourceFilters = ({
     const { getConfigurationValue, setConfigurationValue } =
         useConfigurationContext();
 
-    const open = useArray([resourceFilters.H5P_TYPE, resourceFilters.LICENSE]);
-
-    const disabledFilters = getUserConfig('disabledFilters') || null;
+    const disabledFilters = getUserConfig('disabledFilters') || [];
+    const openFilters = useOpenFilters();
     const [filterViewType, _setFilterViewType] = React.useState(() => {
         return getConfigurationValue('filterViewType', viewTypes.GROUPED);
     });
@@ -75,45 +100,6 @@ const ResourceFilters = ({
     });
     const [showCreateFilter, setShowCreateFilter] = React.useState(false);
     const [showDelete, setShowDelete] = React.useState(false);
-
-    const filterBlocks = [
-        {
-            type: resourceFilters.SAVED_FILTERS,
-            title: _.capitalize(t('saved_filter', { count: 2 })),
-            content: (
-                <SavedFilters
-                    savedFilterData={savedFilterData}
-                    setShowDelete={setShowDelete}
-                    filterUtils={filterUtils}
-                />
-            ),
-        },
-        {
-            type: resourceFilters.H5P_TYPE,
-            title: _.capitalize(t('content_type', { count: 2 })),
-            count: filters.contentTypes.value.length,
-            content: (
-                <H5PTypes
-                    contentTypeData={contentTypeData}
-                    contentTypes={filters.contentTypes}
-                    filterCount={filterCount ? filterCount.contentTypes : []}
-                    filterViewType={filterViewType}
-                />
-            ),
-        },
-        {
-            type: resourceFilters.LICENSE,
-            title: _.capitalize(t('license', { count: 1 })),
-            count: filters.licenses.value.length,
-            content: (
-                <Licenses
-                    licenseData={licenseData}
-                    licenses={filters.licenses}
-                    filterCount={filterCount ? filterCount.licenses : []}
-                />
-            ),
-        },
-    ];
 
     return (
         <>
@@ -150,39 +136,42 @@ const ResourceFilters = ({
                 </Button>
             </Box>
             <List component="nav" className={classes.root} dense>
-                {filterBlocks
-                    .filter(
-                        (filterBlock) =>
-                            disabledFilters === null ||
-                            disabledFilters.indexOf(filterBlock.type) === -1
-                    )
-                    .map((filterBlock) => (
-                        <React.Fragment key={filterBlock.type}>
-                            <ListItemButton
-                                onClick={() => open.toggle(filterBlock.type)}
-                            >
-                                <ListItemText
-                                    classes={{
-                                        primary: classes.mainCategories,
-                                    }}
-                                >
-                                    <strong>{t(filterBlock.title)}</strong>
-                                </ListItemText>
-                                {open.has(filterBlock.type) ? (
-                                    <ExpandLess />
-                                ) : (
-                                    <ExpandMore />
-                                )}
-                            </ListItemButton>
-                            <Collapse
-                                in={open.has(filterBlock.type)}
-                                timeout="auto"
-                                unmountOnExit
-                            >
-                                {filterBlock.content}
-                            </Collapse>
-                        </React.Fragment>
-                    ))}
+                <FilterBlock
+                    disabled={disabledFilters.includes(SAVED_FILTERS)}
+                    onToggle={() => openFilters.toggle(SAVED_FILTERS)}
+                    title={capitalize(t('saved_filter', { count: 2 }))}
+                >
+                    <SavedFilters
+                        savedFilterData={savedFilterData}
+                        setShowDelete={setShowDelete}
+                        filterUtils={filterUtils}
+                    />
+                </FilterBlock>
+                <FilterBlock
+                    disabled={disabledFilters.includes(H5P_TYPE)}
+                    onToggle={() => openFilters.toggle(H5P_TYPE)}
+                    open={openFilters.has(H5P_TYPE)}
+                    title={capitalize(t('content_type', { count: 2 }))}
+                >
+                    <H5PTypes
+                        contentTypeData={contentTypeData}
+                        contentTypes={filters.contentTypes}
+                        filterCount={filterCount ? filterCount.contentTypes : []}
+                        filterViewType={filterViewType}
+                    />
+                </FilterBlock>
+                <FilterBlock
+                    disabled={disabledFilters.includes(LICENSE)}
+                    onToggle={() => openFilters.toggle(LICENSE)}
+                    open={openFilters.has(LICENSE)}
+                    title={capitalize(t('license', { count: 1 }))}
+                >
+                    <Licenses
+                        licenseData={licenseData}
+                        licenses={filters.licenses}
+                        filterCount={filterCount ? filterCount.licenses : []}
+                    />
+                </FilterBlock>
             </List>
             <Button
                 variant="outlined"
@@ -193,7 +182,7 @@ const ResourceFilters = ({
                     filters.reset();
                 }}
             >
-                {_.capitalize(t('reset'))}
+                {capitalize(t('reset'))}
             </Button>
             <CreateSavedFilter
                 show={showCreateFilter}
