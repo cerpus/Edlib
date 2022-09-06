@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, ControlLabel, FormControl, FormGroup, ProgressBar } from 'react-bootstrap';
 import ModalWindow from '../../../ModalWindow';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 const ContentNoUpgrades = ({
     noUpgradeAvailable,
@@ -27,9 +28,10 @@ const ContentUpgradeLayout = ({
     onUndoUpgrade,
     percentProgress,
     inProgress,
-    translations,
     selectedLibraryId,
 }) => {
+    const { formatMessage } = useIntl();
+
     return (
         <div className="upgradeVersionContainer">
             {(upgradeComplete !== true && inProgress !== true) && (
@@ -40,7 +42,9 @@ const ContentUpgradeLayout = ({
                             onChange={onClick}
                             value={selectedLibraryId}
                         >
-                            <option value="">{translations.selectVersion}</option>
+                            <option value="">
+                                {formatMessage({id:'H5PCONTENTUPGRADE.SELECTVERSION'})}
+                            </option>
                             {libraries.map((library, index) => {
                                 return (
                                     <option key={index} value={library.id}>{library.version}</option>
@@ -53,27 +57,29 @@ const ContentUpgradeLayout = ({
                         onHide={onToggleConfirm}
                         header={
                             <div>
-                                {translations.confirmation}
+                                <FormattedMessage id="H5PCONTENTUPGRADE.CONFIRMATION"/>
                             </div>
                         }
                         footer={
                             <div>
                                 <Button onClick={onConfirm} bsStyle="success">
-                                    {translations.yes}
+                                    <FormattedMessage id="H5PCONTENTUPGRADE.YES"/>
                                 </Button>
                                 <Button onClick={onToggleConfirm} bsStyle="danger">
-                                    {translations.no}
+                                    <FormattedMessage id="H5PCONTENTUPGRADE.NO"/>
                                 </Button>
                             </div>
                         }
                     >
-                        {translations.upgradeConfirmation}
+                        <FormattedMessage id="H5PCONTENTUPGRADE.UPGRADE-CONFIRMATION"/>
                     </ModalWindow>
                 </>
             )}
             {(inProgress === true || upgradeComplete === true) && (
                 <>
-                    <ControlLabel>{translations.progress}</ControlLabel>
+                    <ControlLabel>
+                        <FormattedMessage id="H5PCONTENTUPGRADE.PROGRESS"/>
+                    </ControlLabel>
                     <ProgressBar
                         now={percentProgress}
                         label={`${percentProgress}%`}
@@ -82,12 +88,16 @@ const ContentUpgradeLayout = ({
             )}
             {upgradeComplete === true && (
                 <div className="contentupgrade-complete">
-                    <div>{translations.undoTextHTML}</div>
+                    <div>
+                        <FormattedMessage id="H5PCONTENTUPGRADE.UNDO-TEXT-1"/>
+                        <br/>
+                        <FormattedMessage id="H5PCONTENTUPGRADE.UNDO-TEXT-2"/>
+                    </div>
                     <Button
                         bsStyle="danger"
                         onClick={onUndoUpgrade}
                     >
-                        {translations.undo}
+                        <FormattedMessage id="H5PCONTENTUPGRADE.UNDO"/>
                     </Button>
                 </div>
             )}
@@ -106,19 +116,6 @@ ContentUpgradeLayout.propTypes = {
     percentProgress: PropTypes.number,
     inProgress: PropTypes.bool,
     selectedLibraryId: PropTypes.string,
-    translations: PropTypes.shape({
-        version: PropTypes.string.isRequired,
-        upgrade: PropTypes.string.isRequired,
-        confirmation: PropTypes.string.isRequired,
-        yes: PropTypes.string.isRequired,
-        no: PropTypes.string.isRequired,
-        upgradeConfirmation: PropTypes.string.isRequired,
-        progress: PropTypes.string.isRequired,
-        undoText: PropTypes.string.isRequired,
-        undo: PropTypes.string.isRequired,
-        selectVersion: PropTypes.string.isRequired,
-        undoTextHTML: PropTypes.node.isRequired,
-    }).isRequired,
 };
 
 ContentUpgradeLayout.defaultProps = {
