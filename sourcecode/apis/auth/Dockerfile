@@ -3,8 +3,8 @@
 #
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
-RUN apk --no-cache add --virtual .builds-deps build-base python3 curl
-RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN apk --no-cache add build-base ca-certificates python3 curl
+RUN ln -s python3 /usr/bin/python
 
 #
 # appbase container, contains app and dependencies
@@ -34,3 +34,10 @@ CMD [ "yarn", "migrate" ]
 FROM appbase as prod
 EXPOSE 80
 CMD [ "yarn", "start" ]
+
+#
+# Dev
+#
+FROM base AS dev
+COPY ./docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint
+ENTRYPOINT ["docker-entrypoint"]
