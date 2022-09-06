@@ -139,6 +139,7 @@ const ResourceFilters = ({
                 <FilterBlock
                     disabled={disabledFilters.includes(SAVED_FILTERS)}
                     onToggle={() => openFilters.toggle(SAVED_FILTERS)}
+                    open={openFilters.has(SAVED_FILTERS)}
                     title={capitalize(t('saved_filter', { count: 2 }))}
                 >
                     <SavedFilters
