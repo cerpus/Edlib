@@ -59,12 +59,12 @@ const ViewContainer = ({ children, showDeleteButton, resources, refetch }) => {
                 ),
             })}
             <ResourceModal
-                isOpen={!!selectedResource}
+                isOpen={Boolean(selectedResource)}
                 onClose={() => setSelectedResource(null)}
                 resource={selectedResource}
             />
             <Dialog
-                open={!!showConfirmDeletionModal}
+                open={Boolean(showConfirmDeletionModal)}
                 onClose={() => setShowConfirmDeletionModal(false)}
                 maxWidth="sm"
                 fullWidth
