@@ -351,7 +351,7 @@ services:
       - ./localSetup/.env
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c 'wait-for mysql:3306 && wait-for rabbitmq:5672 && wait-for redis:6379 && update-ca-certificates && yarn && yarn migrate && yarn dev'"
+    command: [sh, -c, 'yarn && yarn wait && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
@@ -360,7 +360,6 @@ services:
       - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
       - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
       - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts/wait-for.sh:/usr/local/bin/wait-for
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       - mysql
