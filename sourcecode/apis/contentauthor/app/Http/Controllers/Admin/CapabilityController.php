@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Lang;
-use Auth;
-use App\LibraryDescription;
+use App\H5PLibrary;
 use App\H5PLibraryCapability;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\Capability;
-use App\Http\Requests\CapabilityScoreRequest;
-use App\Http\Requests\CapabilityEnableRequest;
-use App\Http\Requests\GetTranslatedDescriptionRequest;
 use App\Http\Requests\CapabilityDescriptionPostRequest;
+use App\Http\Requests\CapabilityEnableRequest;
+use App\Http\Requests\CapabilityScoreRequest;
+use App\Http\Requests\GetTranslatedDescriptionRequest;
+use App\Libraries\H5P\H5pPresave;
+use App\LibraryDescription;
+use Illuminate\Support\Facades\Auth;
 
 class CapabilityController extends Controller
 {
@@ -22,10 +22,23 @@ class CapabilityController extends Controller
 
     public function index()
     {
-        $capabilities = H5PLibraryCapability::all()->sortBy('name');
-        $locale = Lang::getLocale();
+        $items = H5PLibrary::runnable()
+            ->with(['capability'])
+            ->orderByRaw('name, major_version, minor_version, patch_version')
+            ->get();
 
-        return view('admin.capability.index')->with(compact('capabilities', 'locale'));
+        /** @var H5pPresave $h5pPresave */
+        $h5pPresave = app(H5pPresave::class);
+        $librariesWithScript = $h5pPresave->getAllLibrariesWithScripts();
+
+        $libraries = $items->map(function ($item) use ($librariesWithScript) {
+            $item->presaveInstalled = $item->supportsMaxScore();
+            $item->presaveAvailable = in_array($item->machineName, $librariesWithScript);
+
+            return $item;
+        });
+
+        return view('admin.capability.index')->with(compact('libraries'));
     }
 
     public function refresh()
