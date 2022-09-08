@@ -22,7 +22,7 @@ class CapabilityController extends Controller
 
     public function index()
     {
-        $items = H5PLibrary::runnable()
+        $libraries = H5PLibrary::runnable()
             ->with(['capability'])
             ->orderByRaw('name, major_version, minor_version, patch_version')
             ->get();
@@ -31,14 +31,7 @@ class CapabilityController extends Controller
         $h5pPresave = app(H5pPresave::class);
         $librariesWithScript = $h5pPresave->getAllLibrariesWithScripts();
 
-        $libraries = $items->map(function ($item) use ($librariesWithScript) {
-            $item->presaveInstalled = $item->supportsMaxScore();
-            $item->presaveAvailable = in_array($item->machineName, $librariesWithScript);
-
-            return $item;
-        });
-
-        return view('admin.capability.index')->with(compact('libraries'));
+        return view('admin.capability.index')->with(compact('libraries', 'librariesWithScript'));
     }
 
     public function refresh()

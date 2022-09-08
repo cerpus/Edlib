@@ -301,6 +301,11 @@ parameters:
 			path: app/Http/Controllers/Admin/Capability.php
 
 		-
+			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/CapabilityController.php
+
+		-
 			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/GamesAdminController.php
