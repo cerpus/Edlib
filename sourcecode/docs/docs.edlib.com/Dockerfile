@@ -1,4 +1,4 @@
-FROM node:14 as build
+FROM node:16-alpine as build
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install
@@ -12,7 +12,7 @@ COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD nginx -g "daemon off;"
 
-FROM node:14 as dev
+FROM node:16-alpine as dev
 WORKDIR /app
 EXPOSE 3000
 CMD yarn; yarn start
