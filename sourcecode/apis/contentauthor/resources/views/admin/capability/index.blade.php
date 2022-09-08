@@ -42,10 +42,8 @@
                                 {{ !empty($library->capability->score)?'checked':'' }}>
                         </td>
                         <td>
-                            @if($library->supportsMaxScore())
-                                Installed
-                            @elseif(in_array($library->machineName, $librariesWithScript))
-                                Available
+                            @if(in_array($library->machineName, $librariesWithScript))
+                                {{ $library->supportsMaxScore() ? 'Installed' : 'Available' }}
                             @endif
                         </td>
                     </tr>
