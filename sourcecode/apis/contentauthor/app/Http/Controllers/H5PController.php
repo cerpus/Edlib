@@ -114,6 +114,7 @@ class H5PController extends Controller
         $viewData = [
             'id' => $id,
             'title' => $content['title'],
+            'language' => $content['language'],
             'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
             'config' => $settings,
             'jsScripts' => $h5pView->getScripts(),
