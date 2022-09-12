@@ -50,7 +50,8 @@ const CardView = ({ resources, showDeleteButton = false, refetch }) => {
                         <Grid
                             key={resource.id}
                             item
-                            xs={6}
+                            xs={12}
+                            sm={6}
                             lg={4}
                             className={classes.gridItem}
                         >
