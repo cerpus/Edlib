@@ -84,7 +84,7 @@ const ResourceEditCog = ({
                 }
             </Reference>
             {isOpen && (
-                <Popper placement="left-start" positionFixed>
+                <Popper placement="auto" positionFixed>
                     {({ ref, style, placement }) => (
                         <Wrapper
                             onClick={(e) => {
