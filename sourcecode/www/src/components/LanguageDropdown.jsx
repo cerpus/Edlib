@@ -22,6 +22,7 @@ const LanguageDropdown = ({ language, setLanguage }) => {
 
     return (
         <Autocomplete
+            fullWidth
             open={open}
             onOpen={() => {
                 setOpen(true);
