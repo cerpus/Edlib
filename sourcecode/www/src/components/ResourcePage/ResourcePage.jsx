@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Tune as TuneIcon } from '@mui/icons-material';
 import { Spinner } from '@cerpus/ui';
 import _ from 'lodash';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled as muiStyled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import useTranslation from '../../hooks/useTranslation';
@@ -70,13 +70,6 @@ const StyledResourcePage = styled.div`
         }
     }
 
-    .contentOptions {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        margin-top: 10px;
-    }
-
     .layoutOptions {
         display: flex;
         cursor: pointer;
@@ -111,6 +104,19 @@ const Content = styled.div`
     justify-content: space-between;
     height: 100%;
 `;
+
+const SelectorWrapper = muiStyled(Box)(({ theme }) => ({
+    [theme.breakpoints.up('xs')]: {
+        flex: '1 1 100%',
+    },
+    [theme.breakpoints.up('sm')]: {
+        flex: `1 1 calc(50% - ${theme.spacing(1)})`,
+    },
+    [theme.breakpoints.up('md')]: {
+        flex: `1 1 calc(25% - ${theme.spacing(1)})`,
+    },
+    display: 'flex',
+}));
 
 const getOrderText = (t, order) => {
     switch (order) {
@@ -188,7 +194,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
     );
 
     const sortOrderDropDown = (
-        <FormControl variant="outlined">
+        <FormControl variant="outlined" fullWidth>
             <InputLabel>{t('Sortering')}</InputLabel>
             <Select
                 MenuProps={{
@@ -276,52 +282,63 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 ]}
             />
             <div className="pageContent">
-                <div className="contentOptions">
-                    <Box display="flex" paddingRight={1}>
-                        <Box
-                            paddingRight={1}
-                            style={{
-                                width: 400,
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginTop: '10',
+                        flexWrap: 'wrap',
+                        gap: 1,
+                        flex: "1 1 100%",
+                    }}
+                >
+                    <Box
+                        sx={[
+                            (theme) => ({
+                                flex: {
+                                    xs: '1 1 100%',
+                                    md: `1 1 calc(50% - ${theme.spacing(1)})`,
+                                },
+                                display: 'flex',
+                            })
+                        ]}
+                    >
+                        <TextField
+                            fullWidth
+                            label={t('Søk')}
+                            variant="outlined"
+                            value={filters.searchInput}
+                            onChange={(e) => setSearch(e.target.value)}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <Icon>
+                                            <SearchIcon />
+                                        </Icon>
+                                    </InputAdornment>
+                                ),
                             }}
-                        >
-                            <TextField
-                                fullWidth
-                                label={t('Søk')}
-                                variant="outlined"
-                                value={filters.searchInput}
-                                onChange={(e) => setSearch(e.target.value)}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Icon>
-                                                <SearchIcon />
-                                            </Icon>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Box>
-                        <div
-                            style={{
-                                width: 200,
-                            }}
-                        >
-                            <LanguageDropdown
-                                language={
-                                    filters.languages.length !== 0
-                                        ? filters.languages[0]
-                                        : null
-                                }
-                                setLanguage={(value) =>
-                                    filters.languages.setValue(
-                                        value ? [value] : []
-                                    )
-                                }
-                            />
-                        </div>
+                        />
                     </Box>
-                    <div>{sortOrderDropDown}</div>
-                </div>
+                    <SelectorWrapper>
+                        <LanguageDropdown
+                            language={
+                                filters.languages.length !== 0
+                                    ? filters.languages[0]
+                                    : null
+                            }
+                            setLanguage={(value) =>
+                                filters.languages.setValue(
+                                    value ? [value] : []
+                                )
+                            }
+                        />
+                    </SelectorWrapper>
+                    <SelectorWrapper>
+                        {sortOrderDropDown}
+                    </SelectorWrapper>
+                </Box>
                 <Box
                     pt={1}
                     sx={{
