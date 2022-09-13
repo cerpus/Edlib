@@ -98,11 +98,10 @@ const PaginationWrapper = styled.div`
 `;
 
 const Content = styled.div`
-    flex: 1;
+    flex: 1 1 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
 `;
 
 const SelectorWrapper = muiStyled(Box)(({ theme }) => ({
@@ -290,7 +289,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                         marginTop: '10',
                         flexWrap: 'wrap',
                         gap: 1,
-                        flex: "1 1 100%",
+                        flex: "1 1 auto",
                     }}
                 >
                     <Box
