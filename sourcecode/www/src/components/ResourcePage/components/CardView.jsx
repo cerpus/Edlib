@@ -1,19 +1,18 @@
 import React from 'react';
-import { Box, Button, Grid, Paper } from '@mui/material';
+import { Box, Button, Grid, Paper, Tooltip } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import { getResourceName, ResourceIcon } from '../../Resource';
 import useTranslation from '../../../hooks/useTranslation.js';
 import PublishedTag from '../../PublishedTag.jsx';
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { MoreVert as MoreVertIcon, Preview } from '@mui/icons-material';
 import ResourceEditCog from '../../ResourceEditCog.jsx';
 import ViewContainer from './ViewContainer.jsx';
-
+import { capitalize } from 'lodash';
 const useStyles = makeStyles()((theme) => ({
     gridItem: {
         display: 'flex',
     },
     paper: {
-        padding: theme.spacing(2),
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
@@ -55,7 +54,15 @@ const CardView = ({ resources, showDeleteButton = false, refetch }) => {
                             lg={4}
                             className={classes.gridItem}
                         >
-                            <Paper className={classes.paper}>
+                            <Paper
+                                className={classes.paper}
+                                sx={{
+                                    padding: {
+                                        xs: 1,
+                                        md: 2,
+                                    }
+                                }}
+                            >
                                 <Box
                                     display="flex"
                                     justifyContent="space-between"
@@ -115,16 +122,20 @@ const CardView = ({ resources, showDeleteButton = false, refetch }) => {
                                                 </Button>
                                             )}
                                         </ResourceEditCog>
-                                        <Button
-                                            size="small"
-                                            color="secondary"
-                                            variant="contained"
-                                            onClick={() =>
-                                                setSelectedResource(resource)
-                                            }
-                                        >
-                                            {t('preview')}
-                                        </Button>
+                                        <Tooltip title={capitalize(t('preview'))}>
+                                            <Button
+                                                size="small"
+                                                color="secondary"
+                                                variant="contained"
+                                                onClick={() => setSelectedResource(resource)}
+                                                aria-label={t('preview')}
+                                                sx={{
+                                                    minWidth: 0,
+                                                }}
+                                            >
+                                                <Preview />
+                                            </Button>
+                                        </Tooltip>
                                     </Box>
                                 </Box>
                             </Paper>
