@@ -13,6 +13,14 @@ module.exports = {
     'docusaurus-plugin-matomo',
   ],
   themeConfig: {
+    announcementBar: {
+      id: 'cookie_consent',
+      content:
+        'This website uses cookies to ensure you get the best experience on our website. <a target="_blank" rel="noopener noreferrer" href="https://www.cookiesandyou.com/"> Learn more</a>',
+      backgroundColor: '#25c2a0',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
     matomo: {
       // Matomo is for web analytics
       matomoUrl: 'https://matomo.cerpus.com/',
