@@ -64,7 +64,7 @@ jobs:
         run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
 
       - name: Commit fixed code
-        uses: stefanzweifel/git-auto-commit-action
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Run php-cs-fixer
 
