@@ -40,7 +40,7 @@ jobs:
 
       # todo: use same php-cs-fixer version as the one in tools/
       - name: Run php-cs-fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
+        uses: docker://oskarstark/php-cs-fixer-ga:latest
 
       - name: Commit fixed code
         uses: stefanzweifel/git-auto-commit-action
