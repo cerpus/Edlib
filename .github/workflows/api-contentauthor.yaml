@@ -22,7 +22,34 @@ env:
   shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Cache php-cs-fixer
+        uses: actions/cache@v3
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
+          restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
+
+      # todo: use same php-cs-fixer version as the one in tools/
+      - name: Run php-cs-fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
+
+      - name: Commit fixed code
+        uses: stefanzweifel/git-auto-commit-action
+        with:
+          commit_message: Run php-cs-fixer
+
   phpstan:
+    needs: [php-cs-fixer]
+
     runs-on: ubuntu-20.04
 
     defaults:
@@ -58,6 +85,7 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=512M
 
   test_and_release:
+    needs: [php-cs-fixer]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

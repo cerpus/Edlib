@@ -53,7 +53,7 @@ Packages/*
 
 buildandtest.sh
 buildid
-.phpunit.result.cache
+*.cache
 
 test-storage-volume/
 /storage/framework/testing/
