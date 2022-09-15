@@ -17,8 +17,6 @@ class LtiLocale
      * Set locale based on lti param
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
-     * @return mixed
      */
     public function handle($request, Closure $next)
     {

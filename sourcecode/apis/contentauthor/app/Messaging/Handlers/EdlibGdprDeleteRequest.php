@@ -25,11 +25,11 @@ class EdlibGdprDeleteRequest implements RabbitMQPubSubConsumerHandler
         $edlibGdprDeleteMessage = new EdlibGdprDeleteMessage(json_decode($data, true));
 
         foreach ($this->processors as $processor) {
-            $worker = new $processor;
+            $worker = new $processor();
             if ($worker instanceof Processor) {
                 $worker->handle($edlibGdprDeleteMessage);
             } else {
-                Log::warning( get_class($worker) . " does not implement the App\\Gdpr\\Handlers\\Processor interface.");
+                Log::warning(get_class($worker) . " does not implement the App\\Gdpr\\Handlers\\Processor interface.");
             }
             unset($worker);
         }

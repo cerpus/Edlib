@@ -2,7 +2,6 @@
 
 namespace Tests\Helpers;
 
-
 use App\Apis\ResourceApiService;
 
 trait MockResourceApi

@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class VideoTest extends TestCase
 {
-
     use WithFaker;
 
     /**

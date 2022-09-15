@@ -11,7 +11,7 @@ class AddIsPrivateToLinksTable extends Migration
             $table->boolean('is_private')->default(false);
         });
     }
-    
+
     public function down(): void
     {
         Schema::table('links', function (Blueprint $table) {

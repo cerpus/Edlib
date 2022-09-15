@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof JwtException) {
             $e = new HttpException(Response::HTTP_UNAUTHORIZED, $e->getMessage(), $e);
         }
-        
+
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
@@ -68,7 +68,6 @@ class Handler extends ExceptionHandler
      * Convert an authentication exception into an unauthenticated response.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Illuminate\Auth\AuthenticationException $exception
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

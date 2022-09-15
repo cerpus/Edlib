@@ -1,12 +1,16 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
 
 abstract class ContentStateDataObject
 {
-    public $id, $route, $_method, $_token;
-    public $license, $title, $redirectToken;
+    public $id;
+    public $route;
+    public $_method;
+    public $_token;
+    public $license;
+    public $title;
+    public $redirectToken;
     public $isPublished = false;
     public $isDraft = false;
     public $share = 'private';
@@ -15,5 +19,4 @@ abstract class ContentStateDataObject
     {
         $this->_token = csrf_token();
     }
-
 }

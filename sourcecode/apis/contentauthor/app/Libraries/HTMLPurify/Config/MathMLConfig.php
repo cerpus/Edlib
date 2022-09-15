@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Libraries\HTMLPurify\Config;
+
 use App\Libraries\HTMLPurify\HTMLModule\MathML;
 use HTMLPurifier_Config;
 use HTMLPurifier_HTML5Config;
@@ -10,7 +11,7 @@ use HTMLPurifier_VarParser;
 
 class MathMLConfig extends HTMLPurifier_HTML5Config
 {
-    const REVISION = 2019042605;
+    public const REVISION = 2019042605;
 
     /**
      * @param  string|array|HTMLPurifier_Config $config
@@ -49,7 +50,6 @@ class MathMLConfig extends HTMLPurifier_HTML5Config
     /**
      * Creates a new config object that inherits from a previous one
      *
-     * @param  HTMLPurifier_Config $config
      * @return HTMLPurifier_HTML5Config
      */
     public static function inherit(HTMLPurifier_Config $config)
@@ -58,7 +58,6 @@ class MathMLConfig extends HTMLPurifier_HTML5Config
     }
 
     /**
-     * @param HTMLPurifier_ConfigSchema $schema
      * @param HTMLPurifier_PropertyList $parent OPTIONAL
      */
     public function __construct(HTMLPurifier_ConfigSchema $schema, HTMLPurifier_PropertyList $parent = null)
@@ -81,8 +80,9 @@ class MathMLConfig extends HTMLPurifier_HTML5Config
         return parent::getDefinition($type, $raw, $optimized);
     }
 
-    static public function getMathTags(){
-        return array(
+    public static function getMathTags()
+    {
+        return [
             'math',
             'maction',
             'maligngroup',
@@ -125,6 +125,6 @@ class MathMLConfig extends HTMLPurifier_HTML5Config
             'semantics',
             'annotation',
             'annotation-xml',
-        );
+        ];
     }
 }

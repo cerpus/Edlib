@@ -1,12 +1,11 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class IncreaseH5pContentsTextfieldSize extends Migration
 {
-    CONST longTextLength = 4294967295;
-    CONST textLength = 65535;
+    public const longTextLength = 4294967295;
+    public const textLength = 65535;
     /**
      * Run the migrations.
      *

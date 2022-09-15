@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class canPublishContent implements Rule
 {
-
     /** @var Content */
     private $content;
 
@@ -20,8 +19,6 @@ class canPublishContent implements Rule
     /**
      * Create a new rule instance.
      *
-     * @param Content $content
-     * @param Request $request
      * @param string $goal
      */
     public function __construct(Content $content, Request $request, $goal = 'publish')
@@ -35,12 +32,11 @@ class canPublishContent implements Rule
      * Determine if the validation rule passes.
      *
      * @param string $attribute
-     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        return !Content::isUserPublishEnabled() || !!$value === false || $this->content->canPublish($this->request);
+        return !Content::isUserPublishEnabled() || (bool)$value === false || $this->content->canPublish($this->request);
     }
 
     /**

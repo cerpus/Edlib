@@ -52,10 +52,14 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
         Route::get('/capability/refresh', [CapabilityController::class, 'refresh'])->name('admin.capability.refresh');
         Route::post('/capability/{capability}/enable', [CapabilityController::class, 'enable'])->name('admin.capability.enabled');
         Route::post('/capability/{capability}/score', [CapabilityController::class, 'score'])->name('admin.capability.score');
-        Route::post('/capability/{capability}/description',
-            [CapabilityController::class, 'description'])->name('admin.capability.description');
-        Route::get('/capability/{capability}/translation',
-            [CapabilityController::class, 'translation'])->name('admin.capability.translation');
+        Route::post(
+            '/capability/{capability}/description',
+            [CapabilityController::class, 'description']
+        )->name('admin.capability.description');
+        Route::get(
+            '/capability/{capability}/translation',
+            [CapabilityController::class, 'translation']
+        )->name('admin.capability.translation');
 
         Route::get('games', [GamesAdminController::class, 'index'])->name('admin.games');
         Route::post('games', [GamesAdminController::class, 'store'])->name('admin.games.store');

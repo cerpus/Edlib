@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Http\Libraries;
 
-use App\Libraries\ContentAuthorStorage;
 use App\H5PContent;
 use Illuminate\Support\Facades\Storage;
 
 class H5PFileVersioner
 {
-    protected $originalH5P, $newH5P;
+    protected $originalH5P;
+    protected $newH5P;
 
     public function __construct(H5PContent $originalH5P, H5PContent $newH5P)
     {

@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-
 interface H5PVideoInterface
 {
     public function upload($file, $fileHash);
@@ -22,5 +21,4 @@ interface H5PVideoInterface
     public function getVideo($videoId);
 
     public function downloadVideo($videoId);
-
 }

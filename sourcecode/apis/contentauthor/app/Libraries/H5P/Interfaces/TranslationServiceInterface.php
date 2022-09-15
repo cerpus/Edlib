@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Interfaces;
-
 
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 

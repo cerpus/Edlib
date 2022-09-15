@@ -13,7 +13,7 @@ class AddFetchFlagForMetadataFromDrupal extends Migration
      */
     public function up()
     {
-        Schema::table('ndla_id_mappers', function (Blueprint $table){
+        Schema::table('ndla_id_mappers', function (Blueprint $table) {
             $table->smallInteger('metadata_fetch')->nullable()->default(null);
         });
     }
@@ -25,7 +25,7 @@ class AddFetchFlagForMetadataFromDrupal extends Migration
      */
     public function down()
     {
-        Schema::table('ndla_id_mappers', function (Blueprint $table){
+        Schema::table('ndla_id_mappers', function (Blueprint $table) {
             $table->dropColumn('metadata_fetch');
         });
     }

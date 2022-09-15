@@ -2,7 +2,6 @@
 
 namespace App\Transformers;
 
-
 use Embed\Adapters\Adapter;
 use League\Fractal\TransformerAbstract;
 
@@ -23,5 +22,4 @@ class LinkMetadataTransformer extends TransformerAbstract
             'providerUrl' => $embed->getProviderUrl(),
         ];
     }
-
 }

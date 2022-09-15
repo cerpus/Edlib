@@ -26,7 +26,7 @@ class LtiBehaviorSettings
 
             if ($context === 'view') {
                 $validator = Validator::make($extBehaviorSettings, BehaviorSettingsDataObject::$rules);
-                $registerSettings = function ($behaviorSettings){
+                $registerSettings = function ($behaviorSettings) {
                     Session::flash(SessionKeys::EXT_BEHAVIOR_SETTINGS, BehaviorSettingsDataObject::create($behaviorSettings));
                 };
             } elseif ($context === 'editor') {
@@ -37,9 +37,9 @@ class LtiBehaviorSettings
                 }
 
                 $validator = Validator::make($extBehaviorSettings, EditorBehaviorSettingsDataObject::$rules);
-                $registerSettings = function ($editorBehaviorSettings) use ($listEntry){
+                $registerSettings = function ($editorBehaviorSettings) use ($listEntry) {
                     $editorSettings = EditorBehaviorSettingsDataObject::create($editorBehaviorSettings);
-                    if( !empty($editorBehaviorSettings['behaviorSettings'])){
+                    if (!empty($editorBehaviorSettings['behaviorSettings'])) {
                         $behaviorSettings = BehaviorSettingsDataObject::create($editorBehaviorSettings['behaviorSettings']);
                         $editorSettings->setBehaviorSettings($behaviorSettings);
                         Session::flash(SessionKeys::EXT_BEHAVIOR_SETTINGS, $behaviorSettings);

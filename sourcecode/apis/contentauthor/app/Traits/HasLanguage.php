@@ -23,7 +23,8 @@ trait HasLanguage
             ],
             [
                 'language_code' => $this->removeCountryCode(Session::get('locale', config('app.fallback_locale')))
-            ]);
+            ]
+        );
 
         return $contentLanguage->language_code;
     }
@@ -40,7 +41,8 @@ trait HasLanguage
             ],
             [
                 'language_code' => $language,
-            ]);
+            ]
+        );
 
         return $contentLanguage;
     }

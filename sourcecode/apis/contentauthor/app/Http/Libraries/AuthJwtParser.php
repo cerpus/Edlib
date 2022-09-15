@@ -14,7 +14,7 @@ abstract class AuthJwtParser
         $name = $default;
         if ($this->hasNonEmpty($identity, 'displayName')) {
             $name = $identity->displayName;
-        } else if ($this->hasNonEmpty($identity, 'firstName')
+        } elseif ($this->hasNonEmpty($identity, 'firstName')
             || $this->hasNonEmpty($identity, 'lastName')
         ) {
             if (!empty($identity->firstName)) {
@@ -60,5 +60,4 @@ abstract class AuthJwtParser
 
         return array_unique($verifiedEmails);
     }
-
 }

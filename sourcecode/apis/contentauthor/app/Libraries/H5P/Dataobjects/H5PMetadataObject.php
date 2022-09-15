@@ -12,12 +12,18 @@ class H5PMetadataObject
     use CreateTrait;
 
     public $title;
-    public $authors, $authorComments, $changes;
-    public $source, $yearFrom, $yearTo;
-    public $license, $licenseVersion, $licenseExtras;
+    public $authors;
+    public $authorComments;
+    public $changes;
+    public $source;
+    public $yearFrom;
+    public $yearTo;
+    public $license;
+    public $licenseVersion;
+    public $licenseExtras;
     public $defaultLanguage;
 
-    const H5PMetadataFieldsInOrder = [
+    public const H5PMetadataFieldsInOrder = [
         'title',
         'authors',
         'changes',

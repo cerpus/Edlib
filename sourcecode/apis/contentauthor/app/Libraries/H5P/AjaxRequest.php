@@ -101,11 +101,15 @@ class AjaxRequest
         $minor_version = $request->input('minorVersion');
 
         if ($name) {
-            $libraryData = $this->editor->getLibraryData($name, $major_version, $minor_version,
+            $libraryData = $this->editor->getLibraryData(
+                $name,
+                $major_version,
+                $minor_version,
                 $request->get('language'),
                 app(CerpusStorageInterface::class)->getAjaxPath(),
                 null,
-                $request->get('default-language'));
+                $request->get('default-language')
+            );
             $settings = $this->handleEditorBehaviorSettings($request, $name);
             if (!empty($settings['file']) && is_array($libraryData->css ?? null)) {
                 $libraryData->css[] = $settings['file'];
@@ -183,7 +187,6 @@ class AjaxRequest
             'styles' => $styles,
             'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
         ];
-
     }
 
     private function getTranslations(Request $request): array
@@ -212,7 +215,7 @@ class AjaxRequest
             exit;
         }
         $validator = new H5PContentValidator($this->core->h5pF, $this->core);
-        $validator->validateLibrary($libraryParameters, (object)array('options' => array($libraryParameters->library)));
+        $validator->validateLibrary($libraryParameters, (object)['options' => [$libraryParameters->library]]);
         return [
             'success' => true,
             'data' => $libraryParameters

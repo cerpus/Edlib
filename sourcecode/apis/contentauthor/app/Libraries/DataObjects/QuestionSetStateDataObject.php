@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 
@@ -13,7 +11,10 @@ class QuestionSetStateDataObject extends ContentStateDataObject
 {
     use CreateTrait;
 
-    public $links, $questionSetJsonData, $contentTypes, $questionset;
-    public $editmode, $presentation;
-
+    public $links;
+    public $questionSetJsonData;
+    public $contentTypes;
+    public $questionset;
+    public $editmode;
+    public $presentation;
 }

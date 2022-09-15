@@ -2,7 +2,6 @@
 
 namespace App\Libraries\DataObjects;
 
-
 class ContentTypeDataObject
 {
     public $externalSystemName = "contentauthor";
@@ -16,8 +15,7 @@ class ContentTypeDataObject
         string $contentType,
         string $title,
         ?string $icon
-    )
-    {
+    ) {
         $this->group = $group;
         $this->contentType = $contentType;
         $this->title = $title;

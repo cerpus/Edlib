@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class TestProgressSeeder extends Seeder
 {
-
     public function run()
     {
         $this->h5pContentUserData();

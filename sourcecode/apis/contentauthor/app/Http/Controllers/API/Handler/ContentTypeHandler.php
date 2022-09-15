@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\API\Handler;
 
-
 use App\Content;
 use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Http\Controllers\H5PController;
-use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 
 class ContentTypeHandler
 {
-
     private $data;
 
     public function storeQuestionset($questionsetData)
@@ -66,5 +63,4 @@ class ContentTypeHandler
         $h5p = app(H5PController::class);
         return $h5p->persistContent($request, $userId)->toArray();
     }
-
 }

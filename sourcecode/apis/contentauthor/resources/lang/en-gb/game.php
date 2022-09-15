@@ -1,4 +1,5 @@
 <?php
+
 return [
     "game" => "Game",
     "create-game" => "Create game",

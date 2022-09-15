@@ -115,6 +115,6 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->when(RequestId::class)
             ->needs(Logger::class)
-            ->give(fn() => Log::channel());
+            ->give(fn () => Log::channel());
     }
 }

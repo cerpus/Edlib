@@ -2,7 +2,6 @@
 
 namespace App\Gdpr\Handlers;
 
-
 use App\CollaboratorContext;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
 

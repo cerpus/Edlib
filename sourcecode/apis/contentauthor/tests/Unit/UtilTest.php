@@ -20,7 +20,7 @@ class UtilTest extends TestCase
         $jsonData = ['a' => ['b' => 'c']];
         $response = new Response(200, [], json_encode($jsonData, JSON_THROW_ON_ERROR));
 
-        $this->assertSame($jsonData, Util::handleEdlibNodeApiRequest(fn() => $response));
+        $this->assertSame($jsonData, Util::handleEdlibNodeApiRequest(fn () => $response));
     }
 
     /**
@@ -32,7 +32,7 @@ class UtilTest extends TestCase
 
         $this->expectException(JsonException::class);
 
-        Util::handleEdlibNodeApiRequest(fn() => $response);
+        Util::handleEdlibNodeApiRequest(fn () => $response);
     }
 
     /**

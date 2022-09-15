@@ -38,7 +38,6 @@ class CollaboratableTest extends TestCase
 
         $questionSet = $questionSet->fresh();
         $this->assertCount(1, $questionSet->collaborators);
-
     }
 
     public function test_collaboratable_model_setup_for_game()
@@ -120,7 +119,6 @@ class CollaboratableTest extends TestCase
         $this->assertCount(0, $questionSet->newCollaborators());
         $this->assertCount(0, $questionSet->collaborators()->where('email', 'c(at)d.com')->get());
         $this->assertCount(1, $questionSet->collaborators()->where('email', 'a@b.com')->get());
-
     }
 
     public function test_you_can_send_emails_to_new_collaborators()
@@ -184,7 +182,6 @@ class CollaboratableTest extends TestCase
         $questionSet->setCollaborators(['1@b.com', '2@d.com']);
         $questionSet = $questionSet->fresh();
         $this->assertEquals('1@b.com,2@d.com', $questionSet->getCollaboratorEmails());
-
     }
 
     public function test_feature_toggle_off()
@@ -212,5 +209,4 @@ class CollaboratableTest extends TestCase
             return $mail->hasTo('a@b.com');
         });
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 return [
     "link" => "Länk",
     "create-link" => "Skapa länk",

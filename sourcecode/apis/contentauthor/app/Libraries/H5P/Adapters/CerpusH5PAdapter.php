@@ -23,7 +23,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
      * Alter parameters before added to the H5PIntegrationObject
      *
      * @param string $parameters
-     * @param H5PAlterParametersSettingsDataObject|null $settings
      * @return string
      */
     public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
@@ -36,33 +35,25 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return self::getCoreExtraTags();
     }
 
-    /**
-     * @return array
-     */
+
     public function getEditorCss(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
+
     public function getEditorSettings(): array
     {
         return [];
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomEditorScripts(): array
     {
         return ['/js/videos/streamps.js', asset('js/videos/brightcove.js')];
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewScripts(): array
     {
         $scripts = [];
@@ -81,9 +72,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return $scripts;
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewCss(): array
     {
         return [];
@@ -108,10 +97,9 @@ class CerpusH5PAdapter implements H5PAdapterInterface
                 // Recurse for group.
                 $this->alterLibrarySemantics($field->fields, null, null, null);
             } elseif ($field->type == 'text' && isset($field->widget) && $field->widget == 'html') {
-
                 // Add MathML tags necessary for the NDLA MathML extension to HTML text widget.
                 if (!isset($field->tags)) {
-                    $field->tags = array();
+                    $field->tags = [];
                 }
                 $field->tags = array_merge($field->tags, $this->getEditorExtraTags($field));
             }

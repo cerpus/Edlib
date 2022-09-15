@@ -88,7 +88,7 @@ class ContentInfoController extends Controller
                 "limit" => $limit
             ],
             "resources" => array_map(
-                fn(CaEdlibResource $resource) => $this->resourceSerializer->serialize($resource),
+                fn (CaEdlibResource $resource) => $this->resourceSerializer->serialize($resource),
                 $resources,
             ),
         ];

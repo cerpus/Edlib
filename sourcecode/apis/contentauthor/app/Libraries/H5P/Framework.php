@@ -148,7 +148,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
                 return $response->getBody()->getContents();
             })
-            ->otherwise(fn($e) => $e instanceof GuzzleException ? null : throw $e)
+            ->otherwise(fn ($e) => $e instanceof GuzzleException ? null : throw $e)
             ->wait();
     }
 
@@ -157,7 +157,6 @@ class Framework implements \H5PFrameworkInterface, Result
      *
      * @param string $machineName
      * @param string $tutorialUrl
-     *
      */
     public function setLibraryTutorialUrl($machineName, $tutorialUrl)
     {
@@ -207,7 +206,7 @@ class Framework implements \H5PFrameworkInterface, Result
      *   Translated string
      * TODO: Implement this for real....
      */
-    public function t($message, $replacements = array())
+    public function t($message, $replacements = [])
     {
         foreach ($replacements as $key => $replacement) {
             $firstCharacter = $key[0];
@@ -274,10 +273,10 @@ class Framework implements \H5PFrameworkInterface, Result
             ->orderBy('patch_version')
             ->getQuery()
             ->get()
-            ->mapToGroups(function ($item){
+            ->mapToGroups(function ($item) {
                 return [$item->name => $item];
             })
-            ->sortBy(function ($item){
+            ->sortBy(function ($item) {
                 return $item->first()->title;
             })
             ->toArray();
@@ -329,14 +328,10 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function getAdminUrl()
     {
-
     }
 
     /**
      * Set the URL to the library admin page
-     *
-     * @param string $message
-     *   URL to admin page
      */
     public function setAdminUrl($url)
     {
@@ -464,28 +459,6 @@ class Framework implements \H5PFrameworkInterface, Result
      * Store data about a library
      *
      * Also fills in the libraryId in the libraryData object if the object is new
-     *
-     * @param array $libraryData
-     *   Associative array containing:
-     *   - libraryId: The id of the library if it is an existing library.
-     *   - title: The library's name
-     *   - machineName: The library machineName
-     *   - majorVersion: The library's majorVersion
-     *   - minorVersion: The library's minorVersion
-     *   - patchVersion: The library's patchVersion
-     *   - runnable: 1 if the library is a content type, 0 otherwise
-     *   - fullscreen(optional): 1 if the library supports fullscreen, 0 otherwise
-     *   - embedTypes(optional): list of supported embed types
-     *   - preloadedJs(optional): list of associative arrays containing:
-     *     - path: path to a js file relative to the library root folder
-     *   - preloadedCss(optional): list of associative arrays containing:
-     *     - path: path to css file relative to the library root folder
-     *   - dropLibraryCss(optional): list of associative arrays containing:
-     *     - machineName: machine name for the librarys that are to drop their css
-     *   - semantics(optional): Json describing the content structure for the library
-     *   - language(optional): associative array containing:
-     *     - languageCode: Translation in json format
-     * TODO: Implement this for real....
      */
     public function saveLibraryData(&$library, $new = true)
     {
@@ -654,8 +627,6 @@ class Framework implements \H5PFrameworkInterface, Result
     /**
      * Save what libraries a library is dependending on
      *
-     * @param int $libraryId
-     *   Library Id for the library we're saving dependencies for
      * @param array $dependencies
      *   List of dependencies as associative arrays containing:
      *   - machineName: The library machineName
@@ -674,15 +645,17 @@ class Framework implements \H5PFrameworkInterface, Result
             $libraries = H5PLibrary::fromLibrary([$dependency['machineName'],$dependency['majorVersion'],$dependency['minorVersion']])
                 ->select('id')
                 ->get()
-                ->each(function ($library) use ($library_id, $dependency_type){
-                    H5PLibraryLibrary::updateOrCreate([
+                ->each(function ($library) use ($library_id, $dependency_type) {
+                    H5PLibraryLibrary::updateOrCreate(
+                        [
                         'library_id' => $library_id,
                         'required_library_id' => $library['id'],
                         'dependency_type' => $dependency_type
                     ],
-                    [
-                        'dependency_type' => $dependency_type
-                    ]);
+                        [
+                            'dependency_type' => $dependency_type
+                        ]
+                    );
                 });
         }
     }
@@ -770,12 +743,14 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function saveLibraryUsage($contentId, $librariesInUse)
     {
-        $dropLibraryCssList = array();
+        $dropLibraryCssList = [];
 
         foreach ($librariesInUse as $dependency) {
             if (!empty($dependency['library']['dropLibraryCss'])) {
-                $dropLibraryCssList = array_merge($dropLibraryCssList,
-                    explode(', ', $dependency['library']['dropLibraryCss']));
+                $dropLibraryCssList = array_merge(
+                    $dropLibraryCssList,
+                    explode(', ', $dependency['library']['dropLibraryCss'])
+                );
             }
         }
 
@@ -1176,7 +1151,6 @@ class Framework implements \H5PFrameworkInterface, Result
      * @param $sql
      * @param array $params
      * @param bool $returnFirst
-     * @return mixed
      */
     private function runQuery($sql, $params = [], $returnFirst = false)
     {
@@ -1202,7 +1176,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
     public function saveCachedAssets($key, $libraries)
     {
-        foreach ($libraries as $library){
+        foreach ($libraries as $library) {
             H5PLibrariesCachedAssets::create([
                 'hash' => $key,
                 'library_id' => $library['id']
@@ -1213,7 +1187,7 @@ class Framework implements \H5PFrameworkInterface, Result
     public function deleteCachedAssets($library_id)
     {
         $cachedAssets = H5PLibrariesCachedAssets::where('library_id', $library_id)->get();
-        $cachedAssets->each(function ($asset){
+        $cachedAssets->each(function ($asset) {
             $asset->delete();
         });
         return $cachedAssets->pluck('hash')->toArray();
@@ -1232,8 +1206,12 @@ class Framework implements \H5PFrameworkInterface, Result
             })
             ->transform(function ($library) {
                 $item = new \stdClass();
-                $item->key = sprintf("%s %s.%s", $library->name, $library->major_version,
-                    $library->minor_version);
+                $item->key = sprintf(
+                    "%s %s.%s",
+                    $library->name,
+                    $library->major_version,
+                    $library->minor_version
+                );
                 $item->count = $library->contents()->count();
 
                 return $item;

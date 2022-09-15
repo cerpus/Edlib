@@ -2,7 +2,6 @@
 
 namespace App\Transformers;
 
-
 use App\QuestionSet;
 use Carbon\Carbon;
 use League\Fractal\Resource\Collection;
@@ -11,7 +10,6 @@ use League\Fractal\TransformerAbstract;
 
 class QuestionSetsTransformer extends TransformerAbstract
 {
-
     protected array $defaultIncludes = [
         'created',
         'updated',
@@ -36,7 +34,7 @@ class QuestionSetsTransformer extends TransformerAbstract
 
     private function getDate(QuestionSet $questionSet, $field): Item
     {
-        return $this->item(Carbon::parse($questionSet->$field), new DateTransformer);
+        return $this->item(Carbon::parse($questionSet->$field), new DateTransformer());
     }
 
     public function includeCreated(QuestionSet $set): Item
@@ -60,6 +58,6 @@ class QuestionSetsTransformer extends TransformerAbstract
 
     public function includeQuestions(QuestionSet $questionSet): Collection
     {
-        return $this->collection($questionSet->questions, new QuestionSetsQuestionTransformer);
+        return $this->collection($questionSet->questions, new QuestionSetsQuestionTransformer());
     }
 }

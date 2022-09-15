@@ -3,10 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\H5PContent;
-use App\Article;
-use App\Link;
-use App\Game;
 
 class AddPublishDraftFlag extends Migration
 {

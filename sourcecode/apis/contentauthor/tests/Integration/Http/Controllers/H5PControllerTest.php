@@ -19,7 +19,8 @@ use Tests\TestCase;
 
 class H5PControllerTest extends TestCase
 {
-    use RefreshDatabase, MockAuthApi;
+    use RefreshDatabase;
+    use MockAuthApi;
 
     public function testCreate(): void
     {

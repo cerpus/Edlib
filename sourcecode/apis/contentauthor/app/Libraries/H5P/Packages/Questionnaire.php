@@ -74,10 +74,7 @@ class Questionnaire extends H5PBase
         return $config;
     }
 
-    /**
-     * @param object $config
-     * @return object
-     */
+
     protected function setUserStateToUnfinished(object $config): object
     {
         $modifiedContentConfigs = (object) [];
@@ -100,10 +97,7 @@ class Questionnaire extends H5PBase
         return $config;
     }
 
-    /**
-     * @param object $config
-     * @return object
-     */
+
     protected function setSaveFrequencyToOneSecond(object $config): object
     {
         if ($config->saveFreq !== false) {

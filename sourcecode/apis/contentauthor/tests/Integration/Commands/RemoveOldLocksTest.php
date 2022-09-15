@@ -18,7 +18,8 @@ class RemoveOldLocksTest extends TestCase
             [
                 'created_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES),
                 'updated_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES - 2),
-            ]);
+            ]
+        );
 
         $this->assertCount(2, ContentLock::all());
 
@@ -30,7 +31,8 @@ class RemoveOldLocksTest extends TestCase
             [
                 'created_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES + 1),
                 'updated_at' => Carbon::now()->subMinutes(ContentLock::EXPIRES + 1),
-            ]);
+            ]
+        );
 
         $this->assertCount(5, ContentLock::all());
 

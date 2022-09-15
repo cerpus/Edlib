@@ -35,7 +35,7 @@ class GamesAdminController extends Controller
         $extractPath = '/tmp/millionaire/' . $version;
 
         $zip = new ZipArchive();
-        if($zip->open($gameFile->path())){
+        if ($zip->open($gameFile->path())) {
             $zip->extractTo($extractPath);
             $zip->close();
         }
@@ -49,8 +49,11 @@ class GamesAdminController extends Controller
         });
 
         // update database
-        $gameType = Gametype::ofGameType($appManifest->getName(), $appManifest->getMajorVersion(),
-            $appManifest->getMinorVersion())->first();
+        $gameType = Gametype::ofGameType(
+            $appManifest->getName(),
+            $appManifest->getMajorVersion(),
+            $appManifest->getMinorVersion()
+        )->first();
 
         $action = 'updated';
         if (!$gameType) {
@@ -68,7 +71,9 @@ class GamesAdminController extends Controller
         // Clean up temp files
         Storage::disk('tmp')->deleteDirectory('millionaire/' . $version);
 
-        return redirect('/admin/games')->with('message',
-            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.');
+        return redirect('/admin/games')->with(
+            'message',
+            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.'
+        );
     }
 }

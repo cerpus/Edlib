@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Libraries;
 
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -51,8 +50,7 @@ class ContentAuthorStorage
         string $sourceFolder,
         string $destinationFolder,
         array $ignoredFiles = []
-    )
-    {
+    ) {
         collect($sourceDisk->listContents($sourceFolder, true))
             ->filter(function (StorageAttributes $fileProperties) use ($ignoredFiles) {
                 $file = basename($fileProperties->path());

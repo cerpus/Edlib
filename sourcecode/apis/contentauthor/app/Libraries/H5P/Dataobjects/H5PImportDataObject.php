@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Dataobjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 

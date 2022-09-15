@@ -53,7 +53,7 @@ class H5PReportController extends Controller
 
                     $returnElement = $this->updateOrCreateAnswerType($element, $returnElement);
 
-                    array_push($return, $returnElement);
+                    $return[] = $returnElement;
                 }
             }
             return $return;
@@ -72,8 +72,6 @@ class H5PReportController extends Controller
 
     /**
      * @param $elements
-     * @param  array  $answer
-     * @return array
      */
     private function updateOrCreateAnswerType($elements, array $answer): array
     {

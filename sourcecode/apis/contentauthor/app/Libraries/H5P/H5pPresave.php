@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Libraries\H5P;
 
 use Illuminate\Contracts\Filesystem\Cloud;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use InvalidArgumentException;
 
 /**
@@ -54,7 +53,7 @@ class H5pPresave
     public function getAllLibrariesWithScripts(): array
     {
         return collect($this->fs->directories())
-            ->filter(fn(string $dir): bool => $this->fs->exists("$dir/presave.js"))
+            ->filter(fn (string $dir): bool => $this->fs->exists("$dir/presave.js"))
             ->values()
             ->toArray();
     }

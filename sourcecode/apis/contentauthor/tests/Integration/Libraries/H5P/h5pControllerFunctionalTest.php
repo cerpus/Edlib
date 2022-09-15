@@ -18,16 +18,15 @@ use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
-use Ramsey\Uuid\Uuid;
 use stdClass;
 use Tests\Helpers\MockMQ;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
-
 class h5pControllerFunctionalTest extends TestCase
 {
-    use RefreshDatabase, MockMQ;
+    use RefreshDatabase;
+    use MockMQ;
 
     protected array $fakedEvents = [
         ContentCreating::class,
@@ -45,7 +44,6 @@ class h5pControllerFunctionalTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function addAuthorToParameters1()
     {
@@ -57,7 +55,6 @@ class h5pControllerFunctionalTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function addAuthorToParameters2()
     {
@@ -69,7 +66,6 @@ class h5pControllerFunctionalTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function addAuthorToParameters3()
     {
@@ -81,7 +77,6 @@ class h5pControllerFunctionalTest extends TestCase
 
     /**
      * @test
-     *
      */
     public function storeContent()
     {

@@ -2,11 +2,10 @@
 
 namespace App\Libraries\Games\Millionaire;
 
-
 class AppManifest
 {
     private $manifest;
-    static $NAME = 'CERPUS.MILLIONAIRE';
+    public static $NAME = 'CERPUS.MILLIONAIRE';
 
     /**
      * AppManifest constructor.
@@ -39,6 +38,6 @@ class AppManifest
 
     public function getMinorVersion()
     {
-        return explode('.', $this->manifest->description)[1];;
+        return explode('.', $this->manifest->description)[1];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P;
 
-
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -10,7 +9,6 @@ use App\Http\Controllers\Admin\Capability;
 
 class EditorAjax implements \H5PEditorAjaxInterface
 {
-
     /**
      * Gets latest library versions that exists locally
      *
@@ -46,7 +44,7 @@ class EditorAjax implements \H5PEditorAjaxInterface
      *
      * @return array|object|null Returns results from querying the database
      */
-    public function getContentTypeCache($machineName = NULL)
+    public function getContentTypeCache($machineName = null)
     {
         if ($machineName) {
             return (object)H5PLibrariesHubCache::where('name', $machineName)->first()->only(['id', 'is_recommended']);

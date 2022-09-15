@@ -14,7 +14,8 @@ use TypeError;
 
 class H5PProgressTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers;
+    use RefreshDatabase;
+    use TestHelpers;
 
     public function assertPreConditions(): void
     {
@@ -53,8 +54,10 @@ class H5PProgressTest extends TestCase
         $expectedResult->success = false;
         $expectedResult->message = "Missing parameters";
         $h5pprogress = $this->getH5PProgress();
-        $this->assertEquals($expectedResult,
-            $h5pprogress->storeProgress(new Request(['action' => "h5p_contents_user_data"])));
+        $this->assertEquals(
+            $expectedResult,
+            $h5pprogress->storeProgress(new Request(['action' => "h5p_contents_user_data"]))
+        );
     }
 
     public function testShouldUpdate()

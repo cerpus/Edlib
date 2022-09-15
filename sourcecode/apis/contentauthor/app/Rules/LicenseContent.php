@@ -11,7 +11,6 @@ class LicenseContent implements Rule
      * Determine if the provided 'share' value is valid
      *
      * @param string $attribute
-     * @param mixed $value
      * @return bool
      */
     public function passes($attribute, $value)

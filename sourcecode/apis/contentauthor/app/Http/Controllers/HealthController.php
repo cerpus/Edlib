@@ -11,7 +11,7 @@ class HealthController extends Controller
 {
     public function index()
     {
-        $randomValue = rand(1,100000000);
+        $randomValue = rand(1, 100000000);
         $cacheKey = 'healthcheck-' . $randomValue;
 
         Cache::put($cacheKey, $randomValue, 60);

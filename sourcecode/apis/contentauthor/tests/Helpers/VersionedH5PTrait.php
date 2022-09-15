@@ -20,7 +20,6 @@ trait VersionedH5PTrait
                 $directory = "/content/$contentId/$dirName";
                 Storage::disk()->makeDirectory($directory);
             });
-
     }
 
     public function deleteDirectoriesAfterTest()

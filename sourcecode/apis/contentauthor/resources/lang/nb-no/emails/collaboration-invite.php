@@ -1,4 +1,5 @@
 <?php
+
 return [
     'email-title' => "Du er invitert til samarbeid i :originSystemName",
     'you-have-been-invited' => 'Du er invitert av :inviterName til å samarbeide i :originSystemName om ":contentTitle".',

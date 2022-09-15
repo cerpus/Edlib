@@ -16,7 +16,6 @@ class CreateQuestionSetTagsTable extends Migration
         Schema::table('question_sets', function (Blueprint $table) {
             $table->text('tags')->default('');
         });
-
     }
 
     /**

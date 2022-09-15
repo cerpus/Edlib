@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\H5POption;
 
@@ -30,7 +28,7 @@ class AddNdlaCssTimestamp extends Migration
     public function down()
     {
         $ndlaCustomCssTimestamp = H5POption::where('option_name', H5POption::NDLA_CUSTOM_CSS_TIMESTAMP)->first();
-        if ($ndlaCustomCssTimestamp){
+        if ($ndlaCustomCssTimestamp) {
             $ndlaCustomCssTimestamp->delete();
         }
     }

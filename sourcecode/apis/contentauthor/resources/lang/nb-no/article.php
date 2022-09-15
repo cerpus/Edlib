@@ -1,4 +1,5 @@
 <?php
+
 return [
     'Article' => 'Artikkel',
     'create-article' => 'Ny artikkel',

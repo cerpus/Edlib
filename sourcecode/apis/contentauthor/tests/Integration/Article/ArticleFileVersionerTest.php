@@ -15,7 +15,8 @@ class ArticleFileVersionerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $originalArticle, $newArticle;
+    protected $originalArticle;
+    protected $newArticle;
 
     public function setUpOriginal()
     {

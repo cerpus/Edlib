@@ -45,13 +45,15 @@ use Illuminate\Support\Facades\Session;
  */
 abstract class Content extends Model
 {
+    use HasLanguage;
+    use HasTranslations;
+    use Attributable;
+    use Versionable;
     public const TYPE_ARTICLE = 'article';
     public const TYPE_GAME = 'game';
     public const TYPE_H5P = 'h5p';
     public const TYPE_LINK = 'link';
     public const TYPE_QUESTIONSET = 'questionset';
-
-    use HasLanguage, HasTranslations, Attributable, Versionable;
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable
@@ -140,7 +142,6 @@ abstract class Content extends Model
             if ($user) {
                 $ownerName = trim(implode(' ', [$user->getFirstName() ?? '', $user->getLastName() ?? '']));
             }
-
         } catch (Exception $e) {
         }
 
@@ -179,7 +180,7 @@ abstract class Content extends Model
     {
         return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
     }
-    
+
     public function canUpdateOriginalResource(mixed $userId): bool
     {
         return $this->isOwner($userId) || $this->isCollaborator();
@@ -213,7 +214,6 @@ abstract class Content extends Model
     /**
      * Return a sorted, lowercased, comma-separated list of collaborators in the request
      *
-     * @param Request $request
      * @return string
      */
     protected function getRequestCollaborators(Request $request)
@@ -284,17 +284,17 @@ abstract class Content extends Model
 
     public function hasLock()
     {
-        return (new ContentLock)->hasLock($this->id);
+        return (new ContentLock())->hasLock($this->id);
     }
 
     public function lock()
     {
-        (new ContentLock)->lock($this->id);
+        (new ContentLock())->lock($this->id);
     }
 
     public function unlock()
     {
-        (new ContentLock)->unlock($this->id);
+        (new ContentLock())->unlock($this->id);
     }
 
     /**
@@ -425,7 +425,7 @@ abstract class Content extends Model
      *
      * Poor mans morphism...
      */
-    static public function findContentById($contentId)
+    public static function findContentById($contentId)
     {
         if ((preg_match('/^\d+$/', $contentId) && ($content = H5PContent::find($contentId))) ||
             ($content = Article::find($contentId)) ||
@@ -483,8 +483,8 @@ abstract class Content extends Model
             $this->updated_at->toDateTimeImmutable(),
             CollaboratorContext::getResourceContextCollaborators($this->id),
             $this->collaborators
-                ->map(fn($collaborator) => strtolower($collaborator->email))
-                ->filter(fn($email) => $email !== "")
+                ->map(fn ($collaborator) => strtolower($collaborator->email))
+                ->filter(fn ($email) => $email !== "")
                 ->sort()
                 ->values()
                 ->toArray(),

@@ -15,7 +15,8 @@ use Tests\Helpers\MockVersioningTrait;
 
 class LockStatusTest extends TestCase
 {
-    use RefreshDatabase, MockVersioningTrait;
+    use RefreshDatabase;
+    use MockVersioningTrait;
 
     public function testLockStatus()
     {
@@ -45,7 +46,8 @@ class LockStatusTest extends TestCase
                 'id' => '0800e3f5-d7a7-4add-a12a-16df86462837',
                 'owner_id' => $user->auth_id,
                 'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f'
-            ]);
+            ]
+        );
 
         $newArticle = Article::factory()->create([
             'id' => '9655b7b5-0f2a-4664-a191-09d874a50cab',
@@ -81,7 +83,8 @@ class LockStatusTest extends TestCase
                 'id' => '0800e3f5-d7a7-4add-a12a-16df86462837',
                 'owner_id' => $user->auth_id,
                 'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f'
-            ]);
+            ]
+        );
 
         $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,

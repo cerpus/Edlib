@@ -259,23 +259,23 @@ class H5PContent extends Content implements VersionableObject
         $query->where('bulk_calculated', $type);
     }
 
-    function getId(): string
+    public function getId(): string
     {
         return $this->id;
     }
 
-    function setParentVersionId(string $parentVersionId): bool
+    public function setParentVersionId(string $parentVersionId): bool
     {
         // Is not tracked
         return false;
     }
 
-    function setVersionId(string $versionId)
+    public function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
     }
 
-    function getOwnerId(): string
+    public function getOwnerId(): string
     {
         return $this->user_id;
     }
@@ -324,11 +324,11 @@ class H5PContent extends Content implements VersionableObject
         if ($library->has_icon) {
             $h5pFramework = app(H5PFrameworkInterface::class);
 
-            $library_folder = H5PCore::libraryToString(array(
+            $library_folder = H5PCore::libraryToString([
                 'machineName' => $library->machine_name,
                 'majorVersion' => $library->major_version,
                 'minorVersion' => $library->minor_version
-            ), true);
+            ], true);
 
 
             $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');

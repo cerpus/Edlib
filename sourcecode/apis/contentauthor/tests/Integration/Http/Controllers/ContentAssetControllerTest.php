@@ -10,7 +10,8 @@ use Tests\TestCase;
 
 class ContentAssetControllerTest extends TestCase
 {
-    private $testDisk, $fakedisk;
+    private $testDisk;
+    private $fakedisk;
 
     protected function setUp(): void
     {

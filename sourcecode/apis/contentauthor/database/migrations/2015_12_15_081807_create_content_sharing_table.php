@@ -12,8 +12,7 @@ class CreateContentSharingTable extends Migration
      */
     public function up()
     {
-        Schema::create('cerpus_contents_shares', function(Blueprint $table)
-        {
+        Schema::create('cerpus_contents_shares', function (Blueprint $table) {
             $table->integer('h5p_id')->unsigned();
             $table->text('email', 65535);
             $table->dateTime('created_at')->default('0000-00-00 00:00:00');

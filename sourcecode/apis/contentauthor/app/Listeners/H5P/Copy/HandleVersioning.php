@@ -4,16 +4,15 @@ namespace App\Listeners\H5P\Copy;
 
 use App\Libraries\Versioning\VersionableObject;
 use App\Listeners\AbstractHandleVersioning;
-use Illuminate\Support\Facades\Log;
 use App\Events\H5PWasCopied;
-use Cerpus\VersionClient\VersionData;
 use Cerpus\VersionClient\VersionClient;
 
 class HandleVersioning extends AbstractHandleVersioning
 {
     protected $versionClient;
 
-    protected $originalH5P, $newH5P;
+    protected $originalH5P;
+    protected $newH5P;
 
     public function __construct(VersionClient $versionClient)
     {

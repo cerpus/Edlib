@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Image;
 
-
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
@@ -13,7 +12,6 @@ use Illuminate\Http\File;
 
 class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProviderInterface
 {
-
     private $client;
     /** @var CerpusStorageInterface */
     private $storage;
@@ -27,10 +25,10 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         'height' => 'height',
     ];
 
-    const FIND_IMAGES_URL = '/image-api/v2/images';
-    const GET_IMAGE_URL = '/image-api/v2/images/%s';
-    const GET_IMAGE_ID = '/image-api/raw/id/%s';
-    const GET_IMAGE_NAME = '/image-api/raw/%s';
+    public const FIND_IMAGES_URL = '/image-api/v2/images';
+    public const GET_IMAGE_URL = '/image-api/v2/images/%s';
+    public const GET_IMAGE_ID = '/image-api/raw/id/%s';
+    public const GET_IMAGE_NAME = '/image-api/raw/%s';
 
     public function __construct(Client $client)
     {
@@ -56,7 +54,6 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         $images = $request->getBody()->getContents();
 
         return \response()->json(json_decode($images));
-
     }
 
     public function getImage($imageId)
@@ -149,7 +146,7 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
 
     public function alterImageProperties($imageProperties, bool $includeWidthQuery): object
     {
-        if (empty($imageProperties->path) ){
+        if (empty($imageProperties->path)) {
             return $imageProperties;
         }
 
@@ -158,14 +155,14 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         $query = [
             'width' => config('h5p.image.properties.width'),
         ];
-        if(!empty($url['query'])){
+        if (!empty($url['query'])) {
             parse_str($url['query'], $existingQuery);
             $query = array_merge($query, $existingQuery);
         }
-        if (!$includeWidthQuery){
+        if (!$includeWidthQuery) {
             unset($query['width']);
         }
-        if (!empty($imageProperties->externalId) && strpos($imageProperties->path, "/" . $imageProperties->externalId . "?") !== false){
+        if (!empty($imageProperties->externalId) && strpos($imageProperties->path, "/" . $imageProperties->externalId . "?") !== false) {
             $imageProperties->path = $this->getImageUrlFromId($imageProperties->externalId, $query, true);
         } else {
             $imageProperties->path = $this->getImageUrlFromName(basename($url['path']), $query, true);

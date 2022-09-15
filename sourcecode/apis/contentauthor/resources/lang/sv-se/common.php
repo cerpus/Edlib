@@ -1,4 +1,5 @@
 <?php
+
 return [
     'cancel' => 'Avbryt',
     'save-and-close' => 'Spara och stäng',

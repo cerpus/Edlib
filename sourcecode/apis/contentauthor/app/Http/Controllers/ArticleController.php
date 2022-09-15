@@ -30,10 +30,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
@@ -91,7 +91,8 @@ class ArticleController extends Controller
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
-        $editorSetup = EditorConfigObject::create([
+        $editorSetup = EditorConfigObject::create(
+            [
                 'userPublishEnabled' => $adapter->isUserPublishEnabled(),
                 'canPublish' => true,
                 'canList' => true,
@@ -237,7 +238,8 @@ class ArticleController extends Controller
             'article' => $article->toArray(),
         ]);
 
-        $editorSetup = EditorConfigObject::create([
+        $editorSetup = EditorConfigObject::create(
+            [
                 'userPublishEnabled' => Content::isUserPublishEnabled(),
                 'canPublish' => $article->canPublish($request),
                 'canList' => $article->canList($request),

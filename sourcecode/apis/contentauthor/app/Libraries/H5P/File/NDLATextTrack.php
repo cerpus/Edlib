@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\File;
-
 
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
@@ -12,7 +10,6 @@ use GuzzleHttp\Client;
 
 class NDLATextTrack implements H5PExternalProviderInterface
 {
-
     private $client;
     /** @var CerpusStorageInterface */
     private $storage;
@@ -48,7 +45,7 @@ class NDLATextTrack implements H5PExternalProviderInterface
         $fileName = md5($source);
         $filePath = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $content['id'], $this->getType(), $fileName, $extension);
 
-        if( !$this->storage->storeContentOnDisk($filePath, fopen($tempFile, "r"))){
+        if (!$this->storage->storeContentOnDisk($filePath, fopen($tempFile, "r"))) {
             throw new Exception("Could not store file on disk");
         }
         unlink($tempFile);
@@ -57,7 +54,6 @@ class NDLATextTrack implements H5PExternalProviderInterface
             'path' => sprintf(ContentStorageSettings::CONTENT_LOCAL_PATH, $this->getType(), $fileName, $extension),
             'mime' => $values['mime'],
         ];
-
     }
 
     public function getType(): string

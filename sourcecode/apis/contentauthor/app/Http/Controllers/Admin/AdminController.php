@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Libraries\ContentAuthorStorage;
-use Illuminate\Support\Facades\DB;
-use Exception;
-use H5PCore;
-use H5peditor;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\ContentLock;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\AdminConfig;
 use App\Http\Controllers\Controller;

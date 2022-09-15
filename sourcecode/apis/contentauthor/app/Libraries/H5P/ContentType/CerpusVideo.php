@@ -37,7 +37,6 @@ class CerpusVideo extends BaseH5PContent
             if (strstr($license, License::LICENSE_BY)) {
                 $this->content->params->sources[0]->copyright->version = '4.0';
                 $this->content->metadata->licenseVersion = '4.0';
-
             } else {
                 unset($this->content->params->sources[0]->copyright->version);
                 $this->content->metadata->licenseVersion = '';
@@ -76,5 +75,4 @@ class CerpusVideo extends BaseH5PContent
 
         return $this;
     }
-
 }

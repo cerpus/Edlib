@@ -50,19 +50,16 @@ class NdlaIdMapper extends Model
     public static function articleByNdlaId($id)
     {
         return self::where('ndla_id', $id)->where('type', 'article')->first();
-
     }
 
     public static function articlesByNdlaId($id)
     {
         return self::where('ndla_id', $id)->where('type', 'article')->get();
-
     }
 
     public static function h5pByNdlaId($id)
     {
         return self::where('ndla_id', $id)->where('type', 'h5p')->first();
-
     }
 
     public static function byNdlaIdAndLanguage($id, $language)

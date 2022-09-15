@@ -75,7 +75,7 @@ class H5PServiceProvider extends ServiceProvider
         $this->app
             ->when(H5pPresave::class)
             ->needs(Cloud::class)
-            ->give(fn() => Storage::disk('h5p-presave'));
+            ->give(fn () => Storage::disk('h5p-presave'));
 
         $this->app->bind(H5PVideoInterface::class, function () {
             $adapter = app(H5PAdapterInterface::class);
@@ -168,7 +168,7 @@ class H5PServiceProvider extends ServiceProvider
             return $instance ?? null;
         });
 
-        $this->app->singletonIf('H5PFilesystem', fn() => Storage::disk());
+        $this->app->singletonIf('H5PFilesystem', fn () => Storage::disk());
 
         $this->app->bind(CerpusStorageInterface::class, function ($app, $config) {
             /** @var App $app */
@@ -186,11 +186,11 @@ class H5PServiceProvider extends ServiceProvider
             $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
             switch ($adapterTarget) {
                 case 'ndla':
-                    $adapter = new NDLAH5PAdapter;
+                    $adapter = new NDLAH5PAdapter();
                     break;
                 case 'cerpus':
                 default:
-                    $adapter = new CerpusH5PAdapter;
+                    $adapter = new CerpusH5PAdapter();
                     break;
             }
             if (Session::has('adapterMode')) {

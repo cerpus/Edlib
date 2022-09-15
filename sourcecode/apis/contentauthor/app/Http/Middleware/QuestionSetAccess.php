@@ -12,16 +12,14 @@ class QuestionSetAccess
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
     public function handle($request, Closure $next)
     {
         $game = QuestionSet::findOrFail($request->id);
-        if($game->isOwner(Session::get('authId', false))
+        if ($game->isOwner(Session::get('authId', false))
             || $game->isCollaborator()
             || $game->isCopyable()
-            || $game->isExternalCollaborator()){
+            || $game->isExternalCollaborator()) {
             return $next($request);
         }
 

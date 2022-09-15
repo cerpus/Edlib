@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\H5PContent;
 use App\Http\Controllers\Controller;
 use App\QuestionSet;
 
@@ -38,6 +37,5 @@ class QuestionSetInfoController extends Controller
         }
 
         return $response;
-
     }
 }

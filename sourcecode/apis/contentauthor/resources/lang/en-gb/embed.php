@@ -1,4 +1,5 @@
 <?php
+
 return [
     "link" => "Link",
     "create-link" => "Create link",

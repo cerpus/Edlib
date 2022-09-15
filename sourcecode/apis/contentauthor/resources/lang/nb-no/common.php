@@ -1,4 +1,5 @@
 <?php
+
 return [
     'cancel' => 'Avbryt',
     'save-and-close' => 'Lagre og lukk',

@@ -8,6 +8,7 @@ use App\Libraries\DataObjects\ContentLockDataObject;
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class LockStatusController extends Controller
@@ -37,7 +38,7 @@ class LockStatusController extends Controller
         if (!$lockData->isLocked) {
             $currentEditUrl = $content->getEditUrl();
             $latestEditUrl = $content->getEditUrl(true);
-            if ($currentEditUrl === $latestEditUrl ){
+            if ($currentEditUrl === $latestEditUrl) {
                 (new ContentLock())->lock($id);
             }
             $lockData->editUrl = $latestEditUrl;
@@ -49,7 +50,7 @@ class LockStatusController extends Controller
     public function pulse($id)
     {
         $userId = Session::get('authId', false);
-        if (config('feature.content-locking') !== true || empty($userId)){
+        if (config('feature.content-locking') !== true || empty($userId)) {
             abort(404);
         }
 

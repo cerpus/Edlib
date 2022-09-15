@@ -14,5 +14,5 @@ class H5POption extends Model
 
     public $timestamps = false;
 
-    const NDLA_CUSTOM_CSS_TIMESTAMP = "NDLA_CUSTOM_CSS_TIMESTAMP";
+    public const NDLA_CUSTOM_CSS_TIMESTAMP = "NDLA_CUSTOM_CSS_TIMESTAMP";
 }

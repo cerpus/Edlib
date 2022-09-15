@@ -1,4 +1,5 @@
 <?php
+
 return [
     'locked-title' => "Content is locked",
     'article-is-locked' => "The content is locked for editing.",

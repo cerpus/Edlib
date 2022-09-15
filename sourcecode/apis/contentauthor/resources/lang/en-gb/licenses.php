@@ -1,4 +1,5 @@
 <?php
+
 return [
     'PRIVATE' => 'Private',
     'CC0' => 'Creative Commons Zero',

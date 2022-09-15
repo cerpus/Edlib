@@ -12,6 +12,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use stdClass;
+
 use function preg_match;
 use function sprintf;
 use function str_split;

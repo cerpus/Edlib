@@ -12,16 +12,14 @@ class GameAccess
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
      */
     public function handle($request, Closure $next)
     {
         $game = Game::findOrFail($request->id);
-        if($game->isOwner(Session::get('authId', false))
+        if ($game->isOwner(Session::get('authId', false))
         || $game->isCollaborator()
         || $game->isCopyable()
-        || $game->isExternalCollaborator(Session::get('authId', false))){
+        || $game->isExternalCollaborator(Session::get('authId', false))) {
             return $next($request);
         }
 

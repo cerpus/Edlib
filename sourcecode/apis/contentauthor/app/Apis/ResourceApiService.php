@@ -26,7 +26,8 @@ class ResourceApiService
      */
     public function getCollaborators(string $externalSystemName, string $externalSystemId): array
     {
-        $data = Util::handleEdlibNodeApiRequest(function () use ($externalSystemName, $externalSystemId) {
+        $data = Util::handleEdlibNodeApiRequest(
+            function () use ($externalSystemName, $externalSystemId) {
             return $this->client
                 ->getAsync("/v1/resources-from-external/$externalSystemName/$externalSystemId/collaborators")
                 ->wait();

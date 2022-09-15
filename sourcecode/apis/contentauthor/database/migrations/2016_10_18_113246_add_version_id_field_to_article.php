@@ -13,7 +13,7 @@ class AddVersionIdFieldToArticle extends Migration
     public function up()
     {
         Schema::table('articles', function (Blueprint $table) {
-           $table->uuid('version_id')->after('id')->nullable();
+            $table->uuid('version_id')->after('id')->nullable();
         });
     }
 

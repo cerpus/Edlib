@@ -25,8 +25,8 @@ class H5PLibraryCapability extends Model
     {
         $locale = Lang::getLocale();
         $trans = LibraryDescription::where('locale', $locale)->where('library_id', $this->library_id)->first();
-        if(is_null($trans)){
-            if(empty($this->title)){
+        if (is_null($trans)) {
+            if (empty($this->title)) {
                 return '';
             }
             return $this->title;
@@ -38,7 +38,7 @@ class H5PLibraryCapability extends Model
     {
         $locale = Lang::getLocale();
         $trans = LibraryDescription::where('locale', $locale)->where('library_id', $this->library_id)->first();
-        if(is_null($trans)){
+        if (is_null($trans)) {
             return '';
         }
         return $trans->description;

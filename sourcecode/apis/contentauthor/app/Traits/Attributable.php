@@ -12,7 +12,7 @@ trait Attributable
 {
     public function getAttribution(): Attribution
     {
-        return ContentAttribution::firstOrCreate(['content_id' => $this->id], ['attribution' => (new Attribution)])->attribution;
+        return ContentAttribution::firstOrCreate(['content_id' => $this->id], ['attribution' => (new Attribution())])->attribution;
     }
 
     public function setAttribution(Attribution $attribution)

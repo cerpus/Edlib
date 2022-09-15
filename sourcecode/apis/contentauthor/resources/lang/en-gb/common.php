@@ -1,4 +1,5 @@
 <?php
+
 return [
     'cancel' => 'Cancel',
     'save-and-close' => 'Save and close',

@@ -6,7 +6,6 @@ use App\Libraries\H5P\Packages\Column;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-
 class ColumnTest extends TestCase
 {
     use WithFaker;
@@ -38,5 +37,4 @@ class ColumnTest extends TestCase
         $columnSemanticsObject->content[0]->content->params->sources[0]->mime = $mimeType;
         $this->assertEquals($column->getPackageStructure(), $columnSemanticsObject);
     }
-
 }

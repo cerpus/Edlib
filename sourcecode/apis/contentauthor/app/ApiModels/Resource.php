@@ -2,8 +2,6 @@
 
 namespace App\ApiModels;
 
-use App;
-
 class Resource
 {
     public string $id;
@@ -20,8 +18,7 @@ class Resource
         ?string $deletedAt,
         string  $updatedAt,
         string  $createdAt
-    )
-    {
+    ) {
         $this->id = $id;
         $this->resourceGroupId = $resourceGroupId;
         $this->deletedReason = $deletedReason;

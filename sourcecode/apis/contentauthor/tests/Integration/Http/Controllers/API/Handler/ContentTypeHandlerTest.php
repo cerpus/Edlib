@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers\API\Handler;
 
-
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
@@ -19,8 +18,10 @@ use Tests\TestCase;
 
 class ContentTypeHandlerTest extends TestCase
 {
-
-    use RefreshDatabase, MockVersioningTrait, WithFaker, MockResourceApi;
+    use RefreshDatabase;
+    use MockVersioningTrait;
+    use WithFaker;
+    use MockResourceApi;
 
     public function setUp(): void
     {

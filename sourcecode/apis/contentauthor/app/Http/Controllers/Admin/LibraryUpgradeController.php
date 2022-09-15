@@ -84,7 +84,7 @@ class LibraryUpgradeController extends Controller
                     $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
                     if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
                         $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
-                        if( empty($newVersion)){
+                        if (empty($newVersion)) {
                             $newVersion = $isPatchUpdate($hasHubCache);
                         }
                         if (!empty($newVersion)) {

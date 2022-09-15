@@ -18,9 +18,7 @@ class HandleVersioning extends AbstractHandleVersioning
         $this->versionClient = $versionClient;
     }
 
-    /**
-     * @param LinkWasSaved $event
-     */
+
     public function handle(LinkWasSaved $event)
     {
         $this->link = $event->link->fresh();

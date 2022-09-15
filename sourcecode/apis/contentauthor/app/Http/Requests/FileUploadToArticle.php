@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Article;
 use App\ACL\ArticleAccess;
-use App\Http\Requests\Request;
 
 class FileUploadToArticle extends Request
 {

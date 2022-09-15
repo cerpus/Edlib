@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Interfaces;
-
 
 use App\H5PLibrary;
 
@@ -25,9 +23,7 @@ interface CerpusStorageInterface
     public function getFileUrl(string $path);
 
     /**
-     * @param string $filePath
      * @param resource $resource
-     * @return mixed
      */
     public function storeContentOnDisk(string $filePath, $resource);
 }

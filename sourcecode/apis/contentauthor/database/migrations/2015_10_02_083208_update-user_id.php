@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class UpdateUserId extends Migration
@@ -13,13 +12,13 @@ class UpdateUserId extends Migration
     public function up()
     {
         Schema::table('h5p_contents', function ($table) {
-            $table->string('user_id',36)->change();
+            $table->string('user_id', 36)->change();
         });
         Schema::table('h5p_contents_user_data', function ($table) {
-            $table->string('user_id',36)->change();
+            $table->string('user_id', 36)->change();
         });
         Schema::table('h5p_results', function ($table) {
-            $table->string('user_id',36)->change();
+            $table->string('user_id', 36)->change();
         });
     }
 
@@ -39,6 +38,5 @@ class UpdateUserId extends Migration
         Schema::table('h5p_results', function ($table) {
             $table->integer('user_id')->unsigned()->change();
         });
-
     }
 }

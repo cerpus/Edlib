@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 
@@ -15,5 +13,4 @@ class ContentLockDataObject
 
     public $isLocked = false;
     public $editUrl;
-
 }

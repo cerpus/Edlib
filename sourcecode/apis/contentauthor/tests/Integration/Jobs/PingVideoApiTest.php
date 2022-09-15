@@ -21,7 +21,11 @@ use Tests\Helpers\VersionedH5PTrait;
 
 class PingVideoApiTest extends TestCase
 {
-    use RefreshDatabase, MockVersioningTrait, VersionedH5PTrait, InteractsWithDatabase, WithFaker;
+    use RefreshDatabase;
+    use MockVersioningTrait;
+    use VersionedH5PTrait;
+    use InteractsWithDatabase;
+    use WithFaker;
 
     private array $packageStructure = [
         'interactiveVideoWithLocalVideoSource' => '{"interactiveVideo":{"video":{"startScreenOptions":{"title":"Interactive Video","hideStartTitle":false,"copyright":""},"textTracks":[{"label":"Subtitles","kind":"subtitles","srcLang":"en"}],"files":[{"path":"videos\/files-5a337db5cdf93.mp4#tmp","mime":"video\/mp4","copyright":{"license":"U"}}]},"assets":{"interactions":[],"bookmarks":[]},"summary":{"task":{"library":"H5P.Summary 1.8","params":{"intro":"Choose the correct statement.","summaries":[{"subContentId":"1dd50eaf-d839-43eb-b41a-091a7f39874d","tip":""}],"overallFeedback":[{"from":0,"to":100}],"solvedLabel":"Progress:","scoreLabel":"Wrong answers:","resultLabel":"Your result","labelCorrect":"Correct.","labelIncorrect":"Incorrect! Please try again.","labelCorrectAnswers":"Correct answers."},"subContentId":"37b2670f-e199-4f76-bd33-0d6ea81efcce"},"displayAt":3}},"override":{"autoplay":false,"loop":false,"showBookmarksmenuOnLoad":false,"showRewind10":false,"preventSkipping":false,"deactivateSound":false},"l10n":{"interaction":"Interaction","play":"Play","pause":"Pause","mute":"Mute","unmute":"Unmute","quality":"Video Quality","captions":"Captions","close":"Close","fullscreen":"Fullscreen","exitFullscreen":"Exit Fullscreen","summary":"Summary","bookmarks":"Bookmarks","defaultAdaptivitySeekLabel":"Continue","continueWithVideo":"Continue with video","playbackRate":"Playback Rate","rewind10":"Rewind 10 Seconds","navDisabled":"Navigation is disabled","sndDisabled":"Sound is disabled","requiresCompletionWarning":"You need to answer all the questions correctly before continuing.","back":"Back","hours":"Hours","minutes":"Minutes","seconds":"Seconds","currentTime":"Current time:","totalTime":"Total time:","navigationHotkeyInstructions":"Use key k for starting and stopping video at any time","singleInteractionAnnouncement":"Interaction appeared:","multipleInteractionsAnnouncement":"Multiple interactions appeared.","videoPausedAnnouncement":"Video is paused"}}',
@@ -191,7 +195,8 @@ class PingVideoApiTest extends TestCase
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
         $this->createVideo($h5pContentParent->id, $videoSource);
         $h5pContentParent->contentVideos()
-            ->save(H5PContentsVideo::factory()
+            ->save(
+                H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentParent->id,
                     'source_file' => $videoSource,
@@ -256,7 +261,8 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($content->id);
         $this->createVideo($content->id, $videoSource);
         $content->contentVideos()
-            ->save(H5PContentsVideo::factory()
+            ->save(
+                H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $content->id,
                     'source_file' => $videoSource,
@@ -392,7 +398,8 @@ class PingVideoApiTest extends TestCase
         $this->createVideo($h5pContentParent->id, $videoSource);
 
         $h5pContentParent->contentVideos()
-            ->save(H5PContentsVideo::factory()
+            ->save(
+                H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentParent->id,
                     'source_file' => $videoSource,
@@ -422,7 +429,8 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $newFileId);
         $h5pContentGrandchild->contentVideos()
-            ->save(H5PContentsVideo::factory()
+            ->save(
+                H5PContentsVideo::factory()
                 ->create([
                     'h5p_content_id' => $h5pContentGrandchild->id,
                     'source_file' => $newFileId,
@@ -570,5 +578,4 @@ class PingVideoApiTest extends TestCase
         ]);
         $this->disk->assertExists('content/' . $h5pContent->id . '/' . $videoSource);
     }
-
 }

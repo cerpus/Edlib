@@ -60,7 +60,7 @@ class QuestionSet extends Content
         return Content::TYPE_QUESTIONSET;
     }
 
-    function getId(): string
+    public function getId(): string
     {
         return $this->id;
     }

@@ -21,7 +21,6 @@ class AdminConfig implements ConfigInterface
     }
 
     /**
-     * @param mixed $id
      * @return AdminConfig
      */
     public function setId($id)
@@ -72,7 +71,7 @@ class AdminConfig implements ConfigInterface
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-pre-save.js'));
 
         H5PLibrary::get()
-            ->filter(fn(H5PLibrary $library): bool => $this->presave->hasScript($library->name))
+            ->filter(fn (H5PLibrary $library): bool => $this->presave->hasScript($library->name))
             ->each(function (H5PLibrary $library): void {
                 $this->addAsset('scripts', $this->presave->getScriptUrl($library->name));
             });
@@ -87,9 +86,9 @@ class AdminConfig implements ConfigInterface
             }, []);
         $contents = $library->contents()->count();
 
-        $settings = array(
+        $settings = [
             'containerSelector' => '#h5p-admin-container',
-            'libraryInfo' => array(
+            'libraryInfo' => [
                 'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->majorVersion, $library->minorVersion),
                 'inProgress' => 'Upgrading to %ver...', $library->title,
                 'error' => 'An error occurred while processing parameters:', $library->title,
@@ -98,10 +97,10 @@ class AdminConfig implements ConfigInterface
                 'errorScript' => 'Could not load upgrades script for %lib.', $library->title,
                 'errorParamsBroken' => 'Parameters are broken.', $library->title,
                 'done' => 'You have successfully upgraded ' . $library->title,
-                'library' => array(
+                'library' => [
                     'name' => $library->name,
                     'version' => $library->major_version . '.' . $library->minor_version,
-                ),
+                ],
                 'libraryBaseUrl' => route('content-upgrade-library', ['library' => '']),
                 'scriptBaseUrl' => '/h5p-php-library/js',
                 'buster' => '?ver=11234',
@@ -110,8 +109,8 @@ class AdminConfig implements ConfigInterface
                 'buttonLabel' => 'Upgrade', $library->title,
                 'total' => $contents,
                 'token' => csrf_token()
-            )
-        );
+            ]
+        ];
         return $settings;
     }
 

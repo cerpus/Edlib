@@ -19,7 +19,6 @@ class AddVersionToH5PContent extends Migration
         Schema::table('h5p_contents', function (Blueprint $table) {
             $table->index("version_id");
         });
-
     }
 
     /**

@@ -43,5 +43,4 @@ class H5PPackage
                 ];
             })->toArray();
     }
-
 }

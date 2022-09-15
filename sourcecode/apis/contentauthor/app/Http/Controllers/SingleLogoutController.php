@@ -19,5 +19,4 @@ class SingleLogoutController extends Controller
 
         return redirect($returnUrl);
     }
-
 }

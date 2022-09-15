@@ -21,14 +21,14 @@ class CreateLearningPaths extends Migration
             $table->timestamps();
         });
 
-        Schema::create('learning_path_steps', function (Blueprint $table){
-           $table->bigInteger('id')->primary();
-           $table->bigInteger('learning_path_id')->index();
-           $table->string('title');
-           $table->unsignedInteger('order');
-           $table->longText('json');
+        Schema::create('learning_path_steps', function (Blueprint $table) {
+            $table->bigInteger('id')->primary();
+            $table->bigInteger('learning_path_id')->index();
+            $table->string('title');
+            $table->unsignedInteger('order');
+            $table->longText('json');
 
-           $table->timestamps();
+            $table->timestamps();
         });
     }
 

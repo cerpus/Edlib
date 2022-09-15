@@ -18,7 +18,7 @@ trait H5PCommonAdapterTrait
     {
         return collect($scripts)
             ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if( $library['machineName'] === 'H5P.Video'){
+                if ($library['machineName'] === 'H5P.Video') {
                     return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
                 }
                 return false;
@@ -30,7 +30,7 @@ trait H5PCommonAdapterTrait
     {
         return collect($scripts)
             ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if( $library['machineName'] === 'H5P.CerpusVideo'){
+                if ($library['machineName'] === 'H5P.CerpusVideo') {
                     return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
                 }
                 return false;
@@ -79,7 +79,7 @@ trait H5PCommonAdapterTrait
         $this->config = $config;
     }
 
-    static public function getCoreExtraTags(): array
+    public static function getCoreExtraTags(): array
     {
         return array_merge(MathMLConfig::getMathTags(), [
             'u',

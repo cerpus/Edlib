@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use LogicException;
 
 class DragText extends H5PBase

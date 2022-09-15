@@ -84,5 +84,4 @@ class File extends Model
 
         return $newFile;
     }
-
 }

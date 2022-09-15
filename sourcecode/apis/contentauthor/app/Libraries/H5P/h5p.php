@@ -66,7 +66,8 @@ class h5p
         // Check if library exists.
         $content['library']['libraryId'] = $this->core->h5pF->getLibraryId(
             $content['library']['machineName'],
-            $content['library']['majorVersion'], $content['library']['minorVersion'],
+            $content['library']['majorVersion'],
+            $content['library']['minorVersion'],
         );
 
         // Get title

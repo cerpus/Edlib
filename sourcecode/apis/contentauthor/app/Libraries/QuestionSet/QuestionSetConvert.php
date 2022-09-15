@@ -21,7 +21,7 @@ class QuestionSetConvert
      */
     public function convert($convertTo, QuestionSetModel $questionSet, ResourceMetadataDataObject $metadata)
     {
-        switch ($convertTo){
+        switch ($convertTo) {
             case H5PQuestionSet::$machineName:
                 return $this->createH5PQuestionSet($questionSet, $metadata);
             case Millionaire::$machineName:
@@ -41,12 +41,12 @@ class QuestionSetConvert
             'authId' => $questionSet->owner,
         ]);
 
-        $questionSet->questions->each(function($question) use ($h5pQuiz){
+        $questionSet->questions->each(function ($question) use ($h5pQuiz) {
             /** @var MultiChoiceQuestion $h5pQuestion */
             $h5pQuestion = MultiChoiceQuestion::create([
                 'text' => $question->question_text,
             ]);
-            $answers = $question->answers->map(function ($answer){
+            $answers = $question->answers->map(function ($answer) {
                 return Answer::create([
                     'text' => $answer->answer_text,
                     'correct' => $answer->correct

@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class QuestionSetTest extends TestCase
 {
-
     /**
      * @test
      */

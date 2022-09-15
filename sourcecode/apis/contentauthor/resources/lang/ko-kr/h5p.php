@@ -1,4 +1,5 @@
 <?php
+
 return [
     'title' => '제목',
     'reuse' => '재사용',

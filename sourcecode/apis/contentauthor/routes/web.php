@@ -92,7 +92,6 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
         Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
         Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
     });
-
 });
 
 Route::post('/jwt/update', [JWTUpdateController::class, 'updateJwtEndpoint']);

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 
@@ -14,5 +12,4 @@ class ArticleStateDataObject extends ContentStateDataObject
     use CreateTrait;
 
     public $content;
-
 }

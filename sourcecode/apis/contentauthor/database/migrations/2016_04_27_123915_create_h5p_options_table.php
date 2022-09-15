@@ -13,8 +13,7 @@ class CreateH5pOptionsTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('h5p_options')) {
-            Schema::create('h5p_options', function(Blueprint $table)
-            {
+            Schema::create('h5p_options', function (Blueprint $table) {
                 $table->bigIncrements('option_id')->unsigned();
                 $table->string('option_name', 191)->nullable()->default(null);
                 $table->longText('option_value');

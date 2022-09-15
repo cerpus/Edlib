@@ -9,7 +9,8 @@ class LinkWasSaved extends Event
 {
     use SerializesModels;
 
-    public $link, $reason;
+    public $link;
+    public $reason;
 
     /**
      * Create a new event instance.

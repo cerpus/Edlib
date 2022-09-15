@@ -17,9 +17,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class H5PLibraryAdmin
 {
-    const BULK_UNTOUCHED = 0;
-    const BULK_UPDATED = 1;
-    const BULK_FAILED = 2;
+    public const BULK_UNTOUCHED = 0;
+    public const BULK_UPDATED = 1;
+    public const BULK_FAILED = 2;
 
     public function __construct(
         private H5PCore $core,
@@ -63,7 +63,7 @@ class H5PLibraryAdmin
         $library = H5PLibrary::findOrFail(filter_input(INPUT_GET, 'id'));
 
         $out = new \stdClass();
-        $out->params = array();
+        $out->params = [];
         $out->token = csrf_token();
 
         $params = filter_input(INPUT_POST, 'params');
@@ -96,13 +96,11 @@ class H5PLibraryAdmin
                         $H5PContentMetadata->fill($metadata);
                         $H5PContentMetadata->save();
                     }
-
                 });
         }
 
         $out->left = $library->contents()->count();
         if ($out->left) {
-
             $contents = collect();
             $library
                 ->contents()
@@ -133,7 +131,6 @@ class H5PLibraryAdmin
     }
 
     /**
-     * @param Request $request
      * @return \stdClass
      */
     public function upgradeMaxscore($libraries, $scores = null)
@@ -143,7 +140,7 @@ class H5PLibraryAdmin
         }
 
         $out = new \stdClass();
-        $out->params = array();
+        $out->params = [];
         $out->token = csrf_token();
 
         $libraryVersions = H5PLibrary::whereIn('name', $libraries)
@@ -172,7 +169,7 @@ class H5PLibraryAdmin
             $contentsQuery->orWhere(function ($query) {
                 $query->where('max_score', 0)
                     ->where('bulk_calculated', self::BULK_UNTOUCHED)
-                    ->whereIn('library_id', function ($query){
+                    ->whereIn('library_id', function ($query) {
                         $query->select('id')
                             ->from('h5p_libraries')
                             ->where('name', QuestionSet::$machineName);
@@ -201,7 +198,6 @@ class H5PLibraryAdmin
     }
 
     /**
-     *
      * @since 1.1.0
      * @param string $get_library
      *
@@ -220,13 +216,13 @@ class H5PLibraryAdmin
             throw new \Exception('Error, invalid library!');
         }
 
-        $library = (object)array(
+        $library = (object)[
             'name' => $library_parts[1],
-            'version' => (object)array(
+            'version' => (object)[
                 'major' => $library_parts[2],
                 'minor' => $library_parts[3]
-            )
-        );
+            ]
+        ];
         $library->semantics = $core->loadLibrarySemantics($library->name, $library->version->major, $library->version->minor);
         if ($library->semantics === null) {
             throw new \Exception('Error, could not library semantics!');

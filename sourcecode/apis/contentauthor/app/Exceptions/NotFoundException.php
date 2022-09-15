@@ -13,8 +13,7 @@ class NotFoundException extends \Exception
         ?string $field = null,
         int $code = 0,
         Throwable $previous = null
-    )
-    {
+    ) {
         parent::__construct($field ? "$field not found" : "Not found", $code, $previous);
         $this->field = $field;
     }

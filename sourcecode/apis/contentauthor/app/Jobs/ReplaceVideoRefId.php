@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Jobs;
-
 
 use App\H5PContent;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -17,7 +15,10 @@ use Illuminate\Support\Collection;
 
 class ReplaceVideoRefId implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $h5p;
     public $videoAdapter;
@@ -45,14 +46,12 @@ class ReplaceVideoRefId implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param H5PAdapterInterface $adapter
-     * @param H5PVideoInterface $video
      * @return void
      * @throws \Exception
      */
     public function handle(H5PAdapterInterface $adapter, H5PVideoInterface $video)
     {
-        if ($adapter->getAdapterName() === 'ndla'){
+        if ($adapter->getAdapterName() === 'ndla') {
             $this->videoAdapter = $video;
             $content = json_decode($this->h5p->parameters);
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -66,7 +65,6 @@ class ReplaceVideoRefId implements ShouldQueue
     }
 
     /**
-     * @param Collection $parameters
      * @return Collection
      */
     private function traverseParameters(Collection $parameters)
@@ -77,7 +75,7 @@ class ReplaceVideoRefId implements ShouldQueue
                 $value = $this->replaceRef($value);
             }
 
-            if (!!(array)$value && (is_array($value) || is_object($value))) {
+            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
                 $value = $this->traverseParameters(collect($value));
             }
             return $value;

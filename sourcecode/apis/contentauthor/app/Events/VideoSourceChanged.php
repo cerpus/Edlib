@@ -9,7 +9,8 @@ class VideoSourceChanged extends Event
 {
     use SerializesModels;
 
-    public $content, $file;
+    public $content;
+    public $file;
 
     /**
      * Create a new event instance.

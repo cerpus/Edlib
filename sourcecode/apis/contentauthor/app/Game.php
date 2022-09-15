@@ -33,8 +33,6 @@ class Game extends Content implements VersionableObject
 
     public string $editRouteName = 'game.edit';
     /**
-     * @param Request $request
-     * @return mixed
      * @throws \Exception
      */
     protected function getRequestContent(Request $request)
@@ -92,7 +90,7 @@ class Game extends Content implements VersionableObject
         if (!is_null($owner)) {
             $game->owner = $owner;
         }
-        if( $game->save() !== true ){
+        if ($game->save() !== true) {
             throw new \Exception(trans('game.could-not-make-copy-of-game', ["title" => $this->title]));
         }
 
@@ -104,23 +102,23 @@ class Game extends Content implements VersionableObject
         return Content::TYPE_GAME;
     }
 
-    function getId(): string
+    public function getId(): string
     {
         return $this->id;
     }
 
-    function getOwnerId(): string
+    public function getOwnerId(): string
     {
         return $this->owner;
     }
 
-    function setParentVersionId(string $parentVersionId): bool
+    public function setParentVersionId(string $parentVersionId): bool
     {
         // Do nothing
         return false;
     }
 
-    function setVersionId(string $versionId)
+    public function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
     }

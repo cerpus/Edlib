@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Controllers\Controller;
 use App\Link;
 use App\Traits\FractalTransformer;
@@ -47,7 +46,6 @@ class LinkInfoController extends Controller
         }
 
         return $response;
-
     }
 
     public function embed(Request $request)
@@ -60,14 +58,13 @@ class LinkInfoController extends Controller
             try {
                 $embed = Embed::create($url);
                 $request->session()->put('linksUrl', $rawUrl);
-                return $this->buildItemResponse($embed, new LinkMetadataTransformer);
+                return $this->buildItemResponse($embed, new LinkMetadataTransformer());
             } catch (InvalidUrlException $exception) {
                 return response()->json([
                     'code' => Response::HTTP_BAD_REQUEST,
                     'message' => 'Invalid url',
                 ], Response::HTTP_BAD_REQUEST);
             }
-
         }
     }
 }

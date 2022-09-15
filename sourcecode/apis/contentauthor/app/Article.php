@@ -21,7 +21,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
+
 use function preg_replace_callback;
+
 use const LIBXML_HTML_NOIMPLIED;
 
 /**
@@ -46,17 +48,17 @@ class Article extends Content implements VersionableObject
 {
     use HasFactory;
 
-    const TMP_UPLOAD_SESSION_KEY = 'articleTmpFiles';
+    public const TMP_UPLOAD_SESSION_KEY = 'articleTmpFiles';
 
     public $incrementing = false;
 
     public string $userColumn = 'owner_id';
     public string $editRouteName = 'article.edit';
 
-    const BULK_UNTOUCHED = 0;
-    const BULK_PROGRESS = 1;
-    const BULK_UPDATED = 2;
-    const BULK_FAILED = 4;
+    public const BULK_UNTOUCHED = 0;
+    public const BULK_PROGRESS = 1;
+    public const BULK_UPDATED = 2;
+    public const BULK_FAILED = 4;
 
     protected $dates = ['deleted_at', "updated_at", "created_at"];
     protected $fillable = ['title', 'content'];
@@ -205,17 +207,17 @@ class Article extends Content implements VersionableObject
         return $this->getMaxScoreHelper($this->content);
     }
 
-    function getId(): string
+    public function getId(): string
     {
         return $this->id;
     }
 
-    function getOwnerId(): string
+    public function getOwnerId(): string
     {
         return $this->owner_id;
     }
 
-    function setParentVersionId(string $parentVersionId): bool
+    public function setParentVersionId(string $parentVersionId): bool
     {
         if ($this->parent_version_id !== $parentVersionId) {
             $this->parent_version_id = $parentVersionId;
@@ -225,7 +227,7 @@ class Article extends Content implements VersionableObject
         }
     }
 
-    function setVersionId(string $versionId)
+    public function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
     }
@@ -264,12 +266,12 @@ class Article extends Content implements VersionableObject
         $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
         collect($dom->getElementsByTagName('img'))
-            ->filter(fn(DOMElement $node) => $node->hasAttribute('src'))
-            ->each(fn(DOMElement $node) => $node->setAttribute(
+            ->filter(fn (DOMElement $node) => $node->hasAttribute('src'))
+            ->each(fn (DOMElement $node) => $node->setAttribute(
                 'src',
                 preg_replace_callback(
                     '@^/h5pstorage/article-uploads/(.*?)@',
-                    fn(array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                    fn (array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
                     $node->getAttribute('src'),
                 ),
             ));

@@ -51,7 +51,6 @@ class AddQuestionSetContentType extends Migration
             $table->primary('id');
             $table->foreign('question_id')->references('id')->on('question_set_questions');
         });
-
     }
 
     /**

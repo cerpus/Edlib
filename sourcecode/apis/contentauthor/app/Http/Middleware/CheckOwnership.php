@@ -2,11 +2,8 @@
 
 namespace App\Http\Middleware;
 
-
 use App\Content;
-use App\Game;
 use App\H5PContent;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Closure;
@@ -20,8 +17,6 @@ class CheckOwnership
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
-     * @return mixed
      */
     public function handle($request, Closure $next)
     {
@@ -60,7 +55,6 @@ class CheckOwnership
     /**
      * Get contentId of request
      * @return int contentId
-     *
      */
     private function getContentId()
     {

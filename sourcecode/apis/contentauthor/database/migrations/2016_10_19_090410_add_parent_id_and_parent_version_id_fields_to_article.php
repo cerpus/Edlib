@@ -35,6 +35,5 @@ class AddParentIdAndParentVersionIdFieldsToArticle extends Migration
         Schema::table('articles', function (Blueprint $table) {
             $table->dropColumn('parent_version_id');
         });
-
     }
 }

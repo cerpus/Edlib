@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P;
 
-
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\Libraries\H5P\Dataobjects\H5PCopyrightAuthorDataObject;
@@ -10,6 +9,7 @@ use App\Libraries\H5P\Dataobjects\H5PCopyrightDataObject;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use Illuminate\Support\Collection;
 use JsonException;
+
 use const JSON_THROW_ON_ERROR;
 
 class H5PCopyright
@@ -30,7 +30,6 @@ class H5PCopyright
     }
 
     /**
-     * @param H5PContent $content
      * @return array
      * @throws JsonException
      */
@@ -150,7 +149,7 @@ class H5PCopyright
         if (!empty($copyright['years'])) {
             $years = explode("-", $copyright['years']);
             $copyright['yearFrom'] = $years[0];
-            if( !empty($years[1])){
+            if (!empty($years[1])) {
                 $copyright['yearTo'] = $years[1];
             }
             unset($copyright['years']);
@@ -200,9 +199,9 @@ class H5PCopyright
 
     private function specialHandling($values)
     {
-        if( $this->h5pContent->library && in_array($this->h5pContent->library->name, ['H5P.CerpusImage', 'H5P.CerpusVideo'])){
-            if( is_array($values) && !empty($values['mime']) ){
-                if( $this->isImage($values['mime'])){
+        if ($this->h5pContent->library && in_array($this->h5pContent->library->name, ['H5P.CerpusImage', 'H5P.CerpusVideo'])) {
+            if (is_array($values) && !empty($values['mime'])) {
+                if ($this->isImage($values['mime'])) {
                     $this->h5pCopyright->contentType = "Image";
                     $this->h5pCopyright->thumbnail = $this->storage->getContentPath($this->h5pContent->id, $values['path']);
                 } elseif ($this->isVideo($values['mime'])) {

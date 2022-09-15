@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 
@@ -13,7 +11,10 @@ class EditorConfigObject
 {
     use CreateTrait;
 
-    public $userPublishEnabled, $canPublish, $canList, $useLicense = false;
+    public $userPublishEnabled;
+    public $canPublish;
+    public $canList;
+    public $useLicense = false;
 
     protected $contentProperties;
 
@@ -24,18 +25,18 @@ class EditorConfigObject
 
     protected $lockedProperties;
 
-    public function setContentProperties(ResourceInfoDataObject $infoDataObject) {
+    public function setContentProperties(ResourceInfoDataObject $infoDataObject)
+    {
         $this->contentProperties = $infoDataObject->toArray();
     }
 
-    public function setLockedProperties(LockedDataObject $lockedDataObject) {
+    public function setLockedProperties(LockedDataObject $lockedDataObject)
+    {
         $this->locked = true;
         $this->lockedProperties = $lockedDataObject->toArray();
     }
 
-    /**
-     * @return string
-     */
+
     public function toJson(): string
     {
         return json_encode($this->toArray());

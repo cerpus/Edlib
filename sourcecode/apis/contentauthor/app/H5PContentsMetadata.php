@@ -24,7 +24,7 @@ class H5PContentsMetadata extends Model
         return $this->belongsTo(H5PContent::class, 'content_id');
     }
 
-    public function convertFromMetadataObject(H5PMetadataObject $metadataObject) : array
+    public function convertFromMetadataObject(H5PMetadataObject $metadataObject): array
     {
         return [
             'title' => $metadataObject->title,
@@ -41,7 +41,7 @@ class H5PContentsMetadata extends Model
         ];
     }
 
-    public function convertToMetadataObject($title = null) : H5PMetadataObject
+    public function convertToMetadataObject($title = null): H5PMetadataObject
     {
         return H5PMetadataObject::create([
             'title' => $title,

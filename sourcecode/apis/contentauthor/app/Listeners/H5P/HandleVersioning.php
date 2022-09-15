@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Listeners\H5P;
-
 
 use App\Events\H5PWasSaved;
 use App\H5PContent;
@@ -13,14 +11,17 @@ use Cerpus\VersionClient\VersionData;
 
 class HandleVersioning extends AbstractHandleVersioning
 {
-    protected $versionClient, $h5p, $event;
+    protected $versionClient;
+    protected $h5p;
+    protected $event;
 
     public function __construct(VersionClient $versionClient)
     {
         $this->versionClient = $versionClient;
     }
 
-    public function handle(H5PWasSaved $event) {
+    public function handle(H5PWasSaved $event)
+    {
         $this->h5p = $event->h5p->fresh();
         $this->event = $event;
 

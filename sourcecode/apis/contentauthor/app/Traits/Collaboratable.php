@@ -67,8 +67,10 @@ trait Collaboratable
                 $mailData->inviterName = Session::get('name', trans('email.name-generic'));
                 $mailData->contentTitle = $this->title;
                 $mailData->originSystemName = Session::get('originalSystem', 'EdLib');
-                $mailData->emailTitle = trans('emails/collaboration-invite.email-title',
-                    ['originSystemName' => $mailData->originSystemName]);
+                $mailData->emailTitle = trans(
+                    'emails/collaboration-invite.email-title',
+                    ['originSystemName' => $mailData->originSystemName]
+                );
 
                 $loginUrl = 'https://edstep.com/';
                 $emailFrom = 'no-reply@edlib.com';

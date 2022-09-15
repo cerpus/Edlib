@@ -12,7 +12,9 @@ use Tests\TestCase;
 
 class H5PResultsProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+    use WithFaker;
+    use RefreshDatabase;
+    use MockRabbitMQPubsub;
 
     public function setUp(): void
     {

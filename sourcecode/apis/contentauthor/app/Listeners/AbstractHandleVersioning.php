@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Listeners;
-
 
 use App\Libraries\Versioning\VersionableObject;
 use Cerpus\VersionClient\exception\LinearVersioningException;
@@ -19,10 +17,11 @@ abstract class AbstractHandleVersioning
         $this->versionClient = $versionClient;
     }
 
-    protected abstract function getParentVersionId();
-    protected abstract function getExternalUrl(VersionableObject $object);
+    abstract protected function getParentVersionId();
+    abstract protected function getExternalUrl(VersionableObject $object);
 
-    protected function handleSave(VersionableObject $object, $reason) {
+    protected function handleSave(VersionableObject $object, $reason)
+    {
         if (!empty(config('feature.versioning'))) {
             $linearVersioning = config('feature.linear-versioning') ? true : false;
             $parentVersionId = $this->getParentVersionId();
@@ -51,7 +50,7 @@ abstract class AbstractHandleVersioning
 
             if (!$versionData) {
                 Log::error('Versioning failed: ' . $this->versionClient->getErrorCode() . ': ' . $this->versionClient->getMessage());
-                //Maybe do something more constructive...add to queue to try again?
+            //Maybe do something more constructive...add to queue to try again?
             } else {
                 $object->setVersionId($versionData->getId());
                 $object->save();
@@ -61,7 +60,8 @@ abstract class AbstractHandleVersioning
         }
     }
 
-    protected function createVersion(VersionableObject $object, $parentVersionId, $reason, $linearVersioning) {
+    protected function createVersion(VersionableObject $object, $parentVersionId, $reason, $linearVersioning)
+    {
         $versionData = new VersionData();
         $versionData->setUserId($object->getOwnerId())
             ->setExternalReference($object->getId())

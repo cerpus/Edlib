@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeDefaultPassword extends Migration
@@ -12,7 +11,7 @@ class ChangeDefaultPassword extends Migration
      */
     public function up()
     {
-//		DB::statement('UPDATE administrators SET password="'.$this->createPassword().'" WHERE id=1');
+        //		DB::statement('UPDATE administrators SET password="'.$this->createPassword().'" WHERE id=1');
     }
 
     /**
@@ -25,13 +24,14 @@ class ChangeDefaultPassword extends Migration
         //
     }
 
-	/**
-	 * Create new password.
-	 * Enter your password string.
-	 *
-	 * @return void
-	 */
-	private function createPassword() {
-	    // Removed from public CA release
-	}
+    /**
+     * Create new password.
+     * Enter your password string.
+     *
+     * @return void
+     */
+    private function createPassword()
+    {
+        // Removed from public CA release
+    }
 }

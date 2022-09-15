@@ -8,12 +8,12 @@
 
 namespace App\Http\Controllers\API;
 
-
 use Illuminate\Http\Request;
 
 class SessionTestController
 {
-    public function setValue($id, Request $request) {
+    public function setValue($id, Request $request)
+    {
         $value = $request->input("value");
         $session = $request->session();
         $session->put($id, $value);
@@ -23,7 +23,8 @@ class SessionTestController
             "value" => $value
         ];
     }
-    public function getValue($id, Request $request) {
+    public function getValue($id, Request $request)
+    {
         return [
             "id" => $id,
             "value" => $request->session()->get($id)

@@ -25,8 +25,6 @@ class ContentController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * @param Request $request
-     * @param H5PAdapterInterface $adapter
      * @param null $contentType
      * @return Application|\Illuminate\Contracts\View\Factory|RedirectResponse|Redirector|\Illuminate\View\View
      */
@@ -104,6 +102,4 @@ class ContentController extends Controller
 
         return $activeContentTypes;
     }
-
-
 }

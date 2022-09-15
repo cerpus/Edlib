@@ -13,6 +13,7 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -57,89 +58,87 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $field->font = new \stdClass();
         }
 
-        $field->font->size = array(
-            (object)array(
+        $field->font->size = [
+            (object)[
                 'label' => '50%',
                 'css' => '0.5em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '56.25%',
                 'css' => '0.5625em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '62.50%',
                 'css' => '0.625em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '68.75%',
                 'css' => '0.6875em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '75%',
                 'css' => '0.75em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '87.50%',
                 'css' => '0.875em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '100%',
                 'css' => '1em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '112.50%',
                 'css' => '1.125em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '125%',
                 'css' => '1.25em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '137.50%',
                 'css' => '1.375em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '150%',
                 'css' => '1.5em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '162.50%',
                 'css' => '1.625em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '175%',
                 'css' => '1.75em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '225%',
                 'css' => '2.25em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '300%',
                 'css' => '3em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '450%',
                 'css' => '4.5em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '675%',
                 'css' => '6.75em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '1350%',
                 'css' => '13.5em'
-            ),
-            (object)array(
+            ],
+            (object)[
                 'label' => '3375%',
                 'css' => '33.75em'
-            )
-        );
+            ]
+        ];
     }
 
-    /**
-     * @return array
-     */
+
     public function getEditorCss(): array
     {
         $css = [(string) mix('css/ndlah5p-editor.css')];
@@ -150,9 +149,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return $css;
     }
 
-    /**
-     * @return array
-     */
+
     public function getEditorSettings(): array
     {
         return [
@@ -160,9 +157,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         ];
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomEditorScripts(): array
     {
         return [
@@ -179,9 +174,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return [];
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewScripts(): array
     {
         $scripts = [
@@ -196,9 +189,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return $scripts;
     }
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewCss(): array
     {
         $css = [];
@@ -231,15 +222,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
                 // Recurse for group.
                 $this->alterLibrarySemantics($field->fields, null, null, null);
             } elseif ($field->type == 'text' && isset($field->widget) && $field->widget == 'html') {
-
                 // Add MathML tags necessary for the NDLA MathML extension to HTML text widget.
                 if (!isset($field->tags)) {
-                    $field->tags = array();
+                    $field->tags = [];
                 }
                 $field->tags = array_merge($field->tags, $this->getEditorExtraTags($field));
             } elseif (in_array($field->type, ['image', 'video', 'file'])) {
                 if (!isset($field->extraAttributes)) {
-                    $field->extraAttributes = array('externalId');
+                    $field->extraAttributes = ['externalId'];
                 } elseif (!in_array('externalId', $field->extraAttributes)) {
                     $field->extraAttributes[] = 'externalId';
                 }
@@ -349,7 +339,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             if ($this->isImageTarget($value)) {
                 $value = $this->imageBrowser->alterImageProperties($value, $this->parameterSettings->useImageWidth);
             }
-            if (!!(array)$value && (is_array($value) || is_object($value))) {
+            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
                 return $this->traverseParameters(collect($value));
             }
 
@@ -366,9 +356,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         return null;
 //        return <<<TRACKINGDOC
-//<!-- Global site tag (gtag.js) - Google Analytics -->
-//<script async src="https://www.googletagmanager.com/gtag/js?id=G-R51SSMVE78"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);}gtag('js', new Date()); gtag('config', 'G-R51SSMVE78'); </script>
-//TRACKINGDOC;
+        //<!-- Global site tag (gtag.js) - Google Analytics -->
+        //<script async src="https://www.googletagmanager.com/gtag/js?id=G-R51SSMVE78"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);}gtag('js', new Date()); gtag('config', 'G-R51SSMVE78'); </script>
+        //TRACKINGDOC;
     }
 
     public function enableEverybodyIsCollaborators(): bool

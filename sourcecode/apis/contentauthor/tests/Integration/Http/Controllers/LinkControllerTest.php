@@ -21,7 +21,9 @@ use Tests\TestCase;
 
 class LinkControllerTest extends TestCase
 {
-    use RefreshDatabase, MockAuthApi, WithFaker;
+    use RefreshDatabase;
+    use MockAuthApi;
+    use WithFaker;
 
     public function testCreate(): void
     {

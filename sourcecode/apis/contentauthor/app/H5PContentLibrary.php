@@ -14,5 +14,4 @@ class H5PContentLibrary extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-
 }

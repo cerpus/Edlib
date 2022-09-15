@@ -14,7 +14,7 @@ class AddMillionaireContenttype extends Migration
     public function up()
     {
         if (!Schema::hasTable('gametypes')) {
-            Schema::create('gametypes', function (Blueprint $table){
+            Schema::create('gametypes', function (Blueprint $table) {
                 $table->uuid('id');
                 $table->string('title');
                 $table->string('name');

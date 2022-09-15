@@ -1,4 +1,5 @@
 <?php
+
 return [
     'locked-title' => "콘텐츠가 잠겨 있습니다.",
     'article-is-locked' => "편집하기 위해 내용이 잠겨 있습니다.",

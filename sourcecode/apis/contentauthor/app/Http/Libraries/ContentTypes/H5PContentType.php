@@ -93,6 +93,5 @@ class H5PContentType implements ContentTypeInterface
             'h5p.temparticle' => 'fa fa-file-text-o',
             default => 'fa fa-list',
         };
-
     }
 }

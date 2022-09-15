@@ -2,18 +2,16 @@
 
 namespace App\Libraries\H5P\Video;
 
-
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use GuzzleHttp\ClientInterface;
 use InvalidArgumentException;
 
 class StreampsAdapter implements H5PVideoInterface
 {
-
-    const UPLOAD_VIDEO = '/v1/video/put/';
-    const VIDEO_DETAILS = '/video/%s/%s.json';
-    const SEE_VIDEO = '/video/%s/%s';
-    const MIME_TYPE = 'video/Streamps';
+    public const UPLOAD_VIDEO = '/v1/video/put/';
+    public const VIDEO_DETAILS = '/video/%s/%s.json';
+    public const SEE_VIDEO = '/video/%s/%s';
+    public const MIME_TYPE = 'video/Streamps';
 
     private ClientInterface $client;
     private string $appId;

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ class ContentAssetController
         }
 
         $detector = new FinfoMimeTypeDetector();
-        $response = new StreamedResponse;
+        $response = new StreamedResponse();
         $filename = preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', basename($path));
 
         $response->headers->replace([
@@ -27,7 +26,8 @@ class ContentAssetController
             'Content-Type' => $detector->detectMimeTypeFromPath($path),
             'Content-Length' => Storage::disk()->size($path),
             'Content-Disposition' => $response->headers->makeDisposition(
-                'inline', $filename
+                'inline',
+                $filename
             ),
         ]);
 
