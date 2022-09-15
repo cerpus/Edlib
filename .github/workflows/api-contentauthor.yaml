@@ -25,22 +25,43 @@ jobs:
   php-cs-fixer:
     runs-on: ubuntu-20.04
 
+    defaults:
+      run:
+        working-directory: sourcecode/apis/contentauthor
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Cache php-cs-fixer
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Manage php-cs-fixer cache
         uses: actions/cache@v3
         with:
           path: .php-cs-fixer.cache
           key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
           restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
 
-      # todo: use same php-cs-fixer version as the one in tools/
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.json') }}
+
+      - name: Install dependencies
+        run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
+
       - name: Run php-cs-fixer
-        uses: docker://oskarstark/php-cs-fixer-ga:latest
+        run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
 
       - name: Commit fixed code
         uses: stefanzweifel/git-auto-commit-action
