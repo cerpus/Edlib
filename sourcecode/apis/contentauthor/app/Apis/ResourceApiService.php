@@ -28,10 +28,10 @@ class ResourceApiService
     {
         $data = Util::handleEdlibNodeApiRequest(
             function () use ($externalSystemName, $externalSystemId) {
-            return $this->client
-                ->getAsync("/v1/resources-from-external/$externalSystemName/$externalSystemId/collaborators")
-                ->wait();
-        }
+                return $this->client
+                    ->getAsync("/v1/resources-from-external/$externalSystemName/$externalSystemId/collaborators")
+                    ->wait();
+            }
         );
 
         return array_map(function ($collaborator) {

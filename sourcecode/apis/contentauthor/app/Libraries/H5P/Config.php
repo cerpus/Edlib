@@ -141,8 +141,8 @@ trait Config
                 $prefix = "/h5p-php-library/";
                 break;
             case "editor":
-            $prefix = "/h5p-editor-php-library/";
-            break;
+                $prefix = "/h5p-editor-php-library/";
+                break;
         }
         return $prefix.$script."?ver=".$this->getCacheBustingVersionString();
     }

@@ -460,55 +460,56 @@ class Framework implements \H5PFrameworkInterface, Result
      *
      * Also fills in the libraryId in the libraryData object if the object is new
      */
-    public function saveLibraryData(&$library, $new = true)
+    public function saveLibraryData(&$libraryData, $new = true)
     {
-        $preloadedJs = $this->pathsToCsv($library, 'preloadedJs', 'path');
-        $preloadedCss = $this->pathsToCsv($library, 'preloadedCss', 'path');
-        $dropLibraryCss = $this->pathsToCsv($library, 'dropLibraryCss', 'machineName');
+        /** @var array $libraryData */
+        $preloadedJs = $this->pathsToCsv($libraryData, 'preloadedJs', 'path');
+        $preloadedCss = $this->pathsToCsv($libraryData, 'preloadedCss', 'path');
+        $dropLibraryCss = $this->pathsToCsv($libraryData, 'dropLibraryCss', 'machineName');
 
         $embedTypes = '';
-        if (isset($library['embedTypes'])) {
-            $embedTypes = implode(', ', $library['embedTypes']);
+        if (isset($libraryData['embedTypes'])) {
+            $embedTypes = implode(', ', $libraryData['embedTypes']);
         }
-        if (!isset($library['semantics'])) {
-            $library['semantics'] = '';
+        if (!isset($libraryData['semantics'])) {
+            $libraryData['semantics'] = '';
         }
-        if (!isset($library['fullscreen'])) {
-            $library['fullscreen'] = 0;
+        if (!isset($libraryData['fullscreen'])) {
+            $libraryData['fullscreen'] = 0;
         }
 
-        $library['metadataSettings'] = isset($library['metadataSettings']) ? \H5PMetadata::boolifyAndEncodeSettings($library['metadataSettings']) : null;
-        $library['addTo'] = isset($library['addTo']) ? json_encode($library['addTo']) : null;
+        $libraryData['metadataSettings'] = isset($libraryData['metadataSettings']) ? \H5PMetadata::boolifyAndEncodeSettings($libraryData['metadataSettings']) : null;
+        $libraryData['addTo'] = isset($libraryData['addTo']) ? json_encode($libraryData['addTo']) : null;
 
         /** @var H5PLibrary $h5pLibrary */
         $h5pLibrary = H5PLibrary::updateOrCreate([
-            'id' => !$new ? $library['libraryId'] : null
+            'id' => !$new ? $libraryData['libraryId'] : null
         ], [
-            'name' => $library['machineName'],
-            'title' => $library['title'],
-            'major_version' => $library['majorVersion'],
-            'minor_version' => $library['minorVersion'],
-            'patch_version' => $library['patchVersion'],
-            'runnable' => $library['runnable'],
-            'fullscreen' => $library['fullscreen'],
+            'name' => $libraryData['machineName'],
+            'title' => $libraryData['title'],
+            'major_version' => $libraryData['majorVersion'],
+            'minor_version' => $libraryData['minorVersion'],
+            'patch_version' => $libraryData['patchVersion'],
+            'runnable' => $libraryData['runnable'],
+            'fullscreen' => $libraryData['fullscreen'],
             'embed_types' => $embedTypes,
             'preloaded_js' => $preloadedJs,
             'preloaded_css' => $preloadedCss,
             'drop_library_css' => $dropLibraryCss,
-            'semantics' => $library['semantics'],
-            'metadata_settings' => $library['metadataSettings'],
-            'add_to' => $library['addTo'],
-            'has_icon' => $library['hasIcon'] ?? 0,
+            'semantics' => $libraryData['semantics'],
+            'metadata_settings' => $libraryData['metadataSettings'],
+            'add_to' => $libraryData['addTo'],
+            'has_icon' => $libraryData['hasIcon'] ?? 0,
             'tutorial_url' => ''
         ]);
-        $library['libraryId'] = $h5pLibrary->id;
+        $libraryData['libraryId'] = $h5pLibrary->id;
 
         $h5pLibrary->libraries()->delete();
         $h5pLibrary->languages()->delete();
-        if (isset($library['language'])) {
-            foreach ($library['language'] as $languageCode => $translation) {
+        if (isset($libraryData['language'])) {
+            foreach ($libraryData['language'] as $languageCode => $translation) {
                 $h5pLibrary->languages()->create([
-                    'library_id' => $library['libraryId'],
+                    'library_id' => $libraryData['libraryId'],
                     'language_code' => $languageCode,
                     'translation' => $translation
                 ]);
@@ -639,23 +640,20 @@ class Framework implements \H5PFrameworkInterface, Result
      *   - dynamic
      * TODO: Implement this for real....
      */
-    public function saveLibraryDependencies($library_id, $dependencies, $dependency_type)
+    public function saveLibraryDependencies($libraryId, $dependencies, $dependency_type)
     {
         foreach ($dependencies as $dependency) {
             $libraries = H5PLibrary::fromLibrary([$dependency['machineName'],$dependency['majorVersion'],$dependency['minorVersion']])
                 ->select('id')
                 ->get()
-                ->each(function ($library) use ($library_id, $dependency_type) {
-                    H5PLibraryLibrary::updateOrCreate(
-                        [
-                        'library_id' => $library_id,
+                ->each(function ($library) use ($libraryId, $dependency_type) {
+                    H5PLibraryLibrary::updateOrCreate([
+                        'library_id' => $libraryId,
                         'required_library_id' => $library['id'],
-                        'dependency_type' => $dependency_type
-                    ],
-                        [
-                            'dependency_type' => $dependency_type
-                        ]
-                    );
+                        'dependency_type' => $dependency_type,
+                    ], [
+                        'dependency_type' => $dependency_type,
+                    ]);
                 });
         }
     }

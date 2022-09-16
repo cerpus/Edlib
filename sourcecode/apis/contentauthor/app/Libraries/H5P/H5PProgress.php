@@ -35,15 +35,13 @@ class H5PProgress implements ProgressInterface
         switch ($request->get('action')) {
             case "h5p_setFinished":
                 return $this->storeFinished($request->all());
-                break;
             case "h5p_contents_user_data":
                 return $this->storeUserContentData($request->all());
-                break;
             case "h5p_preview":
-            return ['success' => true];
-            break;
+                return ['success' => true];
+            default:
+                throw new \Exception("Invalid action.");
         }
-        throw new \Exception("Invalid action.");
     }
 
     protected function storeFinished(array $requestValues)
