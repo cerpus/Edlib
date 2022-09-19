@@ -33,6 +33,7 @@ use Iso639p3;
  * @property string $description
  * @property string $content_create_mode
  * @property string $language_iso_639_3
+ * @property string|null $title_clean
  *
  * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library
@@ -62,6 +63,10 @@ class H5PContent extends Content implements VersionableObject
         'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
+
+    public function getTitleCleanAttribute(): string|null {
+        return htmlspecialchars_decode($this->title, ENT_HTML5 | ENT_QUOTES);
+    }
 
     public function collaborators(): HasMany
     {

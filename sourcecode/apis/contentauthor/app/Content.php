@@ -470,7 +470,7 @@ abstract class Content extends Model
     {
         return new CaEdlibResource(
             (string) $this->id,
-            $this->title,
+            $this->title_clean ?? $this->title,
             $this->getContentOwnerId(),
             $this->isPublished(),
             $this->isDraft(),
