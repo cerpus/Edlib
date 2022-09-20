@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class File extends Model {
+class File extends Model
+{
     use HasFactory;
 
     public function article()
