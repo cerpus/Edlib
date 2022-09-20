@@ -6,7 +6,8 @@ use App\Http\Requests\LTIRequest;
 use Illuminate\Support\Facades\Request;
 use InvalidArgumentException;
 
-class H5pLti {
+class H5pLti
+{
     public function __construct(
         private readonly string $consumerKey,
         private readonly string $consumerSecret,
