@@ -12,5 +12,4 @@ buildid
 .phpunit.result.cache
 test-storage-volume
 ndladata/
-bamboo-specs/
 test-storage-volume/
