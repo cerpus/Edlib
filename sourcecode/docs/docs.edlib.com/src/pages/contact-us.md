@@ -11,7 +11,7 @@ Do you need help with your next educational project? We can help with your onlin
 Want to get in touch? It would be great to hear from you. Here's how you can reach us.
 
 **Cerpus AS**<br/>
-Phone: +47 76 11 99 00<br/>
+
 General enquiries: <post@cerpus.com><br/>
 Support: <support@edlib.com><br/>
 
@@ -22,6 +22,7 @@ Connect with one of our offices (in Norway).
 ### Alsvåg Office
 
 **Cerpus Learning Garden**<br/>
+
 Alsvågveien 688<br/>
 8432 Alsvåg<br/>
 Norway<br/>
