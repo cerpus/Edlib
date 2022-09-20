@@ -64,7 +64,8 @@ class H5PContent extends Content implements VersionableObject
         'is_draft' => 'boolean',
     ];
 
-    public function getTitleCleanAttribute(): string|null {
+    public function getTitleCleanAttribute(): string|null
+    {
         return htmlspecialchars_decode($this->title, ENT_HTML5 | ENT_QUOTES);
     }
 
