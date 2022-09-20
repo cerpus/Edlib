@@ -27,6 +27,8 @@ concurrency:
 
 jobs:
   php-cs-fixer:
+    if: github.ref != 'refs/heads/master'
+
     runs-on: ubuntu-20.04
 
     defaults:
@@ -74,6 +76,7 @@ jobs:
           commit_message: Run php-cs-fixer
 
   phpstan:
+    if: ${{ always() }}
     needs: [php-cs-fixer]
 
     runs-on: ubuntu-20.04
@@ -111,6 +114,7 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=512M
 
   test_and_release:
+    if: ${{ always() }}
     needs: [php-cs-fixer]
     runs-on: ubuntu-latest
     steps:
