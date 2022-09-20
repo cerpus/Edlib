@@ -34,6 +34,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.CERPUSBOT_SECRET }}
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -67,7 +68,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Run php-cs-fixer
-          token: ${{ secrets.CERPUSBOT_SECRET }}
 
   phpstan:
     needs: [php-cs-fixer]
