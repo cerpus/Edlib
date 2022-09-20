@@ -1,4 +1,5 @@
 <?php
+
 return [
     'H5P_DragQuestion' => [
         'disableFullscreen' => env("H5P_DQ_DISABLE_FULLSCREEN", false),
@@ -24,7 +25,7 @@ return [
     'singleContentUpgrade' => env('H5P_SINGLE_CONTENT_UPGRADE', true),
     'developmentMode' => env('H5P_DEVELOPMENT_MODE', false),
     'isHubEnabled' => env('H5P_IS_HUB_ENABLED', false),
-    'defaultExportOption' => env( 'H5P_DEFAULT_EXPORT_OPTION', H5PDisplayOptionBehaviour::CONTROLLED_BY_AUTHOR_DEFAULT_OFF),
+    'defaultExportOption' => env('H5P_DEFAULT_EXPORT_OPTION', H5PDisplayOptionBehaviour::CONTROLLED_BY_AUTHOR_DEFAULT_OFF),
     'include-mathjax' => env("H5P_INCLUDE_MATHJAX", true),
     'crossOrigin' => env('H5P_CROSSORIGIN'),
     'crossOriginRegexp' => env('H5P_CROSSORIGIN_REGEXP', '/.+/'),

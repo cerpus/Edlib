@@ -1,4 +1,5 @@
 <?php
+
 return [
     'questions' => "Spørsmål",
     'create-question' => "Opprett spørsmål",

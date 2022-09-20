@@ -2,8 +2,6 @@
 
 namespace App\Libraries\H5P\Helper;
 
-
-use Illuminate\Support\Facades\Log;
 use App\Libraries\H5P\Packages\Video;
 use App\Libraries\H5P\Packages\Column;
 use App\Libraries\H5P\Packages\DragText;

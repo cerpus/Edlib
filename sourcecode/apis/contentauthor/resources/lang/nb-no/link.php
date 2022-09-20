@@ -1,4 +1,5 @@
 <?php
+
 return [
     "link" => "Lenke",
     "create-link" => "Opprett lenke",

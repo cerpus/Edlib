@@ -46,5 +46,4 @@ class UnlockController extends Controller
             'code' => (int)$code,
         ], $code);
     }
-
 }

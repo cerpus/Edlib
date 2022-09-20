@@ -17,7 +17,7 @@ class AddCreatedMode extends Migration
             $table->string('content_create_mode')->default('cerpus');
         });
 
-        if( config('h5p.h5pAdapter') === 'ndla'){
+        if (config('h5p.h5pAdapter') === 'ndla') {
             \App\H5PContent::query()->update(['content_create_mode' => 'ndla']);
         }
     }

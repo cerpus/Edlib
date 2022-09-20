@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use Lang;
@@ -11,7 +12,7 @@ class Capability
     public function refresh($libraryId = null)
     {
         $librariesQuery = H5PLibrary::runnable()->with(['capability', 'description']);
-        if( !empty($libraryId)){
+        if (!empty($libraryId)) {
             $librariesQuery->whereIn('id', explode(",", $libraryId));
         }
         $libraries = $librariesQuery->get();

@@ -17,7 +17,6 @@ use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
 use App\Libraries\DataObjects\LockedDataObject;
@@ -42,7 +41,6 @@ use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
-use H5peditor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -57,6 +55,7 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -211,7 +210,8 @@ class H5PController extends Controller
                 '_method' => "POST",
             ])->toJson();
 
-        return view('h5p.create',
+        return view(
+            'h5p.create',
             [
                 'jwtToken' => $jwtToken,
                 'config' => $h5pView->getSettings(),
@@ -222,7 +222,8 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]);
+            ]
+        );
     }
 
     /**
@@ -243,7 +244,7 @@ class H5PController extends Controller
         $contentLanguage = $this->getTargetLanguage($h5pContent->language_iso_639_3);
         $isNewLanguageVariant = $adapter->autoTranslateTo() !== null && $contentLanguage === $adapter->autoTranslateTo() && $h5pContent->language_iso_639_3 !== $adapter->autoTranslateTo();
         $h5pLanguage = $this->getTargetLanguage($h5pContent->metadata->default_language ?? null);
-        if (!is_null($h5pLanguage)){
+        if (!is_null($h5pLanguage)) {
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
 
@@ -319,7 +320,7 @@ class H5PController extends Controller
         ]));
 
         if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
-            if (($locked = $h5pContent->hasLock())){
+            if (($locked = $h5pContent->hasLock())) {
                 $editUrl = $h5pContent->getEditUrl();
                 $pollUrl = route('lock.status', $id);
                 $editorSetup->setLockedProperties(LockedDataObject::create([
@@ -350,7 +351,8 @@ class H5PController extends Controller
             '_method' => "PUT",
         ])->toJson();
 
-        return view('h5p.edit',
+        return view(
+            'h5p.edit',
             [
                 'jwtToken' => $jwtToken,
                 'id' => $id,
@@ -365,7 +367,8 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]);
+            ]
+        );
     }
 
     private function getVersionPurpose(Request $request, H5PContent $h5p, $authId): string
@@ -390,7 +393,7 @@ class H5PController extends Controller
         $contentLanguage = $language;
         if (($ltiRequest = $this->lti->getValidatedLtiRequest()) !== null) {
             $ltiLanguage = $ltiRequest->getExtTranslationLanguage();
-            if( !empty($ltiLanguage) ){
+            if (!empty($ltiLanguage)) {
                 $contentLanguage = $ltiLanguage;
             }
         }
@@ -470,8 +473,10 @@ class H5PController extends Controller
                         $mailData->inviterName = Session::get('name');
                         $mailData->contentTitle = $newContent->title;
                         $mailData->originSystemName = Session::get('originalSystem', 'edLib');
-                        $mailData->emailTitle = trans('emails/collaboration-invite.email-title',
-                            ['originSystemName' => $mailData->originSystemName]);
+                        $mailData->emailTitle = trans(
+                            'emails/collaboration-invite.email-title',
+                            ['originSystemName' => $mailData->originSystemName]
+                        );
 
                         $loginUrl = 'https://edstep.com/';
                         $emailFrom = 'no-reply@edlib.com';
@@ -488,16 +493,17 @@ class H5PController extends Controller
                         $mailData->loginUrl = $loginUrl;
                         $mailData->emailFrom = $emailFrom;
 
-                        Mail::send('emails.collaboration-invite', ['mailData' => $mailData],
+                        Mail::send(
+                            'emails.collaboration-invite',
+                            ['mailData' => $mailData],
                             function ($m) use ($mailData) {
                                 $m->from($mailData->emailFrom, $mailData->originSystemName);
                                 $m->to($mailData->emailTo)->subject($mailData->emailTitle);
-                            });
+                            }
+                        );
                     }
                 });
-
         }
-
     }
 
     public static function addAuthorToParameters($paramsString)
@@ -574,8 +580,10 @@ class H5PController extends Controller
         /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
 
-        $this->store_content_shares($content['id'],
-            $request->filled("col-emails") ? $request->request->get("col-emails") : "");
+        $this->store_content_shares(
+            $content['id'],
+            $request->filled("col-emails") ? $request->request->get("col-emails") : ""
+        );
 
         $this->store_content_is_private($newH5pContent, $request);
 
@@ -680,7 +688,7 @@ class H5PController extends Controller
         $statement = $db->prepare($sql);
         $statement->execute($params);
         $result = $statement->fetchAll($db::FETCH_COLUMN, 0);
-        $emails = array();
+        $emails = [];
         foreach ($result as $email_raw) {
             $emails[] = $email_raw;
         }
@@ -714,7 +722,7 @@ class H5PController extends Controller
      */
     public function hasUserProgress(H5PContent $h5p): bool
     {
-        if (config('feature.versioning') !== true){
+        if (config('feature.versioning') !== true) {
             return false;
         }
         return $h5p->contentUserData()->get()->isNotEmpty();
@@ -791,7 +799,7 @@ class H5PController extends Controller
             $this->storeContentLicense($request, $content['id']);
             $this->store_content_shares($content['id'], $collaborators);
         }
-        return array($oldContent, $content, $newH5pContent);
+        return [$oldContent, $content, $newH5pContent];
     }
 
     public function downloadContent(H5PContent $h5p)

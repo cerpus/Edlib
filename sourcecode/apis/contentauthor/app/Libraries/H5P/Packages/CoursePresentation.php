@@ -104,7 +104,7 @@ class CoursePresentation extends H5PBase
                     ->pluck('action')
                     ->each(function ($element, $elementIndex) use ($sourceFile, $newSource, $slide) {
                         if (!is_object($element)) {
-                            \Log::error(__METHOD__ . sprintf(" '%s' is of type %s. Source is: %s",$element, gettype($element), $sourceFile));
+                            \Log::error(__METHOD__ . sprintf(" '%s' is of type %s. Source is: %s", $element, gettype($element), $sourceFile));
                             return;
                         }
                         try {
@@ -171,5 +171,4 @@ class CoursePresentation extends H5PBase
             })
             ->toArray();
     }
-
 }

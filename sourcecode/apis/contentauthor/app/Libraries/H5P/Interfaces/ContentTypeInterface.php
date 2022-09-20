@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-
 use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
 
@@ -25,5 +24,4 @@ interface ContentTypeInterface
     public function addCss($css);
 
     public function getCss($asString = false);
-
 }

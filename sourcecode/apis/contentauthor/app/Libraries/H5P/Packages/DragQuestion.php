@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use LogicException;
 
 class DragQuestion extends H5PBase

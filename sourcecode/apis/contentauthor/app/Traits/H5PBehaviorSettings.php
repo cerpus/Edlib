@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-
 use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
 

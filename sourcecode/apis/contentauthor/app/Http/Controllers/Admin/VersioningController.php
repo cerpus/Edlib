@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin;
-
 
 use App\Content;
 use App\Http\Controllers\Controller;
@@ -14,7 +12,6 @@ use Illuminate\Support\Collection;
 
 class VersioningController extends Controller
 {
-
     private $versionData;
 
     public function index(Request $request)
@@ -22,15 +19,15 @@ class VersioningController extends Controller
         $isContentVersioned = true;
         $this->versionData = collect();
         $contentId = $request->input('contentId');
-        if( $contentId){
+        if ($contentId) {
             $content = Content::findContentById($contentId);
-            if( !empty($content->version_id)){
+            if (!empty($content->version_id)) {
                 /** @var VersionClient $versionClient */
                 $versionClient = resolve(VersionClient::class);
                 /** @var VersionData $versionData */
                 $versionData = $versionClient->getVersion($content->version_id);
                 $this->traverseVersion($versionData, $this->versionData);
-            } elseif(!empty($content)) {
+            } elseif (!empty($content)) {
                 $isContentVersioned = false;
             }
         }
@@ -43,8 +40,6 @@ class VersioningController extends Controller
     }
 
     /**
-     * @param VersionData $versionData
-     * @param Collection $stack
      * @return Collection
      */
     private function traverseVersion(VersionData $versionData, Collection $stack)
@@ -53,7 +48,7 @@ class VersioningController extends Controller
         $versionArray['versionCreatedAtRaw'] = $versionData->getCreatedAt();
         $versionArray['versionCreatedAtFormatted'] = Carbon::createFromTimestampMs($versionData->getCreatedAt())->toIso8601String();
         $content = Content::findContentById($versionData->getExternalReference());
-        if(!empty($content)){
+        if (!empty($content)) {
             $versionArray['content'] = [
                 'title' => $content->title,
                 'created' => $content->created_at->toIso8601String(),
@@ -64,14 +59,14 @@ class VersioningController extends Controller
                 'contentType' => $content->getContentType(),
             ];
         }
-        if( $versionData->getParent() ){
+        if ($versionData->getParent()) {
             $parent = collect();
             $this->traverseVersion($versionData->getParent(), $parent);
             $versionArray['parent'] = $parent;
         }
-        if( $versionData->getChildren() ){
+        if ($versionData->getChildren()) {
             $children = collect();
-            foreach ($versionData->getChildren() as $child){
+            foreach ($versionData->getChildren() as $child) {
                 $this->traverseVersion($child, $children);
             }
             $versionArray['children'] = $children;

@@ -91,7 +91,8 @@ class LTIRequest extends Oauth10Request
         return $this->param("ext_activity_title");
     }
 
-    public function getExtJwtToken() {
+    public function getExtJwtToken()
+    {
         return $this->param("ext_jwt_token");
     }
 

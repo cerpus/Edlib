@@ -1,4 +1,5 @@
 <?php
+
 return [
     'PRIVATE' => 'Privat',
     'CC0' => 'CC0 Fristatus-erklæring',

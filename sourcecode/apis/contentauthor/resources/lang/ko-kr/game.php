@@ -1,4 +1,5 @@
 <?php
+
 return [
     "game" => "게임",
     "create-game" => "게임 만들기",

@@ -37,7 +37,8 @@ class Progress extends Controller
         return response()->json($response);
     }
 
-    private function hasLogin() {
+    private function hasLogin()
+    {
         return Session::get('userId', false) !== false;
     }
 

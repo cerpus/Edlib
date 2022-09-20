@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P;
 
 use App\Apis\ResourceApiService;
-use App\Exceptions\NotFoundException;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
@@ -14,12 +13,11 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\SessionKeys;
 use App\Traits\H5PBehaviorSettings;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class ViewConfig implements ConfigInterface
 {
-    use Config, H5PBehaviorSettings;
+    use Config;
+    use H5PBehaviorSettings;
 
     public $id;
     protected $packageStructure;
@@ -33,8 +31,7 @@ class ViewConfig implements ConfigInterface
         H5PAdapterInterface $adapter,
         \H5PCore $core,
         ResourceApiService $resourceApiService
-    )
-    {
+    ) {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
 
@@ -55,7 +52,6 @@ class ViewConfig implements ConfigInterface
     }
 
     /**
-     * @param mixed $id
      * @return ViewConfig
      */
     public function setId($id)
@@ -119,11 +115,11 @@ class ViewConfig implements ConfigInterface
     private function getDependentFiles()
     {
         $this->assets = $this->h5pCore->getDependenciesFiles($this->h5pCore->loadContentDependencies($this->id, "preloaded"));
-        array_map(function ($type){
+        array_map(function ($type) {
             return array_map(function ($file) {
                 if (isset($file->url)) {
                     $file->path = $file->url;
-                } else if (!filter_var($file->path, FILTER_VALIDATE_URL)){
+                } elseif (!filter_var($file->path, FILTER_VALIDATE_URL)) {
                     $file->path = $this->h5pCore->fs->getDisplayPath(false) . "/" . $file->path;
                 }
                 return $file;
@@ -134,14 +130,14 @@ class ViewConfig implements ConfigInterface
 
     private function addCustomViewCss()
     {
-        array_map(function ($css){
+        array_map(function ($css) {
             $this->addAsset('styles', $this->getAssetUrl(null, $css));
         }, $this->adapter->getCustomViewCss());
     }
 
     private function addCustomScripts()
     {
-        return array_map(function ($script){
+        return array_map(function ($script) {
             $this->addAsset('scripts', (object)[
                 'path' => $script,
                 'version' => null,
@@ -178,7 +174,7 @@ class ViewConfig implements ConfigInterface
         $disable = config('h5p.overrideDisableSetting');
         $contentConfig->displayOptions = $core->getDisplayOptionsForView($disable === false ? $content['disable'] : $disable, $author_id);
         $state = false;
-        if( is_null($this->behaviorSettings) || $this->behaviorSettings->includeAnswers === true){
+        if (is_null($this->behaviorSettings) || $this->behaviorSettings->includeAnswers === true) {
             $progress = new H5PProgress(DB::connection()->getPdo(), $this->userId);
             $state = $progress->getState($content['id'], $this->context);
         }
@@ -194,18 +190,18 @@ class ViewConfig implements ConfigInterface
 
     private function behaviorSettings($library, $parameters)
     {
-        if( !is_null($this->behaviorSettings)){
-            try{
+        if (!is_null($this->behaviorSettings)) {
+            try {
                 /** @var ContentTypeInterface $package */
                 $package = H5PPackageProvider::make($library, $parameters);
                 $parameters = $package->applyBehaviorSettings($this->behaviorSettings);
                 $css = $package->getCss(false);
-                if( !empty($css)){
-                    array_walk($css, function ($cssString){
+                if (!empty($css)) {
+                    array_walk($css, function ($cssString) {
                         $this->addCss($cssString);
                     });
                 }
-            } catch (UnknownH5PPackageException $exception){
+            } catch (UnknownH5PPackageException $exception) {
                 $this->packageStructure = json_decode($parameters);
                 $parameters = $this->applyBehaviorSettings($this->behaviorSettings);
             }

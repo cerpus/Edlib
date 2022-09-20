@@ -23,11 +23,17 @@ use Tests\TestCase;
 
 class CRUTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers, MockVersioningTrait, WithFaker, MockMQ, MockH5PAdapterInterface, MockResourceApi;
+    use RefreshDatabase;
+    use TestHelpers;
+    use MockVersioningTrait;
+    use WithFaker;
+    use MockMQ;
+    use MockH5PAdapterInterface;
+    use MockResourceApi;
 
-    const testDirectory = "h5pstorage";
-    const testContentDirectory = "content";
-    const testEditorDirectory = "editor";
+    public const testDirectory = "h5pstorage";
+    public const testContentDirectory = "content";
+    public const testEditorDirectory = "editor";
 
     /** @test */
     public function test_environment()

@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Integration\Article\Handler;
 
 use App\Article;
@@ -12,7 +13,8 @@ use Tests\TestCase;
 
 class HandleCollaboratorsTest extends TestCase
 {
-    use RefreshDatabase, WithoutMiddleware;
+    use RefreshDatabase;
+    use WithoutMiddleware;
 
     public function testHandleCollaboratorsOnSave()
     {
@@ -32,6 +34,5 @@ class HandleCollaboratorsTest extends TestCase
         $this->assertNotNull($theCollaborator);
 
         $this->assertDatabaseHas('article_collaborators', ['article_id' => $article->id, 'email' => 'a@b.com']);
-
     }
 }

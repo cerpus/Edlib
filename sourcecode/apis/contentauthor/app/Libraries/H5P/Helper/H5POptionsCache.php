@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Helper;
-
 
 use App\H5POption;
 use Illuminate\Support\Facades\Cache;

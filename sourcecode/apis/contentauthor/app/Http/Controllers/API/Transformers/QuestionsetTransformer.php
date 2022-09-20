@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\Transformers;
 
-
 use Cerpus\QuestionBankClient\DataObjects\QuestionsetDataObject;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
@@ -27,7 +26,6 @@ class QuestionsetTransformer extends TransformerAbstract
 
     public function includeQuestions(QuestionsetDataObject $questions): Collection
     {
-        return $this->collection($questions->getQuestions(), new QuestionTransformer);
+        return $this->collection($questions->getQuestions(), new QuestionTransformer());
     }
-
 }

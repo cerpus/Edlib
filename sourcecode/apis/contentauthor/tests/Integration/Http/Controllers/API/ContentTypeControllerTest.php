@@ -12,10 +12,11 @@ use Illuminate\Http\Response;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
-
 class ContentTypeControllerTest extends TestCase
 {
-    use WithFaker, RefreshDatabase, WithoutMiddleware;
+    use WithFaker;
+    use RefreshDatabase;
+    use WithoutMiddleware;
 
     public function setUp(): void
     {
@@ -103,5 +104,4 @@ class ContentTypeControllerTest extends TestCase
         $this->post("api/v1/contenttypes/questionsets")
             ->assertStatus(Response::HTTP_FOUND);
     }
-
 }

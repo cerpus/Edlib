@@ -122,7 +122,6 @@ class QuestionSetController extends Controller
     }
 
     /**
-     * @param ApiQuestionsetRequest $request
      * @return JsonResponse
      */
     public function store(ApiQuestionsetRequest $request)

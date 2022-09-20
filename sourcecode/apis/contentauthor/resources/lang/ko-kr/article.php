@@ -1,4 +1,5 @@
 <?php
+
 return [
     'Article' => '글',
     'create-article' => '글 작성하기',

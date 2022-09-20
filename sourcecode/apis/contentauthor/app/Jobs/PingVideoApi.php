@@ -21,9 +21,13 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 
 class PingVideoApi implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    protected $contentVideo, $versionClient;
+    protected $contentVideo;
+    protected $versionClient;
     /** @var H5PVideoInterface */
     private $adapter;
     public $processedChildren = 0;
@@ -62,7 +66,6 @@ class PingVideoApi implements ShouldQueue
     }
 
     /**
-     * @param H5PContent $h5pContent
      * @return bool
      * @throws NoFilesException
      */
@@ -91,7 +94,6 @@ class PingVideoApi implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param H5PVideoInterface $adapter
      * @return bool
      */
     public function handle(H5PVideoInterface $adapter)

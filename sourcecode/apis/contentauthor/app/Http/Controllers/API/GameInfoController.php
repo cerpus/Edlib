@@ -42,6 +42,5 @@ class GameInfoController extends Controller
         }
 
         return $response;
-
     }
 }

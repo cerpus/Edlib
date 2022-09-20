@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Integration\Http\Controllers\API;
-
 
 use App\Events\ResourceSaved;
 use App\H5PContent;

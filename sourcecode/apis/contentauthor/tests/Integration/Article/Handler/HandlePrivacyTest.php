@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Integration\Article\Handler;
 
 use App\Article;
@@ -12,7 +13,8 @@ use Tests\TestCase;
 
 class HandlePrivacyTest extends TestCase
 {
-    use RefreshDatabase, WithoutMiddleware;
+    use RefreshDatabase;
+    use WithoutMiddleware;
 
     public function testHandlePrivacyOnSave()
     {
@@ -22,7 +24,7 @@ class HandlePrivacyTest extends TestCase
 
         $request = new Request();
         $request->request->add(['share' => 'PRIVATE']);
-        $articleSavedEvent = new ArticleWasSaved($article, $request, collect(), $authId,  'thereason', []);
+        $articleSavedEvent = new ArticleWasSaved($article, $request, collect(), $authId, 'thereason', []);
         $privacyHandler = new HandlePrivacy();
         $privacyHandler->handle($articleSavedEvent);
         $article = $article->fresh();
@@ -30,7 +32,7 @@ class HandlePrivacyTest extends TestCase
 
         $request = new Request();
         $request->request->add(['share' => 'share']);
-        $articleSavedEvent = new ArticleWasSaved($article, $request, collect(), $authId,  'thereason', []);
+        $articleSavedEvent = new ArticleWasSaved($article, $request, collect(), $authId, 'thereason', []);
         $privacyHandler = new HandlePrivacy();
         $privacyHandler->handle($articleSavedEvent);
         $article = $article->fresh();

@@ -11,7 +11,8 @@ class ArticleFileVersioner
 {
     use HTMLHelper;
 
-    protected $originalArticle, $newArticle;
+    protected $originalArticle;
+    protected $newArticle;
 
     public function __construct(Article $originalArticle, Article $newArticle)
     {

@@ -2,8 +2,6 @@
 
 namespace App\Libraries\H5P\Dataobjects;
 
-
-
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
@@ -14,8 +12,12 @@ class H5PCopyrightDataObject
     use CreateTrait;
 
     public $title;
-    public $source, $yearFrom, $yearTo;
-    public $license, $licenseVersion, $licenseExtras;
+    public $source;
+    public $yearFrom;
+    public $yearTo;
+    public $license;
+    public $licenseVersion;
+    public $licenseExtras;
     public $thumbnail;
     public $contentType;
 

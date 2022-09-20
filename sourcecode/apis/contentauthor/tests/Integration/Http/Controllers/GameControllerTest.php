@@ -18,7 +18,9 @@ use Tests\TestCase;
 
 class GameControllerTest extends TestCase
 {
-    use RefreshDatabase, MockAuthApi, WithFaker;
+    use RefreshDatabase;
+    use MockAuthApi;
+    use WithFaker;
 
     public function testEdit(): void
     {

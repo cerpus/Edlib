@@ -1,10 +1,10 @@
 <?php
+
 namespace App\Libraries\H5P;
 
 use App\Libraries\H5P\Interfaces\ProgressInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class H5PProgress implements ProgressInterface
 {
@@ -35,15 +35,13 @@ class H5PProgress implements ProgressInterface
         switch ($request->get('action')) {
             case "h5p_setFinished":
                 return $this->storeFinished($request->all());
-                break;
             case "h5p_contents_user_data":
                 return $this->storeUserContentData($request->all());
-                break;
-            case "h5p_preview";
+            case "h5p_preview":
                 return ['success' => true];
-                break;
+            default:
+                throw new \Exception("Invalid action.");
         }
-        throw new \Exception("Invalid action.");
     }
 
     protected function storeFinished(array $requestValues)
@@ -85,13 +83,27 @@ class H5PProgress implements ProgressInterface
                 if ($this->shouldUpdate($contentId, $dataId, $subContentId, $context)) {
                     // Update data
                     $response->message = "Updating";
-                    $response->success = $this->updateUserProgress($data, $preload, $invalidate, $contentId, $dataId,
-                        $subContentId, $context);
+                    $response->success = $this->updateUserProgress(
+                        $data,
+                        $preload,
+                        $invalidate,
+                        $contentId,
+                        $dataId,
+                        $subContentId,
+                        $context
+                    );
                 } else {
                     // Insert new data
                     $response->message = "Inserting";
-                    $response->success = $this->insertUserProgress($contentId, $subContentId, $dataId, $data, $preload,
-                        $invalidate, $context);
+                    $response->success = $this->insertUserProgress(
+                        $contentId,
+                        $subContentId,
+                        $dataId,
+                        $data,
+                        $preload,
+                        $invalidate,
+                        $context
+                    );
                 }
             }
         }
@@ -201,11 +213,9 @@ class H5PProgress implements ProgressInterface
     }
 
     /**
-     * @param $wpdb
      * @param $content_id
      * @param $data_id
      * @param $sub_content_id
-     * @return mixed
      */
     private function shouldUpdate($content_id, $data_id, $sub_content_id, $context)
     {
@@ -309,10 +319,7 @@ class H5PProgress implements ProgressInterface
         return $res->progresses;
     }
 
-    /**
-     * @param array $requestValues
-     * @return mixed
-     */
+
     protected function processFinished(array $requestValues)
     {
         $content_id = @filter_var($requestValues['contentId'], FILTER_VALIDATE_INT);
@@ -320,18 +327,26 @@ class H5PProgress implements ProgressInterface
             return false;
         }
 
-        $data = array(
+        $data = [
             'score' => @$requestValues['score'],
             'max_score' => @$requestValues['maxScore'],
             'opened' => @$requestValues['opened'],
             'finished' => @$requestValues['finished'],
             'time' => @$requestValues['time'],
             'context' => @$requestValues['context']
-        );
+        ];
         if (is_null($data['time'])) {
             $data['time'] = 0;
         }
-        return (resolve(\H5PFrameworkInterface::class))->handleResult($this->currentUserId, $content_id, $data['score'], $data['max_score'],
-            $data['opened'], $data['finished'], $data['time'], $data['context']);
+        return (resolve(\H5PFrameworkInterface::class))->handleResult(
+            $this->currentUserId,
+            $content_id,
+            $data['score'],
+            $data['max_score'],
+            $data['opened'],
+            $data['finished'],
+            $data['time'],
+            $data['context']
+        );
     }
 }

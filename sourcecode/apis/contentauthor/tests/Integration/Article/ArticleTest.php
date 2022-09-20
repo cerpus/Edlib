@@ -20,7 +20,10 @@ use Tests\Helpers\MockVersioningTrait;
 
 class ArticleTest extends TestCase
 {
-    use RefreshDatabase, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase;
+    use MockVersioningTrait;
+    use MockResourceApi;
+    use MockAuthApi;
 
     public function testRewriteUploadUrls(): void
     {
@@ -289,5 +292,4 @@ class ArticleTest extends TestCase
         $this->get(route('article.create'))
             ->assertStatus(Response::HTTP_FOUND);
     }
-
 }

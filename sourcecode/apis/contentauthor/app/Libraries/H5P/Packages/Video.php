@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use LogicException;
 
 class Video extends H5PBase

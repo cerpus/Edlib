@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Libraries\H5P\Traits;
 
 use Illuminate\Filesystem\Filesystem;
@@ -23,8 +22,9 @@ trait FileUploadTrait
 
     public $timeout = 120;
 
-    protected function processFile(H5PFile $file) {
-        if ($this->postponeExecution($file)){
+    protected function processFile(H5PFile $file)
+    {
+        if ($this->postponeExecution($file)) {
             return;
         }
         $file->process_start = Carbon::now();
@@ -65,11 +65,12 @@ trait FileUploadTrait
         }
     }
 
-    private function postponeExecution(H5PFile $file) :bool {
-        if (!is_null($file->process_start) ){
+    private function postponeExecution(H5PFile $file): bool
+    {
+        if (!is_null($file->process_start)) {
             $now = Carbon::now();
             $nextStart = Carbon::parse($file->process_start)->addMinute();
-            if ($nextStart->isAfter($now)){
+            if ($nextStart->isAfter($now)) {
                 $diffInSeconds = $nextStart->diffInRealSeconds($now);
                 $this->release(min(60, $diffInSeconds));
                 return true;

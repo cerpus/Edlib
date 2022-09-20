@@ -2,7 +2,6 @@
 
 namespace App\Libraries\QuestionSet;
 
-
 use App\Content;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
@@ -14,15 +13,12 @@ use Cerpus\QuestionBankClient\QuestionBankClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class QuestionSetHandler
 {
-
     /**
      * @param $values
-     * @param Request $request
      * @return array
      * @throws \Exception
      */
@@ -38,7 +34,7 @@ class QuestionSetHandler
         $questionSet->is_draft = $request->input('isDraft', 0);
         if ($questionSet->save() !== true) {
             throw new \Exception("Could not store Question Set");
-        };
+        }
 
         $collaborators = explode(',', $request->input('col-emails', ''));
         $questionSet->setCollaborators($collaborators)->notifyNewCollaborators();
@@ -65,7 +61,6 @@ class QuestionSetHandler
 
 
     /**
-     * @param QuestionSet $questionSet
      * @param array $questions
      * @throws \Exception
      */
@@ -112,9 +107,7 @@ class QuestionSetHandler
 
 
     /**
-     * @param QuestionSet $questionSet
      * @param $values
-     * @param Request $request
      * @return array
      * @throws \Throwable
      */
@@ -217,5 +210,4 @@ class QuestionSetHandler
 
         return [$id, $title, $type, $score, $fallbackUrl, $resourceType];
     }
-
 }

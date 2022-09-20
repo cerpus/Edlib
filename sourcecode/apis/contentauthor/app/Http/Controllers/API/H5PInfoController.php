@@ -41,6 +41,5 @@ class H5PInfoController extends Controller
         }
 
         return $response;
-
     }
 }

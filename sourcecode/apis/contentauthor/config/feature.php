@@ -1,4 +1,5 @@
 <?php
+
 return [
     'versioning' => true,
     'linear-versioning' => env('FEATURE_LINEAR_VERSIONING', false),

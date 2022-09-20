@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\TranslationServices;
-
 
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
@@ -11,10 +9,11 @@ use GuzzleHttp\Utils as GuzzleUtils;
 
 class NynorskrobotenAdapter implements TranslationServiceInterface
 {
-    const MACHINENAME = 'nynorskroboten';
-    const TRANSLATE_ENDPOINT = '/translate';
+    public const MACHINENAME = 'nynorskroboten';
+    public const TRANSLATE_ENDPOINT = '/translate';
 
-    private $client, $apiToken;
+    private $client;
+    private $apiToken;
 
     public function __construct(Client $client, $apiToken)
     {
@@ -22,7 +21,7 @@ class NynorskrobotenAdapter implements TranslationServiceInterface
         $this->apiToken = $apiToken;
     }
 
-    public function getTranslations(H5PTranslationDataObject $translatable):H5PTranslationDataObject
+    public function getTranslations(H5PTranslationDataObject $translatable): H5PTranslationDataObject
     {
         $response = $this->client->post(self::TRANSLATE_ENDPOINT, [
             'json' => $this->convertSourceToObject($translatable),

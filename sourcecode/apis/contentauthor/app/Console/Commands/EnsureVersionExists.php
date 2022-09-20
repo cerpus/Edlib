@@ -6,7 +6,6 @@ use App\Article;
 use App\H5PContent;
 use Illuminate\Console\Command;
 use Cerpus\VersionClient\VersionClient;
-use Illuminate\Support\Facades\Log;
 
 class EnsureVersionExists extends Command
 {
@@ -42,8 +41,6 @@ class EnsureVersionExists extends Command
     }
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {

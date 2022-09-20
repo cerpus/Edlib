@@ -2,7 +2,6 @@
 
 namespace App\Libraries\Games;
 
-
 use App\Events\GameWasSaved;
 use App\Game;
 use App\Gametype;
@@ -43,7 +42,6 @@ class GameHandler
 
     /**
      * @param $gametypeId
-     * @return GameTypeContract
      * @throws \Exception
      */
     public static function makeGameTypeFromId($gametypeId): GameTypeContract

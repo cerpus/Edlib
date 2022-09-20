@@ -8,13 +8,13 @@ use App\Libraries\DataObjects\Attribution;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
-use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 use TypeError;
 
 class ContentAttributionTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
+    use WithFaker;
 
     public function testModelWorks()
     {

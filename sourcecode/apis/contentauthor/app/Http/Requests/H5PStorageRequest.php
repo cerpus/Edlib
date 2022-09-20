@@ -11,6 +11,7 @@ use App\Rules\LicenseContent;
 use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 use function assert;
 
 class H5PStorageRequest extends FormRequest

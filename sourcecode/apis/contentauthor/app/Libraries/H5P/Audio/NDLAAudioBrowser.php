@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Audio;
-
 
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
@@ -14,13 +12,12 @@ use Illuminate\Http\File;
 
 class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterface
 {
-
     private $client;
     /** @var CerpusStorageInterface */
     private $storage;
 
-    const FIND_AUDIOS_URL = '/audio-api/v1/audio';
-    const GET_AUDIO_URL = '/audio-api/v1/audio/%s';
+    public const FIND_AUDIOS_URL = '/audio-api/v1/audio';
+    public const GET_AUDIO_URL = '/audio-api/v1/audio/%s';
 
     public function __construct(Client $client)
     {
@@ -50,14 +47,14 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
 
     private function buildSearchQuery($queryObject)
     {
-        if( empty($queryObject)){
+        if (empty($queryObject)) {
             return null;
         }
         $queryObject = json_decode($queryObject, true);
-        if( empty($queryObject['query'])){
+        if (empty($queryObject['query'])) {
             unset($queryObject['query']);
         }
-        if( !empty($queryObject['pageSize'])){
+        if (!empty($queryObject['pageSize'])) {
             $queryObject['page-size'] = $queryObject['pageSize'];
             unset($queryObject['pageSize']);
         }
@@ -98,7 +95,7 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
         $fileName = md5($source);
         $filePath = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $content['id'], $this->getType(), $fileName, $extension);
 
-        if( !$this->storage->storeContentOnDisk($filePath, fopen($tempFile, "r"))){
+        if (!$this->storage->storeContentOnDisk($filePath, fopen($tempFile, "r"))) {
             throw new Exception("Could not store file on disk");
         }
         unlink($tempFile);
@@ -107,7 +104,6 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
             'path' => sprintf(ContentStorageSettings::CONTENT_LOCAL_PATH, $this->getType(), $fileName, $extension),
             'mime' => $values['mime'],
         ];
-
     }
 
     public function getType(): string
@@ -118,4 +114,5 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     public function setStorage(CerpusStorageInterface $storage)
     {
         $this->storage = $storage;
-    }}
+    }
+}

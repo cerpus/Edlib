@@ -13,7 +13,6 @@ class AddMetadatasettingsToH5p extends Migration
      */
     public function up()
     {
-
         Schema::table('h5p_libraries', function (Blueprint $table) {
             $table->boolean('has_icon')->default(0);
             $table->text('metadata_settings')->nullable();

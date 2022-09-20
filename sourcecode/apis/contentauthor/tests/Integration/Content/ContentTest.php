@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Integration\Content;
 
 use App\Article;

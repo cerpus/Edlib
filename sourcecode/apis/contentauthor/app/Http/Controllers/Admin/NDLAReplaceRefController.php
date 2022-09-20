@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin;
-
 
 use App\H5PContent;
 use App\Http\Controllers\Controller;
@@ -34,7 +32,7 @@ class NDLAReplaceRefController extends Controller
     public function populateTable()
     {
         \DB::table('h5p_contents')
-            ->whereNotIn('id', function ($query){
+            ->whereNotIn('id', function ($query) {
                 $query->select('content_id')->from('h5p_refid_support');
             })
             ->chunkById(200, function ($contents) {
@@ -56,13 +54,13 @@ class NDLAReplaceRefController extends Controller
             ->where('processed', 0)
             ->where('istarget', 1)
             ->chunkById(50, function ($targets) {
-            foreach ($targets as $target) {
-                ReplaceVideoRefId::dispatch(H5PContent::find($target->content_id));
-                \DB::table('h5p_refid_support')
-                    ->where('content_id', $target->content_id)
-                    ->update(['processed' => 1]);
-            }
-        });
+                foreach ($targets as $target) {
+                    ReplaceVideoRefId::dispatch(H5PContent::find($target->content_id));
+                    \DB::table('h5p_refid_support')
+                        ->where('content_id', $target->content_id)
+                        ->update(['processed' => 1]);
+                }
+            });
 
         return redirect(route('admin.video.ndla.replaceref'));
     }

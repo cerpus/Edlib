@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
 use App\Article;
 
 class OerlearningRenameToEdlib extends Migration

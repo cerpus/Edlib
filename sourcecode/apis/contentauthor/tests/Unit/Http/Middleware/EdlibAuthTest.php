@@ -29,7 +29,7 @@ final class EdlibAuthTest extends TestCase
     public function testGrantsAccessToUserWithValidRole(): void
     {
         $this->assertTrue(
-            $this->middleware->handle($this->request, fn() => true, 'admin'),
+            $this->middleware->handle($this->request, fn () => true, 'admin'),
         );
     }
 
@@ -37,6 +37,6 @@ final class EdlibAuthTest extends TestCase
     {
         $this->expectException(UnauthorizedHttpException::class);
 
-        $this->middleware->handle($this->request, fn() => true, 'superadmin');
+        $this->middleware->handle($this->request, fn () => true, 'superadmin');
     }
 }

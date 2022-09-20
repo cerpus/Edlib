@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Http\Libraries;
-
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;

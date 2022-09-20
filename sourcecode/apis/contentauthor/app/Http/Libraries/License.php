@@ -8,34 +8,34 @@ use Illuminate\Support\Facades\Session;
 
 class License
 {
-    const LICENSE_CC0 = 'CC0';
-    const LICENSE_COPYRIGHT = 'COPYRIGHT';
-    const LICENSE_EDLIB = "EDLL";
-    const LICENSE_PDM = 'PDM';
-    const LICENSE_PRIVATE = 'PRIVATE';
+    public const LICENSE_CC0 = 'CC0';
+    public const LICENSE_COPYRIGHT = 'COPYRIGHT';
+    public const LICENSE_EDLIB = "EDLL";
+    public const LICENSE_PDM = 'PDM';
+    public const LICENSE_PRIVATE = 'PRIVATE';
 
-    const LICENSE_BY_NC = 'BY-NC';
-    const LICENSE_BY_ND = 'BY-ND';
-    const LICENSE_BY_NC_ND = 'BY-NC-ND';
-    const LICENSE_BY_NC_SA = 'BY-NC-SA';
-    const LICENSE_BY_SA = 'BY-SA';
+    public const LICENSE_BY_NC = 'BY-NC';
+    public const LICENSE_BY_ND = 'BY-ND';
+    public const LICENSE_BY_NC_ND = 'BY-NC-ND';
+    public const LICENSE_BY_NC_SA = 'BY-NC-SA';
+    public const LICENSE_BY_SA = 'BY-SA';
 
-    const LICENSE_BY = 'BY';
-    const LICENSE_CC = 'CC';
-    const LICENSE_NC = 'NC';
-    const LICENSE_ND = 'ND';
-    const LICENSE_SA = 'SA';
+    public const LICENSE_BY = 'BY';
+    public const LICENSE_CC = 'CC';
+    public const LICENSE_NC = 'NC';
+    public const LICENSE_ND = 'ND';
+    public const LICENSE_SA = 'SA';
 
-    const LICENSE_CC_BY = 'CC-BY';
-    const LICENSE_CC_BY_SA = 'CC-BY-SA';
-    const LICENSE_CC_BY_ND = 'CC-BY-ND';
-    const LICENSE_CC_BY_NC = 'CC-BY-NC';
-    const LICENSE_CC_BY_NC_SA = 'CC-BY-NC-SA';
-    const LICENSE_CC_BY_NC_ND = 'CC-BY-NC-ND';
+    public const LICENSE_CC_BY = 'CC-BY';
+    public const LICENSE_CC_BY_SA = 'CC-BY-SA';
+    public const LICENSE_CC_BY_ND = 'CC-BY-ND';
+    public const LICENSE_CC_BY_NC = 'CC-BY-NC';
+    public const LICENSE_CC_BY_NC_SA = 'CC-BY-NC-SA';
+    public const LICENSE_CC_BY_NC_ND = 'CC-BY-NC-ND';
 
-    const ALLOWED_LICENSES = 'PRIVATE,CC0,PDM,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND,EDLL';
+    public const ALLOWED_LICENSES = 'PRIVATE,CC0,PDM,BY,BY-SA,BY-NC,BY-ND,BY-NC-SA,BY-NC-ND,EDLL';
 
-    const VALID_LICENSES = [
+    public const VALID_LICENSES = [
         self::LICENSE_BY,
         self::LICENSE_BY_SA,
         self::LICENSE_BY_ND,
@@ -48,7 +48,7 @@ class License
         self::LICENSE_EDLIB,
     ];
 
-    const THROW_AWAY_LICENSE_PARTS = [
+    public const THROW_AWAY_LICENSE_PARTS = [
         'CREATIVE COMMONS',
         'CREATIVE-COMMONS',
         'LICENSE',
@@ -68,7 +68,7 @@ class License
     ];
 
     // This must be in sync with LICENSE_LONG_FORM_PARTS for replacement to happen correctly
-    const LICENSE_SHORT_FORM_PARTS = [
+    public const LICENSE_SHORT_FORM_PARTS = [
         self::LICENSE_BY,
         self::LICENSE_SA,
         self::LICENSE_ND,
@@ -81,7 +81,7 @@ class License
     ];
 
     // This must be in sync with LICENSE_SHORT_FORM_PARTS for replacement to happen correctly
-    const LICENSE_LONG_FORM_PARTS = [
+    public const LICENSE_LONG_FORM_PARTS = [
         'en' => [
             'ATTRIBUTION',
             'SHAREALIKE',

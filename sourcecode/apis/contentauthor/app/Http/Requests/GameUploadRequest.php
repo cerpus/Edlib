@@ -50,8 +50,10 @@ class GameUploadRequest extends FormRequest
                 $zipFile = new Filesystem(new ZipArchiveAdapter($gameFile->path()));
 
                 if (!$zipFile->has('MILLIONAIRE/appmanifest.json')) {
-                    $validator->errors()->add('gameFile',
-                        "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive.");
+                    $validator->errors()->add(
+                        'gameFile',
+                        "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive."
+                    );
                     return;
                 }
 
@@ -62,18 +64,24 @@ class GameUploadRequest extends FormRequest
                 }
 
                 if (!property_exists($appManifest, 'description')) {
-                    $validator->errors()->add('gameFile',
-                        "The appmanifest.json is missing the description property. The description property is used to read the version information.");
+                    $validator->errors()->add(
+                        'gameFile',
+                        "The appmanifest.json is missing the description property. The description property is used to read the version information."
+                    );
                     return;
                 }
             } catch (LogicException $e) {
                 Log::error($e->getFile() . ' (' . $e->getLine() . '): ' . $e->getMessage());
-                $validator->errors()->add('gameFile',
-                    "Something is wrong with the zip file. Error message:'" . $e->getMessage() . "'");
+                $validator->errors()->add(
+                    'gameFile',
+                    "Something is wrong with the zip file. Error message:'" . $e->getMessage() . "'"
+                );
             } catch (Exception $e) {
                 Log::error($e->getFile() . ' (' . $e->getLine() . '): ' . $e->getMessage());
-                $validator->errors()->add('gameFile',
-                    "Something went horribly, horribly wrong. Error message:'" . $e->getMessage() . "'");
+                $validator->errors()->add(
+                    'gameFile',
+                    "Something went horribly, horribly wrong. Error message:'" . $e->getMessage() . "'"
+                );
             }
         });
     }

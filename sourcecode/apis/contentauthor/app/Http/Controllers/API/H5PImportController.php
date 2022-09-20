@@ -17,12 +17,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class H5PImportController extends Controller
 {
-
     /**
-     * @param H5PImportRequest $request
-     * @param H5PImport $import
-     * @param H5PStorage $storage
-     * @param H5PAdapterInterface $adapter
      * @return JsonResponse
      */
     public function importH5P(H5PImportRequest $request, H5PImport $import, H5PStorage $storage, H5PAdapterInterface $adapter)
@@ -36,7 +31,7 @@ class H5PImportController extends Controller
         }
 
         $h5pContent = H5PContent::find($response->h5pId);
-        if( $request->input('disablePublishMetadata', true) === true ){
+        if ($request->input('disablePublishMetadata', true) === true) {
             config([
                 'feature.enableUserPublish' => false,
             ]);

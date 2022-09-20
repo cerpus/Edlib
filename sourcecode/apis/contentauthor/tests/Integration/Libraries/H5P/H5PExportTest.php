@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Integration\Libraries\H5P;
-
 
 use App\H5PContent;
 use App\Libraries\DataObjects\ContentStorageSettings;
@@ -22,9 +20,13 @@ use ZipArchive;
 
 class H5PExportTest extends TestCase
 {
-    use DatabaseMigrations, RefreshDatabase, WithFaker, MockH5PAdapterInterface;
+    use DatabaseMigrations;
+    use RefreshDatabase;
+    use WithFaker;
+    use MockH5PAdapterInterface;
 
-    private $testDisk, $exportDisk;
+    private $testDisk;
+    private $exportDisk;
 
     protected function setUp(): void
     {
@@ -69,7 +71,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $this->assertJson($zipArchive->getFromName('content/content.json'));
         $zipArchive->close();
@@ -104,7 +106,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
@@ -145,7 +147,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
@@ -184,7 +186,7 @@ class H5PExportTest extends TestCase
                 $imageProvider2->method('storeContent')->willReturnCallback(function () use ($h5p) {
                     $imageDirectory = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $h5p->id, "image", "tree", 'jpg');
                     $this->exportDisk->makeDirectory(dirname($imageDirectory));
-                    $this->exportDisk->put( $imageDirectory, $this->testDisk->readStream('files/tree.jpg'));
+                    $this->exportDisk->put($imageDirectory, $this->testDisk->readStream('files/tree.jpg'));
                     return [
                         'path' => "images/tree.jpg",
                         'mime' => "image/jpeg"
@@ -206,7 +208,7 @@ class H5PExportTest extends TestCase
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
@@ -264,7 +266,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
@@ -308,7 +310,7 @@ class H5PExportTest extends TestCase
                 $imageProvider->method('storeContent')->willReturnCallback(function () use ($h5p) {
                     $imageDirectory = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $h5p->id, "image", "tree", 'jpg');
                     $this->exportDisk->makeDirectory(dirname($imageDirectory));
-                    $this->exportDisk->put( $imageDirectory, $this->testDisk->readStream('files/tree.jpg'));
+                    $this->exportDisk->put($imageDirectory, $this->testDisk->readStream('files/tree.jpg'));
                     return [
                         'path' => "images/tree.jpg",
                         'mime' => "image/jpeg"
@@ -340,7 +342,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
@@ -416,7 +418,7 @@ class H5PExportTest extends TestCase
 
         $this->assertFileExists($this->exportDisk->path($exportPath));
         $this->exportDisk->move($exportPath, $archivePath);
-        $zipArchive = new ZipArchive;
+        $zipArchive = new ZipArchive();
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));

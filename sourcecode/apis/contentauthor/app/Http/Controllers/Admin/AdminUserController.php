@@ -26,12 +26,10 @@ class AdminUserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-
         $validated = $request->validate(
             [
                 'name' => 'required|min:3|max:255',
@@ -55,7 +53,6 @@ class AdminUserController extends Controller
         $request->session()->flash('message', "User {$request->name} created!");
 
         return redirect(route('admin-users.index'));
-
     }
 
     /**

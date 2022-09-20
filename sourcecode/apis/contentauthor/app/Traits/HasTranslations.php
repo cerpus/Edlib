@@ -13,7 +13,7 @@ trait HasTranslations
             ->orWhere('link_content_id', $this->id)
             ->get()
             ->map(function ($translation) {
-                if(!$translation->link_content_id){
+                if (!$translation->link_content_id) {
                     return $translation->main_content_id;
                 }
                 return $translation->link_content_id;
@@ -55,7 +55,8 @@ trait HasTranslations
                 [
                     'main_content_id' => $content->id,
                     'link_content_id' => $this->id,
-                ], [
+                ],
+                [
                     'content_type' => $this->getContentType(),
                     'language_code' => $this->getLanguage(),
                 ]

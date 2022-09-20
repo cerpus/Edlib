@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Request;
  */
 class EditorStorage implements \H5peditorStorage
 {
-    const FILE_TEMPORARY = 'temporary';
-    const FILE_KEEP = 'keep';
-    const FILE_REMOVE = 'remove';
+    public const FILE_TEMPORARY = 'temporary';
+    public const FILE_KEEP = 'keep';
+    public const FILE_REMOVE = 'remove';
 
     private $core;
 
@@ -55,8 +55,8 @@ class EditorStorage implements \H5peditorStorage
                         });
                 })
                 ->get()
-                ->sortBy(function ($library) use ($libraries){
-                    return $libraries->search(function ($item) use ($library){
+                ->sortBy(function ($library) use ($libraries) {
+                    return $libraries->search(function ($item) use ($library) {
                         return $library->name === $item->name;
                     });
                 })
@@ -142,7 +142,7 @@ class EditorStorage implements \H5peditorStorage
         $path = $interface->getUploadedH5pPath();
 
         if ($move_file) {
-            if (is_uploaded_file($data)){
+            if (is_uploaded_file($data)) {
                 $uploadedFile = new UploadedFile($data, $path);
                 $result = $uploadedFile->storeAs(ContentStorageSettings::TEMP_DIR, $uploadedFile->getClientOriginalName(), ['disk' => $contentAuthorStorage->getH5pTmpDiskName()]);
             }
@@ -151,11 +151,10 @@ class EditorStorage implements \H5peditorStorage
             file_put_contents($path, $data);
         }
 
-        return (object)array(
+        return (object)[
             'dir' => dirname($path),
             'fileName' => basename($path)
-        );
-
+        ];
     }
 
     /**

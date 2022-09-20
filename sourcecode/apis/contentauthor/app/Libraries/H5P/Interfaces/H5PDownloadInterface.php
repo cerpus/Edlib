@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P\Interfaces;
-
 
 interface H5PDownloadInterface
 {

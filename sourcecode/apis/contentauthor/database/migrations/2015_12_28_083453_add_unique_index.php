@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddUniqueIndex extends Migration
@@ -14,7 +13,7 @@ class AddUniqueIndex extends Migration
     {
         Schema::table('cerpus_contents_shares', function ($table) {
             $table->string('email', 100)->change();
-            $table->unique(array('h5p_id', 'email'));
+            $table->unique(['h5p_id', 'email']);
         });
     }
 
@@ -27,7 +26,7 @@ class AddUniqueIndex extends Migration
     {
         Schema::table('cerpus_contents_shares', function ($table) {
             $table->text('email')->change();
-            $table->dropUnique(array('h5p_id', 'email'));
+            $table->dropUnique(['h5p_id', 'email']);
         });
     }
 }

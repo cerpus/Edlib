@@ -8,7 +8,6 @@
 
 namespace App\Libraries\Games\Contracts;
 
-
 interface GameTypeModelContract
 {
     public function getAssets();

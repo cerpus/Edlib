@@ -2,7 +2,6 @@
 
 namespace App\Libraries\DataObjects;
 
-
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
@@ -12,6 +11,10 @@ class ResourceInfoDataObject
 {
     use CreateTrait;
 
-    public $id, $createdAt, $type, $maxScore, $ownerName;
+    public $id;
+    public $createdAt;
+    public $type;
+    public $maxScore;
+    public $ownerName;
     public $customFields = [];
 }

@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Article;
-use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 
 class ArticleWasCopied extends Event

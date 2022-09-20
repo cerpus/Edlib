@@ -4,13 +4,11 @@ namespace App\Transformers;
 
 use App\QuestionSetQuestionAnswer;
 use Carbon\Carbon;
-use Cerpus\ImageServiceClient\Exceptions\FileNotFoundException;
 use League\Fractal\Resource\Item;
 use League\Fractal\TransformerAbstract;
 
 class QuestionSetsQuestionAnswerTransformer extends TransformerAbstract
 {
-
     protected array $defaultIncludes = [
         'created',
         'updated',
@@ -36,7 +34,7 @@ class QuestionSetsQuestionAnswerTransformer extends TransformerAbstract
 
     private function getDate(QuestionSetQuestionAnswer $answer, $field): Item
     {
-        return $this->item(Carbon::parse($answer->$field), new DateTransformer);
+        return $this->item(Carbon::parse($answer->$field), new DateTransformer());
     }
 
     public function includeCreated(QuestionSetQuestionAnswer $answer): Item
@@ -59,6 +57,6 @@ class QuestionSetsQuestionAnswerTransformer extends TransformerAbstract
 
     public function includeQuestion(QuestionSetQuestionAnswer $answer): Item
     {
-        return $this->item($answer->question(), new QuestionSetsTransformer);
+        return $this->item($answer->question(), new QuestionSetsTransformer());
     }
 }

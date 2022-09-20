@@ -74,7 +74,6 @@ class EmbedController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param EmbedRequest $request
      * @return JsonResponse
      * @throws ValidationException
      */

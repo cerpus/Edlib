@@ -8,14 +8,13 @@ use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
 use Exception;
 use App\Article;
-use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 
 class AdminArticleController extends Controller
 {
-    const chunkSize = 30;
-    const logFile = 'articleMaxScore.log';
+    public const chunkSize = 30;
+    public const logFile = 'articleMaxScore.log';
 
     private $log;
 
@@ -46,18 +45,18 @@ class AdminArticleController extends Controller
         $targets->update(['bulk_calculated' => Article::BULK_PROGRESS]);
 
         $currentTargets
-            ->each(function ($article) use ($batch){
+            ->each(function ($article) use ($batch) {
                 /** @var Article $article */
-                try{
+                try {
                     $status = [
                         'id' => $article->id,
                         'title' => $article->title,
                     ];
-                    $article->max_score = $article->getMaxScoreHelper($article->content, true);;
+                    $article->max_score = $article->getMaxScoreHelper($article->content, true);
                     $article->bulk_calculated = Article::BULK_UPDATED;
                     $status['success'] = true;
                     $this->log("SUCCESS", $status);
-                } catch (Exception $exception){
+                } catch (Exception $exception) {
                     $article->bulk_calculated = Article::BULK_FAILED;
                     $article->max_score = null;
                     $status['success'] = false;
@@ -67,7 +66,7 @@ class AdminArticleController extends Controller
                 } finally {
                     $batch->push($status);
                     $article->save();
-                    if( $status['success'] === true){
+                    if ($status['success'] === true) {
                         event(new ResourceSaved($article->getEdlibDataObject()));
                     }
                 }

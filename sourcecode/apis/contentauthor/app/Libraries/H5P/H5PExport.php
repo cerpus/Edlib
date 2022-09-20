@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P;
-
 
 use App\H5PContent;
 use App\H5PLibrary;
@@ -14,7 +12,10 @@ use Illuminate\Support\Collection;
 
 class H5PExport
 {
-    private $content, $export, $adapter, $externalProviders;
+    private $content;
+    private $export;
+    private $adapter;
+    private $externalProviders;
 
     public function __construct(H5PContent $content, H5PDefaultExport $export, H5PAdapterInterface $adapter)
     {
@@ -27,7 +28,7 @@ class H5PExport
 
     public function generateExport($convertMediaToLocal = false)
     {
-        if( $convertMediaToLocal && $this->externalProviders->isNotEmpty() ){
+        if ($convertMediaToLocal && $this->externalProviders->isNotEmpty()) {
             $this->processContent();
         }
         /** @var H5PLibrary $h5PLibrary */
@@ -44,14 +45,14 @@ class H5PExport
 
         /** @var \H5PContentValidator $validator */
         $validator = resolve(\H5PContentValidator::class);
-        $params = (object)array(
+        $params = (object)[
             'library' => $h5PLibrary->getLibraryString(),
             'params' => json_decode($this->content->parameters)
-        );
+        ];
         if (!$params->params) {
             return null;
         }
-        $validator->validateLibrary($params, (object)array('options' => array($params->library)));
+        $validator->validateLibrary($params, (object)['options' => [$params->library]]);
 
         // Update content dependencies.
         $contents['dependencies'] = $validator->getDependencies();
@@ -63,7 +64,7 @@ class H5PExport
     private function processContent()
     {
         $content = json_decode($this->content->parameters);
-        if( json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \Exception(json_last_error_msg());
         }
         $filtered = $this->traverseFiltered($this->content, collect($content));
@@ -79,7 +80,7 @@ class H5PExport
                 $value = $this->storeContent((array)$value, $h5p);
             }
 
-            if (!!(array)$value && (is_array($value) || is_object($value))) {
+            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
                 $value = $this->traverseFiltered($h5p, collect($value));
             }
             return $value;
@@ -90,11 +91,11 @@ class H5PExport
     private function storeContent($values, $content)
     {
         /** @var H5PExternalProviderInterface $externalProvider */
-        $externalProvider = $this->externalProviders->first(function ($provider) use ($values){
+        $externalProvider = $this->externalProviders->first(function ($provider) use ($values) {
             return $provider->isTargetType($values['mime'], $values['path']);
         });
 
-        if( !is_null($externalProvider)){
+        if (!is_null($externalProvider)) {
             $externalProvider->setStorage($this->export->h5pC->fs);
             $fileDetails = $externalProvider->storeContent($values, $content);
             $values = array_merge($values, $fileDetails);

@@ -9,7 +9,6 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-
 class EdlibGuard implements StatefulGuard
 {
     protected ?GenericUser $user;
@@ -95,7 +94,6 @@ class EdlibGuard implements StatefulGuard
 
         Session::put('user', $user);
         $this->user = $user;
-
     }
 
     public function loginUsingId($id, $remember = false): bool

@@ -1,4 +1,5 @@
 <?php
+
 return [
     "game" => "Spill",
     "create-game" => "Opprett spill",

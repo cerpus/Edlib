@@ -36,5 +36,3 @@ class ContentLanguageTest extends TestCase
         yield['engl'];
     }
 }
-
-

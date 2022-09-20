@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Controllers\API\Transformers\AnswerTransformer;
 use App\Http\Controllers\API\Transformers\QuestionsetTransformer;
 use App\Http\Controllers\API\Transformers\QuestionTransformer;
@@ -11,7 +10,6 @@ use App\Traits\FractalTransformer;
 use Cerpus\QuestionBankClient\DataObjects\SearchDataObject;
 use Cerpus\QuestionBankClient\QuestionBankClient;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class QuestionsetController extends Controller
 {
@@ -39,14 +37,14 @@ class QuestionsetController extends Controller
             ->shuffle()
             ->take(20);
 
-        return $this->buildCollectionResponse($questionsets, new QuestionsetTransformer);
+        return $this->buildCollectionResponse($questionsets, new QuestionsetTransformer());
     }
 
     public function getQuestionset($questionsetId)
     {
         $questionset = QuestionBankClient::getQuestionset($questionsetId);
         $this->addIncludeParse('questions');
-        return $this->buildItemResponse($questionset, new QuestionsetTransformer);
+        return $this->buildItemResponse($questionset, new QuestionsetTransformer());
     }
 
     public function getQuestions($questionsetId)
@@ -82,7 +80,7 @@ class QuestionsetController extends Controller
                 return $answer->isCorrect === false;
             });
         }
-        return $this->buildCollectionResponse($answers, new AnswerTransformer);
+        return $this->buildCollectionResponse($answers, new AnswerTransformer());
     }
 
     public function searchQuestions(Request $request)
@@ -103,6 +101,6 @@ class QuestionsetController extends Controller
             ->shuffle()
             ->take(100);
 
-        return $this->buildCollectionResponse($questions, new QuestionTransformer);
+        return $this->buildCollectionResponse($questions, new QuestionTransformer());
     }
 }

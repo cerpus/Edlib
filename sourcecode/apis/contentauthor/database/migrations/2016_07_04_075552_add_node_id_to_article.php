@@ -19,7 +19,6 @@ class AddNodeIdToArticle extends Migration
         Schema::table('articles', function (Blueprint $table) {
             $table->string('ndla_url')->nullable()->default(null);
         });
-
     }
 
     /**
@@ -36,6 +35,5 @@ class AddNodeIdToArticle extends Migration
         Schema::table('articles', function (Blueprint $table) {
             $table->dropColumn('ndla_url');
         });
-
     }
 }

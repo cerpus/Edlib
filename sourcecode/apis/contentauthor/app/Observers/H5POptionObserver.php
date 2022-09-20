@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\H5POption;
 use App\Libraries\H5P\Helper\H5POptionsCache;
-use Illuminate\Support\Facades\Log;
 
 class H5POptionObserver
 {

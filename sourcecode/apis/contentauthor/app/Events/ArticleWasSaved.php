@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Article;
-use App\Events\Event;
 use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
@@ -12,7 +11,12 @@ class ArticleWasSaved extends Event
 {
     use SerializesModels;
 
-    public $article, $request, $originalCollaborators, $authId, $reason, $theSession;
+    public $article;
+    public $request;
+    public $originalCollaborators;
+    public $authId;
+    public $reason;
+    public $theSession;
 
     public function __construct(Article $article, Request $request, Collection $originalCollaborators, $authId, $reason, $theSession)
     {

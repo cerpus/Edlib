@@ -2,7 +2,6 @@
 
 namespace App\Libraries\Games\Contracts;
 
-
 use App\Game;
 use Illuminate\Http\Request;
 

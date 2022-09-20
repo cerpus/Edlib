@@ -14,23 +14,19 @@ class AddH5pContext extends Migration
     {
         // Holy f***! Sorry for this pain in the ass. But there where no way around this s***...
         if (!DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
-            Schema::table('h5p_contents_user_data', function ($table)
-            {
+            Schema::table('h5p_contents_user_data', function ($table) {
                 $table->dropPrimary('cud_pk1');
             });
 
-            Schema::table('h5p_contents_user_data', function ($table)
-            {
+            Schema::table('h5p_contents_user_data', function ($table) {
                 $table->bigIncrements('id')->first();
                 $table->string('context', 40)->nullable()->default(null);
                 $table->index('context');
                 $table->unique(['content_id', 'user_id', 'sub_content_id', 'data_id', 'context'], 'cu_pid');
             });
         } else {
-
             Schema::drop('h5p_contents_user_data');
-            Schema::create('h5p_contents_user_data', function(Blueprint $table)
-            {
+            Schema::create('h5p_contents_user_data', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->integer('content_id')->unsigned();
                 $table->integer('user_id')->unsigned();
@@ -60,7 +56,6 @@ class AddH5pContext extends Migration
      */
     public function down()
     {
-
         Schema::table('h5p_contents_user_data', function ($table) {
             $table->dropColumn(["id", "context"]);
             if (!DB::connection() instanceof \Illuminate\Database\SQLiteConnection) {
@@ -76,6 +71,5 @@ class AddH5pContext extends Migration
             }
             $table->dropColumn("context");
         });
-
     }
 }

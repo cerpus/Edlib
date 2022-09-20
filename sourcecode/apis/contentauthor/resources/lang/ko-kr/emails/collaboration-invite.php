@@ -1,4 +1,5 @@
 <?php
+
 return [
     'email-title' => ":originSystemName 에서 공동작업하도록 초대되었습니다.",
     'you-have-been-invited' => ':inviterName 에 의해 ":contentTitle" 의 :originSystemName 에서 공동작업하도록 초대되었습니다.',

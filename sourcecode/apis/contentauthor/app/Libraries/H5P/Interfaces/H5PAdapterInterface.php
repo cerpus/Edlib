@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use Illuminate\Support\Collection;
 
@@ -12,40 +11,28 @@ interface H5PAdapterInterface
      * Alter parameters before added to the H5PIntegrationObject
      *
      * @param string $parameters
-     * @param H5PAlterParametersSettingsDataObject|null $settings
      * @return string
      */
     public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null);
 
     /**
      * @param object $field
-     * @return array
      */
     public function getEditorExtraTags($field): array;
 
-    /**
-     * @return array
-     */
+
     public function getEditorCss(): array;
 
-    /**
-     * @return array
-     */
+
     public function getEditorSettings(): array;
 
-    /**
-     * @return array
-     */
+
     public function getCustomEditorScripts(): array;
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewScripts(): array;
 
-    /**
-     * @return array
-     */
+
     public function getCustomViewCss(): array;
 
     /**
@@ -93,7 +80,7 @@ interface H5PAdapterInterface
     /** @return void */
     public function runPresaveCommand(): void;
 
-    static public function getCoreExtraTags(): array;
+    public static function getCoreExtraTags(): array;
 
     /** @return void */
     public function setConfig(ConfigInterface $config);
@@ -101,7 +88,7 @@ interface H5PAdapterInterface
     public function isUserPublishEnabled(): bool;
 
     /** @return bool */
-    public function enableEverybodyIsCollaborators():bool;
+    public function enableEverybodyIsCollaborators(): bool;
 
     public function getExternalProviders(): Collection;
 

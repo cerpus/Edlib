@@ -1,6 +1,6 @@
 <?php
-namespace App\Libraries\H5P\Interfaces;
 
+namespace App\Libraries\H5P\Interfaces;
 
 use Illuminate\Http\Request;
 

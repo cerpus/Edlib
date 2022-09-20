@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\API\Transformers;
 
-
 use Cerpus\QuestionBankClient\DataObjects\QuestionDataObject;
 use League\Fractal\Resource\Collection;
 use League\Fractal\TransformerAbstract;
@@ -31,6 +30,6 @@ class QuestionTransformer extends TransformerAbstract
 
     public function includeAnswers(QuestionDataObject $question): Collection
     {
-        return $this->collection($question->getAnswers(), new AnswerTransformer);
+        return $this->collection($question->getAnswers(), new AnswerTransformer());
     }
 }

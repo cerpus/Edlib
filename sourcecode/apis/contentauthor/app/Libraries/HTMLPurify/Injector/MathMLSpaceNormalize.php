@@ -6,20 +6,18 @@ use HTMLPurifier_Injector;
 
 class MathMLSpaceNormalize extends HTMLPurifier_Injector
 {
-
     /**
      * Elements to apply handleText to.
      * These are those that accept #PCDATA except <cs> and <cbytes>.
      * @type array
      */
-    protected $tags = array('mi', 'mn', 'mo', 'ms', 'mtext', 'ci', 'cn', 'csymbol', 'annotation');
+    protected $tags = ['mi', 'mn', 'mo', 'ms', 'mtext', 'ci', 'cn', 'csymbol', 'annotation'];
 
     /**
      * @param HTMLPurifier_Token $token
      */
     public function handleText(&$token)
     {
-
         // No parent tag => return to avoid error on following line
         if (count($this->currentNesting) == 0) {
             return;
@@ -40,5 +38,4 @@ class MathMLSpaceNormalize extends HTMLPurifier_Injector
             trim($token->data) // Using trim($token->data, ' \t\n\r') trims t,n,r
         );
     }
-
 }

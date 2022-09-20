@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 use Cerpus\Helper\Traits\CreateTrait;
 
@@ -14,6 +12,6 @@ class LockedDataObject
     use CreateTrait;
 
     public $editor;
-    public $editUrl, $pollUrl;
-
+    public $editUrl;
+    public $pollUrl;
 }

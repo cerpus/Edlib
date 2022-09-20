@@ -37,7 +37,7 @@ class GameController extends Controller
     public function doShow($id, $context, $preview = false)
     {
         $game = Game::findOrFail($id);
-        if( !$game->canShow($preview)){
+        if (!$game->canShow($preview)) {
             /** @var Request $request */
             $request = \Illuminate\Support\Facades\Request::instance();
             $ltiRequest = LTIRequest::fromRequest($request);

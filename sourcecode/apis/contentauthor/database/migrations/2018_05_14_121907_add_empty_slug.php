@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use App\H5PContent;
 
@@ -16,7 +14,7 @@ class AddEmptySlug extends Migration
     {
         H5PContent::chunk(100, function ($contents) {
             foreach ($contents as $content) {
-                if( empty($content->slug)){
+                if (empty($content->slug)) {
                     $content->slug = H5PCore::slugify($content['title']);
                     $content->save();
                 }

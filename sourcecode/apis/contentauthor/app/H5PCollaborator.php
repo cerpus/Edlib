@@ -21,5 +21,4 @@ class H5PCollaborator extends Model
     {
         // Do nothing.
     }
-
 }

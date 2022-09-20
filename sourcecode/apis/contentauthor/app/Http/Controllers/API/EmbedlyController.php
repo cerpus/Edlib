@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Libraries\EmbedlyService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,6 +43,5 @@ class EmbedlyController extends Controller
         }
 
         return response()->json($responseData);
-
     }
 }

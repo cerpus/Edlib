@@ -7,7 +7,8 @@ use App\Http\Libraries\License;
 abstract class BaseH5PContent
 {
     protected $id;
-    protected $title, $maxScore;
+    protected $title;
+    protected $maxScore;
     protected $action = 'create';
     protected $copyright = 0;
     protected $sharing = 'sharing';

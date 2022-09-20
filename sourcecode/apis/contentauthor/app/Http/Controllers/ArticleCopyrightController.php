@@ -25,8 +25,6 @@ class ArticleCopyrightController extends Controller
 
     /**
      * Find all the H5Ps embedded in the article and retrieve the attribution information for all of them.
-     *
-     * @return array
      */
     private function getAttributionsForEmbeddedContent(Article $article): array
     {

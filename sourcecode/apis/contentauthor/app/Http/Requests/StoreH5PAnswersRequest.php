@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 
 class StoreH5PAnswersRequest extends Request
 {
@@ -25,8 +23,7 @@ class StoreH5PAnswersRequest extends Request
      */
     public function rules()
     {
-
-        switch ($this->input("action")){
+        switch ($this->input("action")) {
             case "h5p_contents_user_data":
                 $rules = [
                     'content_id' => 'required|numeric',
@@ -38,7 +35,7 @@ class StoreH5PAnswersRequest extends Request
                     'action' => 'required|string',
                 ];
 
-                if( !$this->isPostValuesPresentInRequest(['invalidate','preload','data'])){
+                if (!$this->isPostValuesPresentInRequest(['invalidate','preload','data'])) {
                     $rules['missing'] = 'required';
                 }
 
@@ -51,8 +48,8 @@ class StoreH5PAnswersRequest extends Request
                     'opened' => 'numeric',
                     'finished' => 'numeric',
                 ];
-                
-                if( !$this->isPostValuesPresentInRequest(array_keys($rules))){
+
+                if (!$this->isPostValuesPresentInRequest(array_keys($rules))) {
                     $rules['missing'] = 'required';
                 }
                 break;

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeAdminPassword extends Migration
@@ -31,7 +30,8 @@ class ChangeAdminPassword extends Migration
      *
      * @return void
      */
-    private function createPassword() {
+    private function createPassword()
+    {
         // Removed from public CA release
     }
 }

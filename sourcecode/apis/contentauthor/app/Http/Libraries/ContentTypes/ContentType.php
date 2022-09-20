@@ -2,7 +2,6 @@
 
 namespace App\Http\Libraries\ContentTypes;
 
-
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
@@ -23,21 +22,15 @@ class ContentType
 
     private $guarded = ['subContentTypes'];
 
-    /**
-     * @param array $subContentTypes
-     */
+
     public function addSubContentTypes(array $subContentTypes)
     {
         $this->subContentTypes = $subContentTypes;
     }
 
-    /**
-     * @return array
-     */
+
     public function getSubContentTypes(): array
     {
         return $this->subContentTypes;
     }
-
-
 }

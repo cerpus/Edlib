@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\H5P;
-
 
 use App\Exceptions\H5pImportException;
 use App\Libraries\H5P\Dataobjects\H5PImportDataObject;
@@ -21,8 +19,6 @@ class H5PImport
     }
 
     /**
-     * @param UploadedFile $uploadedFile
-     * @param H5PStorage $storage
      * @param $userId
      * @param bool $isDraft
      * @param bool $isPrivate
@@ -35,7 +31,7 @@ class H5PImport
         $file = $this->saveFileTemporarily($uploadedFile);
         if (!$file) {
             throw new LogicException("Could not save file");
-        };
+        }
 
         if (!$this->isPackageValid()) {
             throw new H5pImportException(implode('; ', $core->h5pF->getMessages('error')));
@@ -59,7 +55,7 @@ class H5PImport
         ]);
 
         // Install any required dependencies
-        $storage->savePackage($content, NULL, false);
+        $storage->savePackage($content, null, false);
         if (empty($storage->contentId)) {
             throw new LogicException("Can't find the id. Whaaat?");
         }
@@ -79,7 +75,7 @@ class H5PImport
     private function isPackageValid()
     {
         $validator = resolve(\H5PValidator::class);
-        if (!$validator->isValidPackage(false, FALSE)) {
+        if (!$validator->isValidPackage(false, false)) {
             $this->editorAjax->storage->removeTemporarilySavedFiles($this->editorAjax->core->h5pF->getUploadedH5pPath());
             return false;
         }

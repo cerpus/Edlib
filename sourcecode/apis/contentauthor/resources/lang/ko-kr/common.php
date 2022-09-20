@@ -1,4 +1,5 @@
 <?php
+
 return [
     'cancel' => '취소',
     'save-and-close' => '저장 후 닫기',

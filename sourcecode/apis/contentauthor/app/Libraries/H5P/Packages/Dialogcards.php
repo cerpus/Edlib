@@ -9,7 +9,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-
 use LogicException;
 
 class Dialogcards extends H5PBase

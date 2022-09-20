@@ -2,7 +2,6 @@
 
 namespace App\Libraries\DataObjects;
 
-
 use Cerpus\Helper\Traits\CreateTrait;
 
 /**
@@ -12,10 +11,13 @@ class ResourceUserDataObject
 {
     use CreateTrait;
 
-    const NAME_FORMAT = '%s %s';
-    const NAME_AND_EMAIL_FORMAT = self::NAME_FORMAT . '(%s)';
+    public const NAME_FORMAT = '%s %s';
+    public const NAME_AND_EMAIL_FORMAT = self::NAME_FORMAT . '(%s)';
 
-    public $firstname, $lastname, $email, $id;
+    public $firstname;
+    public $lastname;
+    public $email;
+    public $id;
 
     public function getFullName()
     {
@@ -24,7 +26,7 @@ class ResourceUserDataObject
 
     public function getNameAndEmail()
     {
-        if( empty($this->email)){
+        if (empty($this->email)) {
             return $this->getFullName();
         }
         return sprintf(self::NAME_AND_EMAIL_FORMAT, $this->firstname, $this->lastname, $this->email);

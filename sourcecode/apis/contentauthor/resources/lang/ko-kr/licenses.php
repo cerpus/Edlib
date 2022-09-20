@@ -1,4 +1,5 @@
 <?php
+
 return [
     'PRIVATE' => '비공개',
     'CC0' => 'CC0(저작권 없음)',

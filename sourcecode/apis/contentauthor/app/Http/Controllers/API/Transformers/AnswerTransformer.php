@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\Transformers;
 
-
 use Cerpus\QuestionBankClient\DataObjects\AnswerDataObject;
 use League\Fractal\TransformerAbstract;
 

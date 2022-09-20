@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApiH5PQuestionsetRequest;
@@ -11,7 +10,6 @@ use Illuminate\Http\Response;
 
 class ContentTypeController extends Controller
 {
-
     public function storeH5PQuestionset(ApiH5PQuestionsetRequest $request)
     {
         /** @var ContentTypeHandler $contentTypeHandler */

@@ -1,4 +1,5 @@
 <?php
+
 return [
     "questions" => "Questions",
     "create-question" => "Create question",

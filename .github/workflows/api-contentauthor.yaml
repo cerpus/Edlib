@@ -21,8 +21,61 @@ env:
   workingDirectory: sourcecode/apis/contentauthor
   shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-20.04
+
+    defaults:
+      run:
+        working-directory: sourcecode/apis/contentauthor
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.CERPUSBOT_SECRET }}
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+
+      - name: Manage php-cs-fixer cache
+        uses: actions/cache@v3
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
+          restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
+
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.json') }}
+
+      - name: Install dependencies
+        run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
+
+      - name: Run php-cs-fixer
+        run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
+
+      - name: Commit fixed code
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Run php-cs-fixer
+
   phpstan:
+    needs: [php-cs-fixer]
+
     runs-on: ubuntu-20.04
 
     defaults:
@@ -58,6 +111,7 @@ jobs:
         run: vendor/bin/phpstan analyse --memory-limit=512M
 
   test_and_release:
+    needs: [php-cs-fixer]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

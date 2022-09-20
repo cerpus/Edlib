@@ -16,6 +16,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+
 use function file_get_contents;
 use function get_object_vars;
 

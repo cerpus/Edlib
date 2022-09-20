@@ -1,4 +1,5 @@
 <?php
+
 return [
     'email-title' => "You have been invited to collaborate in :originSystemName",
     'you-have-been-invited' => 'You have been invited by :inviterName to collaborate in :originSystemName on ":contentTitle".',

@@ -11,17 +11,18 @@ use Illuminate\Database\Eloquent\Model;
  */
 class H5PFile extends Model
 {
-    const FILE_TEMPORARY = "temporary";
-    const FILE_CLONEFILE = "clonefile";
-    const FILE_READY = "ready";
-    const FILE_FAILED = "failed";
+    public const FILE_TEMPORARY = "temporary";
+    public const FILE_CLONEFILE = "clonefile";
+    public const FILE_READY = "ready";
+    public const FILE_FAILED = "failed";
 
     protected $table = 'h5p_files';
 
     protected $guarded = ['id'];
 
-    public function getParamsAttribute($value){
-        if (!empty($value)){
+    public function getParamsAttribute($value)
+    {
+        if (!empty($value)) {
             return json_decode($value);
         }
         return $value;
@@ -31,7 +32,8 @@ class H5PFile extends Model
      * @param Builder $query
      * @param string $requestId
      */
-    protected function getFileUploadStatusFromRequestIdScope($query, $requestId){
+    protected function getFileUploadStatusFromRequestIdScope($query, $requestId)
+    {
         $query->where('requestId', $requestId);
     }
 
@@ -39,7 +41,8 @@ class H5PFile extends Model
      * @param Builder $query
      * @param string $requestId
      */
-    public function scopeOfFileUploadFromRequestId($query, $requestId) {
+    public function scopeOfFileUploadFromRequestId($query, $requestId)
+    {
         return $this->getFileUploadStatusFromRequestIdScope($query, $requestId);
     }
 
@@ -47,7 +50,8 @@ class H5PFile extends Model
      * @param Builder $query
      * @param int $contentId
      */
-    protected function getFileUploadStatusFromContentScope($query, $contentId){
+    protected function getFileUploadStatusFromContentScope($query, $contentId)
+    {
         $query->where('content_id', $contentId);
     }
 
@@ -55,7 +59,8 @@ class H5PFile extends Model
      * @param Builder $query
      * @param int $contentId
      */
-    public function scopeOfFileUploadFromContent($query, $contentId) {
+    public function scopeOfFileUploadFromContent($query, $contentId)
+    {
         return $this->getFileUploadStatusFromContentScope($query, $contentId);
     }
 
@@ -63,7 +68,8 @@ class H5PFile extends Model
      * @param int $contentId
      * @param string $filePath
      */
-    protected function deleteContentPendingUpload($contentId, $filePath) {
+    protected function deleteContentPendingUpload($contentId, $filePath)
+    {
         self::ofFileUploadFromContent($contentId)
             ->get()
             ->filter(function ($file) use ($filePath) {

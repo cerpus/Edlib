@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Auth;
 use App\Traits\Locale;
-use App\Http\Requests\Request;
 
 class GetTranslatedDescriptionRequest extends Request
 {

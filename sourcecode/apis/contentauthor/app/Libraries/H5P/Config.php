@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P;
 
-
 use App\H5PLibrary;
 use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
@@ -39,7 +38,6 @@ trait Config
     protected $fileStorage;
 
     /**
-     * @param  mixed  $context
      * @return Config
      */
     public function setContext($context)
@@ -49,7 +47,6 @@ trait Config
     }
 
     /**
-     * @param  mixed  $preview
      * @return Config
      */
     public function setPreview($preview)
@@ -59,7 +56,6 @@ trait Config
     }
 
     /**
-     * @param  mixed  $userId
      * @return Config
      */
     public function setUserId($userId)
@@ -69,7 +65,6 @@ trait Config
     }
 
     /**
-     * @param  mixed  $userName
      * @return Config
      */
     public function setUserName($userName)
@@ -79,7 +74,6 @@ trait Config
     }
 
     /**
-     * @param  mixed  $name
      * @return Config
      */
     public function setName($name)
@@ -89,7 +83,6 @@ trait Config
     }
 
     /**
-     * @param  mixed  $email
      * @return Config
      */
     public function setEmail($email)
@@ -98,19 +91,14 @@ trait Config
         return $this;
     }
 
-    /**
-     * @param  bool  $displayH5PHub
-     * @return Config
-     */
+
     public function setDisplayH5PHub(bool $displayH5PHub): Config
     {
         $this->displayH5PHub = $displayH5PHub;
         return $this;
     }
 
-    /**
-     * @param  H5PLibrary  $library
-     */
+
     public function setLibrary(H5PLibrary $library)
     {
         $this->library = $library;
@@ -152,7 +140,7 @@ trait Config
             case "core":
                 $prefix = "/h5p-php-library/";
                 break;
-            case "editor";
+            case "editor":
                 $prefix = "/h5p-editor-php-library/";
                 break;
         }

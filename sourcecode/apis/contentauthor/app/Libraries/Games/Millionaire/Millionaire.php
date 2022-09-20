@@ -2,7 +2,6 @@
 
 namespace App\Libraries\Games\Millionaire;
 
-
 use App\Game;
 use App\Gametype;
 use App\Libraries\DataObjects\EditorConfigObject;
@@ -20,7 +19,6 @@ use Ramsey\Uuid\Uuid;
 
 class Millionaire extends GameBase
 {
-
     public static string $machineName = "CERPUS.MILLIONAIRE";
 
     protected int $maxScore = 15;
@@ -175,7 +173,8 @@ class Millionaire extends GameBase
 
         $ownerName = $game->getOwnerName($game->owner);
 
-        $editorSetup = EditorConfigObject::create([
+        $editorSetup = EditorConfigObject::create(
+            [
                 'userPublishEnabled' => Game::isUserPublishEnabled(),
                 'canPublish' => $game->canPublish($request),
                 'canList' => $game->canList($request),
@@ -234,6 +233,6 @@ class Millionaire extends GameBase
 
                 return $questionSetQuestion;
             });
-        return $this->buildItem($questionSet, new QuestionSetsTransformer);
+        return $this->buildItem($questionSet, new QuestionSetsTransformer());
     }
 }

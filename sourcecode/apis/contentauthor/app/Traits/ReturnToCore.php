@@ -10,7 +10,6 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Session;
 
-
 trait ReturnToCore
 {
     public function getRedirectToCoreUrl($id, $title, $type, $score, $redirectToken)
@@ -31,7 +30,8 @@ trait ReturnToCore
         return $returnUrl . '?' . http_build_query($params);
     }
 
-    private function getCoreBaseUrl($redirectToken) {
+    private function getCoreBaseUrl($redirectToken)
+    {
         $redirectKey = 'list.returnUrls.' . $redirectToken;
 
         if (Session::has($redirectKey)) {

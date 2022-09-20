@@ -17,10 +17,11 @@ use Tests\TestCase;
 
 class h5pTest extends TestCase
 {
-    use RefreshDatabase, TestHelpers;
+    use RefreshDatabase;
+    use TestHelpers;
 
-    const testContentDirectory = "content";
-    const testEditorDirectory = "editor";
+    public const testContentDirectory = "content";
+    public const testEditorDirectory = "editor";
 
     private $editorFilesDirectory;
 

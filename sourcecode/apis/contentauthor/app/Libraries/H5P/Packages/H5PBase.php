@@ -81,9 +81,6 @@ abstract class H5PBase implements PackageInterface, ContentTypeInterface
 
     /**
      * Make content type specific modifications to H5P config.
-     *
-     * @param  object  $config
-     * @return object
      */
     public function alterConfig(object $config): object
     {

@@ -26,7 +26,7 @@ final class AddExtQuestionSetToRequestMiddlewareTest extends TestCase
     public function testAddsData(): void
     {
         $middleware = new AddExtQuestionSetToRequestMiddleware('local', true);
-        $middleware->handle($this->request, fn() => null);
+        $middleware->handle($this->request, fn () => null);
 
         $this->assertJsonStringEqualsJsonString(
             json_encode(AddExtQuestionSetToRequestMiddleware::QUESTION_SET_DATA),
@@ -37,7 +37,7 @@ final class AddExtQuestionSetToRequestMiddlewareTest extends TestCase
     public function testCanBeDisabled(): void
     {
         $middleware = new AddExtQuestionSetToRequestMiddleware('local', false);
-        $middleware->handle($this->request, fn() => null);
+        $middleware->handle($this->request, fn () => null);
 
         $this->assertFalse(
             $this->request->getSession()->has(SessionKeys::EXT_QUESTION_SET),
@@ -47,7 +47,7 @@ final class AddExtQuestionSetToRequestMiddlewareTest extends TestCase
     public function testNeverEnabledInProduction(): void
     {
         $middleware = new AddExtQuestionSetToRequestMiddleware('production', true);
-        $middleware->handle($this->request, fn() => null);
+        $middleware->handle($this->request, fn () => null);
 
         $this->assertFalse(
             $this->request->getSession()->has(SessionKeys::EXT_QUESTION_SET),

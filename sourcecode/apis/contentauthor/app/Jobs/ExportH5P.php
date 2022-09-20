@@ -12,13 +12,18 @@ use Illuminate\Queue\SerializesModels;
 
 class ExportH5P implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
-    public $content, $adapter, $fileStorage, $localStorage;
+    public $content;
+    public $adapter;
+    public $fileStorage;
+    public $localStorage;
 
     /**
      * ExportH5P constructor.
-     * @param H5PContent $content
      */
     public function __construct(H5PContent $content)
     {

@@ -2,7 +2,6 @@
 
 namespace App\Gdpr\Handlers;
 
-
 use App\H5PResult;
 use App\Messaging\Messages\EdlibGdprDeleteMessage;
 

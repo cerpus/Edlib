@@ -13,10 +13,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use App\Libraries\H5P\Traits\FileUploadTrait;
 
-
 class H5PFilesUpload implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, FileUploadTrait;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use FileUploadTrait;
     /**
      * Create a new job instance.
      *

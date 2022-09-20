@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Libraries\H5P\Storage;
 
 use App\H5PLibrary;
@@ -34,8 +33,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     public function __construct(
         ContentAuthorStorage $contentAuthorStorage,
         private readonly LoggerInterface $logger,
-    )
-    {
+    ) {
         $this->filesystem = Storage::disk();
         $this->diskName = Storage::getDefaultDriver();
         $this->uploadDisk = $contentAuthorStorage->getH5pTmpDisk();
@@ -109,7 +107,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function saveLibrary($library)
     {
-        $path = sprintf(ContentStorageSettings::LIBRARY_PATH, \H5PCore::libraryToString($library, TRUE));
+        $path = sprintf(ContentStorageSettings::LIBRARY_PATH, \H5PCore::libraryToString($library, true));
         $libraryPath = Str::after($library['uploadDirectory'], $this->uploadDisk->path(""));
         $this->deleteLibraryFromPath($path);
 
@@ -126,7 +124,6 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     }
 
     /**
-     *
      * @param string $source
      * @param string $destination
      *
@@ -240,7 +237,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function exportLibrary($library, $target)
     {
-        $folder = \H5PCore::libraryToString($library, TRUE);
+        $folder = \H5PCore::libraryToString($library, true);
         $srcPath = sprintf(ContentStorageSettings::LIBRARY_PATH, $folder);
         $finalTarget = Str::after($target, $this->uploadDisk->path("")) . "/$folder";
         if ($this->hasLibraryVersion($folder, sprintf(ContentStorageSettings::LIBRARY_VERSION_PREFIX, $library['majorVersion'], $library['minorVersion'], $library['patchVersion']))) {
@@ -336,14 +333,15 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                     // Rewrite relative URLs used inside stylesheets
                     $cssRelPath = preg_replace('/[^\/]+$/', '', $asset->path);
                     $content .= preg_replace_callback(
-                            '/url\([\'"]?([^"\')]+)[\'"]?\)/i',
-                            function ($matches) use ($cssRelPath) {
-                                if (preg_match("/^(data:|([a-z0-9]+:)?\/)/i", $matches[1]) === 1) {
-                                    return $matches[0]; // Not relative, skip
-                                }
-                                return 'url("../' . $cssRelPath . $matches[1] . '")';
-                            },
-                            $assetContent) . "\n";
+                        '/url\([\'"]?([^"\')]+)[\'"]?\)/i',
+                        function ($matches) use ($cssRelPath) {
+                            if (preg_match("/^(data:|([a-z0-9]+:)?\/)/i", $matches[1]) === 1) {
+                                return $matches[0]; // Not relative, skip
+                            }
+                            return 'url("../' . $cssRelPath . $matches[1] . '")';
+                        },
+                        $assetContent
+                    ) . "\n";
                     $filePath = ContentStorageSettings::CACHEDASSETS_CSS_PATH;
                 }
             }
@@ -352,11 +350,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             if (!$this->filesystem->put($outputfile, $content)) {
                 throw new Exception("Could not create cached asset");
             }
-            $files[$type] = array((object)array(
+            $files[$type] = [(object)[
                 'path' => $outputfile,
                 'version' => '',
                 'url' => $this->contentAuthorStorage->getAssetUrl($outputfile)
-            ));
+            ]];
         }
     }
 
@@ -372,14 +370,14 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                  ] as $type => $path) {
             $file = sprintf($path, $key);
             if ($this->filesystem->has($file)) {
-                $files[$type] = array((object)array(
+                $files[$type] = [(object)[
                     'path' => $file,
                     'version' => '',
                     'url' => $this->contentAuthorStorage->getAssetUrl($file)
-                ));
+                ]];
             }
         }
-        return empty($files) ? NULL : $files;
+        return empty($files) ? null : $files;
     }
 
     /**
@@ -434,10 +432,10 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     /**
      * @inheritDoc
      */
-    public function moveContentDirectory($source, $contentId = NULL)
+    public function moveContentDirectory($source, $contentId = null)
     {
-        if ($source === NULL) {
-            return NULL;
+        if ($source === null) {
+            return null;
         }
 
         $target = $this->getFilePrefix($contentId);

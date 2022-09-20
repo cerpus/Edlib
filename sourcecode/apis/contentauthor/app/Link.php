@@ -84,22 +84,22 @@ class Link extends Content implements VersionableObject
         return Content::TYPE_LINK;
     }
 
-    function getId(): string
+    public function getId(): string
     {
         return $this->id;
     }
 
-    function getOwnerId(): string
+    public function getOwnerId(): string
     {
         return $this->owner_id;
     }
 
-    function setParentVersionId(string $parentVersionId): bool
+    public function setParentVersionId(string $parentVersionId): bool
     {
         return false; // Not stored
     }
 
-    function setVersionId(string $versionId)
+    public function setVersionId(string $versionId)
     {
         $this->version_id = $versionId;
     }

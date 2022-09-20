@@ -1,4 +1,5 @@
 <?php
+
 return [
     'defaultShareSetting' => 'share',
 ];

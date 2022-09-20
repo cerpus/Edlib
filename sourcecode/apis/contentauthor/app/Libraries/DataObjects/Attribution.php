@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Libraries\DataObjects;
-
 
 class Attribution
 {
@@ -27,17 +25,13 @@ class Attribution
         $this->origin = $origin;
     }
 
-    /**
-     * @return array
-     */
+
     public function getOriginators(): array
     {
         return $this->originators;
     }
 
-    /**
-     * @param array $originators
-     */
+
     public function setOriginators(array $originators): void
     {
         $this->originators = $originators;
@@ -57,7 +51,6 @@ class Attribution
 
     public function __toString(): string
     {
-
         $attributionStrings = [];
 
         foreach ($this->getOriginators() as $originator) {

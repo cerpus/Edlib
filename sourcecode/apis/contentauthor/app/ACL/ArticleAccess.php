@@ -1,13 +1,12 @@
 <?php
+
 namespace App\ACL;
 
-use App\ArticleCollaborator;
 use Illuminate\Support\Facades\Session;
 use App\Article;
 
 trait ArticleAccess
 {
-
     private function canUpdateArticle(Article $article)
     {
         if (!Session::has('authId')) {
@@ -18,16 +17,16 @@ trait ArticleAccess
             return true;
         }
 
-        if($article->isCollaborator()){
+        if ($article->isCollaborator()) {
             return true;
         }
 
-        if($article->isExternalCollaborator(Session::get('authId'))){
+        if ($article->isExternalCollaborator(Session::get('authId'))) {
             return true;
         }
 
-        if( $article->isCopyable()){
-	        return true;
+        if ($article->isCopyable()) {
+            return true;
         }
 
         return false;

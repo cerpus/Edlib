@@ -18,7 +18,9 @@ use Tests\TestCase;
 
 class ShareProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+    use WithFaker;
+    use RefreshDatabase;
+    use MockRabbitMQPubsub;
 
     public function setUp(): void
     {

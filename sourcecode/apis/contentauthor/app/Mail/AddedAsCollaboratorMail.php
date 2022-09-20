@@ -2,15 +2,14 @@
 
 namespace App\Mail;
 
-use Illuminate\Support\Facades\Session;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class AddedAsCollaboratorMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $collaborationData = [];
 

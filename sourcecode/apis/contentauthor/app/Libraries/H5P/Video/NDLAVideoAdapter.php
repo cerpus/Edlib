@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Video;
 
-
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
@@ -16,13 +15,13 @@ use InvalidArgumentException;
 
 class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterface
 {
-    const GET_VIDEOS = '/v1/accounts/%s/videos';
-    const GET_VIDEO = '/v1/accounts/%s/videos/%s';
-    const GET_VIDEO_SOURCES = self::GET_VIDEO . '/sources';
+    public const GET_VIDEOS = '/v1/accounts/%s/videos';
+    public const GET_VIDEO = '/v1/accounts/%s/videos/%s';
+    public const GET_VIDEO_SOURCES = self::GET_VIDEO . '/sources';
 
-    const MIME_TYPE = 'video/Brightcove';
+    public const MIME_TYPE = 'video/Brightcove';
 
-    const VIDEO_URL = 'https://bc/%s';
+    public const VIDEO_URL = 'https://bc/%s';
 
     private ClientInterface $client;
     private string $accountId;
@@ -86,16 +85,16 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
 
     private function buildSearchQuery($queryObject)
     {
-        if( empty($queryObject)){
+        if (empty($queryObject)) {
             return null;
         }
 
         $query = [];
         $queryObject = json_decode($queryObject);
-        if( !empty($queryObject->query)){
+        if (!empty($queryObject->query)) {
             $query['query'] = sprintf('text:%s', $queryObject->query);
         }
-        if (!empty($queryObject->limit) && isset($queryObject->offset)){
+        if (!empty($queryObject->limit) && isset($queryObject->offset)) {
             $query['limit'] = $queryObject->limit;
             $query['offset'] = $queryObject->offset;
         }
@@ -119,7 +118,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     {
         $videoSourceList = $this->getVideoSources($videoId);
         $videoSource = collect($videoSourceList)
-            ->filter(function($source){
+            ->filter(function ($source) {
                 return !empty($source->container) && $source->container === "MP4";
             })
             ->sortBy('encoding_rate')
@@ -164,7 +163,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
      */
     public function storeContent($source, $content, $setVideo = null)
     {
-        if( !preg_match('/https:\/\/bc\/(ref:[a-z0-9]+|\d+)/', $source['path'], $matches) ){
+        if (!preg_match('/https:\/\/bc\/(ref:[a-z0-9]+|\d+)/', $source['path'], $matches)) {
             throw new Exception("No video id found");
         }
         $localFile = $this->downloadVideo($matches[1]);
@@ -174,7 +173,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
         $fileName = md5($source['path']);
         $filePath = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $content['id'], $this->getType(), $fileName, $extension);
 
-        if( !$this->storage->storeContentOnDisk($filePath, fopen($localFile, "r"))){
+        if (!$this->storage->storeContentOnDisk($filePath, fopen($localFile, "r"))) {
             throw new Exception("Could not store file on disk");
         }
         unlink($localFile);

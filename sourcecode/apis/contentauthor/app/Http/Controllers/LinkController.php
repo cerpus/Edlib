@@ -123,11 +123,13 @@ class LinkController extends Controller
                 $now = Carbon::now();
                 $expires = Carbon::createFromTimestamp($locked->updated_at->timestamp)->addHour();
                 $lockHeadline = trans('lock.article-is-locked');
-                $lockMessage = trans('lock.article-will-expire',
+                $lockMessage = trans(
+                    'lock.article-will-expire',
                     [
                         'expires' => $expires->diffInMinutes($now),
                         'editor' => $locked->getEditor(),
-                    ]);
+                    ]
+                );
                 $editUrl = route('link.edit', $id);
                 $pollUrl = route('lock.status', $id);
 
@@ -185,7 +187,6 @@ class LinkController extends Controller
                 case VersionData::COPY:
                     $link = $oldLink->makeCopy(Session::get('authId'));
                     break;
-
             }
             $link->setParentId($oldLink->version_id);
         }

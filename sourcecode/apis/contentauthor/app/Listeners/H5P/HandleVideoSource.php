@@ -11,8 +11,6 @@ class HandleVideoSource
 
     /**
      * Create the event listener.
-     *
-     * @param H5PCore $core
      */
     public function __construct(H5PCore $core)
     {
@@ -22,7 +20,6 @@ class HandleVideoSource
     /**
      * Handle the event.
      *
-     * @param  VideoSourceChanged $event
      * @return void
      */
     public function handle(VideoSourceChanged $event)

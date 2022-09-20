@@ -20,7 +20,11 @@ use Tests\Helpers\MockVersioningTrait;
 
 class ArticleVersioningTest extends TestCase
 {
-    use RefreshDatabase, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase;
+    use MockMQ;
+    use MockVersioningTrait;
+    use MockResourceApi;
+    use MockAuthApi;
     use WithFaker;
 
     public function setUp(): void

@@ -12,7 +12,9 @@ use Tests\TestCase;
 
 class ContentLockProcessorTest extends TestCase
 {
-    use WithFaker, RefreshDatabase, MockRabbitMQPubsub;
+    use WithFaker;
+    use RefreshDatabase;
+    use MockRabbitMQPubsub;
 
     public function setUp(): void
     {

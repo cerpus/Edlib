@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-
 interface PackageInterface
 {
     public function getElements(): array;

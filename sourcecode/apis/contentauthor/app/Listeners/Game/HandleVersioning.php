@@ -2,13 +2,10 @@
 
 namespace App\Listeners\Game;
 
-use App\Events\Event;
 use App\Events\GameWasSaved;
 use App\Libraries\Versioning\VersionableObject;
 use App\Listeners\AbstractHandleVersioning;
-use Cerpus\VersionClient\VersionData;
 use Cerpus\VersionClient\VersionClient;
-use Illuminate\Support\Facades\Log;
 
 class HandleVersioning extends AbstractHandleVersioning
 {
@@ -21,9 +18,7 @@ class HandleVersioning extends AbstractHandleVersioning
         $this->versionClient = $versionClient;
     }
 
-    /**
-     * @param GameWasSaved $event
-     */
+
     public function handle(GameWasSaved $event)
     {
         $this->game = $event->game->fresh();

@@ -35,8 +35,10 @@ class LtiQuestionSet
             if ($validator->fails()) {
                 // If the validation fails, log the errors, but keep going as this is not a show stopper.
                 // The "only" consequence is that users will not have a pre-filled QuestionSet editor
-                Log::error("Validation of ext_question_set LTI param failed. Errors:",
-                    $validator->messages()->getMessages());
+                Log::error(
+                    "Validation of ext_question_set LTI param failed. Errors:",
+                    $validator->messages()->getMessages()
+                );
 
                 // In case we have a stale value from another request we just remove the key from the session
                 Session::forget(SessionKeys::EXT_QUESTION_SET);
@@ -63,5 +65,4 @@ class LtiQuestionSet
 
         return $extQuestionSet;
     }
-
 }

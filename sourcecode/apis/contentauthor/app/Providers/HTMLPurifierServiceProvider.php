@@ -18,18 +18,18 @@ class HTMLPurifierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(HTMLPurifier_HTML5Config::class, function ($app, $configSettings = null){
+        $this->app->bind(HTMLPurifier_HTML5Config::class, function ($app, $configSettings = null) {
             $config = HTMLPurifier_HTML5Config::createDefault();
             $config->set('Cache.SerializerPath', config('html.cacheDirectory'));
-            if( !empty($configSettings) && is_array($configSettings)){
+            if (!empty($configSettings) && is_array($configSettings)) {
                 $config->loadArray($configSettings);
             }
             return $config;
         });
 
-        $this->app->bind(MathMLConfig::class, function ($app, $configSettings = null){
+        $this->app->bind(MathMLConfig::class, function ($app, $configSettings = null) {
             $config = MathMLConfig::createDefault();
-            if( !empty($configSettings) && is_array($configSettings)){
+            if (!empty($configSettings) && is_array($configSettings)) {
                 $config->loadArray($configSettings);
             }
             $config->set('Cache.SerializerPath', config('html.cacheDirectory'));

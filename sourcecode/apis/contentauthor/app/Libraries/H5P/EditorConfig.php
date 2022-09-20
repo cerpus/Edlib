@@ -8,12 +8,13 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\H5PBehaviorSettings;
 use H5peditor;
 use Illuminate\Support\Facades\Session;
-use function Cerpus\Helper\Helpers\profile as config;
 
+use function Cerpus\Helper\Helpers\profile as config;
 
 class EditorConfig implements ConfigInterface
 {
-    use Config, H5PBehaviorSettings;
+    use Config;
+    use H5PBehaviorSettings;
 
     public $id;
     private $editor;
@@ -33,10 +34,7 @@ class EditorConfig implements ConfigInterface
         $this->contentValidator = $validator;
     }
 
-    /**
-     * @param mixed $id
-     * @return EditorConfig
-     */
+
     public function setId($id): self
     {
         $this->id = $id;
@@ -52,7 +50,8 @@ class EditorConfig implements ConfigInterface
         $this->addCustomEditorStyles();
     }
 
-    public function hideH5pJS() {
+    public function hideH5pJS()
+    {
         $this->hideH5pJS = true;
         return $this;
     }
@@ -61,7 +60,6 @@ class EditorConfig implements ConfigInterface
     {
         $this->init();
         return $this->config;
-
     }
 
     public function setRedirectToken($token)
@@ -90,11 +88,11 @@ class EditorConfig implements ConfigInterface
             $this->setLibrary(H5PLibrary::find($content['library']['id']));
         }
         $editorConfig->filesPath = $this->fileStorage->getEditorDisplayPath(false);
-        $editorConfig->fileIcon = array(
+        $editorConfig->fileIcon = [
             'path' => '/h5p-editor-php-library/images/binary-file.png',
             'width' => 50,
             'height' => 50,
-        );
+        ];
         $editorConfig->apiVersion = \H5PCore::$coreApi;
         $editorSettings = $this->adapter->getEditorSettings();
         if (!empty($editorSettings)) {
@@ -172,7 +170,7 @@ class EditorConfig implements ConfigInterface
      */
     private function addCustomScripts()
     {
-        return array_map(function ($script){
+        return array_map(function ($script) {
             return $this->getAssetUrl(null, $script);
         }, $this->adapter->getCustomEditorScripts());
     }
@@ -207,7 +205,7 @@ class EditorConfig implements ConfigInterface
 
     public function addCustomEditorStyles()
     {
-        foreach ($this->adapter->getCustomEditorStyles() as $style){
+        foreach ($this->adapter->getCustomEditorStyles() as $style) {
             $this->addAsset('styles', $style);
         }
     }

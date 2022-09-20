@@ -7,7 +7,6 @@ use Closure;
 
 trait MockH5PAdapterInterface
 {
-
     public function setupH5PAdapter(array $methods)
     {
         $h5pAdapter = $this->createStub(H5PAdapterInterface::class);

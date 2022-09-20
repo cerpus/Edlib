@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Traits;
 
-
 use App\Libraries\H5P\Packages\ImagePair;
 use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use Tests\TestCase;

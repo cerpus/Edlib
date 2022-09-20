@@ -9,7 +9,9 @@ use Illuminate\Queue\SerializesModels;
 
 class ContentUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $content;
     public $oldContent;

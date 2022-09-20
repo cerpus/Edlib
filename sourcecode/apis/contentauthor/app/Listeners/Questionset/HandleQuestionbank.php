@@ -9,8 +9,6 @@ use Cerpus\QuestionBankClient\DataObjects\MetadataDataObject;
 use Cerpus\QuestionBankClient\DataObjects\QuestionDataObject;
 use Cerpus\QuestionBankClient\DataObjects\QuestionsetDataObject;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Exception;
-use Illuminate\Support\Facades\Log;
 
 class HandleQuestionbank
 {
@@ -70,7 +68,7 @@ class HandleQuestionbank
                 $metadata->images = [$question->image];
             }
 
-            if( $metadata->isDirty()){
+            if ($metadata->isDirty()) {
                 $questionDataObject->addMetadata($metadata);
             }
 
@@ -93,7 +91,7 @@ class HandleQuestionbank
                     $metadata->images = [$answer->image];
                 }
 
-                if( $metadata->isDirty()){
+                if ($metadata->isDirty()) {
                     $answerDataObject->addMetadata($metadata);
                 }
 

@@ -20,8 +20,6 @@ class H5PContentsUserData extends Model
 
     /**
      * @param Builder $query
-     * @param string $context
-     * @return mixed
      */
     public function scopeOfContext($query, string $context)
     {
@@ -30,8 +28,6 @@ class H5PContentsUserData extends Model
 
     /**
      * @param Builder $query
-     * @param array $context
-     * @return mixed
      */
     public function scopeOfContexts($query, array $contexts)
     {

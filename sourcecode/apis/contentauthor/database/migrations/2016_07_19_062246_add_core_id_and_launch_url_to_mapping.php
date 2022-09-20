@@ -35,6 +35,5 @@ class AddCoreIdAndLaunchUrlToMapping extends Migration
         Schema::table('ndla_id_mappers', function (Blueprint $table) {
             $table->dropColumn('launch_url');
         });
-
     }
 }

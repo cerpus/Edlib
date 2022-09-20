@@ -19,7 +19,11 @@ use Tests\Helpers\MockVersioningTrait;
 
 class ArticleLockTest extends TestCase
 {
-    use RefreshDatabase, MockMQ, MockVersioningTrait, MockResourceApi, MockAuthApi;
+    use RefreshDatabase;
+    use MockMQ;
+    use MockVersioningTrait;
+    use MockResourceApi;
+    use MockAuthApi;
     use WithFaker;
 
     public function setUp(): void
@@ -47,7 +51,6 @@ class ArticleLockTest extends TestCase
         $this->withSession(['authId' => $authId, 'email' => $authEmail, 'name' => $authName, 'verifiedEmails' => [$authEmail]])
             ->get(route('article.edit', $article->id));
         $this->assertDatabaseHas('content_locks', ['content_id' => $article->id, 'email' => $authEmail, 'name' => $authName]);
-
     }
 
     /**

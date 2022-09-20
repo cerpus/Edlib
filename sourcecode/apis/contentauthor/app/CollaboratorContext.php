@@ -70,7 +70,6 @@ class CollaboratorContext extends Model
             if (!empty($data)) {
                 self::insert($data);
             }
-
         });
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 return [
     'locked-title' => "Innehållet är låst",
     'article-is-locked' => "Innehållet är låst för redigering.",

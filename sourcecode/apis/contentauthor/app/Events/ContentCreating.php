@@ -9,7 +9,9 @@ use Illuminate\Queue\SerializesModels;
 
 class ContentCreating
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $request;
 
@@ -17,5 +19,4 @@ class ContentCreating
     {
         $this->request = $request;
     }
-
 }

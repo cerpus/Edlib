@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Article;
 use App\ArticleCollaborator;
 use App\CollaboratorContext;
@@ -17,11 +16,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Ramsey\Uuid\Uuid;
 
-class GdprSubjectDataController extends Controller {
+class GdprSubjectDataController extends Controller
+{
     protected $lastItemId;
     protected $lastItemType;
 
-    protected function questionDataForQuestionSet($namePrefix, $qs) {
+    protected function questionDataForQuestionSet($namePrefix, $qs)
+    {
         $dataItems = [];
         $dataItems[] = ['name' => $namePrefix.'QuestionSetId', 'type' => 'RELATED', 'value' => $qs->id, 'description' => 'User owns a link wih this ID.'];
         $dataItems[] = ['name' => $namePrefix.'QuestionSetTitle', 'type' => 'RELATED', 'value' => $qs->title, 'description' => 'User owns a link wih this title.'];
@@ -36,7 +37,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getArticleData($namePrefix, $article) {
+    public function getArticleData($namePrefix, $article)
+    {
         $dataItems = [];
         $dataItems[] = ['name' => $namePrefix.'ArticleId', 'type' => 'RELATED', 'value' => $article->id, 'description' => 'User has access to an article wih this ID. The article might be one of several versions of the same article.'];
         $dataItems[] = ['name' => $namePrefix.'ArticleTitle', 'type' => 'RELATED', 'value' => $article->title, 'description' => 'User has access to an article wih this title. The article might be one of several versions of the same article.'];
@@ -44,7 +46,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getUserArticles($userId, $prevItem=null) {
+    public function getUserArticles($userId, $prevItem=null)
+    {
         $dataItems = [];
         $articles = Article::where('owner_id', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -57,7 +60,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getArticlesByEmail($email, $prevItem=null) {
+    public function getArticlesByEmail($email, $prevItem=null)
+    {
         $dataItems = [];
         $articleCollaborators = ArticleCollaborator::where('email', $email)->orderBy('article_id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -71,25 +75,28 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getH5pData($namePrefix, $h5p) {
+    public function getH5pData($namePrefix, $h5p)
+    {
         $dataItems = [];
         $dataItems[] = ['name' => $namePrefix.'H5pId', 'type' => 'RELATED', 'value' => $h5p->id, 'description' => 'User has access to an H5P wih this ID. The H5P might be one of several versions of the same H5P.'];
         $dataItems[] = ['name' => $namePrefix.'H5pTitle', 'type' => 'RELATED', 'value' => $h5p->title, 'description' => 'User has access to an H5P wih this title. The H5P might be one of several versions of the same H5P.'];
         return $dataItems;
     }
-    public function getH5ps($userId, $prevItem=null) {
+    public function getH5ps($userId, $prevItem=null)
+    {
         $dataItems = [];
         $h5ps = H5PContent::where('user_id', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
             $h5ps = $h5ps->where('id', '>', $prevItem);
         }
-        foreach($h5ps->get() as $h5p) {
+        foreach ($h5ps->get() as $h5p) {
             $this->lastItemId = $h5p->id;
             $dataItems = array_merge($dataItems, $this->getH5pData('owned', $h5p));
         }
         return $dataItems;
     }
-    public function getH5psByEmail($email, $prevItem=null) {
+    public function getH5psByEmail($email, $prevItem=null)
+    {
         $dataItems = [];
         $h5ps = H5PCollaborator::where('email', $email)->orderBy('h5p_id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -103,7 +110,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getLinkData($namePrefix, $link) {
+    public function getLinkData($namePrefix, $link)
+    {
         $dataItems = [];
         $dataItems[] = ['name' => $namePrefix.'LinkId', 'type' => 'RELATED', 'value' => $link->id, 'description' => 'User owns a link wih this ID.'];
         $dataItems[] = ['name' => $namePrefix.'LinkTitle', 'type' => 'RELATED', 'value' => $link->title, 'description' => 'User owns a link wih this title.'];
@@ -111,7 +119,8 @@ class GdprSubjectDataController extends Controller {
         $dataItems[] = ['name' => $namePrefix.'LinkText', 'type' => 'RELATED', 'value' => $link->link_text, 'description' => 'User owns a link wih this link text.'];
         return $dataItems;
     }
-    public function getLinks($userId, $prevItem=null) {
+    public function getLinks($userId, $prevItem=null)
+    {
         $dataItems = [];
         $links = Link::where('owner_id', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -124,14 +133,14 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getCollaboratorContexts($userId, $prevItem=null) {
-
+    public function getCollaboratorContexts($userId, $prevItem=null)
+    {
         $dataItems = [];
         $collaboratorContexts = function () use ($userId) {
             return CollaboratorContext::where('collaborator_id', $userId)->orderBy('context_id', 'ASC')->orderBy('content_id', 'ASC')->limit(5);
         };
         if ($prevItem !== null) {
-            $prevItem = json_decode(base64_decode($prevItem), TRUE);
+            $prevItem = json_decode(base64_decode($prevItem), true);
             $collaboratorContextQuery = $collaboratorContexts()->where('context_id', $prevItem['context_id'])->where('content_id', '>', $prevItem['content_id']);
             $array = [];
             foreach ($collaboratorContextQuery->get() as $collaboratorContext) {
@@ -155,7 +164,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getQuestionSets($userId, $prevItem=null) {
+    public function getQuestionSets($userId, $prevItem=null)
+    {
         $dataItems = [];
         $questionsets = QuestionSet::where('owner', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -168,7 +178,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getH5pUserData($userId, $prevItem=null) {
+    public function getH5pUserData($userId, $prevItem=null)
+    {
         $dataItems = [];
         $h5pUserDatas = H5PContentsUserData::where('user_id', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -185,7 +196,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function getH5pResults($userId, $prevItem=null) {
+    public function getH5pResults($userId, $prevItem=null)
+    {
         $dataItems = [];
         $h5pResults = H5PResult::where('user_id', $userId)->orderBy('id', 'ASC')->limit(5);
         if ($prevItem !== null) {
@@ -204,7 +216,8 @@ class GdprSubjectDataController extends Controller {
         return $dataItems;
     }
 
-    public function processItemById($namePrefix, $id) {
+    public function processItemById($namePrefix, $id)
+    {
         $processMethod = function ($func) use ($namePrefix) {
             return function ($item) use ($func, $namePrefix) {
                 return $func($namePrefix, $item);
@@ -226,23 +239,28 @@ class GdprSubjectDataController extends Controller {
         }
     }
 
-    public function getH5pById($id) {
+    public function getH5pById($id)
+    {
         return H5PContent::find($id);
     }
 
-    public function getArticleById($id) {
+    public function getArticleById($id)
+    {
         return Article::find($id);
     }
 
-    public function getLinkById($id) {
+    public function getLinkById($id)
+    {
         return Link::find($id);
     }
 
-    public function getQuestionSetById($id) {
+    public function getQuestionSetById($id)
+    {
         return QuestionSet::find($id);
     }
 
-    public function resolveItemById($sourcesAndProcessors, $id) {
+    public function resolveItemById($sourcesAndProcessors, $id)
+    {
         foreach ($sourcesAndProcessors as list($source, $processor)) {
             $item = $source($id);
             if ($item) {
@@ -252,17 +270,18 @@ class GdprSubjectDataController extends Controller {
         return [];
     }
 
-    public function multiSourcePagination($sourceMap, $prevId=null, $prevType=null) {
+    public function multiSourcePagination($sourceMap, $prevId=null, $prevType=null)
+    {
         if ($prevType !== null) {
-            $querying = FALSE;
+            $querying = false;
         } else {
-            $querying = TRUE;
+            $querying = true;
         }
         foreach ($sourceMap as $sourceName => $source) {
             $prevIdForType = null;
             if (!$querying && $prevType === $sourceName) {
                 $prevIdForType = $prevId;
-                $querying = TRUE;
+                $querying = true;
             }
             if ($querying) {
                 $output = $source($prevIdForType);
@@ -277,7 +296,8 @@ class GdprSubjectDataController extends Controller {
         return [];
     }
 
-    public function getUserData(Request $request, $userId) {
+    public function getUserData(Request $request, $userId)
+    {
         $currentUserId = Session::get('authId', null);
         $authAdmin = Session::get('authAdmin', false);
         if ($currentUserId !== $userId && !$authAdmin) {
@@ -287,13 +307,27 @@ class GdprSubjectDataController extends Controller {
         $lastItemType = $request->get('lastType', null);
         $lastItemId = $request->get('lastId', null);
         $dataItems = $this->multiSourcePagination([
-            'articles' => function ($prevId) use ($userId) { return $this->getUserArticles($userId, $prevId); },
-            'h5ps' => function ($prevId) use ($userId) { return $this->getH5ps($userId, $prevId); },
-            'links' => function ($prevId) use ($userId) { return $this->getLinks($userId, $prevId); },
-            'questionsets' => function ($prevId) use ($userId) { return $this->getQuestionSets($userId, $prevId); },
-            'collaboratorcontexts' => function ($prevId) use ($userId) { return $this->getCollaboratorContexts($userId, $prevId); },
-            'h5puserdata' => function ($prevId) use ($userId) { return $this->getH5pUserData($userId, $prevId); },
-            'h5presults' => function ($prevId) use ($userId) { return $this->getH5pResults($userId, $prevId); },
+            'articles' => function ($prevId) use ($userId) {
+                return $this->getUserArticles($userId, $prevId);
+            },
+            'h5ps' => function ($prevId) use ($userId) {
+                return $this->getH5ps($userId, $prevId);
+            },
+            'links' => function ($prevId) use ($userId) {
+                return $this->getLinks($userId, $prevId);
+            },
+            'questionsets' => function ($prevId) use ($userId) {
+                return $this->getQuestionSets($userId, $prevId);
+            },
+            'collaboratorcontexts' => function ($prevId) use ($userId) {
+                return $this->getCollaboratorContexts($userId, $prevId);
+            },
+            'h5puserdata' => function ($prevId) use ($userId) {
+                return $this->getH5pUserData($userId, $prevId);
+            },
+            'h5presults' => function ($prevId) use ($userId) {
+                return $this->getH5pResults($userId, $prevId);
+            },
         ], $lastItemId, $lastItemType);
         $response = [
             'items' => $dataItems,
@@ -305,7 +339,8 @@ class GdprSubjectDataController extends Controller {
         return $response;
     }
 
-    public function getUserDataByEmail(Request $request, $email = null) {
+    public function getUserDataByEmail(Request $request, $email = null)
+    {
         $email = $email !== null ? $email : $request->get('email', null);
 
         $authAdmin = Session::get('authAdmin', false);
@@ -316,8 +351,12 @@ class GdprSubjectDataController extends Controller {
         $lastItemType = $request->get('lastType', null);
         $lastItemId = $request->get('lastId', null);
         $dataItems = $this->multiSourcePagination([
-            'articles' => function ($prevId) use ($email) { return $this->getArticlesByEmail($email, $prevId); },
-            'h5ps' => function ($prevId) use ($email) { return $this->getH5psByEmail($email, $prevId); }
+            'articles' => function ($prevId) use ($email) {
+                return $this->getArticlesByEmail($email, $prevId);
+            },
+            'h5ps' => function ($prevId) use ($email) {
+                return $this->getH5psByEmail($email, $prevId);
+            }
         ], $lastItemId, $lastItemType);
         $response = [
             'items' => $dataItems

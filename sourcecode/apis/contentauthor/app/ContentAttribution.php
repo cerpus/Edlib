@@ -35,7 +35,6 @@ class ContentAttribution extends Model
     }
 
     /**
-     * @param Attribution $attribution
      * @throws \Exception
      */
     public function setAttributionAttribute(Attribution $attribution)

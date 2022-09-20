@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Packages;
 
-use App\H5PLibrary;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use LogicException;
 
@@ -69,7 +68,6 @@ class MultiChoice extends H5PBase
 
     /**
      * @param $sourceFile
-     * @param array $newSource
      * @return bool
      * @throws \App\Exceptions\UnknownH5PPackageException
      * @throws \Exception
