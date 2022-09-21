@@ -237,16 +237,16 @@ class AjaxRequest
         $framework = $this->core->h5pF;
 
         $libraries = collect();
-        $details = $this->getLibraryDetails($H5PLibrary, $libraries);
-        if ($details->has($H5PLibrary->getLibraryString())) {
-            $libraryData = $details->get($H5PLibrary->getLibraryString());
+        $this->getLibraryDetails($H5PLibrary, $libraries);
+        if ($libraries->has($H5PLibrary->getLibraryString())) {
+            $libraryData = $libraries->get($H5PLibrary->getLibraryString());
             if (array_key_exists('semantics', $libraryData)) {
                 $H5PLibrary->semantics = $libraryData['semantics'];
                 $H5PLibrary->save();
             }
         }
 
-        $details->each(function ($library) use ($framework) {
+        $libraries->each(function ($library) use ($framework) {
             $framework->deleteLibraryDependencies($library['libraryId']);
 
             // Insert the different new ones
