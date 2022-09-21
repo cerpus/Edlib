@@ -51,6 +51,21 @@ class ArticleTest extends TestCase
         );
     }
 
+    public function testRendersArticleWithBrokenHtml(): void
+    {
+        $article = Article::factory()->create([
+            'content' => '<div>Foo<b></div>bar</b>',
+        ]);
+
+        // libxml works in mysterious ways.
+        // We don't really care that the output looks like this, but it's nice
+        // to know if it suddenly changes after an update or such anyway.
+        $this->assertSame(
+            "<div>Foo<b></b><p>bar</p></div>\n",
+            $article->render(),
+        );
+    }
+
     public function testEditArticleAccessDenied()
     {
         $this->setUpResourceApi();

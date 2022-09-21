@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
+use function libxml_use_internal_errors;
 use function preg_replace_callback;
 
 use const LIBXML_HTML_NOIMPLIED;
@@ -262,20 +263,25 @@ class Article extends Content implements VersionableObject
         $cas = app()->make(ContentAuthorStorage::class);
         assert($cas instanceof ContentAuthorStorage);
 
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $dom = new DOMDocument('1.0', 'UTF-8');
+            $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
-        collect($dom->getElementsByTagName('img'))
-            ->filter(fn (DOMElement $node) => $node->hasAttribute('src'))
-            ->each(fn (DOMElement $node) => $node->setAttribute(
-                'src',
-                preg_replace_callback(
-                    '@^/h5pstorage/article-uploads/(.*?)@',
-                    fn (array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
-                    $node->getAttribute('src'),
-                ),
-            ));
+            collect($dom->getElementsByTagName('img'))
+                ->filter(fn (DOMElement $node) => $node->hasAttribute('src'))
+                ->each(fn (DOMElement $node) => $node->setAttribute(
+                    'src',
+                    preg_replace_callback(
+                        '@^/h5pstorage/article-uploads/(.*?)@',
+                        fn (array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                        $node->getAttribute('src'),
+                    ),
+                ));
 
-        return $dom->saveHTML();
+            return $dom->saveHTML();
+        } finally {
+            libxml_use_internal_errors($previous);
+        }
     }
 }
