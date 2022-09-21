@@ -53,6 +53,7 @@ class ArticleTest extends TestCase
 
     public function testRendersArticleWithBrokenHtml(): void
     {
+        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<div>Foo<b></div>bar</b>',
         ]);
