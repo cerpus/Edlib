@@ -17,6 +17,7 @@ use H5PEditorAjaxInterface;
 use H5PEditorEndpoints;
 use H5PValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -231,25 +232,34 @@ class AjaxRequest
             throw new UnauthorizedHttpException("Not logged in");
         }
 
+        /** @var H5PLibrary $H5PLibrary */
         $H5PLibrary = H5PLibrary::findOrFail($request->input('libraryId'));
         $framework = $this->core->h5pF;
 
         $libraries = collect();
-        $this->getLibraryDetails($H5PLibrary, $libraries)
-            ->each(function ($library) use ($framework) {
-                $framework->deleteLibraryDependencies($library['libraryId']);
+        $details = $this->getLibraryDetails($H5PLibrary, $libraries);
+        if ($details->has($H5PLibrary->getLibraryString())) {
+            $libraryData = $details->get($H5PLibrary->getLibraryString());
+            if (array_key_exists('semantics', $libraryData)) {
+                $H5PLibrary->semantics = $libraryData['semantics'];
+                $H5PLibrary->save();
+            }
+        }
 
-                // Insert the different new ones
-                if (isset($library['preloadedDependencies'])) {
-                    $framework->saveLibraryDependencies($library['libraryId'], $library['preloadedDependencies'], 'preloaded');
-                }
-                if (isset($library['dynamicDependencies'])) {
-                    $framework->saveLibraryDependencies($library['libraryId'], $library['dynamicDependencies'], 'dynamic');
-                }
-                if (isset($library['editorDependencies'])) {
-                    $framework->saveLibraryDependencies($library['libraryId'], $library['editorDependencies'], 'editor');
-                }
-            });
+        $details->each(function ($library) use ($framework) {
+            $framework->deleteLibraryDependencies($library['libraryId']);
+
+            // Insert the different new ones
+            if (isset($library['preloadedDependencies'])) {
+                $framework->saveLibraryDependencies($library['libraryId'], $library['preloadedDependencies'], 'preloaded');
+            }
+            if (isset($library['dynamicDependencies'])) {
+                $framework->saveLibraryDependencies($library['libraryId'], $library['dynamicDependencies'], 'dynamic');
+            }
+            if (isset($library['editorDependencies'])) {
+                $framework->saveLibraryDependencies($library['libraryId'], $library['editorDependencies'], 'editor');
+            }
+        });
 
         return [
             'success' => true,
@@ -257,8 +267,9 @@ class AjaxRequest
         ];
     }
 
-    private function getLibraryDetails(H5PLibrary $H5PLibrary, $affectedLibraries)
+    private function getLibraryDetails(H5PLibrary $H5PLibrary, Collection $affectedLibraries): Collection
     {
+        /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
         $h5pDataFolderName = $H5PLibrary->getLibraryString(true);
         $tmpLibrariesRelative = 'libraries';
@@ -289,6 +300,7 @@ class AjaxRequest
                 }
             }
         }
+
         return $affectedLibraries;
     }
 
