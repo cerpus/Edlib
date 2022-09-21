@@ -35,11 +35,6 @@ const AddAnswer = props => {
                     {label}
                 </Button>
             </div>
-            <div style={styles.dividerContainer}>
-                <Divider
-                    style={styles.divider}
-                />
-            </div>
         </div>
     );
 };
