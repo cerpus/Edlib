@@ -21,7 +21,7 @@ class H5PLibraryLibrary extends Model
 
     public function library(): BelongsTo
     {
-        return $this->belongsTo(H5PLibrary::class, 'id', 'library_id');
+        return $this->belongsTo(H5PLibrary::class);
     }
 
     public function requiredLibrary(): HasOne

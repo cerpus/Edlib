@@ -13,7 +13,13 @@
     </tr>
     @forelse ( $libraries as $library)
         <tr>
-            <td>{{ $library['machineName'] }}</td>
+            <td>
+                @if (!empty($library['libraryId']))
+                    <a href="{{ route('admin.check-library', [$library['libraryId']]) }}">{{ $library['machineName'] }}</a>
+                @else
+                    {{ $library['machineName'] }}
+                @endif
+            </td>
             <td>{{ $library['title'] }}</td>
             @isset($showCount)
                 <td>{{ $library['numContent'] ?: '' }}</td>

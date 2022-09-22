@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
+use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\H5pUpgradeRequest;
 use App\Libraries\H5P\AdminConfig;
@@ -12,10 +13,12 @@ use App\Libraries\H5P\H5PLibraryAdmin;
 use Exception;
 use H5PCore;
 use H5PFrameworkInterface;
+use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LibraryUpgradeController extends Controller
@@ -175,5 +178,63 @@ class LibraryUpgradeController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    public function checkLibrary(H5PLibrary $library): View
+    {
+        $h5pDataFolderName = $library->getLibraryString(true);
+        $disk = Storage::disk();
+        $libsFolder = $disk->path('libraries');
+        $libFolder = $disk->path('libraries/' . $h5pDataFolderName);
+
+        /** @var H5PValidator $validator */
+        $validator = resolve(H5PValidator::class);
+        $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
+
+        $editorDep = $library->libraries()
+            ->where('dependency_type', 'editor')
+            ->select('required_library_id')
+            ->get()
+            ->pluck('required_library_id');
+        $preloadedDep = $library->libraries()
+            ->where('dependency_type', 'preloaded')
+            ->select('required_library_id')
+            ->get()
+            ->pluck('required_library_id');
+
+        if ($libraryData !== false) {
+            foreach(['editorDependencies' => $editorDep, 'preloadedDependencies' => $preloadedDep] as $depType => $deps) {
+                if (array_key_exists($depType, $libraryData)) {
+                    foreach($libraryData[$depType] as $key => $row) {
+                        $depLib = H5PLibrary::fromMachineName($row['machineName'])
+                            ->version($row['majorVersion'], $row['minorVersion'])
+                            ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version'])
+                            ->first();
+
+                        if ($depLib !== null) {
+                            $libraryData[$depType][$key]['library'] = $depLib;
+                            $isSet = $deps->search($depLib->id);
+                            $libraryData[$depType][$key]['dependencySet'] = ($isSet !== false);
+                            if ($isSet !== false) {
+                                $deps->forget($isSet);
+                            }
+                        } else {
+                            $libraryData[$depType][$key]['library'] = null;
+                            $libraryData[$depType][$key]['dependencySet'] = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return view('admin.library-upgrade.library-check', [
+            'library' => $library,
+            'libData' => $libraryData,
+            'preloadDeps' => count($preloadedDep) > 0 ? H5PLibrary::whereIn('id', $preloadedDep)->get() : [],
+            'editorDeps' => count($editorDep) > 0 ? H5PLibrary::whereIn('id', $editorDep)->get() : [],
+            'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
+            'info' => $validator->h5pF->getMessages('info'),
+            'error' => $validator->h5pF->getMessages('error'),
+        ]);
     }
 }
