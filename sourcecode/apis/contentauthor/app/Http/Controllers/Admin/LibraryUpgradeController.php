@@ -186,14 +186,14 @@ class LibraryUpgradeController extends Controller
         $disk = Storage::disk();
         $libsFolder = $disk->path('libraries');
         $libFolder = $disk->path('libraries/' . $h5pDataFolderName);
-
+        $libraryData = [];
         /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
-        $libraryData = [];
-        try {
+
+        if ($disk->directoryExists($libFolder)) {
             $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
-        } catch (\Exception $e) {
-            $validator->h5pF->setErrorMessage($e->getMessage());
+        } else {
+            $validator->h5pF->setErrorMessage("The library folder does not exist: $h5pDataFolderName");
         }
 
         $editorDep = $library->libraries()
