@@ -48,6 +48,17 @@ const AuthWrapper = ({ children }) => {
         store.set('language', language);
     }, [firstName, lastName, email, id, language]);
 
+    const [firstNameErrorText, setfirstNameErrorText] = React.useState("");
+    const [lastNameErrorText, setlastNameErrorText] = React.useState("");
+    const [emailErrorText, setemailErrorText] = React.useState("");
+    const [idErrorText, setidErrorText] = React.useState("");
+    const validateEmail = (email) => {
+        return !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+    }
+    const validateUserId = (userId) => {
+        return isNaN(userId) || !userId;
+    }
+
     if (!jwtToken) {
         return (
             <div style={{ maxWidth: 500 }}>
@@ -58,12 +69,16 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setFirstName(e.target.value)}
                         margin="normal"
                         style={{marginRight: 10}}
+                        error={!!firstNameErrorText}
+                        helperText={firstNameErrorText}
                     />
                     <TextField
                         label="Last name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         margin="normal"
+                        error={!!lastNameErrorText}
+                        helperText={lastNameErrorText}
                     />
                 </div>
                 <div>
@@ -73,6 +88,8 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setEmail(e.target.value)}
                         margin="normal"
                         fullWidth
+                        error={!!emailErrorText}
+                        helperText={emailErrorText}
                     />
                 </div>
                 <div>
@@ -82,6 +99,8 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setId(e.target.value)}
                         margin="normal"
                         fullWidth
+                        error={!!idErrorText}
+                        helperText={idErrorText}
                     />
                 </div>
                 <div style={{marginTop: 20}}>
@@ -106,9 +125,40 @@ const AuthWrapper = ({ children }) => {
                 </div>
                 <div style={{marginTop: 40}}>
                     <Button
+                    type="submit"
                         color="primary"
                         variant="contained"
                         onClick={() => {
+                            if (!firstName) {
+                                setfirstNameErrorText("Please enter first name");
+                            }else {
+                                setfirstNameErrorText("");
+                            }
+
+                            if (!lastName) {
+                                setlastNameErrorText("Please enter last name");
+                            }else {
+                                setlastNameErrorText("");
+                            }
+                            
+                            if (!email) {
+                                setemailErrorText("Please enter email");
+                            }else if (email && validateEmail(email)) {
+                                setemailErrorText("Invalid email address");
+                            }else {
+                                setemailErrorText("");
+                            }
+                            
+                            if(validateUserId(id)) {
+                                setidErrorText("Please enter a valid numeric user id");
+                            }else {
+                                setidErrorText("");
+                            }
+                            
+                            if(!firstName || !lastName || !email || validateUserId(id) || validateEmail(email)){
+                                return;
+                            }
+
                             setJwtToken(
                                 sign(
                                     {
