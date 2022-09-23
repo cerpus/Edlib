@@ -48,6 +48,17 @@ const AuthWrapper = ({ children }) => {
         store.set('language', language);
     }, [firstName, lastName, email, id, language]);
 
+    const [firstNameErrorText, setFirstNameErrorText] = React.useState("");
+    const [lastNameErrorText, setLastNameErrorText] = React.useState("");
+    const [emailErrorText, setEmailErrorText] = React.useState("");
+    const [idErrorText, setIdErrorText] = React.useState("");
+    const isValidEmail = (email) => {
+        return /^[^@]+@([^@.]+\.)*[^@.]+$/.test(email);
+    }
+    const isValidUser = (userId) => {
+        return !isNaN(userId) && userId;
+    }
+
     if (!jwtToken) {
         return (
             <div style={{ maxWidth: 500 }}>
@@ -58,12 +69,16 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setFirstName(e.target.value)}
                         margin="normal"
                         style={{marginRight: 10}}
+                        error={firstNameErrorText !== ''}
+                        helperText={firstNameErrorText}
                     />
                     <TextField
                         label="Last name"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         margin="normal"
+                        error={lastNameErrorText !== ''}
+                        helperText={lastNameErrorText}
                     />
                 </div>
                 <div>
@@ -73,6 +88,8 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setEmail(e.target.value)}
                         margin="normal"
                         fullWidth
+                        error={emailErrorText !== ''}
+                        helperText={emailErrorText}
                     />
                 </div>
                 <div>
@@ -82,6 +99,8 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setId(e.target.value)}
                         margin="normal"
                         fullWidth
+                        error={idErrorText !== ''}
+                        helperText={idErrorText}
                     />
                 </div>
                 <div style={{marginTop: 20}}>
@@ -106,9 +125,47 @@ const AuthWrapper = ({ children }) => {
                 </div>
                 <div style={{marginTop: 40}}>
                     <Button
+                    type="submit"
                         color="primary"
                         variant="contained"
                         onClick={() => {
+
+                            let error = false;
+                            if (!firstName) {
+                                setFirstNameErrorText("Please enter first name");
+                                error = true;
+                            }else {
+                                setFirstNameErrorText("");
+                            }
+
+                            if (!lastName) {
+                                setLastNameErrorText("Please enter last name");
+                                error = true;
+                            }else {
+                                setLastNameErrorText("");
+                            }
+                            
+                            if (!email) {
+                                setEmailErrorText("Please enter email");
+                                error = true;
+                            }else if (email && !isValidEmail(email)) {
+                                setEmailErrorText("Invalid email address");
+                                error = true;
+                            }else {
+                                setEmailErrorText("");
+                            }
+                            
+                            if(!isValidUser(id)) {
+                                setIdErrorText("Please enter a valid numeric user id");
+                                error = true;
+                            }else {
+                                setIdErrorText("");
+                            }
+                            
+                            if(error){
+                                return;
+                            }
+
                             setJwtToken(
                                 sign(
                                     {
