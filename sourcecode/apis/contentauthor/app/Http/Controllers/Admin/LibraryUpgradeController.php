@@ -189,7 +189,12 @@ class LibraryUpgradeController extends Controller
 
         /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
-        $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
+        $libraryData = [];
+        try {
+            $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
+        } catch (\Exception $e) {
+            $validator->h5pF->setErrorMessage($e->getMessage());
+        }
 
         $editorDep = $library->libraries()
             ->where('dependency_type', 'editor')
