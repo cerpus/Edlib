@@ -194,12 +194,10 @@ class LibraryUpgradeController extends Controller
         $editorDep = $library->libraries()
             ->where('dependency_type', 'editor')
             ->select('required_library_id')
-            ->get()
             ->pluck('required_library_id');
         $preloadedDep = $library->libraries()
             ->where('dependency_type', 'preloaded')
             ->select('required_library_id')
-            ->get()
             ->pluck('required_library_id');
 
         if ($libraryData !== false) {
