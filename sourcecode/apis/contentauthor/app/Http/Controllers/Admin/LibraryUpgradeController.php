@@ -206,9 +206,9 @@ class LibraryUpgradeController extends Controller
             ->pluck('required_library_id');
 
         if ($libraryData !== false) {
-            foreach(['editorDependencies' => $editorDep, 'preloadedDependencies' => $preloadedDep] as $depType => $deps) {
+            foreach (['editorDependencies' => $editorDep, 'preloadedDependencies' => $preloadedDep] as $depType => $deps) {
                 if (array_key_exists($depType, $libraryData)) {
-                    foreach($libraryData[$depType] as $key => $row) {
+                    foreach ($libraryData[$depType] as $key => $row) {
                         $depLib = H5PLibrary::fromMachineName($row['machineName'])
                             ->version($row['majorVersion'], $row['minorVersion'])
                             ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version'])
