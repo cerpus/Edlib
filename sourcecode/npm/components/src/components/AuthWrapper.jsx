@@ -48,15 +48,15 @@ const AuthWrapper = ({ children }) => {
         store.set('language', language);
     }, [firstName, lastName, email, id, language]);
 
-    const [firstNameErrorText, setfirstNameErrorText] = React.useState("");
-    const [lastNameErrorText, setlastNameErrorText] = React.useState("");
-    const [emailErrorText, setemailErrorText] = React.useState("");
-    const [idErrorText, setidErrorText] = React.useState("");
-    const validateEmail = (email) => {
-        return !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email);
+    const [firstNameErrorText, setFirstNameErrorText] = React.useState("");
+    const [lastNameErrorText, setLastNameErrorText] = React.useState("");
+    const [emailErrorText, setEmailErrorText] = React.useState("");
+    const [idErrorText, setIdErrorText] = React.useState("");
+    const isValidEmail = (email) => {
+        return /^[^@]+@([^@.]+\.)*[^@.]+$/.test(email);
     }
-    const validateUserId = (userId) => {
-        return isNaN(userId) || !userId;
+    const isValidUser = (userId) => {
+        return !isNaN(userId) && userId;
     }
 
     if (!jwtToken) {
@@ -69,7 +69,7 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setFirstName(e.target.value)}
                         margin="normal"
                         style={{marginRight: 10}}
-                        error={!!firstNameErrorText}
+                        error={firstNameErrorText !== ''}
                         helperText={firstNameErrorText}
                     />
                     <TextField
@@ -77,7 +77,7 @@ const AuthWrapper = ({ children }) => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         margin="normal"
-                        error={!!lastNameErrorText}
+                        error={lastNameErrorText !== ''}
                         helperText={lastNameErrorText}
                     />
                 </div>
@@ -88,7 +88,7 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setEmail(e.target.value)}
                         margin="normal"
                         fullWidth
-                        error={!!emailErrorText}
+                        error={emailErrorText !== ''}
                         helperText={emailErrorText}
                     />
                 </div>
@@ -99,7 +99,7 @@ const AuthWrapper = ({ children }) => {
                         onChange={(e) => setId(e.target.value)}
                         margin="normal"
                         fullWidth
-                        error={!!idErrorText}
+                        error={idErrorText !== ''}
                         helperText={idErrorText}
                     />
                 </div>
@@ -129,33 +129,40 @@ const AuthWrapper = ({ children }) => {
                         color="primary"
                         variant="contained"
                         onClick={() => {
+
+                            let error = false;
                             if (!firstName) {
-                                setfirstNameErrorText("Please enter first name");
+                                setFirstNameErrorText("Please enter first name");
+                                error = true;
                             }else {
-                                setfirstNameErrorText("");
+                                setFirstNameErrorText("");
                             }
 
                             if (!lastName) {
-                                setlastNameErrorText("Please enter last name");
+                                setLastNameErrorText("Please enter last name");
+                                error = true;
                             }else {
-                                setlastNameErrorText("");
+                                setLastNameErrorText("");
                             }
                             
                             if (!email) {
-                                setemailErrorText("Please enter email");
-                            }else if (email && validateEmail(email)) {
-                                setemailErrorText("Invalid email address");
+                                setEmailErrorText("Please enter email");
+                                error = true;
+                            }else if (email && !isValidEmail(email)) {
+                                setEmailErrorText("Invalid email address");
+                                error = true;
                             }else {
-                                setemailErrorText("");
+                                setEmailErrorText("");
                             }
                             
-                            if(validateUserId(id)) {
-                                setidErrorText("Please enter a valid numeric user id");
+                            if(!isValidUser(id)) {
+                                setIdErrorText("Please enter a valid numeric user id");
+                                error = true;
                             }else {
-                                setidErrorText("");
+                                setIdErrorText("");
                             }
                             
-                            if(!firstName || !lastName || !email || validateUserId(id) || validateEmail(email)){
+                            if(error){
                                 return;
                             }
 
