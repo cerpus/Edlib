@@ -190,37 +190,43 @@ class LibraryUpgradeController extends Controller
         /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
 
-        if ($disk->directoryExists($libFolder)) {
+        // The Validator does not check if the library folder exists before accessing files
+        try {
             $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
-        } else {
-            $validator->h5pF->setErrorMessage("The library folder does not exist: $h5pDataFolderName");
+        } catch (Exception $e) {
+            $validator->h5pF->setErrorMessage($e->getMessage());
         }
 
         $editorDep = $library->libraries()
             ->where('dependency_type', 'editor')
-            ->select('required_library_id')
-            ->pluck('required_library_id');
+            ->with('requiredLibrary')
+            ->get();
         $preloadedDep = $library->libraries()
             ->where('dependency_type', 'preloaded')
-            ->select('required_library_id')
-            ->pluck('required_library_id');
+            ->with('requiredLibrary')
+            ->get();
 
         if ($libraryData !== false) {
             foreach (['editorDependencies' => $editorDep, 'preloadedDependencies' => $preloadedDep] as $depType => $deps) {
                 if (array_key_exists($depType, $libraryData)) {
                     foreach ($libraryData[$depType] as $key => $row) {
-                        $depLib = H5PLibrary::fromMachineName($row['machineName'])
-                            ->version($row['majorVersion'], $row['minorVersion'])
-                            ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version'])
-                            ->first();
+                        $depLibKey = $deps->search(function ($value) use ($row) {
+                            return $value->requiredLibrary->name === $row['machineName'] &&
+                                $value->requiredLibrary->major_version === $row['majorVersion'] &&
+                                $value->requiredLibrary->minor_version === $row['minorVersion'];
+                        });
+                        if ($depLibKey !== false) {
+                            $depLib = $deps->pull($depLibKey)->requiredLibrary;
+                        } else {
+                            $depLib = H5PLibrary::fromMachineName($row['machineName'])
+                                ->version($row['majorVersion'], $row['minorVersion'])
+                                ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version'])
+                                ->first();
+                        }
 
                         if ($depLib !== null) {
                             $libraryData[$depType][$key]['library'] = $depLib;
-                            $isSet = $deps->search($depLib->id);
-                            $libraryData[$depType][$key]['dependencySet'] = ($isSet !== false);
-                            if ($isSet !== false) {
-                                $deps->forget($isSet);
-                            }
+                            $libraryData[$depType][$key]['dependencySet'] = ($depLibKey !== false);
                         } else {
                             $libraryData[$depType][$key]['library'] = null;
                             $libraryData[$depType][$key]['dependencySet'] = false;
@@ -233,8 +239,8 @@ class LibraryUpgradeController extends Controller
         return view('admin.library-upgrade.library-check', [
             'library' => $library,
             'libData' => $libraryData,
-            'preloadDeps' => count($preloadedDep) > 0 ? H5PLibrary::whereIn('id', $preloadedDep)->get() : [],
-            'editorDeps' => count($editorDep) > 0 ? H5PLibrary::whereIn('id', $editorDep)->get() : [],
+            'preloadDeps' => $preloadedDep,
+            'editorDeps' => $editorDep,
             'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),

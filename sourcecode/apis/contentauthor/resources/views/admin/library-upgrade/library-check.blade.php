@@ -79,25 +79,6 @@
                                         <td>{{ $libData['patchVersion'] ?? '' }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Semantics</th>
-                                        <td>
-                                            {{
-                                                !empty($library->semantics) ?
-                                                    'Yes, ' . strlen($library->semantics) . ' chars' :
-                                                    'No'
-                                            }}
-                                        </td>
-                                        <td>
-                                            {{
-                                                $libData ?
-                                                    array_key_exists('semantics', $libData) && !empty($libData['semantics']) ?
-                                                        'Yes, ' . strlen($libData['semantics']) . ' chars' :
-                                                        'No' :
-                                                        ''
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
                                         <th>Author</th>
                                         <td></td>
                                         <td>{{ $libData['author'] ?? '' }}</td>
@@ -166,6 +147,58 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3>Semantics</h3>
+                            </div>
+
+                            <div class="panel-body row">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th></th>
+                                        <th>Database</th>
+                                        <th>semantics.json</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Is set / Exist</th>
+                                        <td>
+                                            {{
+                                                !empty($library->semantics) ?' Yes' : 'No'
+                                            }}
+                                        </td>
+                                        <td>
+                                            {{
+                                                $libData ?
+                                                    array_key_exists('semantics', $libData) && !empty($libData['semantics']) ?
+                                                        'Yes' :
+                                                        'No' :
+                                                        ''
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Number of characters</th>
+                                        <td>
+                                            {{
+                                                !empty($library->semantics) ?
+                                                    strlen($library->semantics) :
+                                                    ''
+                                            }}
+                                        </td>
+                                        <td>
+                                            {{
+                                                $libData && array_key_exists('semantics', $libData) && !empty($libData['semantics']) ?
+                                                    strlen($libData['semantics']):
+                                                    ''
+                                            }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="panel panel-default">
