@@ -25,7 +25,7 @@
     "babel-preset-react-app": "^10.0.1",
     "classnames": "^2.3.1",
     "debug": "^4.3.4",
-    "draft-convert": "^2.1.12",
+    "draft-convert": "^2.1.13",
     "draft-js": "^0.11.7",
     "i18next": "^21.9.1",
     "immutable": "^4.1.0",
