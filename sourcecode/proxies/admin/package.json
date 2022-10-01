@@ -27,7 +27,7 @@
     "react-scripts": "^5.0.1",
     "recharts": "^2.1.12",
     "store": "^2.0.12",
-    "styled-components": "^5.3.5"
+    "styled-components": "^5.3.6"
   },
   "scripts": {
     "start": "react-scripts start",
