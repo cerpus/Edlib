@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Storage;
  * @see H5PLibrary::scopeFromLibrary()
  * @method static Builder|static fromLibrary($value)
  *
- * @see H5PLibrary::scopeFromLibraryName()
- * @method static Builder|static fromLibraryName($value)
- *
  * @see H5PLibrary::scopeFromMachineName()
  * @method static Builder|static fromMachineName($machineName)
  *
@@ -81,11 +78,6 @@ class H5PLibrary extends Model
     public function libraries(): HasMany
     {
         return $this->hasMany(H5PLibraryLibrary::class, 'library_id');
-    }
-
-    public function scopeFromLibraryName($query, $value)
-    {
-        return $query->where('name', 'LIKE', '%' . strtolower($value) . '%');
     }
 
     public function scopeFromMachineName($query, $machineName)
