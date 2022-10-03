@@ -846,7 +846,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function loadLibrarySemantics($machineName, $majorVersion, $minorVersion)
     {
-        $row = H5PLibrary::fromLibraryName($machineName)
+        $row = H5PLibrary::fromMachineName($machineName)
             ->version($majorVersion, $minorVersion)
             ->select('semantics')
             ->first();

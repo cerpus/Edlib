@@ -174,7 +174,7 @@ class H5PController extends Controller
 
         if (!is_null($contenttype) && !H5PCore::libraryFromString($contenttype)) {
             /** @var H5PLibrary $library */
-            $library = H5PLibrary::fromLibraryName($contenttype)
+            $library = H5PLibrary::fromMachineName($contenttype)
                 ->latestVersion()
                 ->first();
             if (!empty($library)) {
