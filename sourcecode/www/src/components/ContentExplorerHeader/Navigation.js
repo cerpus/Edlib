@@ -3,9 +3,9 @@ import { makeStyles } from 'tss-react/mui';
 import useTranslation from '../../hooks/useTranslation';
 import { matchPath, useHistory, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import AddCircleRounded from '@mui/icons-material/AddCircleRounded';
-import ShoppingCart from '@mui/icons-material/ShoppingCart';
-import Home from '@mui/icons-material/Home';
+import CreateIcon from '@mui/icons-material/Create';
+import ShareIcon from '@mui/icons-material/Share';
+import PersonIcon from '@mui/icons-material/Person';
 import LinkNavigation from './LinkNavigation';
 import MenuNavigation from './MenuNavigation';
 
@@ -44,13 +44,13 @@ export default ({ activatedEditors, getUrl }) => {
             id: 'shared-content',
             title: t('Delt innhold'),
             active: isActive(getUrl('/shared-content')),
-            icon: <ShoppingCart fontSize="small" />,
+            icon: <ShareIcon fontSize="small" />,
             action: () => history.push(getUrl('/shared-content')),
         },{
             id: 'my-content',
             title: t('Mitt innhold'),
             active: isActive(getUrl('/my-content')),
-            icon: <Home fontSize="small" />,
+            icon: <PersonIcon fontSize="small" />,
             action: () => history.push(getUrl('/my-content')),
         }
     ];
@@ -60,7 +60,7 @@ export default ({ activatedEditors, getUrl }) => {
                 id: 'create-content',
                 title: t('Opprett innhold'),
                 active: isActive(activatedEditors[0][1].link),
-                icon: <AddCircleRounded fontSize="small" />,
+                icon: <CreateIcon fontSize="small" />,
                 action: () => history.push(activatedEditors[0][1].link),
             },
         );
@@ -74,7 +74,7 @@ export default ({ activatedEditors, getUrl }) => {
                     getUrl('/link-author'),
                     getUrl('/doku-author'),
                 ]),
-                icon: <AddCircleRounded fontSize="small" />,
+                icon: <CreateIcon fontSize="small" />,
                 items: activatedEditors.map(
                     ([type, { link, label }]) => ({
                         id: type,
