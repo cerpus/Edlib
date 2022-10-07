@@ -8,6 +8,7 @@ use App\H5PLibrary;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\H5pUpgradeRequest;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use Exception;
@@ -27,6 +28,7 @@ class LibraryUpgradeController extends Controller
         private H5PCore $core,
         private H5PLibraryAdmin $h5pLibraryAdmin,
         private H5PFrameworkInterface $h5pFramework,
+        private readonly ContentAuthorStorage $contentAuthorStorage,
     ) {
         $this->middleware('auth');
     }
@@ -183,16 +185,25 @@ class LibraryUpgradeController extends Controller
     public function checkLibrary(H5PLibrary $library): View
     {
         $h5pDataFolderName = $library->getLibraryString(true);
-        $disk = Storage::disk();
-        $libsFolder = $disk->path('libraries');
-        $libFolder = $disk->path('libraries/' . $h5pDataFolderName);
+        $tmpLibrariesRelative = 'libraries';
+        $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
+        // Download files from bucket to tmp folder
+        $this->contentAuthorStorage->copyFolder(
+            Storage::disk(),
+            $this->contentAuthorStorage->getH5pTmpDisk(),
+            $tmpLibraryRelative,
+            $tmpLibraryRelative
+        );
+        $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
+        $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);
+
         $libraryData = [];
         /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
 
         // The Validator does not check if the library folder exists before accessing files
         try {
-            $libraryData = $validator->getLibraryData($h5pDataFolderName, $libFolder, $libsFolder);
+            $libraryData = $validator->getLibraryData($h5pDataFolderName, $tmpLibraryFolder, $tmpLibraries);
         } catch (Exception $e) {
             $validator->h5pF->setErrorMessage($e->getMessage());
         }

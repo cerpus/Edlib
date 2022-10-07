@@ -1,5 +1,4 @@
 @extends ('layouts.admin')
-
 @section ('content')
     <div class="container">
         <div class="row">
@@ -24,16 +23,28 @@
                                         </div>
                                     @endforeach
                                 @endif
-                                @if ($libData === false)
+                                @if (is_array($libData) === false)
                                     <div class="alert alert-info">
                                         Data from 'libary.json' and 'semantics.json' may not be displayed since the
                                         library failed validation
                                     </div>
-                                @elseif (array_key_exists('semantics', $libData) && $libData['semantics'] !== $library->semantics)
-                                    <div class="alert alert-danger">
-                                        Semantics data in database does not match the 'semantics.json' file.
-                                        Rebuild the library to update the database
-                                    </div>
+                                @else
+                                    @if (array_key_exists('semantics', $libData) && $libData['semantics'] !== $library->semantics)
+                                        <div class="alert alert-danger">
+                                            Semantics data in database does not match the 'semantics.json' file.
+                                            Rebuild the library to update the database
+                                        </div>
+                                    @endif
+                                    @if ($library && $libData && (
+                                            $library->major_version !== $libData['majorVersion'] ||
+                                            $library->minor_version !== $libData['minorVersion'] ||
+                                            $library->patch_version !== $libData['patchVersion']
+                                        )
+                                    )
+                                        <div class="alert alert-danger">
+                                            Library version in database does not match version in 'library.json'
+                                        </div>
+                                    @endif
                                 @endif
                             </div>
 
@@ -99,7 +110,7 @@
                                         <td>{{ implode(', ', $libData['embedTypes'] ?? [])}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Installed time</th>
+                                        <th>Created time</th>
                                         <td>{{ $library->created_at->format('Y-m-d H:i:s e') }}</td>
                                         <td></td>
                                     </tr>
@@ -157,42 +168,19 @@
                             <div class="panel-body row">
                                 <table class="table table-striped">
                                     <tr>
-                                        <th></th>
                                         <th>Database</th>
                                         <th>semantics.json</th>
                                     </tr>
                                     <tr>
-                                        <th>Is set / Exist</th>
                                         <td>
-                                            {{
-                                                !empty($library->semantics) ?' Yes' : 'No'
-                                            }}
+                                            @if(!empty($library->semantics))
+                                                <textarea wrap="off" readonly style="width:400px;height:300px;">{!!$library->semantics!!}</textarea>
+                                            @endif
                                         </td>
                                         <td>
-                                            {{
-                                                $libData ?
-                                                    array_key_exists('semantics', $libData) && !empty($libData['semantics']) ?
-                                                        'Yes' :
-                                                        'No' :
-                                                        ''
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Number of characters</th>
-                                        <td>
-                                            {{
-                                                !empty($library->semantics) ?
-                                                    strlen($library->semantics) :
-                                                    ''
-                                            }}
-                                        </td>
-                                        <td>
-                                            {{
-                                                $libData && array_key_exists('semantics', $libData) && !empty($libData['semantics']) ?
-                                                    strlen($libData['semantics']):
-                                                    ''
-                                            }}
+                                            @if($libData && array_key_exists('semantics', $libData) && !empty($libData['semantics']))
+                                                <textarea wrap="off" readonly style="width:400px;height:300px;">{!! $libData['semantics'] !!}</textarea>
+                                            @endif
                                         </td>
                                     </tr>
                                 </table>
