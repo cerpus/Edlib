@@ -8,7 +8,11 @@
             <th>Set in DB</th>
         </tr>
         @foreach($dependencies as $dep)
-            <tr>
+            @if (empty($dep['library']) || !$dep['dependencySet'])
+                <tr style="background-color: #f2dede">
+            @else
+                <tr>
+            @endif
                 <td>{{ $dep['library']->id ?? ''}}</td>
                 <td>
                     @isset($dep['library'])
@@ -23,7 +27,7 @@
             </tr>
         @endforeach
         @foreach($extraDependencies as $dep)
-            <tr>
+            <tr style="background-color: #f2dede">
                 <td>{{ $dep->requiredLibrary->id }}</td>
                 <td>
                     <a href="{{ route('admin.check-library', [$dep->requiredLibrary->id]) }}">{{ $dep->requiredLibrary->name }}</a>
