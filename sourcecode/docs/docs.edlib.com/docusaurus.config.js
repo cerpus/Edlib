@@ -159,6 +159,11 @@ module.exports = {
       ],
       copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
     },
+    prism: {
+      additionalLanguages: [
+        'php',
+      ],
+    },
   },
   presets: [
     [

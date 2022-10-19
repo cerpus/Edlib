@@ -1,0 +1,38 @@
+---
+sidebar_position: 8
+---
+
+# Language
+There are two main parts in Edlib, the content browser and the editor. The content browser is located in
+`sourcecode/npm/components`, and the editor is placed in `sourcecode/apis/contentauthor`.
+Both have a default language of `en-gb` and a fallback language of `en-gb`. If a language code is not provided it will
+use the default language. If there is untranslated strings or the language is not supported, the fallback language
+will be used.
+
+If you want to translate or improve the translations, see the section about [translating Edlib](./contributing/translation)
+and learn how to do it.
+
+### Content browser
+The language files are located in `src/i18n`. In the request provide the query parameter `language` with a
+supported language code. See `src/i18n/index.js` for a list of supported language codes.
+
+
+### Editor
+The language files are located in `resources/lang`, and the setup is done in `config/app.php`.
+To set the language use `launch_presentation_locale` in the LTI request. When the editor is opened from the content
+browser, it will use the same language, if supported.
+
+The editor consists of two parts, the Edlib editor and the H5P library editor. The H5P editor interface language will
+follow that of the Edlib editor, if supported.
+
+The H5P editor lets you set the language to use for buttons and feedback when viewing the resource. When creating a
+resource this is set to the same language as the interface. This can be changed in the `Text overrides and translations`
+section in the H5P.
+
+There is also a language setting in the sidebar, this should be set to the language of the content and is used by
+the content browser.
+
+The reason for having a separate selector is that the language of the content and the language to use for buttons may
+differ. If for instance creating a resource for Norwegians to learn English, you may want the H5P set to Norwegian,
+to have the buttons and feedback in Norwegian so that the user can navigate easily, but the language in the
+sidebar set to English, since the content is in English.
