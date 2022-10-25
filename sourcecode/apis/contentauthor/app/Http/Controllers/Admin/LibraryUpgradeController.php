@@ -60,6 +60,7 @@ class LibraryUpgradeController extends Controller
 
         // Add settings for each library
         $libraries = collect();
+        $contentTypes = collect();
         foreach ($storedLibraries as $versions) {
             $lastVersion = end($versions);
             reset($versions);
@@ -96,16 +97,17 @@ class LibraryUpgradeController extends Controller
                             $item['hubUpgrade'] = array_shift($newVersion);
                         }
                     }
+                    $contentTypes->push($item);
+                } else {
+                    $libraries->push($item);
                 }
-
-                $libraries->push($item);
             }
         }
 
         $available = collect();
         $hubCacheLibraries
-            ->each(function ($hubCache) use ($libraries, $hubCacheLibraries, $available) {
-                $hasLast = $libraries->where('machineName', $hubCache->name)->firstWhere('isLast', true);
+            ->each(function ($hubCache) use ($contentTypes, $hubCacheLibraries, $available) {
+                $hasLast = $contentTypes->where('machineName', $hubCache->name)->firstWhere('isLast', true);
                 if (empty($hasLast)) {
                     $available->push([
                         'machineName' => $hubCache->name,
@@ -123,7 +125,8 @@ class LibraryUpgradeController extends Controller
             });
 
         return view('admin.library-upgrade.index', [
-            'installed' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'installedLibraries' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'installedContentTypes' => $contentTypes->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
             'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
         ]);
     }
@@ -231,7 +234,7 @@ class LibraryUpgradeController extends Controller
                         } else {
                             $depLib = H5PLibrary::fromMachineName($row['machineName'])
                                 ->version($row['majorVersion'], $row['minorVersion'])
-                                ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version'])
+                                ->select(['id', 'name', 'major_version', 'minor_version', 'patch_version', 'runnable'])
                                 ->first();
                         }
 

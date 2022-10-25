@@ -1,8 +1,9 @@
 <div class="panel-body row">
     <table class="table table-striped">
         <tr>
-            <th>Library id</th>
+            <th>DB id</th>
             <th>Machine name</th>
+            <th>Type</th>
             <th>Required version</th>
             <th>DB version</th>
             <th>Set in DB</th>
@@ -21,6 +22,7 @@
                         {{ $dep['machineName'] }}
                     @endif
                 </td>
+                <td>{{ $dep['library'] ? $dep['library']->runnable ? 'Content type' : 'Library' : ''}}</td>
                 <td>{{ $dep['majorVersion'] . '.' . $dep['minorVersion'] }}</td>
                 <td>{{ $dep['library'] ? $dep['library']->major_version . '.' . $dep['library']->minor_version . '.' . $dep['library']->patch_version : '' }}</td>
                 <td>{{ $dep['library'] ? $dep['dependencySet'] ? 'Yes' : 'No' : ''}}</td>
@@ -32,6 +34,7 @@
                 <td>
                     <a href="{{ route('admin.check-library', [$dep->requiredLibrary->id]) }}">{{ $dep->requiredLibrary->name }}</a>
                 </td>
+                <td>{{ $dep->requiredLibrary->runnable ? 'Content type' : 'Library' }}</td>
                 <td></td>
                 <td>{{ $dep->requiredLibrary->major_version . '.' . $dep->requiredLibrary->minor_version . '.' . $dep->requiredLibrary->patch_version }}</td>
                 <td>Yes</td>
