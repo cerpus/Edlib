@@ -8,7 +8,7 @@
                     <div class="panel-body">
                         <div id="minor-publishing" class="panel panel-default">
                             <div class="panel-heading">
-                                <h3>Install or update H5P libraries</h3>
+                                <h3>Install or update H5P content types and libraries</h3>
                             </div>
 
                             <div class="panel-body row">
@@ -33,7 +33,7 @@
 
                                 <form action="{{ route('admin.check-for-updates') }}" method="post">
                                     @csrf
-                                    <h4>From h5p.org</h4>
+                                    <h4>Content types from h5p.org</h4>
                                     <button type="submit" class="btn btn-success">Check for updates</button>
                                 </form>
                             </div>
@@ -46,12 +46,28 @@
                     <div class="panel-body">
                         <div class="panel panel-default">
                             <div class="panel-heading">
+                                <h3>Content types installed</h3>
+                            </div>
+
+                            <div class="panel-body row">
+                                @include('admin.fragments.library-table', [
+                                    'libraries' => $installedContentTypes,
+                                    'showCount' => true,
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
                                 <h3>Libraries installed</h3>
                             </div>
 
                             <div class="panel-body row">
                                 @include('admin.fragments.library-table', [
-                                    'libraries' => $installed,
+                                    'libraries' => $installedLibraries,
                                     'showCount' => true,
                                 ])
                             </div>

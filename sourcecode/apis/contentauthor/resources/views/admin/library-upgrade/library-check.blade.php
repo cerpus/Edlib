@@ -7,7 +7,7 @@
                     <div class="panel-body">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3>Details for library "<strong>{{ $library->name }}</strong>"</h3>
+                                <h3>Details for {{ $library->runnable ? 'content type' : 'library' }} "<strong>{{ $library->name }}</strong>"</h3>
                             </div>
 
                             <div class="panel-body row">
@@ -226,8 +226,9 @@
                             <div class="panel-body row">
                                 <table class="table table-striped">
                                     <tr>
-                                        <th>Library id</th>
+                                        <th>DB id</th>
                                         <th>Machine name</th>
+                                        <th>Type</th>
                                         <th>Version</th>
                                         <th>Dependency type</th>
                                     </tr>
@@ -237,6 +238,7 @@
                                             <td>
                                                 <a href="{{ route('admin.check-library', [$dep->library->id]) }}">{{ $dep->library->name }}</a>
                                             </td>
+                                            <td>{{ $dep->library->runnable ? 'Content type' : 'Library' }}</td>
                                             <td>{{ $dep->library->major_version . '.' . $dep->library->minor_version . '.' . $dep->library->patch_version}}</td>
                                             <td>{{ $dep->dependency_type }}</td>
                                         </tr>
