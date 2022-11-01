@@ -3174,10 +3174,10 @@ istanbul-reports@^3.1.3:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-jest-bamboo-reporter@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/jest-bamboo-reporter/-/jest-bamboo-reporter-1.2.1.tgz#b5e15918586c4939b57feb72a43b9f4db2cae3bf"
-  integrity sha512-VrBdwhPTpwaj2h2LKjhDqUfRyTQCX+uXVH6QH//L63AZAyIqLRrgWFdq+G1uDLszFNFJWEHhdkIRtqI/CHa2qg==
+jest-bamboo-reporter@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/jest-bamboo-reporter/-/jest-bamboo-reporter-1.3.0.tgz#e2aa09daa0a84512d6faf1130e2517454595edd4"
+  integrity sha512-EiCpfo8Yun7kNdAjEKmtL5QWRn11jcElukme28zbxk1ZWyv4fj8+emIK+2e0ZDA90CGn2S9k++R8Sty+K25lqA==
 
 jest-changed-files@^29.0.0:
   version "29.0.0"

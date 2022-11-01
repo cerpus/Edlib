@@ -28,7 +28,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "jest-bamboo-reporter": "^1.2.1",
+    "jest-bamboo-reporter": "^1.3.0",
     "nodemon": "^2.0.20"
   }
 }
