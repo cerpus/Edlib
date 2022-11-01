@@ -68,7 +68,7 @@
     "@storybook/addon-viewport": "^6.5.10",
     "@storybook/addons": "^6.4.20",
     "@storybook/react": "^6.5.10",
-    "babel-loader": "^8.2.5",
+    "babel-loader": "^9.0.1",
     "i18next-scanner": "^3.3.0",
     "prettier": "^2.6.2",
     "react": "^17.0.2",
