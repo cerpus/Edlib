@@ -108,6 +108,16 @@ const deleteResource = async (tenantId, resourceId) => {
     ).data;
 };
 
+const getResourceStats = async (resourceId, params) => {
+    return (
+        await resourceAxios({
+            url: `/v1/resources/${resourceId}/stats`,
+            method: 'GET',
+            params,
+        })
+    ).data;
+};
+
 export default () => {
     return {
         adminGetAllResources,
@@ -121,5 +131,6 @@ export default () => {
         getResumableJob,
         resumeJob,
         proxy: resourceAxios,
+        getResourceStats,
     };
 };

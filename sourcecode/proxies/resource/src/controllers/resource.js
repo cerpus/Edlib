@@ -14,4 +14,10 @@ export default {
             resources: await req.context.services.resource.adminGetAllResources(),
         };
     },
+    getStats: async (req, res, next) => {
+        return await req.context.services.resource.getResourceStats(
+            req.params.resourceId,
+            req.query
+        )
+    },
 };

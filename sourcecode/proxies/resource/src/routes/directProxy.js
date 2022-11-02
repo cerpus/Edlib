@@ -1,7 +1,8 @@
 import express from 'express';
 import { middlewares } from '@cerpus/edlib-node-utils';
 import proxyRequest from '../services/proxyRequest.js';
-
+import runAsync from "../services/runAsync.js";
+import resourceController from "../controllers/resource.js"
 const { Router } = express;
 
 export default async () => {
@@ -19,10 +20,7 @@ export default async () => {
     router.get(
         '/v1/resources/:resourceId/stats',
         middlewares.isUserAuthenticated,
-        proxyRequest(
-            (req) => req.context.services.resource.proxy,
-            (req) => `/v1/resources/${req.params.resourceId}/stats`
-        )
+        runAsync(resourceController.getStats),
     );
 
     router.get(
