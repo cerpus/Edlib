@@ -14,8 +14,8 @@ export default {
             data: {
                 dateRangeViews:
                     await req.context.db.trackingResourceVersion.getCountByDayForResource(
-                        moment(req.query.start).startOf("day").toDate(),
-                        moment(req.query.end).endOf("day").toDate(),
+                        moment(req.query.start).startOf('day').toDate(),
+                        moment(req.query.end).endOf('day').toDate(),
                         req.params.resourceId
                     ),
             },
