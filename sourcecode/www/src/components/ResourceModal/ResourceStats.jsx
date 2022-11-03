@@ -20,9 +20,9 @@ const ResourceStats = ({ resourceId }) => {
     const { edlibApi } = useConfigurationContext();
 
     const today = moment(new Date()).format('YYYY-MM-DD');
-    const lastWeek = moment(today).subtract(7, 'days').format('YYYY-MM-DD');
+    const lastMonth = moment(today).subtract(30, 'days').format('YYYY-MM-DD');
 
-    const [startDate, setStartDate] = useState(lastWeek);
+    const [startDate, setStartDate] = useState(lastMonth);
     const [endDate, setEndDate] = useState(today);
 
     const { loading, response } = useFetchWithToken(
