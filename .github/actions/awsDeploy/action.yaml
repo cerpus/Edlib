@@ -62,7 +62,7 @@ runs:
       run: |
         aws eks --region eu-west-1 update-kubeconfig --name ${{ inputs.AWS_EKS_CLUSTER_NAME }}
         CONFIG="$(base64 -w 0 ${HOME}/.kube/config)"
-        echo "::set-output name=config::$CONFIG"
+        echo "config=$CONFIG" >> $GITHUB_OUTPUT
 
     - name: Update Chart.yaml with correct app version
       shell: bash
@@ -84,7 +84,7 @@ runs:
           HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ inputs.environment }}.yaml "
         fi
         echo $HELM_VALUES
-        echo "::set-output name=helm-values::$HELM_VALUES"
+        echo "helm-values=$HELM_VALUES" >> $GITHUB_OUTPUT
 
     - name: helm deploy
       shell: bash

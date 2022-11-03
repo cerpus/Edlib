@@ -31,7 +31,7 @@ jobs:
             ref="${{ github.event.inputs.releaseName }}"
           fi
 
-          echo "::set-output name=releaseRef::$ref"
+          echo "releaseRef=$ref" >> $GITHUB_OUTPUT
 
 # ---------- APIS -----------------
   release_api_auth:
