@@ -828,14 +828,17 @@ class H5PController extends Controller
         return $imageAdapter->findImages([
             'page' => $request->get('page'),
             'searchString' => $request->get('searchstring'),
+            'language' => $request->get('language'),
         ]);
     }
 
-    public function getImage($imageId)
+    public function getImage(Request $request, $imageId)
     {
         /** @var H5PImageAdapterInterface $imageAdapter */
         $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->getImage($imageId);
+        return $imageAdapter->getImage($imageId, [
+            'language' => $request->get('language'),
+        ]);
     }
 
     public function browseVideos(Request $request)
@@ -870,13 +873,16 @@ class H5PController extends Controller
         $audioAdapter = app(H5PAudioInterface::class);
         return $audioAdapter->findAudio([
             'query' => $request->get('query'),
+            'language' => $request->get('language'),
         ]);
     }
 
-    public function getAudio($audioId)
+    public function getAudio(Request $request, $audioId)
     {
         /** @var H5PAudioInterface $audioAdapter */
         $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->getAudio($audioId);
+        return $audioAdapter->getAudio($audioId, [
+            'language' => $request->get('language'),
+        ]);
     }
 }

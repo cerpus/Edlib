@@ -6,5 +6,5 @@ interface H5PAudioInterface
 {
     public function findAudio($filterParameters);
 
-    public function getAudio($audioId);
+    public function getAudio($audioId, array $params = []);
 }

@@ -10,11 +10,13 @@ class AudioBrowserContainer extends Component {
         onSelect: PropTypes.func.isRequired,
         locale: PropTypes.string,
         onToggle: PropTypes.func,
+        getCurrentLanguage: PropTypes.func,
     };
 
     static defaultProps = {
         searchUrl: '/audios/browse',
         locale: 'en',
+        getCurrentLanguage: () => 'en',
     };
 
     constructor(props) {
@@ -26,9 +28,11 @@ class AudioBrowserContainer extends Component {
     }
 
     handleSearch(query) {
+        const paramQuery = query || {};
+        paramQuery.language = this.props.getCurrentLanguage();
         return Axios.get(this.props.searchUrl, {
             params: {
-                query: typeof query !== 'undefined' ? query : null,
+                query: paramQuery,
             },
         }).then((response) => {
             return response.data;
@@ -40,9 +44,12 @@ class AudioBrowserContainer extends Component {
             .then(data => this.props.onSelect(data));
     }
 
-
     handleFetchAudioDetails(audioId) {
-        return Axios.get(this.props.searchUrl + '/' + audioId)
+        return Axios.get(this.props.searchUrl + '/' + audioId, {
+            params: {
+                language: this.props.getCurrentLanguage(),
+            }
+        })
             .then((response) => {
                 return response.data;
             });
