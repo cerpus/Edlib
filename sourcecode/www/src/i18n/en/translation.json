@@ -80,7 +80,8 @@
     "Sett inn": "Insert",
     "S": {
         "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later.",
-        "VIEWS_PAST_7_DAYS": "Views last 7 days"
+        "VIEWS": "Views",
+        "TOTAL_VIEWS" : "Total Views"
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",

@@ -12,10 +12,10 @@ export default {
     getResourceStats: async (req) => {
         return {
             data: {
-                last7daysViews:
+                dateRangeViews:
                     await req.context.db.trackingResourceVersion.getCountByDayForResource(
-                        moment().subtract(7, 'days').startOf('day').toDate(),
-                        moment().endOf('day').toDate(),
+                        moment(req.query.start).startOf('day').toDate(),
+                        moment(req.query.end).endOf('day').toDate(),
                         req.params.resourceId
                     ),
             },
