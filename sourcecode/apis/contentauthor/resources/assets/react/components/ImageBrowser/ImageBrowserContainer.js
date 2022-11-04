@@ -12,6 +12,7 @@ class ImageBrowserContainer extends Component {
         searchButtonText: PropTypes.string,
         searchPlaceholder: PropTypes.string,
         onToggle: PropTypes.func,
+        getCurrentLanguage: PropTypes.func,
     };
 
     static defaultProps = {
@@ -19,6 +20,7 @@ class ImageBrowserContainer extends Component {
         locale: 'en',
         useImageText: 'Use',
         searchButtonText: 'Search',
+        getCurrentLanguage: () => 'en',
     };
 
     constructor(props) {
@@ -35,6 +37,7 @@ class ImageBrowserContainer extends Component {
             params: {
                 page: page,
                 searchstring: typeof searchText !== 'undefined' ? searchText : null,
+                language: this.props.getCurrentLanguage(),
             },
         })
             .then((response) => {
@@ -43,7 +46,11 @@ class ImageBrowserContainer extends Component {
     }
 
     handleFetchImageDetails(imageId) {
-        return Axios.get( this.props.searchUrl + '/' + imageId)
+        return Axios.get( this.props.searchUrl + '/' + imageId, {
+            params: {
+                language: this.props.getCurrentLanguage(),
+            },
+        })
             .then((response) => {
                 return response.data;
             });

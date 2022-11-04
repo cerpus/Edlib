@@ -6,7 +6,7 @@ interface H5PImageAdapterInterface
 {
     public function findImages($filterParameters);
 
-    public function getImage($imageId);
+    public function getImage($imageId, array $params = []);
 
     public function getImageUrlFromId($imageId, array $parameters, bool $useOriginalKeys): string;
 

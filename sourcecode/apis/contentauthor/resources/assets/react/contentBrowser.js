@@ -11,6 +11,7 @@ function initImageBrowser(element, settings) {
         onSelectCallback,
         locale,
         onToggleCallback,
+        getCurrentLanguage,
     } = settings;
 
     const i18nData = (locale !== null ? addLanguage(locale) : i18nDefault);
@@ -21,6 +22,7 @@ function initImageBrowser(element, settings) {
                 onSelect={onSelectCallback}
                 locale={locale}
                 onToggle={onToggleCallback}
+                getCurrentLanguage={getCurrentLanguage}
             />
         </IntlProvider>,
         element
@@ -53,6 +55,7 @@ function initAudioBrowser(element, settings) {
         onSelectCallback,
         locale,
         onToggleCallback,
+        getCurrentLanguage,
     } = settings;
 
     const i18nData = (locale !== null ? addLanguage(locale) : i18nDefault);
@@ -63,6 +66,7 @@ function initAudioBrowser(element, settings) {
                 onSelect={onSelectCallback}
                 locale={locale}
                 onToggle={onToggleCallback}
+                getCurrentLanguage={getCurrentLanguage}
             />
         </IntlProvider>,
         element

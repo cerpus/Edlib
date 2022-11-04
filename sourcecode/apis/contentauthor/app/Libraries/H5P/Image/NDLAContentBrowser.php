@@ -44,11 +44,13 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     {
         $page = !empty($filterParameters['page']) ? $filterParameters['page'] : 1;
         $searchString = !empty($filterParameters['searchString']) ? $filterParameters['searchString'] : null;
+        $language = !empty($filterParameters['language']) ? $filterParameters['language'] : null;
 
         $request = $this->client->get(self::FIND_IMAGES_URL, [
             'query' => [
                 'page' => $page,
                 'query' => $searchString,
+                'language' => $language,
             ]
         ]);
         $images = $request->getBody()->getContents();
@@ -56,9 +58,15 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         return \response()->json(json_decode($images));
     }
 
-    public function getImage($imageId)
+    public function getImage($imageId, array $params = [])
     {
-        $request = $this->client->get(sprintf(self::GET_IMAGE_URL, $imageId));
+        $language = !empty($params['language']) ? $params['language'] : null;
+
+        $request = $this->client->get(sprintf(self::GET_IMAGE_URL, $imageId), [
+            'query' => [
+                'language' => $language,
+            ],
+        ]);
         $image = $request->getBody()->getContents();
 
         return \response()->json(json_decode($image));

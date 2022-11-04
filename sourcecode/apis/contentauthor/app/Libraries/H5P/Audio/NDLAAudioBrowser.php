@@ -37,15 +37,20 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
         return \response()->json(json_decode($audios));
     }
 
-    public function getAudio($audioId)
+    public function getAudio($audioId, array $params = [])
     {
-        $request = $this->client->get(sprintf(self::GET_AUDIO_URL, $audioId));
+        $language = !empty($params['language']) ? $params['language'] : null;
+        $request = $this->client->get(sprintf(self::GET_AUDIO_URL, $audioId), [
+            'query' => [
+                'language' => $language,
+            ],
+        ]);
         $audio = $request->getBody()->getContents();
 
         return \response()->json(json_decode($audio));
     }
 
-    private function buildSearchQuery($queryObject)
+    private function buildSearchQuery($queryObject): ?array
     {
         if (empty($queryObject)) {
             return null;
@@ -58,6 +63,10 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
             $queryObject['page-size'] = $queryObject['pageSize'];
             unset($queryObject['pageSize']);
         }
+        if (empty($queryObject['language'])) {
+            unset($queryObject['language']);
+        }
+
         return $queryObject;
     }
 
