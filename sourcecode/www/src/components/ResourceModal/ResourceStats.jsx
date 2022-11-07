@@ -42,6 +42,10 @@ const ResourceStats = ({ resourceId }) => {
     const toDateChange = (event) => {
         setEndDate(event.target.value);
     };
+    let viewsCount = 0;
+    for (let i = 0; i < response?.data?.dateRangeViews?.length; i++) {
+        viewsCount = viewsCount + response?.data?.dateRangeViews[i].count;
+    }
     return (
         <>
             <Box pb={2}>
@@ -92,7 +96,10 @@ const ResourceStats = ({ resourceId }) => {
                 </ResponsiveContainer>
             }
             <Box pb={2}>
-                <strong>{t('S.TOTAL_VIEWS')} : {response?.data?.dateRangeViews?.length} </strong>
+                <strong>{t('S.RANGE_VIEWS')} : {viewsCount} </strong>
+            </Box>
+            <Box pb={2}>
+                <strong>{t('S.TOTAL_VIEWS')} : {response?.data?.totalViews} </strong>
             </Box>
         </>
     );
