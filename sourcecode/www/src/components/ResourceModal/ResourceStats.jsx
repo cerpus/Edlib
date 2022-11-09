@@ -52,10 +52,10 @@ const ResourceStats = ({ resourceId }) => {
                 <strong>{t('S.VIEWS')}</strong>
             </Box>
             <Box pb={2}>
-                <label htmlFor="from"> From: <input type="date" id="from" max={endDate}
+                <label htmlFor="from"> {t('S.FROM')}: <input type="date" id="from" max={endDate}
                                                     onChange={handleDateChange}
                                                     value={startDate}/> </label> {' '}
-                <label htmlFor="to">To: <input type="date" id="to"
+                <label htmlFor="to">{t('S.TO')}: <input type="date" id="to"
                                                min={startDate}
                                                max={new Date()} onChange={toDateChange}
                                                value={endDate}/></label>
@@ -96,10 +96,10 @@ const ResourceStats = ({ resourceId }) => {
                 </ResponsiveContainer>
             }
             <Box pb={2}>
-                <strong>{t('S.RANGE_VIEWS')} : {viewsCount} </strong>
+                <strong>{t('S.RANGE_VIEWS')}: {viewsCount} </strong>
             </Box>
             <Box pb={2}>
-                <strong>{t('S.TOTAL_VIEWS')} : {response?.data?.totalViews} </strong>
+                <strong>{t('S.TOTAL_VIEWS')}: {response?.data?.totalViews} </strong>
             </Box>
         </>
     );
