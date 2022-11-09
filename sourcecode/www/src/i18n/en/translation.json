@@ -81,8 +81,10 @@
     "S": {
         "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later.",
         "VIEWS": "Views",
-        "TOTAL_VIEWS" : "Total Views",
-        "RANGE_VIEWS" : "Range Views"
+        "TOTAL_VIEWS": "Total Views",
+        "RANGE_VIEWS": "Range Views",
+        "FROM": "From",
+        "TO": "To"
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",
