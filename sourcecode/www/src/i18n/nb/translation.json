@@ -145,8 +145,8 @@
     "Sett inn": "Sett inn",
     "S": {
         "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere.",
-        "VIEWS": "Visninger",
-        "TOTAL_VIEWS" : "Totalt antall visninger"
+        "TOTAL_VIEWS" : "Visninger totalt",
+        "RANGE_VIEWS" : "I valgt periode"
     },
     "Godkjente": "Godkjente",
     "Ikke godkjente": "Ikke godkjente",

@@ -18,6 +18,10 @@ export default {
                         moment(req.query.end).endOf('day').toDate(),
                         req.params.resourceId
                     ),
+                totalViews:
+                    await req.context.db.trackingResourceVersion.getCountForResource(
+                        req.params.resourceId
+                    ),
             },
         };
     },
