@@ -32,6 +32,8 @@ env:
     value: {{ .Values.contentauthor.h5pConsumerKey | quote }}
   - name: "H5P_CONSUMER_SECRET"
     value: {{ .Values.contentauthor.h5pConsumerSecret | quote }}
+  - name: "H5P_DEFAULT_EXPORT_OPTION"
+    value: "3"
 {{ if .Values.contentauthor.extraEnvs }}
 {{- range $k, $v := .Values.contentauthor.extraEnvs }}
   - name: {{ $k | quote }}
