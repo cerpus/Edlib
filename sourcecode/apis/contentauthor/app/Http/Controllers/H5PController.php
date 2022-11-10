@@ -829,6 +829,7 @@ class H5PController extends Controller
             'page' => $request->get('page'),
             'searchString' => $request->get('searchstring'),
             'language' => $request->get('language'),
+            'fallback' => 'true',
         ]);
     }
 
@@ -873,7 +874,7 @@ class H5PController extends Controller
         $audioAdapter = app(H5PAudioInterface::class);
         return $audioAdapter->findAudio([
             'query' => $request->get('query'),
-            'language' => $request->get('language'),
+            'fallback' => 'true',
         ]);
     }
 
