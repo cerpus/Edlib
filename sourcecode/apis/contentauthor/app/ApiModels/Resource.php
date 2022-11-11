@@ -10,6 +10,7 @@ class Resource
     public ?string $deletedAt;
     public string $updatedAt;
     public string $createdAt;
+    public string|null $title;
 
     public function __construct(
         string  $id,
@@ -17,7 +18,8 @@ class Resource
         ?string $deletedReason,
         ?string $deletedAt,
         string  $updatedAt,
-        string  $createdAt
+        string  $createdAt,
+        string  $title = null
     ) {
         $this->id = $id;
         $this->resourceGroupId = $resourceGroupId;
@@ -25,5 +27,6 @@ class Resource
         $this->deletedAt = $deletedAt;
         $this->updatedAt = $updatedAt;
         $this->createdAt = $createdAt;
+        $this->title     = $title;
     }
 }

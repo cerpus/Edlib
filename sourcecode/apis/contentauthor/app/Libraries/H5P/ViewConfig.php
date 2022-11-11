@@ -101,9 +101,11 @@ class ViewConfig implements ConfigInterface
             return '';
         }
 
+        $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
         return sprintf(
-            '<iframe src="%s" width=":w" height=":h"></iframe>',
-            htmlspecialchars($edlibUrl, ENT_QUOTES)
+            '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>',
+            htmlspecialchars($edlibUrl, ENT_QUOTES),
+            htmlspecialchars($resource->title ?? '', ENT_QUOTES)
         );
     }
 
