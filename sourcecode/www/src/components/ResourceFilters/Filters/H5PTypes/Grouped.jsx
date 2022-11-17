@@ -102,6 +102,7 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                                     key={index}
                                     dense
                                     onClick={() => contentTypes.toggle(h5p)}
+                                    disabled={h5p.filteredCount === 0}
                                 >
                                     <ListItemIcon
                                         classes={{
