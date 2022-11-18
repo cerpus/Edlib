@@ -52,6 +52,7 @@ const Licenses = ({ licenses, filterCount, licenseData }) => {
                         key={license.value}
                         dense
                         onClick={() => licenses.toggle(license)}
+                        disabled={license.filteredCount === 0}
                     >
                         <ListItemIcon
                             classes={{

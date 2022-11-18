@@ -7,7 +7,7 @@ import { iso6393ToString } from '../helpers/language.js';
 import useTranslation from '../hooks/useTranslation.js';
 import { useConfigurationContext } from '../contexts/Configuration.jsx';
 
-const LanguageDropdown = ({ language, setLanguage }) => {
+const LanguageDropdown = ({ language, setLanguage, filterCount }) => {
     const { t } = useTranslation();
     const { edlibApi } = useConfigurationContext();
 
@@ -20,6 +20,19 @@ const LanguageDropdown = ({ language, setLanguage }) => {
         true
     );
 
+    const getOptionCount = lng => filterCount.find(filterCount => filterCount.key === lng.toLowerCase())?.count ?? 0;
+    const buildLanguageList = (data) => (
+        data.map(lang => {
+            const count = getOptionCount(lang);
+            return {
+                value: lang,
+                disabled: count === 0,
+                label: `${iso6393ToString(lang)} (${count})`,
+            };
+        })
+        .sort((a, b) => (a.label < b.label ? -1 : a.label > b.label ? 1 : 0))
+    );
+
     return (
         <Autocomplete
             fullWidth
@@ -30,12 +43,12 @@ const LanguageDropdown = ({ language, setLanguage }) => {
             onClose={() => {
                 setOpen(false);
             }}
-            isOptionEqualToValue={(option, value) => option === value}
-            getOptionLabel={(option) => iso6393ToString(option)}
-            options={response ? response.data : []}
+            getOptionDisabled={option => option.disabled}
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            options={buildLanguageList(response ? response.data : [])}
             loading={loading}
             onChange={(e, v) => {
-                setLanguage(v);
+                setLanguage(v?.value ?? null);
             }}
             value={language}
             renderInput={(params) => (

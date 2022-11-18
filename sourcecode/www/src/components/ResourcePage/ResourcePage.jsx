@@ -332,6 +332,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                                     value ? [value] : []
                                 )
                             }
+                            filterCount={filterCount ? filterCount.languages : []}
                         />
                     </SelectorWrapper>
                     <SelectorWrapper>
