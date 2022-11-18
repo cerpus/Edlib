@@ -13,6 +13,7 @@ Homestead.json
 !/public/.htaccess
 !/public/graphical
 !public/js
+
 /public/js/*
 !/public/js/presave
 !/public/js/article-xapi.js
@@ -29,7 +30,10 @@ Homestead.json
 !/public/js/resource-common.js
 !/public/js/videos/brightcove.js
 !/public/js/videos/streamps.js
-
+!/public/js/h5p/ndlah5p-youtube.js
+!public/css
+/public/css/*
+!/public/css/ndlah5p-youtube.css
 mix-manifest.json
 app/Libraries/oauth-php/example/server/cache/
 ca1.sql

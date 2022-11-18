@@ -495,6 +495,14 @@ class VideoBrowser extends ContentBrowserBase {
         this.widget.$addDialog.find('.h5p-dialog-box').first().replaceWith(brightcoveContainer);
         this.widget.$add.toggleClass('hidden', this.widget.params !== undefined && this.widget.params.length > 0);
         this.widget.useUrl = this.useUrl(this.widget.useUrl);
+        // Disable YouTube in H5P for NDLA #618
+        if (window.isNotAdmin) {
+            console.log("Is Not Admin: ");
+            const input = document.querySelector('.h5p-file-url.h5peditor-text');
+            if (input) {
+                input.setAttribute("disabled", '');
+            }
+        }
     }
 
     getApiBaseUrl() {
