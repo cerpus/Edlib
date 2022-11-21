@@ -96,16 +96,27 @@ services:
       - ./scripts/generate-password.sh:/usr/local/bin/generate-password
     working_dir: /run/secrets
 
-  nginx:
-    build: ./localSetup/projects/nginx
-    healthcheck:
-      test: [CMD, curl, -fk, https://localhost]
+  certs:
+    build: ./localSetup/projects/certs
+    command: [generate-certs.sh]
     volumes:
-      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
-      - ./localSetup/projects/nginx/generate-certs.sh:/docker-entrypoint.d/generate-certs.sh:ro
-      - ./data/nginx/ca:/etc/ca
+      - ./localSetup/projects/certs/generate-certs.sh:/usr/local/bin/generate-certs.sh:ro
       - ./data/nginx/certs:/etc/ssl/private
-      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public
+      - ./data/nginx/ca:/usr/local/share/ca-certificates
+
+  nginx:
+    image: nginx:1-alpine
+    command: [sh, -c, 'update-ca-certificates && nginx -g "daemon off;"']
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, curl, -f, https://localhost]
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./data/nginx/certs:/etc/ssl/private:ro
+      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
+      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
     ports:
       - "80:80"
       - "443:443"
