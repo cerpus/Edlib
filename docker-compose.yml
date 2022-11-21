@@ -558,6 +558,8 @@ services:
       target: dev
     command: [docker/php/startup-dev.sh]
     depends_on:
+      certs:
+        condition: service_completed_successfully
       mysql:
         condition: service_healthy
       rabbitmq:
