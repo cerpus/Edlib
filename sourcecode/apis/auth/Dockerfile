@@ -39,5 +39,6 @@ CMD [ "yarn", "start" ]
 # Dev
 #
 FROM base AS dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 COPY ./docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]

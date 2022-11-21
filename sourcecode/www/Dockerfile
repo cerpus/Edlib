@@ -11,6 +11,7 @@ EXPOSE 80
 CMD yarn start:prod
 
 FROM node:16-alpine as dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 RUN set -eux; \
     apk add --no-cache \
         curl \

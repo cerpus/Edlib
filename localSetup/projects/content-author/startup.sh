@@ -3,7 +3,6 @@
 set -eux
 
 update-ca-certificates
-/start-scripts/wait-for-multiple.sh mysql:3306 nginx:80 rabbitmq:5672
 cd /app
 composer install
 php artisan migrate --force

@@ -6,8 +6,7 @@
     "dev": "nodemon -L src/api.js",
     "start": "node src/api.js",
     "migrate": "node src/runMigrations.js",
-    "test": "jest --config=./jest.config.json",
-    "wait": "wait-on tcp:mysql:3306 tcp:redis:6379 tcp:rabbitmq:5672"
+    "test": "jest --config=./jest.config.json"
   },
   "engines": {
     "node": ">= 16.0.0"
@@ -31,7 +30,6 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20",
-    "wait-on": "^6.0.1"
+    "nodemon": "^2.0.20"
   }
 }
