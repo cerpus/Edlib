@@ -497,8 +497,7 @@ class VideoBrowser extends ContentBrowserBase {
         this.widget.useUrl = this.useUrl(this.widget.useUrl);
         // Disable YouTube in H5P for NDLA #618
         if (window.isNotAdmin) {
-            console.log("Is Not Admin: ");
-            const input = document.querySelector('.h5p-file-url.h5peditor-text');
+            const input = document.querySelector('.video .h5p-file-url.h5peditor-text');
             if (input) {
                 input.setAttribute("disabled", '');
             }

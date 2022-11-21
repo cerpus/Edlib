@@ -1,8 +1,8 @@
-.h5p-dialog-box~.h5p-dialog-box{
+.video .h5p-dialog-box~.h5p-dialog-box{
     opacity: 0.3;
     pointer-events: none;
   }
-.h5p-file-url-wrapper{
+.video .h5p-file-url-wrapper{
     opacity: 0.3;
     pointer-events: none; 
     cursor: not-allowed;
