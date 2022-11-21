@@ -541,10 +541,29 @@ services:
     depends_on:
       - edlib-common-fpm
 
+  common-startup:
+    build:
+      context: ./sourcecode/apis/common
+      target: dev
+    command: [docker/php/startup-dev.sh]
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./localSetup/.env
+    volumes:
+      - ./sourcecode/apis/common:/var/www/edlibcommon
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+
   edlib-common-fpm:
     build:
       context: ./sourcecode/apis/common
       target: dev
+    depends_on:
+      common-startup:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     healthcheck:
@@ -552,22 +571,20 @@ services:
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - mysql
 
   common-subscribers:
     build:
       context: ./sourcecode/apis/common
       target: dev
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: [php, artisan, 'laravel-rabbitmq-pubsub:consumer']
+    depends_on:
+      common-startup:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - edlib-common-fpm
 
   # --------------------------------------------
   # ----- Services needed for edlib facade -----
