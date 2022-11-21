@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 use Illuminate\Support\Facades\Session;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -146,9 +147,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $css[] = '/js/cropperjs/cropper.min.css';
         if (config('h5p.include-custom-css') === true) {
             $css[] = (string) mix('css/ndlah5p-edit.css');
-        }   
+        }
         $isAdmin = Session::get('isAdmin');
-        if(!$isAdmin){
+        if (!$isAdmin) {
             $css[] = (string) mix('css/ndlah5p-youtube.css');
         }
         return $css;
@@ -171,7 +172,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $js[] = (string) mix('js/h5peditor-image-popup.js');
         $js[] = (string) mix('js/h5peditor-custom.js');
         $isAdmin = Session::get('isAdmin');
-        if(!$isAdmin){
+        if (!$isAdmin) {
             $js[] = (string)mix('js/h5p/ndlah5p-youtube.js');
         }
         return $js;
