@@ -150,7 +150,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         }
         $isAdmin = Session::get('isAdmin');
         if (!$isAdmin) {
-            $css[] = (string) mix('css/ndlah5p-youtube.css');
+            $css[] = '/css/ndlah5p-youtube.css';
         }
         return $css;
     }
@@ -173,7 +173,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $js[] = (string) mix('js/h5peditor-custom.js');
         $isAdmin = Session::get('isAdmin');
         if (!$isAdmin) {
-            $js[] = (string)mix('js/h5p/ndlah5p-youtube.js');
+            $js[] = '/js/h5p/ndlah5p-youtube.js';
         }
         return $js;
     }
