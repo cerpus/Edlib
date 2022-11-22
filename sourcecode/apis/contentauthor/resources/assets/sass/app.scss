@@ -1,6 +1,7 @@
 @import "_functions";
 $material-icons-font-path: '~material-icons/iconfont/';
 @import '~material-icons/iconfont/material-icons';
+@import "image-editor";
 
 body {
   font-family: Lato;
@@ -197,74 +198,6 @@ select[name="h5peditor-library"] {
       background-color: rgba(92, 184, 92, 0.15);
     }
   }
-}
-
-.h5p-cropper-editing-image-editing-container {
-  padding-bottom: 10px;
-  background: #666;
-}
-
-.h5p-editing-image-editingbox {
-  margin-bottom: 10px;
-  max-height: 50vh;
-}
-
-.cropper-container .cropper-wrap-box {
-  overflow: visible;
-}
-
-.cropper-canvas {
-  box-shadow: 0 0 8px 6px rgba(0,0,0,0.8);
-}
-
-.h5p-editing-image-actionbar {
-  height: 40px;
-  text-align: end;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  background-color: #444;
-}
-
-.h5p-editing-action-button {
-  background-color: inherit;
-  border: 0;
-  color: white;
-  height: 100%;
-  padding: 0 8px;
-
-  &:hover{
-    background-color: rgba(255, 255, 255, 0.23);
-  }
-
-  &.h5p-editing-action-active-button{
-    color: cornflowerblue;
-  }
-}
-
-.h5p-editing-image-actions {
-  margin-left: 5px;
-  visibility: hidden;
-  display: flex;
-  height: 100%;
-
-  button {
-    @extend .h5p-editing-action-button;
-  }
-
-  & .h5p-editing-action-crop-done {
-    color: green;
-  }
-
-  & .h5p-editing-action-crop-cancel {
-    color: red;
-  }
-
-}
-
-.h5p-editing-image-active-actions {
-  visibility: visible;
 }
 
 .languagepicker-dialog-div {
