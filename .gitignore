@@ -1,7 +1,9 @@
-/.idea
-**/.DS_Store
+.idea
+*.iml
+.DS_Store
 /sourcecode/not_migrated
 /data
 /localSetup/.env
 node_modules
-/phpunit.phar
+*.phar
+docker-compose.override.yml
