@@ -23,7 +23,7 @@
     "pug": "^3.0.2",
     "supertest": "^6.3.1",
     "swagger-jsdoc": "^6.2.5",
-    "swagger-ui-express": "^4.5.0",
+    "swagger-ui-express": "^4.6.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {
