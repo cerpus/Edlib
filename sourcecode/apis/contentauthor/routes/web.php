@@ -13,7 +13,6 @@ use App\Http\Controllers\API\LinkInfoController;
 use App\Http\Controllers\API\LockStatusController;
 use App\Http\Controllers\API\PublishResourceController;
 use App\Http\Controllers\API\QuestionSetInfoController;
-use App\Http\Controllers\API\SessionTestController;
 use App\Http\Controllers\API\UnlockController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCopyrightController;
@@ -136,9 +135,6 @@ Route::post('api/progress', [Progress::class, 'storeProgress'])->name("setProgre
 Route::get('api/progress', [Progress::class, 'getProgress'])->name("getProgress");
 
 Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->middleware("adaptermode"); // TODO: Refactor into its own controller
-
-Route::post('v1/sessiontest/{id}', [SessionTestController::class, 'setValue']);
-Route::get('v1/sessiontest/{id}', [SessionTestController::class, 'getValue']);
 
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', [ContentTypeController::class, 'storeH5PQuestionset']);
