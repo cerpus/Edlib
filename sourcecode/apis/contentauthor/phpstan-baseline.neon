@@ -671,11 +671,6 @@ parameters:
 			path: app/Libraries/Games/GameHandler.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 3
 			path: app/Libraries/Games/Millionaire/Millionaire.php
@@ -1063,11 +1058,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,App\\\\H5PLibrary\\>\\:\\:transform\\(\\) expects callable\\(App\\\\H5PLibrary, int\\)\\: App\\\\H5PLibrary, Closure\\(mixed\\)\\: stdClass given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Framework.php
-
-		-
-			message: "#^Parameter \\#1 \\$relations of static method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:with\\(\\) expects array\\<int\\|string, Closure\\|string\\>\\|string, array\\{libraries\\: array\\{'requiredLibrary'\\}\\} given\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
 
@@ -2125,36 +2115,6 @@ parameters:
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttributionOrigin\\(\\)\\.$#"
 			count: 2
 			path: tests/Integration/Models/ContentAttributionTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
-			count: 3
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$major_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$minor_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 3
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
