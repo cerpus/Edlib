@@ -6,7 +6,7 @@ import ResourceView from '../../../../../components/ResourceView';
 const ViewResourceContainer = ({ match }) => {
     return (
         <EdlibComponentsProvider>
-            <Container>
+            <Container disableGutters>
                 <Box padding={1}>
                     <ResourceView resourceId={match.params.resourceId} />
                 </Box>
