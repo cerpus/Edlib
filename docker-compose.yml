@@ -10,6 +10,7 @@ volumes:
   elasticsearch:
   maven_cache:
   mysql:
+  npm_cache:
   npm-components-storybook_nodemodules:
   proxy-admin_nodemodules:
   proxy-auth_nodemodules:
@@ -248,6 +249,7 @@ services:
     image: node:16-alpine
     command: [sh, -c, 'npm install --legacy-peer-deps && npm run watch']
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/apis/contentauthor:/app
     working_dir: /app
 
@@ -255,6 +257,7 @@ services:
     image: node:16-alpine
     command: [sh, -c, 'yarn && yarn run start --host=0.0.0.0 --port=80']
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/docs/docs.edlib.com:/app
     working_dir: /app
 
@@ -269,11 +272,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - dokuapi_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/doku/src:/var/www/app/src
-      - ./sourcecode/apis/doku/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/doku/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/doku/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/doku:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
@@ -304,11 +305,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources/src:/var/www/app/src
-      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -325,10 +324,7 @@ services:
     command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources/src:/var/www/app/src
-      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -350,11 +346,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti/src:/var/www/app/src
-      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
@@ -374,10 +368,7 @@ services:
     command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti/src:/var/www/app/src
-      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
 
@@ -392,11 +383,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/auth/src:/var/www/app/src
-      - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
@@ -429,11 +418,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/url/src:/var/www/app/src
-      - ./sourcecode/apis/url/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/url/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/url/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/url:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -454,13 +441,10 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
+      - npm_cache:/root/.npm
       - www_nodemodules:/app/node_modules
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/www/src:/app/src
-      - ./sourcecode/www/public:/app/public
-      - ./sourcecode/www/package.json:/app/package.json
-      - ./sourcecode/www/razzle.config.js:/app/razzle.config.js
-      - ./sourcecode/www/yarn.lock:/app/yarn.lock
+      - ./sourcecode/www:/app
 
   proxy-admin:
     build:
@@ -477,11 +461,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-admin_nodemodules:/app/node_modules
-      - ./sourcecode/proxies/admin/src:/app/src
-      - ./sourcecode/proxies/admin/public:/app/public
-      - ./sourcecode/proxies/admin/package.json:/app/package.json
-      - ./sourcecode/proxies/admin/yarn.lock:/app/yarn.lock
+      - ./sourcecode/proxies/admin:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
 
   proxy-auth:
@@ -497,11 +479,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/auth/src:/var/www/app/src
-      - ./sourcecode/proxies/auth/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/auth/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/auth/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -521,11 +501,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/lti/src:/var/www/app/src
-      - ./sourcecode/proxies/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/lti:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -547,11 +525,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-resource_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/resource/src:/var/www/app/src
-      - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/resource/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/resource:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -568,11 +544,9 @@ services:
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlibapi-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/url/src:/var/www/app/src
-      - ./sourcecode/proxies/url/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/url/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/url:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
@@ -583,6 +557,7 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9009]
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
 
