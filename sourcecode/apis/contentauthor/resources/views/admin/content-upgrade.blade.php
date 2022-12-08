@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Update content</div>
+                    <div class="panel-heading">Upgrade content</div>
                     <div class="panel-body">
                         <div id="h5p-admin-container">Please enable Javascript</div>
                     </div>

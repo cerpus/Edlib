@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Content;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
@@ -258,6 +259,31 @@ class LibraryUpgradeController extends Controller
             'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),
+        ]);
+    }
+
+    public function contentForLibrary(H5PLibrary $library): View
+    {
+        /** @var \App\Apis\ResourceApiService $view */
+        $resourceService = app('\App\Apis\ResourceApiService');
+        $contents = [];
+        $failed = [];
+        $library->contents()
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->each(function ($content) use ($resourceService, &$contents, &$failed) {
+                try {
+                    $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
+                    $contents[$foliumId][] = $content;
+                } catch (Exception $e) {
+                    $failed[$e->getMessage()][] = $content;
+                }
+            });
+
+        return view('admin.library-upgrade.library-content', [
+            'library' => $library,
+            'contents' => $contents,
+            'failed' => $failed,
         ]);
     }
 }

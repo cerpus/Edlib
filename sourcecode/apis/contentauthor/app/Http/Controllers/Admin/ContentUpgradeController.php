@@ -56,18 +56,24 @@ final class ContentUpgradeController
             return null;
         }
 
-        // FIXME: this looks super-broken with the stray $library->title
-        // elements, figure out what's going on here
         return [
             'containerSelector' => '#h5p-admin-container',
             'libraryInfo' => [
-                'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->major_version, $library->minor_version),
-                'inProgress' => 'Upgrading to %ver...', $library->title,
-                'error' => 'An error occurred while processing parameters:', $library->title,
-                'errorData' => 'Could not load data for library %lib.', $library->title,
-                'errorContent' => 'Could not upgrade content %id:', $library->title,
-                'errorScript' => 'Could not load upgrades script for %lib.', $library->title,
-                'errorParamsBroken' => 'Parameters are broken.', $library->title,
+                'message' => sprintf(
+                    'You have selected to upgrade %s resource(s) of type "%s" from version %s.%s.%s.<br>Which version of "%s" do you want to upgrade to?',
+                    $upgradableContentCount,
+                    $library->title,
+                    $library->major_version,
+                    $library->minor_version,
+                    $library->patch_version,
+                    $library->title,
+                ),
+                'inProgress' => 'Upgrading to %ver...',
+                'error' => 'An error occurred while processing parameters:',
+                'errorData' => 'Could not load data for library %lib.',
+                'errorContent' => 'Could not upgrade content %id:',
+                'errorScript' => 'Could not load upgrades script for %lib.',
+                'errorParamsBroken' => 'Parameters are broken.',
                 'done' => 'You have successfully upgraded ' . $library->title,
                 'library' => [
                     'name' => $library->name,
@@ -78,7 +84,7 @@ final class ContentUpgradeController
                 'buster' => '?ver=11234',
                 'versions' => $upgrades,
                 'contents' => $upgradableContentCount,
-                'buttonLabel' => 'Upgrade', $library->title,
+                'buttonLabel' => 'Start upgrade',
                 'infoUrl' => route('admin.content-upgrade', ['id' => $library->id]),
                 'total' => $upgradableContentCount,
                 'token' => csrf_token()
