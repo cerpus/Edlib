@@ -263,7 +263,7 @@ class LibraryUpgradeController extends Controller
 
     public function contentForLibrary(H5PLibrary $library): View
     {
-        /** @var \App\Apis\ResourceApiService $view */
+        /** @var \App\Apis\ResourceApiService $resourceService */
         $resourceService = app('\App\Apis\ResourceApiService');
         $contents = [];
         $failed = [];
