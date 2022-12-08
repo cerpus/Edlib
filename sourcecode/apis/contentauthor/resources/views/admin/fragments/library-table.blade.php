@@ -22,7 +22,11 @@
             </td>
             <td>{{ $library['title'] }}</td>
             @isset($showCount)
-                <td>{{ $library['numContent'] ?: '' }}</td>
+                <td>
+                    @if (!empty($library['numContent']))
+                        <a href="{{ route('admin.content-library', [$library['libraryId']]) }}">{{ $library['numContent'] }}</a>
+                    @endif
+                </td>
                 <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
             @endif
             @isset($showSummary)
@@ -34,11 +38,11 @@
                 data-library-minor="{{$library['minorVersion']}}"
             >
                 @if (!empty($library['upgradeUrl']))
-                    <a title="Upgrade" href="{{ $library['upgradeUrl'] }}">
+                    <a title="Content bulk upgrade" href="{{ $library['upgradeUrl'] }}">
                         <button
                                 type="button"
                                 class="btn btn-info btn-xs"
-                                title="Upgrade"
+                                title="Content bulk upgrade"
                         >
                             <span class="fa fa-refresh"></span>
                         </button>

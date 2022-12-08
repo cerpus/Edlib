@@ -260,4 +260,29 @@ class LibraryUpgradeController extends Controller
             'error' => $validator->h5pF->getMessages('error'),
         ]);
     }
+
+    public function contentForLibrary(H5PLibrary $library): View
+    {
+        /** @var \App\Apis\ResourceApiService $resourceService */
+        $resourceService = app('\App\Apis\ResourceApiService');
+        $contents = [];
+        $failed = [];
+        $library->contents()
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->each(function ($content) use ($resourceService, &$contents, &$failed) {
+                try {
+                    $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
+                    $contents[$foliumId][] = $content;
+                } catch (Exception $e) {
+                    $failed[$e->getMessage()][] = $content;
+                }
+            });
+
+        return view('admin.library-upgrade.library-content', [
+            'library' => $library,
+            'contents' => $contents,
+            'failed' => $failed,
+        ]);
+    }
 }
