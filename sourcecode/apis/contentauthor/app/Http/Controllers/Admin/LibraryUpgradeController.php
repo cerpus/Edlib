@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Content;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
