@@ -33,4 +33,7 @@ return [
         'token' => env('NYNORSKROBOTEN_TOKEN'),
         'domain'    => env('NYNORSKROBOTEN_DOMAIN'),
     ],
+    'nynorobot' => [
+        'base_uri' => env('NYNOROBOT_BASE_URI'),
+    ],
 ];
