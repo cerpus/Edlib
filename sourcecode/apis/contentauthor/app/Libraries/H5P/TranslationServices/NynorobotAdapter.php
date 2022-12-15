@@ -15,8 +15,10 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Throwable;
+
 use function http_build_query;
 use function json_decode;
+
 use const JSON_THROW_ON_ERROR;
 
 final class NynorobotAdapter implements TranslationServiceInterface
