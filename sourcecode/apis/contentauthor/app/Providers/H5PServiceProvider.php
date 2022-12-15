@@ -192,6 +192,10 @@ class H5PServiceProvider extends ServiceProvider
                 ]);
             });
 
+        $this->app->when(NynorobotAdapter::class)
+            ->needs('$style')
+            ->giveConfig('services.nynorobot.style');
+
         $this->app->bind(TranslationServiceInterface::class, match (config('h5p.nynorskAdapter')) {
             'nynorskroboten' => NynorskrobotenAdapter::class,
             'nynorobot' => NynorobotAdapter::class,

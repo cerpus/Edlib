@@ -1,5 +1,7 @@
 <?php
 
+use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -35,5 +37,6 @@ return [
     ],
     'nynorobot' => [
         'base_uri' => env('NYNOROBOT_BASE_URI'),
+        'style' => NynorobotAdapter::STYLE_MODERATE,
     ],
 ];
