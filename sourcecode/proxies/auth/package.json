@@ -20,7 +20,7 @@
     "jest": "^29.3.1",
     "prettier": "^2.8.1",
     "supertest": "^6.3.1",
-    "swagger-jsdoc": "^6.2.5",
+    "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0"
   },
   "devDependencies": {
