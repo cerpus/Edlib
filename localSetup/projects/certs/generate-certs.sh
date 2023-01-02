@@ -8,7 +8,6 @@ DOMAINS="\
 DNS:localhost, \
 DNS:edlibfacade.local, \
 DNS:*.edlibfacade.local, \
-DNS:contentauthor.local, \
 DNS:*.edlib.local, \
 DNS:npm.components.edlib.local \
 "
