@@ -2,7 +2,7 @@ import { env } from '@cerpus/edlib-node-utils';
 
 const contentAuthorUrl = env(
     'EDLIBCOMMON_CONTENTAUTHOR_URL',
-    'https://contentauthor.local'
+    'https://ca.edlib.local'
 );
 
 const edlibUrl = env('EDLIBCOMMON_URL', 'https://api.edlib.local');

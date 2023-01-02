@@ -124,8 +124,8 @@ services:
     networks:
       default:
         aliases:
-          - contentauthor.local
           - api.edlib.local
+          - ca.edlib.local
           - edlibcommon
 
   versionapi:
