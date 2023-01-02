@@ -20,7 +20,7 @@
     "joi": "^17.7.0",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.0",
-    "jwks-rsa": "^2.1.4",
+    "jwks-rsa": "^3.0.0",
     "lodash": "^4.17.21",
     "node-jose": "^2.1.1",
     "prettier": "^2.8.1",
