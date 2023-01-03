@@ -28,6 +28,11 @@ const ResourceViewContainer = ({ resourceId }) => {
                         }
                     />
                 )}
+                <style>{`
+                    body {
+                        line-height: 0;
+                    }
+                `}</style>
             </Helmet>
             <DefaultFetcher useFetchData={getPreviewInfoFetch}>
                 {({ response: preview }) => <ResourceView preview={preview} />}
