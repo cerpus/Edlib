@@ -301,11 +301,6 @@ parameters:
 			path: app/Http/Controllers/Admin/CapabilityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/GamesAdminController.php
-
-		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
