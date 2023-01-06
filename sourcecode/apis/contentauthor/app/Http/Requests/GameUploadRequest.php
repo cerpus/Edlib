@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Auth;
 use Exception;
+use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
 use LogicException;
 use League\Flysystem\Filesystem;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,7 +49,13 @@ class GameUploadRequest extends FormRequest
         $validator->after(function ($validator) {
             try {
                 $gameFile = $validator->getData()['gameFile'];
-                $zipFile = new Filesystem(new ZipArchiveAdapter($gameFile->path()));
+                assert($gameFile instanceof UploadedFile);
+
+                $zipFile = new Filesystem(
+                    new ZipArchiveAdapter(
+                        new FilesystemZipArchiveProvider($gameFile->path()),
+                    ),
+                );
 
                 if (!$zipFile->has('MILLIONAIRE/appmanifest.json')) {
                     $validator->errors()->add(

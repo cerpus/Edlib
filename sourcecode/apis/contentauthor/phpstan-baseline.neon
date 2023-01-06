@@ -6,6 +6,11 @@ parameters:
 			path: app/Article.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Auth\\\\GenericUser\\:\\:\\$id\\.$#"
+			count: 1
+			path: app/Auth/Guards/EdlibGuard.php
+
+		-
 			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
 			count: 1
 			path: app/Auth/Guards/EdlibGuard.php
@@ -22,6 +27,11 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$ndlaMapper\\.$#"
+			count: 1
+			path: app/Content.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$title_clean\\.$#"
 			count: 1
 			path: app/Content.php
 
@@ -117,6 +127,11 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$contentLibraries\\.$#"
+			count: 1
+			path: app/H5PContent.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
 			count: 1
 			path: app/H5PContent.php
 
@@ -291,6 +306,16 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminUserController.php
 
 		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$capability\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/Capability.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$description\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/Capability.php
+
+		-
 			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/Capability.php
@@ -299,11 +324,6 @@ parameters:
 			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/CapabilityController.php
-
-		-
-			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/GamesAdminController.php
 
 		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
@@ -359,6 +379,11 @@ parameters:
 			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
 			count: 1
 			path: app/Http/Controllers/GameController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
 
 		-
 			message: "#^Call to method getCss\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
@@ -504,6 +529,16 @@ parameters:
 			message: "#^Property App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\:\\:\\$guarded is never read, only written\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/ContentType.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\H5PLibrary\\>\\:\\:\\$capability\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/H5PContentType.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PLibrary\\|Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, App\\\\H5PLibrary\\>\\:\\:\\$description\\.$#"
+			count: 1
+			path: app/Http/Libraries/ContentTypes/H5PContentType.php
 
 		-
 			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
@@ -827,7 +862,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$capability\\.$#"
-			count: 1
+			count: 2
 			path: app/Libraries/H5P/EditorAjax.php
 
 		-
@@ -974,6 +1009,11 @@ parameters:
 			message: "#^Strict comparison using \\=\\=\\= between int and '1' will always evaluate to false\\.$#"
 			count: 2
 			path: app/Libraries/H5P/EditorStorage.php
+
+		-
+			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$count\\.$#"
@@ -1407,7 +1447,17 @@ parameters:
 			path: app/Libraries/H5P/ViewConfig.php
 
 		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$assets\\.$#"
+			count: 2
+			path: app/Libraries/H5P/h5p.php
+
+		-
 			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$h5pCore\\.$#"
+			count: 1
+			path: app/Libraries/H5P/h5p.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Libraries/H5P/h5p.php
 
