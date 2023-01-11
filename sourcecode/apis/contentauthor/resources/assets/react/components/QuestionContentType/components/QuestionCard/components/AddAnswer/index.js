@@ -18,21 +18,25 @@ const AddAnswer = props => {
         button: {
             flexGrow: 2,
             marginRight: 5,
+            position: 'relative',
+            left: '43%'
         },
         dividerContainer: {
             width: '100%',
+            border: '1px solid #000',
+            borderStyle: 'dotted',
+            borderRadius: '5px'
         },
     };
 
     return (
         <div className="addAnswerContainer">
-            <div>
+            <div style={styles.dividerContainer}>
                 <Button
                     onClick={onClick}
                     style={styles.button}
                 >
                     {icon}
-                    {label}
                 </Button>
             </div>
         </div>

@@ -7,7 +7,6 @@
   align-items: start;
   position: relative;
   margin-bottom: 15px;
-
   > div {
     width: 100%;
     margin: 10px;
@@ -31,6 +30,10 @@
 
 .addCard {
   align-items: center;
+  border: 1px solid #000;
+  border-style: dotted;
+  border-radius: 5px;
+  padding: 15px;
 }
 
 .cardNumber {
@@ -98,7 +101,8 @@
 }
 
 .presentationButtonLabel {
-    flex-direction: column;
+  flex-direction: column;
+  text-transform: none !important;
 }
 
 .selectQuestionButton {

@@ -128,6 +128,7 @@ const AuthWrapper = ({ children }) => {
                     type="submit"
                         color="primary"
                         variant="contained"
+                        style={{textTransform: 'none'}}
                         onClick={() => {
 
                             let error = false;

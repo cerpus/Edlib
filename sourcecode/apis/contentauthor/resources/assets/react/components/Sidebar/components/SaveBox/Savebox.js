@@ -141,6 +141,7 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
                     variant="contained"
                     color="primary"
                     disabled={processing}
+                    style={{textTransform: 'none'}}
                 >
                     {!processing &&
                         intl.formatMessage({ id: 'SAVEBOX.SAVEANDCLOSE' })}

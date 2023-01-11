@@ -125,6 +125,6 @@ class Game extends Content implements VersionableObject
 
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
     {
-        return new ContentTypeDataObject('Game', $contentType, 'Game', "mui:VideogameAsset");
+        return new ContentTypeDataObject('Game', $contentType, 'Millionaire mini game', "mui:VideogameAsset");
     }
 }

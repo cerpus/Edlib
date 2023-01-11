@@ -13,7 +13,7 @@ function PresentationLayout(props) {
     return (
         <div className="selectPresentationContainer">
             <p>
-                <FormattedMessage id="PRESENTATION.CHOOSE_A_PRESENTATION_FORM" />
+                <h2><FormattedMessage id="PRESENTATION.CHOOSE_A_PRESENTATION_FORM" /></h2>
             </p>
             <div className="presentationList">
                 {actions.map(action => (

@@ -230,7 +230,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         onClick={editResource}
                         startIcon={<EditIcon />}
                     >
-                        {t('Rediger ressurs').toUpperCase()}
+                        {t('Rediger ressurs')}
                     </Button>
                 )}
                 {canReturnResources && (
@@ -240,7 +240,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         onClick={insertResource}
                         startIcon={<ArrowForward />}
                     >
-                        {t('Bruk ressurs').toUpperCase()}
+                        {t('Bruk ressurs')}
                     </Button>
                 )}
             </DialogActions>
