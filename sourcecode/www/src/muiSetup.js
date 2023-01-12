@@ -22,5 +22,6 @@ export const muiTheme = createTheme({
     typography: {
         htmlFontSize: 16,
         fontFamily: "'Lato', sans-serif",
+        button: { textTransform: 'none' },
     },
 });
