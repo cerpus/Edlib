@@ -18,14 +18,13 @@ const AddAnswer = props => {
         button: {
             flexGrow: 2,
             marginRight: 5,
-            position: 'relative',
-            left: '43%'
         },
         dividerContainer: {
             width: '100%',
             border: '1px solid #000',
             borderStyle: 'dotted',
-            borderRadius: '5px'
+            borderRadius: '5px',
+            textAlign: 'center',
         },
     };
 
@@ -35,6 +34,7 @@ const AddAnswer = props => {
                 <Button
                     onClick={onClick}
                     style={styles.button}
+                    aria-label={label}
                 >
                     {icon}
                 </Button>
