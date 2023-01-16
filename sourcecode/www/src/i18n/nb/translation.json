@@ -95,8 +95,8 @@
             "INTERAKTIVTAVLE": "Interaktiv tavle"
         }
     },
-    "Bruk ressurs": "Bruk ressurs",
-    "Rediger ressurs": "Rediger ressurs",
+    "Bruk ressurs": "Bruk innhold",
+    "Rediger ressurs": "Rediger innhold",
     "Lukk": "Lukk",
     "urlDisplayTypes": {
         "ndla": "NDLA",
@@ -126,7 +126,7 @@
     "Video": "Video",
     "Tekst": "Tekst",
     "Innholdssamling": "Innholdssamling",
-    "Delt innhold": "Delt innhold",
+    "Delt innhold": "Finn delt innhold",
     "Samarbeidere": "Samarbeidere",
     "Samarbeider": "Samarbeider",
     "Ingen tilgang": "Ingen tilgang",
@@ -142,7 +142,7 @@
     "Innhold": "Innhold",
     "Matematikkverktøyet": "Matematikkverktøyet",
     "Skriv formelen": "Skriv formelen",
-    "Sett inn": "Sett inn",
+    "Sett inn": "Bruk innhold",
     "S": {
         "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere.",
         "TOTAL_VIEWS": "Visninger totalt",
@@ -177,8 +177,8 @@
     "create_new": "lag ny",
     "edit_filter": "endre filter",
     "choose_filter": "velg filter",
-    "cancel": "avbryt",
-    "save": "lagre",
+    "cancel": "Avbryt",
+    "save": "Lagre",
     "delete_filter": "slett filter",
     "delete": "slett",
     "content_type_groups": {
@@ -204,8 +204,8 @@
     "filter_plural": "filtre",
     "resource_view": "visninger av ressurs",
     "resource_view_plural": "ressursvisninger",
-    "grouped": "gruppert",
-    "save_filter": "lagre filter",
+    "grouped": "Gruppert",
+    "save_filter": "Lagre filter",
     "draft": "utkast",
     "published": "publisert",
     "unpublished": "upublisert",

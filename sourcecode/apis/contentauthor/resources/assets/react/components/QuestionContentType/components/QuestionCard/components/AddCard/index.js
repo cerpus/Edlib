@@ -9,6 +9,12 @@ const AddCard = props => {
         cardNumber,
         icon,
     } = props;
+    const styles = {
+        addNewQuestionContainer: {
+            padding: '8px',
+            textTransform: 'none',
+        }
+    };
     return (
         <div className="addCard">
             <span className="cardNumber">{cardNumber}</span>
@@ -18,7 +24,7 @@ const AddCard = props => {
                     size="large"
                 >
                     {icon}
-                    {label}
+                    <span style={styles.addNewQuestionContainer}>{label} </span>
                 </Button>
             </div>
         </div>

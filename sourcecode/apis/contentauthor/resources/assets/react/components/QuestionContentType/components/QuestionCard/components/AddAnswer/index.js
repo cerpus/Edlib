@@ -21,18 +21,22 @@ const AddAnswer = props => {
         },
         dividerContainer: {
             width: '100%',
+            border: '1px solid #000',
+            borderStyle: 'dotted',
+            borderRadius: '5px',
+            textAlign: 'center',
         },
     };
 
     return (
         <div className="addAnswerContainer">
-            <div>
+            <div style={styles.dividerContainer}>
                 <Button
                     onClick={onClick}
                     style={styles.button}
+                    aria-label={label}
                 >
                     {icon}
-                    {label}
                 </Button>
             </div>
         </div>
