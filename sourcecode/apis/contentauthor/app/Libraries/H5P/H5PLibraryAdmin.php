@@ -44,11 +44,18 @@ class H5PLibraryAdmin
         // Move so core can validate the file extension.
         rename($path, $newPath);
 
-        if (!$this->validator->isValidPackage(true, $upgradeOnly)) {
-            @unlink($this->framework->getUploadedH5pPath());
+        try {
+            if (!$this->validator->isValidPackage(true, $upgradeOnly)) {
+                @unlink($this->framework->getUploadedH5pPath());
 
+                throw new InvalidH5pPackageException(
+                    $this->validator->h5pF->getMessages('error'),
+                );
+            }
+        } catch (\Exception $e) {
+            @unlink($this->framework->getUploadedH5pPath());
             throw new InvalidH5pPackageException(
-                $this->validator->h5pF->getMessages('error'),
+                [$e->getMessage()],
             );
         }
 

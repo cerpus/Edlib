@@ -41,7 +41,7 @@
                     <a title="Content bulk upgrade" href="{{ $library['upgradeUrl'] }}">
                         <button
                                 type="button"
-                                class="btn btn-info btn-xs"
+                                class="btn btn-info btn-xs h5p-action-button"
                                 title="Content bulk upgrade"
                         >
                             <span class="fa fa-refresh"></span>
@@ -50,7 +50,7 @@
                 @elseif ($library['hubUpgrade'] !== null)
                     <button
                             type="button"
-                            class="btn btn-success btn-xs install-btn"
+                            class="btn btn-success btn-xs install-btn h5p-action-button"
                             data-name="{{$library['machineName']}}"
                             data-ajax-url="{{route('admin.ajax')}}"
                             data-ajax-action="{{H5PEditorEndpoints::LIBRARY_INSTALL}}"
@@ -58,11 +58,13 @@
                     >
                         <span class="fa fa-cloud-download"></span>
                     </button>
+                @else
+                    <div class="h5p-action-button"></div>
                 @endif
                 @if(!empty($library['libraryId']))
                     <button
                             type="button"
-                            class="btn btn-warning btn-xs rebuild-btn"
+                            class="btn btn-warning btn-xs rebuild-btn h5p-action-button"
                             data-libraryId="{{$library['libraryId']}}"
                             data-ajax-url="{{route('admin.ajax')}}"
                             data-ajax-action="{{\App\Libraries\H5P\AjaxRequest::LIBRARY_REBUILD}}"
