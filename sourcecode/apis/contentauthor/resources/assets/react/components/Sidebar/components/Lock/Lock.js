@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Alert, Button } from '@cerpus/ui';
+import Button from '@material-ui/core/Button';
 import Axios from '../../../../utils/axiosSetup';
-import { Lock as LockIcon } from '@material-ui/icons';
+import LockIcon from '@material-ui/icons/Lock';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
-const Lock = ({ intl, pollUrl, editor, lockReleased, editUrl: currentEditUrl }) => {
-    if (typeof intl === 'undefined') {
-        return null;
-    }
-
+const Lock = ({pollUrl, editor, lockReleased, editUrl: currentEditUrl }) => {
     const [isLocked, setIsLocked] = useState(true);
     const [editUrl, setEditUrl] = useState();
     let pollLockStatusInterval;
@@ -41,15 +39,13 @@ const Lock = ({ intl, pollUrl, editor, lockReleased, editUrl: currentEditUrl }) 
         <div>
             {isLocked && (
                 <>
-                    <div
-                        className="btn btn-danger btn-block locked"
-                    >
-                        <LockIcon /> {intl.formatMessage({ id: 'LOCK.LOCKED' })}
+                    <div className="btn btn-danger btn-block locked">
+                        <LockIcon /> <FormattedMessage id="LOCK.LOCKED" />
                     </div>
-                    <Alert
-                        color="danger"
-                    >
-                        <FormattedMessage id="LOCK.LOCKEDFOREDITING" />
+                    <Alert severity="warning">
+                        <AlertTitle>
+                            <FormattedMessage id="LOCK.LOCKEDFOREDITING" />
+                        </AlertTitle>
                         <FormattedMessage
                             id="LOCK.LOCKEDWILLEXPIREMESSAGE"
                             values={{
@@ -63,14 +59,14 @@ const Lock = ({ intl, pollUrl, editor, lockReleased, editUrl: currentEditUrl }) 
                 <>
                     <Button
                         onClick={() => location.href = editUrl}
-                        type="tertiary"
+                        type="button"
                         className="gotoEditBtn"
+                        variant="outlined"
+                        fullWidth
                     >
                         <FormattedMessage id="LOCK.GOTONEXTVERSION" />
                     </Button>
-                    <Alert
-                        color="warning"
-                    >
+                    <Alert severity="info">
                         <FormattedMessage id="LOCK.THECONTENTHASBEENUPDATED" />
                     </Alert>
                 </>
@@ -87,4 +83,4 @@ Lock.propTypes = {
     lockReleased: PropTypes.func,
 };
 
-export default injectIntl(Lock);
+export default Lock;

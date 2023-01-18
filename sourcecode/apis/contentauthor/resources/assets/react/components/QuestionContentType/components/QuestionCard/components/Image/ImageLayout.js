@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
-import { Popover, LinearProgress } from '@material-ui/core';
-import { Image as ImageIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import Popover from '@material-ui/core/Popover';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import ImageIcon from '@material-ui/icons/Image';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 function ImageLayout(props) {
     const {

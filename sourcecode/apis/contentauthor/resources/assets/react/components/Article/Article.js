@@ -1,12 +1,13 @@
 /* eslint-disable no-prototype-builtins */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, Label, Input } from '@cerpus/ui';
 import Sidebar from '../Sidebar';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { FormActions, useForm } from '../../contexts/FormContext';
 import CKEditor from 'ckeditor4-react';
 import { injectIntl } from 'react-intl';
+import TextField from '@material-ui/core/TextField';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const editorMessageHandler = (event) => {
     const originalEvent = event.data.$;
@@ -73,23 +74,24 @@ const Article = (props) => {
 
     return (
         <EditorContainer sidebar={<Sidebar onSave={save} />}>
-            <FormGroup>
-                <Label>{intl.formatMessage({ id: 'ARTICLE.TITLE' })}</Label>
-                <Input
-                    placeholder={intl.formatMessage({
-                        id: 'ARTICLE.TITLEPLACEHOLDER',
-                    })}
-                    value={title}
-                    onChange={(event) =>
-                        dispatch({
-                            type: FormActions.setTitle,
-                            payload: { title: event.target.value },
-                        })
-                    }
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label>{intl.formatMessage({ id: 'ARTICLE.CONTENT' })}</Label>
+            <TextField
+                label={intl.formatMessage({ id: 'ARTICLE.TITLE' })}
+                type="text"
+                value={title}
+                onChange={(event) =>
+                    dispatch({
+                        type: FormActions.setTitle,
+                        payload: { title: event.target.value },
+                    })
+                }
+                placeholder={intl.formatMessage({
+                    id: 'ARTICLE.TITLEPLACEHOLDER',
+                })}
+                variant="outlined"
+                fullWidth
+            />
+            <div style={{margin: '10px 0'}}>
+                <FormLabel>{intl.formatMessage({ id: 'ARTICLE.CONTENT' })}</FormLabel>
                 <CKEditor
                     data={content}
                     onChange={(e) =>
@@ -144,7 +146,7 @@ const Article = (props) => {
                         });
                     }}
                 />
-            </FormGroup>
+            </div>
         </EditorContainer>
     );
 };

@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Checkbox } from '@cerpus/ui';
 import getTranslations from './language/translations';
 import { useForm, FormActions } from '../../../../contexts/FormContext';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import CheckBox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
 
-const initialState = (displayButtons, displayDownload, displayCopyright) => (
-    {
-        download: displayDownload,
-        copyright: displayCopyright,
-        frame: displayButtons,
-    });
+const initialState = (displayButtons, displayDownload, displayCopyright) => ({
+    download: displayDownload,
+    copyright: displayCopyright,
+    frame: displayButtons,
+});
 
 const DisplayOptions = ({ displayButtons, displayCopyright, displayDownload, intl }) => {
     const translations = useMemo(() => getTranslations(intl), [intl]);
@@ -29,25 +30,40 @@ const DisplayOptions = ({ displayButtons, displayCopyright, displayDownload, int
     };
 
     return (
-        <>
-            <Checkbox
-                color="tertiary"
-                checked={displayButtons}
-                onToggle={() => triggerChange({ frame: !displayButtons, copyright: false, download: false })}
-            >{translations.displayButtons}</Checkbox>
-            <Checkbox
-                color="tertiary"
-                checked={displayCopyright}
-                onToggle={() => triggerConditionally({ copyright: !displayCopyright })}
-                disabled={!displayButtons}
-            >{translations.displayCopyright}</Checkbox>
-            <Checkbox
-                color="tertiary"
-                checked={displayDownload}
-                onToggle={() => triggerConditionally({ download: !displayDownload })}
-                disabled={!displayButtons}
-            >{translations.displayDownload}</Checkbox>
-        </>
+        <FormGroup>
+            <FormControlLabel
+                control={
+                    <CheckBox
+                        checked={displayButtons}
+                        onChange={() => triggerChange({ frame: !displayButtons, copyright: false, download: false })}
+                        color="primary"
+                    />
+                }
+                label={translations.displayButtons}
+            />
+            <FormControlLabel
+                control={
+                    <CheckBox
+                        checked={displayCopyright}
+                        onChange={() => triggerConditionally({ copyright: !displayCopyright })}
+                        color="primary"
+                        disabled={!displayButtons}
+                    />
+                }
+                label={translations.displayCopyright}
+            />
+            <FormControlLabel
+                control={
+                    <CheckBox
+                        checked={displayDownload}
+                        onChange={() => triggerConditionally({ download: !displayDownload })}
+                        color="primary"
+                        disabled={!displayButtons}
+                    />
+                }
+                label={translations.displayDownload}
+            />
+        </FormGroup>
     );
 };
 

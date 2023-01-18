@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Axios from '../../../../utils/axiosSetup';
-import { FormControl, NativeSelect } from '@material-ui/core';
+import FormControl from '@material-ui/core/FormControl';
+import NativeSelect from '@material-ui/core/NativeSelect';
 import { withStyles } from '@material-ui/core/styles';
 
 class AdapterSelector extends Component {

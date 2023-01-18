@@ -1,8 +1,9 @@
 import React from 'react';
 import { FormActions, useForm } from '../../../../contexts/FormContext';
-import { List, ListItemText } from '@material-ui/core';
-import { Alert } from '@cerpus/ui';
-import WarningIcon from '@material-ui/icons/Warning';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
 
 const AlertBox = () => {
     const {
@@ -20,14 +21,12 @@ const AlertBox = () => {
     return (
         <div className="editorAlertBox">
             <Alert
-                color="danger"
+                severity="error"
                 onClose={() => dispatch({ type: FormActions.resetError })}
-                elevation={2}
             >
-                <div className="editorAlertBoxHeader">
-                    <WarningIcon />
+                <AlertTitle>
                     <strong>{messageTitle}</strong>
-                </div>
+                </AlertTitle>
                 <List>
                     {messages.map((message, index) => (
                         <ListItemText

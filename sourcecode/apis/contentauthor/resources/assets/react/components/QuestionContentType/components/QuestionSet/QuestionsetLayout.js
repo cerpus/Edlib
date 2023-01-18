@@ -4,7 +4,7 @@ import { CardContainer } from '../QuestionCard';
 import AddCard from '../QuestionCard/components/AddCard';
 import { FormattedMessage } from 'react-intl';
 import { PresentationContainer } from '../Presentation';
-import { AddCircle as AddCircleIcon } from '@material-ui/icons';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 function QuestionSetLayout(props) {
     const {
