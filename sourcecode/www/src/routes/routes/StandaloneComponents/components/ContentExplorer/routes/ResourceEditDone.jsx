@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useResourceCapabilities } from '../../../../../../contexts/ResourceCapabilities';
 import { useHistory } from 'react-router-dom';
-import { Button } from '@cerpus/ui';
+import { Button } from '@mui/material';
 
 const Content = styled.div`
     max-width: 800px;

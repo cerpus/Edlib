@@ -1,8 +1,9 @@
+/*This code has not been used anywhere in EDLIB.*/
 import React from 'react';
 import {
     Pagination as PaginationComponent,
     PaginationButton,
-} from '@cerpus/ui';
+} from '@mui/material';
 
 const Pagination = ({ currentPage, pageCount, setCurrentPage }) => {
     const leftDots = currentPage > 3;

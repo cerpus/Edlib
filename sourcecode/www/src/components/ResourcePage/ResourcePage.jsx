@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Tune as TuneIcon } from '@mui/icons-material';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import _ from 'lodash';
 import { useTheme, styled as muiStyled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -381,7 +381,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 </Box>
                 <Content>
                     <div style={{ marginTop: 20 }}>
-                        {loading && <Spinner />}
+                        {loading && <CircularProgress />}
                         {error && <div>{t('Noe skjedde')}</div>}
                         {!loading && !error && resources && !isGridView && (
                             <ResourceTable
