@@ -13,6 +13,7 @@ use H5PFrameworkInterface;
 use H5PStorage;
 use H5PValidator;
 use Illuminate\Http\Request;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class H5PLibraryAdmin
@@ -26,6 +27,7 @@ class H5PLibraryAdmin
         private H5PValidator $validator,
         private H5PFrameworkInterface $framework,
         private H5PStorage $storage,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -52,10 +54,12 @@ class H5PLibraryAdmin
                     $this->validator->h5pF->getMessages('error'),
                 );
             }
-        } catch (\Exception $e) {
+        } catch (\ErrorException $e) {
+            // The validator does not check for file existence before reading
+            $this->logger->error('Upload failed', ['exception' => $e]);
             @unlink($this->framework->getUploadedH5pPath());
             throw new InvalidH5pPackageException(
-                [$e->getMessage()],
+                ['An unexpected error occurred, check that the file you uploaded is a valid .h5p file'],
             );
         }
 

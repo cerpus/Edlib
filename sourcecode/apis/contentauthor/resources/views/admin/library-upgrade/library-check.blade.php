@@ -171,7 +171,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($libData && array_key_exists('semantics', $libData) && !empty($libData['semantics']))
+                                    @if(!empty($libData['semantics']))
                                         <textarea wrap="off" readonly style="width:400px;height:300px;">{!! $libData['semantics'] !!}</textarea>
                                     @endif
                                 </td>
