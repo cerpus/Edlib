@@ -4,7 +4,7 @@ import { AccountCircle } from '@mui/icons-material';
 import { FromSideModal, FromSideModalHeader } from './FromSideModal';
 import useFetchWithToken from '../hooks/useFetchWithToken';
 import styled from 'styled-components';
-import { Spinner, Alert } from '@cerpus/ui';
+import { CircularProgress, Alert } from '@mui/material';
 import ResourcePreviewContainer from '../containers/ResourcePreview';
 import { useConfigurationContext } from '../contexts/Configuration.jsx';
 
@@ -57,7 +57,7 @@ const ResourceVersion = ({ resourceId }) => {
         <ResourcePreviewContainer resource={{ edlibId: resourceId }}>
             {({ error, loading, frame }) => (
                 <>
-                    {loading && <Spinner />}
+                    {loading && <CircularProgress />}
                     {error && <div>Noe skjedde</div>}
                     {frame}
                 </>
@@ -113,7 +113,7 @@ const ResourceVersions = ({ selectedResource, onClose }) => {
                         {selectedResource.name}
                     </FromSideModalHeader>
                     <Content>
-                        {loadingVersions && <Spinner />}
+                        {loadingVersions && <CircularProgress />}
                         {errorLoadingVersions && (
                             <Alert color="red">
                                 Vi fikk problemer med å laste inn versjoner.

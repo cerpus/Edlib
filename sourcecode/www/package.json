@@ -10,7 +10,6 @@
     "translate": "i18next-scanner --config i18n-scanner.config.js"
   },
   "dependencies": {
-    "@cerpus/ui": "^2.1.0",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.9.3",
     "@emotion/server": "^11.4.0",

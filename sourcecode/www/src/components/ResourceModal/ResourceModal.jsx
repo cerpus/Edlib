@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import {
     ArrowForward,
     Edit as EditIcon,
@@ -175,7 +175,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                 padding: '20px 0',
                                             }}
                                         >
-                                            <Spinner />
+                                            <CircularProgress />
                                         </div>
                                     );
                                 }
