@@ -1845,7 +1845,7 @@
     react-popper "^2.2.5"
     store "^2.0.12"
 
-"@cerpus/ui@^2.0.3", "@cerpus/ui@^2.1.0":
+"@cerpus/ui@^2.0.3":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@cerpus/ui/-/ui-2.1.0.tgz#0ec7b2bf188b32764dd4440dbb8754862fd8a8e6"
   integrity sha512-w/RLSnPITpkJYQ8KREdzOmmIwKVptCe58EmbyQGLUtYkx4MiJeEG+0roNVXoybgB125X0Bw+M/uA6VM0PHs2kA==
