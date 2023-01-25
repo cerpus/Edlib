@@ -181,7 +181,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 }
 
                                 if (error) {
-                                    return <div>Noe skjedde</div>;
+                                    return <div>{t('something went wrong')}</div>;
                                 }
 
                                 return (
