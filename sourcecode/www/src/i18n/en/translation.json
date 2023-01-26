@@ -8,6 +8,7 @@
         "explanation": "Here you see content that you can use in your course. Drag and drop resources into your modules."
     },
     "Noe skjedde": "Something happened",
+    "something went wrong": "A server error occurred. Please try again later. If the problem persists, please contact the site administrator.",
     "Fant ingen ressurser": "Didn't find any resources",
     "source": {
         "h5p": "H5P",
