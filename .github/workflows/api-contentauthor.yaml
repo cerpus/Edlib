@@ -94,7 +94,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.1
-          extensions: memcached, oauth, sockets, zip
+          extensions: oauth, sockets, zip
           coverage: pcov
 
       - name: Get Composer cache dir
@@ -154,35 +154,35 @@ jobs:
         shell: bash
         run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 
-      - name: Build and push app container
+      - name: Build and push web container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-contentauthor-app:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
-          target: app
+          target: web
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push phpfpm container
+      - name: Build and push production container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
-          target: phpfpm
+          target: prod
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and push deploy container
+      - name: Build and push startup container
         if: env.shouldPublishImage == '1'
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-contentauthor-deploy:${{ inputs.versionToRelease }}
           context: sourcecode/apis/contentauthor
-          target: deploy
+          target: startup
           cache-from: type=gha
           cache-to: type=gha,mode=max

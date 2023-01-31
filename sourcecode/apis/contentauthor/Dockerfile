@@ -1,19 +1,16 @@
-FROM php:8.1-fpm-alpine AS php_base
-ENV IPE_GD_WITHOUTAVIF=1
+FROM php:8.1-fpm-alpine AS base
 
-WORKDIR /app
-COPY --from=composer:2 /usr/bin/composer /usr/bin/
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
-RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf
-RUN apk add --no-cache bash sudo rclone git unzip
-RUN install-php-extensions \
+RUN apk add --no-cache \
+        git \
+        unzip
+
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         bcmath \
         gettext \
         igbinary \
         intl \
-        memcached \
-        mysqli \
         oauth \
         opcache \
         pcntl \
@@ -22,71 +19,135 @@ RUN install-php-extensions \
         sockets \
         xmlrpc \
         zip
+
+COPY --from=composer/composer:2-bin /composer /usr/local/bin/
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_HTACCESS_PROTECT=0 \
+    COMPOSER_HOME="/tmp" \
+    COMPOSER_MEMORY_LIMIT=-1
+
+COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+
+RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf;
+
+WORKDIR /app
+
+
+FROM base AS composer_deps
+
 COPY composer.json composer.lock ./
+
 RUN composer install \
     --no-autoloader \
+    --no-cache \
     --no-dev \
+    --no-progress \
     --no-scripts
-COPY . .
-RUN mkdir -v -p \
-            storage/app/public \
-            storage/app/storage \
-            storage/framework/cache/data \
-            storage/framework/sessions \
-            storage/framework/testing \
-            storage/framework/views \
-            storage/logs
-RUN composer install \
-        --no-dev
-RUN cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library
-RUN cp -R /app/vendor/h5p/h5p-core public/h5p-php-library
-RUN chown -R www-data:www-data .
 
 
-FROM php_base as test
-COPY docker/run-phpunit.sh /run-phpunit.sh
-RUN composer install
-CMD /run-phpunit.sh
+FROM node:16-alpine AS frontend
 
-FROM node:16-alpine AS jsbuild
 WORKDIR /app
+
 RUN npm i -g npm node-gyp
+
 COPY package.json package-lock.json ./
 RUN npm i --legacy-peer-deps
-COPY webpack.mix.js ./
-COPY --from=php_base /app/vendor/ckeditor/ckeditor ./vendor/ckeditor/ckeditor
-COPY --from=php_base /app/vendor/h5p ./vendor/h5p
-COPY --from=php_base /app/resources ./resources
-COPY --from=php_base /app/public ./public
-RUN npm run production
-RUN rm -rf node_modules
+
+COPY --from=composer_deps /app/vendor/ckeditor/ckeditor vendor/ckeditor/ckeditor
+COPY --from=composer_deps /app/vendor/h5p vendor/h5p
+COPY resources resources
+COPY public public
+COPY webpack.mix.js .
+
+RUN set -eux; \
+    npm run production; \
+    npm cache clean --force; \
+    rm -rf node_modules
 
 
-FROM php_base AS buildresult
-COPY --from=jsbuild /app/public /app/public
-RUN chown -R www-data:www-data /app/public
+FROM composer_deps AS prod
+
+COPY app app
+COPY bootstrap bootstrap
+COPY config config
+COPY database database
+COPY public public
+COPY resources resources
+COPY routes routes
+COPY artisan .
+COPY .env.example .
+COPY --from=composer_deps /app/composer.json /app/composer.lock .
+COPY --from=composer_deps /app/vendor vendor
+COPY --from=frontend /app/public public
+
+ENV LOG_CHANNEL=stderr \
+    APP_DEBUG=false \
+    APP_ENV=production
+
+RUN set -eux; \
+    cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"; \
+    mkdir -p \
+        bootstrap/cache \
+        storage/app/public \
+        storage/framework/cache \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs; \
+    ln -s /app/public/storage/app/public /app/public/storage; \
+    chmod -R o+w \
+        bootstrap/cache \
+        storage; \
+    composer dump-autoload --optimize --classmap-authoritative --apcu; \
+    cp -R /app/vendor/h5p/h5p-editor public/h5p-editor-php-library; \
+    cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
+    chown -R www-data:www-data .
 
 
-FROM buildresult AS deploy
-CMD [ "php", "/app/artisan", "migrate", "--force" ]
+FROM prod as test
+
+COPY phpunit.xml .
+COPY tests tests
+
+RUN set -eux; \
+    install-php-extensions \
+        pcov \
+    ; \
+    composer install \
+        --no-cache \
+        --no-progress \
+    ;
+
+CMD ["vendor/bin/phpunit"]
 
 
-FROM buildresult AS phpfpm
-CMD [ "php-fpm", "-R", "-F", "-O" ]
+FROM prod AS startup
+
+CMD ["php", "artisan", "migrate", "--force"]
 
 
-FROM php_base AS phpfpm-dev
-RUN install-php-extensions \
-        xdebug-stable
+FROM base AS dev
+
+RUN set -eux; \
+    cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
+    install-php-extensions \
+        pcov \
+        xdebug \
+    ;
+
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
+
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
-CMD [ "php-fpm", "-R", "-F", "-O" ]
+
+CMD ["php-fpm"]
 
 
-FROM nginx:1.19-alpine AS app
+FROM nginx:1-alpine AS web
+
 ENV PHP_FPM_HOST "localhost:9000"
-COPY --from=buildresult /app/public /app/public
-RUN apk add --no-cache bash
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+COPY --from=prod /app/public /app/public
 COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
+
 CMD ["nginx"]

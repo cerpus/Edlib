@@ -1,10 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 set -eux
 
 update-ca-certificates
-cd /app
 composer install
 php artisan migrate --force
-chown -R www-data:www-data /app/storage /app/public
-php-fpm -R -F -O
+chown -R www-data:www-data storage public
+exec php-fpm -R -F -O

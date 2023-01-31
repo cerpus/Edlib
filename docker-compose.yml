@@ -172,7 +172,7 @@ services:
   contentauthor-fpm:
     build:
       context: ./sourcecode/apis/contentauthor
-      target: phpfpm-dev
+      target: dev
     depends_on:
       certs:
         condition: service_completed_successfully
