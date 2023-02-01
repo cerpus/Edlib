@@ -18,7 +18,7 @@
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^29.3.1",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.3",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0"
