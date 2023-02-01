@@ -28,6 +28,10 @@ const Content = styled.div`
     background-color: white;
     box-shadow: 0 0 6px 5px rgba(0, 0, 0, 0.18);
     border-radius: 5px;
+
+    @media(forced-colors: active) {
+        border: 1px solid Highlight;
+    },
 `;
 
 const Row = styled.div`

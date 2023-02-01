@@ -3,12 +3,27 @@ import Button from '@mui/material/Button';
 import { makeStyles } from 'tss-react/mui';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import cn from 'classnames';
 
 const useStyles = makeStyles()((theme) => {
     return {
         headerButton: {
             '&:hover': {
                 color: theme.palette.secondary.main,
+            },
+        },
+        activeButton: {
+            color: theme.palette.secondary.main,
+            '@media(forced-colors: active)': {
+                color: 'HighlightText',
+                backgroundColor: 'Highlight',
+            }
+        },
+        selectedItem: {
+            backgroundColor: theme.palette.secondary.main,
+            '@media(forced-colors: active)': {
+                color: 'HighlightText',
+                backgroundColor: 'Highlight',
             },
         },
     };
@@ -37,10 +52,12 @@ export default ({ items }) => {
                         onClick={handleMenu}
                         color="inherit"
                         startIcon={icon}
-                        sx={{
-                            color: active ? 'secondary.main' : 'default',
-                        }}
-                        className={classes.headerButton}
+                        className={cn(
+                            classes.headerButton,
+                            {
+                                [classes.activeButton]: active,
+                            }
+                        )}
                     >
                         {title}
                     </Button>
@@ -66,9 +83,11 @@ export default ({ items }) => {
                                     action();
                                     handleClose();
                                 }}
-                                sx={{
-                                    backgroundColor: active ? 'secondary.main' : 'default',
-                                }}
+                                className={cn(
+                                    {
+                                        [classes.selectedItem]: active,
+                                    }
+                                )}
                             >
                                 {title}
                             </MenuItem>
@@ -83,10 +102,12 @@ export default ({ items }) => {
                     onClick={action}
                     color="inherit"
                     startIcon={icon}
-                    className={classes.headerButton}
-                    sx={{
-                        color: active ? 'secondary.main' : 'default',
-                    }}
+                    className={cn(
+                        classes.headerButton,
+                        {
+                            [classes.activeButton]: active,
+                        }
+                    )}
                 >
                     {title}
                 </Button>
