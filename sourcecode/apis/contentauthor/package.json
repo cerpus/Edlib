@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@brightcove/player-loader": "^1.8.0",
-    "@cerpus/ui": "^2.1.0",
     "@emotion/core": "^10.0.9",
     "@emotion/styled": "^10.0.9",
     "@fontsource/lato": "^4.5.9",

@@ -2,7 +2,7 @@ import './Toggle.css';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Switch } from '@material-ui/core';
+import Switch from '@material-ui/core/Switch';
 
 function Toggle(props) {
     const {

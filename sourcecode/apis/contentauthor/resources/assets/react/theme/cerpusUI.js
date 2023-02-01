@@ -1,9 +1,9 @@
 import React from 'react';
 import i18nDefault, { addLanguage } from '../components/languageSetup';
 import { IntlProvider } from 'react-intl';
-import { ThemeProvider as CerpusThemeProvider } from '@cerpus/ui';
-import { createTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import grey from '@material-ui/core/colors/grey';
 
 const CerpusUI = ({ children }) => {
     const editorContainer = document.getElementById('theBody');
@@ -16,33 +16,45 @@ const CerpusUI = ({ children }) => {
 
     return (
         <IntlProvider {...i18nData} textComponent="span">
-            <CerpusThemeProvider>
-                <ThemeProvider
-                    theme={createTheme({
-                        palette: {
-                            grey: {
-                                main: grey[300],
-                                dark: grey[400],
-                            },
-                            primary: {
-                                main: '#21456A',
-                                dark: '#21456A',
-                            },
-                            secondary: {
-                                main: '#82E066',
-                                dark: '#1D7105',
-                            },
+            <ThemeProvider
+                theme={createTheme({
+                    palette: {
+                        grey: {
+                            main: grey[300],
+                            dark: grey[400],
                         },
-                        typography: {
-                            htmlFontSize: 10,
-                            fontFamily: "'Lato', sans-serif",
+                        primary: {
+                            main: '#21456A',
+                            dark: '#21456A',
                         },
-                    })}
-                >
-                    <CssBaseline />
-                    {children}
-                </ThemeProvider>
-            </CerpusThemeProvider>
+                        secondary: {
+                            main: '#82E066',
+                            dark: '#1D7105',
+                        },
+                        tertiary: {
+                            main: '#2195f3',
+                            dark: '#0067bf',
+                        },
+                    },
+                    typography: {
+                        htmlFontSize: 10,
+                        fontFamily: "'Lato', sans-serif",
+                        body1: {
+                            fontSize: '1.4rem',
+                        },
+                    },
+                    overrides: {
+                        MuiAccordionDetails: {
+                            root: {
+                                display: 'block',
+                            },
+                        }
+                    },
+                })}
+            >
+                <CssBaseline />
+                {children}
+            </ThemeProvider>
         </IntlProvider>
     );
 };

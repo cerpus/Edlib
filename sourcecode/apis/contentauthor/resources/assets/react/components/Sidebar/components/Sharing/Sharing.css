@@ -7,6 +7,6 @@
     align-items: center;
 }
 
-.sharinglayout-container > div {
-    margin-left: auto;
+.sharinglayout-container :first-child {
+    flex: 1 1 auto;
 }

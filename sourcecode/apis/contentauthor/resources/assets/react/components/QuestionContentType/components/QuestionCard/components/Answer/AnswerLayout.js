@@ -2,7 +2,8 @@ import './Answer.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Input } from '@material-ui/core';
+import Icon from '@material-ui/core/Icon';
+import Input from '@material-ui/core/Input';
 import { FormattedMessage } from 'react-intl';
 
 import Toggle from '../Toggle';

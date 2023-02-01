@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Icon } from '@material-ui/core';
+import Modal from '@material-ui/core/Modal';
+import Icon from '@material-ui/core/Icon';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({

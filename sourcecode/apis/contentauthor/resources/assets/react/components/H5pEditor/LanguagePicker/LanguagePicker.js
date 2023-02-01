@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import iso6392 from 'iso-639-2';
-import { Dialog, CircularProgress } from '@material-ui/core';
-import { Checkbox } from '@cerpus/ui';
+import Dialog from '@material-ui/core/Dialog';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import CheckBox from '@material-ui/core/Checkbox';
 
 const LanguagePicker = ({ languageValue, intl, hideNewVariant, onChange, isUpdateInProgress, isNewLanguageVariant }) => {
     return (
@@ -26,13 +28,16 @@ const LanguagePicker = ({ languageValue, intl, hideNewVariant, onChange, isUpdat
             </div>
             {!hideNewVariant && (
                 <div style={{ marginTop: 10 }}>
-                    <Checkbox
-                        color="tertiary"
-                        checked={isNewLanguageVariant}
-                        onToggle={() => onChange(languageValue, !isNewLanguageVariant)}
-                    >
-                        <FormattedMessage id="H5P_EDITOR.LANGUAGE_PICKER.MAKE_NEW_VARIANT" />
-                    </Checkbox>
+                    <FormControlLabel
+                        control={
+                            <CheckBox
+                                checked={isNewLanguageVariant}
+                                onChange={() => onChange(languageValue, !isNewLanguageVariant)}
+                                color="primary"
+                            />
+                        }
+                        label={<FormattedMessage id="H5P_EDITOR.LANGUAGE_PICKER.MAKE_NEW_VARIANT" />}
+                    />
                     <Dialog open={isUpdateInProgress}>
                         <div className="languagepicker-dialog-div">
                             <CircularProgress />

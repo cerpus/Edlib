@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Switch } from '@cerpus/ui';
+import Switch from '@material-ui/core/Switch';
 
 const ListedOption = ({ isPrivate, onToggle }) => {
     return (
@@ -9,8 +9,8 @@ const ListedOption = ({ isPrivate, onToggle }) => {
             <FormattedMessage id="SHARINGCOMPONENT.SHOWINSHAREDCONTENT" />
             <Switch
                 checked={!isPrivate}
-                onToggle={onToggle}
-                color={'tertiary'}
+                onChange={onToggle}
+                color="primary"
             />
         </div>
     );
