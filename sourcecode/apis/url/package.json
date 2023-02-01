@@ -21,7 +21,7 @@
     "lodash": "^4.17.21",
     "prettier": "^2.8.3",
     "supertest": "^6.3.3",
-    "swagger-jsdoc": "^6.2.7",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0"
   },
   "devDependencies": {
