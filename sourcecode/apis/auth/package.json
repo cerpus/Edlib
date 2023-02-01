@@ -23,7 +23,7 @@
     "jwks-rsa": "^2.1.4",
     "lodash": "^4.17.21",
     "node-jose": "^2.1.1",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.3",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0",
