@@ -41,7 +41,7 @@
   "devDependencies": {
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.20.7",
-    "@babel/node": "^7.18.10",
+    "@babel/node": "^7.20.7",
     "@babel/preset-env": "^7.20.2",
     "amqplib": "^0.10.3",
     "babel-plugin-transform-default-import": "^1.0.0",
