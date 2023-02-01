@@ -25,7 +25,7 @@
     "node-jose": "^2.1.1",
     "prettier": "^2.8.1",
     "supertest": "^6.3.3",
-    "swagger-jsdoc": "^6.2.7",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
     "uuid": "^8.3.2"
   },
