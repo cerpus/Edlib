@@ -149,5 +149,3 @@ ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=prod /app/public /app/public
 COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
-
-CMD ["nginx"]
