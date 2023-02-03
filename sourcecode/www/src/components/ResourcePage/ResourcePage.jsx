@@ -307,6 +307,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                             fullWidth
                             label={t('Søk')}
                             variant="outlined"
+                            type="search"
                             value={filters.searchInput}
                             onChange={(e) => setSearch(e.target.value)}
                             InputProps={{

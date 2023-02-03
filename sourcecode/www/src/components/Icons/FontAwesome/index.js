@@ -13,6 +13,10 @@ const StyledIcon = styled.div`
     & > svg {
         width: 20px;
         height: 20px;
+
+        @media(forced-colors: active) {
+            stroke: currentColor;
+        },
     }
 `;
 

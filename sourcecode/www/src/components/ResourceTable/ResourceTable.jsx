@@ -29,6 +29,13 @@ const BodyRow = styled(Row)`
     &:hover {
         box-shadow: 0 0 5px 6px rgba(0, 0, 0, 0.1);
     }
+
+    @media(forced-colors: active) {
+        border: 1px solid;
+        &:hover {
+            border-color: Highlight;
+        }
+    },
 `;
 
 const HeaderRow = styled(Row)`
