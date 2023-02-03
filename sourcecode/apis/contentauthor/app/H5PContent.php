@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Iso639p3;
@@ -89,7 +90,7 @@ class H5PContent extends Content implements VersionableObject
         return $this->hasMany(H5PContentLibrary::class, 'content_id');
     }
 
-    public function metadata()
+    public function metadata(): HasOne
     {
         return $this->hasOne(H5PContentsMetadata::class, 'content_id');
     }

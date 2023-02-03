@@ -21,11 +21,6 @@ parameters:
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$ndlaMapper\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
 			count: 1
 			path: app/Content.php
@@ -1147,11 +1142,6 @@ parameters:
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
 		-
-			message: "#^Call to an undefined method H5PFrameworkInterface\\:\\:handleResult\\(\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PProgress.php
-
-		-
 			message: "#^Call to method execute\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
@@ -1932,18 +1922,8 @@ parameters:
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
-			count: 4
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 7
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
-			message: "#^Relation 'metadata' is not found in App\\\\H5PContent model\\.$#"
-			count: 3
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
 		-
