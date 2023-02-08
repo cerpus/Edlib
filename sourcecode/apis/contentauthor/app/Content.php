@@ -20,6 +20,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -97,7 +98,7 @@ abstract class Content extends Model
 
     abstract public function getContentType(bool $withSubType = false);
 
-    public function ndlaMapper()
+    public function ndlaMapper(): HasOne
     {
         return $this->hasOne(NdlaIdMapper::class, 'ca_id');
     }

@@ -38,7 +38,7 @@ trait Config
     protected $fileStorage;
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setContext($context)
     {
@@ -47,7 +47,7 @@ trait Config
     }
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setPreview($preview)
     {
@@ -56,7 +56,7 @@ trait Config
     }
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setUserId($userId)
     {
@@ -65,7 +65,7 @@ trait Config
     }
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setUserName($userName)
     {
@@ -74,7 +74,7 @@ trait Config
     }
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setName($name)
     {
@@ -83,7 +83,7 @@ trait Config
     }
 
     /**
-     * @return Config
+     * @return $this
      */
     public function setEmail($email)
     {
@@ -91,14 +91,18 @@ trait Config
         return $this;
     }
 
-
-    public function setDisplayH5PHub(bool $displayH5PHub): Config
+    /**
+     * @return $this
+     */
+    public function setDisplayH5PHub(bool $displayH5PHub): self
     {
         $this->displayH5PHub = $displayH5PHub;
         return $this;
     }
 
-
+    /**
+     * @return $this
+     */
     public function setLibrary(H5PLibrary $library)
     {
         $this->library = $library;
@@ -354,6 +358,9 @@ trait Config
         ];
     }
 
+    /**
+     * @return $this
+     */
     public function setDisplayHub(bool $displayHub)
     {
         $this->displayH5PHub = $displayHub;
