@@ -3,8 +3,8 @@ node_modules/
 public/h5p-editor-php-library
 public/h5p-php-library
 public/h5pstorage/*
-storage/
 public/storage/*
+storage/
 vendor/
 .env
 buildandtest.sh

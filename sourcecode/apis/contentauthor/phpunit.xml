@@ -32,30 +32,30 @@
     </testsuites>
     <php>
         <ini name="memory_limit" value="256M" />
-        <env name="APP_ENV" value="testing" force="true"/>
-        <env name="APP_DEBUG" value="true" force="true"/>
-        <env name="APP_URL" value="http://localhost"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-        <env name="DB_CONNECTION" value="sqlite-test"/>
-        <env name="ENABLE_LICENSING" value="true"/>
-        <env name="FEATURE_CONTENT_LOCKING" value="true"/>
-        <env name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
-        <env name="FEATURE_COLLABORATION" value="true"/>
-        <env name="LICENSE_SITE" value="ContentAuthorTest"/>
-        <env name="H5P_CONSUMER_KEY" value="h5p"/>
-        <env name="H5P_CONSUMER_SECRET" value="secret2"/>
-        <env name="TEST_FS_ROOT" value="/tmp"/>
-        <env name="MAIL_PRETEND" value="true"/>
-        <env name="MAIL_DRIVER" value="log"/>
-        <env name="CERPUS_AUTH_SERVER" value=""/>
-        <env name="CERPUS_CORE_SERVER" value=""/>
-        <env name="VERSION_API_SERVER" value="http://versionApiServer.local"/>
-        <env name="XAPI_ENDPOINT" value=""/>
-        <env name="OER_LICENSES_URL" value=""/>
-        <env name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
-        <env name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
-        <env name="FILESYSTEM_DRIVER" value="test"/>
+        <server name="APP_ENV" value="testing" force="true"/>
+        <server name="APP_DEBUG" value="true" force="true"/>
+        <server name="APP_URL" value="http://localhost"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="QUEUE_DRIVER" value="sync"/>
+        <server name="DB_CONNECTION" value="sqlite-test"/>
+        <server name="ENABLE_LICENSING" value="true"/>
+        <server name="FEATURE_CONTENT_LOCKING" value="true"/>
+        <server name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
+        <server name="FEATURE_COLLABORATION" value="true"/>
+        <server name="LICENSE_SITE" value="ContentAuthorTest"/>
+        <server name="H5P_CONSUMER_KEY" value="h5p"/>
+        <server name="H5P_CONSUMER_SECRET" value="secret2"/>
+        <server name="TEST_FS_ROOT" value="/tmp"/>
+        <server name="MAIL_PRETEND" value="true"/>
+        <server name="MAIL_DRIVER" value="log"/>
+        <server name="CERPUS_AUTH_SERVER" value=""/>
+        <server name="CERPUS_CORE_SERVER" value=""/>
+        <server name="VERSION_API_SERVER" value="http://versionApiServer.local"/>
+        <server name="XAPI_ENDPOINT" value=""/>
+        <server name="OER_LICENSES_URL" value=""/>
+        <server name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
+        <server name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
+        <server name="FILESYSTEM_DRIVER" value="test"/>
     </php>
 </phpunit>
