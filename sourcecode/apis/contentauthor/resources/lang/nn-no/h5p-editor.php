@@ -1,4 +1,5 @@
 <?php
+
 return [
     'title' => "Tittel",
     'content-loading' => "Content is loading. Please wait…",
