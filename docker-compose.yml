@@ -196,7 +196,7 @@ services:
   contentauthor-subscribers:
     build:
       context: ./sourcecode/apis/contentauthor
-      target: phpfpm-dev
+      target: dev
     depends_on:
       contentauthor-fpm:
         condition: service_healthy
