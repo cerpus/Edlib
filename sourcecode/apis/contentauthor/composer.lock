@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "623cf538c714b67d16f9d8efe699c0c3",
+    "content-hash": "a6f63482798fb07a7706d61c69aa0538",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -760,16 +760,16 @@
         },
         {
             "name": "cerpus/questionbank-client",
-            "version": "2.3.0",
+            "version": "2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-questionbank-client.git",
-                "reference": "710eb09c0a7f5f5ae7ec859271af364923f60273"
+                "reference": "d8ba87034d040dd1c23224bc32ba26d02e6eb309"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/710eb09c0a7f5f5ae7ec859271af364923f60273",
-                "reference": "710eb09c0a7f5f5ae7ec859271af364923f60273",
+                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/d8ba87034d040dd1c23224bc32ba26d02e6eb309",
+                "reference": "d8ba87034d040dd1c23224bc32ba26d02e6eb309",
                 "shasum": ""
             },
             "require": {
@@ -815,9 +815,9 @@
             "description": "Client to talk do the Cerpus Questionbank Service",
             "support": {
                 "issues": "https://github.com/cerpus/php-questionbank-client/issues",
-                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.3.0"
+                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.3.1"
             },
-            "time": "2023-01-03T06:54:12+00:00"
+            "time": "2023-02-03T11:47:14+00:00"
         },
         {
             "name": "cerpus/version-client",
