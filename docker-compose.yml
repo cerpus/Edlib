@@ -215,7 +215,7 @@ services:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: phpfpm-dev
+      target: dev
     command: [sh, -c, 'while true; do php /app/artisan schedule:run -q; sleep 60; done']
     depends_on:
       contentauthor-fpm:
@@ -231,7 +231,7 @@ services:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: phpfpm-dev
+      target: dev
     command: [php, artisan, horizon]
     depends_on:
       contentauthor-fpm:
