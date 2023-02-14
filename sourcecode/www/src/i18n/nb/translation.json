@@ -147,6 +147,7 @@
         "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere.",
         "TOTAL_VIEWS": "Visninger totalt",
         "RANGE_VIEWS": "I valgt periode",
+        "VIEWS": "Visninger"
         "FROM": "Fra",
         "TO": "Til"
     },
