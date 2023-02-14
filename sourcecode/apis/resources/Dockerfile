@@ -36,5 +36,6 @@ CMD [ "yarn", "start" ]
 # Dev container for running dev with mounted app volume
 #
 FROM base as dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 RUN yarn global add nodemon
 CMD update-ca-certificates; yarn; yarn migrate; yarn dev

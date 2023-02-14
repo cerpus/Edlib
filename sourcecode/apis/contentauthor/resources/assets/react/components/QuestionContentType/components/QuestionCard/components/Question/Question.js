@@ -3,7 +3,7 @@ import './Question.scss';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';

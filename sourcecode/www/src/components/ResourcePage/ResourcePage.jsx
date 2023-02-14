@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Tune as TuneIcon } from '@mui/icons-material';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import _ from 'lodash';
 import { useTheme, styled as muiStyled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -307,6 +307,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                             fullWidth
                             label={t('Søk')}
                             variant="outlined"
+                            type="search"
                             value={filters.searchInput}
                             onChange={(e) => setSearch(e.target.value)}
                             InputProps={{
@@ -332,6 +333,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                                     value ? [value] : []
                                 )
                             }
+                            filterCount={filterCount ? filterCount.languages : []}
                         />
                     </SelectorWrapper>
                     <SelectorWrapper>
@@ -380,8 +382,8 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 </Box>
                 <Content>
                     <div style={{ marginTop: 20 }}>
-                        {loading && <Spinner />}
-                        {error && <div>{t('Noe skjedde')}</div>}
+                        {loading && <CircularProgress />}
+                        {error && <div>{t('something went wrong')}</div>}
                         {!loading && !error && resources && !isGridView && (
                             <ResourceTable
                                 totalCount={pagination.totalCount}

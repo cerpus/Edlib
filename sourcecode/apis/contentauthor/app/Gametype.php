@@ -92,9 +92,8 @@ class Gametype extends Model implements GameTypeModelContract
 
     /**
      * @param string $machineName
-     * @return Model|\Illuminate\Database\Query\Builder|null
      */
-    public static function mostRecent($machineName = null)
+    public static function mostRecent($machineName = null): self|null
     {
         if (!$machineName) {
             return null;

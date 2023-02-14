@@ -57,7 +57,8 @@ class ResourceApiService
             $data['deletedReason'],
             $data['deletedAt'],
             $data['updatedAt'],
-            $data['createdAt']
+            $data['createdAt'],
+            $data['version']['title']
         );
     }
 }

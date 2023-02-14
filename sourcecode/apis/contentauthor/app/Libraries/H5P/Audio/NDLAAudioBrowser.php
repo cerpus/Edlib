@@ -28,6 +28,9 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     public function findAudio($filterParameters)
     {
         $searchString = !empty($filterParameters['query']) ? $this->buildSearchQuery($filterParameters['query']) : null;
+        if (!empty($filterParameters['fallback'])) {
+            $searchString['fallback'] = $filterParameters['fallback'];
+        }
 
         $request = $this->client->get(self::FIND_AUDIOS_URL, [
             'query' => $searchString

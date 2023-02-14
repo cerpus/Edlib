@@ -10,35 +10,41 @@ We are still working on documentation for setting up Edlib on-premise and in the
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/) and docker-compose
+- A recent version of [Docker](https://docs.docker.com/get-docker/)
 - The [git](https://git-scm.com/downloads) command-line utility
 - Ports 80, 443, 3306, 5432, 5672, 6379, 9200, and 15672 on the host machine must be unoccupied
+
+:::note
+
+Avoid using distro-provided versions of Docker, as these tend to be years out of date and might not support the features used by Edlib.
+
+:::
 
 ## Install
 
 1. Clone the Edlib directory and navigate there
 
-   ```sh
+   ```bash
    git clone https://github.com/cerpus/Edlib.git
    cd Edlib
    ```
 
 2. Copy `localSetup/.env.example` to `localSetup/.env`
 
-   ```sh
+   ```bash
    cp localSetup/.env.example localSetup/.env
    ```
 
 3. Start Edlib via Docker Compose
 
-   ```sh
-   docker-compose up -d
+   ```bash
+   docker compose up -d
    ```
 
    This step might take a while. You can check the status of services with
 
-   ```sh
-   docker-compose ps
+   ```bash
+   docker compose ps
    ```
 
 4. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux,
@@ -46,7 +52,7 @@ We are still working on documentation for setting up Edlib on-premise and in the
    Windows, you will have to update the file manually with the values found in
    the script.
 
-   ```sh
+   ```bash
    scripts/update-host-file.sh
    ```
 

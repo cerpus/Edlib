@@ -1,13 +1,28 @@
 import React, { useMemo, useState } from 'react';
-import { ExpandableBox, ExpandableBoxList } from '@cerpus/ui';
 import { AlertBox, SaveBox, Publish, Lock } from './components';
 import SidebarCommonComponents from './SidebarCommonComponents';
 import { useForm } from '../../contexts/FormContext';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { compare } from '../../utils/utils';
-import { Box, Paper } from '@material-ui/core';
-import { Warning } from '@material-ui/icons';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Warning from '@material-ui/icons/Warning';
+import ExpandMoreRounded from '@material-ui/icons/ExpandMoreRounded';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyle = makeStyles((theme) => ({
+    accordionInfo: {
+        display: 'flex',
+        flex: '1 1 auto',
+        justifyContent: 'end',
+        opacity: 0.6,
+        fontStyle: 'italic',
+    },
+}));
 
 const Sidebar = ({
     customSetup,
@@ -26,7 +41,7 @@ const Sidebar = ({
     } = useForm();
     const { locked, lockedProperties, pulseUrl } = setup;
     const [isLocked, setLocked] = useState(locked);
-
+    const classes = useStyle();
     const onChange = (type, payload) => dispatch({ type: type, payload });
     const toggleLock = () => setLocked(!isLocked);
 
@@ -101,22 +116,21 @@ const Sidebar = ({
                             })}
                         />
                     )}
-                    {components.length > 0 && (
-                        <ExpandableBoxList className="expandableList">
-                            {components.map((box, index) => {
-                                const { title, component, info } = box;
-                                return (
-                                    <ExpandableBox
-                                        key={index}
-                                        title={title}
-                                        info={info}
-                                    >
-                                        {component || box}
-                                    </ExpandableBox>
-                                );
-                            })}
-                        </ExpandableBoxList>
-                    )}
+                    {components.map((box, index) => (
+                        <Accordion key={index} variant="outlined">
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreRounded />}
+                            >
+                                <strong>{box.title}</strong>
+                                <div className={classes.accordionInfo}>
+                                    {box.info}
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                {box.component || box}
+                            </AccordionDetails>
+                        </Accordion>
+                    ))}
                 </Box>
             </Paper>
         </Box>

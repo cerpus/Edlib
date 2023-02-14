@@ -40,6 +40,9 @@
             "Tests\\": "tests/"
         }
     },
+    "conflict": {
+        "packbackbooks/lti-1p3-tool": ">5.2.1"
+    },
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

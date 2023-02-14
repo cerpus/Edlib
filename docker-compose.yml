@@ -10,6 +10,7 @@ volumes:
   elasticsearch:
   maven_cache:
   mysql:
+  npm_cache:
   npm-components-storybook_nodemodules:
   proxy-admin_nodemodules:
   proxy-auth_nodemodules:
@@ -73,7 +74,8 @@ services:
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
     depends_on:
-      - elasticsearch_password
+      elasticsearch_password:
+        condition: service_completed_successfully
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9200/_cat/health]
     volumes:
@@ -95,24 +97,35 @@ services:
       - ./scripts/generate-password.sh:/usr/local/bin/generate-password
     working_dir: /run/secrets
 
-  nginx:
-    build: ./localSetup/projects/nginx
-    healthcheck:
-      test: [CMD, curl, -fk, https://localhost]
+  certs:
+    build: ./localSetup/projects/certs
+    command: [generate-certs.sh]
     volumes:
-      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
-      - ./localSetup/projects/nginx/generate-certs.sh:/docker-entrypoint.d/generate-certs.sh:ro
-      - ./data/nginx/ca:/etc/ca
+      - ./localSetup/projects/certs/generate-certs.sh:/usr/local/bin/generate-certs.sh:ro
       - ./data/nginx/certs:/etc/ssl/private
-      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public
+      - ./data/nginx/ca:/usr/local/share/ca-certificates
+
+  nginx:
+    image: nginx:1-alpine
+    command: [sh, -c, 'update-ca-certificates && nginx -g "daemon off;"']
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, curl, -f, https://localhost]
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./data/nginx/certs:/etc/ssl/private:ro
+      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
+      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
     ports:
       - "80:80"
       - "443:443"
     networks:
       default:
         aliases:
-          - contentauthor.local
           - api.edlib.local
+          - ca.edlib.local
           - edlibcommon
 
   versionapi:
@@ -121,20 +134,20 @@ services:
       [
         sh,
         -c,
-        '/start-scripts/wait-for-it.sh postgres:5432; mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
+        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
       ]
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
       - maven_cache:/root/.m2
       - ./sourcecode/apis/version/:/app
-      - ./localSetup/helpers/start-scripts:/start-scripts:ro
     environment:
       HEAPSPACE_MAX: 128m
       DEBUGGING_ENABLED: "yes"
       SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres/versionapi"
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: thepgpassword
-    depends_on:
-      - postgres
     healthcheck:
       test: [CMD, curl, -f, http://localhost/health]
     #ports:
@@ -144,7 +157,7 @@ services:
   contentauthor:
     build:
       context: ./sourcecode/apis/contentauthor
-      target: app
+      target: web
     healthcheck:
       test: [CMD, curl, -f, http://localhost]
     volumes:
@@ -159,7 +172,16 @@ services:
   contentauthor-fpm:
     build:
       context: ./sourcecode/apis/contentauthor
-      target: phpfpm-dev
+      target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
@@ -167,66 +189,67 @@ services:
     healthcheck:
       test: [CMD, nc, -z, localhost, "9000"]
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - mysql
-      - redis
-      - nginx
-      - rabbitmq
 
   contentauthor-subscribers:
     build:
       context: ./sourcecode/apis/contentauthor
-      target: phpfpm-dev
+      target: dev
+    depends_on:
+      contentauthor-fpm:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: [php, artisan, 'laravel-rabbitmq-pubsub:consumer']
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./localSetup/projects/content-author/startup.sh:/startup.sh
       - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - contentauthor-fpm
 
   contentauthor-cron:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: phpfpm-dev
-    command: /bin/bash -c "set -eu;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000;while true; do php /app/artisan schedule:run -q; sleep 60; done"
+      target: dev
+    command: [sh, -c, 'while true; do php /app/artisan schedule:run -q; sleep 60; done']
+    depends_on:
+      contentauthor-fpm:
+        condition: service_healthy
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/apis/contentauthor:/app
-    depends_on:
-      - contentauthor-fpm
 
   contentauthor-horizonqueue:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
-      target: phpfpm-dev
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh contentauthor-fpm:9000; php /app/artisan horizon"
+      target: dev
+    command: [php, artisan, horizon]
+    depends_on:
+      contentauthor-fpm:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - ./localSetup/projects/content-author/.env
       - ./localSetup/.env
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/apis/contentauthor:/app
-    depends_on:
-      - contentauthor-fpm
 
   contentauthor-watch:
     image: node:16-alpine
     command: [sh, -c, 'npm install --legacy-peer-deps && npm run watch']
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/apis/contentauthor:/app
     working_dir: /app
 
@@ -234,6 +257,7 @@ services:
     image: node:16-alpine
     command: [sh, -c, 'yarn && yarn run start --host=0.0.0.0 --port=80']
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/docs/docs.edlib.com:/app
     working_dir: /app
 
@@ -244,65 +268,65 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - dokuapi_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/doku/src:/var/www/app/src
-      - ./sourcecode/apis/doku/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/doku/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/doku/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/doku:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
-      - mysql
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   resourceapi:
     build:
       context: ./sourcecode/apis/resources
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources/src:/var/www/app/src
-      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/resources:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      - mysql
 
   resourceapi-subscribers:
     build:
       context: ./sourcecode/apis/resources
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      resourceapi:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh resourceapi:80;update-ca-certificates; yarn dev:subscribers'"
+    command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources/src:/var/www/app/src
-      - ./sourcecode/apis/resources/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/resources/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/resources/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/resources:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      - resourceapi
 
   ltiapi:
     build:
@@ -311,43 +335,42 @@ services:
       target: dev
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti/src:/var/www/app/src
-      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      - mysql
 
   ltiapi-subscribers:
     build:
       context: ./sourcecode/apis/lti
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      ltiapi:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh ltiapi:80;update-ca-certificates; yarn dev:subscribers'"
+    command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
     volumes:
       - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti/src:/var/www/app/src
-      - ./sourcecode/apis/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/lti/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
-    depends_on:
-      - ltiapi
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
 
   authapi:
     build:
@@ -356,45 +379,50 @@ services:
       target: base
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: [sh, -c, 'yarn && yarn wait && yarn migrate && yarn dev']
+    command: [sh, -c, 'yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/auth/src:/var/www/app/src
-      - ./sourcecode/apis/auth/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/auth/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/auth/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/apis/auth:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
-      - mysql
-      - rabbitmq
-      - redis
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   urlapi:
     build:
       context: ./sourcecode/apis/url
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      elasticsearch:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh mysql:3306 rabbitmq:5672 elasticsearch:9200;update-ca-certificates; yarn; yarn migrate; yarn dev'"
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlib-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/url/src:/var/www/app/src
-      - ./sourcecode/apis/url/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/apis/url/package.json:/var/www/app/package.json
-      - ./sourcecode/apis/url/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/apis/url:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      - mysql
 
   www:
     build:
@@ -402,28 +430,30 @@ services:
       dockerfile: Dockerfile
       target: dev
     command: [sh, -c, 'yarn && yarn start']
+    depends_on:
+      certs:
+        condition: service_completed_successfully
     environment:
       CLIENT_PUBLIC_PATH: https://www.edlib.local/
-      NODE_EXTRA_CA_CERTS: '/usr/local/share/ca-certificates/cacert.pem'
       PUBLIC_PATH: https://www.edlib.local/
     env_file:
       - ./localSetup/.env
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
+      - npm_cache:/root/.npm
       - www_nodemodules:/app/node_modules
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/www/src:/app/src
-      - ./sourcecode/www/public:/app/public
-      - ./sourcecode/www/package.json:/app/package.json
-      - ./sourcecode/www/razzle.config.js:/app/razzle.config.js
-      - ./sourcecode/www/yarn.lock:/app/yarn.lock
+      - ./sourcecode/www:/app
 
   proxy-admin:
     build:
       context: ./sourcecode/proxies/admin
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     environment:
@@ -431,29 +461,28 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost:3000]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-admin_nodemodules:/app/node_modules
-      - ./sourcecode/proxies/admin/src:/app/src
-      - ./sourcecode/proxies/admin/public:/app/public
-      - ./sourcecode/proxies/admin/package.json:/app/package.json
-      - ./sourcecode/proxies/admin/yarn.lock:/app/yarn.lock
+      - ./sourcecode/proxies/admin:/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
 
   proxy-auth:
     build:
       context: ./sourcecode/proxies/auth
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/auth/src:/var/www/app/src
-      - ./sourcecode/proxies/auth/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/auth/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/auth/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/auth:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-lti:
@@ -461,20 +490,21 @@ services:
       context: ./sourcecode/proxies/lti
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672;update-ca-certificates; yarn; yarn dev'"
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/lti/src:/var/www/app/src
-      - ./sourcecode/proxies/lti/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/lti/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/lti/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/proxies/lti:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-resource:
@@ -482,39 +512,42 @@ services:
       context: ./sourcecode/proxies/resource
       dockerfile: Dockerfile
       target: dev
-    command: "/bin/sh -c '/start-scripts/wait-for-multiple.sh rabbitmq:5672 authapi:80;update-ca-certificates; yarn; yarn dev'"
+    command: [sh, -c, 'update-ca-certificates && yarn && yarn dev']
+    depends_on:
+      authapi:
+        condition: service_healthy
+      certs:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - ./localSetup/.env
-    environment:
-      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - proxy-resource_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/resource/src:/var/www/app/src
-      - ./sourcecode/proxies/resource/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/resource/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/resource/yarn.lock:/var/www/app/yarn.lock
-      - ./localSetup/helpers/start-scripts:/start-scripts
+      - ./sourcecode/proxies/resource:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      - authapi
 
   edlibapi-url:
     build:
       context: ./sourcecode/proxies/url
       dockerfile: Dockerfile
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]
     volumes:
+      - npm_cache:/root/.npm
       - edlibapi-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/url/src:/var/www/app/src
-      - ./sourcecode/proxies/url/.env.defaults:/var/www/app/.env.defaults
-      - ./sourcecode/proxies/url/package.json:/var/www/app/package.json
-      - ./sourcecode/proxies/url/yarn.lock:/var/www/app/yarn.lock
+      - ./sourcecode/proxies/url:/var/www/app
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
   #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   npm-components-storybook:
@@ -524,6 +557,7 @@ services:
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9009]
     volumes:
+      - npm_cache:/root/.npm
       - ./sourcecode/npm/components:/app
       - npm-components-storybook_nodemodules:/app/node_modules
 
@@ -540,10 +574,31 @@ services:
     depends_on:
       - edlib-common-fpm
 
+  common-startup:
+    build:
+      context: ./sourcecode/apis/common
+      target: dev
+    command: [docker/php/startup-dev.sh]
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./localSetup/.env
+    volumes:
+      - ./sourcecode/apis/common:/var/www/edlibcommon
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+
   edlib-common-fpm:
     build:
       context: ./sourcecode/apis/common
       target: dev
+    depends_on:
+      common-startup:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     healthcheck:
@@ -551,22 +606,20 @@ services:
     volumes:
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - mysql
 
   common-subscribers:
     build:
       context: ./sourcecode/apis/common
       target: dev
-    command: /bin/bash -c "set -eux;/start-scripts/wait-for-multiple.sh edlib-common-fpm:9000 rabbitmq:5672;php artisan laravel-rabbitmq-pubsub:consumer"
+    command: [php, artisan, 'laravel-rabbitmq-pubsub:consumer']
+    depends_on:
+      common-startup:
+        condition: service_completed_successfully
     env_file:
       - ./localSetup/.env
     volumes:
-      - ./localSetup/helpers/start-scripts:/start-scripts
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    depends_on:
-      - edlib-common-fpm
 
   # --------------------------------------------
   # ----- Services needed for edlib facade -----
@@ -585,14 +638,14 @@ services:
   #    build:
   #      context: ./localSetup/projects/edlibfacade
   #    entrypoint: /before-start.sh
-  #    command: bash -c "/start-scripts/wait-for-multiple.sh configserver:8888 nginx:80;/start-app.sh"
+  #    command: [/start-app.sh]
   #    depends_on:
-  #      - nginx
+  #      configserver:
+  #        condition: service_healthy
   #    volumes:
   #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
   #      - ./data/nginx/ca:/cacerts.d:ro
   #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-  #      - ./localSetup/helpers/start-scripts:/start-scripts
   #    environment:
   #      CONFIGSERVICE_URI: http://configserver:8888
   #      EDLIB_API_URL: https://api.edlib.local

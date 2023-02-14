@@ -1,6 +1,6 @@
 import React from 'react';
 import useFetchWithToken from '../hooks/useFetchWithToken';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import Lti from './Editors/Lti';
 import { useEdlibComponentsContext } from '../contexts/EdlibComponents';
 import queryString from 'query-string';
@@ -60,7 +60,7 @@ const ResourceEditor = ({
                     marginTop: 10,
                 }}
             >
-                <Spinner size={30} />
+                <CircularProgress size={30} />
             </div>
         );
 

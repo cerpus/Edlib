@@ -1,8 +1,9 @@
+/*This code has not been used anywhere in EDLIB.*/
+
 import React from 'react';
 import styled from 'styled-components';
 import cn from 'classnames';
 import { useLockBodyScroll } from 'moment-hooks';
-import { Portal } from '@cerpus/ui';
 
 const Background = styled.div`
     visibility: hidden;

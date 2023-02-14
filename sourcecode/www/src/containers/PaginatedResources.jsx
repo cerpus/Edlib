@@ -1,8 +1,9 @@
+/*This code has not been used anywhere in EDLIB.*/
 import React from 'react';
 import useTranslation from '../hooks/useTranslation';
 import useGetResources from '../hooks/requests/useGetResources';
 import Pagination from '../components/Pagination';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import styled from 'styled-components';
 
 const pageSize = 40;
@@ -50,7 +51,7 @@ const PaginatedResources = ({
     return (
         <Wrapper>
             <div>
-                {loading && <Spinner />}
+                {loading && <CircularProgress />}
                 {error && <div>{t('Noe skjedde')}</div>}
                 {!loading &&
                     !error &&

@@ -2,7 +2,7 @@ import './QuestionContainer.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import { FormattedMessage } from 'react-intl';
 
 import { QuestionBankBrowser } from '../QuestionBankBrowser';

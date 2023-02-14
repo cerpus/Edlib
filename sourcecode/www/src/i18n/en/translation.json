@@ -8,6 +8,7 @@
         "explanation": "Here you see content that you can use in your course. Drag and drop resources into your modules."
     },
     "Noe skjedde": "Something happened",
+    "something went wrong": "A server error occurred. Please try again later. If the problem persists, please contact the site administrator.",
     "Fant ingen ressurser": "Didn't find any resources",
     "source": {
         "h5p": "H5P",
@@ -30,8 +31,8 @@
         "EDLL": "Edlib License",
         "PRIVATE": "Private"
     },
-    "Bruk ressurs": "Use resource",
-    "Rediger ressurs": "Edit resource",
+    "Bruk ressurs": "Use content",
+    "Rediger ressurs": "Edit content",
     "Lukk": "Close",
     "urlDisplayTypes": {
         "ndla": "NDLA",
@@ -61,7 +62,7 @@
     "Video": "Video",
     "Tekst": "Text",
     "Innholdssamling": "Content collection",
-    "Delt innhold": "Shared content",
+    "Delt innhold": "Find shared content",
     "Samarbeidere": "Collaborators",
     "Samarbeider": "Collaborator",
     "Ingen tilgang": "No access",
@@ -77,12 +78,14 @@
     "Innhold": "Content",
     "Matematikkverktøyet": "Math tool",
     "Skriv formelen": "Write formula",
-    "Sett inn": "Insert",
+    "Sett inn": "Use content",
     "S": {
         "ERROR_PUBLISHING": "Something went wrong while trying to publish. Please try again, or come back later.",
         "VIEWS": "Views",
-        "TOTAL_VIEWS" : "Total Views",
-        "RANGE_VIEWS" : "Range Views"
+        "TOTAL_VIEWS": "Total Views",
+        "RANGE_VIEWS": "Range Views",
+        "FROM": "From",
+        "TO": "To"
     },
     "Godkjente": "Approved",
     "Ikke godkjente": "Not approved",
@@ -111,8 +114,8 @@
     "create_new": "create new",
     "edit_filter": "edit filter",
     "choose_filter": "choose filter",
-    "cancel": "cancel",
-    "save": "save",
+    "cancel": "Cancel",
+    "save": "Save",
     "delete_filter": "delete filter",
     "delete": "delete",
     "content_type_groups": {
@@ -132,13 +135,13 @@
     "least_used": "least used",
     "something_happened": "something happened",
     "most_relevant": "most relevant",
-    "grouped": "grouped",
+    "grouped": "Grouped",
     "A-Z": "a-z",
     "filter": "filter",
     "filter_plural": "filters",
     "resource_view": "resource view",
     "resource_view_plural": "resource views",
-    "save_filter": "save filter",
+    "save_filter": "Save filter",
     "draft": "draft",
     "published": "published",
     "unpublished": "unpublished",

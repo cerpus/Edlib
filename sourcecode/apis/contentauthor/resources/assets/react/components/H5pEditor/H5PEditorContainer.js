@@ -8,7 +8,7 @@ import useH5PEditor from '../H5P/useH5PEditor';
 import useConfirmWindowClose from './useConfirmWindowClose';
 import { nextTick, removeKeys } from '../../utils/utils';
 import FileUploadProgress from '../FileUploadProgress';
-import { Fade } from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { useForm } from '../../contexts/FormContext';
 import Sidebar, {
@@ -17,8 +17,8 @@ import Sidebar, {
     ContentUpgradeContainer,
 } from '../Sidebar';
 import { getLanguageStringFromCode } from '../../utils/Helper';
-import { NewReleases } from '@material-ui/icons';
-import { useTheme } from '@cerpus/ui';
+import NewReleases from '@material-ui/icons/NewReleases';
+import { useTheme } from '@material-ui/core/styles';
 import { useEditorSetupContext } from '../../contexts/EditorSetupContext';
 
 const H5PEditorContainer = ({ intl }) => {
@@ -265,8 +265,8 @@ const H5PEditorContainer = ({ intl }) => {
                 }),
                 info: (
                     <NewReleases
-                        htmlColor={theme.colors.tertiary}
-                        fontSize="large"
+                        htmlColor={theme.palette.tertiary.main}
+                        fontSize="medium"
                     />
                 ),
                 component: (
@@ -335,8 +335,7 @@ const H5PEditorContainer = ({ intl }) => {
                 label: intl.formatMessage({
                     id: 'H5P_EDITOR.TAB.H5P_VIEW',
                 }),
-                onClick: () => setCurrentView(views.H5P),
-                selected: currentView === views.H5P,
+                value: views.H5P,
             },
         ];
 
@@ -346,8 +345,7 @@ const H5PEditorContainer = ({ intl }) => {
                     label: intl.formatMessage({
                         id: 'H5P_EDITOR.TAB.LIST_VIEW',
                     }),
-                    onClick: () => setCurrentView(views.LIST),
-                    selected: currentView === views.LIST,
+                    value: views.LIST,
                 }
             );
         }
@@ -358,6 +356,8 @@ const H5PEditorContainer = ({ intl }) => {
     return (
         <EditorContainer
             tabs={getContainerTabs()}
+            activeTab={currentView}
+            onTabChange={setCurrentView}
             sidebar={
                 librarySelected === true && (
                     <Fade in={librarySelected}>

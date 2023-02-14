@@ -1,15 +1,13 @@
 import React from 'react';
 import { EdlibComponentsProvider } from '../../../../../contexts/EdlibComponents';
-import { Box, Container } from '@mui/material';
 import ResourceView from '../../../../../components/ResourceView';
+import Container from '@mui/material/Container';
 
 const ViewResourceContainer = ({ match }) => {
     return (
         <EdlibComponentsProvider>
-            <Container>
-                <Box padding={1}>
-                    <ResourceView resourceId={match.params.resourceId} />
-                </Box>
+            <Container disableGutters>
+                <ResourceView resourceId={match.params.resourceId} />
             </Container>
         </EdlibComponentsProvider>
     );

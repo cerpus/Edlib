@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 
 const AddCard = props => {
     const {
@@ -9,6 +9,12 @@ const AddCard = props => {
         cardNumber,
         icon,
     } = props;
+    const styles = {
+        addNewQuestionContainer: {
+            padding: '8px',
+            textTransform: 'none',
+        }
+    };
     return (
         <div className="addCard">
             <span className="cardNumber">{cardNumber}</span>
@@ -18,7 +24,7 @@ const AddCard = props => {
                     size="large"
                 >
                     {icon}
-                    {label}
+                    <span style={styles.addNewQuestionContainer}>{label} </span>
                 </Button>
             </div>
         </div>

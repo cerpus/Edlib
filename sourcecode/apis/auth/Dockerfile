@@ -4,7 +4,7 @@
 FROM node:16-alpine AS base
 WORKDIR /var/www/app
 RUN apk --no-cache add build-base ca-certificates python3 curl
-RUN ln -s python3 /usr/bin/python
+RUN ln -s -f python3 /usr/bin/python
 
 #
 # appbase container, contains app and dependencies
@@ -39,5 +39,6 @@ CMD [ "yarn", "start" ]
 # Dev
 #
 FROM base AS dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 COPY ./docker-entrypoint-dev.sh /usr/local/bin/docker-entrypoint
 ENTRYPOINT ["docker-entrypoint"]

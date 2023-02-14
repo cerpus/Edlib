@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import {
     ArrowForward,
     Edit as EditIcon,
@@ -175,13 +175,13 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                                 padding: '20px 0',
                                             }}
                                         >
-                                            <Spinner />
+                                            <CircularProgress />
                                         </div>
                                     );
                                 }
 
                                 if (error) {
-                                    return <div>Noe skjedde</div>;
+                                    return <div>{t('something went wrong')}</div>;
                                 }
 
                                 return (
@@ -230,7 +230,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         onClick={editResource}
                         startIcon={<EditIcon />}
                     >
-                        {t('Rediger ressurs').toUpperCase()}
+                        {t('Rediger ressurs')}
                     </Button>
                 )}
                 {canReturnResources && (
@@ -240,7 +240,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                         onClick={insertResource}
                         startIcon={<ArrowForward />}
                     >
-                        {t('Bruk ressurs').toUpperCase()}
+                        {t('Bruk ressurs')}
                     </Button>
                 )}
             </DialogActions>

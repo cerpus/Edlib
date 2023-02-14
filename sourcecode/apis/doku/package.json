@@ -12,7 +12,7 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-env": "^7.20.2",
     "@cerpus/edlib-node-utils": "1.11.0",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
@@ -21,10 +21,10 @@
     "dataloader": "^2.1.0",
     "jest": "^27.5.1",
     "moment": "^2.29.4",
-    "prettier": "^2.7.1",
-    "supertest": "^6.3.1",
-    "swagger-jsdoc": "^6.2.5",
-    "swagger-ui-express": "^4.5.0",
+    "prettier": "^2.8.3",
+    "supertest": "^6.3.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

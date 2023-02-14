@@ -81,10 +81,4 @@ RUN set -eux; \
     cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
     install-php-extensions \
         xdebug-stable \
-    ; \
-    composer install \
-        --apcu-autoloader \
-        --no-progress \
-        --prefer-dist \
-    ; \
-    composer clear-cache;
+    ;

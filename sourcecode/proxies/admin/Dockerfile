@@ -17,6 +17,7 @@ EXPOSE 80
 CMD bash /createEnvFile.sh /usr/share/nginx/html; nginx -g "daemon off;"
 
 FROM node:16-alpine as dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 WORKDIR /app
 RUN apk --no-cache add curl
 EXPOSE 3000

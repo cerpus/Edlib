@@ -2,8 +2,8 @@ import './InfoBox.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@material-ui/core';
-import { Undo } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
+import Undo from '@material-ui/icons/Undo';
 
 function InfoBox(props) {
     const {

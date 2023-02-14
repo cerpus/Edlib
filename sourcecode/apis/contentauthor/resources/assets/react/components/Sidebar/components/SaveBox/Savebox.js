@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Box, Button } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 import { FormActions, useForm } from '../../../../contexts/FormContext';
 import Axios from '../../../../utils/axiosSetup';
 
@@ -141,6 +142,7 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
                     variant="contained"
                     color="primary"
                     disabled={processing}
+                    style={{textTransform: 'none'}}
                 >
                     {!processing &&
                         intl.formatMessage({ id: 'SAVEBOX.SAVEANDCLOSE' })}

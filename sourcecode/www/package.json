@@ -10,7 +10,6 @@
     "translate": "i18next-scanner --config i18n-scanner.config.js"
   },
   "dependencies": {
-    "@cerpus/ui": "^2.1.0",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "^11.9.3",
     "@emotion/server": "^11.4.0",
@@ -18,8 +17,6 @@
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.94",
     "@mui/material": "^5.9.2",
-    "axios": "^0.27.2",
-    "axios-hooks": "^3.1.4",
     "classnames": "^2.3.1",
     "cookie-parser": "^1.4.6",
     "cookie-storage": "^6.1.0",

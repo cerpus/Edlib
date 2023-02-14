@@ -1,0 +1,9 @@
+.video .h5p-dialog-box~.h5p-dialog-box{
+    opacity: 0.3;
+    pointer-events: none;
+  }
+.video .h5p-file-url-wrapper{
+    opacity: 0.3;
+    pointer-events: none; 
+    cursor: not-allowed;
+}

@@ -42,15 +42,12 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
 
     public function findImages($filterParameters)
     {
-        $page = !empty($filterParameters['page']) ? $filterParameters['page'] : 1;
-        $searchString = !empty($filterParameters['searchString']) ? $filterParameters['searchString'] : null;
-        $language = !empty($filterParameters['language']) ? $filterParameters['language'] : null;
-
         $request = $this->client->get(self::FIND_IMAGES_URL, [
             'query' => [
-                'page' => $page,
-                'query' => $searchString,
-                'language' => $language,
+                'page' => !empty($filterParameters['page']) ? $filterParameters['page'] : 1,
+                'query' => !empty($filterParameters['searchString']) ? $filterParameters['searchString'] : null,
+                'language' => !empty($filterParameters['language']) ? $filterParameters['language'] : null,
+                'fallback' => !empty($filterParameters['fallback']) ? $filterParameters['fallback'] : null,
             ]
         ]);
         $images = $request->getBody()->getContents();

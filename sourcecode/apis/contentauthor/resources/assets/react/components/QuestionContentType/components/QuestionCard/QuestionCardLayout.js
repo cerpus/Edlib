@@ -2,7 +2,8 @@ import './QuestionCard.scss';
 
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Add as AddIcon, AddCircle as AddCircleIcon } from '@material-ui/icons';
+import AddIcon from '@material-ui/icons/Add';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { FormattedMessage } from 'react-intl';
 
 import AnswerListComponent from './components/AnswerList';

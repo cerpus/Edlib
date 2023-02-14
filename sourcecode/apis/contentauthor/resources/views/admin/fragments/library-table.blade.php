@@ -22,7 +22,11 @@
             </td>
             <td>{{ $library['title'] }}</td>
             @isset($showCount)
-                <td>{{ $library['numContent'] ?: '' }}</td>
+                <td>
+                    @if (!empty($library['numContent']))
+                        <a href="{{ route('admin.content-library', [$library['libraryId']]) }}">{{ $library['numContent'] }}</a>
+                    @endif
+                </td>
                 <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
             @endif
             @isset($showSummary)
@@ -34,11 +38,11 @@
                 data-library-minor="{{$library['minorVersion']}}"
             >
                 @if (!empty($library['upgradeUrl']))
-                    <a title="Upgrade" href="{{ $library['upgradeUrl'] }}">
+                    <a title="Content bulk upgrade" href="{{ $library['upgradeUrl'] }}">
                         <button
                                 type="button"
-                                class="btn btn-info btn-xs"
-                                title="Upgrade"
+                                class="btn btn-info btn-xs h5p-action-button"
+                                title="Content bulk upgrade"
                         >
                             <span class="fa fa-refresh"></span>
                         </button>
@@ -46,7 +50,7 @@
                 @elseif ($library['hubUpgrade'] !== null)
                     <button
                             type="button"
-                            class="btn btn-success btn-xs install-btn"
+                            class="btn btn-success btn-xs install-btn h5p-action-button"
                             data-name="{{$library['machineName']}}"
                             data-ajax-url="{{route('admin.ajax')}}"
                             data-ajax-action="{{H5PEditorEndpoints::LIBRARY_INSTALL}}"
@@ -54,11 +58,13 @@
                     >
                         <span class="fa fa-cloud-download"></span>
                     </button>
+                @else
+                    <div class="h5p-action-button"></div>
                 @endif
                 @if(!empty($library['libraryId']))
                     <button
                             type="button"
-                            class="btn btn-warning btn-xs rebuild-btn"
+                            class="btn btn-warning btn-xs rebuild-btn h5p-action-button"
                             data-libraryId="{{$library['libraryId']}}"
                             data-ajax-url="{{route('admin.ajax')}}"
                             data-ajax-action="{{\App\Libraries\H5P\AjaxRequest::LIBRARY_REBUILD}}"

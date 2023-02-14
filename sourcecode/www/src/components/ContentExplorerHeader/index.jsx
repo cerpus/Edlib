@@ -28,6 +28,12 @@ const useStyles = makeStyles()((theme) => {
                 width: 40,
                 height: 40,
                 cursor: 'pointer',
+                '&:hover': {
+                    '@media(forced-colors: active)': {
+                        stroke: 'Highlight',
+                        outline: '1px solid Highlight',
+                    },
+                },
             },
         },
     };

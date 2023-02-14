@@ -40,6 +40,10 @@ const StyledIcon = styled.div`
 
     & > svg {
         font-size: ${(props) => props.theme.rem(props.fontSizeRem)};
+
+        @media(forced-colors: active) {
+            stroke: currentColor;
+        },
     }
 `;
 

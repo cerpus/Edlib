@@ -6,7 +6,6 @@ $finder = PhpCsFixer\Finder::create()
     ->path('bootstrap/app.php')
     ->path('config')
     ->path('database')
-    ->path('resources/lang')
     ->path('routes')
     ->path('tests')
 ;

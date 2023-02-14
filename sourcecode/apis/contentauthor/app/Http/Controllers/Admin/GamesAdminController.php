@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
 use ZipArchive;
 use App\Gametype;
 use League\Flysystem\Filesystem;
@@ -27,7 +28,7 @@ class GamesAdminController extends Controller
     public function store(GameUploadRequest $request)
     {
         $gameFile = $request->file('gameFile');
-        $zipFile = new Filesystem(new ZipArchiveAdapter($gameFile->path()));
+        $zipFile = new Filesystem(new ZipArchiveAdapter(new FilesystemZipArchiveProvider($gameFile->path())));
 
         $appManifest = new AppManifest(json_decode($zipFile->read('MILLIONAIRE/appmanifest.json')));
 

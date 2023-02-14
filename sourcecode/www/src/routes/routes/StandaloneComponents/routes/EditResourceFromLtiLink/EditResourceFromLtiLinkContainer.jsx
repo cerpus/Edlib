@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Spinner } from '@cerpus/ui';
+import { CircularProgress } from '@mui/material';
 import ModalHeader from './ModalHeader';
 import useIframeIntegration from '../../../../../hooks/useIframeIntegration';
 import { useEdlibResource } from '../../../../../hooks/requests/useResource';
@@ -33,7 +33,7 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
     );
 
     if (ltiLoading) {
-        return <Spinner />;
+        return <CircularProgress />;
     }
 
     if (ltiError) {

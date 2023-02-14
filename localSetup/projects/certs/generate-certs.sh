@@ -1,25 +1,18 @@
 #!/bin/sh
 set -e
 
-CA_DIR=/etc/ca
+CA_DIR=/usr/local/share/ca-certificates
 CERTS_DIR=/etc/ssl/private
 
 DOMAINS="\
-DNS:edlib.internal.url.local, \
-DNS:edlib.internal.auth.local, \
-DNS:edlib.internal.resource.local, \
-DNS:edlib.internal.lti.local, \
-DNS:edlib.internal.doku.local, \
-DNS:edlib.internal.version.local, \
+DNS:localhost, \
 DNS:edlibfacade.local, \
-DNS:test.edlibfacade.local, \
-DNS:contentauthor.local, \
-DNS:ca.edlib.local, \
-DNS:api.edlib.local, \
-DNS:docs.edlib.local, \
-DNS:www.edlib.local, \
+DNS:*.edlibfacade.local, \
+DNS:*.edlib.local, \
 DNS:npm.components.edlib.local \
 "
+
+mkdir -p "$CA_DIR" "$CERTS_DIR"
 
 if [ ! -f "$CA_DIR/ca.key" ]; then
   echo Generating CA key..

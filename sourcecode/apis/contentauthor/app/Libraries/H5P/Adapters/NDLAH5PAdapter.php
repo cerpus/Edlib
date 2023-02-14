@@ -14,6 +14,8 @@ use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
+use Illuminate\Support\Facades\Session;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -146,6 +148,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         if (config('h5p.include-custom-css') === true) {
             $css[] = (string) mix('css/ndlah5p-edit.css');
         }
+        $isAdmin = Session::get('isAdmin');
+        if (!$isAdmin) {
+            $css[] = '/css/ndlah5p-youtube.css';
+        }
         return $css;
     }
 
@@ -160,13 +166,16 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function getCustomEditorScripts(): array
     {
-        return [
-            "/js/h5p/wiris/h5peditor-html-wiris-addon.js",
-            (string) mix("js/ndla-contentbrowser.js"),
-            "/js/videos/brightcove.js",
-            (string) mix('js/h5peditor-image-popup.js'),
-            (string) mix('js/h5peditor-custom.js'),
-        ];
+        $js[] = "/js/h5p/wiris/h5peditor-html-wiris-addon.js";
+        $js[] = (string) mix("js/ndla-contentbrowser.js");
+        $js[] = "/js/videos/brightcove.js";
+        $js[] = (string) mix('js/h5peditor-image-popup.js');
+        $js[] = (string) mix('js/h5peditor-custom.js');
+        $isAdmin = Session::get('isAdmin');
+        if (!$isAdmin) {
+            $js[] = '/js/h5p/ndlah5p-youtube.js';
+        }
+        return $js;
     }
 
     public function getCustomEditorStyles(): array

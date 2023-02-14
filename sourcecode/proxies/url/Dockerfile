@@ -33,6 +33,7 @@ CMD [ "yarn", "start" ]
 # Dev container for running dev with mounted app volume
 #
 FROM base as dev
+ENV NODE_EXTRA_CA_CERTS="/usr/local/share/ca-certificates/cacert.pem"
 WORKDIR /var/www/app
 RUN yarn global add nodemon
 EXPOSE 80

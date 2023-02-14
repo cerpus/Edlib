@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Axios from 'axios';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { withStyles } from '@material-ui/core/styles';
-import { TextField, Paper, MenuItem, Chip, Button } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
+import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
 import Downshift from 'downshift';
 
 

@@ -21,11 +21,6 @@ parameters:
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Content\\:\\:\\$ndlaMapper\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
 			count: 1
 			path: app/Content.php
@@ -301,11 +296,6 @@ parameters:
 			path: app/Http/Controllers/Admin/CapabilityController.php
 
 		-
-			message: "#^Parameter \\#1 \\$zipArchiveProvider of class League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveAdapter constructor expects League\\\\Flysystem\\\\ZipArchive\\\\ZipArchiveProvider, string given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/GamesAdminController.php
-
-		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
@@ -361,46 +351,6 @@ parameters:
 			path: app/Http/Controllers/GameController.php
 
 		-
-			message: "#^Call to method getCss\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setAlterParametersSettings\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setContext\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setEmail\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 3
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setName\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 2
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setPreview\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setRedirectToken\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 2
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Call to method setUserName\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 3
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:create\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -411,22 +361,7 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#1 \\$config of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:createView\\(\\) expects App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface, App\\\\Libraries\\\\H5P\\\\Config given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Parameter \\#1 \\$config of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:getContents\\(\\) expects App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface, App\\\\Libraries\\\\H5P\\\\Config given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Parameter \\#1 \\$content of method H5PExport\\:\\:deleteExport\\(\\) expects array, ArrayAccess given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, object given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -671,11 +606,6 @@ parameters:
 			path: app/Libraries/Games/GameHandler.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 3
 			path: app/Libraries/Games/Millionaire/Millionaire.php
@@ -722,76 +652,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\AdminConfig\\)\\.$#"
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
 
@@ -854,76 +714,6 @@ parameters:
 			message: "#^Relation 'library' is not found in App\\\\H5PLibraryLanguage model\\.$#"
 			count: 2
 			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\EditorConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\EditorConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
 
 		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\CerpusStorageInterface\\:\\:getEditorDisplayPath\\(\\) invoked with 1 parameter, 0 required\\.$#"
@@ -1067,11 +857,6 @@ parameters:
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Parameter \\#1 \\$relations of static method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:with\\(\\) expects array\\<int\\|string, Closure\\|string\\>\\|string, array\\{libraries\\: array\\{'requiredLibrary'\\}\\} given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Framework.php
-
-		-
 			message: "#^Parameter \\#2 \\$replacements \\(App\\\\Libraries\\\\H5P\\\\type\\) of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:t\\(\\) should be compatible with parameter \\$replacements \\(array\\) of method H5PFrameworkInterface\\:\\:t\\(\\)$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
@@ -1160,11 +945,6 @@ parameters:
 			message: "#^Variable \\$dev_lib in isset\\(\\) is never defined\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
-
-		-
-			message: "#^Call to an undefined method H5PFrameworkInterface\\:\\:handleResult\\(\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PProgress.php
 
 		-
 			message: "#^Call to method execute\\(\\) on an unknown class App\\\\Libraries\\\\H5P\\\\PDOStatement\\.$#"
@@ -1328,76 +1108,6 @@ parameters:
 
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setContext\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setContext\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setDisplayH5PHub\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setDisplayH5PHub\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setEmail\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setEmail\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setPreview\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setPreview\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserId\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserId\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserName\\(\\) has invalid return type App\\\\Libraries\\\\H5P\\\\Config\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\ViewConfig\\:\\:setUserName\\(\\) should return App\\\\Libraries\\\\H5P\\\\Config but returns \\$this\\(App\\\\Libraries\\\\H5P\\\\ViewConfig\\)\\.$#"
 			count: 1
 			path: app/Libraries/H5P/ViewConfig.php
 
@@ -1947,18 +1657,8 @@ parameters:
 			path: tests/Integration/Jobs/PingVideoApiTest.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$metadata\\.$#"
-			count: 4
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
 			count: 7
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
-			message: "#^Relation 'metadata' is not found in App\\\\H5PContent model\\.$#"
-			count: 3
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
 		-
@@ -2077,16 +1777,6 @@ parameters:
 			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
 
 		-
-			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/h5pTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, object given\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/h5pTest.php
-
-		-
 			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/QuestionSetConverterTest.php
@@ -2125,36 +1815,6 @@ parameters:
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttributionOrigin\\(\\)\\.$#"
 			count: 2
 			path: tests/Integration/Models/ContentAttributionTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$id\\.$#"
-			count: 3
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$major_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Gametype\\>\\:\\:\\$minor_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 3
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$major_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$minor_version\\.$#"
-			count: 1
-			path: tests/Integration/Models/GametypeTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"

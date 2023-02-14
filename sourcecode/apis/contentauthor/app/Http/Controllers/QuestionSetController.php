@@ -63,14 +63,14 @@ class QuestionSetController extends Controller
         ) {
             $contentTypes->push([
                 'img' => '/graphical/QuizIcon.png',
-                'label' => 'Quiz',
+                'label' => 'Question Set (H5P)',
                 'outcome' => QuestionSetPackage::$machineName,
             ]);
         }
         if (Gametype::ofName(Millionaire::$machineName)->count() > 0) {
             $contentTypes->push([
                 'img' => '/graphical/MillionaireIcon.png',
-                'label' => 'Millionaire',
+                'label' => 'Millionaire mini game',
                 'outcome' => Millionaire::$machineName,
             ]);
         }

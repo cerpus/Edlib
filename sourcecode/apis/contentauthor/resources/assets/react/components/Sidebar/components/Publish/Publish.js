@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import WarningIcon from '@material-ui/icons/Warning';
-import { Fade } from '@material-ui/core';
-import { Switch } from '@cerpus/ui';
+import Fade from '@material-ui/core/Fade';
+import Switch from '@material-ui/core/Switch';
 import { useForm, FormActions } from '../../../../contexts/FormContext';
 
 const Publish = ({ label, initialPublish = false }) => {
@@ -19,10 +19,10 @@ const Publish = ({ label, initialPublish = false }) => {
             </Fade>
             <Switch
                 checked={isPublished}
-                onToggle={() => {
+                onChange={() => {
                     dispatch({ type: FormActions.setPublish, payload: { published: !isPublished } });
                 }}
-                color={'tertiary'}
+                color="primary"
             />
         </div>
     );
