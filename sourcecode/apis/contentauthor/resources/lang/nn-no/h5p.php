@@ -1,5 +1,4 @@
 <?php
-
 return [
     'title' => 'Tittel',
     'reuse' => 'Gjenbruk',
