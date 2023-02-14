@@ -147,12 +147,9 @@
         "ERROR_PUBLISHING": "Noe skjedde når vi prøvde å publisere. Vennligst prøv igjen eller kom tilbake senere.",
         "TOTAL_VIEWS": "Visninger totalt",
         "RANGE_VIEWS": "I valgt periode",
-<<<<<<< HEAD
         "VIEWS": "Visninger"
-=======
         "FROM": "Fra",
         "TO": "Til"
->>>>>>> f9a353f68d2dee373311282b68debd0f88dea4d4
     },
     "Godkjente": "Godkjente",
     "Ikke godkjente": "Ikke godkjente",
