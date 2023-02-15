@@ -10,7 +10,7 @@ use Generator;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Utils as PsrUtils;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -71,12 +71,13 @@ final class NynorobotAdapter implements TranslationServiceInterface
     private function createTranslationRequests(H5PTranslationDataObject $data): Generator
     {
         foreach ($data->getDocument() as $key => $value) {
-            yield $key => (new Request('POST', 'translateText'))
-                ->withHeader('Accept', 'application/json')
-                ->withBody(PsrUtils::streamFor(http_build_query([
+            yield $key => new Request(
+                'POST',
+                (new Uri('translateText'))->withQuery(http_build_query([
                     'stilmal' => $this->style,
                     'q' => $value,
-                ])));
+                ])),
+            );
         }
     }
 }

@@ -189,6 +189,11 @@ class H5PServiceProvider extends ServiceProvider
             ->give(function () {
                 return new Client([
                     'base_uri' => config('services.nynorobot.base_uri'),
+                    'headers' => [
+                        'x-user' => config('services.nynorobot.key'),
+                        // Unbelievably, this is a thing we have to do.
+                        'x-api-key' => iconv('UTF-8', 'ISO-8859-1', config('services.nynorobot.secret')),
+                    ],
                 ]);
             });
 
