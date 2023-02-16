@@ -60,7 +60,7 @@ final class NynorobotAdapterTest extends TestCase
             'foo' => 'Några saker',
             'att översätta',
             'bar' => 'och testa',
-        ], $translated->getDocument());
+        ], $translated->getFields());
     }
 
     public function testThrowsOnHttpFailure(): void

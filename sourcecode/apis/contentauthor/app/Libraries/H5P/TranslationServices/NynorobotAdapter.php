@@ -59,10 +59,7 @@ final class NynorobotAdapter implements TranslationServiceInterface
             },
         ]))->promise()->wait();
 
-        $data = clone $data;
-        $data->setFieldsFromArray($translated);
-
-        return $data;
+        return new H5PTranslationDataObject($translated);
     }
 
     /**
@@ -70,7 +67,7 @@ final class NynorobotAdapter implements TranslationServiceInterface
      */
     private function createTranslationRequests(H5PTranslationDataObject $data): Generator
     {
-        foreach ($data->getDocument() as $key => $value) {
+        foreach ($data->getFields() as $key => $value) {
             yield $key => new Request(
                 'POST',
                 (new Uri('translateText'))->withQuery(http_build_query([
