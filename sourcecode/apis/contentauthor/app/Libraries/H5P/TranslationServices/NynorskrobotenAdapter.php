@@ -5,6 +5,7 @@ namespace App\Libraries\H5P\TranslationServices;
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use GuzzleHttp\Client;
+
 use const JSON_THROW_ON_ERROR;
 
 class NynorskrobotenAdapter implements TranslationServiceInterface
