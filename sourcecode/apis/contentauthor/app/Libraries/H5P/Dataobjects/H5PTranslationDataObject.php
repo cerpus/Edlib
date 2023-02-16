@@ -9,7 +9,7 @@ use JsonSerializable;
 class H5PTranslationDataObject implements JsonSerializable
 {
     /**
-     * @param array<string, string> $fields
+     * @param string[] $fields
      */
     public function __construct(
         private readonly array $fields,
@@ -18,7 +18,7 @@ class H5PTranslationDataObject implements JsonSerializable
     }
 
     /**
-     * @return array<string, string>
+     * @return string[]
      */
     public function getFields(): array
     {
