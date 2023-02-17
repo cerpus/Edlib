@@ -5,4 +5,8 @@ module.exports = {
         '@storybook/addon-links/register',
         '@storybook/addon-viewport',
     ],
+    core: {
+        disableTelemetry: true,
+        enableCrashReports: false,
+    },
 };
