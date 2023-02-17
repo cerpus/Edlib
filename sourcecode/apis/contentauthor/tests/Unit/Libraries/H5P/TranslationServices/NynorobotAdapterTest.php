@@ -14,8 +14,6 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-use function json_encode;
-
 final class NynorobotAdapterTest extends TestCase
 {
     private MockHandler $mockedResponses;
@@ -36,14 +34,17 @@ final class NynorobotAdapterTest extends TestCase
     public function testCanTranslateTheStuff(): void
     {
         $this->mockedResponses->append(
-            $this->translatedResponse('Några saker'),
-            $this->translatedResponse('att översätta'),
-            $this->translatedResponse('och testa'),
+            new Response(200, ['Content-Type' => 'text/html'], <<<EOHTML
+            <html><body>
+            <div edlib-translation-path="foo"><p>Några saker</p></div>
+            <div edlib-translation-path="0">att översätta</div>
+            <div edlib-translation-path="bar"><h1>och testa</h1></div>
+            </body></html>
+            EOHTML),
         );
 
-        $data = new H5PTranslationDataObject();
-        $data->setFieldsFromArray([
-            'foo' => 'Noen greier',
+        $data = new H5PTranslationDataObject([
+            'foo' => '<p>Noen greier</p>',
             'å oversette',
             'bar' => 'og teste',
         ]);
@@ -51,36 +52,25 @@ final class NynorobotAdapterTest extends TestCase
         $adapter = new NynorobotAdapter(
             $this->client,
             NynorobotAdapter::STYLE_RADICAL,
-            2,
         );
         $translated = $adapter->getTranslations($data);
 
         $this->assertNotSame($data, $translated);
         $this->assertSame([
-            'foo' => 'Några saker',
+            'foo' => "<p>Några saker</p>",
             'att översätta',
-            'bar' => 'och testa',
-        ], $translated->getDocument());
+            'bar' => '<h1>och testa</h1>',
+        ], $translated->getFields());
     }
 
     public function testThrowsOnHttpFailure(): void
     {
         $this->mockedResponses->append(new Response(500, [], ''));
-        $data = new H5PTranslationDataObject();
-        $data->setFieldsFromArray(['foo']);
+        $data = new H5PTranslationDataObject(['foo' => 'bar']);
         $adapter = new NynorobotAdapter($this->client, NynorobotAdapter::STYLE_MODERATE);
 
-        $this->expectExceptionMessage('Translation failed');
+        $this->expectExceptionMessage('Error from translation service');
 
         $adapter->getTranslations($data);
-    }
-
-    private function translatedResponse(string $text): Response
-    {
-        return new Response(200, [], json_encode([
-            'responseData' => ['translatedText' => $text],
-            'responseDetails' => null,
-            'responseStatus' => 200,
-        ]));
     }
 }

@@ -1,33 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Libraries\H5P\Dataobjects;
 
-use Cerpus\Helper\Traits\CreateTrait;
+use JsonSerializable;
 
-/**
- * @method static H5PTranslationDataObject create($attributes = null)
- */
-class H5PTranslationDataObject
+class H5PTranslationDataObject implements JsonSerializable
 {
-    use CreateTrait;
-
-    public $id;
-    private $document = [];
-
-    public function setField($fieldId, $fieldValue)
-    {
-        $this->document[$fieldId] = $fieldValue;
+    /**
+     * @param string[] $fields
+     */
+    public function __construct(
+        private readonly array $fields,
+        private readonly string|null $id = null,
+    ) {
     }
 
-    public function setFieldsFromArray(array $values)
+    /**
+     * @return string[]
+     */
+    public function getFields(): array
     {
-        foreach ($values as $key => $value) {
-            $this->setField($key, $value);
-        }
+        return $this->fields;
     }
 
-    public function getDocument()
+    public function jsonSerialize(): array
     {
-        return $this->document;
+        return [
+            'id' => $this->id,
+            'document' => $this->fields,
+        ];
     }
 }

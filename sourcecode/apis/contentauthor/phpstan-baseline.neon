@@ -1077,16 +1077,6 @@ parameters:
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Cannot access property \\$document on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
-			count: 1
-			path: app/Libraries/H5P/TranslationServices/NynorskrobotenAdapter.php
-
-		-
-			message: "#^Cannot access property \\$guid on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
-			count: 1
-			path: app/Libraries/H5P/TranslationServices/NynorskrobotenAdapter.php
-
-		-
 			message: "#^Call to an undefined method GuzzleHttp\\\\ClientInterface\\:\\:get\\(\\)\\.$#"
 			count: 3
 			path: app/Libraries/H5P/Video/NDLAVideoAdapter.php
