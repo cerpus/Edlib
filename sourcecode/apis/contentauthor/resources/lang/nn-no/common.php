@@ -1,8 +1,7 @@
 <?php
-
 return [
     'cancel' => 'Avbryt',
-    'save-and-close' => 'Lager og lukk',
+    'save-and-close' => 'Lagre og lukk',
     'text-content-type' => "Tekst",
     'interactivity-content-type' => "Interaktivitet",
     'video-content-type' => "Video",
