@@ -36,6 +36,7 @@ Route::post('h5p/adapter', function () {
     return ["url" => route('create')];
 })->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
+Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
 Route::resource('/h5p', H5PController::class, ['except' => ['destroy']]);
 
 Route::get('images/browse', [H5PController::class, 'browseImages']);
