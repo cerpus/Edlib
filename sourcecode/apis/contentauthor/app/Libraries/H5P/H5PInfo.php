@@ -12,14 +12,14 @@ class H5PInfo
         $libraryInfo = H5PLibrary::where('name', $content->library->name)->latestVersion()->first();
         return [
             'title' =>  $content['title'],
-            'h5pLibrary' => $content->library ? [
+            'h5pLibrary' => [
                 'name' => $content->library->name,
                 'majorVersion' => $content->library->major_version,
                 'minorVersion' => $content->library->minor_version,
                 'latestMajorVersion' =>$libraryInfo->major_version,
                 'latestMinorVersion' =>$libraryInfo->minor_version,
                 'upgradable' => $content->library->isUpgradable(),
-            ] : null,
+            ],
             'published'    => $content['is_published'],
         ];
     }
