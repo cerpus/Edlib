@@ -621,37 +621,17 @@ services:
       - ./sourcecode/apis/common:/var/www/edlibcommon
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
 
-  # --------------------------------------------
-  # ----- Services needed for edlib facade -----
-  # --------------------------------------------
-  #  configserver:
-  #    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
-  #    volumes:
-  #      - ./localSetup/projects/config-server/settings:/config
-  #    environment:
-  #      SPRING_PROFILES_ACTIVE: native
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:8888/health]
-  #    ports:
-  #      - 8888:8888
-  #  edlibfacade:
-  #    build:
-  #      context: ./localSetup/projects/edlibfacade
-  #    entrypoint: /before-start.sh
-  #    command: [/start-app.sh]
-  #    depends_on:
-  #      configserver:
-  #        condition: service_healthy
-  #    volumes:
-  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-  #      - ./data/nginx/ca:/cacerts.d:ro
-  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-  #    environment:
-  #      CONFIGSERVICE_URI: http://configserver:8888
-  #      EDLIB_API_URL: https://api.edlib.local
-  #      HEAPSPACE_MAX: 128m
-  #      DEBUGGING_ENABLED: "yes"
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:8080/health]
-  #    ports:
-  #      - 5505:5555
+  edlibfacade:
+    build:
+      context: ./sourcecode/not_migrated/edlibfacade
+      target: dev
+    command: [java, -jar, /app/out/artifacts/edlibfacade_jar/edlibfacade.jar]
+    profiles:
+      - cerpus
+    volumes:
+      - ./data/nginx/ca:/cacerts.d:ro
+      - ./sourcecode/not_migrated/edlibfacade:/app
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/health]
+    ports:
+      - 5505:5555
