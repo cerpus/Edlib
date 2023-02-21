@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyle = makeStyles((theme) => ({
     tab: {
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper, textTransform: 'none',
     },
     firstTab: {
         borderTopLeftRadius: theme.shape.borderRadius,
