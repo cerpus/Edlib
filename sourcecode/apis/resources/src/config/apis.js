@@ -40,21 +40,6 @@ export default {
                 'secret2'
             ),
         },
-        url: {
-            urls: {
-                content: `http://urlapi/v1/content`,
-                lti: `${edlibUrl}/url/v1/lti-view`,
-            },
-            disableVersioning: true,
-            ltiConsumerKey: env(
-                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY',
-                'h5p'
-            ),
-            ltiConsumerSecret: env(
-                'EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET',
-                'secret2'
-            ),
-        },
     },
     coreInternal: {
         url: env('EDLIBCOMMON_CORE_INTERNAL_URL', 'http://core'),

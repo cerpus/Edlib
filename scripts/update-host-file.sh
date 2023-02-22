@@ -6,7 +6,6 @@ default_ip="127.0.0.1"
 ip=${1:-$default_ip}
 
 read -r -d '' hosts << EOM
-$ip\tedlib.internal.url.local
 $ip\tedlib.internal.auth.local
 $ip\tedlib.internal.resource.local
 $ip\tedlib.internal.lti.local

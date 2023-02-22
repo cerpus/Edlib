@@ -1,6 +1,0 @@
-/.idea
-/node_modules
-*.log
-/third-party
-/test-report.json
-/:memory

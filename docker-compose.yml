@@ -5,8 +5,6 @@ volumes:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
-  edlib-url_nodemodules:
-  edlibapi-url_nodemodules:
   elasticsearch:
   maven_cache:
   mysql:
@@ -398,32 +396,6 @@ services:
       redis:
         condition: service_healthy
 
-  urlapi:
-    build:
-      context: ./sourcecode/apis/url
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      elasticsearch:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - edlib-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/url:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
   www:
     build:
       context: ./sourcecode/www
@@ -530,25 +502,6 @@ services:
       - ./sourcecode/proxies/resource:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  edlibapi-url:
-    build:
-      context: ./sourcecode/proxies/url
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-    env_file:
-      - ./localSetup/.env
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - edlibapi-url_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/url:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   npm-components-storybook:
     build:
