@@ -36,7 +36,7 @@
     "on-finished": "^2.4.1",
     "redis": "^4.5.0",
     "redis-mock": "^0.56.3",
-    "winston": "^3.7.2"
+    "winston": "^3.8.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
