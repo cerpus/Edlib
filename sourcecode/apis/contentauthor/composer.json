@@ -41,7 +41,7 @@
         "league/mime-type-detection": "^1.9",
         "masterminds/html5": "^2.7",
         "matthiasmullie/minify": "^1.3",
-        "predis/predis": "^1.1",
+        "predis/predis": "^2.1",
         "ramsey/uuid": "^4.2",
         "spatie/laravel-ignition": "^1.0",
         "symfony/cache": "^6.1",
