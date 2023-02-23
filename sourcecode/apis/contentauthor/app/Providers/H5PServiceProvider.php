@@ -19,6 +19,7 @@ use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
+use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use App\Libraries\H5P\Video\StreampsAdapter;
@@ -26,6 +27,7 @@ use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -175,11 +177,34 @@ class H5PServiceProvider extends ServiceProvider
             return $app->make(H5PFileStorage::class, $config);
         });
 
-        $this->app->bind(TranslationServiceInterface::class, function () {
+        $this->app->bind(NynorskrobotenAdapter::class, function () {
             $client = new Client([
                 'base_uri' => config('services.nynorskroboten.domain'),
             ]);
             return new NynorskrobotenAdapter($client, config('services.nynorskroboten.token'));
+        });
+
+        $this->app->when(NynorobotAdapter::class)
+            ->needs(ClientInterface::class)
+            ->give(function () {
+                return new Client([
+                    'base_uri' => config('services.nynorobot.base_uri'),
+                    'headers' => [
+                        'x-user' => config('services.nynorobot.key'),
+                        // Unbelievably, this is a thing we have to do.
+                        'x-api-key' => iconv('UTF-8', 'ISO-8859-1', config('services.nynorobot.secret')),
+                    ],
+                ]);
+            });
+
+        $this->app->when(NynorobotAdapter::class)
+            ->needs('$style')
+            ->giveConfig('services.nynorobot.style');
+
+        $this->app->bind(TranslationServiceInterface::class, match (config('h5p.nynorskAdapter')) {
+            'nynorskroboten' => NynorskrobotenAdapter::class,
+            'nynorobot' => NynorobotAdapter::class,
+            default => throw new \Exception('Unknown nynorsk adapter'),
         });
 
         $this->app->singletonIf(H5PAdapterInterface::class, function () {

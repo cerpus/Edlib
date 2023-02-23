@@ -18,13 +18,13 @@
     "amqplib": "^0.8.0",
     "axios": "^0.27.2",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "dataloader": "^2.1.0",
+    "dataloader": "^2.2.2",
     "jest": "^27.5.1",
     "moment": "^2.29.4",
     "prettier": "^2.8.3",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^4.6.0",
+    "swagger-ui-express": "^4.6.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

@@ -35,11 +35,6 @@ updates:
     ignore:
       - dependency-name: "@elastic/elasticsearch" # newer versions of this client doesn't support elasticsearch in AWS
 
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/apis/url"
-    schedule:
-      interval: "monthly"
-
 # -----------------------------------------------------
 # ---------- sourcecode/npm repos ---------------------
 # -----------------------------------------------------
@@ -72,15 +67,7 @@ updates:
     schedule:
       interval: "monthly"
   - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/recommendation"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
     directory: "/sourcecode/proxies/resource"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/url"
     schedule:
       interval: "monthly"
 

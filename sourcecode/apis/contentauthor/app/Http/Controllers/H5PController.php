@@ -27,6 +27,7 @@ use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\EditorConfig;
 use App\Libraries\H5P\h5p;
 use App\Libraries\H5P\H5PCopyright;
+use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PExport;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
@@ -866,6 +867,12 @@ class H5PController extends Controller
             return response('No copyright found', Response::HTTP_NOT_FOUND);
         }
         return response()->json($copyrights);
+    }
+
+    public function getInfo(H5PContent $h5p, H5PInfo $h5PInfo)
+    {
+        $information = $h5PInfo->getInformation($h5p);
+        return response()->json($information);
     }
 
     public function browseAudios(Request $request)

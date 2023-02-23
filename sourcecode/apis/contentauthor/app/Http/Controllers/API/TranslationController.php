@@ -2,25 +2,27 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Http\Requests\ApiTranslationRequest;
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
-class TranslationController extends Controller
+final class TranslationController
 {
-    public function __invoke(Request $request, TranslationServiceInterface $translationService)
+    public function __construct(
+        private readonly TranslationServiceInterface $translationService,
+    ) {
+    }
+
+    public function __invoke(ApiTranslationRequest $request): JsonResponse
     {
-        $fieldsToTranslate = $request->json();
-        if ($fieldsToTranslate->has('fields')) {
-            $translationDataObject = H5PTranslationDataObject::create();
-            $fieldsMapping = collect($fieldsToTranslate->get('fields'))
-                ->mapWithKeys(function ($item) {
-                    return [$item['path'] => $item['value']];
-                })->toArray();
-            $translationDataObject->setFieldsFromArray($fieldsMapping);
-            $translated = $translationService->getTranslations($translationDataObject);
-            return response()->json($translated->toArray());
-        }
+        $fieldsToTranslate = collect($request->validated('fields'))
+            ->mapWithKeys(fn ($item) => [$item['path'] => $item['value']])
+            ->toArray();
+
+        $input = new H5PTranslationDataObject($fieldsToTranslate);
+        $translated = $this->translationService->getTranslations($input);
+
+        return response()->json($translated);
     }
 }

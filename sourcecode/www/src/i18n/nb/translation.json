@@ -116,7 +116,7 @@
     "Privat": "Privat",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i Edlib",
     "Delt/offentlig": "Delt/offentlig",
-    "Alle kans se denne Doku": "Alle kan se denne Doku-en",
+    "Alle kans se denne Doku": "Alle kan se denne Dokuen",
     "Hvordan skal andre forfattere kunne bruke denne Doku?": "Hvordan skal andre forfattere kunne bruke denne Doku-en?",
     "Kan bruke den som den er": "Kan brukes som den er",
     "Kan bruke og/eller kopiere og endre den": "Kan bruke og/eller kopiere og endre den",
@@ -210,5 +210,6 @@
     "draft": "utkast",
     "published": "publisert",
     "unpublished": "upublisert",
-    "created": "opprettet"
+    "created": "opprettet",
+    "something went wrong": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator."
 }

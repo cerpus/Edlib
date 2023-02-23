@@ -95,8 +95,8 @@
             "INTERAKTIVTAVLE": "Interaktiv tavle"
         }
     },
-    "Bruk ressurs": "Bruk ressurs",
-    "Rediger ressurs": "Rediger ressurs",
+    "Bruk ressurs": "Bruk innhald",
+    "Rediger ressurs": "Rediger innhald",
     "Lukk": "Lukk",
     "urlDisplayTypes": {
         "ndla": "NDLA",
@@ -107,10 +107,10 @@
         "ndlaWarning": "Vi har funnet ressursen hos NDLA. Hvis du velger å bruke den vil den bli lagt inn i Doku-en."
     },
     "bruk": "Bruk",
-    "Forhåndsvisning": "Førehandsvisning",
+    "Forhåndsvisning": "Vis på førehand",
     "Mitt innhold": "Innhaldet mitt",
     "Legg til samarbeidere": "Legg til samarbeidarar",
-    "Forhåndsvis": "Førehandsvisning",
+    "Forhåndsvis": "Vis på førehand",
     "Publiser": "Publiser",
     "Publiseringsinnstillinger": "Innstillingar for publisering",
     "Privat": "Privat",
@@ -126,7 +126,7 @@
     "Video": "Video",
     "Tekst": "Tekst",
     "Innholdssamling": "Innhaldssamling",
-    "Delt innhold": "Delt innhald",
+    "Delt innhold": "Finn delt innhald",
     "Samarbeidere": "Samarbeidere",
     "Samarbeider": "Samarbeider",
     "Ingen tilgang": "Ingen tilgang",
@@ -142,9 +142,14 @@
     "Innhold": "Innhald",
     "Matematikkverktøyet": "Matematikkverktøyet",
     "Skriv formelen": "Skriv formelen",
-    "Sett inn": "Set inn",
+    "Sett inn": "Bruk innhald",
     "S": {
-        "ERROR_PUBLISHING": "Noko skjedde når me prøvde å publisera. Ver vennleg og prøv igjen eller kom tilbake seinare."
+        "ERROR_PUBLISHING": "Noko skjedde når me prøvde å publisera. Ver vennleg og prøv igjen eller kom tilbake seinare.",
+        "VIEWS": "Visningar",
+        "TOTAL_VIEWS": "Totalen av visningar",
+        "RANGE_VIEWS": "Visningar i valde periode",
+        "FROM": "Frå",
+        "TO": "Til"
     },
     "Godkjente": "Godkjende",
     "Ikke godkjente": "Ikkje godkjende",
@@ -173,8 +178,8 @@
     "create_new": "lag ny",
     "edit_filter": "endre filter",
     "choose_filter": "velg filter",
-    "cancel": "avbryt",
-    "save": "lagre",
+    "cancel": "Avbryt",
+    "save": "Lagre",
     "delete_filter": "slett filter",
     "delete": "slett",
     "content_type_groups": {
@@ -200,10 +205,11 @@
     "filter_plural": "filter",
     "resource_view": "visningar av ressurs",
     "resource_view_plural": "ressursvisningar",
-    "grouped": "gruppert",
-    "save_filter": "lagre filter",
+    "grouped": "Gruppert",
+    "save_filter": "Lagre filter",
     "draft": "utkast",
     "published": "publisert",
     "unpublished": "upublisert",
-    "created": "oppretta"
+    "created": "oppretta",
+    "something went wrong": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator."
 }

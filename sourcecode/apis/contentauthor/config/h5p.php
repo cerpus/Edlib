@@ -54,4 +54,7 @@ return [
     'upload-media-files-timeout' => env("H5P_UPLOAD_MEDIA_FILES_TIMEOUT", 5),
     'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),
     'showDisplayOptions' => env("H5P_SHOW_DISPLAY_OPTIONS", false),
+
+    // one of 'nynorskroboten', 'nynorobot'
+    'nynorskAdapter' => env('H5P_NYNORSK_ADAPTER', 'nynorskroboten'),
 ];
