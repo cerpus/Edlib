@@ -246,11 +246,6 @@ abstract class Content extends Model
         return implode(',', $collaborators);
     }
 
-    public function useVersioning()
-    {
-        return !empty(config('feature.versioning'));
-    }
-
     /**
      * Determine if the request should result in a new version
      */
@@ -264,23 +259,19 @@ abstract class Content extends Model
             return true;
         }
 
-        if ($this->useVersioning() === true) {
-            $ct = $this->getContentTitle();
-            $rt = $this->getRequestTitle($request);
-            $title = $ct !== $rt; // Titles not the same
+        $ct = $this->getContentTitle();
+        $rt = $this->getRequestTitle($request);
+        $title = $ct !== $rt; // Titles not the same
 
-            $cc = $this->getContentContent();
-            $rc = $this->getRequestContent($request);
-            $content = $cc !== $rc; // Content not the same
+        $cc = $this->getContentContent();
+        $rc = $this->getRequestContent($request);
+        $content = $cc !== $rc; // Content not the same
 
-            $cl = $this->getContentLicense();
-            $rl = $this->getRequestLicense($request);
-            $license = $cl !== $rl; // License not the same
+        $cl = $this->getContentLicense();
+        $rl = $this->getRequestLicense($request);
+        $license = $cl !== $rl; // License not the same
 
-            return $title || $content || $license;
-        }
-
-        return false;
+        return $title || $content || $license;
     }
 
     public function hasLock()
@@ -337,7 +328,7 @@ abstract class Content extends Model
     public function isImported($returnMapperObject = false)
     {
         $ndlaMapper = $this->ndlaMapper;
-        if (!config('feature.versioning') || !empty($ndlaMapper)) {
+        if (!empty($ndlaMapper)) {
             return $returnMapperObject === true ? $ndlaMapper : !empty($ndlaMapper);
         }
         $versionClient = app(VersionClient::class);
@@ -445,7 +436,7 @@ abstract class Content extends Model
         }
 
         $editUrl = route($this->editRouteName, $this->id);
-        if ($latest && !empty(config('feature.versioning'))) {
+        if ($latest) {
             /** @var VersionClient $versionClient */
             $versionClient = app()->make(VersionClient::class);
             $latest = $versionClient->latest($this->version_id);

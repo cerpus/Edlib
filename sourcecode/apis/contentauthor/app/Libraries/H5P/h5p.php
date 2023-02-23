@@ -44,7 +44,7 @@ class h5p
         $oldLibrary = null;
         $oldParams = null;
         if ($content !== null) {
-            if (!empty($content['useVersioning']) && $content['useVersioning'] === true) {
+            if ($content['useVersioning'] ?? false) {
                 $content['parent_content_id'] = $content['id'];
                 unset($content['id']);
             }
