@@ -19,7 +19,7 @@
     "amqplib": "^0.8.0",
     "babel-plugin-transform-default-import": "^1.0.0",
     "jest": "^27.5.1",
-    "joi": "^17.7.0",
+    "joi": "^17.8.3",
     "js-yaml": "^4.1.0",
     "prettier": "^2.8.3",
     "supertest": "^6.3.3",
