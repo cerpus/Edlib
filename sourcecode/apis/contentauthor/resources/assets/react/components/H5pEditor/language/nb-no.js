@@ -8,7 +8,7 @@ export default {
     'H5P_EDITOR.LIST_VIEW.ALT_TEXTS': 'Alt-tekster',
     'H5P_EDITOR.LIST_VIEW.HOVER_TEXTS': 'Hover-tekster',
     'H5P_EDITOR.LIST_VIEW.VIEW_ALL': 'Vis alle',
-    'H5P_EDITOR.TAB.H5P_VIEW': 'H5P visning',
+    'H5P_EDITOR.TAB.H5P_VIEW': 'H5P-visning',
     'H5P_EDITOR.TAB.LIST_VIEW': 'Manusvisning',
     'H5P_EDITOR.LANGUAGE_PICKER.NOT_CHOSEN': 'Ikke valgt',
     'H5P_EDITOR.LANGUAGE_PICKER.MAKE_NEW_VARIANT': 'Lag ny variant',
