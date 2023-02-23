@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Session;
  * @property string $node_id
  * @property Collection $collaborators
  * @property bool $is_draft
+ * @property-read NdlaIdMapper|null $ndlaMapper
  *
  * @method static Collection findMany($ids, $columns = ['*'])
  * @method static Builder select($columns = ['*'])
@@ -325,12 +326,12 @@ abstract class Content extends Model
         return $this->versionColumn;
     }
 
-    public function isImported($returnMapperObject = false)
+    public function isImported(): bool
     {
-        $ndlaMapper = $this->ndlaMapper;
-        if (!empty($ndlaMapper)) {
-            return $returnMapperObject === true ? $ndlaMapper : !empty($ndlaMapper);
+        if ($this->ndlaMapper) {
+            return true;
         }
+
         $versionClient = app(VersionClient::class);
         $versionData = $versionClient->getVersion($this[$this->getVersionColumn()]);
 
@@ -340,7 +341,7 @@ abstract class Content extends Model
         $ndlaMapperCollection = NdlaIdMapper::whereIn('ca_id', $this->getVersionedIds($versionData))
             ->latest()
             ->get();
-        return $returnMapperObject === true ? $ndlaMapperCollection->first() : $ndlaMapperCollection->isNotEmpty();
+        return $ndlaMapperCollection->isNotEmpty();
     }
 
     private function getVersionedIds(VersionData $version)
