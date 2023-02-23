@@ -14,7 +14,7 @@
         "laravel/sanctum": "^2.15.1",
         "laravel/tinker": "^2.7.2",
         "packbackbooks/lti-1p3-tool": "^5.2",
-        "predis/predis": "^1.1.10",
+        "predis/predis": "^2.1.1",
         "web-token/jwt-checker": "^2.2.11",
         "web-token/jwt-core": "^2.2.11",
         "web-token/jwt-signature-algorithm-rsa": "^2.2.11"
