@@ -48,6 +48,11 @@ const CerpusUI = ({ children }) => {
                             root: {
                                 display: 'block',
                             },
+                        },
+                        MuiTab:{
+                            root: {
+                                textTransform: 'none',
+                            }
                         }
                     },
                 })}

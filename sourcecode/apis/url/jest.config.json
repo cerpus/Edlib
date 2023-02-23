@@ -1,8 +1,0 @@
-{
-    "name": "urlapi",
-    "collectCoverage": true,
-    "coverageReporters": ["text"],
-    "transformIgnorePatterns": [
-        "/node_modules/(?!@cerpus|uuid|colorette).+\\.js$"
-    ]
-}
