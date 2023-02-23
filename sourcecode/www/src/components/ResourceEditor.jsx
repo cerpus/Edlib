@@ -64,7 +64,7 @@ const ResourceEditor = ({
             </div>
         );
 
-    if (!response || response.editor === 'doku') return <></>;
+    if (!response) return <></>;
 
     return <Lti data={response} onResourceReturned={onResourceReturned} />;
 };

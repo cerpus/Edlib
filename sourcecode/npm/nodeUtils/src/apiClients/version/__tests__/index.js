@@ -28,7 +28,7 @@ describe('Api Clients', () => {
             it('Should throw on invalid version purpose', async () => {
                 const versionApi = versionApiClient({}, {}, {});
                 await expect(
-                    versionApi.create('invalid', externalSystemNames.DOKU, 'id')
+                    versionApi.create('invalid', externalSystemNames.CONTENT_AUTHOR, 'id')
                 ).rejects.toThrow(ValidationException);
             });
         });

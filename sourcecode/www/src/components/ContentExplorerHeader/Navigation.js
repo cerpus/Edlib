@@ -72,7 +72,6 @@ export default ({ activatedEditors, getUrl }) => {
                 active: isActive([
                     getUrl('/resources/new'),
                     getUrl('/link-author'),
-                    getUrl('/doku-author'),
                 ]),
                 icon: <CreateIcon fontSize="small" />,
                 items: activatedEditors.map(

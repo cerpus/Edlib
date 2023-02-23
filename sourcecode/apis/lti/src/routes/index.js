@@ -22,7 +22,7 @@ export default async ({ pubSubConnection }) => {
         swaggerUi.setup(
             swaggerJSDoc({
                 swaggerDefinition: {
-                    basePath: '/dokus',
+                    basePath: '/lti',
                 },
                 apis: ['./src/routes/**/*.js'],
             })
@@ -43,7 +43,7 @@ export default async ({ pubSubConnection }) => {
      */
     apiRouter.get('/', (req, res) => {
         res.json({
-            message: 'Welcome to the EdLib Doku API',
+            message: 'Welcome to the EdLib LTI API',
         });
     });
 
