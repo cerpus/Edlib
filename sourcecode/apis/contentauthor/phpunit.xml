@@ -49,11 +49,7 @@
         <server name="TEST_FS_ROOT" value="/tmp"/>
         <server name="MAIL_PRETEND" value="true"/>
         <server name="MAIL_DRIVER" value="log"/>
-        <server name="CERPUS_AUTH_SERVER" value=""/>
-        <server name="CERPUS_CORE_SERVER" value=""/>
         <server name="VERSION_API_SERVER" value="http://versionApiServer.local"/>
-        <server name="XAPI_ENDPOINT" value=""/>
-        <server name="OER_LICENSES_URL" value=""/>
         <server name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <server name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
         <server name="FILESYSTEM_DRIVER" value="test"/>
