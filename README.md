@@ -34,7 +34,6 @@ Edlib is continuously evolving, with existing features being refined and new fea
    * **Flashcards**: Interactive flashcards. Create a set of stylish and intuitive flashcards that have images paired with questions and answers. 
    * **Quiz**: A content type allowing creatives to create quizzes. Many question types are supported like multiple-choice, fill-in-the-blanks, drag-the-words, mark-the-words, and regular drag-and-drop.
 * Content explorer to easily find and re-use existing Edlib content. Content can be filtered by H5P content type, tags, [Creative-Commons](https://creativecommons.org/) license, and so forth.
-* Create content-by-URL: the ability to point to an existing (publicly available) resource and turn it into an Edlib-based learning resource.
 * Licensing module with an intelligent Creative-Commons license selector.
 * Authoring workflows, including maintaining resources private or making them publicly available.
 * Collaboration functionality for content creators.
