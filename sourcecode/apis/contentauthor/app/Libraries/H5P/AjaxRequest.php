@@ -73,6 +73,9 @@ class AjaxRequest
             case H5PEditorEndpoints::FILTER:
                 return $this->filter($request);
 
+            case H5PEditorEndpoints::CONTENT_HUB_METADATA_CACHE:
+                return $this->contentTypeMetadataCache();
+
             case self::LIBRARY_REBUILD:
                 return $this->libraryRebuild($request);
 
@@ -120,6 +123,24 @@ class AjaxRequest
             $libraries = $this->editor->getLibraries();
             return !is_string($libraries) ? $libraries : json_decode($libraries);
         }
+    }
+
+    /**
+     * The filter options for the H5P Hub option "Get shared Content"
+     * This feature not enabled in Edlib, but the H5P Hub requests the data anyway
+     */
+    private function contentTypeMetadataCache(): array
+    {
+        $this->returnType = "json";
+        return [
+            'success' => true,
+            'data' => [
+                'levels' => [],
+                'languages' => [],
+                'licenses' => [],
+                'disciplines' => [],
+            ],
+        ];
     }
 
     private function contentTypeCache(): array
