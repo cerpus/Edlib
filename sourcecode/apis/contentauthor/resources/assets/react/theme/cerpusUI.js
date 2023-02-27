@@ -48,7 +48,42 @@ const CerpusUI = ({ children }) => {
                             root: {
                                 display: 'block',
                             },
-                        }
+                        },
+                        MuiTab:{
+                            root: {
+                                textTransform: 'none',
+                            }
+                        },
+                        MuiAccordion: {
+                            root: {
+                                borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+                                '&:before': {
+                                    opacity: '0',
+                                },
+                                '&.Mui-expanded': {
+                                    margin: '0',
+                                },
+                            },
+                        },
+                        MuiAccordionSummary:{
+                            root: {
+                                '&.Mui-expanded': {
+                                    minHeight: '0',
+                                },
+                            },
+                            content: {
+                                '&.Mui-expanded': {
+                                    margin: '12px 0',
+                                    fontWeight: 'bold',
+                                },
+                            },
+                        },
+                    },
+                    props: {
+                        MuiAccordion: {
+                            variant: 'elevation',
+                            elevation: '0',
+                        },
                     },
                 })}
             >
