@@ -1,5 +1,4 @@
 import React from 'react';
-import { CircularProgress } from '@mui/material';
 import {
     ArrowForward,
     Edit as EditIcon,
@@ -16,8 +15,10 @@ import { useHistory } from 'react-router-dom';
 import { resourceCapabilities } from '../../config/resource';
 import { useEdlibComponentsContext } from '../../contexts/EdlibComponents';
 import {
+    Alert,
     Box,
     Button,
+    CircularProgress,
     DialogContent,
     DialogActions,
     DialogTitle,
@@ -62,6 +63,9 @@ const useStyles = makeStyles()((theme) => ({
             marginBottom: 15,
         },
     },
+    alertBox: {
+        marginRight: theme.spacing(1),
+    },
 }));
 
 const ResourceModal = ({ isOpen, onClose, resource }) => {
@@ -98,6 +102,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
     }, [resource]);
 
     const capabilities = useResourceCapabilitiesFlags(resource);
+    const canEdit = capabilities[resourceCapabilities.EDIT];
 
     return (
         <Dialog
@@ -223,16 +228,20 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                 </Grid>
             </DialogContent>
             <DialogActions classes={{ root: classes.dialogActions }}>
-                {capabilities[resourceCapabilities.EDIT] && (
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={editResource}
-                        startIcon={<EditIcon />}
-                    >
-                        {t('Rediger ressurs')}
-                    </Button>
-                )}
+                {!canEdit &&
+                    <Alert severity="info" className={classes.alertBox}>
+                        {t('edit_license_restricted')}
+                    </Alert>
+                }
+                <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={canEdit ? editResource : null}
+                    startIcon={<EditIcon />}
+                    disabled={!canEdit}
+                >
+                    {t('Rediger ressurs')}
+                </Button>
                 {canReturnResources && (
                     <Button
                         color="primary"

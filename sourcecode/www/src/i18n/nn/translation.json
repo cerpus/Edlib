@@ -211,5 +211,6 @@
     "published": "publisert",
     "unpublished": "upublisert",
     "created": "oppretta",
-    "something went wrong": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator."
+    "something went wrong": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator.",
+    "edit_license_restricted": "Lisensen tillèt ikkje redigering av dette innhaldet"
 }
