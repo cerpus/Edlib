@@ -343,12 +343,7 @@ H5P.VideoBrightcove = (function ($) {
     // https://bc/0/12345678 => Path is 0, will use normal player
     // https://bc/360/12345678 => Path is 360, will use 360 player
     var is360Video = function (url) {
-        var matches = url.match(/^https:\/\/bc\/?(0|360)?\/(ref:[a-z0-9]+|\d+)$/);
-        if (matches && matches.length > 1) {
-            return matches[1] !== '0';
-        }
-
-        return true;
+        return /^https:\/\/bc\/(360|[1-9]\d*)/.test(url);
     };
 
     return Brightcove;
