@@ -146,5 +146,5 @@
     "published": "published",
     "unpublished": "unpublished",
     "created": "created",
-    "edit_license_restricted": "The license does not allow you to edit this content"
+    "edit_not_allowed_by_license": "The license does not allow you to edit this content"
 }

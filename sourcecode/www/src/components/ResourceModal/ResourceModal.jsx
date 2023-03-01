@@ -230,7 +230,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
             <DialogActions classes={{ root: classes.dialogActions }}>
                 {!canEdit &&
                     <Alert severity="info" className={classes.alertBox}>
-                        {t('edit_license_restricted')}
+                        {t('edit_not_allowed_by_license')}
                     </Alert>
                 }
                 <Button

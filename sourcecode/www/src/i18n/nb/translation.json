@@ -212,5 +212,5 @@
     "unpublished": "upublisert",
     "created": "opprettet",
     "something went wrong": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
-    "edit_license_restricted": "Lisensen tillater ikke redigering av dette innholdet"
+    "edit_not_allowed_by_license": "Lisensen tillater ikke redigering av dette innholdet"
 }
