@@ -571,7 +571,8 @@ class VideoBrowser extends ContentBrowserBase {
             onSelectCallback: values => {
                 promise.finally(() => {
                     this.copyrightHandler.reset();
-                    this.widget.useUrl('https://bc/' + values.id);
+                    const path = values.projection === 'equirectangular' ? 360 : 0;
+                    this.widget.useUrl(`https://bc/${path}/${values.id}`);
                     this.setCopyright(values);
                     this.toggleContentBrowser();
                     this.widget.$add.toggleClass('hidden', this.widget.params.length > 0);
