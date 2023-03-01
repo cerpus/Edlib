@@ -7328,10 +7328,10 @@ jest-worker@^27.4.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-joi@^17.4.2:
-  version "17.7.1"
-  resolved "https://registry.yarnpkg.com/joi/-/joi-17.7.1.tgz#854fc85c7fa3cfc47c91124d30bffdbb58e06cec"
-  integrity sha512-teoLhIvWE298R6AeJywcjR4sX2hHjB3/xJX4qPjg+gTg+c0mzUDsziYlqPmLomq9gVsfaMcgPaGc7VxtD/9StA==
+joi@^17.8.3:
+  version "17.8.3"
+  resolved "https://registry.yarnpkg.com/joi/-/joi-17.8.3.tgz#d772fe27a87a5cda21aace5cf11eee8671ca7e6f"
+  integrity sha512-q5Fn6Tj/jR8PfrLrx4fpGH4v9qM6o+vDUfD4/3vxxyg34OmKcNqYZ1qn2mpLza96S8tL0p0rIw2gOZX+/cTg9w==
   dependencies:
     "@hapi/hoek" "^9.0.0"
     "@hapi/topo" "^5.0.0"
