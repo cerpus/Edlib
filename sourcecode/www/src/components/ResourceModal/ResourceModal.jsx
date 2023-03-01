@@ -110,7 +110,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
             }}
         >
             <DialogTitle className={classes.dialogTitle}>
-                <Box display="flex">
+                <Box display="flex" alignItems="center">
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -132,16 +132,18 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 {resource.version.title}
                             </Typography>
                         </Box>
-                        <Box display="flex" marginLeft={1}>
-                            <Typography>
-                                <a
-                                    href={www(`/s/resources/${resource.id}`)}
-                                    target="_blank"
-                                >
-                                    {www(`/s/resources/${resource.id}`)}
-                                </a>
-                            </Typography>
-                        </Box>
+                        {resource.version.isPublished == true &&
+                            <Box display="flex" marginLeft={1}>
+                                <Typography>
+                                    <a
+                                        href={www(`/s/resources/${resource.id}`)}
+                                        target="_blank"
+                                    >
+                                        {www(`/s/resources/${resource.id}`)}
+                                    </a>
+                                </Typography>
+                            </Box>
+                        }
                     </Box>
                 </Box>
                 {onClose ? (
