@@ -21,7 +21,7 @@
     "dataloader": "^2.2.2",
     "jest": "^27.5.1",
     "moment": "^2.29.4",
-    "prettier": "^2.8.3",
+    "prettier": "^2.8.4",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.1",
