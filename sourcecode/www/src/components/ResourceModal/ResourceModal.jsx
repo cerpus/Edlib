@@ -132,7 +132,7 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                 {resource.version.title}
                             </Typography>
                         </Box>
-                        {resource.version.isPublished == true &&
+                        {resource.version.isPublished &&
                             <Box display="flex" marginLeft={1}>
                                 <Typography>
                                     <a
