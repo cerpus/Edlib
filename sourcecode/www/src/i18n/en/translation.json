@@ -145,5 +145,6 @@
     "draft": "draft",
     "published": "published",
     "unpublished": "unpublished",
-    "created": "created"
+    "created": "created",
+    "edit_not_allowed_by_license": "The license does not allow you to edit this content"
 }
