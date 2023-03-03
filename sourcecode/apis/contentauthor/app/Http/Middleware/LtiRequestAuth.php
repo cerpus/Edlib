@@ -33,7 +33,7 @@ class LtiRequestAuth
                 if ($ltiRequest->getUserGivenName() != null && $ltiRequest->getUserFamilyName() != null) {
                     Session::put('name', $ltiRequest->getUserGivenName().' '.$ltiRequest->getUserFamilyName());
                 }
-                Session::put('email', $ltiRequest->getUserEmail(), 'noemail');
+                Session::put('email', $ltiRequest->getUserEmail() ?? 'noemail');
             }
             $jwt = $ltiRequest->getExtJwtToken();
             if ($jwt !== null && $jwt !== '') {
