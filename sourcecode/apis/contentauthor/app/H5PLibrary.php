@@ -119,7 +119,9 @@ class H5PLibrary extends Model
 
     public function getLibraryString($folderName = false)
     {
-        return \H5PCore::libraryToString($this->getLibraryH5PFriendly(), $folderName);
+        return $folderName ?
+            \H5PCore::libraryToFolderName($this->getLibraryH5PFriendly()) :
+            \H5PCore::libraryToString($this->getLibraryH5PFriendly());
     }
 
     public function getLibraryH5PFriendly($machineName = 'name')

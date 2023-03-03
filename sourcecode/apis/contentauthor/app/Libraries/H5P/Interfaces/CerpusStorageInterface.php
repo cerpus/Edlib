@@ -18,8 +18,6 @@ interface CerpusStorageInterface
 
     public function alterLibraryFiles($files);
 
-    public function deleteLibrary(H5PLibrary $library);
-
     public function getFileUrl(string $path);
 
     /**
