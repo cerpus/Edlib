@@ -142,8 +142,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $headers = [],
         $files = [],
         $method = 'POST'
-    ): string|array|null
-    {
+    ): string|array|null {
         $options = [RequestOptions::FORM_PARAMS => $data];
         if ($stream !== null) {
             $options[RequestOptions::SINK] = $stream;
