@@ -2,8 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-use App\H5PLibrary;
-
 interface CerpusStorageInterface
 {
     public function getDisplayPath(bool $fullUrl = true);

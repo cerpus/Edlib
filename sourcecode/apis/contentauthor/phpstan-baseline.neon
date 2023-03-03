@@ -16,7 +16,22 @@ parameters:
 			path: app/Console/Commands/RemoveOldContentLocks.php
 
 		-
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int\\|string given\\.$#"
+			count: 1
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
+			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
+			count: 1
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
 			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
+			count: 2
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
+			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
 			count: 2
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
@@ -401,11 +416,6 @@ parameters:
 			path: app/Http/Controllers/LinkController.php
 
 		-
-			message: "#^Parameter \\#1 \\$view of function view expects view\\-string\\|null, string given\\.$#"
-			count: 1
-			path: app/Http/Controllers/LinkController.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
 			count: 1
 			path: app/Http/Controllers/QuestionSetController.php
@@ -499,11 +509,6 @@ parameters:
 			message: "#^Variable \\$validator might not be defined\\.$#"
 			count: 2
 			path: app/Http/Middleware/LtiBehaviorSettings.php
-
-		-
-			message: "#^Static method Illuminate\\\\Session\\\\Store\\:\\:put\\(\\) invoked with 3 parameters, 1\\-2 required\\.$#"
-			count: 1
-			path: app/Http/Middleware/LtiRequestAuth.php
 
 		-
 			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\QuestionSetAccess\\:\\:\\$request\\.$#"
@@ -718,11 +723,6 @@ parameters:
 		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\CerpusStorageInterface\\:\\:getEditorDisplayPath\\(\\) invoked with 1 parameter, 0 required\\.$#"
 			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
-			count: 3
 			path: app/Libraries/H5P/EditorConfig.php
 
 		-
@@ -1002,11 +1002,6 @@ parameters:
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
-			count: 3
-			path: app/Libraries/H5P/Packages/H5PBase.php
-
-		-
 			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Packages/InteractiveVideo.php
@@ -1099,11 +1094,6 @@ parameters:
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
-			count: 3
 			path: app/Libraries/H5P/ViewConfig.php
 
 		-
@@ -1835,8 +1825,3 @@ parameters:
 			message: "#^Method Tests\\\\TestCase\\:\\:setUpTraits\\(\\) should return array but return statement is missing\\.$#"
 			count: 1
 			path: tests/TestCase.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),object\\>\\:\\:transform\\(\\) expects callable\\(object, \\(int\\|string\\)\\)\\: object, Closure\\(mixed\\)\\: mixed given\\.$#"
-			count: 3
-			path: tests/Unit/Traits/H5PBehaviorSettingsTest.php
