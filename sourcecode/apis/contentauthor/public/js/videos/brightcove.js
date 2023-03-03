@@ -9,8 +9,7 @@ H5P.VideoBrightcove = (function ($) {
         var videoId = getId(sources[0].path);
 
         const accountId = '4806596774001';
-        const playerId = 'oB5bDFv99';
-
+        const playerId = is360Video(sources[0].path) ? 'oB5bDFv99' : 'BkLm8fT';
         var $wrapper = $('<div/>');
 
         var $placeholder = $('<div id="brightcove-player-container"></div>').appendTo($wrapper);
@@ -334,10 +333,17 @@ H5P.VideoBrightcove = (function ($) {
     var SDKLoaded;
 
     var getId = function (url) {
-        var matches = url.match(/https:\/\/bc\/(ref:[a-z0-9]+|\d+)/);
-        if (matches && matches[1]) {
-            return matches[1];
+        var matches = url.match(/^https:\/\/bc\/?(0|360)?\/(ref:[a-z0-9]+|\d+)$/);
+        if (matches && matches.length > 1) {
+            return matches[matches.length - 1];
         }
+    };
+
+    // https://bc/12345678 => No path, will use 360 player
+    // https://bc/0/12345678 => Path is 0, will use normal player
+    // https://bc/360/12345678 => Path is 360, will use 360 player
+    var is360Video = function (url) {
+        return /^https:\/\/bc\/(360|[1-9]\d*)/.test(url);
     };
 
     return Brightcove;

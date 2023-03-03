@@ -63,9 +63,9 @@ class VersionAllUnversionedContent extends Command
         });
 
         H5PContent::unversioned()->orderBy('id')->chunk(250, function ($h5ps) {
-            $h5ps->each(function ($h5p) {
+            $h5ps->each(function (H5PContent $h5p) {
                 $vd = app(VersionData::class);
-                $vd->setUserId($h5p->owner_id)
+                $vd->setUserId($h5p->user_id)
                     ->setExternalReference($h5p->id)
                     ->setExternalSystem(config('app.site-name'))
                     ->setExternalUrl(route('h5p.show', $h5p->id))
