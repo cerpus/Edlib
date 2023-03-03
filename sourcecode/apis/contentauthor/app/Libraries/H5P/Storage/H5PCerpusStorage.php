@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P\Storage;
 
-use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\H5PContentsVideo;
