@@ -117,11 +117,11 @@ const Sidebar = ({
                         />
                     )}
                     {components.map((box, index) => (
-                        <Accordion key={index} variant="outlined">
+                        <Accordion key={index}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreRounded />}
                             >
-                                <strong>{box.title}</strong>
+                                {box.title}
                                 <div className={classes.accordionInfo}>
                                     {box.info}
                                 </div>
