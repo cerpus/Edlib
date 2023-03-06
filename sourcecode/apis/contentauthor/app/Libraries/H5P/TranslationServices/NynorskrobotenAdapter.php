@@ -34,7 +34,7 @@ class NynorskrobotenAdapter implements TranslationServiceInterface
     {
         return [
             'token' => $this->apiToken,
-            'guid' => $data['id'] ?? '',
+            'guid' => $data->getId() ?? '',
             'fileType' => 'htmlp',
             'document' => $data->getFields(),
         ];
