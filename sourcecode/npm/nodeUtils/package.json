@@ -29,7 +29,7 @@
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^2.1.4",
-    "knex": "^1.0.7",
+    "knex": "^2.4.2",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.40",
     "mysql": "^2.18.1",
