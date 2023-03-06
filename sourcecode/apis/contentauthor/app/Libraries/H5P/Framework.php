@@ -1359,19 +1359,19 @@ class Framework implements \H5PFrameworkInterface, Result
 
     public function getContentHubMetadataCache($lang = 'en')
     {
-        // H5P Content Hub is not in use, but return value to make PHPStan happy
+        // H5P Content Hub is not in use
         return new Stringable();
     }
 
     public function getContentHubMetadataChecked($lang = 'en')
     {
-        // H5P Content Hub is not in use, but return value to make PHPStan happy
+        // H5P Content Hub is not in use
         return now()->toRfc7231String();
     }
 
     public function setContentHubMetadataChecked($time, $lang = 'en')
     {
-        // H5P Content Hub is not in use, but return value to make PHPStan happy
+        // H5P Content Hub is not in use
         return true;
     }
 }
