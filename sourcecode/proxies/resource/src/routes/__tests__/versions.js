@@ -54,13 +54,13 @@ describe('Test endpoints', () => {
         //     };
         //
         //     const versionResource1 = {
-        //         externalSystem: 'Doku',
+        //         externalSystem: 'ContentAuthor',
         //         externalReference: idMapping.externalSystemId,
         //         createdAt: 1605706013580,
         //     };
         //
         //     const versionResource2 = {
-        //         externalSystem: 'Doku',
+        //         externalSystem: 'ContentAuthor',
         //         externalReference: idMapping2.externalSystemId,
         //         createdAt: 1605705668305,
         //     };

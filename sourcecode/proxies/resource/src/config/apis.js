@@ -1,9 +1,6 @@
 import { env } from '@cerpus/edlib-node-utils';
 
 export default {
-    id: {
-        url: env('ID_URL', 'http://idapi'),
-    },
     version: {
         url: env('VERSIONAPI_URL', 'http://versionapi'),
     },

@@ -35,7 +35,7 @@ const queryBuilder = !appConfig.isTest
           ...commonConfig,
       })
     : knex({
-          client: 'sqlite3',
+          client: 'better-sqlite3',
           connection: ':memory',
           useNullAsDefault: true,
           ...commonConfig,

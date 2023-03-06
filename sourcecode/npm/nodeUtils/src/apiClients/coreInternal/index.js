@@ -2,7 +2,6 @@ import axios from 'axios';
 import resource from './resource.js';
 import { exceptionTranslator } from '../../services/index.js';
 import * as errorReporting from '../../services/errorReporting.js';
-import doku from './doku.js';
 import lti from './lti.js';
 import url from './url.js';
 
@@ -27,7 +26,6 @@ export default (req, config) => {
 
     return {
         resource: resource(core),
-        doku: doku(core),
         lti: lti(core),
         url: url(core),
         config,

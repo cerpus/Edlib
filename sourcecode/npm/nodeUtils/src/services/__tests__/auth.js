@@ -14,6 +14,7 @@ describe('apiClients', () => {
                 );
                 const payload = {
                     payload: 'smth',
+                    iat: 1234567890,
                 };
 
                 jwksMock.start();

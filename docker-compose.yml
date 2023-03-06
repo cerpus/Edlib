@@ -1,7 +1,6 @@
 version: "3.7"
 
 volumes:
-  dokuapi_nodemodules:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
@@ -258,30 +257,6 @@ services:
       - npm_cache:/root/.npm
       - ./sourcecode/docs/docs.edlib.com:/app
     working_dir: /app
-
-  dokuapi:
-    build:
-      context: ./sourcecode/apis/doku
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - dokuapi_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/doku:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
 
   resourceapi:
     build:
