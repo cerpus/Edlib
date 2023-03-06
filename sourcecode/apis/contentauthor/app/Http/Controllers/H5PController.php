@@ -723,9 +723,6 @@ class H5PController extends Controller
      */
     public function hasUserProgress(H5PContent $h5p): bool
     {
-        if (config('feature.versioning') !== true) {
-            return false;
-        }
         return $h5p->contentUserData()->get()->isNotEmpty();
     }
 
@@ -767,12 +764,6 @@ class H5PController extends Controller
         $makeNewVersion = $h5pContent->requestShouldBecomeNewVersion($request);
         $oldContent['useVersioning'] = $makeNewVersion;
         $content = $this->h5p->storeContent($request, $oldContent, $authId);
-
-        if ($makeNewVersion !== true && $h5pContent->useVersioning() === false) {
-            /** @var \H5PExport $export */
-            $export = resolve(\H5PExport::class);
-            $export->deleteExport($oldContent);
-        }
 
         $newH5pContent = H5PContent::find($content['id']);
 

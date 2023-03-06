@@ -201,10 +201,6 @@ class H5PContent extends Content implements VersionableObject
             return true;
         }
 
-        if ($this->useVersioning() !== true) {
-            return false;
-        }
-
         if (parent::requestShouldBecomeNewVersion($request) === true) {
             return true;
         }

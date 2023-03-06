@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Session;
  * @property string $node_id
  * @property Collection $collaborators
  * @property bool $is_draft
+ * @property-read NdlaIdMapper|null $ndlaMapper
  *
  * @method static Collection findMany($ids, $columns = ['*'])
  * @method static Builder select($columns = ['*'])
@@ -246,11 +247,6 @@ abstract class Content extends Model
         return implode(',', $collaborators);
     }
 
-    public function useVersioning()
-    {
-        return !empty(config('feature.versioning'));
-    }
-
     /**
      * Determine if the request should result in a new version
      */
@@ -264,23 +260,19 @@ abstract class Content extends Model
             return true;
         }
 
-        if ($this->useVersioning() === true) {
-            $ct = $this->getContentTitle();
-            $rt = $this->getRequestTitle($request);
-            $title = $ct !== $rt; // Titles not the same
+        $ct = $this->getContentTitle();
+        $rt = $this->getRequestTitle($request);
+        $title = $ct !== $rt; // Titles not the same
 
-            $cc = $this->getContentContent();
-            $rc = $this->getRequestContent($request);
-            $content = $cc !== $rc; // Content not the same
+        $cc = $this->getContentContent();
+        $rc = $this->getRequestContent($request);
+        $content = $cc !== $rc; // Content not the same
 
-            $cl = $this->getContentLicense();
-            $rl = $this->getRequestLicense($request);
-            $license = $cl !== $rl; // License not the same
+        $cl = $this->getContentLicense();
+        $rl = $this->getRequestLicense($request);
+        $license = $cl !== $rl; // License not the same
 
-            return $title || $content || $license;
-        }
-
-        return false;
+        return $title || $content || $license;
     }
 
     public function hasLock()
@@ -334,12 +326,12 @@ abstract class Content extends Model
         return $this->versionColumn;
     }
 
-    public function isImported($returnMapperObject = false)
+    public function isImported(): bool
     {
-        $ndlaMapper = $this->ndlaMapper;
-        if (!config('feature.versioning') || !empty($ndlaMapper)) {
-            return $returnMapperObject === true ? $ndlaMapper : !empty($ndlaMapper);
+        if ($this->ndlaMapper) {
+            return true;
         }
+
         $versionClient = app(VersionClient::class);
         $versionData = $versionClient->getVersion($this[$this->getVersionColumn()]);
 
@@ -349,7 +341,7 @@ abstract class Content extends Model
         $ndlaMapperCollection = NdlaIdMapper::whereIn('ca_id', $this->getVersionedIds($versionData))
             ->latest()
             ->get();
-        return $returnMapperObject === true ? $ndlaMapperCollection->first() : $ndlaMapperCollection->isNotEmpty();
+        return $ndlaMapperCollection->isNotEmpty();
     }
 
     private function getVersionedIds(VersionData $version)
@@ -445,7 +437,7 @@ abstract class Content extends Model
         }
 
         $editUrl = route($this->editRouteName, $this->id);
-        if ($latest && !empty(config('feature.versioning'))) {
+        if ($latest) {
             /** @var VersionClient $versionClient */
             $versionClient = app()->make(VersionClient::class);
             $latest = $versionClient->latest($this->version_id);
