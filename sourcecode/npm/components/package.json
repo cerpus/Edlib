@@ -43,7 +43,7 @@
     "react-mathquill": "^1.0.2",
     "react-popper": "^2.3.0",
     "store": "^2.0.12",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "dev": "babel src -d dist --copy-files -w",
