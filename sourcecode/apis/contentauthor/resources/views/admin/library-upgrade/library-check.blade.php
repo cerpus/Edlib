@@ -107,12 +107,12 @@
                             </tr>
                             <tr>
                                 <th>Created time</th>
-                                <td>{{ $library->created_at->format('Y-m-d H:i:s e') }}</td>
+                                <td>{{ $library->created_at?->format('Y-m-d H:i:s e') }}</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <th>Updated time</th>
-                                <td>{{ $library->updated_at->format('Y-m-d H:i:s e') }}</td>
+                                <td>{{ $library->updated_at?->format('Y-m-d H:i:s e') }}</td>
                                 <td></td>
                             </tr>
                             <tr>
