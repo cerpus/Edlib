@@ -341,6 +341,10 @@ class H5PContent extends Content implements VersionableObject
             }
         }
 
+        if ($icon === null) {
+            $icon = url('/graphical/h5p_logo.svg');
+        }
+
         return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
     }
 }
