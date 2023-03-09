@@ -19,10 +19,6 @@ const statuses = [
         name: 'EdLibApi - Recommendations',
         endpoint: '/recommendations/v1/system-status',
     },
-    {
-        name: 'DokuAPI',
-        endpoint: '/dokus/dokuapi-system-status',
-    },
 ];
 
 const SystemStatuses = () => {

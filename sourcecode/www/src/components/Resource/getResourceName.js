@@ -28,10 +28,6 @@ const getResourceName = (resource) => {
         return 'Link';
     }
 
-    if (resource.resourceType === resourceTypes.DOKU) {
-        return 'Edstep';
-    }
-
     return 'Edlib resource';
 };
 

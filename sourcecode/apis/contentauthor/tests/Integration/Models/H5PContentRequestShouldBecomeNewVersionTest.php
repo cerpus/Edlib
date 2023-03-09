@@ -89,28 +89,6 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
         $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], ['isDraft' => true])));
     }
 
-    public function testSaveDraftAsDraftVersioningOff(): void
-    {
-        config(['feature.versioning' => false]);
-
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [
-            'title' => 'Title has changed',
-            'parameters' => json_encode(['params' => []]),
-            'license' => $this->content->getContentLicense(),
-        ])));
-    }
-
-    public function testSaveAsDraftVersioningOff(): void
-    {
-        config(['feature.versioning' => false]);
-
-        $this->assertFalse($this->content->requestShouldBecomeNewVersion(new Request([], [
-            'title' => 'Title has changed',
-            'parameters' => json_encode(['params' => []]),
-            'license' => $this->content->getContentLicense(),
-        ])));
-    }
-
     public function testDraftNewerLibraryVersion(): void
     {
         $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [

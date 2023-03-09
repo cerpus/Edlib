@@ -1,12 +1,11 @@
 <?php
-
 return [
     'title' => "Tittel",
     'content-loading' => "Laster innhold…",
     'save' => "Lagre",
     'upload' => "Last opp",
     'create' => "Lag",
-    'create-content' => "Skap innhold",
+    'create-content' => "Lag innhold",
     'edit-content' => "Rediger innhold",
     'need-id' => "Du trenger en ID for å se innhold",
     'create-interactive-content' => "Opprett interaktivt innhold",

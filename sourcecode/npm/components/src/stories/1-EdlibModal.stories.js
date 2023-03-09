@@ -25,7 +25,6 @@ export const EdlibModal = () => {
                         language={getLanguage()}
                     >
                         <EdlibModalComponent
-                            enableDoku={true}
                             enableVersionInterface={true}
                             onClose={action('on close')}
                             onResourceSelected={async (info) =>
@@ -52,7 +51,6 @@ export const EdlibModalIframe = () => {
                         <div style={{ height: '85vh', border: '1px solid black' }}>
                             <EdlibModalComponent
                                 contentOnly
-                                enableDoku
                                 enableVersionInterface
                                 onClose={action('on close')}
                                 onResourceSelected={async (info) =>

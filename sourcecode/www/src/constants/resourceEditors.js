@@ -4,7 +4,6 @@ const resourceEditors = {
     VIDEO: 'video',
     ARTICLE: 'article',
     EMBED: 'embed',
-    DOKU: 'doku',
 };
 
 export default resourceEditors;

@@ -42,7 +42,7 @@ const useStyles = makeStyles()((theme) => {
 const ContentExplorerHeader = ({ onClose, getUrl }) => {
     const { t } = useTranslation();
     const { classes } = useStyles();
-    const { enableDoku, inMaintenanceMode } = useConfigurationContext();
+    const { inMaintenanceMode } = useConfigurationContext();
     const { getUserConfig } = useEdlibComponentsContext();
 
     const enabledTypes =
@@ -67,22 +67,10 @@ const ContentExplorerHeader = ({ onClose, getUrl }) => {
         //     link: '/resources/new/url',
         //     label: 'Link',
         // },
-        [resourceEditors.DOKU]: {
-            link: getUrl('/resources/new/doku'),
-            label: 'EdStep',
-        },
     };
 
     const activatedEditorsList = Object.entries(editorMapping)
-        .filter(([type]) => isEditorEnabled(type))
-        .filter(([type]) => {
-            switch (type) {
-                case resourceEditors.DOKU:
-                    return enableDoku;
-                default:
-                    return true;
-            }
-        });
+        .filter(([type]) => isEditorEnabled(type));
 
     return (
         <AppBar position="static">

@@ -13,7 +13,6 @@ const colorsPriority = [colors.DANGER, colors.WARNING, colors.SUCCESS];
 export default ({
     authApi,
     coreExternalApi,
-    idApi,
     versionApi,
 }) => {
     const auth = async () => {
@@ -108,34 +107,6 @@ export default ({
         }
     };
 
-    const id = async () => {
-        if (!idApi) {
-            throw new ApiException('idApi is not passed to status service');
-        }
-
-        try {
-            await idApi.home();
-
-            return {
-                name: 'Id service',
-                color: colors.SUCCESS,
-                statusMessage: `All good`,
-                parameters: {
-                    url: idApi.config.url,
-                },
-            };
-        } catch (e) {
-            return {
-                name: 'Id service',
-                color: colors.DANGER,
-                statusMessage: `Noe skjedde (${e.message})`,
-                parameters: {
-                    url: idApi.config.url,
-                },
-            };
-        }
-    };
-
     const db = async () => {
         const parameters = {
             host: dbConfig.host,
@@ -188,5 +159,5 @@ export default ({
         };
     };
 
-    return { auth, coreExternal, id, version, db, parser };
+    return { auth, coreExternal, version, db, parser };
 };

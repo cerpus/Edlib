@@ -7,25 +7,27 @@ on:
       - ".github/workflows/npm-nodeUtils.yaml"
   workflow_dispatch:
 
-env:
-  workingDirectory: sourcecode/npm/nodeUtils
+defaults:
+  run:
+    working-directory: sourcecode/npm/nodeUtils
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v3
+
         - name: Use Node.js 16
           uses: actions/setup-node@v3
           with:
             node-version: 16
-        - name: "Yarn install with cache"
-          uses: bahmutov/npm-install@v1
-          with:
-            working-directory: ${{ env.workingDirectory }}
+            cache: npm
+            cache-dependency-path: sourcecode/npm/nodeUtils/yarn.lock
+
+        - run: yarn install --frozen-lockfile
+
         - name: "Run tests"
-          run: cd ${{ env.workingDirectory }}; yarn test
-          shell: bash
+          run: yarn test
 
         - uses: JS-DevTools/npm-publish@v1
           if: github.event_name != 'workflow_dispatch' && env.NPM_CERPUS_SECRET != ''
@@ -38,7 +40,7 @@ jobs:
 
         - name: "Set version in package.json"
           if: github.event_name == 'workflow_dispatch'
-          run: cd ${{ env.workingDirectory }}; npm version 0.0.0-${{ github.sha }};
+          run: npm version 0.0.0-${{ github.sha }}
 
         - uses: JS-DevTools/npm-publish@v1
           if: github.event_name == 'workflow_dispatch'

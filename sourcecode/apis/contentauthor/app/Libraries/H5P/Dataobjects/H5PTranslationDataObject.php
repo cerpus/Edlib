@@ -17,6 +17,11 @@ class H5PTranslationDataObject implements JsonSerializable
     ) {
     }
 
+    public function getId(): string|null
+    {
+        return $this->id;
+    }
+
     /**
      * @return string[]
      */

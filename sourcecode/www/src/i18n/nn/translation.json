@@ -103,9 +103,6 @@
         "card": "Kort",
         "embedly": "Integrert"
     },
-    "urlAuthor": {
-        "ndlaWarning": "Vi har funnet ressursen hos NDLA. Hvis du velger å bruke den vil den bli lagt inn i Doku-en."
-    },
     "bruk": "Bruk",
     "Forhåndsvisning": "Vis på førehand",
     "Mitt innhold": "Innhaldet mitt",
@@ -116,11 +113,8 @@
     "Privat": "Privat",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Berre du kan setje inn denne ressursen og berre du kan førhandsvise den i Edlib",
     "Delt/offentlig": "Delt/offentleg",
-    "Alle kans se denne Doku": "Alle kan sjå denne Doku-en",
-    "Hvordan skal andre forfattere kunne bruke denne Doku?": "Hvordan skal andre forfattere kunne bruke denne Doku-en?",
     "Kan bruke den som den er": "Kan brukes som den er",
     "Kan bruke og/eller kopiere og endre den": "Kan bruke og/eller kopiere og endre den",
-    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne Doku-en",
     "Interaktivitet": "Interaktivitet",
     "Spørsmål": "Spørsmål",
     "Video": "Video",
