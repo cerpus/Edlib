@@ -15,15 +15,15 @@ Source: https://om.ndla.no/about-ndla/
     <em>Image: An H5P resource on ndla.no</em>
 </div>
 
-## The Journey Towards Edlib
+## The journey towards Edlib
 Since its inception, NDLA has been a pioneer regarding technology related to open educational resources. When the company that developed and created Flash-based interactive content, Amendor AS, started developing an alternative mobile-friendly content creation tool for interactive educational content, NDLA was fast to follow. Amendor formed Joubel in 2014, and the new company started the development of [H5P (HTML5 package)](https://h5p.org/content-types-and-applications) with substantial contributions from NDLA. In 2022 Joubel changed its name to [H5P Group](https://h5p.group/).
 
 When, in 2017-2018, NDLA migrated from their legacy Drupal platform to a more holistic architecture, the time and need for a service to integrate with and handle all aspects of H5P emerged. The resulting solution was Edlib.
 
-## How NDLA Use Edlib Today
+## How NDLA use Edlib today
 Today, Edlib is integrated with NDLA's production environment making it possible to search and reuse existing H5Ps or to create new ones entirely. NDLA takes an active role in choosing the H5P libraries they want to support and has created several H5P libraries from scratch to meet their needs. NDLA also actively contributes by translating existing and new H5P content types available on the [H5P GitHub](https://github.com/h5p).
 
-### Translation and Language
+### Translation and language
 A natural part of the production process of H5P-content is the creation of language variants of most H5Ps, as NDLA is obliged to provide their OERs in Norway's two official languages, [Bokmål](https://en.wikipedia.org/wiki/Bokm%C3%A5l) and [Nynorsk](https://en.wikipedia.org/wiki/Nynorsk). This can be done as part of the workflow of creating a copy of an article for translation purposes or directly within Edlib itself. A plugin to ease the translation work does the heavy lifting by translating on-the-fly (using a third-party translation API) when a user chooses to create a Nynorsk variant of an existing Bokmål H5P.
 
 <div class="text--center">
@@ -32,7 +32,7 @@ A natural part of the production process of H5P-content is the creation of langu
     <em>Image: Language selection in Content Author</em>
 </div>
 
-### Script View
+### Script view
 As part of the NDLA's work with languages and translations, they have dedicated translators working with only language-related tasks. This has led to the need for a separate "Script view" that is limited to only displaying the text inside the H5Ps, enabling the translators to focus on translating and improving language content. The "Script view" is beneficial to all of Edlib's users.
 
 <div class="text--center">
@@ -41,7 +41,7 @@ As part of the NDLA's work with languages and translations, they have dedicated 
     <em>Image: Script view is made available through a separate tab within the Content Author</em>
 </div>
 
-### Media Handling Via APIs
+### Media handling via APIs
 In NDLA's case, the handling of media &mdash;image, audio and video files&mdash; is done through separate APIs. This means that the organization's content editors cannot upload media files directly when creating or editing H5Ps: they need to use the media that is already embedded in the H5Ps or, alternatively, access the dedicated APIs for managing media content. This is done to prohibit duplication of files and to make sure all media files are handled in a generic manner which imposes uniformity in the context of integrating and migrating to other providers at a later stage.
 
 #### The video API integration 
@@ -62,8 +62,10 @@ If an image is deleted the alt-text set for the image will be displayed. Since e
 
 To provent loading of large images, an additional configuration setting `width=2500` is added when the content is viewed. The size is a configuration setting, the default value is `2500`. This functionality is not used for some content types, currently `H5P.ThreeImage` and `H5P.NDLAThreeImage`, that require the original quality.
  
-### License and Attribution
-NDLA is one of Norway's pioneers regarding attribution and licensing of open educational content. Having implemented [Creative Commons](https://creativecommons.org/) as part of their vision for content creation, they also encouraged the companies behind H5P and Edlib to actively be part of the "commons" world. This enables NDLA to safely share their OERs which, in turn, provides their users with all the necessary license and attribution information to make safe use of them. NDLA ensures that this information is accessible to the teachers and students that need it. The attribution and license information is made available through the "Rights of use" entry on all H5P and from the Edlib APIs. All the collected data is made available &mdash;in each and every article on NDLA's site&mdash;as part of the overall instructions for reuse: 
+
+### License and attribution
+NDLA is one of Norway's pioneers regarding attribution and licensing of open educational content. Having implemented [Creative Commons](https://creativecommons.org/) as part of their vision for content creation, they also encouraged the companies behind H5P and Edlib to actively be part of the "commons" world. This enables NDLA to safely share their OERs which, in turn, provides their users with all the necessary license and attribution information to make safe use of them. NDLA ensures that this information is accessible to the teachers and students that need it. The attribution and license information is made available through the "Rights of use" entry on all H5P and from the Edlib APIs. All the collected data is made available &mdash;in each and every article on NDLA's site&mdash;as part of the overall instructions for reuse:
+
 
 <div class="text--center">
     <img class="edlib-image" alt="All articles summarize the attribution and licensing information of the embedded elements - the H5P information is provided by Edlib" src="/img/ndla-case-study4.png" />
@@ -73,7 +75,7 @@ NDLA is one of Norway's pioneers regarding attribution and licensing of open edu
 
 Edlib has made an "copyright" endpoint available for accessing information on attribution and licenses for resources used in articles ndla.no. It can be found and tested on [NDLA Swagger](https://h5p.ndla.no/swagger-ui.html#/resource-copyright-info-controller)  
 
-### Resource Tracking
+### Resource tracking
 Edlib offers a great overview of the resources that an individual "owns" (that is, resources created by the user) and the resources created by other users within the NDLA organization. The "My Content" tab lists resources belonging to the individual user while the "Shared Content" tab list the resources created by other users.
 
 <div class="text--center">
@@ -82,13 +84,13 @@ Edlib offers a great overview of the resources that an individual "owns" (that i
     <em>Image: My Content vs. Shared Content: separation of resources by &quot;ownership&quot;</em>
 </div> 
 
-#### Access To Resources
+#### Access to resources
 All of NDLA's editorial staff need access to existing Edlib resources made by other users (even those that are  potentially no longer active on the NDLA platform). For this purpose, a custom setting ensures that all resources, by default, are shared. When a user edits a resource owned by another user, a custom setting provides them with collaboration rights on the resource and adds the resource to the user's "My Content" list without making a version-controlled fork of the resource. 
 
-#### Editor Locking
+#### Editor locking
 When users have access to all resources within a service, the system needs to handle situations where the users stand at risk of loosing content related to changes made by other users. Editor locking prevents such a scenario. With editor locking the user is notified that another user is already editing the (same) resource &mdash;effectively locking it&mdash; and the user is given the choice to try again later or to start modifying the resource and wait for the other user's lock to be released so that their changes can be saved.
 
-#### Creating Content Via The H5P Hub
+#### Creating content via the H5P Hub
 The creation of resources starts by selecting the "Create Content" tab in Edlib's header bar. This brings the user to the H5P Hub where the preview and the supported H5P types are listed.
 
 <div class="text--center">
@@ -97,25 +99,26 @@ The creation of resources starts by selecting the "Create Content" tab in Edlib'
     <em>Image: Edlib uses the H5P hub for the purpose of content creation</em>
 </div> 
 
-### Admin Features
+### Admin features
 
-#### Version Control
-Having used H5P from the very beginning, NDLA has a vast number of resources and needs to maintain a tight control over the upgrading of library versions. This means that the existing resources in Edlib won't be affected by a system upgrade/installation of a newer version on the same library (H5P content type). Each resource can be individually upgraded to either the next available version or directly to the latest version. In addition, the admin panel enables the maintainers to do a controlled bulk upgrade of all resources from one version to another.
+#### Version control
+Having used H5P from the very beginning, NDLA has a vast number of resources and needs to maintain a tight control over the upgrading of library versions. This means that the existing resources in Edlib won't be affected by a system upgrade/installation of a newer version on the same library (H5P content type). Each resource can be individually upgraded to either the next available version or directly to the latest version. In addition, the admin panel enables the maintainers to do a controlled bulk upgrade of all resources from one version to another. The admins can also get a list of content on each H5P library version and they get to see if there are any library dependancies and much more info by clicking the machine name link for the individual H5P library. 
+
 
 <div class="text--center">
-    <img class="edlib-image" alt="Overview of installed libraries of Course Presentation with content and possibility for bulk upgrade" src="/img/ndla-case-study5.png" />
+    <img class="edlib-image" alt="Overview of installed libraries of Course Presentation with content and possibility for bulk upgrade" src="/img/H5Plibraries_update.png" />
     <br/>
-    <em>Image: Overview of installed libraries of Course Presentation with content and possibility for bulk upgrade</em>
+    <em>Image: Overview of some of the installed libraries of Course Presentation, list of resources within each library version (content) and possibility for bulk upgrade</em>
     <br/>
     <br/>
 </div> 
 
 To ensure consistency regarding content type versions, Edlib will prohibit users from uploading resources with unsupported versions through the H5P hub, making upgrading a task for authorized users only.
 
-#### Enabled H5P Types
+#### Enabled H5P types
 Edlib supports all H5P content types, and NDLA has chosen the varieties they want to keep in their H5P hub. This gives NDLA control over what content types are used. It also provides NDLA the possibility of doing a qualified review/test of the types they want before deciding to enable them for the organization as a whole. The review and testing are done in their test environment. It's important to note that all former H5P content types, with content, will be visible for filtering and search purposes within Edlib even if the content type has been disabled for the purpose of creating new content.
 
-#### Custom H5P Content Types
+#### Custom H5P content types
 NDLA has developed several H5P content types from scratch and forked existing official H5P types to add wanted functionality. These content types were made to meet the demands for providing high-quality learning resources. The content types are made to work within Edlib and in general installations of H5P, for exmaple, via WordPress plugins. Each of the content types is accessible as a separate repository on NDLA's GitHub accounts, https://github.com/NDLANO and https://github.com/NDLA-H5P.   
 
 ## Summary
