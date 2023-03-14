@@ -1237,11 +1237,6 @@ parameters:
 			path: app/NdlaIdMapper.php
 
 		-
-			message: "#^Method Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:registerPolicies\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: app/Providers/AuthServiceProvider.php
-
-		-
 			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"
 			count: 1
 			path: app/Providers/AuthServiceProvider.php
