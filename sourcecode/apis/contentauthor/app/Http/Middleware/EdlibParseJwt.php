@@ -37,7 +37,8 @@ class EdlibParseJwt extends AuthJwtParser
             Auth::login(new GenericUser([
                 'id' => $payload->sub,
                 'name' => $this->getBestName($user),
-                'email' => $this->getEmail($user)
+                'email' => $this->getEmail($user),
+                'roles' => $roles,
             ]));
             return $next($request);
         }
