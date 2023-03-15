@@ -22,6 +22,10 @@ const useStyle = makeStyles((theme) => ({
         opacity: 0.6,
         fontStyle: 'italic',
     },
+    accordionTitle: {
+        fontSize: '1.6rem',
+        fontWeight: '400',
+    }
 }));
 
 const Sidebar = ({
@@ -120,6 +124,7 @@ const Sidebar = ({
                         <Accordion key={index}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreRounded />}
+                                className={classes.accordionTitle}
                             >
                                 {box.title}
                                 <div className={classes.accordionInfo}>

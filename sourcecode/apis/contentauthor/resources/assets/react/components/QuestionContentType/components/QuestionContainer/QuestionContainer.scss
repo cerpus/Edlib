@@ -9,4 +9,16 @@
             flex: 3;
         }
     }
+
+    .placeholder input {
+        font-family: "'Lato', sans-serif";
+        font-size: 1.8rem;
+        font-weight: 400;
+    }
+
+    .placeholder input::placeholder {
+        font-family: "'Lato', sans-serif";
+        font-size: 1.6rem;
+        font-weight: 400;
+    }
 }

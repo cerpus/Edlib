@@ -19,12 +19,13 @@ const useStyles = makeStyles()((theme) => ({
         justifyContent: 'space-between',
     },
     title: {
-        fontWeight: '500',
-        fontSize: '1.2em',
+        fontWeight: '400',
+        fontSize: '1.2rem',
         wordBreak: 'break-word',
     },
     subtitle: {
-        fontSize: '0.8em',
+        fontSize: '0.875rem',
+        fontWeight: '400',
     },
     buttons: {
         '& > button': {

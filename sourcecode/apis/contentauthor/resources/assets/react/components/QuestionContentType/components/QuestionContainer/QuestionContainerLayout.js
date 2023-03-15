@@ -32,6 +32,7 @@ const QuestionContainerLayout = props => {
         <div className="questionSetSurface">
             <div>
                 <TextField
+                    className="placeholder"
                     placeholder={placeholder}
                     label={<FormattedMessage id="QUESTIONCONTAINER.TITLE_LABEL" />}
                     fullWidth={true}
