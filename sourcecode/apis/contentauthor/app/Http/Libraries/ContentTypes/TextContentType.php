@@ -4,9 +4,6 @@ namespace App\Http\Libraries\ContentTypes;
 
 class TextContentType implements ContentTypeInterface
 {
-    /**
-     * @param $redirectToken
-     */
     public function getContentTypes($redirectToken): ContentType
     {
         return ContentType::create(

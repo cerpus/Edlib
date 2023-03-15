@@ -162,7 +162,6 @@ class EditorStorage implements \H5peditorStorage
      * up. E.g. for files that are uploaded through the editor.
      *
      * @param H5peditorFile
-     * @param $content_id
      */
     public static function markFileForCleanup($file, $content_id = null)
     {

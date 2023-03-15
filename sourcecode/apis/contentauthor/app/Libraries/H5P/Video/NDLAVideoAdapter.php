@@ -156,8 +156,6 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     }
 
     /**
-     * @param $source
-     * @param $content
      * @return array
      * @throws Exception
      */

@@ -19,7 +19,6 @@ class H5PImport
     }
 
     /**
-     * @param $userId
      * @param bool $isDraft
      * @param bool $isPrivate
      * @return H5PImportDataObject|bool

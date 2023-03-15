@@ -116,8 +116,6 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     }
 
     /**
-     * @param $values
-     * @param $content
      * @return array
      * @throws Exception
      */
