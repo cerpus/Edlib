@@ -1,6 +1,7 @@
 name: Weblate auto-merge
 on:
   pull_request_target:
+    types: [opened]
 
 permissions:
   pull-requests: write
