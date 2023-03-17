@@ -15,7 +15,7 @@ const useStyles = makeStyles()((theme) => {
             justifyContent: 'center',
             flex: 3,
             '& > *': {
-                padding: theme.spacing(1),
+                padding: theme.spacing(1, 2.5, 1, 2.5),
             },
         },
     };
