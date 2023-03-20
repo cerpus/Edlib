@@ -7,7 +7,7 @@
     "recommendationEngine": {
         "explanation": "Her ser du innhold du kan bruke i kurset. Dra og slipp innholdselementer til modulene dine."
     },
-    "Noe skjedde": "Noe skjedde",
+    "Noe skjedde": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
     "Fant ingen ressurser": "Fant ingen ressurser",
     "source": {
         "h5p": "H5P",
@@ -192,7 +192,7 @@
     "least_used": "minst brukt",
     "most_used": "mest brukt",
     "first_changed": "først endret",
-    "something_happened": "noe skjedde",
+    "something_happened": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
     "most_relevant": "mest relevant",
     "A-Z": "a-å",
     "filter": "filter",

@@ -52,7 +52,7 @@ const GenerateCsvWithResourceUrls = () => {
 
     return (
         <>
-            {error && <Alert color="danger">Noe skjedde</Alert>}
+            {error && <Alert color="danger">{t('something went wrong')}</Alert>}
             {success && <Alert color="success">Vellykket!</Alert>}
             <Button color="primary" onClick={onClick} disabled={loading}>
                 {loading && <CircularProgress />}
