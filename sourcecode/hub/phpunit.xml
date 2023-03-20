@@ -19,6 +19,7 @@
     </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:VaYy17usaDFlRZRAO9OQukSy6rpcCKlooovrAc55x6s="/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
