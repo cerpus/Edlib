@@ -115,6 +115,7 @@ services:
       - ./data/nginx/certs:/etc/ssl/private:ro
       - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
       - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
+      - ./sourcecode/hub/public:/srv/www/hub/public:ro
     ports:
       - "80:80"
       - "443:443"
@@ -370,6 +371,16 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  hub:
+    build:
+      context: sourcecode/hub
+      target: dev
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '9000']
+    volumes:
+      - ./sourcecode/hub:/srv/www/hub
+    working_dir: /srv/www/hub
 
   www:
     build:

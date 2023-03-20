@@ -1,0 +1,193 @@
+name: "Hub"
+
+on:
+  push:
+    paths:
+      - "sourcecode/hub/**"
+      - ".github/workflows/hub.yaml"
+  workflow_call:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
+    secrets:
+      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID:
+        required: true
+      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY:
+        required: true
+
+defaults:
+  run:
+    working-directory: sourcecode/hub
+
+env:
+  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
+
+concurrency:
+  group: hub-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  composer-validate:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Validate
+        run: composer validate
+
+  php-cs-fixer:
+    if: github.ref != 'refs/heads/master'
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.CERPUSBOT_SECRET }}
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Manage php-cs-fixer cache
+        uses: actions/cache@v3
+        with:
+          path: .php-cs-fixer.cache
+          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
+          restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
+
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.json') }}
+
+      - name: Install dependencies
+        run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
+
+      - name: Run php-cs-fixer
+        run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
+
+      - name: Commit fixed code
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Run php-cs-fixer
+
+  phpstan:
+    if: ${{ always() }}
+    needs: [php-cs-fixer]
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: oauth, sockets, zip
+          coverage: pcov
+
+      - name: Get Composer cache dir
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('**/composer.json') }}
+
+      - name: Install dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --memory-limit=512M
+
+  test_and_release:
+    if: always()
+    needs: [php-cs-fixer]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build test image
+        uses: docker/build-push-action@v2
+        with:
+          tags: "hub-test:latest"
+          outputs: "type=docker"
+          context: sourcecode/hub
+          target: test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run tests
+        run: |
+          docker run hub-test
+
+      - name: Configure AWS Credentials
+        if: env.shouldPublishImage == '1'
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+          role-duration-seconds: 3600
+          role-session-name: GithubCerpusPushImage
+
+      - name: Login to AWS docker registry
+        if: env.shouldPublishImage == '1'
+        shell: bash
+        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Build and push web container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/hub-web:${{ inputs.versionToRelease }}
+          context: sourcecode/hub
+          target: web
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push production container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/hub-fpm:${{ inputs.versionToRelease }}
+          context: sourcecode/hub
+          target: prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push startup container
+        if: env.shouldPublishImage == '1'
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: public.ecr.aws/f0t8l9h1/hub-startup:${{ inputs.versionToRelease }}
+          context: sourcecode/hub
+          target: startup
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

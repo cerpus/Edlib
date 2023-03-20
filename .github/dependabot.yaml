@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: "monthly"
 
+  - package-ecosystem: composer
+    directory: /sourcecode/hub
+    schedule:
+      interval: monthly
+
 # -----------------------------------------------------
 # ------------ sourcecode/apis repos ------------------
 # -----------------------------------------------------

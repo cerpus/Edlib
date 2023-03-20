@@ -1,0 +1,13 @@
+body {
+    background: #ffd8d8;
+    font-family: comic sans ms;
+}
+
+a {
+    color: #cc0c79;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
