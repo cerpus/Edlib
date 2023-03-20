@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,14 +11,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Content extends Model
 {
     use HasFactory;
-    use HasUuids;
+    use HasUlids;
 
     /**
      * @return HasOne<ContentVersion>
      */
-    public function latest(): HasOne
+    public function latestVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)->latestOfMany();
+        return $this->hasOne(ContentVersion::class)
+            ->with('resource')
+            ->latestOfMany();
     }
 
     /**

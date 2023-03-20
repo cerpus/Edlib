@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,15 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class LtiTool extends Model
 {
     use HasFactory;
-    use HasUuids;
+    use HasUlids;
 
     public $timestamps = false;
 
     /**
-     * @return HasMany<Content>
+     * @return HasMany<LtiResource>
      */
-    public function contents(): HasMany
+    public function resources(): HasMany
     {
-        return $this->hasMany(Content::class);
+        return $this->hasMany(LtiResource::class);
     }
 }

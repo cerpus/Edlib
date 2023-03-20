@@ -8,7 +8,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('contents', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
+            $table->timestampsTz();
         });
     }
 
