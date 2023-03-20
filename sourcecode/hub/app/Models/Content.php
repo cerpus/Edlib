@@ -13,11 +13,17 @@ class Content extends Model
     use HasFactory;
     use HasUuids;
 
+    /**
+     * @return HasOne<ContentVersion>
+     */
     public function latest(): HasOne
     {
         return $this->hasOne(ContentVersion::class)->latestOfMany();
     }
 
+    /**
+     * @return HasMany<ContentVersion>
+     */
     public function versions(): HasMany
     {
         return $this->hasMany(ContentVersion::class)->orderBy('id', 'DESC');
