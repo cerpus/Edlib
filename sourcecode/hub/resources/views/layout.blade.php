@@ -11,6 +11,16 @@
     <body>
         <header>
             <h1>@yield('title', config('app.name'))</h1>
+
+            @auth
+                <p>Logged in as <strong>{{ auth()->id() }}</strong>.
+                <form action="{{ route('log_out') }}" method="POST">
+                    @csrf
+                    <button>Log out</button>
+                </form>
+            @endauth
+
+            <hr>
         </header>
 
         <main>
