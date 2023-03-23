@@ -13,6 +13,10 @@ class User extends Model
     use HasFactory;
     use HasUlids;
 
+    protected $casts = [
+        'admin' => 'boolean',
+    ];
+
     protected $fillable = [
         'name',
     ];

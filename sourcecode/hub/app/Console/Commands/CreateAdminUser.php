@@ -23,6 +23,7 @@ class CreateAdminUser extends Command
         DB::transaction(function () use ($email, $password) {
             $user = new User();
             $user->name = $email;
+            $user->admin = true;
             $user->save();
 
             $login = new UserLogin();
