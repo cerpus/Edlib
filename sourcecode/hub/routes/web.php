@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LtiToolController;
-use App\Http\Controllers\ExplorerController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,12 +20,23 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/content-explorer', [ExplorerController::class, 'index']);
-
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'login')->name('login');
     Route::post('/login', 'check')->name('login_check');
     Route::post('/log-out', 'logout')->name('log_out');
+});
+
+Route::controller(ContentController::class)->group(function () {
+    Route::get('/content', 'index')->name('content.index');
+    Route::get('/content/create', 'create')->name('content.create');
+
+    Route::get('/content/create/{tool}', 'launchCreator')
+        ->name('content.launch-creator')
+        ->whereUlid('tool');
+
+    Route::get('/content/{content}/preview', 'preview')
+        ->name('content.preview')
+        ->whereUlid('content');
 });
 
 Route::middleware('can:admin')->controller(LtiToolController::class)->group(function () {
