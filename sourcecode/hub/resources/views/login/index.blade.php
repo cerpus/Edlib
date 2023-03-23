@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', 'Login')
+@section('title', trans('messages.log-in'))
 
 @section('content')
     <form action="{{ route('login_check') }}" method="POST">
@@ -16,18 +16,18 @@
 
         <p>
             <label>
-                Email
+                {{ trans('messages.email-address') }}
                 <input type="email" name="email" value="{{ old('email') }}">
             </label>
         </p>
 
         <p>
             <label>
-                Password
+                {{ trans('messages.password') }}
                 <input type="password" name="password">
             </label>
         </p>
 
-        <p><button>Log in</button></p>
+        <p><button>{{ trans('messages.log-in') }}</button></p>
     </form>
 @endsection
