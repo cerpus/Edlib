@@ -14,6 +14,22 @@ class LtiTool extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'lti_version' => LtiVersion::class,
+    ];
+
+    protected $hidden = [
+        'consumer_secret',
+    ];
+
+    protected $fillable = [
+        'name',
+        'lti_version',
+        'creator_launch_url',
+        'consumer_key',
+        'consumer_secret',
+    ];
+
     /**
      * @return HasMany<LtiResource>
      */

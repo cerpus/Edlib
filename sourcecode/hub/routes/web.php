@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ExplorerController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,10 @@ Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'login')->name('login');
     Route::post('/login', 'check')->name('login_check');
     Route::post('/log-out', 'logout')->name('log_out');
+});
+
+Route::middleware('can:admin')->controller(LtiToolController::class)->group(function () {
+    Route::get('/admin/lti-tools', 'index')->name('admin.lti-tools.index');
+    Route::get('/admin/lti-tools/add', 'add')->name('admin.lti-tools.add');
+    Route::post('/admin/lti-tools', 'store')->name('admin.lti-tools.store');
 });

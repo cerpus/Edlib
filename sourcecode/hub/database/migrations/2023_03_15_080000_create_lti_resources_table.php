@@ -10,6 +10,8 @@ return new class () extends Migration {
         Schema::create('lti_resources', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->ulid('lti_tool_id');
+            $table->text('view_launch_url');
+            $table->text('edit_launch_url');
             $table->text('title');
             $table->text('title_html')->nullable();
             $table->timestampTz('created_at');

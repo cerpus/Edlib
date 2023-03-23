@@ -9,6 +9,11 @@ return new class () extends Migration {
     {
         Schema::create('lti_tools', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->text('name');
+            $table->string('lti_version');
+            $table->text('creator_launch_url');
+            $table->text('consumer_key')->nullable();
+            $table->text('consumer_secret')->nullable();
         });
     }
 
