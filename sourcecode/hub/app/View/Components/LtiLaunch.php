@@ -6,6 +6,7 @@ use App\Models\LtiVersion;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use Symfony\Component\Uid\Uuid;
+
 use function view;
 
 class LtiLaunch extends Component

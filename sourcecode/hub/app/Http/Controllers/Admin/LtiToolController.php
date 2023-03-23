@@ -7,6 +7,7 @@ use App\Http\Requests\StoreLtiToolRequest;
 use App\Models\LtiTool;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+
 use function redirect;
 
 final class LtiToolController extends Controller
