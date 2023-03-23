@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
@@ -39,8 +40,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content');
 });
 
-Route::middleware('can:admin')->controller(LtiToolController::class)->group(function () {
-    Route::get('/admin/lti-tools', 'index')->name('admin.lti-tools.index');
-    Route::get('/admin/lti-tools/add', 'add')->name('admin.lti-tools.add');
-    Route::post('/admin/lti-tools', 'store')->name('admin.lti-tools.store');
+Route::middleware('can:admin')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
+    Route::controller(LtiToolController::class)->group(function () {
+        Route::get('/admin/lti-tools', 'index')->name('admin.lti-tools.index');
+        Route::get('/admin/lti-tools/add', 'add')->name('admin.lti-tools.add');
+        Route::post('/admin/lti-tools', 'store')->name('admin.lti-tools.store');
+    });
 });

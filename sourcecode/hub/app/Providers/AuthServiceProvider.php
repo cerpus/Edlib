@@ -23,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('admin', function (UserLogin $login) {
-            return $login->user->admin;
+            return $login?->user->admin ?? false;
         });
     }
 }

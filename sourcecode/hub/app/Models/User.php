@@ -22,6 +22,13 @@ class User extends Model
     ];
 
     /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'admin' => false,
+    ];
+
+    /**
      * @return HasManyThrough<Content>
      */
     public function contents(): HasManyThrough
