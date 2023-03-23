@@ -1,8 +1,6 @@
-@extends('layout')
+<x-layout>
+    <x-slot:title>{{ trans('My content!') }}</x-slot:title>
 
-@section('title', trans('My content!'))
-
-@section('content')
     <div class="grid">
         @foreach ($contents as $content)
             <x-content-card :content="$content" />
@@ -10,4 +8,4 @@
     </div>
 
     {{ $contents->links() }}
-@endsection
+</x-layout>

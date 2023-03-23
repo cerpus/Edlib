@@ -1,7 +1,5 @@
-@extends('layout')
+<x-layout>
+    <x-slot:title>Hubhubhubhubbhbubbubub</x-slot:title>
 
-@section('title', 'Hubhubhubhubbhbubbubub')
-
-@section('content')
     <p>TODO: write the rest of the application</p>
-@endsection
+</x-layout>

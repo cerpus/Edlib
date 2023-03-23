@@ -3,28 +3,32 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@yield('title', config('app.name'))</title>
+        <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @yield('head')
+        {{ $head ?? '' }}
     </head>
-
     <body>
         <header>
-            <h1>@yield('title', config('app.name'))</h1>
+            <h1>{{ $title ?? config('app.name') }}</h1>
 
             @auth
                 <p>Logged in as <strong>{{ auth()->id() }}</strong>.
+                @can('admin')
+                    <a href="{{ route('admin.index') }}">{{ trans('messages.admin-home') }}</a>
+                @endcan
                 <form action="{{ route('log_out') }}" method="POST">
                     @csrf
                     <button>Log out</button>
                 </form>
+            @else
+                <p><a href="{{ route('login') }}">{{ trans('messages.log-in') }}</a></p>
             @endauth
 
             <hr>
         </header>
 
         <main>
-            @yield('content')
+            {{ $slot }}
         </main>
 
         <footer>

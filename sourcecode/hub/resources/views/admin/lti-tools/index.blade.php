@@ -1,8 +1,6 @@
-@extends('layout')
+<x-layout>
+    <x-slot:title>LTI tools</x-slot:title>
 
-@section('title', 'LTI tools')
-
-@section('content')
     <ul>
         @foreach ($tools as $tool)
             <li>
@@ -12,9 +10,9 @@
                     <dd>
                         @if ($tool->consumer_id)
                             <kbd>{{ $tool->consumer_id }}</kbd>
-                        @else
-                            (none)
-                        @endif
+                    @else
+                        (none)
+                    @endif
                     <dt>Associated resources
                     <dd>{{ $tool->resources_count }}
                 </dl>
@@ -23,4 +21,4 @@
     </ul>
 
     <p><a href="{{ route('admin.lti-tools.add') }}">Add LTI tool</a></p>
-@endsection
+</x-layout>

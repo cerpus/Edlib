@@ -1,10 +1,8 @@
 @php use App\Models\LtiVersion; @endphp
 
-@extends('layout')
+<x-layout>
+    <x-slot:title>Add LTI tool</x-slot:title>
 
-@section('title', 'Add LTI tool')
-
-@section('content')
     <form action="{{ route('admin.lti-tools.store') }}" method="POST">
         @csrf
 
@@ -57,4 +55,4 @@
             <button>Add</button>
         </p>
     </form>
-@endsection
+</x-layout>

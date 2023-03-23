@@ -1,8 +1,6 @@
-@extends('layout')
+<x-layout>
+    <x-slot:title>{{ trans('messages.log-in') }}</x-slot:title>
 
-@section('title', trans('messages.log-in'))
-
-@section('content')
     <form action="{{ route('login_check') }}" method="POST">
         @csrf
 
@@ -30,4 +28,4 @@
 
         <p><button>{{ trans('messages.log-in') }}</button></p>
     </form>
-@endsection
+</x-layout>

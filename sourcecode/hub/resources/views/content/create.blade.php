@@ -1,13 +1,10 @@
-@extends('layout')
+<x-layout>
+    <x-slot:title>Content types</x-slot:title>
 
-@section('title', 'Content types')
-
-@section('content')
     <p>Select a content type</p>
-
     <ul>
         @foreach ($types as $type)
             <li><a href="{{ route('content.launch-creator', [$type->id]) }}">{{ $type->name }}</a></li>
         @endforeach
     </ul>
-@endsection
+</x-layout>
