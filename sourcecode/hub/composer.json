@@ -4,7 +4,8 @@
         "php": "8.2.*",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "psr/clock": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

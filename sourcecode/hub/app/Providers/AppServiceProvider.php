@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Psr\Clock\ClockInterface;
+use Random\Randomizer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
+
+        $this->app->bind(ClockInterface::class, CarbonToPsrClockAdapter::class);
+        $this->app->bind(Randomizer::class);
     }
 
     /**
