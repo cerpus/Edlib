@@ -8,4 +8,5 @@ return [
     'manage-lti-tools' => 'Manage LTI tools',
     'preview' => 'Preview',
     'edit' => 'Edit',
+    'search' => 'Search',
 ];

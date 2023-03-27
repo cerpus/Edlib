@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexContentRequest;
 use App\Models\Content;
 use App\Models\LtiTool;
 use Illuminate\Contracts\View\View;
@@ -10,10 +11,19 @@ use function view;
 
 class ContentController extends Controller
 {
-    public function index(): View
+    public function index(IndexContentRequest $request): View
     {
+        $query = $request->validated('q', '');
+
+        if ($query !== '') {
+            $contents = Content::search($query)->paginate();
+        } else {
+            $contents = Content::paginate();
+        }
+
         return view('content.index', [
-            'contents' => Content::paginate(25),
+            'contents' => $contents,
+            'query' => $query,
         ]);
     }
 

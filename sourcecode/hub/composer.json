@@ -3,8 +3,11 @@
     "require": {
         "php": "8.2.*",
         "guzzlehttp/guzzle": "^7.2",
+        "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10.0",
+        "laravel/scout": "^10.0",
         "laravel/tinker": "^2.8",
+        "meilisearch/meilisearch-php": "^1.0",
         "psr/clock": "^1.0"
     },
     "require-dev": {

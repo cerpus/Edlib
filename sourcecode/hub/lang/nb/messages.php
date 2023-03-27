@@ -6,4 +6,5 @@ return [
     'log-in' => 'Logg inn',
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
+    'search' => 'Søk',
 ];

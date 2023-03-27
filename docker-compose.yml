@@ -6,6 +6,7 @@ volumes:
   edlib-resources_nodemodules:
   elasticsearch:
   maven_cache:
+  meilisearch_data:
   mysql:
   npm_cache:
   npm-components-storybook_nodemodules:
@@ -381,6 +382,16 @@ services:
     volumes:
       - ./sourcecode/hub:/srv/www/hub
     working_dir: /srv/www/hub
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.0
+    environment:
+      MEILI_NO_ANALYTICS: 'true'
+      MEILI_MASTER_KEY: masterkey1234567
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:7700/health]
+    volumes:
+      - meilisearch_data:/meili_data
 
   www:
     build:
