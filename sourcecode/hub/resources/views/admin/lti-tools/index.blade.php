@@ -6,10 +6,10 @@
             <li>
                 <strong>{{ $tool->name }}</strong>
                 <dl>
-                    <dt>Consumer ID
+                    <dt>Consumer key
                     <dd>
-                        @if ($tool->consumer_id)
-                            <kbd>{{ $tool->consumer_id }}</kbd>
+                        @if ($tool->consumer_key)
+                            <kbd>{{ $tool->consumer_key }}</kbd>
                     @else
                         (none)
                     @endif
