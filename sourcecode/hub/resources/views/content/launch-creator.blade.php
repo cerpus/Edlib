@@ -3,6 +3,6 @@
 
     <x-lti-launch
         :launchUrl="$tool->creator_launch_url"
-        :ltiVersion="$tool->lti_version"
+        :ltiTool="$tool"
     />
 </x-layout>
