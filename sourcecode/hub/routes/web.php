@@ -29,7 +29,12 @@ Route::controller(LoginController::class)->group(function () {
 
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
+
     Route::get('/content/create', 'create')->name('content.create');
+
+    Route::get('/content/{content}/edit', 'edit')
+        ->name('content.edit')
+        ->whereUlid('content');
 
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')

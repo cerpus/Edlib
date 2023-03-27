@@ -6,4 +6,6 @@ return [
     'log-in' => 'Log in',
     'admin-home' => 'Admin home',
     'manage-lti-tools' => 'Manage LTI tools',
+    'preview' => 'Preview',
+    'edit' => 'Edit',
 ];

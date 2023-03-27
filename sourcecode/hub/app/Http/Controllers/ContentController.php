@@ -26,6 +26,13 @@ class ContentController extends Controller
         ]);
     }
 
+    public function edit(Content $content): View
+    {
+        return view('content.edit', [
+            'content' => $content,
+        ]);
+    }
+
     public function launchCreator(LtiTool $tool): View
     {
         return view('content.launch-creator', [
