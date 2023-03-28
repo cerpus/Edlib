@@ -1,0 +1,11 @@
+id: 44692
+name: edlib-test
+environments:
+  production:
+    memory: 128
+    cli-memory: 128
+    runtime: 'php-8.2:al2'
+    build:
+      - 'composer install --no-dev'
+      - 'php artisan event:cache'
+      - 'npm ci && npm run build && rm -rf node_modules'
