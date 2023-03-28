@@ -70,7 +70,7 @@ final readonly class Oauth1Signer
         return strtoupper($method) .
             '&' . rawurlencode($url) .
             '&' . rawurlencode(implode('&', array_map(
-                fn(string $value, string $key): string => "$key=$value",
+                fn (string $value, string $key): string => "$key=$value",
                 $parameters,
                 array_keys($parameters),
             )));

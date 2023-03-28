@@ -7,6 +7,7 @@ namespace App\Lti;
 use function array_keys;
 use function htmlspecialchars;
 use function sprintf;
+
 use const ENT_HTML5;
 use const ENT_QUOTES;
 
