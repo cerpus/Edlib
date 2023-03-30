@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lti\Oauth1;
 
 use App\Lti\Oauth1\Oauth1Claims as Claim;
+
 use function hash_equals;
 
 final readonly class Oauth1Validator implements Oauth1ValidatorInterface

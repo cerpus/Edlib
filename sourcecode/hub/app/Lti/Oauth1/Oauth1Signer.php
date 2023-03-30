@@ -7,6 +7,7 @@ namespace App\Lti\Oauth1;
 use App\Lti\Oauth1\Oauth1Claims as Claim;
 use Psr\Clock\ClockInterface;
 use Random\Randomizer;
+
 use function base64_encode;
 use function hash_hmac;
 use function rawurlencode;

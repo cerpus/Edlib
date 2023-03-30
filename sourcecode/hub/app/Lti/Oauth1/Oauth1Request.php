@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lti\Oauth1;
 
 use BadMethodCallException;
+
 use function array_combine;
 use function array_keys;
 use function array_map;
@@ -14,6 +15,7 @@ use function ksort;
 use function rawurlencode;
 use function sprintf;
 use function strtoupper;
+
 use const ENT_HTML5;
 use const ENT_QUOTES;
 

@@ -8,6 +8,7 @@ use App\Lti\Oauth1\Oauth1Credentials;
 use App\Models\Content;
 use App\Models\LtiTool;
 use Illuminate\Contracts\View\View;
+
 use function assert;
 use function is_string;
 use function view;
