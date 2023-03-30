@@ -44,7 +44,7 @@ final class ContentTest extends TestCase
             ->create();
 
         // TODO: assert that the frame and form exist and stuff
-        $this->get("/content/{$content->id}/preview")
+        $this->get("/content/{$content->id}")
             ->assertOk();
     }
 }

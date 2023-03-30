@@ -1,28 +1,26 @@
 <?php
 
-namespace Tests\Unit\Lti;
+namespace Tests\Unit\Lti\Oauth1;
 
-use App\Lti\Oauth1Credentials;
-use App\Lti\Oauth1Request;
-use App\Lti\Oauth1Signer;
-use App\Lti\Oauth1SignerFactory;
+use App\Lti\Oauth1\Oauth1Credentials;
+use App\Lti\Oauth1\Oauth1Request;
+use App\Lti\Oauth1\Oauth1Signer;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\TestCase;
 use Random\Randomizer;
 use Tests\Stub\ClockStub;
 use Tests\Stub\RandomEngineStub;
-use Tests\TestCase;
 
-#[CoversClass(Oauth1SignerFactory::class)]
 #[CoversClass(Oauth1Signer::class)]
 #[CoversClass(Oauth1Credentials::class)]
 #[CoversClass(Oauth1Request::class)]
 final class Oauth1SignerTest extends TestCase
 {
-    private Oauth1SignerFactory $signerFactory;
+    private Oauth1Signer $signer;
 
     protected function setUp(): void
     {
-        $this->signerFactory = new Oauth1SignerFactory(
+        $this->signer = new Oauth1Signer(
             new ClockStub(),
             new Randomizer(new RandomEngineStub()),
         );
@@ -30,9 +28,10 @@ final class Oauth1SignerTest extends TestCase
 
     public function testSignsOauth1Requests(): void
     {
-        $request = $this->signerFactory
-            ->create(new Oauth1Credentials('my-client', 'my-secret'))
-            ->sign('POST', 'https://example.com/');
+        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $request = new Oauth1Request('POST', 'https://example.com/');
+
+        $request = $this->signer->sign($request, $credentials);
 
         $this->assertEquals([
             'oauth_consumer_key' => 'my-client',
@@ -46,11 +45,12 @@ final class Oauth1SignerTest extends TestCase
 
     public function testSignsOauth1RequestsWithExtraParams(): void
     {
-        $request = $this->signerFactory
-            ->create(new Oauth1Credentials('my-client', 'my-secret'))
-            ->sign('POST', 'https://example.com/', [
-                'lti_version' => 'LTI-1p0',
-            ]);
+        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $request = new Oauth1Request('POST', 'https://example.com/', [
+            'lti_version' => 'LTI-1p0',
+        ]);
+
+        $request = $this->signer->sign($request, $credentials);
 
         $this->assertEquals([
             'lti_version' => 'LTI-1p0',
@@ -65,9 +65,10 @@ final class Oauth1SignerTest extends TestCase
 
     public function testOutputsOauth1ParametersAsHtmlFormInputs(): void
     {
-        $request = $this->signerFactory
-            ->create(new Oauth1Credentials('my-client', 'my-secret'))
-            ->sign('POST', 'https://example.com/');
+        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $request = new Oauth1Request('POST', 'https://example.com/');
+
+        $request = $this->signer->sign($request, $credentials);
 
         $this->assertSame(<<<EOHTML
         <input type="hidden" name="oauth_consumer_key" value="my-client"/>

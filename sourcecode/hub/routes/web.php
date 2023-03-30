@@ -30,6 +30,10 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
 
+    Route::get('/content/{content}', 'show')
+        ->name('content.preview')
+        ->whereUlid('content');
+
     Route::get('/content/create', 'create')->name('content.create');
 
     Route::get('/content/{content}/edit', 'edit')
@@ -39,10 +43,6 @@ Route::controller(ContentController::class)->group(function () {
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
         ->whereUlid('tool');
-
-    Route::get('/content/{content}/preview', 'preview')
-        ->name('content.preview')
-        ->whereUlid('content');
 });
 
 Route::middleware('can:admin')->group(function () {

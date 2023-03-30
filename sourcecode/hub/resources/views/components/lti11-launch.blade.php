@@ -1,15 +1,15 @@
 <iframe
     src=""
     name="lti-launch-{{ $uniqueId }}"
-    width="{{ $width }}"
-    height="{{ $height }}"
+    width="{{ $width ?? 640 }}"
+    height="{{ $height ?? 480 }}"
 ></iframe>
 
 <form
-    action="{{ $launchUrl }}"
-    method="POST"
+    action="{{ $launch->getRequest()->getUrl() }}"
+    method="{{ $launch->getRequest()->getMethod() }}"
     class="auto-submit"
-    target="{{ 'lti-launch-'.($uniqueId) }}"
+    target="{{ 'lti-launch-'.$uniqueId }}"
 >
-    {!! $oauth1Request->toHtmlFormInputs() !!}
+    {!! $launch->getRequest()->toHtmlFormInputs() !!}
 </form>

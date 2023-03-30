@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Lti\Oauth1Credentials;
+use App\Lti\Oauth1\Oauth1Credentials;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
