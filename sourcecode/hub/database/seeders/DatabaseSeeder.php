@@ -7,6 +7,7 @@ use App\Models\ContentVersion;
 use App\Models\LtiResource;
 use App\Models\LtiTool;
 use App\Models\LtiVersion;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -37,6 +38,9 @@ class DatabaseSeeder extends Seeder
 
         Content::factory()
             ->has($contentVersionFactory, 'versions')
+            ->hasAttached(User::factory(), [
+                'role' => 'owner',
+            ], 'users')
             ->count(40)
             ->create();
     }

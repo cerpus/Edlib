@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Middleware\LtiValidatedRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,6 +30,10 @@ Route::controller(LoginController::class)->group(function () {
 
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
+
+    Route::get('/content/mine', 'mine')
+        ->middleware('auth')
+        ->name('content.mine');
 
     Route::get('/content/{content}', 'show')
         ->name('content.preview')

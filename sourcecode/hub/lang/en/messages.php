@@ -9,4 +9,6 @@ return [
     'preview' => 'Preview',
     'edit' => 'Edit',
     'search' => 'Search',
+    'shared-content' => 'Shared content',
+    'my-content' => 'My content',
 ];

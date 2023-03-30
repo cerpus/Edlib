@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Scout\Searchable;
@@ -36,6 +37,19 @@ class Content extends Model
     }
 
     /**
+     * @return BelongsToMany<User>
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withCasts([
+                'role' => ContentUserRole::class,
+            ])
+            ->withTimestamps();
+    }
+
+    /**
      * @return array<string, int|string>
      */
     public function toSearchableArray(): array
@@ -45,11 +59,12 @@ class Content extends Model
         return [
             'id' => $this->id,
             'title' => $latest->resource->title,
+            'user_ids' => $this->users()->allRelatedIds()->toArray(),
         ];
     }
 
     public function shouldBeSearchable(): bool
     {
-        return true; // TODO: draft/published
+        return isset($this->latestVersion->resource->title);
     }
 }

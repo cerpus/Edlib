@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('content_users', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+        Schema::create('content_user', function (Blueprint $table) {
             $table->ulid('content_id');
             $table->ulid('user_id');
             $table->string('role');
@@ -23,6 +22,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('content_users');
+        Schema::dropIfExists('content_user');
     }
 };

@@ -19,13 +19,25 @@ class ContentController extends Controller
     {
         $query = $request->validated('q', '');
 
-        if ($query !== '') {
-            $contents = Content::search($query)->paginate();
-        } else {
-            $contents = Content::paginate();
-        }
+        $contents = Content::search($query);
 
         return view('content.index', [
+            'contents' => $contents->paginate(),
+            'query' => $query,
+        ]);
+    }
+
+    public function mine(IndexContentRequest $request): View
+    {
+        $query = $request->validated('q', '');
+
+        $currentUserId = auth()->user()?->user?->id;
+
+        $contents = Content::search($query)
+            ->where('user_ids', $currentUserId)
+            ->paginate();
+
+        return view('content.mine', [
             'contents' => $contents,
             'query' => $query,
         ]);

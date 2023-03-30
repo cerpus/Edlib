@@ -7,4 +7,6 @@ return [
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
     'search' => 'Søk',
+    'shared-content' => 'Delt innhold',
+    'my-content' => 'Mitt innhold',
 ];
