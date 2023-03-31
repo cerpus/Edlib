@@ -7,7 +7,6 @@
     "recommendationEngine": {
         "explanation": "Her kan du sjå kva ressursar du kan bruke i kurset ditt. Dra og slepp ressursar i modulane dine."
     },
-    "Noe skjedde": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator.",
     "Fant ingen ressurser": "Fann ingen ressursar",
     "source": {
         "h5p": "H5P",
@@ -205,6 +204,5 @@
     "published": "publisert",
     "unpublished": "upublisert",
     "created": "oppretta",
-    "something went wrong": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator.",
     "edit_not_allowed_by_license": "Lisensen tillèt ikkje redigering av dette innhaldet"
 }

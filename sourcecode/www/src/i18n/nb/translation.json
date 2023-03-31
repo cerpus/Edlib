@@ -7,7 +7,6 @@
     "recommendationEngine": {
         "explanation": "Her ser du innhold du kan bruke i kurset. Dra og slipp innholdselementer til modulene dine."
     },
-    "Noe skjedde": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
     "Fant ingen ressurser": "Fant ingen ressurser",
     "source": {
         "h5p": "H5P",
@@ -205,6 +204,5 @@
     "published": "publisert",
     "unpublished": "upublisert",
     "created": "opprettet",
-    "something went wrong": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
     "edit_not_allowed_by_license": "Lisensen tillater ikke redigering av dette innholdet"
 }

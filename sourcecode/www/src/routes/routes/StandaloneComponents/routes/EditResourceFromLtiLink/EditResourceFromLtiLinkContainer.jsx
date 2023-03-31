@@ -40,7 +40,7 @@ const EditEdlibResourceModal = ({ ltiLaunchUrl, onAction }) => {
         return (
             <>
                 <ModalHeader onClose={() => onAction('onClose')}>
-                    {t('something went wrong')}
+                    {t('something_happened')}
                 </ModalHeader>
             </>
         );
