@@ -1,8 +1,8 @@
-import language from './nb-no.json'; 
+import language from './nb-no.json';
 
 export default {
-    locale: 'nb-no',
+    locale: 'nb-NO',
     messages: {
         ...language,
     },
-}; 
+};
