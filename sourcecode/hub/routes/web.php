@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
-use App\Http\Middleware\LtiValidatedRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
