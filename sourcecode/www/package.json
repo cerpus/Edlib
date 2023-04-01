@@ -54,7 +54,7 @@
     "razzle": "^4.2.16",
     "razzle-dev-utils": "^4.2.16",
     "webpack": "^4.44.1",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.13.2"
   },
   "browserslist": {
     "production": [
