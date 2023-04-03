@@ -45,7 +45,6 @@
     "lodash": "^4.17.21",
     "material-icons": "^0.2.3",
     "moment": "^2.29.1",
-    "ndla-ui": "^0.17.12",
     "prettier": "^2.6.0",
     "prop-types": "^15.6.1",
     "react": "^17.0.2",
