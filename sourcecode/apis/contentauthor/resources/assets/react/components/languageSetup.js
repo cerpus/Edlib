@@ -1,7 +1,5 @@
 import * as i18nDataEnGb from '../language/en-gb';
 import * as i18nDataNbNo from '../language/nb-no';
-import * as i18nDataNnNo from '../language/nn-no';
-
 const addLanguage = (languageCode) => {
     let i18nData;
     try {
@@ -13,9 +11,6 @@ const addLanguage = (languageCode) => {
             case 'nb-no':
                 i18nData = i18nDataNbNo;
                 break;
-            case 'nn-no':
-                i18nData = i18nDataNnNo;
-                break
             default:
                 i18nData = i18nDataEnGb;
                 break;
