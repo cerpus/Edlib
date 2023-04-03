@@ -11,6 +11,13 @@
         <header>
             <h1>{{ $title ?? config('app.name') }}</h1>
 
+            <ul>
+                <li><a href="{{ route('content.index') }}">Shared content</a></li>
+                @auth
+                    <li><a href="{{ route('content.mine') }}">My content</a></li>
+                @endauth
+            </ul>
+
             @auth
                 <p>Logged in as <strong>{{ auth()->id() }}</strong>.
                 @can('admin')
