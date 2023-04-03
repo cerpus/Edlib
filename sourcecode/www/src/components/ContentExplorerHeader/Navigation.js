@@ -15,7 +15,7 @@ const useStyles = makeStyles()((theme) => {
             justifyContent: 'center',
             flex: 3,
             '& > *': {
-                padding: theme.spacing(1),
+                padding: theme.spacing(1, 2.5, 1, 2.5),
             },
         },
     };
@@ -72,7 +72,6 @@ export default ({ activatedEditors, getUrl }) => {
                 active: isActive([
                     getUrl('/resources/new'),
                     getUrl('/link-author'),
-                    getUrl('/doku-author'),
                 ]),
                 icon: <CreateIcon fontSize="small" />,
                 items: activatedEditors.map(

@@ -103,9 +103,6 @@
         "card": "Kort",
         "embedly": "Integrert"
     },
-    "urlAuthor": {
-        "ndlaWarning": "Vi har funnet ressursen hos NDLA. Hvis du velger å bruke den vil den bli lagt inn i Doku-en."
-    },
     "bruk": "Bruk",
     "Forhåndsvisning": "Forhåndsvisning",
     "Mitt innhold": "Mitt innhold",
@@ -116,11 +113,8 @@
     "Privat": "Privat",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i Edlib",
     "Delt/offentlig": "Delt/offentlig",
-    "Alle kans se denne Doku": "Alle kan se denne Dokuen",
-    "Hvordan skal andre forfattere kunne bruke denne Doku?": "Hvordan skal andre forfattere kunne bruke denne Doku-en?",
     "Kan bruke den som den er": "Kan brukes som den er",
     "Kan bruke og/eller kopiere og endre den": "Kan bruke og/eller kopiere og endre den",
-    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne Doku-en",
     "Interaktivitet": "Interaktivitet",
     "Spørsmål": "Spørsmål",
     "Video": "Video",
@@ -164,7 +158,7 @@
     "Sortering": "Sortering",
     "Denne ressursen er nå publisert": "Denne ressursen er nå publisert",
     "Innholdstype": "Innholdstype",
-    "license": "lisens",
+    "license": "Lisens",
     "license_plural": "lisenser",
     "last_changed": "Sist endret",
     "author": "forfatter",
@@ -210,7 +204,7 @@
     "draft": "utkast",
     "published": "publisert",
     "unpublished": "upublisert",
-    "created": "opprettet",
+    "created": "Opprettet",
     "something went wrong": "En systemfeil har oppstått. Vennligst oppfrisk siden eller prøv igjen om litt. Dersom problemet vedvarer, vennligst kontakt administrator.",
     "edit_not_allowed_by_license": "Lisensen tillater ikke redigering av dette innholdet"
 }

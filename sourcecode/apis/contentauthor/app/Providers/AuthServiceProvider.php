@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Administrator;
 use App\Auth\Guards\EdlibGuard;
+use Illuminate\Auth\GenericUser;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,8 +33,11 @@ class AuthServiceProvider extends ServiceProvider
             return new EdlibGuard($app['request']);
         });
 
-        parent::registerPolicies($gate);
-
-        //
+        Gate::define('superadmin', function (Administrator|GenericUser $user) {
+            return (
+                $user instanceof Administrator ||
+                in_array('superadmin', $user->roles ?? [])
+            );
+        });
     }
 }

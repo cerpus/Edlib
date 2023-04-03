@@ -50,7 +50,7 @@ class RemoveOldContentLocks extends Command
             ContentLock::whereIn('content_id', $staleLocks)->delete();
             Log::info("Removed " . count($staleLocks) . " stale locks.");
         } else {
-            Log::info("No stale locks removed.");
+            Log::debug("No stale locks removed.");
         }
     }
 }

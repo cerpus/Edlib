@@ -376,11 +376,6 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method H5PExport\\:\\:deleteExport\\(\\) expects array, ArrayAccess given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -1242,11 +1237,6 @@ parameters:
 			path: app/NdlaIdMapper.php
 
 		-
-			message: "#^Method Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:registerPolicies\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: app/Providers/AuthServiceProvider.php
-
-		-
 			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"
 			count: 1
 			path: app/Providers/AuthServiceProvider.php
@@ -1808,12 +1798,12 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getContentLicense\\(\\)\\.$#"
-			count: 9
+			count: 7
 			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
 
 		-
 			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
-			count: 14
+			count: 12
 			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
 
 		-

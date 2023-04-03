@@ -39,9 +39,6 @@
         "card": "Card",
         "embedly": "Integrated"
     },
-    "urlAuthor": {
-        "ndlaWarning": "We have found the resource in NDLA's system. If you choose to use this resource the content will be appended to the Doku."
-    },
     "bruk": "Use",
     "Forhåndsvisning": "Preview",
     "Mitt innhold": "My content",
@@ -52,11 +49,8 @@
     "Privat": "Private",
     "Bare du kan sette inn denne ressursen og bare du kan forhåndsvise den i EdLib": "Only you can use this resource and only you can preview it in Edlib",
     "Delt/offentlig": "Shared/public",
-    "Alle kans se denne Doku": "Everybody can see this Doku",
-    "Hvordan skal andre forfattere kunne bruke denne Doku?": "How can other authors use this Doku?",
     "Kan bruke den som den er": "Can use as is",
     "Kan bruke og/eller kopiere og endre den": "Can use and/or copy and edit it",
-    "Kan bruke, kopiere og/eller få rettigheter til å dele eller videreselge denne doku": "Can use, copy and/or get rights to share or resell this Doku",
     "Interaktivitet": "Interactivity",
     "Spørsmål": "Question",
     "Video": "Video",
@@ -100,7 +94,7 @@
     "Sortering": "Sorting",
     "Denne ressursen er nå publisert": "This resource is now published",
     "Innholdstype": "Content type",
-    "license": "license",
+    "license": "License",
     "license_plural": "licenses",
     "last_changed": "last changed",
     "author": "author",
@@ -145,6 +139,6 @@
     "draft": "draft",
     "published": "published",
     "unpublished": "unpublished",
-    "created": "created",
+    "created": "Created",
     "edit_not_allowed_by_license": "The license does not allow you to edit this content"
 }

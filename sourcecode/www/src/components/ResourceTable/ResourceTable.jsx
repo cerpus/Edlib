@@ -41,8 +41,7 @@ const BodyRow = styled(Row)`
 const HeaderRow = styled(Row)`
     font-weight: bold;
     margin-bottom: 8px;
-    font-size: ${(props) => props.theme.rem(0.8)};
-
+    font-size: ${(props) => props.theme.rem(1)};
     & > div {
         padding: 0 5px;
         display: flex;
@@ -69,7 +68,7 @@ const Cell = styled.div`
         props.secondary &&
         `
         color: #595959;
-        font-size: ${props.theme.rem(0.8)};
+        font-size: ${props.theme.rem(0.875)};
   `}
 `;
 
@@ -90,11 +89,11 @@ const Title = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     padding-right: 20px;
-    font-size: ${(props) => props.theme.rem(1.2)};
+    font-size: ${(props) => props.theme.rem(1.125)};
 `;
 
 const UnderTitle = styled.div`
-    font-size: ${(props) => props.theme.rem(0.8)};
+    font-size: ${(props) => props.theme.rem(0.875)};
 `;
 
 const CogWrapper = styled.div`
@@ -102,7 +101,6 @@ const CogWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     flex: 1;
 `;
 
@@ -126,7 +124,13 @@ const ResourceTable = ({
         >
             {({ cogProps, setSelectedResource, resources }) => (
                 <>
-                    <HeaderRow>
+                    <HeaderRow
+                        style={{
+                            gridColumnStart: 'icon',
+                            gridColumnEnd: 'span date',
+                            fontWeight: 400,
+                        }}
+                    >
                         <div
                             style={{
                                 gridColumnStart: 'icon',
@@ -137,7 +141,7 @@ const ResourceTable = ({
                                 {t('Innhold')}{' '}
                                 <span
                                     style={{
-                                        fontWeight: 'normal',
+                                        fontWeight: 400,
                                     }}
                                 >
                                     <i>{`${totalCount} ${t('ressurser')}`}</i>

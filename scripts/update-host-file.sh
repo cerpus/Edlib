@@ -9,7 +9,6 @@ read -r -d '' hosts << EOM
 $ip\tedlib.internal.auth.local
 $ip\tedlib.internal.resource.local
 $ip\tedlib.internal.lti.local
-$ip\tedlib.internal.doku.local
 $ip\tedlib.internal.common.local
 $ip\tedlib.internal.version.local
 $ip\tedlibfacade.local

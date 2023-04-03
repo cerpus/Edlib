@@ -13,6 +13,8 @@ const AddCard = props => {
         addNewQuestionContainer: {
             padding: '8px',
             textTransform: 'none',
+            fontSize: '1.6rem',
+            fontWeight: '400 !important',
         }
     };
     return (

@@ -77,7 +77,6 @@ class Kernel extends HttpKernel
 
         // Edlib middleware
         'edlib.parse-jwt' => \App\Http\Middleware\EdlibParseJwt::class,
-        'edlib.auth' => \App\Http\Middleware\EdlibAuth::class,
 
         // Edlib internal middleware
         'internal.handle-jwt' => \App\Http\Middleware\InternalHandleJwt::class,
@@ -108,7 +107,6 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\EdlibParseJwt::class,
-        \App\Http\Middleware\EdlibAuth::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,

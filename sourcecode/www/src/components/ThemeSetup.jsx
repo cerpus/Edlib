@@ -38,6 +38,10 @@ const ThemeSetup = ({ children }) => {
                 border: `1px solid ${borderColor}`,
                 padding: '5px',
                 fontSize: 16,
+                typography: {
+                    fontFamily: "'Lato', sans-serif",
+                    fontWeight: 400,
+                },
                 breakpoints: {
                     xs: 0,
                     sm: 600,

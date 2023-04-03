@@ -46,7 +46,6 @@ export const ConfigurationProvider = ({
 ConfigurationProvider.defaultProps = {
     enableVersionInterface: false,
     enableTranslationButton: false,
-    enableDoku: false,
     enableCollections: false,
     inMaintenanceMode: false,
 };

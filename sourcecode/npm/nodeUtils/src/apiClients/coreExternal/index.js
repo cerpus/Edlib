@@ -9,7 +9,6 @@ import resource from './resource.js';
 import { exceptionTranslator } from '../../services/index.js';
 import license from './license.js';
 import info from './info.js';
-import doku from './doku.js';
 import * as errorReporting from '../../services/errorReporting.js';
 
 const coreAxios = (req, config) => async (options) => {
@@ -46,7 +45,6 @@ export default (req, config) => {
         resource: resource(core),
         license: license(core),
         info: info(core),
-        doku: doku(core),
         config,
     };
 };

@@ -91,10 +91,6 @@ class GameHandler
 
     private function handleCopy(Game $game, Request $request)
     {
-        if ($game->useVersioning() !== true) {
-            return [$game, VersionData::UPDATE];
-        }
-
         $reason = $game->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
 
         if ($reason === VersionData::COPY && !$request->get("license", false)) {

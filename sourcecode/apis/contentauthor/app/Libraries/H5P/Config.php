@@ -376,6 +376,6 @@ trait Config
     {
         // Previously from H5Plugin::VERSION
         // TODO: figure out if this is important
-        return '2.0.2';
+        return '2.0.3';
     }
 }
