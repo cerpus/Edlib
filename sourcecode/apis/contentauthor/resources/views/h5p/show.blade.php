@@ -22,8 +22,8 @@
             element.classList.add('hide');
         })(this)">
             {{trans('common.resource-in-draft-state')}}
-            <div class="draft-resource-close" >
-                {{trans('common.close')}}
+            <div class="draft-resource-close" aria-label="close">
+                &times;
             </div>
         </div>
     @endif

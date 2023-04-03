@@ -1,50 +1,55 @@
 @import '../../../../../../../sass/variables';
 
 .answerCard {
-  border-radius: 5px;
-  position: relative;
-  overflow: hidden;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
 
-  &.correctAnswer {
-    background-color: lighten($brand-success, 30%);
+    &.correctAnswer {
+        background-color: lighten($brand-success, 30%);
+
+        .answerTitle {
+            background-color: lighten($brand-success, 15%);
+        }
+
+        .richeditor-container {
+            border-bottom: 2px solid #2d8712;
+        }
+    }
+
+    &.wrongAnswer {
+        background-color: lighten($brand-danger, 30%);
+
+        .answerTitle {
+          background-color: lighten($brand-danger, 15%);
+        }
+
+        .richeditor-container {
+          border-bottom: 2px solid #e3514d;
+        }
+    }
+
+    .displayText {
+        margin-top: 10px;
+        width: 100%;
+        padding-bottom: 6px;
+        white-space: pre-wrap;
+    }
 
     .answerTitle {
-      background-color: lighten($brand-success, 15%);
+        padding: 4px 8px;
     }
 
-    .richeditor-container {
-      border-bottom: 2px solid #2d8712;
-    }
-  }
-
-  &.wrongAnswer {
-    background-color: lighten($brand-danger, 30%);
-
-    .answerTitle {
-      background-color: lighten($brand-danger, 15%);
+    .answerContainer {
+        padding: 8px;
     }
 
-    .richeditor-container {
-      border-bottom: 2px solid #e3514d;
+    &.H5PQuizAddedAlternative {
+        border: 1px dashed #72aceb;
     }
-  }
 
-  .displayText {
-    margin-top: 10px;
-    width: 100%;
-    padding-bottom: 6px;
-    white-space: pre-wrap;
-  }
-
-  .answerTitle {
-    padding: 4px 8px;
-  }
-
-  .answerContainer {
-    padding: 8px;
-  }
-
-  &.H5PQuizAddedAlternative {
-    border: 1px dashed #72aceb;
-  }
+    .answerContainer .richeditor-container {
+        font-size: 1.8rem;
+        font-weight: 400;
+    }
 }

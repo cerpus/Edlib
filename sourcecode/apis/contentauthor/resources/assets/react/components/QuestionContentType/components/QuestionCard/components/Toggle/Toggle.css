@@ -1,12 +1,13 @@
 .togglerSwitch {
     display: flex;
     align-items: center;
+    font-size: 1.4rem;
+    font-weight: 400;
 }
 
 .togglerSwitch label {
     margin: 0;
 }
-
 
 .isCorrectSwitch {
     transform: rotate(180deg);

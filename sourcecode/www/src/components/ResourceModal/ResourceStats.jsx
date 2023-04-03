@@ -8,6 +8,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts';
+import { makeStyles } from 'tss-react/mui';
 import { fillEmptyDays } from '../../helpers/chart.js';
 import useFetchWithToken from '../../hooks/useFetchWithToken.jsx';
 import { Box, CircularProgress } from '@mui/material';
@@ -15,7 +16,26 @@ import moment from 'moment';
 import useTranslation from '../../hooks/useTranslation.js';
 import { useConfigurationContext } from '../../contexts/Configuration.jsx';
 
+const useStyles = makeStyles()((theme) => ({
+    views: {
+        fontSize: '1rem',
+        fontWeight: '400 !important',
+    },
+    totalViews: {
+        fontSize: '1rem',
+        fontWeight: '400 !important',
+    },
+    dates: {
+        fontSize: '1rem',
+        fontWeight: '400 !important',
+    },
+    totalCount: {
+        fontSize: '1rem',
+        fontWeight: '400 !important',
+    },
+}));
 const ResourceStats = ({ resourceId }) => {
+    const { classes } = useStyles();
     const { t } = useTranslation();
     const { edlibApi } = useConfigurationContext();
 
@@ -48,10 +68,10 @@ const ResourceStats = ({ resourceId }) => {
     }
     return (
         <>
-            <Box pb={2}>
-                <strong>{t('S.VIEWS')}</strong>
+            <Box pb={2} className={classes.views}>
+                {t('S.VIEWS')}
             </Box>
-            <Box pb={2}>
+            <Box pb={2} className={classes.dates}>
                 <label htmlFor="from"> {t('S.FROM')}: <input type="date" id="from" max={endDate}
                                                     onChange={handleDateChange}
                                                     value={startDate}/> </label> {' '}
@@ -77,8 +97,8 @@ const ResourceStats = ({ resourceId }) => {
                             left: -20,
                         }}
                     >
-                        <XAxis dataKey="date" />
-                        <YAxis allowDecimals={false} />
+                        <XAxis dataKey="date" tick={{fontSize: '0.875rem'}} />
+                        <YAxis allowDecimals={false} tick={{fontSize: '0.875rem'}} />
                         <Tooltip />
                         {datasets.map((dataset) => (
                             <Line
@@ -95,11 +115,11 @@ const ResourceStats = ({ resourceId }) => {
                     </LineChart>
                 </ResponsiveContainer>
             }
-            <Box pb={2}>
-                <strong>{t('S.RANGE_VIEWS')}: {viewsCount} </strong>
+            <Box pb={2} className={classes.totalCount}>
+                {t('S.RANGE_VIEWS')}: {viewsCount}
             </Box>
-            <Box pb={2}>
-                <strong>{t('S.TOTAL_VIEWS')}: {response?.data?.totalViews} </strong>
+            <Box pb={2} className={classes.totalViews}>
+                {t('S.TOTAL_VIEWS')}: {response?.data?.totalViews}
             </Box>
         </>
     );

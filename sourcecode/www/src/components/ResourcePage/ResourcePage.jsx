@@ -194,7 +194,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
 
     const sortOrderDropDown = (
         <FormControl variant="outlined" fullWidth>
-            <InputLabel>{t('Sortering')}</InputLabel>
+            <InputLabel sx={{ fontSize: '0.875rem !important', fontWeight: '400'}}>{t('Sortering')}</InputLabel>
             <Select
                 MenuProps={{
                     style: { zIndex: 2051 },
