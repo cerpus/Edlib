@@ -39,7 +39,7 @@
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
     "react-helmet": "^6.1.0",
-    "react-i18next": "^12.1.5",
+    "react-i18next": "^12.2.0",
     "react-mathquill": "^1.0.2",
     "react-popper": "^2.3.0",
     "store": "^2.0.12",
