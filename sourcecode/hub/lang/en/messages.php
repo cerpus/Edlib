@@ -12,4 +12,7 @@ return [
     'search' => 'Search',
     'shared-content' => 'Shared content',
     'my-content' => 'My content',
+    'preferences' => 'Preferences',
+    'language' => 'Language',
+    'save' => 'Save',
 ];

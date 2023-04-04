@@ -10,4 +10,7 @@ return [
     'search' => 'Søk',
     'shared-content' => 'Delt innhold',
     'my-content' => 'Mitt innhold',
+    'preferences' => 'Innstillinger',
+    'language' => 'Språk',
+    'save' => 'Lagre',
 ];

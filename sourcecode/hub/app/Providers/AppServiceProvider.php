@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Configuration\Locales;
 use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -25,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ClockInterface::class, CarbonToPsrClockAdapter::class);
         $this->app->bind(Randomizer::class);
+
+        $this->app->when(Locales::class)
+            ->needs('$locales')
+            ->giveConfig('app.allowed_locales');
     }
 
     /**

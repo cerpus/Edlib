@@ -65,15 +65,32 @@
                                     {{ auth()->id() }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end p-3">
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a
+                                            href="{{ route('user.preferences') }}"
+                                            class="dropdown-item">
+                                            {{ trans('messages.preferences') }}
+                                        </a>
+                                    </li>
                                     @can('admin')
-                                        <p><a href="{{ route('admin.index') }}">{{ trans('messages.admin-home') }}</a></p>
+                                        <li>
+                                            <a
+                                                href="{{ route('admin.index') }}"
+                                                class="dropdown-item"
+                                            >
+                                                {{ trans('messages.admin-home') }}</a>
+                                        </li>
                                     @endcan
-                                    <form action="{{ route('log_out') }}" method="POST">
-                                        @csrf
-                                        <button class="btn btn-danger">{{ trans('messages.log-out') }}</button>
-                                    </form>
-                                </div>
+                                    <li>
+                                        <form action="{{ route('log_out') }}" method="POST">
+                                            @csrf
+                                            <button class="dropdown-item">
+                                                {{ trans('messages.log-out') }}
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </li>
                         @else
                             <li class="nav-item">

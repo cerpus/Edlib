@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\UserSaved;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -17,6 +18,17 @@ class UserLogin extends Model implements AuthenticatableContract
 
     protected $hidden = [
         'password',
+    ];
+
+    protected $fillable = [
+        'locale',
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $dispatchesEvents = [
+        'saved' => UserSaved::class,
     ];
 
     /**

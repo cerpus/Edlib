@@ -2,6 +2,7 @@
     "type": "project",
     "require": {
         "php": "8.2.*",
+        "ext-intl": "*",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10.0",

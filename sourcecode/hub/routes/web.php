@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,6 +48,11 @@ Route::controller(ContentController::class)->group(function () {
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
         ->whereUlid('tool');
+});
+
+Route::middleware('auth:web')->controller(UserController::class)->group(function () {
+    Route::get('/preferences', 'preferences')->name('user.preferences');
+    Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
 });
 
 Route::middleware('can:admin')->group(function () {

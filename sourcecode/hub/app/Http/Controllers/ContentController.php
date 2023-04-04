@@ -9,6 +9,7 @@ use App\Models\Content;
 use App\Models\LtiTool;
 use Illuminate\Contracts\View\View;
 
+use function app;
 use function assert;
 use function is_string;
 use function view;
@@ -54,6 +55,7 @@ class ContentController extends Controller
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
+            ->withClaim('launch_presentation_locale', app()->getLocale())
             ->toPresentationLaunch($credentials, $launchUrl, $content->id);
 
         return view('content.show', [
@@ -93,6 +95,7 @@ class ContentController extends Controller
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
+            ->withClaim('launch_presentation_locale', app()->getLocale())
             ->toItemSelectionLaunch(
                 $tool->getOauth1Credentials(),
                 $tool->creator_launch_url,
