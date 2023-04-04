@@ -1,7 +1,7 @@
 import language from './nb-no.json';
 
 export default {
-    locale: 'nb-NO',
+    locale: 'nb-no',
     messages: {
         ...language,
     },
