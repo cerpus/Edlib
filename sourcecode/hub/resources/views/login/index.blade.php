@@ -12,20 +12,9 @@
             </ul>
         @endif
 
-        <p>
-            <label>
-                {{ trans('messages.email-address') }}
-                <input type="email" name="email" value="{{ old('email') }}">
-            </label>
-        </p>
+        <x-form.field name="email" :label="trans('messages.email-address')"/>
+        <x-form.field name="password" :label="trans('messages.password')" type="password" />
 
-        <p>
-            <label>
-                {{ trans('messages.password') }}
-                <input type="password" name="password">
-            </label>
-        </p>
-
-        <p><button>{{ trans('messages.log-in') }}</button></p>
+        <x-form.button class="btn-primary">{{ trans('messages.log-in') }}</x-form.button>
     </form>
 </x-layout>
