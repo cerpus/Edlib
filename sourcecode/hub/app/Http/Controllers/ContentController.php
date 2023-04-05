@@ -7,11 +7,14 @@ use App\Lti\LtiLaunchBuilder;
 use App\Lti\Oauth1\Oauth1Credentials;
 use App\Models\Content;
 use App\Models\LtiTool;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 
+use Illuminate\Http\RedirectResponse;
 use function app;
 use function assert;
 use function is_string;
+use function to_route;
 use function view;
 
 class ContentController extends Controller
@@ -71,6 +74,16 @@ class ContentController extends Controller
         return view('content.create', [
             'types' => $tools,
         ]);
+    }
+
+    public function copy(Content $content): RedirectResponse
+    {
+        $user = auth()->user();
+        assert($user instanceof User);
+
+        $copy = $content->createCopyBelongingTo($user);
+
+        return to_route('content.index', [$copy->id]);
     }
 
     public function edit(Content $content, LtiLaunchBuilder $builder): View

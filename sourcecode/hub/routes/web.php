@@ -41,6 +41,10 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/create', 'create')->name('content.create');
 
+    Route::post('/content/{content}/copy', 'copy')
+        ->can('copy', 'content')
+        ->name('content.copy');
+
     Route::get('/content/{content}/edit', 'edit')
         ->name('content.edit')
         ->whereUlid('content');

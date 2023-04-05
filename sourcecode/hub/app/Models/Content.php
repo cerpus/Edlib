@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Searchable;
 
 class Content extends Model
@@ -17,6 +18,20 @@ class Content extends Model
     use Searchable;
 
     protected $perPage = 40;
+
+    public function createCopyBelongingTo(User $user): self
+    {
+        return DB::transaction(function () use ($user) {
+            // TODO: title for resource copies
+            // TODO: somehow denote content is copied
+            $copy = new Content();
+            $copy->save();
+            $copy->versions()->save($this->latestVersion->replicate());
+            $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
+
+            return $copy;
+        });
+    }
 
     /**
      * @return HasOne<ContentVersion>
