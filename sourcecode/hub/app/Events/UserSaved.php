@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Events;
 
-use App\Models\UserLogin;
+use App\Models\User;
 
 class UserSaved
 {
     public function __construct(
-        public readonly UserLogin $user,
+        public readonly User $user,
     ) {
     }
 }

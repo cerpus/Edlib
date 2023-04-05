@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Events\UserSaved;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Model
+class User extends Model implements AuthenticatableContract
 {
+    use Authenticatable;
     use HasFactory;
     use HasUlids;
 
@@ -18,6 +21,18 @@ class User extends Model
 
     protected $fillable = [
         'name',
+        'locale',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $dispatchesEvents = [
+        'saved' => UserSaved::class,
     ];
 
     /**
@@ -27,11 +42,8 @@ class User extends Model
         'admin' => false,
     ];
 
-    /**
-     * @return HasOne<UserLogin>
-     */
-    public function login(): HasOne
+    public function getAuthIdentifierName(): string
     {
-        return $this->hasOne(UserLogin::class, 'user_id');
+        return 'email';
     }
 }

@@ -3,8 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\User;
-use App\Models\UserLogin;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * @template-extends Factory<User>
@@ -13,20 +14,19 @@ class UserFactory extends Factory
 {
     public function definition(): array
     {
+        $name = $this->faker->name;
+        $email = Str::slug($name).'@example.com';
+
         return [
-            'name' => $this->faker->name,
+            'name' => $name,
+            'email' => $email,
+            'password' => Hash::make($this->faker->password),
+            'admin' => false,
         ];
     }
 
     public function admin(): static
     {
-        return $this->state([
-            'admin' => true,
-        ]);
-    }
-
-    public function hasLogin(): static
-    {
-        return $this->has(UserLogin::factory(), 'login');
+        return $this->state(['admin' => true]);
     }
 }

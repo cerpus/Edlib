@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Configuration\Locales;
 use App\Http\Requests\SavePreferencesRequest;
-use App\Models\UserLogin;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 
@@ -24,7 +24,7 @@ class UserController extends Controller
     public function savePreferences(SavePreferencesRequest $request): RedirectResponse
     {
         $user = auth()->user();
-        assert($user instanceof UserLogin);
+        assert($user instanceof User);
 
         $user->fill($request->validated());
         $user->save();

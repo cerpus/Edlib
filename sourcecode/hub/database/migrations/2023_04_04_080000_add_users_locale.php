@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::table('user_logins', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->string('locale')->default(app()->getLocale());
         });
     }
 
     public function down(): void
     {
-        Schema::table('user_logins', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('locale');
         });
     }

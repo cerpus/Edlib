@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Commands;
 
-use App\Models\UserLogin;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +28,7 @@ final class CreateAdminUserTest extends TestCase
             'password' => 'password123',
         ]));
 
-        $login = UserLogin::where('email', 'john@example.com')->firstOrFail();
+        $login = User::where('email', 'john@example.com')->firstOrFail();
 
         $this->assertTrue(Gate::forUser($login)->allows('admin'));
     }

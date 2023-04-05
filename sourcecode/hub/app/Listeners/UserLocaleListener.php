@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\UserSaved;
-use App\Models\UserLogin;
+use App\Models\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ final readonly class UserLocaleListener
      */
     public function handleUserLogin(Login $event): void
     {
-        if ($event->user instanceof UserLogin) {
+        if ($event->user instanceof User) {
             $this->request->session()->put('locale', $event->user->locale);
         }
     }
@@ -34,7 +34,7 @@ final readonly class UserLocaleListener
         $loggedIn = $this->guard->user();
 
         if (
-            $loggedIn instanceof UserLogin &&
+            $loggedIn instanceof User &&
             $event->user->is($loggedIn) &&
             $event->user->wasChanged('locale')
         ) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Models\UserLogin;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
@@ -16,7 +16,7 @@ final class UserTest extends DuskTestCase
 
     public function testUserCanChangeLanguage(): void
     {
-        UserLogin::factory()->create([
+        User::factory()->create([
             'email' => 'john@example.com',
             'password' => Hash::make('supersecret'),
             'locale' => 'en',

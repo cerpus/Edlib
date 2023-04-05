@@ -32,7 +32,7 @@ class ContentController extends Controller
     {
         $query = $request->validated('q', '');
 
-        $currentUserId = auth()->user()?->user?->id;
+        $currentUserId = auth()->user()->id;
 
         $contents = Content::search($query)
             ->where('user_ids', $currentUserId)
