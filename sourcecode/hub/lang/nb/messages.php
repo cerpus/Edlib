@@ -15,4 +15,5 @@ return [
     'save' => 'Lagre',
     'copy' => 'Kopier',
     'search-query' => 'Søkeord',
+    'toggle-menu' => 'Åpne/lukk meny',
 ];

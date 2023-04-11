@@ -22,8 +22,9 @@
                     data-bs-target="#global-nav-scroll"
                     aria-controls="global-nav-scroll"
                     aria-expanded="false"
+                    aria-label="{{ trans('messages.toggle-menu') }}"
                 >
-                    🍔
+                    <span class="navbar-toggler-icon" aria-hidden="true"></span>
                 </button>
 
                 <div class="collapse navbar-collapse d-lg-flex" id="global-nav-scroll">

@@ -17,4 +17,5 @@ return [
     'save' => 'Save',
     'copy' => 'Copy',
     'search-query' => 'Search query',
+    'toggle-menu' => 'Toggle menu',
 ];
