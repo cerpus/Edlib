@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
-use App\Content;
 use App\Gametype;
 use App\H5PLibrary;
 use App\H5pLti;

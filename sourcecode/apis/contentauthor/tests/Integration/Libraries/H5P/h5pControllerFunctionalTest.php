@@ -11,7 +11,6 @@ use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Event;
 use stdClass;
 use Tests\Helpers\MockMQ;
 use Tests\Seeds\TestH5PSeeder;
