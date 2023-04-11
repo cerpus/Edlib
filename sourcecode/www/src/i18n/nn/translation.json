@@ -158,7 +158,7 @@
     "Sortering": "Sortering",
     "Denne ressursen er nå publisert": "Denne ressursen er no publisert",
     "Innholdstype": "Innhaldstype",
-    "license": "lisens",
+    "license": "Lisens",
     "license_plural": "lisensar",
     "last_changed": "Sist endra",
     "author": "forfattar",
@@ -204,7 +204,7 @@
     "draft": "utkast",
     "published": "publisert",
     "unpublished": "upublisert",
-    "created": "oppretta",
+    "created": "Oppretta",
     "something went wrong": "Ein systemfeil har oppstått. Ver vennleg å laste sida om att eller forsøk igjen seinare. Dersom problemet held frem, ver vennleg å kontakte administrator.",
     "edit_not_allowed_by_license": "Lisensen tillèt ikkje redigering av dette innhaldet"
 }

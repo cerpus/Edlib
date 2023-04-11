@@ -94,7 +94,7 @@
     "Sortering": "Sorting",
     "Denne ressursen er nå publisert": "This resource is now published",
     "Innholdstype": "Content type",
-    "license": "license",
+    "license": "License",
     "license_plural": "licenses",
     "last_changed": "last changed",
     "author": "author",
@@ -139,6 +139,6 @@
     "draft": "draft",
     "published": "published",
     "unpublished": "unpublished",
-    "created": "created",
+    "created": "Created",
     "edit_not_allowed_by_license": "The license does not allow you to edit this content"
 }
