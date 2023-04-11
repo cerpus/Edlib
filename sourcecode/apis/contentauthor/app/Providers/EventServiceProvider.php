@@ -13,10 +13,6 @@ class EventServiceProvider extends ServiceProvider
      * The event listener mappings for the application.
      */
     protected $listen = [
-        \App\Events\SomeEvent::class => [
-            \App\Listeners\EventListener::class,
-        ],
-
         \App\Events\ArticleWasSaved::class => [
             \App\Listeners\Article\HandleVersioning::class,
             \App\Listeners\Article\HandleCollaborators::class,
