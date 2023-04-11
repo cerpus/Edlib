@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
 use App\Content;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Gametype;
 use App\H5PLibrary;
 use App\H5pLti;
@@ -126,15 +122,11 @@ class QuestionSetController extends Controller
      */
     public function store(ApiQuestionsetRequest $request)
     {
-        event(new ContentCreating($request));
-
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
         [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
-
-        event(new ContentCreated(Content::findContentById($id)));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $id,
@@ -219,8 +211,6 @@ class QuestionSetController extends Controller
 
     public function update(ApiQuestionsetRequest $request, QuestionSet $questionset)
     {
-        event(new ContentUpdating($questionset, $request));
-
         if (!$this->canCreate()) {
             abort(403);
         }
@@ -235,10 +225,6 @@ class QuestionSetController extends Controller
         );
 
         $content = QuestionSet::find($id);
-
-        if (isset($content)) {
-            event(new ContentUpdated(QuestionSet::find($id)), null);
-        }
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $id,

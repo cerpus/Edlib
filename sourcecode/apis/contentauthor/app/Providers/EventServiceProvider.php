@@ -2,12 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentDeleted;
-use App\Events\ContentDeleting;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Events\ResourceSaved;
 use App\Listeners\H5P\HandleExport;
 use App\Listeners\ResourceEventHandler;
@@ -64,28 +58,6 @@ class EventServiceProvider extends ServiceProvider
 
         ResourceSaved::class => [
             ResourceEventHandler::class,
-        ],
-
-        ContentCreating::class => [
-            //
-        ],
-
-        ContentCreated::class => [
-//            CreateContentInRecommendationEngine::class,
-        ],
-
-        ContentUpdating::class => [
-            //
-        ],
-
-        ContentUpdated::class => [
-        ],
-
-        ContentDeleting::class => [
-            //
-        ],
-
-        ContentDeleted::class => [
         ],
     ];
 
