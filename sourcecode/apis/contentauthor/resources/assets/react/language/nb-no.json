@@ -167,7 +167,7 @@
     "LICENSEINDICATOR.BUTTON-TEXT": "Velg en annen lisens",
     "LICENSEINDICATOR.USE-LICENSE": "Bruk denne lisensen",
     "SHARINGCOMPONENT.ISPUBLISHED": "Publisert",
-    "SHARINGCOMPONENT.LISTED": "Synlig i markedsplassen",
+    "SHARINGCOMPONENT.LISTED": "Synlig på markedsplassen",
     "SHARINGCOMPONENT.YES": "Ja",
     "SHARINGCOMPONENT.NO": "Nei",
     "SHARINGCOMPONENT.SHARING": "Deling",
@@ -194,7 +194,7 @@
     "ARTICLE.TITLE": "Tittel",
     "ARTICLE.TITLEPLACEHOLDER": "Legg til din tittel…",
     "ARTICLE.CONTENT": "Innhold",
-    "ARTICLE.ERROR": "Oi sann…",
+    "ARTICLE.ERROR": "Oisann…",
     "unpublished_changes": "Upubliserte endringer",
     "unpublished_changes_explain": "Lagre og lukk for å legge endringene til i den publiserte versjonen"
 }
