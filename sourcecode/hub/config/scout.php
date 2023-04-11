@@ -121,6 +121,7 @@ return [
         'index-settings' => [
             Content::class => [
                 'filterableAttributes' => ['user_ids'],
+                'sortableAttributes' => ['created_at', 'updated_at'],
             ],
         ],
     ],

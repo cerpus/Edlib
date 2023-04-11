@@ -17,7 +17,7 @@ class Content extends Model
     use HasUlids;
     use Searchable;
 
-    protected $perPage = 40;
+    protected $perPage = 48;
 
     public function createCopyBelongingTo(User $user): self
     {
@@ -75,6 +75,8 @@ class Content extends Model
             'id' => $this->id,
             'title' => $latest->resource->title,
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 

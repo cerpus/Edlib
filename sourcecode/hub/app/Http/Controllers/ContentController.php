@@ -9,8 +9,8 @@ use App\Models\Content;
 use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
-
 use Illuminate\Http\RedirectResponse;
+
 use function app;
 use function assert;
 use function is_string;
@@ -23,7 +23,8 @@ class ContentController extends Controller
     {
         $query = $request->validated('q', '');
 
-        $contents = Content::search($query);
+        $contents = Content::search($query)
+            ->orderBy('updated_at', 'desc');
 
         return view('content.index', [
             'contents' => $contents->paginate(),
@@ -39,6 +40,7 @@ class ContentController extends Controller
 
         $contents = Content::search($query)
             ->where('user_ids', $currentUserId)
+            ->orderBy('updated_at', 'desc')
             ->paginate();
 
         return view('content.mine', [
