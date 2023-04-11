@@ -15,4 +15,5 @@ return [
     'preferences' => 'Preferences',
     'language' => 'Language',
     'save' => 'Save',
+    'copy' => 'Copy',
 ];

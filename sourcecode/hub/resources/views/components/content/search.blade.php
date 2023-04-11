@@ -16,7 +16,8 @@
                 class="btn-secondary"
                 :aria-label="trans('messages.search')"
             >
-                🔍 {{ trans('messages.search') }}
+                <x-icon name="search" />
+                {{ trans('messages.search') }}
             </x-form.button>
         </div>
     </div>

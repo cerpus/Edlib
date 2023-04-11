@@ -12,11 +12,22 @@
     </div>
 
     <nav class="card-footer">
-        <a href="{{ route('content.preview', [$content->id]) }}">{{ trans('messages.preview') }}</a>
-        <a href="{{ route('content.edit', [$content->id]) }}">{{ trans('messages.edit') }}</a>
+        <a
+            href="{{ route('content.edit', [$content->id]) }}"
+            class="btn btn-outline-dark"
+            title="{{ trans('messages.edit') }}"
+        >
+            <x-icon name="pencil" />
+        </a>
+
         <form action="{{ route('content.copy', [$content->id]) }}" method="POST" class="d-inline">
             @csrf
-            <button class="d-inline">Copy</button>
+            <button
+                class="btn btn-outline-dark d-inline"
+                title="{{ trans('messages.copy') }}"
+            >
+                <x-icon name="clipboard" />
+            </button>
         </form>
     </nav>
 </article>

@@ -13,4 +13,5 @@ return [
     'preferences' => 'Innstillinger',
     'language' => 'Språk',
     'save' => 'Lagre',
+    'copy' => 'Kopier',
 ];
