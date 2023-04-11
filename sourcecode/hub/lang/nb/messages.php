@@ -14,4 +14,5 @@ return [
     'language' => 'Språk',
     'save' => 'Lagre',
     'copy' => 'Kopier',
+    'search-query' => 'Søkeord',
 ];

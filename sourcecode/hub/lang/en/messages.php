@@ -16,4 +16,5 @@ return [
     'language' => 'Language',
     'save' => 'Save',
     'copy' => 'Copy',
+    'search-query' => 'Search query',
 ];
