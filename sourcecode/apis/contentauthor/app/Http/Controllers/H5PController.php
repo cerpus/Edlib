@@ -677,7 +677,7 @@ class H5PController extends Controller
             $collaborators = collect($h5pContent->collaborators)
                 ->pluck('email')
                 ->add(Session::get('email'))
-                ->reject(fn($v) => $v === 'noemail' || $v === null)
+                ->reject(fn ($v) => $v === 'noemail' || $v === null)
                 ->unique()
                 ->implode(',');
 

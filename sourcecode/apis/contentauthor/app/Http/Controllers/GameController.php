@@ -12,7 +12,6 @@ use App\Libraries\Games\GameHandler;
 use App\Traits\ReturnToCore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
