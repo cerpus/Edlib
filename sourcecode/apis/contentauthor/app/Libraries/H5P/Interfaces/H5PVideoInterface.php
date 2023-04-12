@@ -4,6 +4,9 @@ namespace App\Libraries\H5P\Interfaces;
 
 interface H5PVideoInterface
 {
+    /**
+     * @return object{videoId: string}
+     */
     public function upload($file, $fileHash);
 
     public function getVideoDetails($videoId);
