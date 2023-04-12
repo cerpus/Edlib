@@ -90,7 +90,7 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs(Client::class)
-            ->give(fn() => Oauth2Client::getClient(OauthSetup::create([
+            ->give(fn () => Oauth2Client::getClient(OauthSetup::create([
                 'authUrl' => config('h5p.video.authUrl'),
                 'coreUrl' => config('h5p.video.url'),
                 'key' => config('h5p.video.key'),
