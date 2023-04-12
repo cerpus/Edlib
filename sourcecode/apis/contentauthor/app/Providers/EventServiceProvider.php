@@ -15,9 +15,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         \App\Events\ArticleWasSaved::class => [
             \App\Listeners\Article\HandleVersioning::class,
-            \App\Listeners\Article\HandleCollaborators::class,
             \App\Listeners\Article\HandlePrivacy::class,
-            \App\Listeners\Article\HandleCollaborationInviteEmails::class,
         ],
 
         \App\Events\ArticleWasCopied::class => [

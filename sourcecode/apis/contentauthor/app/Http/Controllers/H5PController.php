@@ -47,7 +47,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Iso639p3;
@@ -63,8 +62,6 @@ class H5PController extends Controller
     use ReturnToCore;
 
     private string $viewDataCacheName = 'viewData-';
-
-    private bool $sendEmail = true;
 
     public function __construct(
         private H5pLti $lti,
@@ -401,7 +398,6 @@ class H5PController extends Controller
         [$oldContent, $content, $newH5pContent] = $this->performUpdate($request, $h5p, $authId, $versionPurpose);
 
         //
-        $this->sendCollaboratorInviteEmails($newH5pContent, $h5p);
         Cache::forget($this->viewDataCacheName . $content['id']);
         if ($oldContent['library']['name'] !== $content['library']['machineName']) {
             // Remove old progresses
@@ -432,55 +428,6 @@ class H5PController extends Controller
         }
 
         return response()->json($responseValues, Response::HTTP_OK);
-    }
-
-    private function sendCollaboratorInviteEmails($newContent, $oldContent)
-    {
-        if ($this->sendEmail === true && $newContent->id !== $oldContent->id) {
-            $oldCollaborators = $oldContent->collaborators ? $oldContent->collaborators->pluck('email')->toArray() : [];
-            $newContent->collaborators
-                ->pluck('email')// All emails in new article
-                ->filter(function ($newCollaborator) use ($oldCollaborators) {
-                    //Remove emails that exist as collaborators in the old article
-                    return !in_array($newCollaborator, $oldCollaborators) && Session::get("email") !== $newCollaborator;
-                })->each(function ($collaborator) use ($newContent) {
-                    if ($collaborator) {// Send mails to the new additions
-                        $mailData = new stdClass();
-                        $mailData->emailTo = $collaborator;
-                        $mailData->inviterName = Session::get('name');
-                        $mailData->contentTitle = $newContent->title;
-                        $mailData->originSystemName = Session::get('originalSystem', 'edLib');
-                        $mailData->emailTitle = trans(
-                            'emails/collaboration-invite.email-title',
-                            ['originSystemName' => $mailData->originSystemName]
-                        );
-
-                        $loginUrl = 'https://edstep.com/';
-                        $emailFrom = 'no-reply@edlib.com';
-                        switch (mb_strtolower(Session::get('originalSystem'))) {
-                            case 'edstep':
-                                $loginUrl = 'https://edstep.com/';
-                                $emailFrom = 'no-reply@edstep.com';
-                                break;
-                            case 'learnplayground':
-                                $loginUrl = 'https://learnplayground.com/';
-                                $emailFrom = 'no-reply@learnplayground.com';
-                                break;
-                        }
-                        $mailData->loginUrl = $loginUrl;
-                        $mailData->emailFrom = $emailFrom;
-
-                        Mail::send(
-                            'emails.collaboration-invite',
-                            ['mailData' => $mailData],
-                            function ($m) use ($mailData) {
-                                $m->from($mailData->emailFrom, $mailData->originSystemName);
-                                $m->to($mailData->emailTo)->subject($mailData->emailTitle);
-                            }
-                        );
-                    }
-                });
-        }
     }
 
     public static function addAuthorToParameters($paramsString)
@@ -546,18 +493,9 @@ class H5PController extends Controller
         /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
 
-        $this->store_content_shares(
-            $content['id'],
-            $request->filled("col-emails") ? $request->request->get("col-emails") : ""
-        );
-
         $this->store_content_is_private($newH5pContent, $request);
 
-        $theOldContent = $this->getEmptyOldContent();
-
         event(new H5PWasSaved($newH5pContent, $request, VersionData::CREATE));
-
-        $this->sendCollaboratorInviteEmails($newH5pContent, $theOldContent);
 
         return $newH5pContent;
     }
@@ -716,11 +654,6 @@ class H5PController extends Controller
         if (!$request->filled('license')) {
             $request->request->add(['license' => $h5pContent->getContentLicense()]);
         }
-        if (!$request->filled('col-emails')) {
-            $request->request->add([
-                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray())
-            ]);
-        }
 
         $makeNewVersion = $h5pContent->requestShouldBecomeNewVersion($request);
         $oldContent['useVersioning'] = $makeNewVersion;
@@ -732,19 +665,21 @@ class H5PController extends Controller
 
         // If user is the original owner of the resource
         if ($newH5pContent->isOwner($authId)) {
+            $collaborators = $h5pContent->collaborators->pluck('email')->implode(',');
+
             if (in_array($versionPurpose, [VersionData::UPDATE, VersionData::UPGRADE])) {
-                $this->store_content_shares($content['id'], $request->filled("col-emails") ? $request->request->get("col-emails") : "");
+                $this->store_content_shares($content['id'], $collaborators);
             }
 
             $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
         } elseif ($versionPurpose === VersionData::UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
-            $emails = $h5pContent->collaborators->pluck('email')->toArray();
-            $currentUserEmail = Session::get('email', "noemail");
-            if ($currentUserEmail !== "noemail" && !in_array($currentUserEmail, $emails)) {
-                $emails[] = $currentUserEmail;
-            }
-            $collaborators = implode(',', $emails);
+            $collaborators = collect($h5pContent->collaborators)
+                ->pluck('email')
+                ->add(Session::get('email'))
+                ->reject(fn($v) => $v === 'noemail' || $v === null)
+                ->unique()
+                ->implode(',');
 
             // TODO Update license and privacy based on the old h5p
 

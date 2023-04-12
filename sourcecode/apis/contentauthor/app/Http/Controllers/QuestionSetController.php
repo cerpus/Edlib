@@ -78,7 +78,6 @@ class QuestionSetController extends Controller
             abort(403);
         }
 
-        $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
         Session::forget(SessionKeys::EXT_QUESTION_SET);
@@ -106,7 +105,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.create')->with(compact([
-            'emails',
             'editorSetup',
             'state',
         ]));
@@ -146,7 +144,6 @@ class QuestionSetController extends Controller
         $this->addIncludeParse('questions.answers');
         $questionSetData = $this->buildItem($questionset, new QuestionSetsTransformer());
         $contenttypes = $this->getQuestionsetContentTypes();
-        $emails = $questionset->getCollaboratorEmails();
         $ownerName = $questionset->getOwnerName($questionset->owner);
 
         /** @var H5PAdapterInterface $adapter */
@@ -183,8 +180,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.edit')->with(compact([
-            'emails',
-            'emails',
             'state',
             'editorSetup'
         ]));

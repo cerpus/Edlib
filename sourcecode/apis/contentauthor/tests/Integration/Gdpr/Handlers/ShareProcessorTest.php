@@ -82,12 +82,14 @@ class ShareProcessorTest extends TestCase
         $email = 'test@example.com';
 
         $questionSet = QuestionSet::factory()->create();
-        $questionSet->setCollaborators([$email, $this->faker->email]);
+        $questionSet->collaborators()->save(new Collaborator(['email' => $email]));
+        $questionSet->collaborators()->save(new Collaborator(['email' => $this->faker->email]));
 
         $game = Game::factory()->create();
-        $game->setCollaborators([$email, $this->faker->email]);
+        $game->collaborators()->save(new Collaborator(['email' => $email]));
+        $game->collaborators()->save(new Collaborator(['email' => $this->faker->email]));
         $anotherGame = Game::factory()->create();
-        $anotherGame->setCollaborators([$this->faker->email]);
+        $anotherGame->collaborators()->save(new Collaborator(['email' => $this->faker->email]));
 
         $this->assertCount(5, Collaborator::all());
         $this->assertCount(2, $questionSet->fresh()->collaborators);

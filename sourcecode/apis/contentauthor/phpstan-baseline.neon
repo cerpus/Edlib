@@ -106,11 +106,6 @@ parameters:
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/Game.php
-
-		-
 			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
 			count: 1
 			path: app/H5PCollaborator.php
@@ -1007,11 +1002,6 @@ parameters:
 			path: app/Listeners/AbstractHandleVersioning.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$mailer\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
-
-		-
 			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
 			count: 1
 			path: app/Listeners/Article/HandleVersioning.php
@@ -1060,11 +1050,6 @@ parameters:
 			message: "#^Class App\\\\Libraries\\\\H5P\\\\EditorStorage constructor invoked with 2 parameters, 1 required\\.$#"
 			count: 1
 			path: app/Providers/H5PServiceProvider.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/QuestionSet.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
@@ -1138,7 +1123,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 10
+			count: 9
 			path: tests/Integration/Article/ArticleVersioningTest.php
 
 		-
@@ -1208,17 +1193,17 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 18
+			count: 16
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 27
+			count: 25
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
-			count: 14
+			count: 13
 			path: tests/Integration/Libraries/H5P/CRUTest.php
 
 		-

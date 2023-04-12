@@ -137,13 +137,7 @@ class ArticleController extends Controller
 
         $this->moveTempFiles($article);
 
-        $emailCollaborators = collect();
-        if ($request->filled('col-emails')) {
-            $emailCollaborators = collect(explode(",", $request->get('col-emails')));
-        }
-
-        // Handles privacy, collaborators, and registering a new version
-        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
+        event(new ArticleWasSaved($article, $request, collect(), Session::get('authId'), VersionData::CREATE, Session::all()));
 
         $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
 
@@ -314,7 +308,7 @@ class ArticleController extends Controller
         $article->save();
         $oldArticle->unlock();
 
-        $collaborators = $this->handleCollaborators($request, $oldArticle, $article, $reason);
+        $collaborators = $this->handleCollaborators($oldArticle, $article, $reason);
 
         // Do some final checking
         if (!$request->filled('license')) {
@@ -365,17 +359,13 @@ class ArticleController extends Controller
         Session::forget(Article::TMP_UPLOAD_SESSION_KEY);
     }
 
-    protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
+    protected function handleCollaborators(Article $oldArticle, Article $newArticle, $reason): Collection
     {
         switch ($reason) {
             case VersionData::UPDATE:
                 $collaborators = "";
                 if (!$newArticle->isOwner(Session::get('authId'))) { // Collaborators cannot update collaborators
                     $collaborators = $this->getCollaboratorsEmails($oldArticle);
-                } else {
-                    if ($request->filled('col-emails')) {
-                        $collaborators = $request->get('col-emails');
-                    }
                 }
                 return collect(explode(",", $collaborators));
 

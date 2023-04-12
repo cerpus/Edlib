@@ -252,7 +252,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.licensing',
             'feature.content-locking',
             'feature.context-collaboration',
-            'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
             'h5p.video.enable',
