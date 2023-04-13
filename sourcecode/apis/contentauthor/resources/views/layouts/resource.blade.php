@@ -18,7 +18,7 @@
     <script src="{{ asset('js/jsrequestintercept.js') }}"></script>
     @stack("css")
 </head>
-<body onunload="unlock();">
+<body id="theBody" onunload="unlock();">
 <div id="mainContainer">
     <div class="mainContent" id="mainContent"></div>
 </div>
