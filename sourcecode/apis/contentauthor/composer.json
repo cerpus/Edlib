@@ -16,7 +16,7 @@
         "ext-pdo": "*",
         "ext-zip": "*",
         "cerpus/cerpushelper": "^2.1",
-        "cerpus/coreclient": "^1.4.0",
+        "cerpus/coreclient": "^2.0.0",
         "cerpus/edlib-resource-kit-laravel": "^0.6.0",
         "cerpus/imageservice-client": "^2.1",
         "cerpus/laravel-rabbitmq-pubsub": "^2.1",
