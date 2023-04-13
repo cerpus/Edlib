@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Closure;
 use Illuminate\Support\Facades\Session;
 use App\H5pLti;
+
 use function str_replace;
 
 class LtiLocale
