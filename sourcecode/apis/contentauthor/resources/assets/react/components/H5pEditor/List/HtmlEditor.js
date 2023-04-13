@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Ckeditor from 'ckeditor4-react';
+import { CKEditor } from 'ckeditor4-react';
 
 const HtmlEditor = ({ value, onChange, name, config }) => {
     const [focus, setFocus] = useState(false);
@@ -17,9 +17,9 @@ const HtmlEditor = ({ value, onChange, name, config }) => {
     };
 
     return (
-        <Ckeditor
+        <CKEditor
             config={config}
-            data={value}
+            initData={value}
             name={name}
             onChange={handleOnChange}
             onFocus={handleFocus}

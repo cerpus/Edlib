@@ -58,7 +58,6 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
         if (empty($queryObject)) {
             return null;
         }
-        $queryObject = json_decode($queryObject, true);
         if (empty($queryObject['query'])) {
             unset($queryObject['query']);
         }

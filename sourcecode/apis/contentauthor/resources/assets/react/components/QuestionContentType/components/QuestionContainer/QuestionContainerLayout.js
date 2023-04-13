@@ -8,7 +8,6 @@ import { FormattedMessage } from 'react-intl';
 import { QuestionBankBrowser } from '../QuestionBankBrowser';
 import TagsManager from '../../../TagsManager';
 import LoadingModal from '../LoadingModal';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const QuestionContainerLayout = props => {
     const {
@@ -24,7 +23,6 @@ const QuestionContainerLayout = props => {
         loadingText,
         loadingTitle,
         editMode,
-        handleDragEnd,
         searchTitle,
         placeholder,
     } = props;
@@ -50,21 +48,7 @@ const QuestionContainerLayout = props => {
                     tags={tags}
                     onChange={onTagsChange}
                 />
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <Droppable
-                        droppableId="questionSetDropZone"
-                    >
-                        {(provided, snapshot) => (
-                            <div
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                            >
-                                {cardsComponents}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                {cardsComponents}
             </div>
             {typeof onQuestionBankSelect === 'function' && (
                 <div>

@@ -16,7 +16,6 @@ function AudioBrowserLayout({
     return (
         <Dialog
             maxWidth={maxWidth}
-            onBackdropClick={onCancel}
             onToggle={onToggle}
         >
             <NDLAAudio

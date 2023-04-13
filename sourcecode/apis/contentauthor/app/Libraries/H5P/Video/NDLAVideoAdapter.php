@@ -90,13 +90,12 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
         }
 
         $query = [];
-        $queryObject = json_decode($queryObject);
-        if (!empty($queryObject->query)) {
-            $query['query'] = sprintf('text:%s', $queryObject->query);
+        if (!empty($queryObject['query'])) {
+            $query['query'] = sprintf('text:%s', $queryObject['query']);
         }
-        if (!empty($queryObject->limit) && isset($queryObject->offset)) {
-            $query['limit'] = $queryObject->limit;
-            $query['offset'] = $queryObject->offset;
+        if (!empty($queryObject['limit']) && isset($queryObject['offset'])) {
+            $query['limit'] = $queryObject['limit'];
+            $query['offset'] = $queryObject['offset'];
         }
         return $query;
     }

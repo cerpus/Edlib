@@ -13,6 +13,7 @@ export class QuestionsetContainer extends Component {
         onAddCard: PropTypes.func,
         onPresentationChange: PropTypes.func,
         contentTypes: PropTypes.array,
+        handleDragEnd: PropTypes.func,
     };
 
     static defaultProps = {
@@ -52,7 +53,7 @@ export class QuestionsetContainer extends Component {
                 onAddCard={this.handleAddCard}
                 onPresentationChange={this.props.onPresentationChange}
                 contentTypes={this.props.contentTypes}
-                handleDragEnd={this.handleDragEnd}
+                handleDragEnd={this.props.handleDragEnd}
             />
         );
     }

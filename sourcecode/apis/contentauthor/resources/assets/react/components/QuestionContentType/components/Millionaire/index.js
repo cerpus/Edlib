@@ -29,6 +29,7 @@ class MillionaireContainer extends Component {
         title: PropTypes.string,
         questionSearchUrl: PropTypes.string,
         editMode: PropTypes.bool,
+        handleDragEnd: PropTypes.func,
     };
 
     REQUIRED_NUM_ALTERNATIVES = 4;
@@ -170,7 +171,7 @@ class MillionaireContainer extends Component {
             }
         }
 
-        millionaireCards.forEach(card => {
+        millionaireCards.forEach((card, index) => {
             if (!Array.isArray(card.answers) || card.answers.length < this.REQUIRED_NUM_ALTERNATIVES) {
                 for (let i = card.answers.length || 0; i < this.REQUIRED_NUM_ALTERNATIVES; i++) {
                     let newAnswer = additionalAnswers.pop();
@@ -187,6 +188,7 @@ class MillionaireContainer extends Component {
                     card.answers = [].concat(card.answers, [newAnswer]);
                 }
             }
+            card.order = index;
             card.useImage = true;
         });
 
@@ -304,6 +306,7 @@ class MillionaireContainer extends Component {
                 onAddCard={this.handleAddCard}
                 minimumNumberOfQuestions={this.REQUIRED_NUM_QUESTIONS}
                 onDisplayAddAnswerButton={this.handleDisplayAddAnswerButton}
+                handleDragEnd={this.props.handleDragEnd}
             />);
     }
 }

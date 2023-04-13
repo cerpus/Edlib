@@ -53,7 +53,7 @@ WORKDIR /app
 RUN npm i -g npm node-gyp
 
 COPY package.json package-lock.json ./
-RUN npm i --legacy-peer-deps
+RUN npm i
 
 COPY --from=composer_deps /app/vendor/ckeditor/ckeditor vendor/ckeditor/ckeditor
 COPY --from=composer_deps /app/vendor/h5p vendor/h5p

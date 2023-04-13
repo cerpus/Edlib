@@ -24,6 +24,7 @@ class H5PQuizContainer extends Component {
         onToggleDialog: PropTypes.func,
         tags: PropTypes.array,
         title: PropTypes.string,
+        handleDragEnd: PropTypes.func,
     };
 
     state = {
@@ -174,6 +175,7 @@ class H5PQuizContainer extends Component {
                 processingForm={this.state.isProcessing}
                 onChangeProcessing={this.handleProcessing}
                 infoText={this.state.infoText}
+                handleDragEnd={this.props.handleDragEnd}
             />);
     }
 }
