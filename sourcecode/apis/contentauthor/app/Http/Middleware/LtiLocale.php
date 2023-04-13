@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\App;
 use Closure;
 use Illuminate\Support\Facades\Session;
 use App\H5pLti;
+use function str_replace;
 
 class LtiLocale
 {
@@ -22,8 +23,11 @@ class LtiLocale
     {
         $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
-            if ($ltiRequest->getLocale()) {
-                Session::put('locale', $ltiRequest->getLocale());
+            $locale = $ltiRequest->getLocale();
+
+            if ($locale) {
+                // LTI language codes are BCP-47, but Laravel wants ISO 15897
+                Session::put('locale', str_replace('-', '_', $locale));
             }
         }
         App::setLocale(Session::get('locale', config('app.fallback_locale')));

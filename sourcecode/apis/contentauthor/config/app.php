@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'locale' => 'en-gb',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en-gb',
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -198,12 +198,16 @@ return [
         'ImageService' => \Cerpus\ImageServiceClient\ImageServiceClient::class,
     ],
 
+    // TODO: discover automatically
     'supported_locale' => [
-        'en-gb' => 'English',
-        'nb-no' => 'Norsk',
-        /*'sv-se' => 'Svenska',*/
-        'ko-kr' => '한국어',
-        'nn-no' => 'Nynorsk',
+        'de' => 'Deutsch',
+        'en' => 'English',
+        'es' => 'Español',
+        'ko' => '한국어',
+        'nb' => 'Norsk',
+        'nn' => 'Nynorsk',
+        'sv' => 'Svenska',
+        'zh_Hans' => '中文（简体）',
     ],
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
