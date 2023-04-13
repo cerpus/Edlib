@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Session;
 class QuestionSetHandler
 {
     /**
-     * @param $values
      * @return array
      * @throws \Exception
      */
@@ -107,7 +106,6 @@ class QuestionSetHandler
 
 
     /**
-     * @param $values
      * @return array
      * @throws \Throwable
      */

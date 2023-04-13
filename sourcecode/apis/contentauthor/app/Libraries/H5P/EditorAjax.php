@@ -40,8 +40,6 @@ class EditorAjax implements \H5PEditorAjaxInterface
      *
      * @todo Get data from H5P.org
      *
-     * @param $machineName
-     *
      * @return array|object|null Returns results from querying the database
      */
     public function getContentTypeCache($machineName = null)

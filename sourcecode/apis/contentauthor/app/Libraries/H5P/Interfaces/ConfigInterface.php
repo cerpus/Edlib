@@ -6,7 +6,6 @@ use App\H5PLibrary;
 
 /**
  * @property mixed $id
- * @property array $assets
  */
 interface ConfigInterface
 {

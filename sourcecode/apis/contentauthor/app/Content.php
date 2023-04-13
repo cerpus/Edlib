@@ -151,7 +151,6 @@ abstract class Content extends Model
     }
 
     /**
-     * @param $currentUserId
      * @return bool
      * @throws Exception
      */
@@ -413,7 +412,6 @@ abstract class Content extends Model
     }
 
     /**
-     * @param $contentId
      * @return H5PContent|Article|Game|Link|QuestionSet|null
      *
      * Poor mans morphism...
