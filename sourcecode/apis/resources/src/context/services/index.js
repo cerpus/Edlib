@@ -11,7 +11,6 @@ export default (req) => {
         version: versionApi,
         externalResourceFetcher: externalResourceFetcher(),
         elasticsearch: elasticsearch(req),
-        coreInternal: apiClients.coreInternal(req, apiConfig.coreInternal),
         edlibAuth: apiClients.edlibAuth(req, apiConfig.edlibAuth),
         lti: lti(),
     };

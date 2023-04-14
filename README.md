@@ -107,4 +107,3 @@ Edlib includes the ability to record metadata on learning objects. Setting the m
 - EDLIBCOMMON_DB_PASSWORD
 - EDLIBCOMMON_DB_PORT
 - EDLIBCOMMON_DB_PREFIX
-- EDLIBCOMMON_CORE_INTERNAL_URL

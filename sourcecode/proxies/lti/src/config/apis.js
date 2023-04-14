@@ -14,9 +14,6 @@ export default {
         ),
         secret: env('AUTHAPI_SECRET', '91bbc285-a57a-405c-97cb-c9549ced42f0'),
     },
-    coreInternal: {
-        url: env('CORE_INTERNAL_URL', 'http://core'),
-    },
     resource: {
         url: env('RESOURCE_API_URL', 'http://resourceapi'),
     },

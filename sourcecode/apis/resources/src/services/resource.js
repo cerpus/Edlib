@@ -451,50 +451,6 @@ const transformElasticResources = async (
     }));
 };
 
-const retrieveCoreInfo = async (context, resourceVersions) => {
-    try {
-        const coreInfos =
-            await context.services.coreInternal.resource.multipleFromExternalIdInfo(
-                resourceVersions.map((rv) => ({
-                    externalSystemName: rv.externalSystemName,
-                    externalSystemId: rv.externalSystemId,
-                }))
-            );
-
-        for (let {
-            externalSystemName,
-            externalSystemId,
-            resourceInfo,
-        } of coreInfos) {
-            const resourceVersion = resourceVersions.find(
-                (rv) =>
-                    rv.externalSystemName === externalSystemName &&
-                    rv.externalSystemId === externalSystemId
-            );
-
-            if (!resourceVersion) {
-                throw new ApiException('Resource not found');
-            }
-
-            if (resourceInfo && resourceInfo.deletedAt) {
-                await context.db.resource.update(resourceVersion.resourceId, {
-                    deletedAt: moment(resourceInfo.deletedAt).toDate(),
-                });
-            }
-
-            if (resourceInfo && resourceInfo.uuid) {
-                await context.db.resourceVersion.update(resourceVersion.id, {
-                    id: resourceInfo.uuid,
-                });
-            }
-        }
-    } catch (e) {
-        if (!(e instanceof NotFoundException)) {
-            throw e;
-        }
-    }
-};
-
 const status = async (context, resourceId) => {
     const resourceVersion =
         await context.db.resourceVersion.getLatestNonDraftResourceVersion(
@@ -877,7 +833,6 @@ export const saveResource = async (
 export default {
     getResourcesFromRequest,
     transformElasticResources,
-    retrieveCoreInfo,
     isPublished,
     status,
     saveResource,

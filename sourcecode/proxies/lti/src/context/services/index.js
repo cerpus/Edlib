@@ -6,10 +6,6 @@ import lti from './lti.js';
 export default (req) => {
     const authApi = apiClients.auth(req, apiConfig.auth);
     const coreExternalApi = apiClients.coreExternal(req, apiConfig.core);
-    const coreInternalApi = apiClients.coreInternal(
-        req,
-        apiConfig.coreInternal
-    );
     const statusService = services.status({
         coreExternalApi,
         authApi,
@@ -20,7 +16,6 @@ export default (req) => {
     return {
         auth: authApi,
         coreExternal: coreExternalApi,
-        coreInternal: coreInternalApi,
         status: statusService,
         resource: resourceService,
         lti: ltiService,
