@@ -2,12 +2,6 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentDeleted;
-use App\Events\ContentDeleting;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\H5PContent;
 use App\Http\Controllers\H5PController;
 use App\Http\Requests\H5PStorageRequest;
@@ -17,7 +11,6 @@ use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Event;
 use stdClass;
 use Tests\Helpers\MockMQ;
 use Tests\Seeds\TestH5PSeeder;
@@ -27,15 +20,6 @@ class h5pControllerFunctionalTest extends TestCase
 {
     use RefreshDatabase;
     use MockMQ;
-
-    protected array $fakedEvents = [
-        ContentCreating::class,
-        ContentCreated::class,
-        ContentUpdating::class,
-        ContentUpdated::class,
-        ContentDeleting::class,
-        ContentDeleted::class,
-    ];
 
     public function assertPreConditions(): void
     {
@@ -80,8 +64,6 @@ class h5pControllerFunctionalTest extends TestCase
      */
     public function storeContent()
     {
-        Event::fake($this->fakedEvents);
-
         $request = new H5PStorageRequest([], [
             'title' => "H5P Title",
             "library" => "H5P.Flashcards 1.1",
@@ -128,7 +110,6 @@ class h5pControllerFunctionalTest extends TestCase
      */
     public function updateContent()
     {
-        Event::fake($this->fakedEvents);
         $core = resolve(H5PCore::class);
 
         $request = new H5PStorageRequest();

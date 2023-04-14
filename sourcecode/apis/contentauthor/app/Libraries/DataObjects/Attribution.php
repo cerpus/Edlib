@@ -17,9 +17,7 @@ class Attribution
         return $this->origin;
     }
 
-    /**
-     * @param $origin
-     */
+
     public function setOrigin($origin): void
     {
         $this->origin = $origin;

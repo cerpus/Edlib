@@ -74,8 +74,6 @@ class CollaboratorContext extends Model
     }
 
     /**
-     * @param $collaboratorId
-     * @param $resourceId
      * @return bool
      * @throws Exception
      */

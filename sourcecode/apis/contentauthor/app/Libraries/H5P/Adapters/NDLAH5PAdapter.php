@@ -215,7 +215,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     }
 
     /**
-     * @param $semantics
      * @return void
      */
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
