@@ -41,7 +41,6 @@ class GameHandler
     }
 
     /**
-     * @param $gametypeId
      * @throws \Exception
      */
     public static function makeGameTypeFromId($gametypeId): GameTypeContract

@@ -89,8 +89,6 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     }
 
     /**
-     * @param $values
-     * @param $content
      * @return array
      * @throws Exception
      */

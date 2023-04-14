@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Events\LinkWasSaved;
 use App\H5pLti;
 use App\Http\Libraries\License;
@@ -69,8 +65,6 @@ class LinkController extends Controller
      */
     public function store(LinksRequest $request): JsonResponse
     {
-        event(new ContentCreating($request));
-
         if (!$this->canCreate()) {
             abort(403);
         }
@@ -91,8 +85,6 @@ class LinkController extends Controller
         $link->save();
 
         event(new LinkWasSaved($link, VersionData::CREATE));
-
-        event(new ContentCreated($link));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $link->id,
@@ -158,8 +150,6 @@ class LinkController extends Controller
         $link = app(Link::class);
         $oldLink = $link::findOrFail($id);
 
-        event(new ContentUpdating($oldLink, $request));
-
         if (!$this->canCreate()) {
             abort(403);
         }
@@ -202,8 +192,6 @@ class LinkController extends Controller
         $link->save();
 
         event(new LinkWasSaved($link, $reason));
-
-        event(new ContentUpdated($link));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $link->id,
