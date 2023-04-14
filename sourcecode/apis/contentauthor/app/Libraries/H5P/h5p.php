@@ -26,8 +26,8 @@ class h5p
         $this->initConfig($config);
 
         return new H5PView(
-            $config->assets['scripts'],
-            $config->assets['styles'],
+            $config->getScriptAssets(),
+            $config->getStyleAssets(),
             $config->getConfig(),
         );
     }

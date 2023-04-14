@@ -412,8 +412,8 @@ class ImageBrowser extends ContentBrowserBase {
 
     buildParams(values) {
         const params = {
-            path: values.imageUrl,
-            mime: values.contentType,
+            path: values.image.imageUrl,
+            mime: values.image.contentType,
             externalId: values.id,
             metadataUrl: values.metaUrl
         };

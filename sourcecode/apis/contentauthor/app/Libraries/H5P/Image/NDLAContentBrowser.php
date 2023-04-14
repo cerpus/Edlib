@@ -25,8 +25,8 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         'height' => 'height',
     ];
 
-    public const FIND_IMAGES_URL = '/image-api/v2/images';
-    public const GET_IMAGE_URL = '/image-api/v2/images/%s';
+    public const FIND_IMAGES_URL = '/image-api/v3/images';
+    public const GET_IMAGE_URL = '/image-api/v3/images/%s';
     public const GET_IMAGE_ID = '/image-api/raw/id/%s';
     public const GET_IMAGE_NAME = '/image-api/raw/%s';
 
@@ -116,8 +116,6 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     }
 
     /**
-     * @param $values
-     * @param $content
      * @return array
      * @throws Exception
      */

@@ -5,8 +5,6 @@ namespace Tests\Integration\Article;
 use App\ApiModels\User;
 use App\Article;
 use App\Events\ArticleWasSaved;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -87,9 +85,7 @@ class ArticleTest extends TestCase
     {
         $this->withoutMiddleware(VerifyCsrfToken::class);
         $this->expectsEvents([
-            ContentCreating::class,
             ArticleWasSaved::class,
-            ContentCreated::class,
         ]);
         $authId = Str::uuid();
 

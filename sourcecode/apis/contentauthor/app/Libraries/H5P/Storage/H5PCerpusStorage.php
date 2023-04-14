@@ -114,7 +114,6 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     }
 
     /**
-     * @param $library
      * @return bool
      */
     private function deleteLibraryFromPath($library)
@@ -538,8 +537,6 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     }
 
     /**
-     * @param $filename
-     * @param $title
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      * @throws Exception
      */
