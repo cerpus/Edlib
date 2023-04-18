@@ -143,9 +143,11 @@ jobs:
       - name: Run tests
         run: |
           docker run -v "$(pwd):/reports" contentauthor-test \
-           vendor/bin/phpunit --coverage-clover /reports/coverage.xml
+           vendor/bin/phpunit --coverage-clover /tmp/coverage.xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
+        with:
+          path: /tmp/coverage.xml
 
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'
