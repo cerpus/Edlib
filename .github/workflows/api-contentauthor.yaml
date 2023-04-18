@@ -142,7 +142,10 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run contentauthor-test
+          docker run -v "$(pwd):/reports" contentauthor-test \
+           vendor/bin/phpunit --coverage-clover /reports/coverage.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
 
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'
