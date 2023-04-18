@@ -33,6 +33,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     public function __construct(
         ContentAuthorStorage $contentAuthorStorage,
         private readonly LoggerInterface $logger,
+        private readonly H5PVideoInterface $videoAdapter,
     ) {
         $this->filesystem = Storage::disk();
         $this->diskName = Storage::getDefaultDriver();
@@ -54,9 +55,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             unlink($tmpfile);
         }
 
-        /** @var H5PVideoInterface $adapter */
-        $adapter = app(H5PVideoInterface::class);
-        $uploadJsonData = $adapter->upload($this->filesystem->readStream($sourcepath), $hash);
+        $uploadJsonData = $this->videoAdapter->upload($this->filesystem->readStream($sourcepath), $hash);
 
         $h5pContentsVideo = H5PContentsVideo::firstOrCreate([
             'h5p_content_id' => $toId,
