@@ -1727,21 +1727,6 @@ parameters:
 			path: tests/Integration/Libraries/H5P/Package/VideoTest.php
 
 		-
-			message: "#^Class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor invoked with 4 parameters, 2 required\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentAuthorStorage of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects App\\\\Libraries\\\\ContentAuthorStorage, Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem given\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
-
-		-
-			message: "#^Parameter \\#2 \\$logger of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects Psr\\\\Log\\\\LoggerInterface, string given\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
-
-		-
 			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/QuestionSetConverterTest.php
