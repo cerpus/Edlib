@@ -1,12 +1,13 @@
 # Edlib
 
 Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing, and using rich interactive learning resources.
+As a functional resource hub created for integration towards your frontend CMS or LMS system, Edlib seeks to enhance efficiency through reuse and collaboration on learning content for your system users. You can insert the content into a context within your learning system or point directly to the specific content using links. All resources are stored and available through Edlib, which means no files to keep track of and a single repository for your learning content - neat and tidy.
 
 > The individual learner is at the center of everything we do, and our vision is to provide first-class open learning tools and content to as many of those individuals as possible. &mdash; Tommy W. Nordeng (co-founder of Cerpus)
 
 We strongly believe that the focus should be on the individual learner. Everything we do is based on this belief, from technical solutions and content creation to user interface design and the resulting learning experience.  
 
-Edlib is being developed with :heart: by [Cerpus](https://cerpus.com/), a company based out of Northern Norway focused on developing innovative educational services and applications. Edlib was specifically designed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's applications &mdash; [Gamilab](https://gamilab.com/) and [Edstep](https://edstep.com/) &mdash; as well as being easily capable of integration into third-party learning applications. 
+Edlib is being developed with :heart: by [Cerpus](https://cerpus.com/), a company based out of Northern Norway focused on developing innovative educational services and applications. Edlib was specifically designed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's applications &mdash; [Gamilab](https://gamilab.com/) and the former Edstep platform &mdash; as well as being easily capable of integration into third-party learning applications. 
 
 <img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
 
@@ -51,7 +52,8 @@ Edlib is continuously evolving, with existing features being refined and new fea
 
 ## Installation
 
-Documentation to help you install Edlib and start developing against it is currently being worked on. Check back for updates.
+Documentation for setting up your own developing environment can be found in our [getting started section on "Edlib docs"](https://docs.edlib.com/docs/developers/getting-started) 
+https://docs.edlib.com/docs/developers/getting-started
 
 ## Documentation
 
