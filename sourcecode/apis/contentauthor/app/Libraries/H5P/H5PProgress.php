@@ -188,11 +188,7 @@ class H5PProgress implements ProgressInterface
         $stmt->execute($params);
     }
 
-    /**
-     * @param $content_id
-     * @param $data_id
-     * @param $sub_content_id
-     */
+
     private function deleteRow($content_id, $data_id, $sub_content_id, $context)
     {
         $sql = "delete from $this->tableName where content_id=:content_id and data_id=:data_id and user_id=:user_id and sub_content_id=:sub_content_id";
@@ -212,11 +208,7 @@ class H5PProgress implements ProgressInterface
         $stmt->execute($params);
     }
 
-    /**
-     * @param $content_id
-     * @param $data_id
-     * @param $sub_content_id
-     */
+
     private function shouldUpdate($content_id, $data_id, $sub_content_id, $context)
     {
         $params = [
@@ -244,14 +236,7 @@ class H5PProgress implements ProgressInterface
         return false;
     }
 
-    /**
-     * @param $data
-     * @param $preload
-     * @param $invalidate
-     * @param $content_id
-     * @param $data_id
-     * @param $sub_content_id
-     */
+
     private function updateUserProgress($data, $preload, $invalidate, $content_id, $data_id, $sub_content_id, $context)
     {
         $sql = "update $this->tableName
@@ -280,14 +265,7 @@ class H5PProgress implements ProgressInterface
         return $stmt->execute($params);
     }
 
-    /**
-     * @param $content_id
-     * @param $sub_content_id
-     * @param $data_id
-     * @param $data
-     * @param $preload
-     * @param $invalidate
-     */
+
     private function insertUserProgress($content_id, $sub_content_id, $data_id, $data, $preload, $invalidate, $context)
     {
         $sql = "insert into $this->tableName (user_id, content_id, sub_content_id, data_id, data, preload, invalidate, updated_at, context)

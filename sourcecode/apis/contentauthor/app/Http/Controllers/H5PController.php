@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
 use App\H5PCollaborator;
@@ -408,8 +404,6 @@ class H5PController extends Controller
      */
     public function update(H5PStorageRequest $request, H5PContent $h5p, H5PCore $core): Response|JsonResponse
     {
-        event(new ContentUpdating($h5p, $request));
-
         $authId = Session::get('authId', false);
         $versionPurpose = $this->getVersionPurpose($request, $h5p, $authId);
         [$oldContent, $content, $newH5pContent] = $this->performUpdate($request, $h5p, $authId, $versionPurpose);
@@ -432,7 +426,6 @@ class H5PController extends Controller
         $oldContent = H5PContent::find($oldContent["id"]);
 
         event(new ResourceSaved($newContent->getEdlibDataObject()));
-        event(new ContentUpdated($newContent, $oldContent));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $content['id'],
@@ -543,15 +536,12 @@ class H5PController extends Controller
             "parameters" => self::addAuthorToParameters($request->get("parameters"))
         ]);
 
-        event(new ContentCreating($request));
-
         $content = $this->persistContent($request, Session::get('authId'));
         $scoring = $this->getScoringForContent($content);
 
         Cache::forget($this->viewDataCacheName . $content->id);
 
         event(new ResourceSaved($content->getEdlibDataObject()));
-        event(new ContentCreated($content));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $content->id,
