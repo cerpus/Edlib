@@ -55,7 +55,7 @@ Edlib is continuously evolving, with existing features being refined and new fea
 ## Installation
 
 Documentation for setting up your own developing environment can be found in our [getting started section on "Edlib docs"](https://docs.edlib.com/docs/developers/getting-started) 
-https://docs.edlib.com/docs/developers/getting-started
+
 
 ## Documentation
 
