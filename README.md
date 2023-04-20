@@ -1,5 +1,7 @@
 # Edlib
 
+[![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
+
 Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) application for creating, sharing, storing, and using rich interactive learning resources.
 As a functional resource hub created for integration towards your frontend CMS or LMS system, Edlib seeks to enhance efficiency through reuse and collaboration on learning content for your system users. You can insert the content into a context within your learning system or point directly to the specific content using links. All resources are stored and available through Edlib, which means no files to keep track of and a single repository for your learning content - neat and tidy.
 
@@ -53,7 +55,7 @@ Edlib is continuously evolving, with existing features being refined and new fea
 ## Installation
 
 Documentation for setting up your own developing environment can be found in our [getting started section on "Edlib docs"](https://docs.edlib.com/docs/developers/getting-started) 
-https://docs.edlib.com/docs/developers/getting-started
+
 
 ## Documentation
 
