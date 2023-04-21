@@ -21,6 +21,7 @@ use H5PCore;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Stringable;
 use InvalidArgumentException;
 use PDO;
 use Psr\Http\Message\ResponseInterface;
@@ -132,18 +133,33 @@ class Framework implements \H5PFrameworkInterface, Result
         ];
     }
 
-    public function fetchExternalData($url, $data = null, $blocking = true, $stream = null): string|null
-    {
-        $method = $data ? 'POST' : 'GET';
+    public function fetchExternalData(
+        $url,
+        $data = null,
+        $blocking = true,
+        $stream = null,
+        $fullData = false,
+        $headers = [],
+        $files = [],
+        $method = 'POST'
+    ): string|array|null {
         $options = [RequestOptions::FORM_PARAMS => $data];
         if ($stream !== null) {
             $options[RequestOptions::SINK] = $stream;
         }
+        $options[RequestOptions::HEADERS] = $headers;
 
         return $this->httpClient->requestAsync($method, $url, $options)
-            ->then(static function (ResponseInterface $response) use ($blocking) {
+            ->then(static function (ResponseInterface $response) use ($blocking, $fullData) {
                 if (!$blocking) {
                     return null;
+                }
+                if ($fullData) {
+                    return [
+                        'status' => $response->getStatusCode(),
+                        'headers' => $response->getHeaders(),
+                        'data' => $response->getBody()->getContents(),
+                    ];
                 }
 
                 return $response->getBody()->getContents();
@@ -910,7 +926,7 @@ class Framework implements \H5PFrameworkInterface, Result
         $libraryModel = H5PLibrary::findOrFail($library->id);
         $libraryModel->deleteOrFail();
 
-        app(CerpusStorageInterface::class)->deleteLibrary($libraryModel);
+        app(\H5PFileStorage::class)->deleteLibrary($libraryModel->getLibraryH5PFriendly());
     }
 
     /**
@@ -1333,5 +1349,28 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         $h5pLibrary = H5PLibrary::fromLibrary($library)->first();
         return !is_null($h5pLibrary) && $h5pLibrary->isUpgradable();
+    }
+
+    public function replaceContentHubMetadataCache($metadata, $lang)
+    {
+        // H5P Content Hub is not in use
+    }
+
+    public function getContentHubMetadataCache($lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return new Stringable();
+    }
+
+    public function getContentHubMetadataChecked($lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return now()->toRfc7231String();
+    }
+
+    public function setContentHubMetadataChecked($time, $lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return true;
     }
 }
