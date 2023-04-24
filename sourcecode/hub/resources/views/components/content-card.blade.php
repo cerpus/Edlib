@@ -2,7 +2,7 @@
     <div class="card-body">
         <h5 class="card-title">
             <a href="{{ route('content.preview', [$content->id]) }}">
-                {{ $content->latestVersion->resource->title }}
+                {{ $content->latestPublishedVersion->resource->title }}
             </a>
         </h5>
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,5 +47,13 @@ class ContentVersion extends Model
     public function parent(): HasOne
     {
         return $this->hasOne(self::class, 'parent_version_id');
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopePublished(Builder $query): void
+    {
+        $query->where('published', true);
     }
 }

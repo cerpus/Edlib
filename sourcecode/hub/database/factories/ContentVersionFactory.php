@@ -20,4 +20,11 @@ final class ContentVersionFactory extends Factory
             'published' => $this->faker->boolean,
         ];
     }
+
+    public function unpublished(): self
+    {
+        return $this->state([
+            'published' => false,
+        ]);
+    }
 }

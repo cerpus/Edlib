@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +27,7 @@ class Content extends Model
             // TODO: somehow denote content is copied
             $copy = new Content();
             $copy->save();
-            $copy->versions()->save($this->latestVersion->replicate());
+            $copy->versions()->save($this->latestPublishedVersion->replicate());
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
 
             return $copy;
@@ -36,11 +37,13 @@ class Content extends Model
     /**
      * @return HasOne<ContentVersion>
      */
-    public function latestVersion(): HasOne
+    public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
             ->with('resource')
-            ->latestOfMany();
+            ->ofMany(['id' => 'max'], function (Builder $query) {
+                $query->published();
+            });
     }
 
     /**
@@ -69,7 +72,7 @@ class Content extends Model
      */
     public function toSearchableArray(): array
     {
-        $latest = $this->latestVersion;
+        $latest = $this->latestPublishedVersion;
 
         return [
             'id' => $this->id,
@@ -82,6 +85,6 @@ class Content extends Model
 
     public function shouldBeSearchable(): bool
     {
-        return isset($this->latestVersion->resource->title);
+        return $this->latestPublishedVersion()->exists();
     }
 }

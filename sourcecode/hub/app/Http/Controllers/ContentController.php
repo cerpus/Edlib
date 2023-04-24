@@ -51,10 +51,12 @@ class ContentController extends Controller
 
     public function show(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
-        $credentials = $content->latestVersion?->resource?->tool?->getOauth1Credentials();
+        $version = $content->latestPublishedVersion()->firstOrFail();
+
+        $credentials = $version->resource?->tool?->getOauth1Credentials();
         assert($credentials instanceof Oauth1Credentials);
 
-        $launchUrl = $content->latestVersion?->resource?->view_launch_url;
+        $launchUrl = $version->resource?->view_launch_url;
         assert(is_string($launchUrl));
 
         $launch = $launchBuilder
@@ -90,10 +92,12 @@ class ContentController extends Controller
 
     public function edit(Content $content, LtiLaunchBuilder $builder): View
     {
-        $credentials = $content->latestVersion?->resource?->tool?->getOauth1Credentials();
+        $version = $content->latestPublishedVersion()->firstOrFail();
+
+        $credentials = $version->resource?->tool?->getOauth1Credentials();
         assert($credentials instanceof Oauth1Credentials);
 
-        $launchUrl = $content->latestVersion?->resource?->edit_launch_url;
+        $launchUrl = $version->resource?->edit_launch_url;
         assert(is_string($launchUrl));
 
         $launch = $builder

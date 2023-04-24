@@ -37,7 +37,8 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/{content}', 'show')
         ->name('content.preview')
-        ->whereUlid('content');
+        ->whereUlid('content')
+        ->can('view');
 
     Route::get('/content/create', 'create')->name('content.create');
 

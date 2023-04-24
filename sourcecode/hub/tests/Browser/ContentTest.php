@@ -22,7 +22,7 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($content) {
             $browser->visit('/content/'.$content->id)
-                ->assertTitleContains($content->latestVersion->resource->title)
+                ->assertTitleContains($content->latestPublishedVersion->resource->title)
                 ->assertPresent('iframe');
         });
     }
