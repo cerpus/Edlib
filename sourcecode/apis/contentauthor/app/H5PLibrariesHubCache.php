@@ -41,16 +41,10 @@ class H5PLibrariesHubCache extends Model
 
     public function getLibraryString($folderName = false)
     {
-        return $folderName ?
-            \H5PCore::libraryToFolderName([
-                'machineName' => $this->name,
-                'majorVersion' => $this->major_version,
-                'minorVersion' => $this->minor_version,
-            ]) :
-            \H5PCore::libraryToString([
-                'machineName' => $this->name,
-                'majorVersion' => $this->major_version,
-                'minorVersion' => $this->minor_version,
-            ]);
+        return \H5PCore::libraryToString([
+            'machineName' => $this->name,
+            'majorVersion' => $this->major_version,
+            'minorVersion' => $this->minor_version,
+        ], $folderName);
     }
 }

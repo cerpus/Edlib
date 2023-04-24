@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Storage;
 
+use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\H5PContentsVideo;
@@ -105,7 +106,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function saveLibrary($library)
     {
-        $path = sprintf(ContentStorageSettings::LIBRARY_PATH, \H5PCore::libraryToFolderName($library));
+        $path = sprintf(ContentStorageSettings::LIBRARY_PATH, \H5PCore::libraryToString($library, true));
         $libraryPath = Str::after($library['uploadDirectory'], $this->uploadDisk->path(""));
         $this->deleteLibraryFromPath($path);
 
@@ -234,7 +235,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function exportLibrary($library, $target)
     {
-        $folder = \H5PCore::libraryToFolderName($library);
+        $folder = \H5PCore::libraryToString($library, true);
         $srcPath = sprintf(ContentStorageSettings::LIBRARY_PATH, $folder);
         $finalTarget = Str::after($target, $this->uploadDisk->path("")) . "/$folder";
         if ($this->hasLibraryVersion($folder, sprintf(ContentStorageSettings::LIBRARY_VERSION_PREFIX, $library['majorVersion'], $library['minorVersion'], $library['patchVersion']))) {
@@ -492,11 +493,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function getUpgradeScript($machineName, $majorVersion, $minorVersion)
     {
-        $path = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, \H5PCore::libraryToFolderName([
+        $path = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, \H5PCore::libraryToString([
             'machineName' => $machineName,
             'majorVersion' => $majorVersion,
             'minorVersion' => $minorVersion,
-        ]));
+        ], true));
         return $this->filesystem->exists($path) ? "/$path" : null;
     }
 
@@ -604,9 +605,9 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             ->isNotEmpty();
     }
 
-    public function deleteLibrary($library)
+    public function deleteLibrary(H5PLibrary $library)
     {
-        $libraryPath = sprintf(ContentStorageSettings::LIBRARY_PATH, \H5PCore::libraryToFolderName($library));
+        $libraryPath = sprintf(ContentStorageSettings::LIBRARY_PATH, $library->getLibraryString(true));
         $deleteRemote = $this->deleteLibraryFromPath($libraryPath);
         $deleteLocal = $this->uploadDisk->exists($libraryPath) ? $this->uploadDisk->deleteDirectory($libraryPath) : true;
         return $deleteRemote && $deleteLocal;
