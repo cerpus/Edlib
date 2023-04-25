@@ -3,6 +3,7 @@
 return [
     'email-address' => 'Email address',
     'password' => 'Password',
+    'password-confirmation' => 'Confirm password',
     'log-in' => 'Log in',
     'log-out' => 'Log out',
     'admin-home' => 'Admin home',
@@ -18,4 +19,9 @@ return [
     'copy' => 'Copy',
     'search-query' => 'Search query',
     'toggle-menu' => 'Toggle menu',
+    'registration' => 'Registration',
+    'sign-up' => 'Sign up',
+    'required' => 'Required',
+    'name' => 'Name',
+    'name-form-help' => 'Your name will be displayed to those with whom you share content.',
 ];

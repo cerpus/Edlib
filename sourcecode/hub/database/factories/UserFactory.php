@@ -22,7 +22,13 @@ class UserFactory extends Factory
             'email' => $email,
             'password' => Hash::make($this->faker->password),
             'admin' => false,
+            'locale' => 'en',
         ];
+    }
+
+    public function withEmail(string $email): static
+    {
+        return $this->state(['email' => $email]);
     }
 
     public function admin(): static

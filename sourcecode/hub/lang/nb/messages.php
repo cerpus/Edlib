@@ -3,6 +3,7 @@
 return [
     'email-address' => 'Epostadresse',
     'password' => 'Passord',
+    'password-confirmation' => 'Bekreft passord',
     'log-in' => 'Logg inn',
     'log-out' => 'Logg ut',
     'preview' => 'Forhåndsvis',
@@ -16,4 +17,9 @@ return [
     'copy' => 'Kopier',
     'search-query' => 'Søkeord',
     'toggle-menu' => 'Åpne/lukk meny',
+    'registration' => 'Registrering',
+    'sign-up' => 'Registrer',
+    'required' => 'Påkrevd',
+    'name' => 'Navn',
+    'name-form-help' => 'Navnet ditt vil vises til de du deler innhold med.',
 ];

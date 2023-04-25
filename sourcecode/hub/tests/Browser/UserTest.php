@@ -14,6 +14,37 @@ final class UserTest extends DuskTestCase
 {
     use DatabaseMigrations;
 
+    public function testUserCanSignUp(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/register')
+                ->assertGuest()
+                ->type('name', 'Freddie Mercury')
+                ->type('email', 'freddie@royal.gov.uk')
+                ->type('password', 'scaramouche')
+                ->type('password_confirmation', 'scaramouche')
+                ->press('Sign up')
+                ->assertAuthenticated();
+        });
+    }
+
+    public function testUserCannotSignUpWithDuplicateEmail(): void
+    {
+        User::factory()->withEmail('duplicate@example.com')->create();
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/register')
+                ->assertGuest()
+                ->type('name', 'Guy Incognito')
+                ->type('email', 'duplicate@example.com')
+                ->type('password', 'duplicate')
+                ->type('password_confirmation', 'duplicate')
+                ->press('Sign up')
+                ->assertSee('The email has already been taken.')
+                ->assertGuest();
+        });
+    }
+
     public function testUserCanChangeLanguage(): void
     {
         User::factory()->create([

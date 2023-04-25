@@ -55,9 +55,14 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('tool');
 });
 
-Route::middleware('auth:web')->controller(UserController::class)->group(function () {
-    Route::get('/preferences', 'preferences')->name('user.preferences');
-    Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
+Route::controller(UserController::class)->group(function () {
+    Route::get('/register', 'register')->name('register');
+    Route::post('/register', 'store');
+
+    Route::middleware('auth:web')->group(function () {
+        Route::get('/preferences', 'preferences')->name('user.preferences');
+        Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
+    });
 });
 
 Route::middleware('can:admin')->group(function () {

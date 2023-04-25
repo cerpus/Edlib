@@ -63,7 +63,7 @@
                                     aria-expanded="false"
                                     data-bs-toggle="dropdown"
                                 >
-                                    {{ auth()->id() }}
+                                    {{ auth()->user()->name }}
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -95,7 +95,21 @@
                             </li>
                         @else
                             <li class="nav-item">
-                                <a href="{{ route('login') }}" class="nav-link">{{ trans('messages.log-in') }}</a>
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="nav-link @if(request()->routeIs('login')) active @endif"
+                                >
+                                    {{ trans('messages.log-in') }}
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a
+                                    href="{{ route('register') }}"
+                                    class="nav-link @if(request()->routeIs('register')) active @endif"
+                                >
+                                    {{ trans('messages.sign-up') }}
+                                </a>
                             </li>
                         @endauth
                     </ul>
