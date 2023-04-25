@@ -9,8 +9,12 @@ use App\Models\User;
 
 class ContentPolicy
 {
-    public function view(User $user, Content $content): bool
+    public function view(User|null $user, Content $content): bool
     {
+        if ($user?->admin) {
+            return true;
+        }
+
         return $content->latestPublishedVersion()->exists();
     }
 
