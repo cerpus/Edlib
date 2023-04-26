@@ -1,6 +1,7 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
+        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -9,16 +10,15 @@
                             Contents of type "<strong>{{ $library->name }}</strong>" version
                             <strong>{{ $library->major_version . '.' . $library->minor_version . '.' . $library->patch_version}}</strong>
                         </h3>
+                        <a href="{{ route('admin.content-library', [$library->id, 'latestOnly' => Request::get('latestOnly', '1') === '0' ? '1' : '0' ]) }}">
+                            {{ Request::get('latestOnly', '1') === '0' ? 'Display only content that is latest version' : 'Also display content that is not latest version' }}
+                        </a>
                     </div>
                     <div class="panel-body">
                         <div class="panel-body row">
                             <div class="alert alert-info">
-                                By copying the Folium id and pasting it in the search field in Content Explorer,
-                                you can find the <i>latest</i> version of the content.
-                            </div>
-                            <div class="alert alert-warning">
-                                Some content listet below could be previous versions of content that has been updated
-                                to a newer version of the content type
+                                To find the content in Content Explorer, copy the Folium id and paste
+                                it into the searchfield
                             </div>
                         </div>
                         <div class="panel-body row">
@@ -86,7 +86,7 @@
                                                     <th>License</th>
                                                     <th>Published</th>
                                                     <th>Listed</th>
-                                                    <th>Has lock</th>
+                                                    <th>Has&nbsp;lock</th>
                                                 </tr>
                                                 @foreach($group as $content)
                                                     <tr>

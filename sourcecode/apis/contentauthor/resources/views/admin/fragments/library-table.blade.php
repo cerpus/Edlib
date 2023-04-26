@@ -24,7 +24,7 @@
             @isset($showCount)
                 <td>
                     @if (!empty($library['numContent']))
-                        <a href="{{ route('admin.content-library', [$library['libraryId']]) }}">{{ $library['numContent'] }}</a>
+                        <a href="{{ route('admin.content-library', [$library['libraryId'], 'latestOnly' => '1']) }}">{{ $library['numContent'] }}</a>
                     @endif
                 </td>
                 <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
@@ -33,6 +33,7 @@
                 <td>{{ $library['summary'] ?: '' }}
             @endif
             <td
+                class="h5p-action-button-container"
                 data-library-name="{{$library['machineName']}}"
                 data-library-major="{{$library['majorVersion']}}"
                 data-library-minor="{{$library['minorVersion']}}"
@@ -76,7 +77,7 @@
                 @if(empty($library['numLibraryDependencies']) && !empty($library['libraryId']))
                     <button
                             type="button"
-                            class="btn btn-danger btn-xs delete-btn"
+                            class="btn btn-danger btn-xs h5p-action-button delete-btn"
                             data-ajax-url="{{ route('admin.delete-library', [$library['libraryId']]) }}"
                             title="Delete"
                     >

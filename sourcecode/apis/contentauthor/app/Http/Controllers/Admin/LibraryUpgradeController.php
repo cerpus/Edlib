@@ -17,6 +17,7 @@ use H5PFrameworkInterface;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -261,19 +262,29 @@ class LibraryUpgradeController extends Controller
         ]);
     }
 
-    public function contentForLibrary(H5PLibrary $library): View
+    public function contentForLibrary(H5PLibrary $library, Request $request): View
     {
         /** @var \App\Apis\ResourceApiService $resourceService */
         $resourceService = app('\App\Apis\ResourceApiService');
+        /** @var \Cerpus\VersionClient\VersionClient $versionClient */
+        $versionClient = app('Cerpus\VersionClient\VersionClient');
+        $latestOnly = $request->get('latestOnly', '1') === '1';
         $contents = [];
         $failed = [];
+
         $library->contents()
             ->orderBy('updated_at', 'DESC')
             ->orderBy('id', 'DESC')
-            ->each(function ($content) use ($resourceService, &$contents, &$failed) {
+            ->each(function ($content) use ($resourceService, $versionClient, $latestOnly, &$contents, &$failed) {
                 try {
-                    $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
-                    $contents[$foliumId][] = $content;
+                    $latest = null;
+                    if ($latestOnly && $content->version_id) {
+                        $latest = $versionClient->latest($content->version_id);
+                    }
+                    if (!$latestOnly || (!empty($latest) && $content->version_id === $latest->getId())) {
+                        $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
+                        $contents[$foliumId][] = $content;
+                    }
                 } catch (Exception $e) {
                     $failed[$e->getMessage()][] = $content;
                 }
