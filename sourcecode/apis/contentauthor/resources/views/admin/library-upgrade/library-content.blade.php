@@ -10,8 +10,8 @@
                             Contents of type "<strong>{{ $library->name }}</strong>" version
                             <strong>{{ $library->major_version . '.' . $library->minor_version . '.' . $library->patch_version}}</strong>
                         </h3>
-                        <a href="{{ route('admin.content-library', [$library->id, 'latestOnly' => Request::get('latestOnly', '1') === '0' ? '1' : '0' ]) }}">
-                            {{ Request::get('latestOnly', '1') === '0' ? 'Display only content that is latest version' : 'Also display content that is not latest version' }}
+                        <a href="{{ route('admin.content-library', [$library->id, 'listAll' => !$listAll]) }}">
+                            {{ $listAll ? 'Also display content that is not latest version' : 'Display only content that is latest version' }}
                         </a>
                     </div>
                     <div class="panel-body">

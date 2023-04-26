@@ -268,20 +268,20 @@ class LibraryUpgradeController extends Controller
         $resourceService = app('\App\Apis\ResourceApiService');
         /** @var \Cerpus\VersionClient\VersionClient $versionClient */
         $versionClient = app('Cerpus\VersionClient\VersionClient');
-        $latestOnly = $request->get('latestOnly', '1') === '1';
+        $listAll = (bool) $request->get('listAll', true);
         $contents = [];
         $failed = [];
 
         $library->contents()
             ->orderBy('updated_at', 'DESC')
             ->orderBy('id', 'DESC')
-            ->each(function ($content) use ($resourceService, $versionClient, $latestOnly, &$contents, &$failed) {
+            ->each(function ($content) use ($resourceService, $versionClient, $listAll, &$contents, &$failed) {
                 try {
                     $latest = null;
-                    if ($latestOnly && $content->version_id) {
+                    if ($listAll && $content->version_id) {
                         $latest = $versionClient->latest($content->version_id);
                     }
-                    if (!$latestOnly || (!empty($latest) && $content->version_id === $latest->getId())) {
+                    if (!$listAll || (!empty($latest) && $content->version_id === $latest->getId())) {
                         $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
                         $contents[$foliumId][] = $content;
                     }
@@ -294,6 +294,7 @@ class LibraryUpgradeController extends Controller
             'library' => $library,
             'contents' => $contents,
             'failed' => $failed,
+            'listAll' => $listAll,
         ]);
     }
 }

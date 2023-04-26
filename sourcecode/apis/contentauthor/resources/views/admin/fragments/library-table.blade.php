@@ -24,7 +24,7 @@
             @isset($showCount)
                 <td>
                     @if (!empty($library['numContent']))
-                        <a href="{{ route('admin.content-library', [$library['libraryId'], 'latestOnly' => '1']) }}">{{ $library['numContent'] }}</a>
+                        <a href="{{ route('admin.content-library', [$library['libraryId']]) }}">{{ $library['numContent'] }}</a>
                     @endif
                 </td>
                 <td>{{ $library['numLibraryDependencies'] ?: '' }}</td>
