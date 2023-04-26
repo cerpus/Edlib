@@ -65,12 +65,15 @@ Route::controller(UserController::class)->group(function () {
     });
 });
 
-Route::middleware('can:admin')->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+Route::middleware('can:admin')->prefix('/admin')->group(function () {
+    Route::get('', [AdminController::class, 'index'])->name('admin.index');
+
+    Route::post('/rebuild-content-index', [AdminController::class, 'rebuildContentIndex'])
+        ->name('admin.rebuild-content-index');
 
     Route::controller(LtiToolController::class)->group(function () {
-        Route::get('/admin/lti-tools', 'index')->name('admin.lti-tools.index');
-        Route::get('/admin/lti-tools/add', 'add')->name('admin.lti-tools.add');
-        Route::post('/admin/lti-tools', 'store')->name('admin.lti-tools.store');
+        Route::get('/lti-tools', 'index')->name('admin.lti-tools.index');
+        Route::get('/lti-tools/add', 'add')->name('admin.lti-tools.add');
+        Route::post('/lti-tools', 'store')->name('admin.lti-tools.store');
     });
 });

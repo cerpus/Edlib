@@ -22,4 +22,8 @@ return [
     'required' => 'Påkrevd',
     'name' => 'Navn',
     'name-form-help' => 'Navnet ditt vil vises til de du deler innhold med.',
+    'rebuild-content-index' => 'Gjenoppbygg innholdsindeks',
+    'alert-lti-tool-added' => 'LTI-verktøy lagt til.',
+    'alert-rebuilding-content-index' => 'Bygger om innholdsindeksen…',
+    'close' => 'Lukk',
 ];

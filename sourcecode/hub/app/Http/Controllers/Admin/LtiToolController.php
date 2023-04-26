@@ -30,8 +30,7 @@ final class LtiToolController extends Controller
     {
         LtiTool::create($request->validated());
 
-        $request->session()->flash('success', 'We added the LTI thing innit');
-
-        return redirect()->route('admin.lti-tools.index');
+        return to_route('admin.lti-tools.index')
+            ->with('alert', trans('messages.alert-lti-tool-added'));
     }
 }

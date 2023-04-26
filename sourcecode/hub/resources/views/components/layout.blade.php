@@ -117,6 +117,19 @@
             </div>
         </nav>
 
+        @if (session()->has('alert'))
+            {{-- TODO: make floating so the page content doesn't bounce around --}}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ session('alert') }}
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="{{ trans('messages.close') }}"
+                ></button>
+            </div>
+        @endif
+
         <main class="container">
             <header>
                 <h1>{{ $title }}</h1>

@@ -24,4 +24,8 @@ return [
     'required' => 'Required',
     'name' => 'Name',
     'name-form-help' => 'Your name will be displayed to those with whom you share content.',
+    'rebuild-content-index' => 'Rebuild content index',
+    'alert-lti-tool-added' => 'LTI tool added.',
+    'alert-rebuilding-content-index' => 'Rebuilding content index…',
+    'close' => 'Close',
 ];
