@@ -11,6 +11,7 @@ use BadMethodCallException;
 use Countable;
 use IteratorAggregate;
 use OutOfBoundsException;
+
 use function array_is_list;
 use function count;
 

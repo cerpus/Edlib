@@ -6,7 +6,9 @@ namespace App\Lti\ContentItem;
 
 use ML\JsonLD\DocumentLoaderInterface;
 use ML\JsonLD\RemoteDocument;
+
 use function file_get_contents;
+
 use const JSON_THROW_ON_ERROR;
 
 final class JsonldDocumentLoader implements DocumentLoaderInterface

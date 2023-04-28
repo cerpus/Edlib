@@ -7,8 +7,10 @@ namespace App\Lti\ContentItem;
 use ML\JsonLD\DocumentLoaderInterface;
 use ML\JsonLD\JsonLD;
 use stdClass;
+
 use function assert;
 use function json_decode;
+
 use const JSON_THROW_ON_ERROR;
 
 final readonly class ContentItemsMapper
@@ -31,7 +33,7 @@ final readonly class ContentItemsMapper
             'documentLoader' => $this->documentLoader,
         ]);
 
-        return new ContentItems(array_map(fn(stdClass $item) => new LtiLinkItem(
+        return new ContentItems(array_map(fn (stdClass $item) => new LtiLinkItem(
             $item->{ContentItems::PROP_MEDIA_TYPE}[0]->{'@value'}
                 ?? throw new \Exception('missing media type'),
             $this->mapPlacementAdvice($item),
