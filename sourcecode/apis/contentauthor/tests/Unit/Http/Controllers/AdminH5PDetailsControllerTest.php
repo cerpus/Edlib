@@ -210,7 +210,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
         $resourceAPI->expects($this->once())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($f4mId, '', '', '','','',''));
+            ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
         $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
 
         $versionApi = $this->createMock('Cerpus\VersionClient\VersionClient');
