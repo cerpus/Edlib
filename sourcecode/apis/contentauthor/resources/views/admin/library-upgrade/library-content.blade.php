@@ -16,53 +16,32 @@
                     </div>
                     <div class="panel-body">
                         <div class="panel-body row">
-                            <div class="alert alert-info">
-                                To find the content in Content Explorer, copy the Folium id and paste
-                                it into the searchfield
-                            </div>
-                        </div>
-                        <div class="panel-body row">
-                            @foreach($contents as $idx => $group)
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h5>
-                                            Folium id:
-                                            <input
-                                                class="ca-admin-folium-view"
-                                                value="{{ $idx }}"
-                                                readonly
-                                                size="36"
-                                            />
-                                        </h5>
-                                    </div>
-                                    <table class="table table-striped">
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Title</th>
-                                            <th>Created</th>
-                                            <th>Updated</th>
-                                            <th>Language</th>
-                                            <th>License</th>
-                                            <th>Published</th>
-                                            <th>Listed</th>
-                                            <th>Has lock</th>
-                                        </tr>
-                                        @foreach($group as $content)
-                                            <tr>
-                                                <td>{{ $content->id }}</td>
-                                                <td>{{ $content->title }}</td>
-                                                <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
-                                                <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
-                                                <td>{{ $content->language_iso_639_3 }}</td>
-                                                <td>{{ $content->license }}</td>
-                                                <td>{{ $content->isPublished() ? 1 : 0 }}</td>
-                                                <td>{{ $content->isListed() ? 1 : 0 }}</td>
-                                                <td>{{ $content->hasLock() ? 1 : 0 }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-                            @endforeach
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Title</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
+                                    <th>Language</th>
+                                    <th>License</th>
+                                    <th>Published</th>
+                                    <th>Listed</th>
+                                    <th>Has lock</th>
+                                </tr>
+                                @foreach($contents as $content)
+                                    <tr>
+                                        <td><a href="{{ route('admin.content-details', [$content->id]) }}">{{ $content->id }}</a></td>
+                                        <td>{{ $content->title }}</td>
+                                        <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
+                                        <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
+                                        <td>{{ $content->language_iso_639_3 }}</td>
+                                        <td>{{ $content->license }}</td>
+                                        <td>{{ $content->isPublished() ? 1 : 0 }}</td>
+                                        <td>{{ $content->isListed() ? 1 : 0 }}</td>
+                                        <td>{{ $content->hasLock() ? 1 : 0 }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
                         </div>
 
                         @if (count($failed) > 0)
