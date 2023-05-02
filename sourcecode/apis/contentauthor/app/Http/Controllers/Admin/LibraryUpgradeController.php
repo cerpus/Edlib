@@ -7,7 +7,6 @@ use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\H5pUpgradeRequest;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use Exception;
@@ -25,7 +24,6 @@ class LibraryUpgradeController extends Controller
         private H5PCore $core,
         private H5PLibraryAdmin $h5pLibraryAdmin,
         private H5PFrameworkInterface $h5pFramework,
-        private readonly ContentAuthorStorage $contentAuthorStorage,
     ) {
         $this->middleware('auth');
     }
