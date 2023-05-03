@@ -137,7 +137,8 @@ class H5PLibrary extends Model
     {
         $includePatchVersion = $this->patch_version_in_folder_name ?? false;
         if ($includePatchVersion) {
-            return sprintf('%s %d.%d.%d',
+            return sprintf(
+                '%s %d.%d.%d',
                 $this->name,
                 $this->major_version,
                 $this->minor_version,
@@ -145,7 +146,8 @@ class H5PLibrary extends Model
             );
         }
 
-        return sprintf('%s %d.%d',
+        return sprintf(
+            '%s %d.%d',
             $this->name,
             $this->major_version,
             $this->minor_version,
