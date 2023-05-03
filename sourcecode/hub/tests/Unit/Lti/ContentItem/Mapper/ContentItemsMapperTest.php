@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Lti;
+namespace Tests\Unit\Lti\ContentItem\Mapper;
 
 use App\Lti\ContentItem\ContentItemPlacement;
-use App\Lti\ContentItem\ContentItemsMapper;
 use App\Lti\ContentItem\Image;
+use App\Lti\ContentItem\Mapper\ContentItemsMapper;
+use App\Lti\ContentItem\PresentationDocumentTarget;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
@@ -62,7 +63,7 @@ final class ContentItemsMapperTest extends TestCase
             $contentItems[0]->getThumbnail(),
         );
         $this->assertEquals(
-            new ContentItemPlacement(640, 480, 'iframe', '_top'),
+            new ContentItemPlacement(640, 480, PresentationDocumentTarget::Iframe, '_top'),
             $contentItems[0]->getContentItemPlacement(),
         );
     }

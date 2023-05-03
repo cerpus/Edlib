@@ -9,7 +9,7 @@ class ContentItemPlacement
     public function __construct(
         private readonly int|null $displayWidth = null,
         private readonly int|null $displayHeight = null,
-        private readonly string|null $presentationDocumentTarget = null,
+        private readonly PresentationDocumentTarget|null $presentationDocumentTarget = null,
         private readonly string|null $windowTarget = null,
     ) {
     }
@@ -24,7 +24,7 @@ class ContentItemPlacement
         return $this->displayHeight;
     }
 
-    public function getPresentationDocumentTarget(): string|null
+    public function getPresentationDocumentTarget(): PresentationDocumentTarget|null
     {
         return $this->presentationDocumentTarget;
     }
