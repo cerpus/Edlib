@@ -14,7 +14,7 @@
     @foreach( $styles as $css)
         {!! HTML::style($css) !!}
     @endforeach
-    {!! HTML::script('https://code.jquery.com/jquery-1.11.3.min.js') !!}
+    {!! HTML::script('https://code.jquery.com/jquery-1.12.4.min.js') !!}
 </head>
 <body>
     @if($preview && $inDraftState ?? false)
@@ -39,7 +39,7 @@
     <script>
         H5P.jQuery.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': H5P.jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
     </script>

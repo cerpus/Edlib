@@ -162,7 +162,7 @@ class ViewConfig implements ConfigInterface
         $parameters = $this->behaviorSettings($content['library']['name'], $this->adapter->alterParameters($core->filterParameters($content), $this->alterParametersSettings));
 
         $contentConfig = new \stdClass();
-        $contentConfig->library = $core::libraryToString($content['library']);
+        $contentConfig->library = $content['libraryFullVersionName'];
         $contentConfig->jsonContent = $parameters;
         $contentConfig->fullScreen = $content['library']['fullscreen'];
         $contentConfig->exportUrl = route('content-download', ['h5p' => $content['id']]);

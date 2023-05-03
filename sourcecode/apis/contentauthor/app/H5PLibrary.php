@@ -36,6 +36,10 @@ class H5PLibrary extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'patch_version_in_folder_name' => 'bool',
+    ];
+
     protected static function boot()
     {
         parent::boot();
@@ -119,7 +123,33 @@ class H5PLibrary extends Model
 
     public function getLibraryString($folderName = false)
     {
-        return \H5PCore::libraryToString($this->getLibraryH5PFriendly(), $folderName);
+        $lib = $this->getLibraryH5PFriendly();
+        $lib['patchVersionInFolderName'] = $this->patch_version_in_folder_name;
+        return $folderName ?
+            \H5PCore::libraryToFolderName($lib) :
+            \H5PCore::libraryToString($lib);
+    }
+
+    /**
+     * Get the library name, supports patch version naming
+     */
+    public function libraryToString(): string
+    {
+        $includePatchVersion = $this->patch_version_in_folder_name ?? false;
+        if ($includePatchVersion) {
+            return sprintf('%s %d.%d.%d',
+                $this->name,
+                $this->major_version,
+                $this->minor_version,
+                $this->patch_version
+            );
+        }
+
+        return sprintf('%s %d.%d',
+            $this->name,
+            $this->major_version,
+            $this->minor_version,
+        );
     }
 
     public function getLibraryH5PFriendly($machineName = 'name')
@@ -128,6 +158,7 @@ class H5PLibrary extends Model
             'machineName' => $this->$machineName,
             'majorVersion' => $this->major_version,
             'minorVersion' => $this->minor_version,
+            'patchVersion' => $this->patch_version,
         ];
     }
 

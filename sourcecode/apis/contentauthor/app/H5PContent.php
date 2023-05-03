@@ -326,12 +326,13 @@ class H5PContent extends Content implements VersionableObject
         if ($library->has_icon) {
             $h5pFramework = app(H5PFrameworkInterface::class);
 
-            $library_folder = H5PCore::libraryToString([
+            $library_folder = H5PCore::libraryToFolderName([
                 'machineName' => $library->machine_name,
                 'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version
-            ], true);
-
+                'minorVersion' => $library->minor_version,
+                'patchVersion' => $library->patch_version,
+                'patchVersionInFolderName' => $library->patch_version_in_folder_name,
+            ]);
 
             $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
 
