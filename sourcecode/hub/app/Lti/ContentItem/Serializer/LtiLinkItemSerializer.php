@@ -36,7 +36,6 @@ final readonly class LtiLinkItemSerializer implements LtiLinkItemSerializerInter
 
         if ($linkItem->getText() !== null) {
             $serialized[ContentItems::PROP_TEXT] = $linkItem->getText();
-
         }
 
         if ($linkItem->getThumbnail() !== null) {
