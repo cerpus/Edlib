@@ -41,10 +41,13 @@ function QuestionCardLayout(props) {
                     showAddAnswer={showAddAnswerButton}
                 />
                 {typeof deleteCard === 'function' && (
-                    <AddIcon
+                    <button
                         className="deleteButton"
                         onClick={deleteCard}
-                    />
+                        aria-label="Delete button"
+                    >
+                        <AddIcon />
+                    </button>
                 )}
             </div>
             {addToSet &&

@@ -29,16 +29,13 @@ const AddAnswer = props => {
     };
 
     return (
-        <div className="addAnswerContainer">
-            <div style={styles.dividerContainer}>
-                <Button
-                    onClick={onClick}
-                    style={styles.button}
-                    aria-label={label}
-                >
-                    {icon}
-                </Button>
-            </div>
+        <div className="addAnswerContainer" onClick={onClick} style={styles.dividerContainer}>
+            <Button
+                style={styles.button}
+                aria-label="Add answers"
+            >
+                {icon}
+            </Button>
         </div>
     );
 };

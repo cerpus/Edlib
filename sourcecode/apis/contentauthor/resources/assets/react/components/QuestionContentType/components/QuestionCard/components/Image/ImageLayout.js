@@ -21,7 +21,7 @@ function ImageLayout(props) {
 
     let icon = null;
     if ( previewImage === null) {
-        icon = <ImageIcon />;
+        icon = <ImageIcon style={{cursor: 'pointer'}} />;
         if ( readOnly === false ) {
             icon = (
                 <DropZone
@@ -29,6 +29,7 @@ function ImageLayout(props) {
                     multiple={false}
                     className="imageDropzone"
                     disabled={readOnly}
+                    aria-label="Add image"
                 >
                     {icon}
                 </DropZone>);

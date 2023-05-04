@@ -11,6 +11,7 @@ import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
 import { useEditorSetupContext } from '../../../../../../contexts/EditorSetupContext';
+import AddIcon from '@material-ui/icons/Add';
 
 const AnswerLayout = props => {
     const {
@@ -76,10 +77,13 @@ const AnswerLayout = props => {
             )}
 
             {canDelete === true && typeof deleteAnswer === 'function' && (
-                <Icon
-                    className="deleteButton"
-                    onClick={deleteAnswer}
-                >add</Icon>
+                 <button
+                 className="deleteButton"
+                 onClick={deleteAnswer}
+                 aria-label="Delete button"
+             >
+                 <AddIcon />
+             </button>
             )}
             <div className="answerContainer">
                 {inputType}

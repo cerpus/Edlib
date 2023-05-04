@@ -18,12 +18,12 @@ const AddCard = props => {
         }
     };
     return (
-        <div className="addCard">
+        <div className="addCard" onClick={onClick}>
             <span className="cardNumber">{cardNumber}</span>
             <div className="addCardContainer">
                 <Button
-                    onClick={onClick}
                     size="large"
+                    aria-label="Add question"
                 >
                     {icon}
                     <span style={styles.addNewQuestionContainer}>{label} </span>
