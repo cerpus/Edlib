@@ -6,7 +6,6 @@ use App\H5PContent;
 use App\H5PLibrary;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
-use H5PCore;
 use H5PExport as H5PDefaultExport;
 use Illuminate\Support\Collection;
 
@@ -33,9 +32,13 @@ class H5PExport
         }
         /** @var H5PLibrary $h5PLibrary */
         $h5PLibrary = $this->content->library;
-        $library = H5PCore::libraryFromString($h5PLibrary->getLibraryString());
-        $library['libraryId'] = $h5PLibrary->id;
-        $library['name'] = $h5PLibrary->name;
+        $library = [
+            'machineName' => $h5PLibrary->name,
+            'majorVersion' => $h5PLibrary->major_version,
+            'minorVersion' => $h5PLibrary->minor_version,
+            'libraryId' => $h5PLibrary->id,
+            'name' => $h5PLibrary->name,
+        ];
 
         $contents = $this->content->toArray();
         $contents['params'] = $this->content->parameters;
@@ -46,7 +49,7 @@ class H5PExport
         /** @var \H5PContentValidator $validator */
         $validator = resolve(\H5PContentValidator::class);
         $params = (object)[
-            'library' => $h5PLibrary->getLibraryString(),
+            'library' => $h5PLibrary->getLibraryString(false, false),
             'params' => json_decode($this->content->parameters)
         ];
         if (!$params->params) {

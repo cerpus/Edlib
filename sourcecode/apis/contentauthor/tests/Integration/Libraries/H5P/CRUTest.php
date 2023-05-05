@@ -496,6 +496,7 @@ class CRUTest extends TestCase
 
         /** @var H5PContent $newContent */
         $newContent = $contents->first();
+        /** @var H5PLibrary $library */
         $library = $newContent->library()->first();
 
         $this->setupH5PAdapter([
@@ -513,7 +514,7 @@ class CRUTest extends TestCase
                 '_token' => csrf_token(),
                 'title' => 'New resource',
                 'action' => 'create',
-                'library' => $library->getLibraryString(),
+                'library' => $library->getLibraryString(false, false),
                 'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,
@@ -536,7 +537,7 @@ class CRUTest extends TestCase
             ->put(route('h5p.update', $newContent->id), [
                 '_token' => csrf_token(),
                 'title' => $newContent->title,
-                'library' => $library->getLibraryString(),
+                'library' => $library->getLibraryString(false, false),
                 'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
                 'license' => "PRIVATE",
                 'lti_message_type' => $this->faker->word,

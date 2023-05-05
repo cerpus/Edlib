@@ -259,8 +259,8 @@ class AjaxRequest
 
         $libraries = collect();
         $this->getLibraryDetails($H5PLibrary, $libraries);
-        if ($libraries->has($H5PLibrary->getLibraryString())) {
-            $libraryData = $libraries->get($H5PLibrary->getLibraryString());
+        if ($libraries->has($H5PLibrary->getLibraryString(false, false))) {
+            $libraryData = $libraries->get($H5PLibrary->getLibraryString(false, false));
             if (array_key_exists('semantics', $libraryData)) {
                 $H5PLibrary->semantics = $libraryData['semantics'];
                 $H5PLibrary->save();
@@ -307,15 +307,15 @@ class AjaxRequest
         $libraryData = $validator->getLibraryData($H5PLibrary->getLibraryString(true), $tmpLibraryFolder, $tmpLibraries);
         $libraryData['libraryId'] = $H5PLibrary->id;
 
-        if (!$affectedLibraries->has($H5PLibrary->getLibraryString())) {
-            $affectedLibraries->put($H5PLibrary->getLibraryString(), $libraryData);
+        if (!$affectedLibraries->has($H5PLibrary->getLibraryString(false, false))) {
+            $affectedLibraries->put($H5PLibrary->getLibraryString(false, false), $libraryData);
         }
         foreach (['preloadedDependencies', 'dynamicDependencies', 'editorDependencies'] as $value) {
             if (!empty($libraryData[$value])) {
                 foreach ($libraryData[$value] as $library) {
                     /** @var H5PLibrary $dependentLibrary */
                     $dependentLibrary = H5PLibrary::fromLibrary($library)->first();
-                    if (!$affectedLibraries->has($dependentLibrary->getLibraryString())) {
+                    if (!$affectedLibraries->has($dependentLibrary->getLibraryString(false, false))) {
                         $affectedLibraries = $this->getLibraryDetails($dependentLibrary, $affectedLibraries);
                     }
                 }

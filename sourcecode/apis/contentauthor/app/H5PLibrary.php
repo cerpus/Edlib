@@ -121,36 +121,55 @@ class H5PLibrary extends Model
         return $asModels !== true ? $versions : $this->hydrate($versions->toArray());
     }
 
-    public function getLibraryString($folderName = false)
+    /**
+     * @param bool $folderName True to get folder name for the library
+     * @param bool|null $fullVersion Use true/false to force or null to use patch_version_in_folder_name value
+     * @return string
+     */
+    public function getLibraryString(bool $folderName = false, ?bool $fullVersion = null): string
     {
-        $lib = $this->getLibraryH5PFriendly();
-        $lib['patchVersionInFolderName'] = $this->patch_version_in_folder_name;
-        return $folderName ?
-            \H5PCore::libraryToFolderName($lib) :
-            \H5PCore::libraryToString($lib);
+        return static::getLibraryName([
+            'machineName' => $this->name,
+            'majorVersion' => $this->major_version,
+            'minorVersion' => $this->minor_version,
+            'patchVersion' => $this->patch_version,
+            'patchVersionInFolderName' => $this->patch_version_in_folder_name,
+
+        ], $folderName, $fullVersion);
     }
 
-    /**
-     * Get the library name, supports patch version naming
-     */
-    public function libraryToString(): string
+    public static function libraryToFolderName(array $libraryData, ?bool $fullVersion = null): string
     {
-        $includePatchVersion = $this->patch_version_in_folder_name ?? false;
-        if ($includePatchVersion) {
-            return sprintf(
-                '%s %d.%d.%d',
-                $this->name,
-                $this->major_version,
-                $this->minor_version,
-                $this->patch_version
-            );
+        return static::getLibraryName($libraryData, true, $fullVersion);
+    }
+
+    public static function libraryToString(array $libraryData, ?bool $fullVersion = null): string
+    {
+        return static::getLibraryName($libraryData, false, $fullVersion);
+    }
+
+    private static function getLibraryName(array $libraryData, bool $asFolder, ?bool $fullVersion): string
+    {
+        if (
+            isset($libraryData['patchVersion']) && (
+                $fullVersion === true || (
+                    $fullVersion === null &&
+                    isset($libraryData['patchVersionInFolderName']) &&
+                    $libraryData['patchVersionInFolderName']
+                )
+            )
+        ) {
+            $format = $asFolder ? '%s-%d.%d.%d' : '%s %d.%d.%d';
+        } else {
+            $format = $asFolder ? '%s-%d.%d' : '%s %d.%d';
         }
 
         return sprintf(
-            '%s %d.%d',
-            $this->name,
-            $this->major_version,
-            $this->minor_version,
+            $format,
+            $libraryData['machineName'] ?? $libraryData['name'],
+            $libraryData['majorVersion'],
+            $libraryData['minorVersion'],
+            $libraryData['patchVersion'] ?? ''
         );
     }
 
@@ -166,7 +185,13 @@ class H5PLibrary extends Model
 
     public function getTitleAndVersionString()
     {
-        return \H5PCore::libraryToString($this->getLibraryH5PFriendly('title'));
+        return static::getLibraryName([
+            'machineName' => $this->title,
+            'majorVersion' => $this->major_version,
+            'minorVersion' => $this->minor_version,
+            'patchVersion' => $this->patch_version,
+        ], false, true);
+        //return \H5PCore::libraryToString($this->getLibraryH5PFriendly('title'));
     }
 
     public function scopeFromLibrary($query, $value)

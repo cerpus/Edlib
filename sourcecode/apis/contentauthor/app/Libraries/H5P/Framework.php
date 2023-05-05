@@ -975,7 +975,7 @@ class Framework implements \H5PFrameworkInterface, Result
             'libraryMajorVersion' => $h5pcontent->library->major_version,
             'libraryMinorVersion' => $h5pcontent->library->minor_version,
             'libraryPatchVersion' => $h5pcontent->library->patch_version,
-            'libraryFullVersionName' => $h5pcontent->library->getLibraryString(),
+            'libraryFullVersionName' => $h5pcontent->library->getLibraryString(false, false),
             'libraryEmbedTypes' => $h5pcontent->library->embed_types,
             'libraryFullscreen' => $h5pcontent->library->fullscreen,
             'language' => $h5pcontent->metadata->default_language ?? null,

@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Storage;
 
+use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\H5PContentsVideo;
@@ -235,9 +236,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function exportLibrary($library, $target)
     {
-        $folder = \H5PCore::libraryToFolderName($library);
+        $folder = H5PLibrary::libraryToFolderName($library);
+        // To make the exported file backward compatible, we don't use patch in target folder name
+        $targetFolder = H5PLibrary::libraryToFolderName($library, false);
         $srcPath = sprintf(ContentStorageSettings::LIBRARY_PATH, $folder);
-        $finalTarget = Str::after($target, $this->uploadDisk->path("")) . "/$folder";
+        $finalTarget = Str::after($target, $this->uploadDisk->path("")) . "/$targetFolder";
         if ($this->hasLibraryVersion($folder, sprintf(ContentStorageSettings::LIBRARY_VERSION_PREFIX, $library['majorVersion'], $library['minorVersion'], $library['patchVersion']))) {
             $this->exportLocalDirectory($srcPath, $finalTarget, $folder);
         } else {

@@ -97,7 +97,10 @@ class H5PControllerTest extends TestCase
         $data = $result->getData();
         $this->assertArrayHasKey('state', $data);
         $state = json_decode($data['state'], true);
-        $this->assertEquals(License::LICENSE_CC, $state['license']);
+        $this->assertSame(License::LICENSE_CC, $state['license']);
+
+        $editorSetup = json_decode($data['editorSetup']);
+        $this->assertSame($libs[0]->title . ' 1.2.3', $editorSetup->contentProperties->type);
     }
 
     /**
