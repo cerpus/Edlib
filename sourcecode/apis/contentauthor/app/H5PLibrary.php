@@ -124,7 +124,6 @@ class H5PLibrary extends Model
     /**
      * @param bool $folderName True to get folder name for the library
      * @param bool|null $fullVersion Use true/false to force or null to use patch_version_in_folder_name value
-     * @return string
      */
     public function getLibraryString(bool $folderName = false, ?bool $fullVersion = null): string
     {
