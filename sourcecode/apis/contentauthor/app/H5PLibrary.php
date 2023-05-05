@@ -127,7 +127,7 @@ class H5PLibrary extends Model
      */
     public function getLibraryString(bool $folderName = false, ?bool $fullVersion = null): string
     {
-        return static::getLibraryName([
+        return self::getLibraryName([
             'machineName' => $this->name,
             'majorVersion' => $this->major_version,
             'minorVersion' => $this->minor_version,
@@ -139,12 +139,12 @@ class H5PLibrary extends Model
 
     public static function libraryToFolderName(array $libraryData, ?bool $fullVersion = null): string
     {
-        return static::getLibraryName($libraryData, true, $fullVersion);
+        return self::getLibraryName($libraryData, true, $fullVersion);
     }
 
     public static function libraryToString(array $libraryData, ?bool $fullVersion = null): string
     {
-        return static::getLibraryName($libraryData, false, $fullVersion);
+        return self::getLibraryName($libraryData, false, $fullVersion);
     }
 
     private static function getLibraryName(array $libraryData, bool $asFolder, ?bool $fullVersion): string
@@ -184,13 +184,12 @@ class H5PLibrary extends Model
 
     public function getTitleAndVersionString()
     {
-        return static::getLibraryName([
+        return self::getLibraryName([
             'machineName' => $this->title,
             'majorVersion' => $this->major_version,
             'minorVersion' => $this->minor_version,
             'patchVersion' => $this->patch_version,
         ], false, true);
-        //return \H5PCore::libraryToString($this->getLibraryH5PFriendly('title'));
     }
 
     public function scopeFromLibrary($query, $value)
