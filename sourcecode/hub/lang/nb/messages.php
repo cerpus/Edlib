@@ -9,7 +9,7 @@ return [
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
     'search' => 'Søk',
-    'shared-content' => 'Delt innhold',
+    'explore' => 'Utforsk',
     'my-content' => 'Mitt innhold',
     'preferences' => 'Innstillinger',
     'language' => 'Språk',
@@ -26,4 +26,5 @@ return [
     'alert-lti-tool-added' => 'LTI-verktøy lagt til.',
     'alert-rebuilding-content-index' => 'Bygger om innholdsindeksen…',
     'close' => 'Lukk',
+    'create' => 'Opprett',
 ];

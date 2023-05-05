@@ -31,9 +31,20 @@
                     <ul class="navbar-nav justify-content-center flex-grow-1">
                         <li class="nav-item">
                             <a
+                                href="{{ route('content.create') }}"
+                                class="nav-link @if(request()->routeIs('content.create')) active @endif"
+                            >
+                                <x-icon name="file-earmark-plus" class="me-1" />
+                                {{ trans('messages.create') }}
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a
                                 href="{{ route('content.mine') }}"
                                 class="nav-link @if(request()->routeIs('content.mine')) active @endif"
                             >
+                                <x-icon name="person" class="me-1" />
                                 {{ trans('messages.my-content') }}
                             </a>
                         </li>
@@ -43,13 +54,17 @@
                                 href="{{ route('content.index') }}"
                                 class="nav-link @if(request()->routeIs('content.index')) active @endif"
                             >
-                                {{ trans('messages.shared-content') }}
+                                <x-icon name="globe" class="me-1" />
+                                {{ trans('messages.explore') }}
                             </a>
                         </li>
 
                         @env('local')
                             <li class="nav-item">
-                                <a href="{{ route('telescope') }}" class="nav-link">Debug</a>
+                                <a href="{{ route('telescope') }}" class="nav-link">
+                                    <x-icon name="bug" class="me-1" />
+                                    Debug
+                                </a>
                             </li>
                         @endenv
                     </ul>
@@ -70,7 +85,9 @@
                                     <li>
                                         <a
                                             href="{{ route('user.preferences') }}"
-                                            class="dropdown-item">
+                                            class="dropdown-item"
+                                        >
+                                            <x-icon name="wrench" class="me-2" />
                                             {{ trans('messages.preferences') }}
                                         </a>
                                     </li>
@@ -80,13 +97,16 @@
                                                 href="{{ route('admin.index') }}"
                                                 class="dropdown-item"
                                             >
-                                                {{ trans('messages.admin-home') }}</a>
+                                                <x-icon name="gear-fill" class="me-2" />
+                                                {{ trans('messages.admin-home') }}
+                                            </a>
                                         </li>
                                     @endcan
                                     <li>
                                         <form action="{{ route('log_out') }}" method="POST">
                                             @csrf
                                             <button class="dropdown-item">
+                                                <x-icon name="box-arrow-right" class="me-2" />
                                                 {{ trans('messages.log-out') }}
                                             </button>
                                         </form>

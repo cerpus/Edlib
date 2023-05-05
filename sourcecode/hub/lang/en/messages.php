@@ -11,7 +11,7 @@ return [
     'preview' => 'Preview',
     'edit' => 'Edit',
     'search' => 'Search',
-    'shared-content' => 'Shared content',
+    'explore' => 'Explore',
     'my-content' => 'My content',
     'preferences' => 'Preferences',
     'language' => 'Language',
@@ -28,4 +28,5 @@ return [
     'alert-lti-tool-added' => 'LTI tool added.',
     'alert-rebuilding-content-index' => 'Rebuilding content index…',
     'close' => 'Close',
+    'create' => 'Create',
 ];
