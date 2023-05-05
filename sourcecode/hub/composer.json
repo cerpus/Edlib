@@ -3,6 +3,8 @@
     "require": {
         "php": "8.2.*",
         "ext-intl": "*",
+        "cerpus/edlib-resource-kit": "0.5.x-dev",
+        "cerpus/edlib-resource-kit-laravel": "0.6.x-dev",
         "guzzlehttp/guzzle": "^7.2",
         "http-interop/http-factory-guzzle": "^1.2",
         "laravel/framework": "^10.0",
@@ -10,7 +12,6 @@
         "laravel/tinker": "^2.8",
         "laravel/vapor-core": "^2.28",
         "meilisearch/meilisearch-php": "^1.0",
-        "ml/json-ld": "^1.2",
         "psr/clock": "^1.0"
     },
     "require-dev": {
@@ -67,6 +68,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "platform": {
+            "ext-sockets": "8.2.99"
         }
     },
     "minimum-stability": "stable",
