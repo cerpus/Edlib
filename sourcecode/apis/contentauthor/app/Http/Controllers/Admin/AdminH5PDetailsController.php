@@ -144,25 +144,33 @@ class AdminH5PDetailsController extends Controller
         $resourceService = app('\App\Apis\ResourceApiService');
         /** @var \Cerpus\VersionClient\VersionClient $versionClient */
         $versionClient = app('Cerpus\VersionClient\VersionClient');
-        $history = collect();
+        $versions = collect();
+        $history = [];
 
-        $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
-
-        $data = $versionClient->getVersion($content->version_id);
-        if ($data === false) {
-            Log::error(__METHOD__, [$versionClient->getErrorCode(), $versionClient->getError()]);
+        try {
+            $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
+        } catch (Exception $e) {
+            Log::warning($e);
+            $foliumId = '';
         }
-        $ret = $data ? $this->getVersions($data, $history) : [];
+
+        if ($content->version_id) {
+            $data = $versionClient->getVersion($content->version_id);
+            if ($data === false) {
+                Log::error(__METHOD__, [$versionClient->getErrorCode(), $versionClient->getError()]);
+            }
+            $history = $data ? $this->getVersions($data, $versions) : [];
+        }
 
         return view('admin.library-upgrade.content-details', [
             'content' => $content,
-            'latestVersion' => !isset($ret[$content->id]['children']),
+            'latestVersion' => !isset($history[$content->id]['children']),
             'foliumId' => $foliumId,
-            'history' => $ret,
+            'history' => $history,
         ]);
     }
 
-    private function getVersions(VersionData $versionData, Collection $stack): Collection
+    private function getVersions(VersionData $versionData, Collection $stack, $getChildren = true): Collection
     {
         $versionArray = $versionData->toArray();
         $versionArray['versionDate'] = Carbon::createFromTimestampMs($versionData->getCreatedAt())->format('Y-m-d H:i:s e');
@@ -188,7 +196,9 @@ class AdminH5PDetailsController extends Controller
         if ($children) {
             $versionArray['children'] = [];
             foreach ($children as $child) {
-                $this->getVersions($child, $stack);
+                if ($getChildren) {
+                    $this->getVersions($child, $stack, false);
+                }
                 $versionArray['children'][] = $child->getExternalReference();
             }
         }

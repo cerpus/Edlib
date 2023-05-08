@@ -1,12 +1,9 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
-        @php
-            $contentHistory = $history[$content->id]['content'];
-        @endphp
         <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
         <br>
-        <a href="{{ route('admin.content-library', [$contentHistory['library_id']]) }}">Back to content list</a>
+        <a href="{{ route('admin.content-library', $content->library->id) }}">Back to content list</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -63,17 +60,16 @@
                             </tr>
                             <tr>
                                 <th>Library</th>
-                                <td>{{ $contentHistory['library'] }}</td>
+                                <td>{{ sprintf('%s %d.%d.%d', $content->library->name, $content->library->major_version, $content->library->minor_version, $content->library->patch_version) }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 @empty($history)
-                    <div class="alert alert-danger">
-                        Failed getting history
+                    <div class="alert alert-warning">
+                        No history found
                     </div>
-                @endempty
-                @isset($history)
+                @else
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4>History</h4>
@@ -140,10 +136,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($latestVersion)
+                                    @empty($history[$content->id]['children'])
                                         <tr>
                                             <td colspan="6">
-                                                This is the latest version
+                                                {{ $latestVersion ? 'This is the latest version' : 'No content found' }}
                                             </td>
                                         </tr>
                                     @else
@@ -159,12 +155,12 @@
                                                 <td>{{ $history[$itemId]['content']['library'] ?? '' }}</td>
                                             </tr>
                                         @endforeach
-                                    @endif
+                                    @endempty
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                @endisset
+                @endempty
             </div>
         </div>
     </div>
