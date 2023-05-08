@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+import {useIntl} from "react-intl";
 
 const AddCard = props => {
     const {
@@ -17,18 +19,23 @@ const AddCard = props => {
             fontWeight: '400 !important',
         }
     };
+    const useStyles = makeStyles((theme) => ({
+        largeButton: {
+            width: '100%',
+        },
+    }));
+    const classes = useStyles();
+    const intl = useIntl();
     return (
-        <div className="addCard" onClick={onClick}>
-            <span className="cardNumber">{cardNumber}</span>
-            <div className="addCardContainer">
-                <Button
-                    size="large"
-                    aria-label="Add question"
-                >
-                    {icon}
-                    <span style={styles.addNewQuestionContainer}>{label} </span>
-                </Button>
-            </div>
+        <div className="addCard">
+            <Button
+                aria-label={intl.formatMessage({ id: 'QUESTIONCONTAINER.ADD_LABEL' })}
+                onClick={onClick}
+                className={classes.largeButton}
+            >
+                {icon}
+                <span style={styles.addNewQuestionContainer}>{label} </span>
+            </Button>
         </div>
     );
 };

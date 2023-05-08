@@ -34,7 +34,6 @@
   border: 1px solid #000;
   border-style: dotted;
   border-radius: 5px;
-  padding: 15px;
 }
 
 .cardNumber {
@@ -205,15 +204,5 @@
 
   &:hover {
     cursor: pointer;
-  }
-}
-
-.addCardContainer {
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-
-  > button {
-    font-weight: 400 !important;
   }
 }
