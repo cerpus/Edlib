@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Configuration\Locales;
+use App\Lti\Oauth1\Oauth1Signer;
+use App\Lti\Oauth1\Oauth1SignerInterface;
 use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Pagination\Paginator;
@@ -33,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(Locales::class)
             ->needs('$locales')
             ->giveConfig('app.allowed_locales');
+
+        $this->app->singleton(Oauth1SignerInterface::class, Oauth1Signer::class);
     }
 
     /**

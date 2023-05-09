@@ -12,7 +12,7 @@ use function base64_encode;
 use function hash_hmac;
 use function rawurlencode;
 
-final readonly class Oauth1Signer
+final readonly class Oauth1Signer implements Oauth1SignerInterface
 {
     public function __construct(
         private ClockInterface $clock,
