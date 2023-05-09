@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Libraries\H5P;
 
+use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLibrary;
 use App\Libraries\H5P\Framework;
@@ -281,10 +282,11 @@ final class FrameworkTest extends TestCase
         $this->assertSame($editDep->patch_version_in_folder_name, $library['editorDependencies'][0]['patchVersionInFolderName']);
     }
 
-    public function test_deleteLibrary(): void
+    /** @dataProvider provider_usePatch */
+    public function test_deleteLibrary($usePatch): void
     {
         /** @var H5PLibrary $library */
-        $library = H5PLibrary::factory()->create();
+        $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
 
         $storage = $this->createMock(H5PCerpusStorage::class);
         $this->instance(H5PCerpusStorage::class, $storage);
@@ -304,26 +306,25 @@ final class FrameworkTest extends TestCase
         $this->assertDatabaseMissing('h5p_libraries', ['id' => $library->id]);
     }
 
-    public function test_deleteLibrary_withPatch(): void
+    /** @dataProvider provider_usePatch */
+    public function test_loadContent($usePatch): void
     {
-        /** @var H5PLibrary $library */
-        $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => true]);
+        /** @var H5PLibrary $h5pLibrary */
+        $h5pLibrary = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
+        /** @var H5PContent $h5pContent */
+        $h5pContent = H5PContent::factory()->create(['library_id' => $h5pLibrary->id]);
 
-        $storage = $this->createMock(H5PCerpusStorage::class);
-        $this->instance(H5PCerpusStorage::class, $storage);
-        $storage
-            ->expects($this->once())
-            ->method('deleteLibrary')
-            ->with([
-                'machineName' => $library->name,
-                'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version,
-                'patchVersion' => $library->patch_version,
-                'patchVersionInFolderName' => $library->patch_version_in_folder_name,
-            ]);
+        $content = $this->framework->loadContent($h5pContent->id);
 
-        $this->assertDatabaseHas('h5p_libraries', ['id' => $library->id]);
-        $this->framework->deleteLibrary($library);
-        $this->assertDatabaseMissing('h5p_libraries', ['id' => $library->id]);
+        $this->assertSame($h5pContent->id, $content['id']);
+        $this->assertSame($h5pContent->id, $content['contentId']);
+        $this->assertSame($h5pLibrary->id, $content['libraryId']);
+        $this->assertSame($h5pLibrary->getLibraryString(), $content['libraryFullVersionName']);
+    }
+
+    public function provider_usePatch(): \Generator
+    {
+        yield [false];
+        yield [true];
     }
 }

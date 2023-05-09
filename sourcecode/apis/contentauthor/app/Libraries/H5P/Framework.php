@@ -928,6 +928,7 @@ class Framework implements \H5PFrameworkInterface, Result
             throw new TypeError(sprintf('Expected object, %s given', get_debug_type($library)));
         }
 
+        /** @var H5PLibrary $libraryModel */
         $libraryModel = H5PLibrary::findOrFail($library->id);
         $libraryModel->deleteOrFail();
 
@@ -975,7 +976,7 @@ class Framework implements \H5PFrameworkInterface, Result
             'libraryMajorVersion' => $h5pcontent->library->major_version,
             'libraryMinorVersion' => $h5pcontent->library->minor_version,
             'libraryPatchVersion' => $h5pcontent->library->patch_version,
-            'libraryFullVersionName' => $h5pcontent->library->getLibraryString(false, false),
+            'libraryFullVersionName' => $h5pcontent->library->getLibraryString(),
             'libraryEmbedTypes' => $h5pcontent->library->embed_types,
             'libraryFullscreen' => $h5pcontent->library->fullscreen,
             'language' => $h5pcontent->metadata->default_language ?? null,
