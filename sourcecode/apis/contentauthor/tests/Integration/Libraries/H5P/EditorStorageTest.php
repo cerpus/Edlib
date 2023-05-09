@@ -36,7 +36,9 @@ class EditorStorageTest extends TestCase
 
     public function test_getLibrary_allLibraries(): void
     {
+        /** @var H5PLibrary $lib1 */
         $lib1 = H5PLibrary::factory()->create(['semantics' => 'something']);
+        /** @var H5PLibrary $lib2 */
         $lib2 = H5PLibrary::factory()->create(['name' => 'H5P.Headphones', 'semantics' => 'something']);
 
         $core = $this->createMock(\H5PCore::class);

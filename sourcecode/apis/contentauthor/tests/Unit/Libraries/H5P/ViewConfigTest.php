@@ -10,11 +10,13 @@ use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Libraries\H5P\ViewConfig;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ViewConfigTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
     /**
      * @dataProvider provider_testConfig
@@ -46,8 +48,8 @@ class ViewConfigTest extends TestCase
             ->with('contentauthor', $h5pcontent->id)
             ->willReturn(
                 new Resource(
-                    42,
-                    24,
+                    $this->faker->uuid,
+                    $this->faker->uuid,
                     '',
                     null,
                     '',

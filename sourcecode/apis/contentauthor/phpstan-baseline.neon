@@ -1810,3 +1810,23 @@ parameters:
 			message: "#^Method Tests\\\\TestCase\\:\\:setUpTraits\\(\\) should return array but return statement is missing\\.$#"
 			count: 1
 			path: tests/TestCase.php
+
+		-
+			message: "#^Parameter \\#1 \\$library of method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:deleteLibrary\\(\\) expects stdClass, App\\\\H5PLibrary given\\.$#"
+			count: 2
+			path: tests/Unit/Libraries/H5P/FrameworkTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
+			count: 2
+			path: tests/Unit/Libraries/H5P/ViewConfigTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
+			count: 2
+			path: tests/Unit/Libraries/H5P/ViewConfigTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Libraries/H5P/ViewConfigTest.php
