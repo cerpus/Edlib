@@ -22,9 +22,9 @@ class ContentController extends Controller
     public function index(IndexContentRequest $request): View
     {
         $query = $request->validated('q', '');
+        assert(is_string($query));
 
-        $contents = Content::search($query)
-            ->orderBy('updated_at', 'desc');
+        $contents = Content::findShared($query);
 
         return view('content.index', [
             'contents' => $contents->paginate(),
@@ -35,16 +35,15 @@ class ContentController extends Controller
     public function mine(IndexContentRequest $request): View
     {
         $query = $request->validated('q', '');
+        assert(is_string($query));
 
-        $currentUserId = auth()->user()->id;
+        $user = auth()->user();
+        assert($user instanceof User);
 
-        $contents = Content::search($query)
-            ->where('user_ids', $currentUserId)
-            ->orderBy('updated_at', 'desc')
-            ->paginate();
+        $contents = Content::findForUser($user, $query);
 
         return view('content.mine', [
-            'contents' => $contents,
+            'contents' => $contents->paginate(),
             'query' => $query,
         ]);
     }

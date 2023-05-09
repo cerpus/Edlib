@@ -120,7 +120,7 @@ return [
         'key' => env('MEILISEARCH_KEY', null),
         'index-settings' => [
             Content::class => [
-                'filterableAttributes' => ['user_ids'],
+                'filterableAttributes' => ['published', 'user_ids'],
                 'sortableAttributes' => ['created_at', 'updated_at'],
             ],
         ],

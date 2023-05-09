@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
 class Content extends Model
@@ -32,6 +33,13 @@ class Content extends Model
 
             return $copy;
         });
+    }
+
+    public function latestVersion(): HasOne
+    {
+        return $this->hasOne(ContentVersion::class)
+            ->has('resource')
+            ->latestOfMany();
     }
 
     /**
@@ -72,11 +80,14 @@ class Content extends Model
      */
     public function toSearchableArray(): array
     {
-        $latest = $this->latestPublishedVersion;
+        $version = $this->latestPublishedVersion ?? $this->latestVersion;
+        assert($version !== null);
 
         return [
             'id' => $this->id,
-            'title' => $latest->resource->title,
+            'has_draft' => $this->latestVersion !== $this->latestPublishedVersion,
+            'published' => $this->latestPublishedVersion !== null,
+            'title' => $version->resource->title,
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -85,6 +96,28 @@ class Content extends Model
 
     public function shouldBeSearchable(): bool
     {
-        return $this->latestPublishedVersion()->exists();
+        return $this->versions()->has('resource')->exists();
+    }
+
+    public static function findShared(string $query = ''): ScoutBuilder
+    {
+        return Content::search($query)
+            ->where('published', true)
+            ->orderBy('updated_at', 'desc')
+            ->query(fn (Builder $query) => $query->with([
+                'latestPublishedVersion',
+                'latestPublishedVersion.resource'
+            ]));
+    }
+
+    public static function findForUser(User $user, string $query = ''): ScoutBuilder
+    {
+        return Content::search($query)
+            ->where('user_ids', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->query(fn (Builder $query) => $query->with([
+                'latestVersion',
+                'latestVersion.resource'
+            ]));
     }
 }

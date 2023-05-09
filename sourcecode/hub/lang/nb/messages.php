@@ -27,4 +27,5 @@ return [
     'alert-rebuilding-content-index' => 'Bygger om innholdsindeksen…',
     'close' => 'Lukk',
     'create' => 'Opprett',
+    'unpublished' => 'Upublisert',
 ];

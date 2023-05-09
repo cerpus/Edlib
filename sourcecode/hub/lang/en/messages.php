@@ -29,4 +29,5 @@ return [
     'alert-rebuilding-content-index' => 'Rebuilding content index…',
     'close' => 'Close',
     'create' => 'Create',
+    'unpublished' => 'Unpublished',
 ];

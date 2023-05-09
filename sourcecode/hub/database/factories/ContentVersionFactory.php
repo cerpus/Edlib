@@ -21,6 +21,13 @@ final class ContentVersionFactory extends Factory
         ];
     }
 
+    public function published(): self
+    {
+        return $this->state([
+            'published' => true,
+        ]);
+    }
+
     public function unpublished(): self
     {
         return $this->state([
