@@ -86,10 +86,17 @@ Edlib's user interface is multilingual. Support for new languages can be added w
 | API Name             | Status                                         |
 |----------------------|------------------------------------------------|
 | API - Content author | [![Translation status](https://weblate.edlib.com/widgets/content-author/-/multi-auto.svg)](https://weblate.edlib.com/engage/content-author/) |
-| NPM - Components     | [![Translation status](https://weblate.edlib.com/widgets/npm-components/-/multi-auto.svg)](https://weblate.edlib.com/engage/npm-components/) |
 | WWW -                | [![Translation status](https://weblate.edlib.com/widgets/www/-/www/multi-auto.svg)](https://weblate.edlib.com/engage/www/) |
 
 ## Miscellaneous
+
+### Code coverage status
+
+The code coverage report is currently covering the PHP parts of the Edlib code for the following parts of Edlib:
+
+- Content Author: [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
+
+- WWW: N/A - currently not available as this part of Edlib is being rewritten. Check back later for updates on this.
 
 ### Metadata
 
