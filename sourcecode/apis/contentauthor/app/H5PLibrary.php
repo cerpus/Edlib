@@ -122,8 +122,8 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @param bool $folderName True to get folder name for the library
-     * @param bool|null $fullVersion Use true/false to force or null to use patch_version_in_folder_name value
+     * @param bool $folderName True to get name suitable for folder
+     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
      */
     public function getLibraryString(bool $folderName = false, ?bool $fullVersion = null): string
     {
@@ -137,27 +137,37 @@ class H5PLibrary extends Model
         ], $folderName, $fullVersion);
     }
 
+    /**
+     * @param array $libraryData Key names: machineName/name, majorVersion, minorVersion, patchVersion, patchVersionInFolderName
+     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
+     * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
+     */
     public static function libraryToFolderName(array $libraryData, ?bool $fullVersion = null): string
     {
         return self::getLibraryName($libraryData, true, $fullVersion);
     }
 
+    /**
+     * @param array $libraryData Key names: machineName/name, majorVersion, minorVersion, patchVersion, patchVersionInFolderName
+     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
+     * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
+     */
     public static function libraryToString(array $libraryData, ?bool $fullVersion = null): string
     {
         return self::getLibraryName($libraryData, false, $fullVersion);
     }
 
+    /**
+     * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
+     */
     private static function getLibraryName(array $libraryData, bool $asFolder, ?bool $fullVersion): string
     {
-        if (
-            isset($libraryData['patchVersion']) && (
-                $fullVersion === true || (
-                    $fullVersion === null &&
-                    isset($libraryData['patchVersionInFolderName']) &&
-                    $libraryData['patchVersionInFolderName']
-                )
-            )
-        ) {
+        $usePatch = $fullVersion === true || ($fullVersion === null && array_key_exists('patchVersionInFolderName', $libraryData) && $libraryData['patchVersionInFolderName']);
+        if ($usePatch && !isset($libraryData['patchVersion'])) {
+            throw new \InvalidArgumentException('Full version name requested but patch version missing');
+        }
+
+        if ($usePatch) {
             $format = $asFolder ? '%s-%d.%d.%d' : '%s %d.%d.%d';
         } else {
             $format = $asFolder ? '%s-%d.%d' : '%s %d.%d';
@@ -179,6 +189,7 @@ class H5PLibrary extends Model
             'majorVersion' => $this->major_version,
             'minorVersion' => $this->minor_version,
             'patchVersion' => $this->patch_version,
+            'patchVersionInFolderName' => $this->patch_version_in_folder_name,
         ];
     }
 
