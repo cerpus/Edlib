@@ -122,6 +122,20 @@ jobs:
     if: always()
     needs: [php-cs-fixer]
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_PASSWORD: thepgpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -142,7 +156,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run hub-test
+          docker run --net=host -e DB_DATABASE=postgres -e DB_USERNAME=postgres -e DB_PASSWORD=thepgpassword hub-test
 
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'
