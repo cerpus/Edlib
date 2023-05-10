@@ -136,6 +136,19 @@ jobs:
         ports:
           - 5432:5432
 
+      meilisearch:
+        image: getmeili/meilisearch:v1.0
+        env:
+          MEILI_NO_ANALYTICS: 'true'
+          MEILI_MASTER_KEY: masterkey1234567
+        options: >-
+          --health-cmd 'curl -f http://localhost:7700/health'
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 7700:7700
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -155,8 +168,13 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Run tests
-        run: |
-          docker run --net=host -e DB_DATABASE=postgres -e DB_USERNAME=postgres -e DB_PASSWORD=thepgpassword hub-test
+        run: docker run --rm --net=host
+          -e MEILISEARCH_HOST=http://localhost:7700
+          -e MEILISEARCH_KEY=masterkey1234567
+          -e DB_DATABASE=postgres
+          -e DB_USERNAME=postgres
+          -e DB_PASSWORD=thepgpassword
+          hub-test
 
       - name: Configure AWS Credentials
         if: env.shouldPublishImage == '1'

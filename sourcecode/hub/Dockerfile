@@ -100,6 +100,9 @@ FROM prod as test
 COPY phpunit.xml .
 COPY tests tests
 
+ENV APP_ENV=testing \
+    APP_DEBUG=true
+
 RUN set -eux; \
     install-php-extensions \
         pcov \
