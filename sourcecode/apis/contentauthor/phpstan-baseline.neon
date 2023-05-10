@@ -281,6 +281,21 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:has\\(\\) expects array\\<\\(int\\|string\\)\\>\\|int\\|string, null given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) expects \\(int\\|string\\), null given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
 			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminUserController.php

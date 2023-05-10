@@ -18,15 +18,6 @@
                             <i class="glyphicon glyphicon-upload"></i> Update games
                         </a>
                     </div>
-                    <div class="panel-body">
-                        <h2 class="text-center">NDLA Import</h2>
-                        @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
-                            <a class="col-md-6 well well-lg text-center" href="{{ route('admin.importexport.index') }}">
-                                <i class="glyphicon glyphicon-edit"></i> Import / Export settings and management
-                            </a>
-                        @endif
-                    </div>
-
                 </div>
             </div>
         </div>
