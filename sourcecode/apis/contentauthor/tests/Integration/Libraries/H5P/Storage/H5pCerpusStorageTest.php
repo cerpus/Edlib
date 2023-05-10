@@ -57,17 +57,37 @@ class H5pCerpusStorageTest extends TestCase
         $this->assertEquals("", $cerpusStorage->getFileUrl('test.txt'));
     }
 
-    /** @dataProvider provider_getUpdateScript */
-    public function test_getUpgradeScript($data): void
+    /** @dataProvider provider_usePatch */
+    public function test_getUpgradeScript($usePatch): void
     {
-        H5PLibrary::factory()->create(array_merge($data, ['major_version' => $data['major_version'] - 1]));
-        H5PLibrary::factory()->create(array_merge($data, ['minor_version' => $data['minor_version'] - 1]));
+        H5PLibrary::factory()->create([
+            'major_version' => 1,
+            'minor_version' => 3,
+            'patch_version' => 4,
+            'patch_version_in_folder_name' => $usePatch
+        ]);
+        H5PLibrary::factory()->create([
+            'major_version' => 2,
+            'minor_version' => 2,
+            'patch_version' => 4,
+            'patch_version_in_folder_name' => $usePatch
+        ]);
 
         /** @var H5PLibrary $library */
-        $library = H5PLibrary::factory()->create($data);
+        $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
 
-        H5PLibrary::factory()->create(array_merge($data, ['minor_version' => $data['minor_version'] + 1]));
-        H5PLibrary::factory()->create(array_merge($data, ['major_version' => $data['major_version'] + 1]));
+        H5PLibrary::factory()->create([
+            'major_version' => 2,
+            'minor_version' => 4,
+            'patch_version' => 4,
+            'patch_version_in_folder_name' => $usePatch
+        ]);
+        H5PLibrary::factory()->create([
+            'major_version' => 3,
+            'minor_version' => 3,
+            'patch_version' => 4,
+            'patch_version_in_folder_name' => $usePatch
+        ]);
 
         $folder = $library->getLibraryString(true);
         $expected = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, $folder);
@@ -81,31 +101,27 @@ class H5pCerpusStorageTest extends TestCase
             new NullVideoAdapter(),
         );
 
-        $path = $cerpusStorage->getUpgradeScript($data['name'], $data['major_version'], $data['minor_version']);
+        $path = $cerpusStorage->getUpgradeScript($library->name, $library->major_version, $library->minor_version);
         $this->assertSame("/$expected", $path);
         Storage::delete($expected);
     }
 
-    public function provider_getUpdateScript(): \Generator
+    public function provider_usePatch(): \Generator
     {
-        yield [[
-            'name' => 'H5P.Foobar',
-            'major_version' => 2,
-            'minor_version' => 3,
-            'patch_version' => 4,
-        ]];
-        yield [[
-            'name' => 'H5P.Foobar',
-            'major_version' => 2,
-            'minor_version' => 3,
-            'patch_version' => 4,
-            'patch_version_in_folder_name' => true,
-        ]];
+        yield [false];
+        yield [true];
     }
 
-    /** @dataProvider provider_deleteLibrary */
-    public function test_deleteLibrary($data): void
+    /** @dataProvider provider_usePatch */
+    public function test_deleteLibrary($usePatch): void
     {
+        $data = [
+            'name' => 'H5P.Foobar',
+            'majorVersion' => 2,
+            'minorVersion' => 3,
+            'patchVersion' => 4,
+            'patchVersionInFolderName' => $usePatch,
+        ];
         $path = sprintf(ContentStorageSettings::LIBRARY_PATH, H5PLibrary::libraryToFolderName($data));
 
         Storage::fake('test');
@@ -118,25 +134,7 @@ class H5pCerpusStorageTest extends TestCase
         );
 
         $this->assertTrue(Storage::exists($path));
-        $ret = $cerpusStorage->deleteLibrary($data);
-        $this->assertTrue($ret);
+        $this->assertTrue($cerpusStorage->deleteLibrary($data));
         $this->assertFalse(Storage::exists($path));
-    }
-
-    public function provider_deleteLibrary(): \Generator
-    {
-        yield [[
-           'name' => 'H5P.Foobar',
-           'majorVersion' => 2,
-           'minorVersion' => 3,
-           'patchVersion' => 4,
-        ]];
-        yield [[
-           'name' => 'H5P.Foobar',
-           'majorVersion' => 2,
-           'minorVersion' => 3,
-           'patchVersion' => 4,
-           'patchVersionInFolderName' => true,
-        ]];
     }
 }

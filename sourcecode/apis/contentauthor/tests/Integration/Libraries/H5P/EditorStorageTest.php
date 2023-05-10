@@ -17,9 +17,9 @@ class EditorStorageTest extends TestCase
         $library = H5PLibrary::factory()->create(['semantics' => 'something']);
         $libraries = (object) [
             'uberName' => $library->getLibraryString(false, false),
-            'name' => 'H5P.Foobar',
-            'majorVersion' => 1,
-            'minorVersion' => 2,
+            'name' => $library->name,
+            'majorVersion' => $library->major_version,
+            'minorVersion' => $library->minor_version,
         ];
 
         $core = $this->createMock(\H5PCore::class);

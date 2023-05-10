@@ -78,7 +78,7 @@ class H5PLibraryTest extends TestCase
     {
         yield 0 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], null, 'H5P.Foobar 2.1.4'];
         yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], null, 'H5P.Foobar 2.1'];
-        yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], false, 'H5P.Foobar 2.1'];
-        yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], true, 'H5P.Foobar 2.1.4'];
+        yield 2 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], false, 'H5P.Foobar 2.1'];
+        yield 3 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], true, 'H5P.Foobar 2.1.4'];
     }
 }
