@@ -22,3 +22,14 @@ TODO: write the rest of the README
    APP_URL=https://hub.edlib.local
    ```
 5. Run the browser tests.
+
+## Using ngrok for development
+
+Social login requires the dev environment to be available over the web for some
+providers to allow OAuth redirects. ngrok can be used for this purpose:
+
+```shell
+docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
+    ngrok/ngrok:latest http hub.edlib.local:443 \
+    --hostname=edlib-hub-your-domain-here.ngrok.dev
+```

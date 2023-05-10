@@ -126,6 +126,7 @@ services:
           - api.edlib.local
           - ca.edlib.local
           - edlibcommon
+          - hub.edlib.local
 
   versionapi:
     image: maven:3-openjdk-11
