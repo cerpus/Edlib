@@ -33,3 +33,13 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
     ngrok/ngrok:latest http hub.edlib.local:443 \
     --hostname=edlib-hub-your-domain-here.ngrok.dev
 ```
+
+## Useful resources
+
+* [Laravel 10 documentation](https://laravel.com/docs/10.x)
+* [Bootstrap 5.3 documentation](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
+* [LTI 1.1 implementation guide](https://www.imsglobal.org/specs/ltiv1p1/implementation-guide)
+* [LTI 1.3 specification](http://www.imsglobal.org/spec/lti/v1p3/)
+* [LTI 1.3 implementation guide](https://www.imsglobal.org/spec/lti/v1p3/impl/)
+* [LTI Content-Item specification](https://www.imsglobal.org/specs/lticiv1p0/specification)
+* [LTI Deep Linking specification](http://www.imsglobal.org/spec/lti-dl/v2p0)
