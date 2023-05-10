@@ -142,7 +142,7 @@ jobs:
           MEILI_NO_ANALYTICS: 'true'
           MEILI_MASTER_KEY: masterkey1234567
         options: >-
-          --health-cmd 'curl -f http://localhost:7700/health'
+          --health-cmd "curl -f http://localhost:7700/health"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
