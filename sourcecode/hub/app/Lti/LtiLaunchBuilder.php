@@ -6,7 +6,7 @@ namespace App\Lti;
 
 use App\Lti\Oauth1\Oauth1Credentials;
 use App\Lti\Oauth1\Oauth1Request;
-use App\Lti\Oauth1\Oauth1Signer;
+use App\Lti\Oauth1\Oauth1SignerInterface;
 
 class LtiLaunchBuilder
 {
@@ -21,7 +21,7 @@ class LtiLaunchBuilder
     ];
 
     public function __construct(
-        private readonly Oauth1Signer $oauth1Signer,
+        private readonly Oauth1SignerInterface $oauth1Signer,
     ) {
     }
 

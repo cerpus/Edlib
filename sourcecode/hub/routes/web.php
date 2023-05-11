@@ -4,7 +4,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LtiController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\LtiValidatedRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,7 +55,21 @@ Route::controller(ContentController::class)->group(function () {
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
         ->whereUlid('tool');
+
+    Route::post('/lti/1.1/item-selection-return', 'store')
+        ->middleware(LtiValidatedRequest::class)
+        ->middleware('lti.launch-type:ContentItemSelection')
+        ->name('content.store');
 });
+
+Route::controller(LtiController::class)
+    ->middleware(LtiValidatedRequest::class)
+    ->prefix('/lti/1.1')
+    ->group(function () {
+        Route::post('/select', 'select')
+            ->middleware('lti.launch-type:ContentItemSelectionRequest')
+            ->name('lti.select');
+    });
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/register', 'register')->name('register');

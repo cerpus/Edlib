@@ -34,6 +34,8 @@ final readonly class LtiValidatedRequest
             throw new UnauthorizedHttpException(challenge: 'OAuth');
         }
 
+        $request->session()->put('lti', $oauthRequest->toArray());
+
         return $next($request);
     }
 }

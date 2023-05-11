@@ -2,6 +2,14 @@
 
 namespace App\Models;
 
+use App\Lti\Oauth1\Oauth1Request;
+use App\Lti\Oauth1\Oauth1SignerInterface;
+use BadMethodCallException;
+use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItemPlacement;
+use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
+use Cerpus\EdlibResourceKit\Lti\ContentItem\LtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
+use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
+use function is_string;
+use function session;
+use const JSON_THROW_ON_ERROR;
 
 class Content extends Model
 {
@@ -20,6 +31,43 @@ class Content extends Model
     use Searchable;
 
     protected $perPage = 48;
+
+    public function toItemSelectionRequest(): Oauth1Request
+    {
+        $returnUrl = session()->get('lti.content_item_return_url')
+            ?? throw new BadMethodCallException('Not in LTI selection context');
+        assert(is_string($returnUrl));
+
+        $version = $this->latestPublishedVersion
+            ?? throw new BadMethodCallException('Calling the thing on content without published version');
+        assert($version->resource !== null);
+
+        $contentItems = new ContentItems([
+            new LtiLinkItem(
+                mediaType: 'application/vnd.ims.lti.v1.ltilink',
+                title: $version->resource->title,
+                url: url()->route('content.preview', [$this->id]),
+                placementAdvice: new ContentItemPlacement(
+                    presentationDocumentTarget: PresentationDocumentTarget::Iframe,
+                ),
+            ),
+        ]);
+
+        $serializer = app()->make(ContentItemsSerializerInterface::class);
+        $oauth1Signer = app()->make(Oauth1SignerInterface::class);
+
+        $credentials = LtiTool::where('consumer_key', session()->get('lti.oauth_consumer_key'))
+            ->firstOrFail()
+            ->getOauth1Credentials();
+
+        return $oauth1Signer->sign(new Oauth1Request('POST', $returnUrl, [
+            'content_items' => json_encode(
+                $serializer->serialize($contentItems),
+                flags: JSON_THROW_ON_ERROR,
+            ),
+            'lti_message_type' => 'ContentItemSelection',
+        ]), $credentials);
+    }
 
     public function createCopyBelongingTo(User $user): self
     {
@@ -48,7 +96,7 @@ class Content extends Model
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
-            ->with('resource')
+            ->has('resource')
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 $query->published();
             });
@@ -106,7 +154,6 @@ class Content extends Model
             ->orderBy('updated_at', 'desc')
             ->query(fn (Builder $query) => $query->with([
                 'latestPublishedVersion',
-                'latestPublishedVersion.resource'
             ]));
     }
 

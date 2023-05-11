@@ -13,3 +13,12 @@
 >
     {!! $launch->getRequest()->toHtmlFormInputs() !!}
 </form>
+
+{{-- TODO: no inline scripts, redirect to the new content --}}
+<script>
+    window.addEventListener('message', (event) => {
+        if (event.data === 'close') {
+            alert('Edlib should close, now');
+        }
+    });
+</script>
