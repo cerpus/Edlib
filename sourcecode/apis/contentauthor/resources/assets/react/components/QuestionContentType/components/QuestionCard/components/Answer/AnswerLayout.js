@@ -2,7 +2,6 @@ import './Answer.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
 import {FormattedMessage, useIntl} from 'react-intl';
 
@@ -34,7 +33,7 @@ const AnswerLayout = props => {
     } = props;
     const { editorLanguage } = useEditorSetupContext();
     let inputType;
-    const intl = useIntl();
+    const { formatMessage }  = useIntl();
 
     if ( onAnswerChange ) {
         if ( richText ) {
@@ -81,7 +80,7 @@ const AnswerLayout = props => {
                  <button
                  className="deleteButton"
                  onClick={deleteAnswer}
-                 aria-label={intl.formatMessage({ id: 'QUESTIONCARD.DELETE_BUTTON_LABEL' })}
+                 aria-label={formatMessage({ id: 'QUESTIONCARD.DELETE_BUTTON_LABEL' })}
              >
                  <AddIcon />
              </button>

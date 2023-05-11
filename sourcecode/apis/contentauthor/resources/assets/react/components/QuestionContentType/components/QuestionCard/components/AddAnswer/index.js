@@ -11,31 +11,13 @@ const AddAnswer = props => {
         label,
     } = props;
 
-    const styles = {
-        divider: {
-            width: '100%',
-            flexShrink: 'unset',
-        },
-        button: {
-            flexGrow: 2,
-            marginRight: 5,
-        },
-        dividerContainer: {
-            width: '100%',
-            border: '1px solid #000',
-            borderStyle: 'dotted',
-            borderRadius: '5px',
-            textAlign: 'center',
-        },
-    };
-
-    const intl = useIntl();
+    const { formatMessage }  = useIntl();
 
     return (
-        <div className="addAnswerContainer" onClick={onClick} style={styles.dividerContainer}>
+        <div className="addAnswerContainer">
             <Button
-                style={styles.button}
-                aria-label={intl.formatMessage({ id: 'ANSWER.LABEL_ADD_ANSWER' })}
+                aria-label={formatMessage({ id: 'ANSWER.LABEL_ADD_ANSWER' })}
+                onClick={onClick}
             >
                 {icon}
             </Button>

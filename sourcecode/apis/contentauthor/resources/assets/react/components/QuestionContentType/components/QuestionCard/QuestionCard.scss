@@ -19,14 +19,21 @@
 }
 
 .addAnswerContainer {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid #000;
+    border-style: dotted;
+    border-radius: 5px;
+    text-align: center;
 
-  > button {
-    font-weight: bold;
-    text-transform: inherit;
-  }
+    > button {
+        font-weight: bold;
+        text-transform: inherit;
+        flex-grow: 2;
+        margin-right: 5px;
+    }
 }
 
 .addCard {
@@ -34,6 +41,9 @@
   border: 1px solid #000;
   border-style: dotted;
   border-radius: 5px;
+    > button {
+        width: 100%;
+    }
 }
 
 .cardNumber {
@@ -200,9 +210,15 @@
   opacity: .5;
   border: none;
   background: none;
-  padding-right: 0px;
 
   &:hover {
     cursor: pointer;
   }
+}
+
+.addNewQuestionContainer {
+    padding: 8px;
+    text-transform: none;
+    font-size: 1.6rem;
+    font-weight: 400 !important;
 }

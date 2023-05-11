@@ -24,7 +24,7 @@ function QuestionCardLayout(props) {
         showAddAnswerButton = true,
     } = props;
 
-    const intl = useIntl()
+    const { formatMessage }  = useIntl();
     let layout = (
         <Fragment>
             <div className="questionCard">
@@ -45,7 +45,7 @@ function QuestionCardLayout(props) {
                     <button
                         className="deleteButton"
                         onClick={deleteCard}
-                        aria-label={intl.formatMessage({ id: 'QUESTIONCARD.DELETE_BUTTON_LABEL' })}
+                        aria-label={formatMessage({id:'QUESTIONCARD.DELETE_BUTTON_LABEL'})}
                     >
                         <AddIcon />
                     </button>

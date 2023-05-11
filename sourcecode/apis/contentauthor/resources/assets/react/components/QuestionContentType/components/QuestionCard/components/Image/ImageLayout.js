@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from 'react';
+import { React, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
 import Popover from '@material-ui/core/Popover';
@@ -21,7 +20,7 @@ function ImageLayout(props) {
         uploading,
     } = props;
 
-    const intl = useIntl();
+    const { formatMessage }  = useIntl();
     const [focused, setFocused] = useState(false);
     let icon = null;
     if ( previewImage === null) {
@@ -39,7 +38,7 @@ function ImageLayout(props) {
                     className={`imageDropzone ${focused ? 'focused' : ''}`}
                     disabled={readOnly}
                     inputProps={{
-                        'aria-label': intl.formatMessage({
+                        'aria-label': formatMessage({
                             id: 'QUESTIONCARD.ADD_IMAGE_LABEL',
                         })
                     }}
