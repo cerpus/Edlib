@@ -16,6 +16,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
+        "cache/array-adapter": "^1.2",
         "fakerphp/faker": "^1.9.1",
         "laravel/dusk": "^7.7",
         "laravel/telescope": "^4.14",

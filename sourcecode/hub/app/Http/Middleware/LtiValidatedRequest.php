@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Lti\Exception\Oauth1ValidationException;
 use App\Lti\Oauth1\Oauth1Credentials;
 use App\Lti\Oauth1\Oauth1Request;
 use App\Lti\Oauth1\Oauth1Validator;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final readonly class LtiValidatedRequest
 {
-    public function __construct(private Oauth1Validator $validator)
+    public function __construct(private Oauth1Validator $oauth1Validator)
     {
     }
 
@@ -28,10 +29,17 @@ final readonly class LtiValidatedRequest
             ...$request->request->all(),
         ]);
 
+        // TODO: get credentials from database or something
         $credentials = new Oauth1Credentials('h5p', 'secret2');
 
-        if (!$this->validator->validate($oauthRequest, $credentials)) {
-            throw new UnauthorizedHttpException(challenge: 'OAuth');
+        try {
+            $this->oauth1Validator->validate($oauthRequest, $credentials);
+        } catch (Oauth1ValidationException $e) {
+            throw new UnauthorizedHttpException(
+                challenge: 'OAuth',
+                message: 'OAuth 1.0 validation failure: ' . $e->getMessage(),
+                previous: $e,
+            );
         }
 
         $request->session()->put('lti', $oauthRequest->toArray());
