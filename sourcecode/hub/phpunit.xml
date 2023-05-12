@@ -23,10 +23,12 @@
         <env name="APP_URL" value="http://localhost/"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
+        <env name="DB_DATABASE" value="hub_test"/>
         <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
         <!-- <env name="DB_DATABASE" value=":memory:"/> -->
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SCOUT_PREFIX" value="hub_test_"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
