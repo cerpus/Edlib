@@ -24,12 +24,12 @@ class H5PLibraryAdminTest extends TestCase
             ->post(route('admin.content-upgrade', ['id' => $fromLib->id]), [
                 'libraryId' => $toLib->id,
             ])
+            ->assertOk()
             ->assertJson([
                 'left' => 2,
                 'skipped' => [],
                 'params' => [],
-            ])
-            ->assertOk();
+            ]);
 
         $content = $ret->decodeResponseJson();
         $this->assertCount(2, $content['params']);
@@ -65,12 +65,12 @@ class H5PLibraryAdminTest extends TestCase
                     ]),
                 ]),
             ])
+            ->assertOk()
             ->assertJson([
                 'left' => 0,
                 'skipped' => $skipped,
                 'params' => [],
-            ])
-            ->assertOk();
+            ]);
 
         $content = $ret->decodeResponseJson();
         $this->assertCount(0, $content['params']);
