@@ -20,8 +20,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
+
 use function is_string;
 use function session;
+
 use const JSON_THROW_ON_ERROR;
 
 class Content extends Model
