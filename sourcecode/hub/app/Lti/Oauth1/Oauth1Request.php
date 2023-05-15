@@ -116,9 +116,9 @@ class Oauth1Request
         $path = parse_url($this->url, PHP_URL_PATH) ?: '/';
 
         return "$scheme://$host" . ($port !== null && (
-                $scheme === 'http' && $port !== 80 ||
-                $scheme === 'https' && $port !== 443
-            ) ? ":$port" : '') . $path;
+            $scheme === 'http' && $port !== 80 ||
+            $scheme === 'https' && $port !== 443
+        ) ? ":$port" : '') . $path;
     }
 
     /**
@@ -128,7 +128,7 @@ class Oauth1Request
     {
         // convert parameters to [key, value] arrays
         $parameters = array_map(
-            fn(string $value, int|string $key) => [(string) $key, $value],
+            fn (string $value, int|string $key) => [(string) $key, $value],
             $this->parameters,
             array_keys($this->parameters),
         );
@@ -149,17 +149,17 @@ class Oauth1Request
         // remove signature claims
         $parameters = array_filter(
             $parameters,
-            fn($pair) => $pair[0] !== Oauth1Claims::SIGNATURE,
+            fn ($pair) => $pair[0] !== Oauth1Claims::SIGNATURE,
         );
 
         // encode pairs, then sort
         $parameters = array_map(
-            fn(array $pair) => [rawurlencode($pair[0]), rawurlencode($pair[1])],
+            fn (array $pair) => [rawurlencode($pair[0]), rawurlencode($pair[1])],
             $parameters,
         );
         usort(
             $parameters,
-            fn($a, $b) => strcmp($a[0], $b[0]) ?: strcmp($a[1], $b[1]),
+            fn ($a, $b) => strcmp($a[0], $b[0]) ?: strcmp($a[1], $b[1]),
         );
 
         // combine result into query string

@@ -30,7 +30,8 @@ final readonly class Oauth1Signer implements Oauth1SignerInterface
         return base64_encode(hash_hmac(
             'sha1',
             $request->generateSignatureBaseString(),
-            sprintf('%s&%s',
+            sprintf(
+                '%s&%s',
                 rawurlencode($clientCredentials->secret),
                 rawurlencode($tokenCredentials?->secret ?? ''),
             ),
