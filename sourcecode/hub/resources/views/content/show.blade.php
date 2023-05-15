@@ -1,5 +1,29 @@
-<x-layout>
+<x-sidebar-layout>
     <x-slot:title>{{ $content->latestPublishedVersion->resource->title }}</x-slot:title>
 
     <x-lti-launch :launch="$launch" />
-</x-layout>
+
+    <x-slot:sidebar>
+        @env('local')
+            @php($version = $content->latestVersion)
+
+            <details>
+                <summary>Debug</summary>
+
+                <dl>
+                    <dt>ID</dt>
+                    <dd><kbd>{{ $content->id }}</kbd></dd>
+
+                    <dt>Version ID</Dt>
+                    <dd><kbd>{{ $version->id }}</kbd></dd>
+
+                    <dt>Resource ID</dt>
+                    <dd><kbd>{{ $version->lti_resource_id }}</kbd></dd>
+
+                    <dt>Presentation launch URL</dt>
+                    <dd><kbd>{{ $version->resource->view_launch_url }}</kbd></dd>
+                </dl>
+            </details>
+        @endenv
+    </x-slot:sidebar>
+</x-sidebar-layout>
