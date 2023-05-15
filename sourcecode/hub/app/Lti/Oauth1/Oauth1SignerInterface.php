@@ -8,7 +8,8 @@ interface Oauth1SignerInterface
 {
     public function calculateSignature(
         Oauth1Request $request,
-        Oauth1Credentials $credentials,
+        Oauth1Credentials $clientCredentials,
+        Oauth1Credentials|null $tokenCredentials = null,
     ): string;
 
     /**
@@ -19,6 +20,7 @@ interface Oauth1SignerInterface
 
     public function sign(
         Oauth1Request $request,
-        Oauth1Credentials $credentials,
+        Oauth1Credentials $clientCredentials,
+        Oauth1Credentials|null $tokenCredentials = null,
     ): Oauth1Request;
 }

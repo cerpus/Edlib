@@ -13,6 +13,6 @@ interface Oauth1ValidatorInterface
      */
     public function validate(
         Oauth1Request $request,
-        Oauth1Credentials $credentials,
+        Oauth1Credentials $consumerCredentials,
     ): void;
 }

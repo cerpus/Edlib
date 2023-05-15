@@ -9,20 +9,20 @@ use SensitiveParameter;
 
 final readonly class Oauth1Credentials
 {
-    public string $consumerSecret;
+    public string $secret;
 
     public function __construct(
-        public string $consumerKey,
-        #[SensitiveParameter] string $consumerSecret,
+        public string $key,
+        #[SensitiveParameter] string $secret,
     ) {
-        if ($consumerKey === '') {
-            throw new InvalidArgumentException('Consumer key cannot be empty');
+        if ($key === '') {
+            throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        if ($consumerSecret === '') {
-            throw new InvalidArgumentException('Consumer secret cannot be empty');
+        if ($secret === '') {
+            throw new InvalidArgumentException('Secret cannot be empty');
         }
 
-        $this->consumerSecret = $consumerSecret;
+        $this->secret = $secret;
     }
 }

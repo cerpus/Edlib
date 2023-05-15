@@ -30,13 +30,15 @@ final readonly class Oauth1Validator implements Oauth1ValidatorInterface
     ) {
     }
 
-    public function validate(Oauth1Request $request, Oauth1Credentials $credentials): void
-    {
+    public function validate(
+        Oauth1Request $request,
+        Oauth1Credentials $consumerCredentials,
+    ): void {
         if (!$request->has(Claim::CONSUMER_KEY)) {
             $this->error('No consumer key provided');
         }
 
-        if ($request->get(Claim::CONSUMER_KEY) !== $credentials->consumerKey) {
+        if ($request->get(Claim::CONSUMER_KEY) !== $consumerCredentials->key) {
             $this->error('Provided consumer key does not match expected key');
         }
 
@@ -74,7 +76,7 @@ final readonly class Oauth1Validator implements Oauth1ValidatorInterface
         ) {
             $this->error('Provided time deviates too much from server time');
         }
-        $signature = $this->signer->calculateSignature($request, $credentials);
+        $signature = $this->signer->calculateSignature($request, $consumerCredentials);
 
         if (!hash_equals($signature, $request->get(Claim::SIGNATURE))) {
             $this->error('Provided signature does not match');

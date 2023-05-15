@@ -12,14 +12,14 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Oauth1Credentials::class)]
 final class Oauth1CredentialsTest extends TestCase
 {
-    public function testCannotUseEmptyConsumerKey(): void
+    public function testCannotUseEmptyKey(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
         new Oauth1Credentials('', 'not empty');
     }
 
-    public function testCannotUseEmptyConsumerSecret(): void
+    public function testCannotUseEmptySecret(): void
     {
         $this->expectException(InvalidArgumentException::class);
 

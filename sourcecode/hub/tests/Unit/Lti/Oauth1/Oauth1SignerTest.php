@@ -79,4 +79,42 @@ final class Oauth1SignerTest extends TestCase
         <input type="hidden" name="oauth_version" value="1.0"/>
         EOHTML, $request->toHtmlFormInputs());
     }
+
+    public function testGeneratesKeyWithTokenCredentials(): void
+    {
+        // Test with the example from
+        // https://developer.twitter.com/en/docs/authentication/oauth-1-0a/creating-a-signature
+
+        $clientCredentials = new Oauth1Credentials(
+            'xvz1evFS4wEEPTGEFPHBog',
+            'kAcSOqF21Fu85e7zjz7ZN2U4ZRhfV3WpwPAoE3Z7kBw',
+        );
+
+        $tokenCredentials = new Oauth1Credentials(
+            '370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb',
+            'LswwdoUaIvS8ltyTt5jkRh4J50vUPVVHtR2YPi5kE',
+        );
+
+        $request = new Oauth1Request(
+            'POST',
+            'https://api.twitter.com/1.1/statuses/update.json?include_entities=true',
+            [
+                'oauth_consumer_key' => $clientCredentials->key,
+                'oauth_nonce' => 'kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg',
+                'oauth_signature_method' => 'HMAC-SHA1',
+                'oauth_timestamp' => '1318622958',
+                'oauth_token' => $tokenCredentials->key,
+                'oauth_version' => '1.0',
+                'status' => 'Hello Ladies + Gentlemen, a signed OAuth request!',
+            ],
+        );
+
+        $signature = $this->signer->calculateSignature(
+            $request,
+            $clientCredentials,
+            $tokenCredentials,
+        );
+
+        $this->assertSame('hCtSmYh+iHYCEqBWrE7C7hYmtUk=', $signature);
+    }
 }

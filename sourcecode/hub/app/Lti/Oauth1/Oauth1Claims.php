@@ -11,5 +11,6 @@ final class Oauth1Claims
     public const SIGNATURE = 'oauth_signature';
     public const SIGNATURE_METHOD = 'oauth_signature_method';
     public const TIMESTAMP = 'oauth_timestamp';
+    public const TOKEN = 'oauth_token';
     public const VERSION = 'oauth_version';
 }
