@@ -5,8 +5,10 @@ environments:
         memory: 1024
         cli-memory: 512
         runtime: docker
-        database: edlib-test
-        cache: edlib-test
+        database: edlib-test-db
+        cache: edlib-test-cache
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
             - 'php artisan optimize'
+            - 'php artisan event:cache'
+            - 'npm ci && npm run build && rm -rf node_modules'
