@@ -30,9 +30,6 @@ jobs:
       - name: Install NPM
         run: npm install
 
-      - name: Build assets
-        run: npm ci && npm run build && rm -rf node_modules
-
       - name: Deploy to sandbox environment
         run: vapor deploy production --without-waiting
         env:
