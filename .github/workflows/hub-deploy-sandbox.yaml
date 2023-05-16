@@ -2,6 +2,7 @@ name: Deploy-sandbox
 
 on:
   workflow_dispatch:
+  pull_request:
 
 defaults:
   run:
@@ -35,7 +36,7 @@ jobs:
 
       - name: Build assets
         run: npm ci && npm run build && rm -rf node_modules
-        
+
       - name: Deploy to sandbox environment
         run: vapor deploy production --without-waiting
         env:
