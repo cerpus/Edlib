@@ -27,9 +27,6 @@ jobs:
       - name: Install Project Dependencies
         run: composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
 
-      - name: Run PHP artisan
-        run: php artisan event:cache
-
       - name: Install NPM
         run: npm install
 
