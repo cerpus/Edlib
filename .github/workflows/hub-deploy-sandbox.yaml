@@ -1,0 +1,42 @@
+name: Deploy-sandbox
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: sourcecode/hub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:v2
+          coverage: none
+      
+      - name: Require Vapor CLI
+        run: composer global require laravel/vapor-cli
+
+      - name: Install Project Dependencies
+        run: composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
+
+      - name: Run PHP artisan
+        run: php artisan event:cache
+
+      - name: Install NPM
+        run: npm install
+
+      - name: Build assets
+        run: npm ci && npm run build && rm -rf node_modules
+        
+      - name: Deploy to sandbox environment
+        run: vapor deploy production --without-waiting
+        env:
+            VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
