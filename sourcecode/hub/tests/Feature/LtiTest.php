@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Lti\LtiLaunchBuilder;
 use App\Lti\Oauth1\Oauth1Credentials;
+use App\Models\LtiPlatform;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,15 +14,49 @@ final class LtiTest extends TestCase
 {
     use RefreshDatabase;
 
+    private LtiLaunchBuilder $launchBuilder;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->launchBuilder = $this->app->make(LtiLaunchBuilder::class);
+    }
+
+    public function testAuthorizedItemSelectionRequestsRedirectToContentExplorer(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+
+        $request = $this->launchBuilder->toItemSelectionLaunch(
+            $platform->getOauth1Credentials(),
+            'https://hub.edlib.local/lti/1.1/select',
+            'http://example.com/',
+        )->getRequest();
+
+        $this->post('/lti/1.1/select', $request->toArray())
+            ->assertRedirect('https://hub.edlib.local/content');
+    }
+
+    public function testUnauthorizedItemSelectionRequestsAreRejected(): void
+    {
+        $request = $this->launchBuilder->toItemSelectionLaunch(
+            new Oauth1Credentials("it's a", "fake"),
+            'https://hub.edlib.local/lti/1.1/select',
+            'http://example.com/',
+        )->getRequest();
+
+        $this->post('/lti/1.1/select', $request->toArray())
+            ->assertUnauthorized();
+    }
+
     public function testReportsErrorsToToolConsumer(): void
     {
-        $launchBuilder = $this->app->make(LtiLaunchBuilder::class);
+        $platform = LtiPlatform::factory()->create();
 
-        $request = $launchBuilder
+        $request = $this->launchBuilder
             ->withClaim('launch_presentation_return_url', 'https://example.com/return')
             ->toPresentationLaunch(
-                new Oauth1Credentials('h5p', 'secret2'),
-                'http://localhost/lti/1.1/select',
+                $platform->getOauth1Credentials(),
+                'https://hub.edlib.local/lti/1.1/select',
                 'some-resource-link',
             )
             ->getRequest();

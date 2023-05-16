@@ -7,6 +7,7 @@ return [
     'log-in' => 'Log in',
     'log-out' => 'Log out',
     'admin-home' => 'Admin home',
+    'manage-lti-platforms' => 'Manage LTI platforms',
     'manage-lti-tools' => 'Manage LTI tools',
     'preview' => 'Preview',
     'edit' => 'Edit',
@@ -30,4 +31,10 @@ return [
     'close' => 'Close',
     'create' => 'Create',
     'unpublished' => 'Unpublished',
+    'key' => 'Key',
+    'secret' => 'Secret',
+    'created' => 'Created',
+    'lti-platforms-description' => 'LTI platforms are the consumers of content. To launch Edlib, the platform must use a pre-shared key/secret pair which you create here.',
+    'lti-platform-created-success' => 'The LTI platform ":name" was successfully created.',
+    'lti-platform-secret-shown-only-once' => 'This secret will be shown only once.',
 ];

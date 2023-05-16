@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
@@ -87,9 +88,14 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     Route::post('/rebuild-content-index', [AdminController::class, 'rebuildContentIndex'])
         ->name('admin.rebuild-content-index');
 
-    Route::controller(LtiToolController::class)->group(function () {
-        Route::get('/lti-tools', 'index')->name('admin.lti-tools.index');
-        Route::get('/lti-tools/add', 'add')->name('admin.lti-tools.add');
-        Route::post('/lti-tools', 'store')->name('admin.lti-tools.store');
+    Route::prefix('/lti-platforms')->controller(LtiPlatformController::class)->group(function () {
+        Route::get('', 'index')->name('admin.lti-platforms.index');
+        Route::post('', 'store')->name('admin.lti-platforms.store');
+    });
+
+    Route::prefix('/lti-tools')->controller(LtiToolController::class)->group(function () {
+        Route::get('', 'index')->name('admin.lti-tools.index');
+        Route::get('/add', 'add')->name('admin.lti-tools.add');
+        Route::post('', 'store')->name('admin.lti-tools.store');
     });
 });

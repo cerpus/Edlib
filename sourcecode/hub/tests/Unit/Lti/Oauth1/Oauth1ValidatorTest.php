@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Random\Randomizer;
 use Tests\Stub\ClockStub;
+use Tests\Stub\InMemoryOauth1CredentialStore;
 use Tests\Stub\RandomEngineStub;
 
 #[CoversClass(Oauth1Signer::class)]
@@ -22,11 +23,16 @@ use Tests\Stub\RandomEngineStub;
 #[CoversClass(Oauth1Request::class)]
 final class Oauth1ValidatorTest extends TestCase
 {
+    private InMemoryOauth1CredentialStore $credentials;
+
     private Oauth1Validator $validator;
 
     protected function setUp(): void
     {
+        $this->credentials = new InMemoryOauth1CredentialStore();
+
         $this->validator = new Oauth1Validator(
+            $this->credentials,
             new Oauth1Signer(
                 new ClockStub(),
                 new Randomizer(new RandomEngineStub()),
@@ -39,7 +45,8 @@ final class Oauth1ValidatorTest extends TestCase
     #[DoesNotPerformAssertions]
     public function testValidOauth1RequestPasses(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -49,12 +56,13 @@ final class Oauth1ValidatorTest extends TestCase
             'oauth_version' => '1.0',
         ]);
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testMissingConsumerKeyIsRejected(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
             'oauth_signature' => '6w+On/hrM4ijTwIQDyCylJv3sUE=',
@@ -67,12 +75,11 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('No consumer key provided'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
-    public function testDoesNotValidateAgainstProvidedConsumerKey(): void
+    public function testMustMatchKeyOfExistingConsumer(): void
     {
-        $credentials = new Oauth1Credentials('my-other-client', 'my-secret');
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -83,15 +90,16 @@ final class Oauth1ValidatorTest extends TestCase
         ]);
 
         $this->expectExceptionObject(
-            new Oauth1ValidationException('Provided consumer key does not match expected key'),
+            new Oauth1ValidationException('Provided key does not correspond to any known consumer'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testMissingNonceIsRejected(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_signature' => 'YMMkbRwzQgrchvOiwY7k4/4Pq1Y=',
@@ -102,12 +110,13 @@ final class Oauth1ValidatorTest extends TestCase
 
         $this->expectExceptionObject(new Oauth1ValidationException('No nonce provided'));
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testNoncesCannotBeReused(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -117,18 +126,19 @@ final class Oauth1ValidatorTest extends TestCase
             'oauth_version' => '1.0',
         ]);
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
 
         $this->expectExceptionObject(
             new Oauth1ValidationException('Provided nonce has already been used'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testSignatureIsRequired(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -141,12 +151,13 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('No signature provided'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testInvalidSignaturesAreRejected(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -160,12 +171,13 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('Provided signature does not match'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testRequiresHmacSha1Signature(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -179,12 +191,13 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('Signature method must be "HMAC-SHA1"'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testTimestampIsRequired(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -197,12 +210,13 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('No timestamp provided'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testTimestampPastAllowedLeewayIsRejected(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -216,12 +230,13 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('Provided time deviates too much from server time'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 
     public function testVersionMustBeOnePointZero(): void
     {
-        $credentials = new Oauth1Credentials('my-client', 'my-secret');
+        $this->credentials->add(new Oauth1Credentials('my-client', 'my-secret'));
+
         $request = new Oauth1Request('POST', 'https://example.com/', [
             'oauth_consumer_key' => 'my-client',
             'oauth_nonce' => 'NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0',
@@ -235,6 +250,6 @@ final class Oauth1ValidatorTest extends TestCase
             new Oauth1ValidationException('Provided version must be "1.0" or omitted'),
         );
 
-        $this->validator->validate($request, $credentials);
+        $this->validator->validate($request);
     }
 }

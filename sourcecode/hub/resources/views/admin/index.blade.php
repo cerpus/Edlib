@@ -3,6 +3,12 @@
 
     <ul>
         <li>
+            <a href="{{ route('admin.lti-platforms.index') }}">
+                {{ trans('messages.manage-lti-platforms') }}
+            </a>
+        </li>
+
+        <li>
             <a href="{{ route('admin.lti-tools.index') }}">
                 {{ trans('messages.manage-lti-tools') }}
             </a>

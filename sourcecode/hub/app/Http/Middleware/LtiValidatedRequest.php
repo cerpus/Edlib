@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Lti\Exception\Oauth1ValidationException;
-use App\Lti\Oauth1\Oauth1Credentials;
 use App\Lti\Oauth1\Oauth1Request;
 use App\Lti\Oauth1\Oauth1Validator;
 use Closure;
@@ -29,11 +28,8 @@ final readonly class LtiValidatedRequest
             ...$request->request->all(),
         ]);
 
-        // TODO: get credentials from database or something
-        $credentials = new Oauth1Credentials('h5p', 'secret2');
-
         try {
-            $this->oauth1Validator->validate($oauthRequest, $credentials);
+            $this->oauth1Validator->validate($oauthRequest);
         } catch (Oauth1ValidationException $e) {
             throw new UnauthorizedHttpException(
                 challenge: 'OAuth',
