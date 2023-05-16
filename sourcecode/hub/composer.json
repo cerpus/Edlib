@@ -10,7 +10,8 @@
         "laravel/framework": "^10.0",
         "laravel/scout": "^10.0",
         "laravel/tinker": "^2.8",
-        "laravel/vapor-core": "^2.28",
+        "laravel/vapor-cli": "^1.56",
+        "laravel/vapor-core": "^2.31",
         "meilisearch/meilisearch-php": "^1.0",
         "psr/clock": "^1.0"
     },
