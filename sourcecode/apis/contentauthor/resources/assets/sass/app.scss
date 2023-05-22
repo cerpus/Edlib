@@ -248,6 +248,7 @@ select[name="h5peditor-library"] {
     padding-right: 0;
 
     & > div {
+      scrollbar-gutter: stable both-edges;
       @include respond-to('desktop') {
         overflow-y: auto;
         max-height: calc(100vh - 7rem);
