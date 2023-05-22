@@ -1,6 +1,10 @@
 <x-sidebar-layout>
     <x-slot:title>{{ $content->latestPublishedVersion->resource->title }}</x-slot:title>
 
+    <x-slot:head>
+        <x-oembed-links />
+    </x-slot:head>
+
     <x-lti-launch :launch="$launch" />
 
     <x-slot:sidebar>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OembedController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\LtiValidatedRequest;
@@ -99,3 +100,5 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
         Route::post('', 'store')->name('admin.lti-tools.store');
     });
 });
+
+Route::get('/oembed', OembedController::class)->name('oembed');

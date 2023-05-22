@@ -1,4 +1,7 @@
 <x-layout.base>
+    <x-slot:title>{{ $title ?? '' }}</x-slot:title>
+    <x-slot:head>{{ $head ?? '' }}</x-slot:head>
+
     <div class="container">
         <div class="row">
             <main class="col-12 col-lg-9">
