@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
+import {useIntl} from "react-intl";
 
 const AddCard = props => {
     const {
@@ -9,26 +10,17 @@ const AddCard = props => {
         cardNumber,
         icon,
     } = props;
-    const styles = {
-        addNewQuestionContainer: {
-            padding: '8px',
-            textTransform: 'none',
-            fontSize: '1.6rem',
-            fontWeight: '400 !important',
-        }
-    };
+
+    const { formatMessage }  = useIntl();
     return (
         <div className="addCard">
-            <span className="cardNumber">{cardNumber}</span>
-            <div className="addCardContainer">
-                <Button
-                    onClick={onClick}
-                    size="large"
-                >
-                    {icon}
-                    <span style={styles.addNewQuestionContainer}>{label} </span>
-                </Button>
-            </div>
+            <Button
+                aria-label={formatMessage({ id: 'QUESTIONCONTAINER.ADD_LABEL' })}
+                onClick={onClick}
+            >
+                {icon}
+                <span className="addNewQuestionContainer">{label} </span>
+            </Button>
         </div>
     );
 };

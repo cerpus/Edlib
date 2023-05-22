@@ -40,6 +40,7 @@ const QuestionContainerLayout = props => {
                     value={title}
                     InputLabelProps={{
                         shrink: true,
+                        style: { fontSize: "2.2rem" }
                     }}
                     margin="normal"
                     inputProps={{
