@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Foundation\Vite;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use function app;
 use function is_array;
 use function str_starts_with;
