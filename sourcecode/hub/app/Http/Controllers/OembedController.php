@@ -9,9 +9,11 @@ use App\Oembed\OembedFormat;
 use App\Oembed\RichContentResponse;
 use App\Oembed\Serializer;
 use Illuminate\Http\Response;
+
 use function htmlspecialchars;
 use function preg_quote;
 use function sprintf;
+
 use const ENT_HTML5;
 use const ENT_QUOTES;
 

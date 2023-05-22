@@ -8,7 +8,9 @@ use App\Oembed\OembedFormat;
 use App\Oembed\RichContentResponse;
 use App\Oembed\Serializer;
 use PHPUnit\Framework\TestCase;
+
 use function json_decode;
+
 use const JSON_THROW_ON_ERROR;
 
 final class SerializerTest extends TestCase
@@ -43,7 +45,7 @@ final class SerializerTest extends TestCase
             'The content title',
         );
 
-        $xml = (new Serializer)->serialize($content, OembedFormat::Xml);
+        $xml = (new Serializer())->serialize($content, OembedFormat::Xml);
 
         $this->assertXmlStringEqualsXmlString(<<<EOXML
         <?xml version="1.0" encoding="utf-8"?>

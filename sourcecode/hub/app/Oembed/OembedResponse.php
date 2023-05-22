@@ -22,7 +22,7 @@ abstract class OembedResponse
             'version' => '1.0',
             'type' => $this->getType(),
             'title' => $title,
-        ], fn($v) => $v !== null) + $data;
+        ], fn ($v) => $v !== null) + $data;
 
         $this->data = $data;
     }
