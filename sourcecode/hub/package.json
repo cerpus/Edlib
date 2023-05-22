@@ -8,7 +8,8 @@
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.7.2",
         "sass": "^1.60.0",
-        "vite": "^4.0.0"
+        "vite": "^4.0.0",
+        "vite-plugin-manifest-sri": "^0.1.0"
     },
     "dependencies": {
         "@fontsource/lato": "^4.5.10",
