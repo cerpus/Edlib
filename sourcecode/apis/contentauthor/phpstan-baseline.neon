@@ -1722,6 +1722,11 @@ parameters:
 			path: tests/Integration/Libraries/H5P/H5PExportTest.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 13
+			path: tests/Integration/Libraries/H5P/H5PLibraryAdminTest.php
+
+		-
 			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php

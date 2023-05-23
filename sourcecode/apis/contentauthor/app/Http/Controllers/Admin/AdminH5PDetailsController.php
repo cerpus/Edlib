@@ -14,6 +14,7 @@ use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -108,33 +109,47 @@ class AdminH5PDetailsController extends Controller
     {
         /** @var \Cerpus\VersionClient\VersionClient $versionClient */
         $versionClient = app('Cerpus\VersionClient\VersionClient');
-        $listAll = (bool) $request->get('listAll', true);
-        $contents = [];
-        $failed = [];
+        $pageSize = 100;
+        $page = (int) $request->get('page', 1);
+        $listAll = (bool) $request->get('listAll', false);
+        $latestCount = 0;
+        $total = $library->contents()->count();
 
-        $library->contents()
+        $contents = $library
+            ->contents()
             ->orderBy('updated_at', 'DESC')
             ->orderBy('id', 'DESC')
+            ->limit($pageSize)
+            ->offset($pageSize * ($page-1))
             ->get()
-            ->filter(function ($value) use ($versionClient, $listAll, &$contents, &$failed) {
+            ->map(function (H5PContent $row) use ($versionClient, &$latestCount) {
                 try {
                     $latest = null;
-                    if ($listAll && $value->version_id) {
-                        $latest = $versionClient->latest($value->version_id);
+                    if ($row->version_id) {
+                        $latest = $versionClient->latest($row->version_id);
                     }
-                    if (!$listAll || (!empty($latest) && $value->version_id === $latest->getId())) {
-                        $contents[] = $value;
-                    }
-                } catch (Exception $e) {
-                    $failed[$e->getMessage()][] = $value;
+                    $isLatest = (!empty($latest) && $row->version_id === $latest->getId());
+                    $latestCount += $isLatest ? 1 : 0;
+
+                    return [
+                        'item' => $row,
+                        'isLatest' => $isLatest,
+                    ];
+                } catch (Exception) {
+                    return [
+                        'item' => $row,
+                        'isLatest' => null,
+                    ];
                 }
             });
 
         return view('admin.library-upgrade.library-content', [
             'library' => $library,
-            'contents' => $contents,
-            'failed' => $failed,
             'listAll' => $listAll,
+            'latestCount' => $latestCount,
+            'paginator' => (new LengthAwarePaginator($contents, $total, $pageSize))
+                ->withPath('/admin/libraries/'.$library->id.'/content')
+                ->appends(['listAll' => $listAll]),
         ]);
     }
 

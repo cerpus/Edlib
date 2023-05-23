@@ -15,6 +15,17 @@
         {!! HTML::style($css) !!}
     @endforeach
     {!! HTML::script('https://code.jquery.com/jquery-1.12.4.min.js') !!}
+    <script type="text/x-mathjax-config">
+        // When MathJax is done, check if a resize of the container is required
+        MathJax.Hub.Register.StartupHook("End", function () {
+            if (window.parent && document.documentElement.scrollHeight > document.documentElement.clientHeight) {
+                window.parent.postMessage({
+                  context: 'h5p',
+                  action: 'hello'
+                }, '*');
+            }
+        });
+    </script>
 </head>
 <body>
     @if($preview && $inDraftState ?? false)

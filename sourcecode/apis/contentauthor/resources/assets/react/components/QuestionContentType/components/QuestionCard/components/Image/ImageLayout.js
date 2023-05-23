@@ -1,10 +1,11 @@
-import React from 'react';
+import { React, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
 import Popover from '@material-ui/core/Popover';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ImageIcon from '@material-ui/icons/Image';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useIntl } from 'react-intl';
 
 function ImageLayout(props) {
     const {
@@ -19,16 +20,28 @@ function ImageLayout(props) {
         uploading,
     } = props;
 
+    const { formatMessage }  = useIntl();
+    const [focused, setFocused] = useState(false);
     let icon = null;
     if ( previewImage === null) {
-        icon = <ImageIcon />;
+        icon = <ImageIcon
+            style={{ cursor: 'pointer' }}
+            tabIndex={0}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
+        />;
         if ( readOnly === false ) {
             icon = (
                 <DropZone
                     onDropAccepted={onDrop}
                     multiple={false}
-                    className="imageDropzone"
+                    className={`imageDropzone ${focused ? 'focused' : ''}`}
                     disabled={readOnly}
+                    inputProps={{
+                        'aria-label': formatMessage({
+                            id: 'QUESTIONCARD.ADD_IMAGE_LABEL',
+                        })
+                    }}
                 >
                     {icon}
                 </DropZone>);

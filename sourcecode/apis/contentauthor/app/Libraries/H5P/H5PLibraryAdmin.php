@@ -71,13 +71,14 @@ class H5PLibraryAdmin
     public function upgradeProgress(Request $request)
     {
         /** @var H5PLibrary $library */
-        $library = H5PLibrary::findOrFail(filter_input(INPUT_GET, 'id'));
+        $library = H5PLibrary::findOrFail($request->query('id'));
 
         $out = new \stdClass();
+        $out->skipped = json_decode($request->post('skipped', '[]'));
         $out->params = [];
         $out->token = csrf_token();
 
-        $params = filter_input(INPUT_POST, 'params');
+        $params = $request->post('params');
         if ($params !== null) {
             if (!$request->filled('libraryId')) {
                 throw new BadRequestHttpException("Missing library to update to");
@@ -110,11 +111,12 @@ class H5PLibraryAdmin
                 });
         }
 
-        $out->left = $library->contents()->count();
+        $out->left = $library->contents()->count() - count($out->skipped);
         if ($out->left) {
             $contents = collect();
             $library
                 ->contents()
+                ->whereNotIn('id', $out->skipped)
                 ->chunk(40, function ($contentsChunk) use ($contents) {
                     foreach ($contentsChunk as $content) {
                         $contents->push($content);

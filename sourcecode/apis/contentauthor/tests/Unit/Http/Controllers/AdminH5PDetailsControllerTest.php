@@ -13,6 +13,8 @@ use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
@@ -158,12 +160,19 @@ class AdminH5PDetailsControllerTest extends TestCase
     {
         /** @var H5PLibrary $library*/
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $content */
-        $content = H5PContent::factory()->create([
+        /** @var H5PContent $failedContent */
+        $failedContent = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
+            'updated_at' => Carbon::now()->sub('1d'),
         ]);
-        $versionId = $content->version_id;
+        /** @var H5PContent $versionContent */
+        $versionContent = H5PContent::factory()->create([
+            'version_id' => $this->faker->uuid,
+            'library_id' => $library->id,
+            'updated_at' => Carbon::now(),
+        ]);
+        $versionId = $versionContent->version_id;
 
         $versionApi = $this->createMock('Cerpus\VersionClient\VersionClient');
         $this->instance('Cerpus\VersionClient\VersionClient', $versionApi);
@@ -173,25 +182,43 @@ class AdminH5PDetailsControllerTest extends TestCase
             'id' => $versionId,
             'createdAt' => $this->faker->unixTime,
             'versionPurpose' => 'Testing',
-            'externalReference' => $content->id,
+            'externalReference' => $versionContent->id,
         ]);
 
         $versionApi
-            ->expects($this->once())
+            ->expects($this->exactly(2))
             ->method('latest')
-            ->with($versionId)
-            ->willReturn($version);
+            ->withConsecutive([$versionId], [$failedContent->version_id])
+            ->willReturnCallback(function ($data) use ($versionId, $version) {
+                if ($data === $versionId) {
+                    return $version;
+                }
+                throw new \Exception('test');
+            });
 
         $controller = app(AdminH5PDetailsController::class);
         $res = $controller->contentForLibrary($library, new Request());
         $data = $res->getData();
 
         $this->assertArrayHasKey('library', $data);
-        $this->assertArrayHasKey('contents', $data);
-        $this->assertArrayHasKey('failed', $data);
+        $this->assertArrayHasKey('paginator', $data);
         $this->assertArrayHasKey('listAll', $data);
+        $this->assertArrayHasKey('latestCount', $data);
 
-        $this->assertCount(1, $data['contents']);
+        $this->assertFalse($data['listAll']);
+        $this->assertSame(1, $data['latestCount']);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $data['paginator']);
+        $this->assertSame(2, $data['paginator']->count());
+
+        $item = $data['paginator']->getCollection()->first();
+        $this->assertSame($versionContent->id, $item['item']->id);
+        $this->assertTrue($item['isLatest']);
+        $this->assertSame($data['library']->id, $item['item']->library_id);
+
+        $item = $data['paginator']->getCollection()->last();
+        $this->assertSame($failedContent->id, $item['item']->id);
+        $this->assertNull($item['isLatest']);
+        $this->assertSame($data['library']->id, $item['item']->library_id);
     }
 
     public function test_contentHistory(): void
