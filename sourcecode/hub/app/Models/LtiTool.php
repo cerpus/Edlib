@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use function assert;
+
 class LtiTool extends Model
 {
     use HasFactory;
@@ -42,6 +44,8 @@ class LtiTool extends Model
 
     public function getOauth1Credentials(): Oauth1Credentials
     {
+        assert($this->consumer_key !== null && $this->consumer_secret !== null);
+
         if ($this->lti_version !== LtiVersion::Lti1_1) {
             throw new BadMethodCallException(
                 'Can only get OAuth 1.0 credentials for LTI 1.1 tools',

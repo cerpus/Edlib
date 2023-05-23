@@ -7,12 +7,12 @@ namespace App\Oembed;
 abstract class OembedResponse
 {
     /**
-     * @var array<string, mixed>
+     * @var array<string, string>
      */
     public readonly array $data;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<string, string> $data
      */
     public function __construct(
         array $data,

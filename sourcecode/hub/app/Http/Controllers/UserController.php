@@ -43,15 +43,13 @@ class UserController extends Controller
     {
         return view('user.preferences', [
             'locales' => $locales->getTranslatedMap(app()->getLocale()),
-            'user' => auth()->user(),
+            'user' => $this->getUser(),
         ]);
     }
 
     public function savePreferences(SavePreferencesRequest $request): RedirectResponse
     {
-        $user = auth()->user();
-        assert($user instanceof User);
-
+        $user = $this->getUser();
         $user->fill($request->validated());
         $user->save();
 

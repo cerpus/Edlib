@@ -9,26 +9,16 @@ use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
+use function app;
 use function str_replace;
 
 final class StoreContentRequest extends FormRequest
 {
-    public function __construct(
-        private readonly ContentItemsMapperInterface $mapper,
-        private readonly ContentItemsSerializerInterface $serializer,
-        array $query = [],
-        array $request = [],
-        array $attributes = [],
-        array $cookies = [],
-        array $files = [],
-        array $server = [],
-        $content = null,
-    ) {
-        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
-    }
-
     protected function prepareForValidation(): void
     {
+        $serializer = app()->make(ContentItemsSerializerInterface::class);
+        $mapper = app()->make(ContentItemsMapperInterface::class);
+
         $value = $this->input('content_items');
 
         if (!is_string($value)) {
@@ -37,7 +27,7 @@ final class StoreContentRequest extends FormRequest
 
         // normalize content items
         $this->merge([
-            'content_items' => $this->serializer->serialize($this->mapper->map($value)),
+            'content_items' => $serializer->serialize($mapper->map($value)),
         ]);
     }
 

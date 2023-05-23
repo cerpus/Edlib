@@ -20,7 +20,7 @@ final class ContentFactory extends Factory
         ];
     }
 
-    public function withPublishedVersion(): static
+    public function withPublishedVersion(): self
     {
         return $this->has(
             ContentVersion::factory()

@@ -11,8 +11,8 @@ use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
 use App\Models\LtiTool;
-use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +23,8 @@ use function is_string;
 use function json_encode;
 use function to_route;
 use function view;
+
+use const JSON_THROW_ON_ERROR;
 
 class ContentController extends Controller
 {
@@ -44,9 +46,7 @@ class ContentController extends Controller
         $query = $request->validated('q', '');
         assert(is_string($query));
 
-        $user = auth()->user();
-        assert($user instanceof User);
-
+        $user = $this->getUser();
         $contents = Content::findForUser($user, $query);
 
         return view('content.mine', [
@@ -88,9 +88,7 @@ class ContentController extends Controller
 
     public function copy(Content $content): RedirectResponse
     {
-        $user = auth()->user();
-        assert($user instanceof User);
-
+        $user = $this->getUser();
         $copy = $content->createCopyBelongingTo($user);
 
         return to_route('content.index', [$copy->id]);
@@ -137,16 +135,22 @@ class ContentController extends Controller
         StoreContentRequest $request,
         ContentItemsMapperInterface $mapper,
     ): View {
-        $item = $mapper->map(json_encode($request->input('content_items')))[0];
+        $item = $mapper->map(json_encode(
+            $request->input('content_items'),
+            flags: JSON_THROW_ON_ERROR,
+        ))[0];
 
         $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
             ->firstOrFail();
 
-        $content = DB::transaction(function () use ($item, $request, $tool) {
+        /*$content = */DB::transaction(function () use ($item, $tool) {
+            $title = $item->getTitle() ?? throw new Exception('Missing title');
+            $url = $item->getUrl() ?? throw new Exception('Missing URL');
+
             $resource = new LtiResource();
-            $resource->title = $item->getTitle();
+            $resource->title = $title;
             $resource->lti_tool_id = $tool->id;
-            $resource->view_launch_url = $item->getUrl();
+            $resource->view_launch_url = $url;
             $resource->edit_launch_url = 'idk'; // TODO: figure this out
             $resource->save();
 
@@ -157,7 +161,7 @@ class ContentController extends Controller
             $contentVersion->lti_resource_id = $resource->id;
             $contentVersion->published = true;
 
-            $content->users()->save(auth()->user(), [
+            $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 

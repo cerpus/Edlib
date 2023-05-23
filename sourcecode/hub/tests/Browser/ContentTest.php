@@ -19,10 +19,14 @@ final class ContentTest extends DuskTestCase
             ->withPublishedVersion()
             ->create()
             ->fresh(); // FIXME: why won't this work without?
+        assert($content instanceof Content);
 
-        $this->browse(function (Browser $browser) use ($content) {
+        $expectedTitle = $content->latestPublishedVersion?->resource?->title;
+        assert($expectedTitle !== null);
+
+        $this->browse(function (Browser $browser) use ($content, $expectedTitle) {
             $browser->visit('/content/'.$content->id)
-                ->assertTitleContains($content->latestPublishedVersion->resource->title)
+                ->assertTitleContains($expectedTitle)
                 ->assertPresent('iframe');
         });
     }

@@ -10,6 +10,7 @@ use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\LtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -74,17 +75,23 @@ class Content extends Model
     public function createCopyBelongingTo(User $user): self
     {
         return DB::transaction(function () use ($user) {
+            $version = $this->latestPublishedVersion
+                ?? throw new Exception('No published version');
+
             // TODO: title for resource copies
             // TODO: somehow denote content is copied
             $copy = new Content();
             $copy->save();
-            $copy->versions()->save($this->latestPublishedVersion->replicate());
+            $copy->versions()->save($version->replicate());
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
 
             return $copy;
         });
     }
 
+    /**
+     * @return HasOne<ContentVersion>
+     */
     public function latestVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
@@ -100,6 +107,7 @@ class Content extends Model
         return $this->hasOne(ContentVersion::class)
             ->has('resource')
             ->ofMany(['id' => 'max'], function (Builder $query) {
+                /** @var Builder<ContentVersion> $query */
                 $query->published();
             });
     }
@@ -126,18 +134,21 @@ class Content extends Model
     }
 
     /**
-     * @return array<string, int|string>
+     * @return array<string, mixed>
      */
     public function toSearchableArray(): array
     {
         $version = $this->latestPublishedVersion ?? $this->latestVersion;
         assert($version !== null);
 
+        $title = $version->resource?->title ?? null;
+        assert($title !== null);
+
         return [
             'id' => $this->id,
             'has_draft' => $this->latestVersion !== $this->latestPublishedVersion,
             'published' => $this->latestPublishedVersion !== null,
-            'title' => $version->resource->title,
+            'title' => $title,
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -19,6 +19,9 @@ class ContentCard extends Component
         $browser->assertVisible($this->selector());
     }
 
+    /**
+     * @return array<mixed>
+     */
     public static function siteElements(): array
     {
         return [];
