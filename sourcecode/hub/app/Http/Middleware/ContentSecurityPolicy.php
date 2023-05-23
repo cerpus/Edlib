@@ -38,10 +38,11 @@ final class ContentSecurityPolicy
 
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self'; ".
-                "frame-src " . implode(' ', $frameSources) . "; " .
-                "script-src 'nonce-" . $this->vite->cspNonce() . "'; " .
-                "style-src 'nonce-" . $this->vite->cspNonce() . "'",
+            "default-src 'self'" .
+                "; frame-src " . implode(' ', $frameSources) .
+                "; img-src 'self' data:" .
+                "; script-src 'nonce-" . $this->vite->cspNonce() . "'" .
+                "; style-src 'nonce-" . $this->vite->cspNonce() . "'",
         );
 
         return $response;
