@@ -175,7 +175,7 @@ class H5PController extends Controller
                 ->latestVersion()
                 ->first();
             if (!empty($library)) {
-                $contenttype = $library->getLibraryString(false, false);
+                $contenttype = $library->getLibraryString(false);
             } else {
                 $contenttype = false;
             }
@@ -332,7 +332,7 @@ class H5PController extends Controller
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
-            'library' => $library->getLibraryString(false, false),
+            'library' => $library->getLibraryString(false),
             'libraryid' => $h5pContent->library_id,
             'parameters' => $params,
             'language_iso_639_3' => $contentLanguage,

@@ -16,7 +16,7 @@ class EditorStorageTest extends TestCase
         /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create(['semantics' => 'something']);
         $libraries = (object) [
-            'uberName' => $library->getLibraryString(false, false),
+            'uberName' => $library->getLibraryString(false),
             'name' => $library->name,
             'majorVersion' => $library->major_version,
             'minorVersion' => $library->minor_version,

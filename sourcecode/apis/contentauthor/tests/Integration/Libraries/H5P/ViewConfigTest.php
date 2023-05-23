@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\H5P;
+namespace Tests\Integration\Libraries\H5P;
 
 use App\ApiModels\Resource;
 use App\Apis\ResourceApiService;

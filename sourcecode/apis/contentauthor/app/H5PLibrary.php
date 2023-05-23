@@ -122,47 +122,47 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @param bool $folderName True to get name suitable for folder
-     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
+     * @param bool|null $withPatchVersion Null to use patchVersionInFolderName value to decide or true/false to force
      */
-    public function getLibraryString(bool $folderName = false, ?bool $fullVersion = null): string
+    public function getLibraryString(?bool $withPatchVersion = null): string
     {
-        return self::getLibraryName([
-            'machineName' => $this->name,
-            'majorVersion' => $this->major_version,
-            'minorVersion' => $this->minor_version,
-            'patchVersion' => $this->patch_version,
-            'patchVersionInFolderName' => $this->patch_version_in_folder_name,
-
-        ], $folderName, $fullVersion);
+        return self::getLibraryName($this->getLibraryH5PFriendly(), false, $withPatchVersion);
     }
 
     /**
-     * @param array $libraryData Key names: machineName/name, majorVersion, minorVersion, patchVersion, patchVersionInFolderName
-     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
-     * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
+     * @param bool|null $withPatchVersion Null to use patchVersionInFolderName value to decide or true/false to force
      */
-    public static function libraryToFolderName(array $libraryData, ?bool $fullVersion = null): string
+    public function getFolderName(?bool $withPatchVersion = null): string
     {
-        return self::getLibraryName($libraryData, true, $fullVersion);
+        return self::getLibraryName($this->getLibraryH5PFriendly(), true, $withPatchVersion);
     }
 
     /**
-     * @param array $libraryData Key names: machineName/name, majorVersion, minorVersion, patchVersion, patchVersionInFolderName
-     * @param bool|null $fullVersion Null to use patchVersionInFolderName, true/false to override
+     * @param array{machineName?: string, name?: string, majorVersion: int, minorVersion: int, patchVersion: int, patchVersionInFolderName: bool} $libraryData
+     * @param bool|null $withPatchVersion Null to use patchVersionInFolderName value to decide or true/false to force
      * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
      */
-    public static function libraryToString(array $libraryData, ?bool $fullVersion = null): string
+    public static function libraryToFolderName(array $libraryData, ?bool $withPatchVersion = null): string
     {
-        return self::getLibraryName($libraryData, false, $fullVersion);
+        return self::getLibraryName($libraryData, true, $withPatchVersion);
+    }
+
+    /**
+     * @param array{machineName?: string, name?: string, majorVersion: int, minorVersion: int, patchVersion: int, patchVersionInFolderName: bool} $libraryData
+     * @param bool|null $withPatchVersion Null to use patchVersionInFolderName value to decide or true/false to force
+     * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
+     */
+    public static function libraryToString(array $libraryData, ?bool $withPatchVersion = null): string
+    {
+        return self::getLibraryName($libraryData, false, $withPatchVersion);
     }
 
     /**
      * @throws \InvalidArgumentException If requesting full version without patchVersion present in data
      */
-    private static function getLibraryName(array $libraryData, bool $asFolder, ?bool $fullVersion): string
+    private static function getLibraryName(array $libraryData, bool $asFolder, ?bool $withPatchVersion): string
     {
-        $usePatch = $fullVersion === true || ($fullVersion === null && array_key_exists('patchVersionInFolderName', $libraryData) && $libraryData['patchVersionInFolderName']);
+        $usePatch = $withPatchVersion === true || ($withPatchVersion === null && array_key_exists('patchVersionInFolderName', $libraryData) && $libraryData['patchVersionInFolderName']);
         if ($usePatch && !isset($libraryData['patchVersion'])) {
             throw new \InvalidArgumentException('Full version name requested but patch version missing');
         }
@@ -182,7 +182,7 @@ class H5PLibrary extends Model
         );
     }
 
-    public function getLibraryH5PFriendly($machineName = 'name')
+    public function getLibraryH5PFriendly($machineName = 'name'): array
     {
         return [
             'machineName' => $this->$machineName,
@@ -286,7 +286,7 @@ class H5PLibrary extends Model
 
     public function supportsMaxScore(): bool
     {
-        $libraryLocation = sprintf('libraries/%s/presave.js', self::getLibraryString(true));
+        $libraryLocation = sprintf('libraries/%s/presave.js', self::getFolderName());
         if (Storage::disk()->exists($libraryLocation)) {
             return true;
         }

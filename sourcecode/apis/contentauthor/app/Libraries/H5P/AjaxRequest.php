@@ -259,8 +259,8 @@ class AjaxRequest
 
         $libraries = collect();
         $this->getLibraryDetails($H5PLibrary, $libraries);
-        if ($libraries->has($H5PLibrary->getLibraryString(false, false))) {
-            $libraryData = $libraries->get($H5PLibrary->getLibraryString(false, false));
+        if ($libraries->has($H5PLibrary->getLibraryString(false))) {
+            $libraryData = $libraries->get($H5PLibrary->getLibraryString(false));
             if (array_key_exists('semantics', $libraryData)) {
                 $H5PLibrary->semantics = $libraryData['semantics'];
                 $H5PLibrary->save();
@@ -292,7 +292,7 @@ class AjaxRequest
     {
         /** @var H5PValidator $validator */
         $validator = resolve(H5PValidator::class);
-        $h5pDataFolderName = $H5PLibrary->getLibraryString(true);
+        $h5pDataFolderName = $H5PLibrary->getFolderName();
         $tmpLibrariesRelative = 'libraries';
         $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
         // Download files from bucket to tmp folder
@@ -304,18 +304,18 @@ class AjaxRequest
         );
         $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
         $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);
-        $libraryData = $validator->getLibraryData($H5PLibrary->getLibraryString(true), $tmpLibraryFolder, $tmpLibraries);
+        $libraryData = $validator->getLibraryData($H5PLibrary->getFolderName(), $tmpLibraryFolder, $tmpLibraries);
         $libraryData['libraryId'] = $H5PLibrary->id;
 
-        if (!$affectedLibraries->has($H5PLibrary->getLibraryString(false, false))) {
-            $affectedLibraries->put($H5PLibrary->getLibraryString(false, false), $libraryData);
+        if (!$affectedLibraries->has($H5PLibrary->getLibraryString(false))) {
+            $affectedLibraries->put($H5PLibrary->getLibraryString(false), $libraryData);
         }
         foreach (['preloadedDependencies', 'dynamicDependencies', 'editorDependencies'] as $value) {
             if (!empty($libraryData[$value])) {
                 foreach ($libraryData[$value] as $library) {
                     /** @var H5PLibrary $dependentLibrary */
                     $dependentLibrary = H5PLibrary::fromLibrary($library)->first();
-                    if (!$affectedLibraries->has($dependentLibrary->getLibraryString(false, false))) {
+                    if (!$affectedLibraries->has($dependentLibrary->getLibraryString(false))) {
                         $affectedLibraries = $this->getLibraryDetails($dependentLibrary, $affectedLibraries);
                     }
                 }

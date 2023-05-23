@@ -49,7 +49,7 @@ class H5PExport
         /** @var \H5PContentValidator $validator */
         $validator = resolve(\H5PContentValidator::class);
         $params = (object)[
-            'library' => $h5PLibrary->getLibraryString(false, false),
+            'library' => $h5PLibrary->getLibraryString(false),
             'params' => json_decode($this->content->parameters)
         ];
         if (!$params->params) {

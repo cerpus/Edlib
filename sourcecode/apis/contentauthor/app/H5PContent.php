@@ -325,7 +325,7 @@ class H5PContent extends Content implements VersionableObject
 
         if ($library->has_icon) {
             $h5pFramework = app(H5PFrameworkInterface::class);
-            $library_folder = $library->getLibraryString(true);
+            $library_folder = $library->getFolderName();
             $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
 
             if (!empty($icon_path)) {

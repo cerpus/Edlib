@@ -8,33 +8,49 @@ use Tests\TestCase;
 class H5PLibraryTest extends TestCase
 {
     /**
-     * @dataProvider provider_libraryString
+     * @dataProvider provider_getLibraryString
      */
-    public function test_getLibraryString($isFolder, $usePatch, $hasPatch, $expected): void
+    public function test_getLibraryString($usePatch, $hasPatch, $expected): void
     {
         /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->make([
             'patch_version_in_folder_name' => $hasPatch,
         ]);
 
-        $this->assertSame($expected, $lib->getLibraryString($isFolder, $usePatch));
+        $this->assertSame($expected, $lib->getLibraryString($usePatch));
     }
 
-    public function provider_libraryString(): \Generator
+    public function provider_getLibraryString(): \Generator
     {
-        yield 'Folder 1' => [true, null, false, 'H5P.Foobar-1.2'];
-        yield 'Folder 2' => [true, null, true, 'H5P.Foobar-1.2.3'];
-        yield 'Folder 3' => [true, true, false, 'H5P.Foobar-1.2.3'];
-        yield 'Folder 4' => [true, true, true, 'H5P.Foobar-1.2.3'];
-        yield 'Folder 5' => [true, false, false, 'H5P.Foobar-1.2'];
-        yield 'Folder 6' => [true, false, true, 'H5P.Foobar-1.2'];
+        yield 0 => [null, false, 'H5P.Foobar 1.2'];
+        yield 1 => [null, true, 'H5P.Foobar 1.2.3'];
+        yield 2 => [true, false, 'H5P.Foobar 1.2.3'];
+        yield 3 => [true, true, 'H5P.Foobar 1.2.3'];
+        yield 4 => [false, false, 'H5P.Foobar 1.2'];
+        yield 5 => [false, true, 'H5P.Foobar 1.2'];
+    }
 
-        yield 'Name 1' => [false, null, false, 'H5P.Foobar 1.2'];
-        yield 'Name 2' => [false, null, true, 'H5P.Foobar 1.2.3'];
-        yield 'Name 3' => [false, true, false, 'H5P.Foobar 1.2.3'];
-        yield 'Name 4' => [false, true, true, 'H5P.Foobar 1.2.3'];
-        yield 'Name 5' => [false, false, false, 'H5P.Foobar 1.2'];
-        yield 'Name 6' => [false, false, true, 'H5P.Foobar 1.2'];
+    /**
+     * @dataProvider provider_getFolderName
+     */
+    public function test_getFolderName($usePatch, $hasPatch, $expected): void
+    {
+        /** @var H5PLibrary $lib */
+        $lib = H5PLibrary::factory()->make([
+            'patch_version_in_folder_name' => $hasPatch,
+        ]);
+
+        $this->assertSame($expected, $lib->getFolderName($usePatch));
+    }
+
+    public function provider_getFolderName(): \Generator
+    {
+        yield 0 => [null, false, 'H5P.Foobar-1.2'];
+        yield 1 => [null, true, 'H5P.Foobar-1.2.3'];
+        yield 2 => [true, false, 'H5P.Foobar-1.2.3'];
+        yield 3 => [true, true, 'H5P.Foobar-1.2.3'];
+        yield 4 => [false, false, 'H5P.Foobar-1.2'];
+        yield 5 => [false, true, 'H5P.Foobar-1.2'];
     }
 
     /** @dataProvider provider_libraryToFolderName */

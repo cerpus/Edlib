@@ -89,7 +89,7 @@ class H5pCerpusStorageTest extends TestCase
             'patch_version_in_folder_name' => $usePatch
         ]);
 
-        $folder = $library->getLibraryString(true);
+        $folder = $library->getFolderName();
         $expected = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, $folder);
 
         Storage::fake('test');

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
 use Cerpus\VersionClient\VersionData;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
@@ -81,7 +82,14 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->instance(ContentAuthorStorage::class, $storage);
         $storage
             ->expects($this->once())
-            ->method('copyFolder');
+            ->method('copyFolder')
+            ->with(
+                $this->isInstanceOf(FilesystemAdapter::class),
+                $this->isInstanceOf(FilesystemAdapter::class),
+                $this->equalTo('libraries/H5P.Foobar-1.2'),
+                $this->equalTo('libraries/H5P.Foobar-1.2'),
+                $this->equalTo([]),
+            );
 
         $framework = $this->createMock(Framework::class);
         $this->instance(Framework::class, $framework);
@@ -97,6 +105,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $validator
             ->expects($this->once())
             ->method('getLibraryData')
+            ->with($this->equalTo('H5P.Foobar-1.2'), $this->isNull(), $this->isNull())
             ->willReturn([
                 'editorDependencies' => [
                     [
