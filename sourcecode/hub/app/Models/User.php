@@ -17,11 +17,13 @@ class User extends Model implements AuthenticatableContract
 
     protected $casts = [
         'admin' => 'boolean',
+        'debug_mode' => 'boolean',
     ];
 
     protected $fillable = [
         'name',
         'locale',
+        'debug_mode',
     ];
 
     protected $hidden = [
@@ -40,6 +42,7 @@ class User extends Model implements AuthenticatableContract
      */
     protected $attributes = [
         'admin' => false,
+        'debug_mode' => false,
     ];
 
     public function getAuthIdentifierName(): string

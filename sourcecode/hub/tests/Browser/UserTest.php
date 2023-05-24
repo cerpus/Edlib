@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Models\Content;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Hash;
@@ -64,6 +65,25 @@ final class UserTest extends DuskTestCase
                 ->select('locale', 'nb')
                 ->press('Save')
                 ->assertSee('Mitt innhold');
+        });
+    }
+
+    public function testUserCanEnableDebugMode(): void
+    {
+        $content = Content::factory()->withPublishedVersion()->create();
+        $user = User::factory()->create();
+
+        $this->browse(function (Browser $browser) use ($content, $user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit("/content/{$content->id}")
+                ->assertMissing('aside summary')
+                ->visit('/preferences')
+                ->check('debug_mode')
+                ->press('Save')
+                ->visit("/content/{$content->id}")
+                ->assertSeeIn('aside summary', 'Debug');
         });
     }
 }

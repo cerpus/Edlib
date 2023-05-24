@@ -8,7 +8,7 @@
     <x-lti-launch :launch="$launch" />
 
     <x-slot:sidebar>
-        @env('local')
+        @if (auth()->user()?->debug_mode ?? false)
             @php($version = $content->latestVersion)
 
             <details>
@@ -41,6 +41,6 @@
                     </dd>
                 </dl>
             </details>
-        @endenv
+        @endif
     </x-slot:sidebar>
 </x-sidebar-layout>

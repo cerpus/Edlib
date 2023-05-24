@@ -36,4 +36,6 @@ return [
     'lti-platforms-description' => 'LTI-plattformer er forbrukerne av innhold. For å starte Edlib, må plattformen bruke et forhåndsdelt nøkkelpar som du oppretter her.',
     'lti-platform-created-success' => 'Opprettelsen av LTl-plattformen «:name» ble vellykket.',
     'lti-platform-secret-shown-only-once' => 'Denne hemmeligheten vises bare én gang.',
+    'debug-mode' => 'Feilsøkingsmodus',
+    'debug-mode-form-help' => 'Feilsøkingsmodus vil avsløre tekniske detaljer som kan være behjelpelige under feilsøking eller utvikling av innholdstyper.',
 ];
