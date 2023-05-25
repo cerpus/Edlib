@@ -104,8 +104,7 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
 
 Route::get('/oembed', OembedController::class)->name('oembed');
 
-Route::prefix('google')->name('google.')->group( function(){
+Route::prefix('google')->name('google.')->group(function () {
     Route::get('login', [GoogleController::class, 'loginWithGoogle'])->name('login');
     Route::any('callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
 });
-
