@@ -25,7 +25,6 @@ class User extends Model implements AuthenticatableContract
         'locale',
         'debug_mode',
         'email',
-        'password',
         'google_id'
     ];
 

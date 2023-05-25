@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -17,25 +16,15 @@ class GoogleController extends Controller
 
     public function callbackFromGoogle(): RedirectResponse
     {
-        try {
-            $user = Socialite::driver('google')->user();
-            $existingUser = User::where('email', $user->getEmail())->first();
+        $googleUser = Socialite::driver('google')->user();
 
-            if (!$existingUser) {
-                $newUser = User::create([
-                    'name' => $user->getName(),
-                    'email' => $user->getEmail(),
-                    'password' => Hash::make($user->getName() . '@' . $user->getId())
-                ]);
+        $user = User::updateOrCreate(
+            ['email' => $googleUser->getEmail()],
+            ['name' => $googleUser->getName()]
+        );
 
-                Auth::login($newUser);
-            } else {
-                Auth::login($existingUser);
-            }
+        Auth::login($user);
 
-            return redirect()->route('home');
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        return redirect()->route('home');
     }
 }
