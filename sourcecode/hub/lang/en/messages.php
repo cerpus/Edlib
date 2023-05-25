@@ -5,6 +5,7 @@ return [
     'password' => 'Password',
     'password-confirmation' => 'Confirm password',
     'log-in' => 'Log in',
+    'log-in-google' => 'Log in with Google',
     'log-out' => 'Log out',
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',
