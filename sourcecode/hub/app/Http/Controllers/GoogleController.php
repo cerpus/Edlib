@@ -3,27 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-    public function loginWithGoogle()
+    public function loginWithGoogle(): RedirectResponse
     {
         return Socialite::driver('google')->redirect();
     }
 
-    public function callbackFromGoogle()
+    public function callbackFromGoogle(): RedirectResponse
     {
         try {
             $user = Socialite::driver('google')->user();
-
-            // Check if user already exists
             $existingUser = User::where('email', $user->getEmail())->first();
 
             if (!$existingUser) {
-                // Create new user
                 $newUser = User::create([
                     'name' => $user->getName(),
                     'email' => $user->getEmail(),
