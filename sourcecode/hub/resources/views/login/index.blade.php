@@ -23,4 +23,7 @@
     <a href="{{ route('google.login') }}" class="btn btn-primary btn-user btn-block">
         {{ trans('messages.log-in-google') }}
     </a>
+    <a href="{{ route('facebook.login') }}" class="btn btn-primary btn-user btn-block">
+        {{ trans('messages.log-in-facebook') }}
+    </a>
 </x-layout>

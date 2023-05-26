@@ -20,7 +20,7 @@ class GoogleController extends Controller
 
         $user = User::updateOrCreate(
             ['email' => $googleUser->getEmail()],
-            ['name' => $googleUser->getName()]
+            ['name' => $googleUser->getName(), 'google_id' => $googleUser->getId()]
         );
 
         Auth::login($user);

@@ -6,6 +6,7 @@ return [
     'password-confirmation' => 'Confirm password',
     'log-in' => 'Log in',
     'log-in-google' => 'Log in with Google',
+    'log-in-facebook' => 'Log in with Facebook',
     'log-out' => 'Log out',
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',

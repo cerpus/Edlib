@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OembedController;
@@ -107,4 +108,9 @@ Route::get('/oembed', OembedController::class)->name('oembed');
 Route::prefix('google')->name('google.')->group(function () {
     Route::get('login', [GoogleController::class, 'loginWithGoogle'])->name('login');
     Route::any('callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
+});
+
+Route::prefix('facebook')->name('facebook.')->group(function () {
+    Route::get('login', [FacebookController::class, 'loginWithFacebook'])->name('login');
+    Route::any('callback', [FacebookController::class, 'callbackFromFacebook'])->name('callback');
 });
