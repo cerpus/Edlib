@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-
 const DefaultHookQuery = ({
     children,
     fetchData,
@@ -18,7 +17,7 @@ const DefaultHookQuery = ({
     }
 
     if (error) {
-        return <Alert color="danger">Something happened</Alert>;
+        return <Alert color="danger">{t('something_happened')}</Alert>;
     }
 
     return children(dataProps);

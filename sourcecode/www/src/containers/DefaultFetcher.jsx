@@ -9,7 +9,7 @@ const DefaultFetcher = ({ useFetchData, children }) => {
     return (
         <>
             {loading && !error && <CircularProgress />}
-            {error && <Alert>{t('something went wrong')}</Alert>}
+            {error && <Alert>{t('something_happened')}</Alert>}
             {response && children({ response })}
         </>
     );
