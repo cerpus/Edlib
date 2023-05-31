@@ -281,6 +281,21 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:has\\(\\) expects array\\<\\(int\\|string\\)\\>\\|int\\|string, null given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
+			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) expects \\(int\\|string\\), null given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
+
+		-
 			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminUserController.php
@@ -747,11 +762,6 @@ parameters:
 
 		-
 			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(H5peditorFile\\)\\: Unexpected token \"\\\\n     \\* \", expected variable at offset 185$#"
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
 
@@ -1712,6 +1722,11 @@ parameters:
 			path: tests/Integration/Libraries/H5P/H5PExportTest.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 13
+			path: tests/Integration/Libraries/H5P/H5PLibraryAdminTest.php
+
+		-
 			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php
@@ -1730,21 +1745,6 @@ parameters:
 			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/VideoTest.php
-
-		-
-			message: "#^Class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor invoked with 4 parameters, 2 required\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
-
-		-
-			message: "#^Parameter \\#1 \\$contentAuthorStorage of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects App\\\\Libraries\\\\ContentAuthorStorage, Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem given\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
-
-		-
-			message: "#^Parameter \\#2 \\$logger of class App\\\\Libraries\\\\H5P\\\\Storage\\\\H5PCerpusStorage constructor expects Psr\\\\Log\\\\LoggerInterface, string given\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Storage/H5pCerpusStorage.php
 
 		-
 			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"

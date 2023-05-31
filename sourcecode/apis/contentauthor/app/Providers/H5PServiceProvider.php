@@ -22,7 +22,7 @@ use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
-use App\Libraries\H5P\Video\StreampsAdapter;
+use App\Libraries\H5P\Video\NullVideoAdapter;
 use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
@@ -80,33 +80,26 @@ class H5PServiceProvider extends ServiceProvider
             ->give(fn () => Storage::disk('h5p-presave'));
 
         $this->app->bind(H5PVideoInterface::class, function () {
-            $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    $client = Oauth2Client::getClient(OauthSetup::create([
-                        'authUrl' => config('h5p.video.authUrl'),
-                        'coreUrl' => config('h5p.video.url'),
-                        'key' => config('h5p.video.key'),
-                        'secret' => config('h5p.video.secret'),
-                    ]));
+            $adapter = $this->app->make(H5PAdapterInterface::class)->getAdapterName();
 
-                    $adapter = new NDLAVideoAdapter($client, config('h5p.video.accountId'));
-                    break;
-                case "cerpus":
-                default:
-                    $client = new Client([
-                        'base_uri' => config('h5p.video.url'),
-                    ]);
-                    $appId = config('h5p.video.key');
-                    $appKey = config('h5p.video.secret');
-
-                    $adapter = new StreampsAdapter($client, $appId, $appKey);
-                    break;
-            }
-
-
-            return $adapter;
+            return match (strtolower($adapter)) {
+                'ndla' => $this->app->make(NDLAVideoAdapter::class),
+                default => $this->app->make(NullVideoAdapter::class),
+            };
         });
+
+        $this->app->when(NDLAVideoAdapter::class)
+            ->needs(Client::class)
+            ->give(fn () => Oauth2Client::getClient(OauthSetup::create([
+                'authUrl' => config('h5p.video.authUrl'),
+                'coreUrl' => config('h5p.video.url'),
+                'key' => config('h5p.video.key'),
+                'secret' => config('h5p.video.secret'),
+            ])));
+
+        $this->app->when(NDLAVideoAdapter::class)
+            ->needs('$accountId')
+            ->giveConfig('h5p.video.accountId');
 
         $this->app->bind(H5PImageAdapterInterface::class, function () {
             $adapter = app(H5PAdapterInterface::class);

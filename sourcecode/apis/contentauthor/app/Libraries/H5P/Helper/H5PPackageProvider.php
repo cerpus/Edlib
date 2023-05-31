@@ -21,7 +21,6 @@ use App\Libraries\H5P\Packages\CoursePresentation;
 class H5PPackageProvider
 {
     /**
-     * @param $machineName
      * @param string $structure
      * @return PackageInterface
      * @throws UnknownH5PPackageException

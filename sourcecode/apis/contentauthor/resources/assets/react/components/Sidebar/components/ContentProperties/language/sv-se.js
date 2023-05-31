@@ -1,7 +1,0 @@
-export default {
-    'CONTENTPROPERTIES.VERSION': 'Version',
-    'CONTENTPROPERTIES.ID': 'Id',
-    'CONTENTPROPERTIES.CREATEDAT': 'Created at',
-    'CONTENTPROPERTIES.TYPE': 'Type',
-    'CONTENTPROPERTIES.MAXSCORE': 'Max score',
-};

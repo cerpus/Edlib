@@ -4,7 +4,7 @@ $material-icons-font-path: '~material-icons/iconfont/';
 @import "image-editor";
 
 body {
-  font-family: Lato;
+  font-family: Lato, sans-serif;
 }
 
 .required:after {
@@ -248,6 +248,7 @@ select[name="h5peditor-library"] {
     padding-right: 0;
 
     & > div {
+      scrollbar-gutter: stable both-edges;
       @include respond-to('desktop') {
         overflow-y: auto;
         max-height: calc(100vh - 7rem);
@@ -285,7 +286,7 @@ select[name="h5peditor-library"] {
 
   .expandableList .expandableBox,
   .publish-box {
-    padding: 0.8rem 0.3125rem 0.8rem 1rem;
+    padding: 0.8rem 0.3125rem 0rem 1.6rem;
 
     & .toggler {
       div {

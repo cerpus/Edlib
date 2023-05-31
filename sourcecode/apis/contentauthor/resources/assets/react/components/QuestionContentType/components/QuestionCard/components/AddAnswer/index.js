@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import AddCircle from '@material-ui/icons/AddCircle';
+import { useIntl} from 'react-intl';
 
 const AddAnswer = props => {
     const {
@@ -10,35 +11,16 @@ const AddAnswer = props => {
         label,
     } = props;
 
-    const styles = {
-        divider: {
-            width: '100%',
-            flexShrink: 'unset',
-        },
-        button: {
-            flexGrow: 2,
-            marginRight: 5,
-        },
-        dividerContainer: {
-            width: '100%',
-            border: '1px solid #000',
-            borderStyle: 'dotted',
-            borderRadius: '5px',
-            textAlign: 'center',
-        },
-    };
+    const { formatMessage }  = useIntl();
 
     return (
         <div className="addAnswerContainer">
-            <div style={styles.dividerContainer}>
-                <Button
-                    onClick={onClick}
-                    style={styles.button}
-                    aria-label={label}
-                >
-                    {icon}
-                </Button>
-            </div>
+            <Button
+                aria-label={formatMessage({ id: 'ANSWER.LABEL_ADD_ANSWER' })}
+                onClick={onClick}
+            >
+                {icon}
+            </Button>
         </div>
     );
 };

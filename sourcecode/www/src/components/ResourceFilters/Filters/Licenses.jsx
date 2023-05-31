@@ -20,6 +20,10 @@ const useStyles = makeStyles()((theme) => ({
     listItemIcon: {
         minWidth: 30,
     },
+    listItemText: {
+        fontSize: '1rem !important',
+        fontWeight: '400',
+    },
 }));
 
 const Licenses = ({ licenses, filterCount, licenseData }) => {
@@ -73,6 +77,9 @@ const Licenses = ({ licenses, filterCount, licenseData }) => {
                         </ListItemIcon>
                         <ListItemText
                             primary={`${license.title} (${license.filteredCount})`}
+                            classes={{
+                                root: classes.listItemText,
+                            }}
                         />
                     </ListItemButton>
                 ))}

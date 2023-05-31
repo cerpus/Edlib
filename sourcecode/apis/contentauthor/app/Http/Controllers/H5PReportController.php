@@ -70,9 +70,7 @@ class H5PReportController extends Controller
         }
     }
 
-    /**
-     * @param $elements
-     */
+
     private function updateOrCreateAnswerType($elements, array $answer): array
     {
         if ($elements["type"] ?? null) {

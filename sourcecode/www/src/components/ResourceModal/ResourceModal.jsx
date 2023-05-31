@@ -54,17 +54,31 @@ const useStyles = makeStyles()((theme) => ({
     footer: {
         marginTop: 30,
         display: 'flex',
+        fontSize: '1rem',
+        fontWeight: '400 !important',
+    },
+    createdAt: {
+        fontSize: '0.875rem',
+        fontWeight: '400 !important',
     },
     meta: {
         marginRight: 20,
         '& > div:first-child': {
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
+            fontWeight: '400',
+            textTransform: 'none',
             marginBottom: 15,
         },
     },
     alertBox: {
         marginRight: theme.spacing(1),
+    },
+    title: {
+        fontSize: '1.125rem',
+        fontWeight: '400 !important',
+    },
+    titleURL: {
+        fontSize: '0.875rem',
+        fontWeight: '400 !important',
     },
 }));
 
@@ -133,13 +147,13 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                             justifyContent="center"
                             marginLeft={1}
                         >
-                            <Typography variant="h6">
+                            <Typography variant="h6" className={classes.title}>
                                 {resource.version.title}
                             </Typography>
                         </Box>
                         {resource.version.isPublished &&
                             <Box display="flex" marginLeft={1}>
-                                <Typography>
+                                <Typography className={classes.titleURL}>
                                     <a
                                         href={www(`/s/resources/${resource.id}`)}
                                         target="_blank"
@@ -196,19 +210,13 @@ const ResourceModal = ({ isOpen, onClose, resource }) => {
                                         <div>{frame}</div>
                                         <div className={classes.footer}>
                                             <div className={classes.meta}>
-                                                <div>
-                                                    {_.capitalize(
-                                                        t('created')
-                                                    )}
-                                                </div>
-                                                <div>
+                                                <div>{t('created')}</div>
+                                                <div className={classes.createdAt}>
                                                     {moment(resource.version.createdAt).format('LL')}
                                                 </div>
                                             </div>
                                             <div className={classes.meta}>
-                                                <div>
-                                                    {_.capitalize(t('license'))}
-                                                </div>
+                                                <div>{t('license')}</div>
                                                 <div>
                                                     <License
                                                         license={

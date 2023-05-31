@@ -255,7 +255,6 @@ class H5PContent extends Content implements VersionableObject
 
     /**
      * @param  Builder  $query
-     * @param $type
      */
     public function scopeOfBulkCalculated($query, $type)
     {

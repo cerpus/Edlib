@@ -33,6 +33,9 @@ const PublishedTag = ({ isPublished, isDraft }) => {
                         : isPublished
                         ? '#A8E994'
                         : null,
+                    fontSize: '0.875rem !important',
+                    fontWeight: '400',
+                    fontFamily: "'Lato', sans-serif",
                 }}
             />
         </div>

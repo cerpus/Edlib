@@ -15,6 +15,17 @@
         {!! HTML::style($css) !!}
     @endforeach
     {!! HTML::script('https://code.jquery.com/jquery-1.11.3.min.js') !!}
+    <script type="text/x-mathjax-config">
+        // When MathJax is done, check if a resize of the container is required
+        MathJax.Hub.Register.StartupHook("End", function () {
+            if (window.parent && document.documentElement.scrollHeight > document.documentElement.clientHeight) {
+                window.parent.postMessage({
+                  context: 'h5p',
+                  action: 'hello'
+                }, '*');
+            }
+        });
+    </script>
 </head>
 <body>
     @if($preview && $inDraftState ?? false)
@@ -22,8 +33,8 @@
             element.classList.add('hide');
         })(this)">
             {{trans('common.resource-in-draft-state')}}
-            <div class="draft-resource-close" >
-                {{trans('common.close')}}
+            <div class="draft-resource-close" aria-label="close">
+                &times;
             </div>
         </div>
     @endif

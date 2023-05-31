@@ -7,6 +7,7 @@ use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
+use H5peditorFile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Request;
 
@@ -161,8 +162,7 @@ class EditorStorage implements \H5peditorStorage
      * Marks a file for later cleanup, useful when files are not instantly cleaned
      * up. E.g. for files that are uploaded through the editor.
      *
-     * @param H5peditorFile
-     * @param $content_id
+     * @param H5peditorFile $file
      */
     public static function markFileForCleanup($file, $content_id = null)
     {

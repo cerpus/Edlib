@@ -67,7 +67,6 @@ class MultiChoice extends H5PBase
     }
 
     /**
-     * @param $sourceFile
      * @return bool
      * @throws \App\Exceptions\UnknownH5PPackageException
      * @throws \Exception
