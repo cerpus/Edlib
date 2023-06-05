@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,25 +14,18 @@ use League\Flysystem\StorageAttributes;
  */
 class ContentAuthorStorage
 {
-    private string $assetsBaseUrl;
-
-    public function __construct(string $cdnPrefix)
+    public function __construct(private readonly Cloud $fs)
     {
-        $this->assetsBaseUrl = !empty($cdnPrefix) ? $cdnPrefix : route('content.asset', null, true);
     }
 
-    public function getAssetUrl(string $path, bool $private = false): string
+    public function getAssetUrl(string $path): string
     {
-        if ($private) {
-            return route('content.asset', ['path' => $path], true);
-        }
-
-        return rtrim($this->assetsBaseUrl, '/') . '/' . ltrim($path, '/');
+        return $this->fs->url($path);
     }
 
     public function getAssetsBaseUrl(): string
     {
-        return $this->assetsBaseUrl;
+        return rtrim($this->fs->url(''), '/');
     }
 
     public function getH5pTmpDiskName(): string

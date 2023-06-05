@@ -157,7 +157,7 @@ services:
       test: [CMD, curl, -f, http://localhost]
     volumes:
       - ./sourcecode/apis/contentauthor/docker/contentAuthor.conf.template:/etc/nginx/templates/contentAuthor.conf.template:ro
-      - ./sourcecode/apis/contentauthor/public:/app/public
+      - ./sourcecode/apis/contentauthor/public:/app/public:ro
       - ./sourcecode/apis/contentauthor/storage/app:/app/public/h5pstorage
       - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-editor:/app/public/h5p-editor-php-library:ro
       - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-core:/app/public/h5p-php-library:ro

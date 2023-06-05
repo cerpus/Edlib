@@ -10,8 +10,6 @@ interface CerpusStorageInterface
 
     public function getEditorDisplayPath();
 
-    public function getLibrariesPath();
-
     public function getContentPath($id, $file);
 
     public function getAjaxPath();

@@ -124,7 +124,7 @@ class Gametype extends Model implements GameTypeModelContract
     public function getPublicFolder()
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
-        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder()), true) . '/';
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder()));
     }
 
     public function getMachineFolder()

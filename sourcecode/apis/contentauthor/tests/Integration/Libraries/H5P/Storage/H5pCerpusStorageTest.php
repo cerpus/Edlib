@@ -23,7 +23,7 @@ class H5pCerpusStorageTest extends TestCase
         $disk->put('test.txt', 'some content');
 
         $cerpusStorage = new H5pCerpusStorage(
-            new ContentAuthorStorage(''),
+            new ContentAuthorStorage($disk),
             new NullLogger(),
             new NullVideoAdapter(),
         );
@@ -38,7 +38,7 @@ class H5pCerpusStorageTest extends TestCase
         $disk->put('test.txt', 'some content');
 
         $cerpusStorage = new H5pCerpusStorage(
-            new ContentAuthorStorage(''),
+            new ContentAuthorStorage($disk),
             new NullLogger(),
             new NullVideoAdapter(),
         );
@@ -51,7 +51,7 @@ class H5pCerpusStorageTest extends TestCase
         $disk = Storage::fake('fake');
 
         $cerpusStorage = new H5pCerpusStorage(
-            new ContentAuthorStorage(''),
+            new ContentAuthorStorage($disk),
             new NullLogger(),
             new NullVideoAdapter(),
         );
