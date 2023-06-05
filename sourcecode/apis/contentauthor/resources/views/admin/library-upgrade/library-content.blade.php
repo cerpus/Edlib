@@ -10,82 +10,54 @@
                             Contents of type "<strong>{{ $library->name }}</strong>" version
                             <strong>{{ $library->major_version . '.' . $library->minor_version . '.' . $library->patch_version}}</strong>
                         </h3>
-                        <a href="{{ route('admin.content-library', [$library->id, 'listAll' => !$listAll]) }}">
-                            {{ $listAll ? 'Also display content that is not latest version' : 'Display only content that is latest version' }}
-                        </a>
                     </div>
                     <div class="panel-body">
+                            <label>
+                                <a href="{{ route('admin.content-library', [$library->id, 'listAll' => !$listAll, 'page' => $paginator->currentPage()]) }}">
+                                    <input type="checkbox" {{$listAll ? '' : 'checked="checked"'}}>
+                                    Only list latest version content
+                                </a>
+                            </label>
                         <div class="panel-body row">
+                            {{ $paginator->onEachSide(5)->links() }}
+                            Content {{ $paginator->firstItem() }} - {{$paginator->lastItem()}} of {{$paginator->total()}}
+                            @if($listAll)
+                                ( {{ $latestCount }} latest version )
+                            @else
+                                ( {{ $latestCount }} displayed, {{ $paginator->count() - $latestCount }} hidden )
+                            @endif
                             <table class="table table-striped">
                                 <tr>
                                     <th>Id</th>
                                     <th>Title</th>
                                     <th>Created</th>
-                                    <th>Updated</th>
+                                    <th>Updated &#8595;</th>
                                     <th>Language</th>
                                     <th>License</th>
                                     <th>Published</th>
                                     <th>Listed</th>
                                     <th>Has lock</th>
+                                    <th>Latest</th>
                                 </tr>
-                                @foreach($contents as $content)
-                                    <tr>
-                                        <td><a href="{{ route('admin.content-details', [$content->id]) }}">{{ $content->id }}</a></td>
-                                        <td>{{ $content->title }}</td>
-                                        <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
-                                        <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
-                                        <td>{{ $content->language_iso_639_3 }}</td>
-                                        <td>{{ $content->license }}</td>
-                                        <td>{{ $content->isPublished() ? 1 : 0 }}</td>
-                                        <td>{{ $content->isListed() ? 1 : 0 }}</td>
-                                        <td>{{ $content->hasLock() ? 1 : 0 }}</td>
-                                    </tr>
+                                @foreach($paginator->getCollection() as $content)
+                                    @if($listAll || $content['isLatest'] === true)
+                                        <tr>
+                                            <td><a href="{{ route('admin.content-details', [$content['item']->id]) }}">{{ $content['item']->id }}</a></td>
+                                            <td>{{ $content['item']->title }}</td>
+                                            <td>{{ $content['item']->created_at->format('Y-m-d H:i:s e') }}</td>
+                                            <td>{{ $content['item']->updated_at->format('Y-m-d H:i:s e') }}</td>
+                                            <td>{{ $content['item']->language_iso_639_3 }}</td>
+                                            <td>{{ $content['item']->license }}</td>
+                                            <td>{{ $content['item']->isPublished() ? 1 : 0 }}</td>
+                                            <td>{{ $content['item']->isListed() ? 1 : 0 }}</td>
+                                            <td>{{ $content['item']->hasLock() ? 1 : 0 }}</td>
+                                            <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </table>
+                            {{ $paginator->onEachSide(5)->links() }}
                         </div>
-
-                        @if (count($failed) > 0)
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4>Content that failed when getting the Folium id</h4>
-                                </div>
-                                @foreach($failed as $idx => $group)
-                                    <div class="panel-body row">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h5>Error message: {{ $idx }}</h5>
-                                            </div>
-                                            <table class="table table-striped">
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>Title</th>
-                                                    <th>Created</th>
-                                                    <th>Updated</th>
-                                                    <th>Language</th>
-                                                    <th>License</th>
-                                                    <th>Published</th>
-                                                    <th>Listed</th>
-                                                    <th>Has&nbsp;lock</th>
-                                                </tr>
-                                                @foreach($group as $content)
-                                                    <tr>
-                                                        <td>{{ $content->id }}</td>
-                                                        <td>{{ $content->title }}</td>
-                                                        <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
-                                                        <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
-                                                        <td>{{ $content->language_iso_639_3 }}</td>
-                                                        <td>{{ $content->license }}</td>
-                                                        <td>{{ $content->isPublished() ? 1 : 0 }}</td>
-                                                        <td>{{ $content->isListed() ? 1 : 0 }}</td>
-                                                        <td>{{ $content->hasLock() ? 1 : 0 }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </table>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
