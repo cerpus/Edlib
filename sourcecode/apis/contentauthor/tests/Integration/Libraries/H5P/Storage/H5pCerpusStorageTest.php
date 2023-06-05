@@ -9,6 +9,7 @@ use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Support\Facades\Storage;
 use Psr\Log\NullLogger;
 use Tests\TestCase;
+
 use function assert;
 
 class H5pCerpusStorageTest extends TestCase
