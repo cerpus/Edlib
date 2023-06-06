@@ -114,3 +114,9 @@ Route::prefix('facebook')->name('facebook.')->group(function () {
     Route::get('login', [FacebookController::class, 'loginWithFacebook'])->name('login');
     Route::any('callback', [FacebookController::class, 'callbackFromFacebook'])->name('callback');
 });
+
+Route::get('/my-account', [UserController::class, 'myAccount'])->name('user.my-account');
+
+Route::get('/change-username', [UserController::class, 'changeUsername'])->name('change-username');
+Route::post('/change-username', [UserController::class, 'saveUsername'])->name('user.update-username');
+

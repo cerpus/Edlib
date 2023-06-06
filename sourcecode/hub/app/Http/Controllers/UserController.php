@@ -55,4 +55,23 @@ class UserController extends Controller
 
         return to_route('user.preferences');
     }
+
+    public function myAccount(): View|RedirectResponse
+    {
+        return view('user.my-account');
+    }
+
+    public function changeUsername(): View|RedirectResponse
+    {
+        return view('user.my-account');
+    }
+
+    public function saveUsername(StoreUserRequest $request): RedirectResponse
+    {
+        $username = $request->validated()['name'];
+        $user = Auth::user();
+        $user->setAttribute('name', $username);
+        $user->save();
+        return redirect()->route('user.my-account')->with('success', 'Username updated successfully');
+    }
 }
