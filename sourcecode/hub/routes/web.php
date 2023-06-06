@@ -119,4 +119,3 @@ Route::get('/my-account', [UserController::class, 'myAccount'])->name('user.my-a
 
 Route::get('/change-username', [UserController::class, 'changeUsername'])->name('change-username');
 Route::post('/change-username', [UserController::class, 'saveUsername'])->name('user.update-username');
-
