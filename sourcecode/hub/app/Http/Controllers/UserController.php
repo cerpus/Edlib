@@ -68,10 +68,13 @@ class UserController extends Controller
 
     public function saveUsername(StoreUserRequest $request): RedirectResponse
     {
-        $username = $request->validated()['name'];
+        $validatedData = $request->validated();
+
+        /** @var User $user */
         $user = Auth::user();
-        $user->setAttribute('name', $username);
-        $user->save();
-        return redirect()->route('user.my-account')->with('success', 'Username updated successfully');
+
+        $user->update(['name' => $validatedData['name']]);
+
+        return redirect()->route('user.my-account')->with('success', 'Name updated successfully');
     }
 }
