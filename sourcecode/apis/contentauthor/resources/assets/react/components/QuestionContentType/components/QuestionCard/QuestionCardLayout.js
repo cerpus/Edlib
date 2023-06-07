@@ -4,7 +4,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import AnswerListComponent from './components/AnswerList';
 import { Question } from './components/Question';
@@ -24,6 +24,7 @@ function QuestionCardLayout(props) {
         showAddAnswerButton = true,
     } = props;
 
+    const { formatMessage }  = useIntl();
     let layout = (
         <Fragment>
             <div className="questionCard">
@@ -41,10 +42,13 @@ function QuestionCardLayout(props) {
                     showAddAnswer={showAddAnswerButton}
                 />
                 {typeof deleteCard === 'function' && (
-                    <AddIcon
+                    <button
                         className="deleteButton"
                         onClick={deleteCard}
-                    />
+                        aria-label={formatMessage({id:'QUESTIONCARD.DELETE_BUTTON_LABEL'})}
+                    >
+                        <AddIcon />
+                    </button>
                 )}
             </div>
             {addToSet &&

@@ -6,6 +6,7 @@ use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use BadMethodCallException;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -39,7 +40,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
 
     public function upload($file, $fileHash)
     {
-        // TODO: Implement upload() method.
+        throw new BadMethodCallException('not implemented');
     }
 
     public function getVideoDetails($videoId)

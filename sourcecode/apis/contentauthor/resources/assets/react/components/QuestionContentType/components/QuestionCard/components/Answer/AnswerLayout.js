@@ -2,15 +2,15 @@ import './Answer.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
-import { FormattedMessage } from 'react-intl';
+import {FormattedMessage, useIntl} from 'react-intl';
 
 import Toggle from '../Toggle';
 import { ImageContainer } from '../Image';
 import RichEditor from '../../../../../RichEditor';
 import HtmlContainer from '../../../../../HtmlContainer/HtmlContainer';
 import { useEditorSetupContext } from '../../../../../../contexts/EditorSetupContext';
+import AddIcon from '@material-ui/icons/Add';
 
 const AnswerLayout = props => {
     const {
@@ -33,6 +33,7 @@ const AnswerLayout = props => {
     } = props;
     const { editorLanguage } = useEditorSetupContext();
     let inputType;
+    const { formatMessage }  = useIntl();
 
     if ( onAnswerChange ) {
         if ( richText ) {
@@ -76,10 +77,13 @@ const AnswerLayout = props => {
             )}
 
             {canDelete === true && typeof deleteAnswer === 'function' && (
-                <Icon
-                    className="deleteButton"
-                    onClick={deleteAnswer}
-                >add</Icon>
+                 <button
+                 className="deleteButton"
+                 onClick={deleteAnswer}
+                 aria-label={formatMessage({ id: 'QUESTIONCARD.DELETE_BUTTON_LABEL' })}
+             >
+                 <AddIcon />
+             </button>
             )}
             <div className="answerContainer">
                 {inputType}
