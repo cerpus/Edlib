@@ -43,4 +43,6 @@ return [
     'debug-mode' => 'Debug mode',
     'debug-mode-form-help' => 'Enabling debug mode will reveal technical information that might be helpful when troubleshooting or developing content types.',
     'change-profile-name' => 'Change profile name',
+    'alert-profile-name-update' => 'Profile name updated successfully',
+
 ];

@@ -56,12 +56,7 @@ class UserController extends Controller
         return to_route('user.preferences');
     }
 
-    public function myAccount(): View|RedirectResponse
-    {
-        return view('user.my-account');
-    }
-
-    public function changeUsername(): View|RedirectResponse
+    public function myAccount(): View
     {
         return view('user.my-account');
     }
@@ -75,6 +70,6 @@ class UserController extends Controller
 
         $user->update(['name' => $validatedData['name']]);
 
-        return redirect()->route('user.my-account')->with('success', 'Name updated successfully');
+        return redirect()->route('user.myAccount')->with('alert', trans('messages.alert-profile-name-update'));
     }
 }

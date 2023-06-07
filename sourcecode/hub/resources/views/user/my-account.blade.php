@@ -1,16 +1,9 @@
 <x-layout>
-    <x-slot name="title">{{ trans('messages.my-account') }}</x-slot>
+    <x-slot:title>{{ trans('messages.my-account') }}</x-slot:title>
 
     <h6>{{ trans('messages.change-profile-name') }}</h6>
-    @if(session('success'))
-        <div class="alert alert-success" role="alert" id="success-alert">
-            {{ session('success') }}
-        </div>
-    @endif
 
-    <x-form action="{{ route('user.update-username') }}" method="POST">
-        @csrf
-
+    <x-form action="{{ route('user.saveUsername') }}">
         <x-form.field
             name="name"
             type="text"

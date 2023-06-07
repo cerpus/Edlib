@@ -84,7 +84,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a
-                                            href="{{ route('user.my-account') }}"
+                                            href="{{ route('user.myAccount') }}"
                                             class="dropdown-item"
                                         >
                                             <x-icon name="person-fill-gear" class="me-2" />
