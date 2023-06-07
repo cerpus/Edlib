@@ -84,6 +84,15 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a
+                                            href="{{ route('user.my-account') }}"
+                                            class="dropdown-item"
+                                        >
+                                            <x-icon name="person-fill-gear" class="me-2" />
+                                            {{ trans('messages.my-account') }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
                                             href="{{ route('user.preferences') }}"
                                             class="dropdown-item"
                                         >

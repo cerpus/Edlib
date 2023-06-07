@@ -8,6 +8,7 @@ return [
     'log-in-google' => 'Log in with Google',
     'log-in-facebook' => 'Log in with Facebook',
     'log-out' => 'Log out',
+    'my-account' => 'My Account',
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',
     'manage-lti-tools' => 'Manage LTI tools',
@@ -41,4 +42,7 @@ return [
     'lti-platform-secret-shown-only-once' => 'This secret will be shown only once.',
     'debug-mode' => 'Debug mode',
     'debug-mode-form-help' => 'Enabling debug mode will reveal technical information that might be helpful when troubleshooting or developing content types.',
+    'change-profile-name' => 'Change profile name',
+    'alert-profile-name-update' => 'Profile name updated successfully',
+
 ];

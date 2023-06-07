@@ -19,6 +19,7 @@
                 type="{{ $type ?? 'text' }}"
                 :aria-describedby="$errors->has($name) ? 'errors-'.$name : null"
                 :required="$required ?? false"
+                :value="$value ?? ''"
             />
             @break
     @endswitch

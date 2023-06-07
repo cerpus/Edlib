@@ -82,6 +82,9 @@ Route::controller(UserController::class)->group(function () {
     Route::middleware('auth:web')->group(function () {
         Route::get('/preferences', 'preferences')->name('user.preferences');
         Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
+
+        Route::get('/my-account', 'myAccount')->name('user.my-account');
+        Route::post('/save-name', 'saveName')->name('user.save-name');
     });
 });
 

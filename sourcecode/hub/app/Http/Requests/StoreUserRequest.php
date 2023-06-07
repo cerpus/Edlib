@@ -18,8 +18,8 @@ final class StoreUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', Rule::unique(User::class, 'email')],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'email' => ['sometimes', 'required', 'email', Rule::unique(User::class, 'email')],
+            'password' => ['sometimes', 'required', 'confirmed', Password::min(8)],
         ];
     }
 }

@@ -55,4 +55,22 @@ class UserController extends Controller
 
         return to_route('user.preferences');
     }
+
+    public function myAccount(): View
+    {
+        $user = Auth::user();
+        return view('user.my-account', ['user' => $user]);
+    }
+
+    public function saveName(StoreUserRequest $request): RedirectResponse
+    {
+        $validatedData = $request->validated();
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->update(['name' => $validatedData['name']]);
+
+        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-profile-name-update'));
+    }
 }
