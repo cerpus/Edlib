@@ -58,10 +58,11 @@ class UserController extends Controller
 
     public function myAccount(): View
     {
-        return view('user.my-account');
+        $user = Auth::user();
+        return view('user.my-account', ['user' => $user]);
     }
 
-    public function saveUsername(StoreUserRequest $request): RedirectResponse
+    public function saveName(StoreUserRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -70,6 +71,6 @@ class UserController extends Controller
 
         $user->update(['name' => $validatedData['name']]);
 
-        return redirect()->route('user.myAccount')->with('alert', trans('messages.alert-profile-name-update'));
+        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-profile-name-update'));
     }
 }

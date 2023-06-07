@@ -83,8 +83,8 @@ Route::controller(UserController::class)->group(function () {
         Route::get('/preferences', 'preferences')->name('user.preferences');
         Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
 
-        Route::get('/myAccount', 'myAccount')->name('user.myAccount');
-        Route::post('/saveUsername', 'saveUsername')->name('user.saveUsername');
+        Route::get('/my-account', 'myAccount')->name('user.my-account');
+        Route::post('/save-name', 'saveName')->name('user.save-name');
     });
 });
 

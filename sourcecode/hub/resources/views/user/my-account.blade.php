@@ -3,11 +3,12 @@
 
     <h6>{{ trans('messages.change-profile-name') }}</h6>
 
-    <x-form action="{{ route('user.saveUsername') }}">
+    <x-form action="{{ route('user.save-name') }}">
         <x-form.field
             name="name"
             type="text"
             :label="trans('messages.name')"
+            :value="old('name', $user->name)"
             required
         />
 
