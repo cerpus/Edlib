@@ -20,6 +20,7 @@
                 :aria-describedby="$errors->has($name) ? 'errors-'.$name : null"
                 :required="$required ?? false"
                 :value="$value ?? ''"
+                :autocomplete="$autocomplete ?? null"
             />
             @break
     @endswitch

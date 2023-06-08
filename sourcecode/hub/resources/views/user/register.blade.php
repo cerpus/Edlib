@@ -21,6 +21,7 @@
             name="password"
             type="password"
             :label="trans('messages.password')"
+            autocomplete="new-password"
             required
         />
 
@@ -28,6 +29,7 @@
             name="password_confirmation"
             type="password"
             :label="trans('messages.password-confirmation')"
+            autocomplete="new-password"
             required
         />
 
