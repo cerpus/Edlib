@@ -5,6 +5,7 @@ volumes:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
   elasticsearch:
+  mailpit_data:
   maven_cache:
   meilisearch_data:
   mysql:
@@ -383,6 +384,15 @@ services:
     volumes:
       - ./sourcecode/hub:/srv/www/hub
     working_dir: /srv/www/hub
+
+  mailpit:
+    image: axllent/mailpit
+    environment:
+      MP_DATA_FILE: /data/mailpit.db
+    healthcheck:
+      test: [CMD, sh, -c, 'wget --no-verbose --tries=1 --spider http://localhost:8025/livez || exit 1']
+    volumes:
+      - mailpit_data:/data
 
   meilisearch:
     image: getmeili/meilisearch:v1.0

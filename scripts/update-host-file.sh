@@ -19,6 +19,8 @@ $ip\tapi.edlib.local
 $ip\tdocs.edlib.local
 $ip\twww.edlib.local
 $ip\tnpm.components.edlib.local
+$ip\thub.edlib.local
+$ip\tmailpit.edlib.local
 EOM
 
 replaceStringWithoutNewline=${hosts//$'\n'/\\n}
