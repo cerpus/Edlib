@@ -78,6 +78,8 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         Route::get('maxscore', [AdminController::class, 'viewMaxScoreOverview'])->name('admin.maxscore.list');
         Route::post('maxscore', [AdminController::class, 'updateMaxScore'])->name('admin.maxscore.update');
         Route::get('maxscore/failed', [AdminController::class, 'viewFailedCalculations'])->name('admin.maxscore.failed');
+        Route::get('/maxscore/pre-save-script', [AdminController::class, 'getPresaveScript'])
+            ->name('admin.maxscore.get-presave-script');
 
         Route::get('article/maxscore', [AdminArticleController::class, 'index'])->name('admin.article.maxscore.list');
         Route::post('article/maxscore', [AdminArticleController::class, 'updateMaxScore'])->name('admin.article.maxscore.update');

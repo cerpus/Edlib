@@ -35,6 +35,8 @@ use Iso639p3;
  * @property string $content_create_mode
  * @property string $language_iso_639_3
  * @property string|null $title_clean
+ * @property ?int $max_score
+ * @property int $bulk_calculated
  *
  * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library

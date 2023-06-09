@@ -6,12 +6,12 @@ var info, $container;
 $(document).ready(function () {
 
     // Get and reset container
-    $container = $('#h5p-admin-container').html('<p></p>');
+    $container = $('#h5p-admin-container').html('');
 
     info = CalculateScoreConfig;
 
     $(".list-group-item")
-        .on('redraw', function(){
+        .on('redraw', function () {
             const total = parseInt($(this).find('.badge').text());
             const progress = $(this).find('.progress');
             const processed = progress.find('.progress-bar-success');
@@ -24,7 +24,7 @@ $(document).ready(function () {
             processed.text(data.success);
             inprogress.text(data.inprogress);
             failed.text(data.failed);
-            if( (data.success + data.inprogress + data.failed) === total){
+            if ((data.success + data.inprogress + data.failed) === total) {
                 $(this).trigger('done');
             }
         })
@@ -56,12 +56,17 @@ $(document).ready(function () {
             const self = $(this);
             self.addClass('disabled');
             self.find(':checked').attr('disabled', true);
+        })
+        .on('error', function (event, data) {
+            const logView = $(this).find('.errorlog');
+            logView.append('<div>Content ' + data.id + ' failed: ' + data.error.message + '</div>');
+            logView.removeClass('hidden');
         });
 
     const events = {
         'start': function (params) {
             params.forEach(function (value) {
-                $('#library_' + value.replace('.', '')).trigger('start');
+                $('#library_' + value).trigger('start');
             });
         },
         'nextbatch': function (params) {
@@ -70,36 +75,43 @@ $(document).ready(function () {
                     return params[key];
                 })
                 .reduce(function (o, n) {
-                    if (n.library in o) {
-                        o[n.library]++;
+                    if (n.libraryId in o) {
+                        o[n.libraryId]++;
                     } else {
-                        o[n.library] = 1;
+                        o[n.libraryId] = 1;
                     }
                     return o;
                 }, []);
             Object.keys(t).forEach(function (index) {
-                $('#library_' + index.replace('.', '')).trigger('progress', {
+                $('#library_' + index).trigger('progress', {
                     num: t[index],
                 });
             })
         },
         'upgraded': function (params) {
-            $('#library_' + params.params.library.replace('.', '')).trigger("failed" in params.params ? "failed" : "upgraded");
+            $('#library_' + params.params.libraryId).trigger(params.params.success ? "upgraded" : "failed");
         },
         'terminate': function () {
             const hasErrors = $('.list-group-item .progress').filter(function () {
                 return $(this).data('failed') > 0;
             }).length > 0;
-            if( hasErrors) {
+            if (hasErrors) {
                 $("#failedCalculations").removeClass('disabled');
             }
-        }
+        },
+        'error': function (params) {
+            $('#library_' + params.libraryId).trigger('error', params);
+        },
+        'status': function (data) {
+            $container.append(`<div>${data.message}</div`);
+        },
     };
 
     // Add "go" button
     $('#runCalculations')
         .removeClass('disabled')
         .click(function () {
+            $container.html('<div>Calculation started</div>')
             const libraries = $('.maxScoreCheckbox:checked')
                 .map(function () {
                     return this.value;
@@ -112,8 +124,9 @@ $(document).ready(function () {
 /**
  * Start a new content upgrade.
  *
- * @param {Number} libraryId
- * @returns {_L1.ContentUpgrade}
+ * @param {array} libraries
+ * @param {object} events
+ * @returns void
  */
 function MaxScoreBulkTool(libraries, events) {
     var self = this;
@@ -166,7 +179,7 @@ MaxScoreBulkTool.prototype.nextBatch = function (outData) {
             self.terminate();
 
             // Nothing left to process
-            return self.setStatus(info.done);
+            return self.setStatus('Calculation done');
         }
 
         self.left = inData.left;
@@ -187,7 +200,6 @@ MaxScoreBulkTool.prototype.setStatus = function (msg) {
     this.trigger('status', {
         message: msg
     });
-    $container.html(msg);
 };
 
 /**
@@ -204,14 +216,6 @@ MaxScoreBulkTool.prototype.processBatch = function (parameters) {
     // Track current batch
     self.parameters = parameters;
 
-    // Create id mapping
-    self.ids = [];
-    for (var id in parameters) {
-        if (parameters.hasOwnProperty(id)) {
-            self.ids.push(id);
-        }
-    }
-
     // Keep track of current content
     self.current = -1;
     self.assignWork();
@@ -223,52 +227,95 @@ MaxScoreBulkTool.prototype.processBatch = function (parameters) {
 MaxScoreBulkTool.prototype.assignWork = function () {
     var self = this;
 
-    var id = self.ids[self.current + 1];
-    if (id === undefined) {
+    var data = self.parameters[self.current + 1];
+
+    if (data === undefined) {
         return false; // Out of work
     }
     self.current++;
     self.working++;
 
-    self.trigger('assign', {
-        id: id
-    });
+    const { id, library, libraryId, libraryName } = data;
 
-    const {library, params} = self.parameters[id];
+    // There is no version info for the libraries loaded, so we clear 'H5PPresave' to prevent using incorrect
+    // versions of scripts needed for this calculation. Even if the current library is the same as previous,
+    // scripts for other libraries could have been loaded.
+    H5PPresave = {};
+
+    self.fetchScript(library)
+        .then(() => {
+            self.process(data);
+        })
+        .catch(e => {
+            self.failed(id, libraryId, e);
+        });
+};
+
+MaxScoreBulkTool.prototype.fetchScript = async function (library) {
+    if (H5PPresaveCache.hasOwnProperty(library)) {
+        if (H5PPresaveCache[library] !== false) {
+            window?.eval(H5PPresaveCache[library]);
+        } else {
+            throw new Error(`No script for ${library}`);
+        }
+    } else {
+        try {
+            H5PPresaveCache[library] = await $.ajax({
+                method: 'GET',
+                url: '/admin/maxscore/pre-save-script',
+                data: window.H5PEditor.libraryFromString(library),
+                dataType: "script",
+                cache: true,
+            });
+        } catch {
+            H5PPresaveCache[library] = false;
+            throw new Error(`Failed to load script for ${library}`);
+        }
+    }
+
+    return true;
+};
+
+MaxScoreBulkTool.prototype.failed = function (contentId, libraryId, error) {
+    this.trigger("error", {
+        id: contentId,
+        libraryId: libraryId,
+        error: error,
+    });
+    this.workDone(contentId, {
+        score: 0,
+        libraryId: libraryId,
+        success: false,
+        error: error,
+    });
+}
+
+MaxScoreBulkTool.prototype.process = function (data) {
+    const self = this;
+
+    const { id, library, libraryName, libraryId, params } = data;
     const decodedParams = JSON.parse(params);
 
-    if (H5PPresave[library] !== undefined) {
+    if (typeof H5PPresave[libraryName] === 'function') {
         try {
-            H5PPresave[library](decodedParams, function (values) {
+            H5PPresave[libraryName](decodedParams, function (values) {
                 self.workDone(id, {
                     score: values.maxScore,
-                    library: library
+                    libraryId: libraryId,
+                    success: true,
                 });
             })
         } catch (e) {
-            if (window.console && console.log) {
-                console.log("------------------------------");
-                console.log(id, library);
-                console.log(e);
+            if (window.console) {
+                console.group(`Error! Library: '${library}', Content: ${id}`);
+                console.error(e.message);
                 console.log(decodedParams);
+                console.groupEnd();
             }
-            self.trigger("error", {
-                id: id,
-                library: library,
-                error: e,
-            });
-            self.workDone(id, {
-                score: 0,
-                library: library,
-                failed: true,
-                error: e,
-            });
+            self.failed(id, libraryId, e);
         }
     } else {
-        self.workDone(id, {
-            score: 0,
-            library: library
-        });
+        self.failed(id, libraryId, {message: `Not a function 'H5PPresave[${libraryName}]'`});
     }
 };
 
@@ -317,4 +364,3 @@ MaxScoreBulkTool.prototype.trigger = function (action, data) {
         this.events[action].call(this, data);
     }
 };
-

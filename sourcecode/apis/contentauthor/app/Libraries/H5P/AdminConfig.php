@@ -13,8 +13,7 @@ class AdminConfig implements ConfigInterface
     private $id;
 
     public function __construct(
-        private H5PCore $core,
-        private readonly H5pPresave $presave,
+        private H5PCore $core
     ) {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
@@ -66,15 +65,8 @@ class AdminConfig implements ConfigInterface
     {
         $this->addCoreAssets();
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
         $this->addAsset('scripts', (string) mix('js/maxscore.js'));
-        $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-pre-save.js'));
-
-        H5PLibrary::get()
-            ->filter(fn (H5PLibrary $library): bool => $this->presave->hasScript($library->name))
-            ->each(function (H5PLibrary $library): void {
-                $this->addAsset('scripts', $this->presave->getScriptUrl($library->name));
-            });
+        $this->addAsset('scripts', '/js/h5p/h5peditor-pre-save.js');
     }
 
     public function getSettings(H5PLibrary $library)
