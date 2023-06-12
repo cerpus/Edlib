@@ -18,6 +18,10 @@
         <x-form.button class="btn-primary">
             {{ trans('messages.log-in') }}
         </x-form.button>
+
+        <a href="{{ route('forgot-password') }}" class="btn btn-primary btn-user btn-block">
+            {{ trans('messages.forgot-password') }}
+        </a>
     </x-form>
     <hr>
     <a href="{{ route('google.login') }}" class="btn btn-primary btn-user btn-block">

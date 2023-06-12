@@ -43,6 +43,10 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'views' => [
+                'html' => 'emails',
+                'text' => 'emails',
+            ],
         ],
 
         'ses' => [
@@ -118,6 +122,22 @@ return [
 
         'paths' => [
             resource_path('views/vendor/mail'),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | View Path
+    |--------------------------------------------------------------------------
+    |
+    | The base directory path for the mail views. This is used when the mail
+    | views are not explicitly specified in the mailer configuration.
+    |
+    */
+
+    'view' => [
+        'paths' => [
+            resource_path('views/mail'),
         ],
     ],
 
