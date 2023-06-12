@@ -42,14 +42,6 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return HasOne<self>
-     */
-    public function parent(): HasOne
-    {
-        return $this->hasOne(self::class, 'parent_version_id');
-    }
-
-    /**
      * @param Builder<self> $query
      */
     public function scopePublished(Builder $query): void

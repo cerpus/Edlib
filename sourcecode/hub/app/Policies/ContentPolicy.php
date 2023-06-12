@@ -18,6 +18,15 @@ class ContentPolicy
         return $content->latestPublishedVersion()->exists();
     }
 
+    public function edit(User $user, Content $content): bool
+    {
+        if ($user->admin) {
+            return true;
+        }
+
+        return $content->users()->where('id', $user->id)->exists();
+    }
+
     public function copy(User $user, Content $content): bool
     {
         return true;

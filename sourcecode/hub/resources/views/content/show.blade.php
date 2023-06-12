@@ -8,6 +8,23 @@
     <x-lti-launch :launch="$launch" />
 
     <x-slot:sidebar>
+        @can('edit', $content)
+            <section>
+                <h2 class="fs-5">{{ trans('messages.version-history') }}</h2>
+
+                <ul class="p-0">
+                    @foreach ($content->versions as $version)
+                        <li class="d-block p-1 mb-1 {{ $version->published ? ($content?->latestPublishedVersion->is($version) ? 'bg-success text-bg-success' : 'bg-success-subtle'): 'bg-danger-subtle' }}">
+                            {{ $version->created_at }}
+                            @if ($content?->latestPublishedVersion->is($version))
+                                <span class="d-block">{{ trans('messages.published') }}</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endcan
+
         @if (auth()->user()?->debug_mode ?? false)
             @php($version = $content->latestVersion)
 

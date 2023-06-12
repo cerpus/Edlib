@@ -38,4 +38,6 @@ return [
     'lti-platform-secret-shown-only-once' => 'Denne hemmeligheten vises bare én gang.',
     'debug-mode' => 'Feilsøkingsmodus',
     'debug-mode-form-help' => 'Feilsøkingsmodus vil avsløre tekniske detaljer som kan være behjelpelige under feilsøking eller utvikling av innholdstyper.',
+    'version-history' => 'Versjonshistorikk',
+    'published' => 'Publisert',
 ];
