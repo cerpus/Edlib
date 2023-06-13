@@ -69,7 +69,7 @@ jobs:
 
       - name: Build and push app
         id: docker_build_app
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-resources-app:${{ inputs.versionToRelease }}
@@ -80,7 +80,7 @@ jobs:
 
       - name: Build and push migration container
         id: docker_build_migration
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           push: true
           tags: public.ecr.aws/f0t8l9h1/api-resources-migration:${{ inputs.versionToRelease }}
