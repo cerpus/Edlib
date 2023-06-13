@@ -26,8 +26,7 @@ H5PEditor.Presave = (function (Editor) {
   Presave.prototype.process = function (library, content) {
     var self = this;
 
-    const libName = library.replace('-', ' ');
-    if (Presave.libraryExists(libName) === true) {
+    if (Presave.libraryExists(library) === true) {
       const machineName = Presave.sanitizeLibrary(library);
       H5PPresave[machineName](content, function (serverSideData) {
         if (typeof serverSideData !== 'object') {
@@ -115,9 +114,10 @@ H5PEditor.Presave = (function (Editor) {
                 window?.eval(H5PPresaveCache[library]);
               }
           } else {
+              const folderName = library.replace(' ', '-');
               $.ajax({
                   method: 'GET',
-                  url: `${H5PLibraryPath}/${library.replace(' ','-')}/presave.js`,
+                  url: `${H5PLibraryPath}/${folderName}/presave.js`,
                   dataType: "script",
                   async: false,
                   cache: true,
