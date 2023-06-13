@@ -82,7 +82,7 @@ class AdminControllerTest extends TestCase
         $this->assertEquals(2, $libraries[1]->contents_count);
         $this->assertEquals(3, $libraries[2]->contents_count);
 
-        foreach($data['scripts'] as $script) {
+        foreach ($data['scripts'] as $script) {
             $this->assertStringNotContainsStringIgnoringCase('/js/presave/', $script);
             $this->assertStringNotContainsStringIgnoringCase('/presave.js', $script);
         }
