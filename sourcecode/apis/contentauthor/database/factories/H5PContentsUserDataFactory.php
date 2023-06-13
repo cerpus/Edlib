@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\H5PContentsUserData;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PContentsUserData>
+ */
 class H5PContentsUserDataFactory extends Factory
 {
     public function definition(): array

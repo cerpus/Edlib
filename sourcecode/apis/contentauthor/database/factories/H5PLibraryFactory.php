@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\H5PLibrary;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PLibrary>
+ */
 class H5PLibraryFactory extends Factory
 {
     public function definition(): array

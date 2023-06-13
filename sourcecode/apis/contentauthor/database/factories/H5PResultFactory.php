@@ -2,9 +2,13 @@
 
 namespace Database\Factories;
 
+use App\H5PResult;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PResult>
+ */
 class H5PResultFactory extends Factory
 {
     public function definition(): array

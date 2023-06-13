@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\H5PContentsVideo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PContentsVideo>
+ */
 class H5PContentsVideoFactory extends Factory
 {
     public function definition(): array
