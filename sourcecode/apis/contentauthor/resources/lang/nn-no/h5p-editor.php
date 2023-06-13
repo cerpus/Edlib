@@ -5,7 +5,7 @@ return [
     'save' => "Lagre",
     'upload' => "Last opp",
     'create' => "Lag",
-    'create-content' => "Opprett innhald",
+    'create-content' => "Lag innhald",
     'edit-content' => "Rediger innhald",
     'need-id' => "Du treng ein ID for å sjå innhaldet",
     'create-interactive-content' => "Opprett interaktivt innhald",

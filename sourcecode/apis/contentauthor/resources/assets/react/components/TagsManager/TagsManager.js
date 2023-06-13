@@ -318,10 +318,11 @@ const styles = theme => ({
     },
     buttonAdd: {
         minWidth: '36px',
-        fontSize: '0.9em',
+        fontFamily: "'Lato', sans-serif",
+        fontSize: '1.6rem',
         textTransform: 'none',
         padding: '0 5px',
-        fontWeight: 'bold',
+        fontWeight: '400 !important',
     },
     buttonClose: {
         color: '#272E33',

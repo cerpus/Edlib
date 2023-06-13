@@ -22,41 +22,37 @@ abstract class AbstractHandleVersioning
 
     protected function handleSave(VersionableObject $object, $reason)
     {
-        if (!empty(config('feature.versioning'))) {
-            $linearVersioning = config('feature.linear-versioning') ? true : false;
-            $parentVersionId = $this->getParentVersionId();
-            if ($parentVersionId !== null) {
-                if ($object->setParentVersionId($parentVersionId)) {
-                    $object->save();
-                }
-            }
-
-            $versionData = $this->createVersion(
-                $object,
-                $parentVersionId,
-                $reason,
-                $linearVersioning
-            );
-
-            if ($versionData && $versionData->getParent()) {
-                $parent = $versionData->getParent();
-                if ($parent instanceof VersionData) {
-                    $parent = $parent->getId();
-                }
-                if ($object->setParentVersionId($parent)) {
-                    $object->save();
-                }
-            }
-
-            if (!$versionData) {
-                Log::error('Versioning failed: ' . $this->versionClient->getErrorCode() . ': ' . $this->versionClient->getMessage());
-            //Maybe do something more constructive...add to queue to try again?
-            } else {
-                $object->setVersionId($versionData->getId());
+        $linearVersioning = config('feature.linear-versioning') ? true : false;
+        $parentVersionId = $this->getParentVersionId();
+        if ($parentVersionId !== null) {
+            if ($object->setParentVersionId($parentVersionId)) {
                 $object->save();
             }
+        }
+
+        $versionData = $this->createVersion(
+            $object,
+            $parentVersionId,
+            $reason,
+            $linearVersioning
+        );
+
+        if ($versionData && $versionData->getParent()) {
+            $parent = $versionData->getParent();
+            if ($parent instanceof VersionData) {
+                $parent = $parent->getId();
+            }
+            if ($object->setParentVersionId($parent)) {
+                $object->save();
+            }
+        }
+
+        if (!$versionData) {
+            Log::error('Versioning failed: ' . $this->versionClient->getErrorCode() . ': ' . $this->versionClient->getMessage());
+        //Maybe do something more constructive...add to queue to try again?
         } else {
-            Log::debug(__METHOD__ . ' Versioning not enabled. Set "FEATURE_VERSIONING=true" in .env to enable');
+            $object->setVersionId($versionData->getId());
+            $object->save();
         }
     }
 

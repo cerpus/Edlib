@@ -25,6 +25,10 @@ const useStyles = makeStyles()((theme) => ({
     listItemIcon: {
         minWidth: 30,
     },
+    listItemText: {
+        fontSize: '1rem !important',
+        fontWeight: '400',
+    },
 }));
 
 const Grouped = ({ allH5ps, contentTypes }) => {
@@ -76,14 +80,16 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                     <ListItemButton
                         onClick={() => open.toggle(category.translationKey)}
                     >
-                        <ListItemText>
-                            <strong>
-                                {_.capitalize(
-                                    t(
-                                        `content_type_groups.${category.translationKey}`
-                                    )
-                                )}
-                            </strong>
+                        <ListItemText
+                            classes={{
+                                root: classes.listItemText,
+                            }}
+                        >
+                            {_.capitalize(
+                                t(
+                                    `content_type_groups.${category.translationKey}`
+                                )
+                            )}
                         </ListItemText>
                         {open.has(category.translationKey) ? (
                             <ExpandLess />
@@ -123,6 +129,9 @@ const Grouped = ({ allH5ps, contentTypes }) => {
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={`${h5p.title} (${h5p.filteredCount})`}
+                                        classes={{
+                                            root: classes.listItemText,
+                                        }}
                                     />
                                 </ListItemButton>
                             ))}

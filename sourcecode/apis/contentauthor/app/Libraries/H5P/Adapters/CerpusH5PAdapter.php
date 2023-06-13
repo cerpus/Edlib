@@ -78,12 +78,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return [];
     }
 
-    /**
-     * @param $semantics
-     * @param $machineName
-     * @param $majorVersion
-     * @param $minorVersion
-     */
+
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
     {
         $this->alterPackageSemantics($semantics, $machineName);

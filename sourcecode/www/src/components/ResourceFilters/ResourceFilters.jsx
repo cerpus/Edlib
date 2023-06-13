@@ -36,12 +36,14 @@ const useStyles = makeStyles()((theme) => ({
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
         padding: 0,
+        fontWeight: '400',
     },
     nested: {
         paddingLeft: theme.spacing(1),
     },
     mainCategories: {
-        fontSize: '1.1em',
+        fontSize: '1.125rem',
+        fontWeight: '400',
     },
 }));
 
@@ -56,7 +58,7 @@ const FilterBlock = ({ children, disabled, onToggle, open, title }) => {
         <Fragment>
             <ListItemButton onClick={onToggle}>
                 <ListItemText classes={{ primary: classes.mainCategories }}>
-                    <strong>{title}</strong>
+                    {title}
                 </ListItemText>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
@@ -113,6 +115,10 @@ const ResourceFilters = ({
                         filters.contentTypes.value.length === 0 &&
                         filters.licenses.value.length === 0
                     }
+                    style={{
+                        fontSize: '1rem !important',
+                        fontWeight: '400',
+                    }}
                 >
                     {t('save_filter')}
                 </Button>
@@ -127,6 +133,8 @@ const ResourceFilters = ({
                     endIcon={<FilterListIcon />}
                     style={{
                         color: 'inherit',
+                        fontSize: '1rem !important',
+                        fontWeight: '400',
                     }}
                     size="small"
                 >
@@ -181,6 +189,10 @@ const ResourceFilters = ({
                 type="gray"
                 onClick={() => {
                     filters.reset();
+                }}
+                style={{
+                    fontSize: '1rem !important',
+                    fontWeight: '400',
                 }}
             >
                 {capitalize(t('reset'))}

@@ -6,9 +6,6 @@ use App\H5PLibrary;
 
 class InteractivityContentType implements ContentTypeInterface
 {
-    /**
-     * @param $redirectToken
-     */
     public function getContentTypes($redirectToken): ContentType
     {
         /** @var ContentType $contentType */

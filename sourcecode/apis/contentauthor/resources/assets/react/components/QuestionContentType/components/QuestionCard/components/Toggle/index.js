@@ -14,13 +14,13 @@ function Toggle(props) {
 
     return (
         <div className="togglerSwitch">
-            <label>{leftLabel}</label>
+            {leftLabel}
             <Switch
                 onChange={onToggle}
                 checked={isCorrect}
                 color="default"
             />
-            <label>{rightLabel}</label>
+            {rightLabel}
         </div>
     );
 }

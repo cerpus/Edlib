@@ -5,6 +5,7 @@
 
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
@@ -18,11 +19,11 @@ use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('auth/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::get('sso-edlib-admin', [LoginController::class, 'ssoFromEdlibAdmin'])->middleware('edlib.parse-jwt', 'edlib.auth:superadmin');
+Route::get('sso-edlib-admin', [LoginController::class, 'ssoFromEdlibAdmin'])->middleware('edlib.parse-jwt', 'can:superadmin');
 Route::post('auth/login', [LoginController::class, 'login']);
 Route::post('auth/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')->group(
+Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
     function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
 
@@ -38,10 +39,16 @@ Route::middleware('edlib.auth:superadmin')->namespace('Admin')->prefix('admin')-
             ->name('admin.upgrade-library');
         Route::delete('libraries/{library}', [LibraryUpgradeController::class, 'deleteLibrary'])
             ->name('admin.delete-library');
-        Route::get('libraries/{library}/check', [LibraryUpgradeController::class, 'checkLibrary'])
+
+        /*
+         * Admin library and content details
+         */
+        Route::get('libraries/{library}/check', [AdminH5PDetailsController::class, 'checkLibrary'])
             ->name('admin.check-library');
-        Route::get('libraries/{library}/content', [LibraryUpgradeController::class, 'contentForLibrary'])
+        Route::get('libraries/{library}/content', [AdminH5PDetailsController::class, 'contentForLibrary'])
             ->name('admin.content-library');
+        Route::get('content/{content}/details', [AdminH5PDetailsController::class, 'contentHistory'])
+            ->name('admin.content-details');
 
         Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
 

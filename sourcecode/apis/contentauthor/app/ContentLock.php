@@ -37,7 +37,6 @@ class ContentLock extends Model
     }
 
     /**
-     * @param $id
      * @return bool|ContentLock
      */
     public function hasLock($id)

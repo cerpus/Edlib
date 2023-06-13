@@ -4,8 +4,6 @@ namespace Tests\Integration\Http\Controllers;
 
 use App\Article;
 use App\Events\ArticleWasSaved;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
 use App\Http\Controllers\ArticleController;
 use App\Http\Libraries\License;
 use Faker\Provider\Uuid;
@@ -53,9 +51,7 @@ class ArticleControllerTest extends TestCase
         ]);
 
         $this->expectsEvents([
-            ContentCreating::class,
             ArticleWasSaved::class,
-            ContentCreated::class,
         ]);
 
         $response = $this->post(route('article.store'), [

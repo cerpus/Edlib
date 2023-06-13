@@ -4,7 +4,6 @@ namespace Tests\Integration\Http\Controllers;
 
 use App\ApiModels\User;
 use App\Content;
-use App\Events\ContentCreated;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Game;
@@ -86,7 +85,6 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents([
             QuestionsetWasSaved::class,
-            ContentCreated::class,
             ResourceSaved::class,
         ]);
 

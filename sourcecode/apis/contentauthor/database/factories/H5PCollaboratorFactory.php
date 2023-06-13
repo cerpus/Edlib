@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\H5PCollaborator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PCollaborator>
+ */
 class H5PCollaboratorFactory extends Factory
 {
     public function definition(): array

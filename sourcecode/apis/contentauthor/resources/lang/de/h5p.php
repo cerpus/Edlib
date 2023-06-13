@@ -1,1 +1,4 @@
 <?php
+return [
+    'title' => 'Titel',
+];

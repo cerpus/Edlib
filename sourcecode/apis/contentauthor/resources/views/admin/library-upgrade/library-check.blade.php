@@ -1,6 +1,7 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
+        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -107,12 +108,12 @@
                             </tr>
                             <tr>
                                 <th>Created time</th>
-                                <td>{{ $library->created_at->format('Y-m-d H:i:s e') }}</td>
+                                <td>{{ $library->created_at?->format('Y-m-d H:i:s e') }}</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <th>Updated time</th>
-                                <td>{{ $library->updated_at->format('Y-m-d H:i:s e') }}</td>
+                                <td>{{ $library->updated_at?->format('Y-m-d H:i:s e') }}</td>
                                 <td></td>
                             </tr>
                             <tr>
@@ -124,6 +125,11 @@
                                 <th>Fullscreen</th>
                                 <td>{{ $library->fullscreen }}</td>
                                 <td>{{ $libData['fullscreen'] ?? '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Patch version in folder name</th>
+                                <td>{{ $library?->patch_version_in_folder_name ? 'Yes' : 'No' }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <th>preloadedJs</th>

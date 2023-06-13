@@ -13,7 +13,6 @@ return [
     ],
     'video' => [
         'enable' => env("H5P_VIDEO_STREAM_ENABLED", true),
-        'adapter' => env("H5P_VIDEO_ADAPTER", 'streamps'), //deprecated
         'url' => env("H5P_VIDEO_URL"),
         'key' => env("H5P_VIDEO_ADAPTER_KEY"),
         'secret' => env("H5P_VIDEO_ADAPTER_SECRET"),
