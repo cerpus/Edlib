@@ -59,6 +59,7 @@
 <script>
     const CalculateScoreConfig = {!! $scoreConfig !!};
     const H5PIntegration = {!! $settings !!};
+    const H5PLibraryPath = "{!! $libraryPath !!}";
 </script>
 @endpush
 

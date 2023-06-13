@@ -59,6 +59,9 @@ $(document).ready(function () {
         })
         .on('error', function (event, data) {
             const logView = $(this).find('.errorlog');
+            if (data.error.code) {
+                data.error.message += ` (${data.error.code})`;
+            }
             logView.append('<div>Content ' + data.id + ' failed: ' + data.error.message + '</div>');
             logView.removeClass('hidden');
         });
@@ -262,8 +265,7 @@ MaxScoreBulkTool.prototype.fetchScript = async function (library) {
         try {
             H5PPresaveCache[library] = await $.ajax({
                 method: 'GET',
-                url: '/admin/maxscore/pre-save-script',
-                data: window.H5PEditor.libraryFromString(library),
+                url: `${H5PLibraryPath}/${library.replace(' ', '-')}/presave.js`,
                 dataType: "script",
                 cache: true,
             });

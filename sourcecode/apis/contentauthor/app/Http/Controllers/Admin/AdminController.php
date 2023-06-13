@@ -6,14 +6,12 @@ use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminPreSaveScriptRequest;
-use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -60,6 +58,7 @@ class AdminController extends Controller
             'scoreConfig' => $scoreConfig,
             'settings' => json_encode($config->getMaxScoreSettings()),
             'numFailed' => H5PContent::where('bulk_calculated', H5PLibraryAdmin::BULK_FAILED)->count(),
+            'libraryPath' => app(CerpusStorageInterface::class)->getLibrariesPath(),
         ]);
     }
 
@@ -89,29 +88,5 @@ class AdminController extends Controller
             "json" => response()->json($returnValue),
             default => $returnValue,
         };
-    }
-
-    public function getPresaveScript(AdminPreSaveScriptRequest $request)
-    {
-        /** @var H5PLibrary $library */
-        $library = H5PLibrary::fromLibrary($request->validated())->first();
-
-        if ($library) {
-            $libraryLocation = sprintf(ContentStorageSettings::PRESAVE_SCRIPT_PATH, $library->getLibraryString(true));
-            if (Storage::disk()->exists($libraryLocation)) {
-                return response()->stream(function () use ($libraryLocation) {
-                    $handle = Storage::disk()->readStream($libraryLocation);
-                    while (!feof($handle)) {
-                        if (connection_aborted() === 1) {
-                            break;
-                        }
-                        echo fread($handle, 2048);
-                    }
-                    fclose($handle);
-                }, 200);
-            }
-        }
-
-        return response('Script not found', 404);
     }
 }

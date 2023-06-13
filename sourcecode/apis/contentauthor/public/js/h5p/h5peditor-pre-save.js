@@ -117,8 +117,7 @@ H5PEditor.Presave = (function (Editor) {
           } else {
               $.ajax({
                   method: 'GET',
-                  url: '/admin/maxscore/pre-save-script',
-                  data: parts,
+                  url: `${H5PLibraryPath}/${library.replace(' ','-')}/presave.js`,
                   dataType: "script",
                   async: false,
                   cache: true,
@@ -128,7 +127,7 @@ H5PEditor.Presave = (function (Editor) {
                   })
                   .fail(jqXHR => {
                       H5PPresaveCache[library] = false;
-                      if (jqXHR.status !== 404) {
+                      if (![403, 404].includes(jqXHR.status)) {
                           console.error(jqXHR);
                           throw new Error(`Error loading script for ${library}`);
                       }

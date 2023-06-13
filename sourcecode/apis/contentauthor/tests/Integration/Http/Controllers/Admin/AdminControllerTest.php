@@ -31,12 +31,16 @@ class AdminControllerTest extends TestCase
         $this->instance(FilesystemAdapter::class, $fsa);
         $fsa->expects($this->exactly(3))->method('exists')->willReturn(true);
 
-        Storage::shouldReceive('disk')->times(4)->andReturn($fsa);
+        Storage::shouldReceive('disk')->andReturn($fsa);
+        Storage::shouldReceive('getDefaultDriver')->andReturn('test');
 
+        /** @var H5PLibrary $library1 */
         $library1 = H5PLibrary::factory()->create();
+        /** @var H5PLibrary $library2 */
         $library2 = H5PLibrary::factory()->create([
             'minor_version' => 42,
         ]);
+        /** @var H5PLibrary $library3 */
         $library3 = H5PLibrary::factory()->create([
             'name' => 'H5P.Toolbar',
         ]);
@@ -67,9 +71,11 @@ class AdminControllerTest extends TestCase
         $this->assertArrayHasKey('scoreConfig', $data);
         $this->assertArrayHasKey('settings', $data);
         $this->assertArrayHasKey('numFailed', $data);
+        $this->assertArrayHasKey('libraryPath', $data);
 
         $this->assertEquals(1, $data['numFailed']);
         $this->assertCount(3, $data['libraries']);
+        $this->assertStringEndsWith('/content/assets/libraries', $data['libraryPath']);
 
         $libraries = $data['libraries'];
         $this->assertEquals(1, $libraries[0]->contents_count);
@@ -78,10 +84,7 @@ class AdminControllerTest extends TestCase
 
         foreach($data['scripts'] as $script) {
             $this->assertStringNotContainsStringIgnoringCase('/js/presave/', $script);
-            if (Str::contains($script, [$library1->name, $library3->name])) {
-                $this->assertStringStartsWith('http://localhost/content/assets/libraries/', $script);
-                $this->assertStringEndsWith('/presave.js', $script);
-            }
+            $this->assertStringNotContainsStringIgnoringCase('/presave.js', $script);
         }
     }
 
@@ -116,36 +119,5 @@ class AdminControllerTest extends TestCase
             'max_score' => 3,
             'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
         ]);
-    }
-
-    public function test_getPresaveScript(): void
-    {
-        $scriptContent = 'Not a real script';
-        $library = H5PLibrary::factory()->create();
-        $fileName = sprintf(ContentStorageSettings::PRESAVE_SCRIPT_PATH, $library->getLibraryString(true));
-        Storage::fake();
-        Storage::put($fileName, $scriptContent);
-
-        $this->withSession(['user' => new GenericUser(['roles' => ['superadmin']])])
-            ->get(route('admin.maxscore.get-presave-script', [
-                'machineName' => $library->name,
-                'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version,
-            ]))
-            ->assertOk()
-            ->assertStreamedContent($scriptContent);
-    }
-
-    public function test_getPresaveScript_NotFound(): void
-    {
-        $library = H5PLibrary::factory()->create();
-
-        $this->withSession(['user' => new GenericUser(['roles' => ['superadmin']])])
-            ->get(route('admin.maxscore.get-presave-script', [
-                'machineName' => $library->name,
-                'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version,
-            ]))
-            ->assertNotFound();
     }
 }
