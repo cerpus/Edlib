@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\QuestionSetQuestionAnswer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<QuestionSetQuestionAnswer>
+ */
 class QuestionSetQuestionAnswerFactory extends Factory
 {
     public function definition(): array
