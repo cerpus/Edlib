@@ -3,10 +3,6 @@
 namespace Tests\Integration\Http\Controllers;
 
 use App\ApiModels\User;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Events\LinkWasSaved;
 use App\Http\Controllers\LinkController;
 use App\Http\Libraries\License;
@@ -88,9 +84,7 @@ class LinkControllerTest extends TestCase
         ]);
 
         $this->expectsEvents([
-            ContentCreating::class,
             LinkWasSaved::class,
-            ContentCreated::class,
         ]);
 
         $response = $this->post(route('link.store'), [
@@ -123,9 +117,7 @@ class LinkControllerTest extends TestCase
         ]);
 
         $this->expectsEvents([
-            ContentUpdating::class,
             LinkWasSaved::class,
-            ContentUpdated::class,
         ]);
 
         /** @var Link $link */

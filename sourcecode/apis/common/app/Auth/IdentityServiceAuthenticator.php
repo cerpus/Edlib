@@ -123,8 +123,8 @@ class IdentityServiceAuthenticator
 
         return new User([
             'id' => $userPayload["id"],
-            'firstName' => $userPayload['firstName'],
-            'lastName' => $userPayload['lastName'],
+            'firstName' => $userPayload['firstName'] ?? null,
+            'lastName' => $userPayload['lastName'] ?? null,
             'email' => $userPayload['email'],
             'isAdmin' => $userPayload['isAdmin'] == 1,
         ]);

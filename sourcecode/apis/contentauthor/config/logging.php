@@ -62,6 +62,7 @@ return [
             'with' => [
                 'stream' => 'php://stderr',
             ],
+            'level' => 'info',
         ],
         'syslog' => [
             'driver' => 'syslog',

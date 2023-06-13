@@ -107,7 +107,7 @@ class PingVideoApi implements ShouldQueue
             $this->adapter = $adapter;
             try {
                 $this->updateContent($h5pcontent);
-                if ($h5pcontent->useVersioning() && !empty($h5pcontent->version_id)) {
+                if (!empty($h5pcontent->version_id)) {
                     $versions = $this->versionClient->getVersion($h5pcontent->version_id);
                     $this->handleChildren($versions->getChildren());
                 }

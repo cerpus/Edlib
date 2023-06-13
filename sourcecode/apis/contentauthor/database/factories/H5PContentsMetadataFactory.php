@@ -3,8 +3,12 @@
 namespace Database\Factories;
 
 use App\H5PContent;
+use App\H5PContentsMetadata;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<H5PContentsMetadata>
+ */
 class H5PContentsMetadataFactory extends Factory
 {
     public function definition(): array

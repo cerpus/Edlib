@@ -1,13 +1,15 @@
 .publish-box {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
+    font-weight: 400;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
 
-  :first-child {
+    :first-child {
     flex: 1 1 auto;
-  }
+    }
 
-  & > svg {
+    & > svg {
     margin-right: 1rem;
-  }
+    }
 }

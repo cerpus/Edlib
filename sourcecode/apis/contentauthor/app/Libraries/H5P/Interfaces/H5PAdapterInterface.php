@@ -36,7 +36,6 @@ interface H5PAdapterInterface
     public function getCustomViewCss(): array;
 
     /**
-     * @param $semantics
      * @return void
      */
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion);
@@ -74,10 +73,10 @@ interface H5PAdapterInterface
     /** @return bool */
     public function resetNdlaIdTracking($sessionKey): void;
 
-    /** @return bool */
+
     public function showArticleImportExportFunctionality(): bool;
 
-    /** @return void */
+
     public function runPresaveCommand(): void;
 
     public static function getCoreExtraTags(): array;
@@ -87,7 +86,7 @@ interface H5PAdapterInterface
 
     public function isUserPublishEnabled(): bool;
 
-    /** @return bool */
+
     public function enableEverybodyIsCollaborators(): bool;
 
     public function getExternalProviders(): Collection;
