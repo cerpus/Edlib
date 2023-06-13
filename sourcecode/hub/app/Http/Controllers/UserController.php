@@ -107,7 +107,7 @@ class UserController extends Controller
         return redirect()->route('login')->with('alert', trans('messages.alert-password-reset'));
     }
 
-    public function showResetPasswordForm($token, $email): View|RedirectResponse
+    public function showResetPasswordForm(string $token, string $email): View|RedirectResponse
     {
         $user = User::where('password_reset_token', $token)->where('email', $email)->first();
 
@@ -118,7 +118,7 @@ class UserController extends Controller
         return redirect()->back()->with('alert', trans('messages.alert-password-reset-invalid-token'));
     }
 
-    public function resetPassword(Request $request, $token): View|RedirectResponse
+    public function resetPassword(Request $request, string $token): View|RedirectResponse
     {
         $user = User::where('password_reset_token', $token)->first();
 

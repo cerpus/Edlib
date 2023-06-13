@@ -10,7 +10,7 @@ class ResetPasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $resetLink;
+    public string $resetLink;
 
     /**
      * Create a new message instance.
