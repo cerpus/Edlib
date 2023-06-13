@@ -6,14 +6,12 @@ use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
-use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
