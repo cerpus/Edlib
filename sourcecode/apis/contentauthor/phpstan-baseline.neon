@@ -1447,31 +1447,6 @@ parameters:
 			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$content of method App\\\\Libraries\\\\H5P\\\\H5PCopyright\\:\\:getCopyrights\\(\\) expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
-			count: 13
-			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 13
-			path: tests/Integration/Libraries/H5P/H5PExportTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$slug\\.$#"
-			count: 7
-			path: tests/Integration/Libraries/H5P/H5PExportTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$content of class App\\\\Libraries\\\\H5P\\\\H5PExport constructor expects App\\\\H5PContent, Illuminate\\\\Database\\\\Eloquent\\\\Model given\\.$#"
-			count: 7
-			path: tests/Integration/Libraries/H5P/H5PExportTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 25
-			path: tests/Integration/Libraries/H5P/H5PLibraryAdminTest.php
-
-		-
 			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php
