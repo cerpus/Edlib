@@ -14,7 +14,9 @@ class Questionset
     /** @var string $authId */
     /** @var string $licence */
     /** @var string $title */
-    public $authId, $license, $title;
+    public $authId;
+    public $license;
+    public $title;
 
     protected $type = 'H5P.QuestionSet';
 
@@ -34,18 +36,14 @@ class Questionset
         $this->questions = collect();
     }
 
-    /**
-     * @param MultiChoiceQuestion $question
-     */
+
     public function addQuestion(MultiChoiceQuestion $question)
     {
         $this->questions->push($question);
         $this->updateScore($question);
     }
 
-    /**
-     * @param bool $sharing
-     */
+
     public function setSharing(bool $sharing)
     {
         $this->sharing = $sharing;

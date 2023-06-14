@@ -34,7 +34,7 @@ abstract class Question
     public function addAnswers(Collection $answers)
     {
         $that = $this;
-        $answers->each(function($answer) use ($that) {
+        $answers->each(function ($answer) use ($that) {
             $that->addAnswer($answer);
         });
     }
