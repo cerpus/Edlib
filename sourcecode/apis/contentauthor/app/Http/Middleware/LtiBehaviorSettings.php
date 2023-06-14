@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Http\Requests\LTIRequest;
+use App\Libraries\DataObjects\BehaviorSettingsDataObject;
+use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
 use App\SessionKeys;
-use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
