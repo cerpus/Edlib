@@ -220,7 +220,7 @@ class H5PLibrary extends Model
 
     public function supportsMaxScore(): bool
     {
-        $libraryLocation = sprintf(ContentStorageSettings::PRESAVE_SCRIPT_PATH, $this->getLibraryString(true));
+        $libraryLocation = sprintf('libraries/%s/presave.js', self::getLibraryString(true));
         if (Storage::disk()->exists($libraryLocation)) {
             return true;
         }

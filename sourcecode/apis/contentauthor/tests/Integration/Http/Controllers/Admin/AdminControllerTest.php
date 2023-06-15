@@ -8,7 +8,6 @@ use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use Illuminate\Auth\GenericUser;
-use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
@@ -25,12 +24,10 @@ class AdminControllerTest extends TestCase
         $this->instance(\H5PCore::class, $core);
         $core->expects($this->once())->method('getLocalization')->willReturn([]);
 
-        $fsa = $this->createMock(FilesystemAdapter::class);
-        $this->instance(FilesystemAdapter::class, $fsa);
-        $fsa->expects($this->exactly(3))->method('exists')->willReturn(true);
-
-        Storage::shouldReceive('disk')->andReturn($fsa);
-        Storage::shouldReceive('getDefaultDriver')->andReturn('test');
+        Storage::fake('test');
+        Storage::put('libraries/H5P.Foobar-1.2/presave.js', 'the content');
+        Storage::put('libraries/H5P.Foobar-1.42/presave.js', 'the content');
+        Storage::put('libraries/H5P.Toolbar-1.2/presave.js', 'the content');
 
         /** @var H5PLibrary $library1 */
         $library1 = H5PLibrary::factory()->create();
