@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "211f9a624c6cce708322275ff71cb579",
+    "content-hash": "1fd674e156313954899ecd7a6d284612",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -393,70 +393,6 @@
                 "source": "https://github.com/cerpus/php-cerpushelper/tree/v2.2.0"
             },
             "time": "2023-03-15T09:34:04+00:00"
-        },
-        {
-            "name": "cerpus/coreclient",
-            "version": "v1.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cerpus/php-coreclient.git",
-                "reference": "a19d2d2b9fd95e19514adbb6ea2b753623af3697"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-coreclient/zipball/a19d2d2b9fd95e19514adbb6ea2b753623af3697",
-                "reference": "a19d2d2b9fd95e19514adbb6ea2b753623af3697",
-                "shasum": ""
-            },
-            "require": {
-                "cerpus/cerpushelper": "^1.0|^2.0",
-                "ext-json": "*",
-                "illuminate/http": "*",
-                "php": "^7.4 || ^8.0"
-            },
-            "require-dev": {
-                "fakerphp/faker": "^1.16",
-                "illuminate/validation": "^6.0",
-                "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Cerpus\\CoreClient\\Providers\\CoreClientServiceProvider"
-                    ],
-                    "aliases": {
-                        "CoreClient": "Cerpus\\CoreClient\\CoreClient"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cerpus\\CoreClient\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Thomas Horn Sivertsen",
-                    "email": "thomass@cerpus.com"
-                }
-            ],
-            "description": "Client for communication with Core",
-            "keywords": [
-                "Cerpus Core API Client",
-                "laravel",
-                "lumen"
-            ],
-            "support": {
-                "issues": "https://github.com/cerpus/php-coreclient/issues",
-                "source": "https://github.com/cerpus/php-coreclient/tree/v1.5.0"
-            },
-            "time": "2022-01-21T14:54:46+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit",
@@ -3204,6 +3140,7 @@
                 "issues": "https://github.com/LaravelCollective/html/issues",
                 "source": "https://github.com/LaravelCollective/html"
             },
+            "abandoned": "spatie/laravel-html",
             "time": "2023-02-13T18:15:35+00:00"
         },
         {
@@ -4879,6 +4816,7 @@
                 "issues": "https://github.com/php-http/message-factory/issues",
                 "source": "https://github.com/php-http/message-factory/tree/master"
             },
+            "abandoned": "psr/http-factory",
             "time": "2015-12-19T14:08:53+00:00"
         },
         {

@@ -2,16 +2,14 @@
 
 namespace App\Traits;
 
-use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
+use App\Libraries\DataObjects\BehaviorSettingsDataObject;
+use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
 
 trait H5PBehaviorSettings
 {
-    /** @var BehaviorSettingsDataObject */
-    protected $behaviorSettings;
+    protected BehaviorSettingsDataObject|null $behaviorSettings = null;
 
-    /** @var EditorBehaviorSettingsDataObject */
-    protected $editorBehaviorSettings;
+    protected EditorBehaviorSettingsDataObject|null $editorBehaviorSettings = null;
 
     protected $packageStructure;
     private $css = [];
@@ -69,9 +67,9 @@ trait H5PBehaviorSettings
             return;
         }
         $this->alterRetryButton();
-        $this->addCss(sprintf('.h5p-flashcards-results.show .h5p-results-retry-button, 
-        .h5p-image-sequencing .h5p-image-sequencing-retry 
-        { 
+        $this->addCss(sprintf('.h5p-flashcards-results.show .h5p-results-retry-button,
+        .h5p-image-sequencing .h5p-image-sequencing-retry
+        {
             display: %s;
         }', $this->behaviorSettings->enableRetry === true ? 'inline-block' : 'none'));
     }
