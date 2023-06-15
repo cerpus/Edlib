@@ -82,7 +82,7 @@ const CerpusUI = ({ children }) => {
                     props: {
                         MuiAccordion: {
                             variant: 'elevation',
-                            elevation: '0',
+                            elevation: 0,
                         },
                     },
                 })}
