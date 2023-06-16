@@ -35,7 +35,7 @@ class ViewConfigTest extends TestCase
         $resourceApi
             ->expects($this->once())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($id, '', '' ,'', '', ''));
+            ->willReturn(new Resource($id, '', '', '', '', ''));
 
         $viewConfig = $viewConfig->setId($id);
 
