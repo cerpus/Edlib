@@ -2,7 +2,9 @@
 
 namespace App\Libraries\H5P;
 
+use App\ApiModels\Resource;
 use App\Apis\ResourceApiService;
+use App\Exceptions\NotFoundException;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
@@ -25,7 +27,7 @@ class ViewConfig implements ConfigInterface
     /** @var H5PAlterParametersSettingsDataObject */
     protected $alterParametersSettings;
     private ResourceApiService $resourceApiService;
-    private ?string $edlibUrl = null;
+    private ?Resource $resource = null;
 
     public function __construct(
         H5PAdapterInterface $adapter,
@@ -77,36 +79,42 @@ class ViewConfig implements ConfigInterface
 
     public function getEdlibUrl()
     {
-        if ($this->edlibUrl) {
-            return $this->edlibUrl;
-        }
-
-        $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
         $edlibEmbedPath = config('edlib.embedPath');
 
-        if (!$edlibEmbedPath) {
-            return null;
+        if ($edlibEmbedPath !== null && $this->getResource()) {
+            return str_replace('<resourceId>', $this->resource->id, $edlibEmbedPath);
         }
 
-        $this->edlibUrl = str_replace('<resourceId>', $resource->id, $edlibEmbedPath);
-
-        return $this->edlibUrl;
+        return null;
     }
 
     private function getEmbedCode()
     {
         $edlibUrl = $this->getEdlibUrl();
 
-        if (!$edlibUrl) {
-            return '';
+        if ($edlibUrl !== null && $this->getResource()) {
+            return sprintf(
+                '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>',
+                htmlspecialchars($edlibUrl, ENT_QUOTES),
+                htmlspecialchars($this->resource->title ?? '', ENT_QUOTES)
+            );
         }
 
-        $resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
-        return sprintf(
-            '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>',
-            htmlspecialchars($edlibUrl, ENT_QUOTES),
-            htmlspecialchars($resource->title ?? '', ENT_QUOTES)
-        );
+        return '';
+    }
+
+    private function getResource(): bool
+    {
+        try {
+            if ($this->resource === null) {
+                $this->resource = $this->resourceApiService->getResourceFromExternalReference('contentauthor', $this->id);
+            }
+
+            return true;
+        } catch (NotFoundException|\JsonException) {
+            $this->resource = null;
+            return false;
+        }
     }
 
     public function setAlterParametersSettings(H5PAlterParametersSettingsDataObject $settings)

@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 
 class h5p
 {
+    private bool $configInitialised = false;
+
     public function __construct(
         private H5PCore $core,
         private H5PStorage $storage,
@@ -23,7 +25,10 @@ class h5p
 
     public function createView(ConfigInterface $config): H5PView
     {
-        $this->initConfig($config);
+        if (!$this->configInitialised) {
+            $this->initConfig($config);
+            $this->configInitialised = true;
+        }
 
         return new H5PView(
             $config->getScriptAssets(),
@@ -34,7 +39,10 @@ class h5p
 
     public function getContents(ConfigInterface $config, mixed $id): array
     {
-        $this->initConfig($config);
+        if (!$this->configInitialised) {
+            $this->initConfig($config);
+            $this->configInitialised = true;
+        }
 
         return $this->core->loadContent($id);
     }

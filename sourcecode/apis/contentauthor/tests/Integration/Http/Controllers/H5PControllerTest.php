@@ -2,13 +2,16 @@
 
 namespace Tests\Integration\Http\Controllers;
 
+use App\ApiModels\Resource;
 use App\ApiModels\User;
+use App\Apis\ResourceApiService;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PLibrary;
 use App\Http\Controllers\H5PController;
 use App\Http\Libraries\License;
 use App\Http\Requests\H5PStorageRequest;
+use Faker\Factory;
 use Faker\Provider\Uuid;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -140,5 +143,68 @@ class H5PControllerTest extends TestCase
         yield [['libraryid' => 999999], ['libraryid']];
         yield [['library' => null], ['library']];
         yield [['language_iso_639_3' => 'eeee'], ['language_iso_639_3']];
+    }
+
+    public function testDoShow(): void
+    {
+        $faker = Factory::create();
+        $resourceId = $faker->uuid;
+        $resourceApi = $this->createMock(ResourceApiService::class);
+        $this->instance(ResourceApiService::class, $resourceApi);
+
+        $faker = Factory::create();
+        H5PLibrary::factory()->create();
+        /** @var H5PLibrary $library */
+        $library = H5PLibrary::factory()->create([
+            'minor_version' => 18,
+        ]);
+        /** @var H5PContent $content */
+        H5PContent::factory()->create([
+            'library_id' => $library->id,
+        ]);
+        $content = H5PContent::factory()->create([
+            'library_id' => $library->id,
+            'is_published' => true,
+            'is_draft' => false,
+            'max_score' => 42,
+        ]);
+
+        $resourceApi
+            ->expects($this->exactly(1))
+            ->method('getResourceFromExternalReference')
+            ->willReturn(new Resource($resourceId, '', '', '', '', $content->title));
+
+        $controller = app(H5PController::class);
+        $result = $controller->doShow($content->id, $faker->sha1, false)->getData();
+
+        $this->assertEquals(2, $result['id']);
+        $this->assertFalse($result['preview']);
+        $this->assertArrayHasKey('embed', $result);
+        $this->assertArrayHasKey('config', $result);
+
+        $config = json_decode(substr($result['config'], 25, -9), flags: JSON_THROW_ON_ERROR);
+
+        $this->assertObjectHasAttribute('baseUrl', $config);
+        $this->assertObjectHasAttribute('url', $config);
+        $this->assertObjectHasAttribute('user', $config);
+        $this->assertObjectHasAttribute('tokens', $config);
+        $this->assertObjectHasAttribute('siteUrl', $config);
+        $this->assertObjectHasAttribute('l10n', $config);
+        $this->assertObjectHasAttribute('loadedJs', $config);
+        $this->assertObjectHasAttribute('loadedCss', $config);
+        $this->assertObjectHasAttribute('pluginCacheBuster', $config);
+        $this->assertObjectHasAttribute('libraryUrl', $config);
+
+        $this->assertEquals('/ajax?action=', $config->ajaxPath);
+        $this->assertTrue($config->canGiveScore);
+        $this->assertStringEndsWith("/s/resources/$resourceId", $config->documentUrl);
+
+        $contents = $config->contents->{"cid-$content->id"};
+        $this->assertEquals('H5P.Foobar 1.18', $contents->library);
+        $this->assertObjectHasAttribute('exportUrl', $contents);
+        $this->assertObjectHasAttribute('embedCode', $contents);
+        $this->assertObjectHasAttribute('resizeCode', $contents);
+        $this->assertObjectHasAttribute('displayOptions', $contents);
+        $this->assertObjectHasAttribute('contentUserData', $contents);
     }
 }

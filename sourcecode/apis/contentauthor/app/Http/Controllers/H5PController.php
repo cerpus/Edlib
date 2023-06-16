@@ -107,7 +107,7 @@ class H5PController extends Controller
         $settings = $h5pView->getSettings();
         $styles = array_merge($h5pView->getStyles(), $styles);
 
-        $viewData = [
+        return view('h5p.show', [
             'id' => $id,
             'title' => $content['title'],
             'language' => $content['language'],
@@ -119,9 +119,7 @@ class H5PController extends Controller
             'inDraftState' => !$h5pContent->isActuallyPublished(),
             'preview' => $preview,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
-        ];
-
-        return view('h5p.show', $viewData);
+        ]);
     }
 
     /**
