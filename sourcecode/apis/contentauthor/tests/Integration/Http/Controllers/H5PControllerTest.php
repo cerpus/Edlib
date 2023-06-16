@@ -158,10 +158,10 @@ class H5PControllerTest extends TestCase
         $library = H5PLibrary::factory()->create([
             'minor_version' => 18,
         ]);
-        /** @var H5PContent $content */
         H5PContent::factory()->create([
             'library_id' => $library->id,
         ]);
+        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'is_published' => true,
