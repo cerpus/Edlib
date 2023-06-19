@@ -532,7 +532,7 @@ class VideoBrowser extends ContentBrowserBase {
                     srcLang: track.srclang.split('-')[0],
                     track: {
                         externalId: track.id,
-                        path: track.sources[0].src.replace('http', 'https'),
+                        path: track.sources[0].src,
                         mime: track.mime_type,
                     }
                 };

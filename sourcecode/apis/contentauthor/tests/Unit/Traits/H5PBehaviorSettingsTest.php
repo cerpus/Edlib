@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Traits;
 
+use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Packages\CoursePresentation;
 use App\Libraries\H5P\Packages\MultiChoice;
 use App\Traits\H5PBehaviorSettings;
-use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use PHPUnit\Framework\TestCase;
 
 class H5PBehaviorSettingsTest extends TestCase

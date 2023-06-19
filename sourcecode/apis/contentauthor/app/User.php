@@ -11,6 +11,14 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+/**
+ * A dummy user that is not actually bound to a database table.
+ *
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $remember_token
+ */
 class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
