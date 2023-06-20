@@ -1,7 +1,10 @@
 name: Deploy-sandbox
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - "sourcecode/hub/**"
+      - ".github/workflows/hub-deploy-sandbox.yaml"
 
 defaults:
   run:
