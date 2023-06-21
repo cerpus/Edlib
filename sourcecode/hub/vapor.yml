@@ -7,6 +7,7 @@ environments:
         runtime: docker
         database: edlib-test-db
         cache: edlib-test-cache
+        domain: hub.cerpusdev.net
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
             - 'php artisan optimize'
