@@ -59,7 +59,7 @@ class Content extends Model
         $serializer = app()->make(ContentItemsSerializerInterface::class);
         $oauth1Signer = app()->make(Oauth1SignerInterface::class);
 
-        $credentials = LtiTool::where('consumer_key', session()->get('lti.oauth_consumer_key'))
+        $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
             ->firstOrFail()
             ->getOauth1Credentials();
 

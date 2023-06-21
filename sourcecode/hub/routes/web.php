@@ -4,12 +4,14 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\CookieController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OembedController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiValidatedRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -66,14 +68,13 @@ Route::controller(ContentController::class)->group(function () {
         ->name('content.store');
 });
 
-Route::controller(LtiController::class)
-    ->middleware(LtiValidatedRequest::class)
-    ->prefix('/lti/1.1')
-    ->group(function () {
-        Route::post('/select', 'select')
-            ->middleware('lti.launch-type:ContentItemSelectionRequest')
-            ->name('lti.select');
-    });
+Route::prefix('/lti/1.1')->group(function () {
+    Route::post('/select', [LtiController::class, 'select'])
+        ->middleware(EnsureFrameCookies::class)
+        ->middleware(LtiValidatedRequest::class)
+        ->middleware('lti.launch-type:ContentItemSelectionRequest')
+        ->name('lti.select');
+});
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
@@ -117,3 +118,5 @@ Route::prefix('facebook')->name('facebook.')->group(function () {
     Route::get('login', [FacebookController::class, 'loginWithFacebook'])->name('login');
     Route::any('callback', [FacebookController::class, 'callbackFromFacebook'])->name('callback');
 });
+
+Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');
