@@ -8,7 +8,7 @@ use Illuminate\Contracts\Filesystem\Cloud;
 use InvalidArgumentException;
 
 /**
- * Manager class for H5P presave scripts.
+ * Manager class for Edlib included H5P pre-save scripts.
  *
  * This should be the preferred option over accessing the filesystem directly.
  */

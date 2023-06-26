@@ -13,6 +13,7 @@ use H5PFrameworkInterface;
 use H5PStorage;
 use H5PValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -156,19 +157,19 @@ class H5PLibraryAdmin
         $out->params = [];
         $out->token = csrf_token();
 
-        $libraryVersions = H5PLibrary::whereIn('name', $libraries)
-            ->get()
-            ->pluck('name', 'id');
+        /** @var Collection $libraryVersions */
+        $libraryVersions = H5PLibrary::select('id', 'name')->find($libraries);
+        $libraryIds = $libraryVersions->pluck('id');
 
         if ($scores !== null) {
             collect(json_decode($scores))
-                ->each(function ($scoreObject, $id) use ($libraryVersions) {
+                ->each(function ($scoreObject, $id) use ($libraryIds) {
                     $content = H5PContent::findOrFail($id);
-                    if (!$libraryVersions->has($content->library_id)) {
+                    if (!$libraryIds->contains($content->library_id)) {
                         throw new \InvalidArgumentException("Library don't match");
                     }
                     $content->max_score = $scoreObject->score;
-                    $content->bulk_calculated = empty($scoreObject->error) ? self::BULK_UPDATED : self::BULK_FAILED;
+                    $content->bulk_calculated = $scoreObject->success ? self::BULK_UPDATED : self::BULK_FAILED;
                     if ($content->save() !== true) {
                         throw new \Exception("Setting of score failed");
                     }
@@ -177,33 +178,33 @@ class H5PLibraryAdmin
         }
 
         $contentsQuery = H5PContent::whereNull('max_score')
-            ->whereIn('library_id', $libraryVersions->keys());
-        if ($libraryVersions->contains(QuestionSet::$machineName)) {
-            $contentsQuery->orWhere(function ($query) {
+            ->whereIn('library_id', $libraryIds)
+            ->orderBy('library_id');
+
+        $questionSetIds = $libraryVersions->where('name', QuestionSet::$machineName)->pluck('id');
+        if ($questionSetIds->count() > 0) {
+            $contentsQuery->orWhere(function ($query) use ($questionSetIds) {
                 $query->where('max_score', 0)
                     ->where('bulk_calculated', self::BULK_UNTOUCHED)
-                    ->whereIn('library_id', function ($query) {
-                        $query->select('id')
-                            ->from('h5p_libraries')
-                            ->where('name', QuestionSet::$machineName);
-                    });
+                    ->whereIn('library_id', $questionSetIds);
             });
         }
 
         $out->left = $contentsQuery->count();
         if ($out->left) {
             $contents = $contentsQuery
-                ->limit(200)
+                ->limit(100)
                 ->get();
 
             $out->params = $contents
-                ->mapWithKeys(function ($content) use ($libraryVersions) {
+                ->map(function ($content) {
                     return [
-                        $content->id => [
                             'id' => $content->id,
-                            'library' => $libraryVersions->get($content->library_id),
+                            'library' => $content->library->getLibraryString(),
+                            'libraryName' => $content->library->name,
+                            'libraryId' => $content->library_id,
                             'params' => $content->parameters,
-                        ]];
+                        ];
                 })
                 ->toArray();
         }
