@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
-use App\ContentLock;
-use Illuminate\Http\Request;
-use App\Libraries\H5P\AjaxRequest;
-use App\Libraries\H5P\AdminConfig;
 use App\Http\Controllers\Controller;
-use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\DataObjects\ResourceUserDataObject;
+use App\Libraries\H5P\AdminConfig;
+use App\Libraries\H5P\AjaxRequest;
+use App\Libraries\H5P\H5PLibraryAdmin;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
+use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
@@ -38,33 +39,27 @@ class AdminController extends Controller
                 H5PContent::noMaxScoreScope($query);
             }
         ])
+            ->groupBy('id')
             ->having('contents_count', ">", 0)
             ->orderBy('name')
             ->get()
-            ->reduce(function ($old, $new) {
-                if (array_key_exists($new->name, $old)) {
-                    $old[$new->name]->contents_count += $new->contents_count;
-                } else {
-                    $old[$new->name] = $new;
-                }
-                return $old;
-            }, []);
+            ->filter(fn (H5PLibrary $library) => $library->supportsMaxScore());
 
-        $numFailed = H5PContent::with('library')
-            ->where('bulk_calculated', H5PLibraryAdmin::BULK_FAILED)
-            ->count();
         $config = resolve(AdminConfig::class);
         $config->addPresaveScripts();
-        $scripts = $config->getScriptAssets();
-        $settings = json_encode($config->getMaxScoreSettings());
-
         $scoreConfig = json_encode([
             'endpoint' => route('admin.maxscore.update'),
             'token' => csrf_token(),
-            'done' => '<p>Calculations are done!</p>',
         ]);
 
-        return view('admin.maxscore-overview', compact('libraries', 'scripts', 'scoreConfig', 'settings', 'numFailed'));
+        return view('admin.maxscore-overview', [
+            'libraries' => $libraries,
+            'scripts' => $config->getScriptAssets(),
+            'scoreConfig' => $scoreConfig,
+            'settings' => json_encode($config->getMaxScoreSettings()),
+            'numFailed' => H5PContent::where('bulk_calculated', H5PLibraryAdmin::BULK_FAILED)->count(),
+            'libraryPath' => app(CerpusStorageInterface::class)->getLibrariesPath(),
+        ]);
     }
 
     public function updateMaxScore(Request $request)
