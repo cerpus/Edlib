@@ -9,7 +9,6 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use BadMethodCallException;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Http\File;
 use InvalidArgumentException;
@@ -24,18 +23,14 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
 
     public const VIDEO_URL = 'https://bc/%s';
 
-    private ClientInterface $client;
-    private string $accountId;
-    private CerpusStorageInterface $storage;
-
-    public function __construct(Client $client, string $accountId)
-    {
+    public function __construct(
+        private readonly Client $client,
+        private readonly CerpusStorageInterface $storage,
+        private readonly string $accountId,
+    ) {
         if ($accountId === '') {
             throw new InvalidArgumentException('$accountId cannot be an empty string');
         }
-
-        $this->client = $client;
-        $this->accountId = $accountId;
     }
 
     public function upload($file, $fileHash)
@@ -186,10 +181,5 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     public function getType(): string
     {
         return "video";
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }

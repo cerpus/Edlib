@@ -1077,11 +1077,6 @@ parameters:
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Call to an undefined method GuzzleHttp\\\\ClientInterface\\:\\:get\\(\\)\\.$#"
-			count: 3
-			path: app/Libraries/H5P/Video/NDLAVideoAdapter.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
 			count: 1
 			path: app/Libraries/H5P/ViewConfig.php

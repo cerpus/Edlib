@@ -101,55 +101,56 @@ class H5PServiceProvider extends ServiceProvider
             ->needs('$accountId')
             ->giveConfig('h5p.video.accountId');
 
+        $this->app->when(NDLAContentBrowser::class)
+            ->needs(Client::class)
+            ->give(fn() => Auth0Client::getClient(OauthSetup::create([
+                'key' => config('h5p.image.key'),
+                'secret' => config('h5p.image.secret'),
+                'authUrl' => config('h5p.image.authDomain'),
+                'coreUrl' => config('h5p.image.url'),
+                'audience' => config('h5p.image.audience'),
+            ])));
+
         $this->app->bind(H5PImageAdapterInterface::class, function () {
-            $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    $client = Auth0Client::getClient(OauthSetup::create([
+            $adapter = $this->app->make(H5PAdapterInterface::class);
+
+            return match (strtolower($adapter->getAdapterName())) {
+                'ndla' => $this->app->make(NDLAContentBrowser::class),
+                default => null,
+            };
+        });
+
+        $this->app->when(NDLAAudioBrowser::class)
+            ->needs(Client::class)
+            ->give(function () {
+                if (!is_null(config('h5p.audio.url'))) {
+                    $authSetup = OauthSetup::create([
+                        'key' => config('h5p.audio.key'),
+                        'secret' => config('h5p.audio.secret'),
+                        'authUrl' => config('h5p.audio.authDomain'),
+                        'coreUrl' => config('h5p.audio.url'),
+                        'audience' => config('h5p.audio.audience'),
+                    ]);
+                } else {
+                    $authSetup = OauthSetup::create([
                         'key' => config('h5p.image.key'),
                         'secret' => config('h5p.image.secret'),
                         'authUrl' => config('h5p.image.authDomain'),
                         'coreUrl' => config('h5p.image.url'),
                         'audience' => config('h5p.image.audience'),
-                    ]));
-                    return new NDLAContentBrowser($client);
-                case "cerpus":
-                default:
-                    // None supported at the moment
-                    break;
-            }
-            return null;
-        });
+                    ]);
+                }
+
+                return Auth0Client::getClient($authSetup);
+            });
 
         $this->app->bind(H5PAudioInterface::class, function () {
-            $adapter = app(H5PAdapterInterface::class);
-            switch (strtolower($adapter->getAdapterName())) {
-                case "ndla":
-                    if (!is_null(config('h5p.audio.url'))) {
-                        $authSetup = OauthSetup::create([
-                            'key' => config('h5p.audio.key'),
-                            'secret' => config('h5p.audio.secret'),
-                            'authUrl' => config('h5p.audio.authDomain'),
-                            'coreUrl' => config('h5p.audio.url'),
-                            'audience' => config('h5p.audio.audience'),
-                        ]);
-                    } else {
-                        $authSetup = OauthSetup::create([
-                            'key' => config('h5p.image.key'),
-                            'secret' => config('h5p.image.secret'),
-                            'authUrl' => config('h5p.image.authDomain'),
-                            'coreUrl' => config('h5p.image.url'),
-                            'audience' => config('h5p.image.audience'),
-                        ]);
-                    }
-                    $client = Auth0Client::getClient($authSetup);
-                    return new NDLAAudioBrowser($client);
-                case "cerpus":
-                default:
-                    // None supported at the moment
-                    break;
-            }
-            return null;
+            $adapter = $this->app->make(H5PAdapterInterface::class);
+
+            return match (strtolower($adapter->getAdapterName())) {
+                'ndla' => $this->app->make(NDLAAudioBrowser::class),
+                default => null, // none supported at the moment
+            };
         });
 
         $this->app->singleton(H5PCerpusStorage::class);

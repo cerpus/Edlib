@@ -10,13 +10,10 @@ use GuzzleHttp\Client;
 
 class NDLATextTrack implements H5PExternalProviderInterface
 {
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private readonly Client $client,
+        private readonly CerpusStorageInterface $storage,
+    ) {
     }
 
     public function isTargetType($mimeType, $pathToFile): bool
@@ -59,10 +56,5 @@ class NDLATextTrack implements H5PExternalProviderInterface
     public function getType(): string
     {
         return 'file';
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }
