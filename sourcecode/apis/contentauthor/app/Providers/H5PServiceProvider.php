@@ -103,7 +103,7 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->when(NDLAContentBrowser::class)
             ->needs(Client::class)
-            ->give(fn() => Auth0Client::getClient(OauthSetup::create([
+            ->give(fn () => Auth0Client::getClient(OauthSetup::create([
                 'key' => config('h5p.image.key'),
                 'secret' => config('h5p.image.secret'),
                 'authUrl' => config('h5p.image.authDomain'),
