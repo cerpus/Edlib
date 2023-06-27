@@ -11,8 +11,10 @@ use H5PExport as H5PDefaultExport;
 use Illuminate\Support\Collection;
 use JsonException;
 use UnexpectedValueException;
+
 use function json_decode;
 use function property_exists;
+
 use const JSON_THROW_ON_ERROR;
 
 readonly class H5PExport

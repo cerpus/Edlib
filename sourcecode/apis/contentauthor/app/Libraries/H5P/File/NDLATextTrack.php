@@ -41,7 +41,7 @@ class NDLATextTrack implements H5PExternalProviderInterface
             parse_str(parse_url($source, PHP_URL_QUERY), $result);
             ['id' => $id, 'track' => $track] = $result;
             $source = collect($this->video->getVideoDetails($id)->text_tracks ?? [])
-                ->firstOrFail(fn($item) => $item->id === $track)
+                ->firstOrFail(fn ($item) => $item->id === $track)
                 ->sources[0]
                 ->src;
         }

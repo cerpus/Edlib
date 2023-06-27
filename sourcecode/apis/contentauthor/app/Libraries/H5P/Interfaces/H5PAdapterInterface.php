@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P\Interfaces;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use Illuminate\Support\Collection;
 
 interface H5PAdapterInterface
 {
