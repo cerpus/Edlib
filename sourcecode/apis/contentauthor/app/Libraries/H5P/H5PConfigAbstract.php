@@ -17,27 +17,23 @@ abstract class H5PConfigAbstract implements ConfigInterface
     protected const CACHE_BUSTER_STRING = '2.0.3';
     protected const EMBED_TEMPLATE = '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>';
 
-    public \H5PCore $h5pCore;
-    public int $id;
-
-    protected H5PAdapterInterface $adapter;
-    protected array $config = [];
-    protected array $contentConfig = [];
-    protected array $editorConfig = [];
-    protected array $assets = ['styles' => [], 'scripts' => []];
-    protected string|bool|null $userId = null;
-    protected string|bool|null $userName = null;
-    protected string|bool|null $userUsername = null;
-    protected string|bool|null $userEmail = null;
-    protected ?string $redirectToken = null;
-    protected array $content = [];
-    protected ?string $language = null;
-
-    public function __construct(H5PAdapterInterface $adapter, \H5PCore $h5pCore)
+    public function __construct(
+        protected H5PAdapterInterface $adapter,
+        public \H5PCore $h5pCore,
+        public ?int $id = null,
+        protected array $config = [],
+        protected array $contentConfig = [],
+        protected array $editorConfig = [],
+        protected array $assets = ['styles' => [], 'scripts' => []],
+        protected string|bool|null $userId = null,
+        protected string|bool|null $userName = null,
+        protected string|bool|null $userUsername = null,
+        protected string|bool|null $userEmail = null,
+        protected ?string $redirectToken = null,
+        protected array $content = [],
+        protected ?string $language = null,
+    )
     {
-        $this->adapter = $adapter;
-        $this->h5pCore = $h5pCore;
-
         $this->adapter->setConfig($this);
 
         $url = UrlHelper::getCurrentBaseUrl();
