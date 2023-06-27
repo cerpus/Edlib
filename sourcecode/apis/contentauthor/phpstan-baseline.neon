@@ -386,11 +386,6 @@ parameters:
 			path: app/Http/Controllers/H5PController.php
 
 		-
-			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
 			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -724,11 +719,6 @@ parameters:
 			message: "#^Relation 'library' is not found in App\\\\H5PLibraryLanguage model\\.$#"
 			count: 2
 			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\CerpusStorageInterface\\:\\:getEditorDisplayPath\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
@@ -1074,37 +1064,7 @@ parameters:
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
 			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface\\:\\:alterConfig\\(\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Parameter \\#1 \\$parameters of method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:alterParameters\\(\\) expects string, object given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Parameter \\#2 \\$type of method H5PCore\\:\\:loadContentDependencies\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$h5pCore\\.$#"
-			count: 1
-			path: app/Libraries/H5P/h5p.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:getContents\\(\\) should return array but returns object\\.$#"
-			count: 1
-			path: app/Libraries/H5P/h5p.php
+			path: app/Libraries/H5P/H5PViewConfig.php
 
 		-
 			message: "#^Parameter \\#1 \\$content of method H5peditor\\:\\:processParameters\\(\\) expects stdClass, int given\\.$#"
@@ -1383,11 +1343,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/H5PControllerTest.php
-
-		-
-			message: "#^Variable \\$h5pContentLibs in PHPDoc tag @var does not exist\\.$#"
 			count: 1
 			path: tests/Integration/Http/Controllers/H5PControllerTest.php
 

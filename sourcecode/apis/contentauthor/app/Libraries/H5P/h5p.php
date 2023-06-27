@@ -14,8 +14,6 @@ use Illuminate\Http\Request;
 
 class h5p
 {
-    private bool $configInitialised = false;
-
     public function __construct(
         private H5PCore $core,
         private H5PStorage $storage,
@@ -25,26 +23,11 @@ class h5p
 
     public function createView(ConfigInterface $config): H5PView
     {
-        if (!$this->configInitialised) {
-            $this->initConfig($config);
-            $this->configInitialised = true;
-        }
-
         return new H5PView(
             $config->getScriptAssets(),
             $config->getStyleAssets(),
             $config->getConfig(),
         );
-    }
-
-    public function getContents(ConfigInterface $config, mixed $id): array
-    {
-        if (!$this->configInitialised) {
-            $this->initConfig($config);
-            $this->configInitialised = true;
-        }
-
-        return $this->core->loadContent($id);
     }
 
     public function storeContent(Request $request, array|null $content, mixed $userId): array
@@ -135,18 +118,5 @@ class h5p
         ];
 
         return $core->getStorableDisplayOptions($set, $current);
-    }
-
-    private function initConfig(ConfigInterface $config): void
-    {
-        $config->h5pCore = $config->getH5PCore() ?? $this->core;
-
-        if (!empty($config->id)) {
-            $config->setContent($this->core->loadContent($config->id));
-        }
-
-        // FIXME: this must be called here due to undocumented side effects that
-        // have to occur for the object to behave correctly
-        $config->getConfig();
     }
 }

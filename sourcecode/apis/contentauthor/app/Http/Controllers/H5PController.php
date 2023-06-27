@@ -20,11 +20,13 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use App\Libraries\H5P\EditorConfig;
 use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PCreateConfig;
+use App\Libraries\H5P\H5PEditConfig;
+use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\H5PCopyright;
-use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PExport;
+use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -32,7 +34,6 @@ use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
-use App\Libraries\H5P\ViewConfig;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
@@ -52,7 +53,6 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -93,17 +93,18 @@ class H5PController extends Controller
         if (!$h5pContent->canShow($preview)) {
             return view('layouts.draft-resource', compact('styles'));
         }
-        $viewConfig = (resolve(ViewConfig::class))
-            ->setId($id)
-            ->setUserId(Session::get('userId', false))
-            ->setUserName(Session::get('name', false))
-            ->setEmail(Session::get('email', false))
-            ->setPreview($preview)
-            ->setContext($context);
-        $viewConfig->setAlterParametersSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
 
+        $viewConfig = (app(H5PViewConfig::class))
+            ->setUserId(Session::get('authId', false))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setPreview($preview)
+            ->setContext($context)
+            ->loadContent($id)
+            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
         $h5pView = $this->h5p->createView($viewConfig);
-        $content = $this->h5p->getContents($viewConfig, $id);
+        $content = $viewConfig->getContent();
         $settings = $h5pView->getSettings();
         $styles = array_merge($h5pView->getStyles(), $styles);
 
@@ -138,7 +139,6 @@ class H5PController extends Controller
     public function create(Request $request, H5PCore $core, $contenttype = null): View
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
-        $redirectToken = $request->input('redirectToken');
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
@@ -146,18 +146,17 @@ class H5PController extends Controller
         } catch (Exception) {
         }
 
-        /** @var EditorConfig $editorConfig */
-        $editorConfig = (resolve(EditorConfig::class))
+        $editorConfig = (app(H5PCreateConfig::class))
             ->setUserId(Session::get('authId', false))
-            ->setUserName(Session::get('userName', false))
-            ->setEmail(Session::get('email', false))
-            ->setName(Session::get('name', false))
-            ->setRedirectToken($redirectToken)
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
             ->setDisplayHub(empty($contenttype))
-            ->setLanguage(Iso639p3::code2letters($language))
-            ->hideH5pJS();
-
+            ->setRedirectToken($request->input('redirectToken'))
+            ->setDisplayHub(empty($contenttype))
+            ->setLanguage(Iso639p3::code2letters($language));
         $h5pView = $this->h5p->createView($editorConfig);
+
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
@@ -243,18 +242,17 @@ class H5PController extends Controller
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
 
-        $editorConfig = (resolve(EditorConfig::class))
-            ->setId($id)
+        $editorConfig = (app(H5PEditConfig::class))
             ->setUserId(Session::get('authId', false))
-            ->setUserName(Session::get('userName', false))
-            ->setEmail(Session::get('email', false))
-            ->setName(Session::get('name', false))
-            ->setRedirectToken($request->get('redirectToken'))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setRedirectToken($request->input('redirectToken'))
             ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
-            ->hideH5pJS();
-
+            ->loadContent($id);
         $h5pView = $this->h5p->createView($editorConfig);
-        $content = $this->h5p->getContents($editorConfig, $id);
+        $content = $editorConfig->getContent();
+
         if (empty($content)) {
             Log::error(__METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),

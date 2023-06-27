@@ -1,0 +1,23 @@
+<?php
+
+class H5PCore
+{
+    /**
+     * @param int $id for content.
+     * @return ?array
+     */
+    public function loadContent($id) {}
+
+    /**
+     * @param int $id for content.
+     * @param ?string $type
+     * @return array
+     */
+    public function loadContentDependencies($id, $type = null) {}
+
+    /**
+     * @param Object|array $content
+     * @return ?string
+     */
+    public function filterParameters(&$content) {}
+}

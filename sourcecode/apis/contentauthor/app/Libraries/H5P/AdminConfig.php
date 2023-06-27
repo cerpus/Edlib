@@ -4,6 +4,7 @@ namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
+use App\Libraries\H5P\Traits\Config;
 use H5PCore;
 
 class AdminConfig implements ConfigInterface

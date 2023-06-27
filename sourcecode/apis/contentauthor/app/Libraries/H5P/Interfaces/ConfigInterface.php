@@ -15,9 +15,5 @@ interface ConfigInterface
 
     public function getStyleAssets();
 
-    public function setContent($content);
-
-    public function setLibrary(H5PLibrary $library);
-
     public function getH5PCore();
 }

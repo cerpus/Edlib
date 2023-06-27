@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Libraries\H5P;
+namespace App\Libraries\H5P\Traits;
 
 use App\H5PLibrary;
 use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\LtiToH5PLanguage;
 use Exception;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Session;
 use stdClass;
 
 trait Config
