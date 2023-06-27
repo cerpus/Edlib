@@ -32,8 +32,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
         protected ?string $redirectToken = null,
         protected array $content = [],
         protected ?string $language = null,
-    )
-    {
+    ) {
         $this->adapter->setConfig($this);
 
         $url = UrlHelper::getCurrentBaseUrl();
