@@ -4,19 +4,48 @@ class H5PCore
 {
     /**
      * @param int $id for content.
-     * @return ?array
+     * @return ?array{
+     *      'id': int,
+     *      'contentId': int,
+     *      'params': string,
+     *      'filtered': string,
+     *      'embedType': string,
+     *      'title': string,
+     *      'disable': int,
+     *      'user_id': string,
+     *      'slug': string,
+     *      'libraryId': int,
+     *      'libraryName': string,
+     *      'libraryMajorVersion': int,
+     *      'libraryMinorVersion': int,
+     *      'libraryEmbedTypes': string,
+     *      'libraryFullscreen': int,
+     *      'language': string,
+     *      'max_score': ?int,
+     *      'created_at': Object<\Illuminate\Support\Carbon>,
+     *      'updated_at': Object<\Illuminate\Support\Carbon>,
+     * }
      */
     public function loadContent($id) {}
 
     /**
      * @param int $id for content.
-     * @param ?string $type
-     * @return array
+     * @param 'editor'|'preloaded'|'dynamic' $type
+     * @return array{
+     *     'libraryId': int,
+     *     'machineName': string,
+     *     'majorVersion': int,
+     *     'minorVersion': int,
+     *     'patchVersion': int,
+     *     'preloadedJs'?: string,
+     *     'preloadedCss'?: string,
+     *     'dropCss'?: string,
+     * }
      */
     public function loadContentDependencies($id, $type = null) {}
 
     /**
-     * @param Object|array $content
+     * @param Object|array<mixed> $content
      * @return ?string
      */
     public function filterParameters(&$content) {}
