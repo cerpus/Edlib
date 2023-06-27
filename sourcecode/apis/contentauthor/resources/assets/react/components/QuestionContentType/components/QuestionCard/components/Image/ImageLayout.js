@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import DropZone from 'react-dropzone';
 import Popover from '@material-ui/core/Popover';
@@ -22,17 +22,33 @@ function ImageLayout(props) {
 
     const { formatMessage }  = useIntl();
     const [focused, setFocused] = useState(false);
+    const dropzoneRef = useRef(null);
+
+    const handleIconKeyPress = (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            dropzoneRef.current.open();
+        }
+    };
+
     let icon = null;
     if ( previewImage === null) {
-        icon = <ImageIcon
-            style={{ cursor: 'pointer' }}
-            tabIndex={0}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-        />;
+        icon = (
+            <ImageIcon
+                style={{
+                    cursor: 'pointer',
+                    boxShadow: focused ? '0 0 0 1px' : 'none',
+                }}
+                tabIndex={0}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                onKeyPress={handleIconKeyPress}
+            />
+        );
         if ( readOnly === false ) {
             icon = (
                 <DropZone
+                    ref={dropzoneRef}
                     onDropAccepted={onDrop}
                     multiple={false}
                     className={`imageDropzone ${focused ? 'focused' : ''}`}
