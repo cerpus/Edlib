@@ -102,7 +102,7 @@ final class UserTest extends DuskTestCase
                 ->press('Log in')
                 ->assertAuthenticated()
                 ->visit('/my-account')
-                ->type('name','User1_New')
+                ->type('name', 'User1_New')
                 ->press('Save')
                 ->assertSee('User1_New');
         });
