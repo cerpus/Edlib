@@ -3,6 +3,7 @@
 namespace App\Libraries\H5P\Video;
 
 use App\Libraries\DataObjects\ContentStorageSettings;
+use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use BadMethodCallException;
@@ -165,7 +166,7 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
         $fileName = md5($source['path']);
         $filePath = sprintf(ContentStorageSettings::CONTENT_FULL_PATH, $content['id'], $this->getType(), $fileName, $extension);
 
-        $storage = app()->make(H5PVideoInterface::class);
+        $storage = app()->make(CerpusStorageInterface::class);
         if (!$storage->storeContentOnDisk($filePath, fopen($localFile, "r"))) {
             throw new Exception("Could not store file on disk");
         }
