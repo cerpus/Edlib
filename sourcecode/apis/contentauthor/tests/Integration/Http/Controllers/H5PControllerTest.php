@@ -287,7 +287,7 @@ class H5PControllerTest extends TestCase
         $resourceApi
             ->expects($this->atLeastOnce())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '' , '', '', $content->title));
+            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $controller = app(H5PController::class);
         $result = $controller->doShow($content->id, $faker->sha1, false)->getData();

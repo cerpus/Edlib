@@ -9,6 +9,7 @@ use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Support\Facades\Session;
 use Ramsey\Uuid\Uuid;
+
 use function Cerpus\Helper\Helpers\profile as config;
 
 abstract class H5PConfigAbstract implements ConfigInterface

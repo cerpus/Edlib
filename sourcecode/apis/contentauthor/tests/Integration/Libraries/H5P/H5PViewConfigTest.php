@@ -107,7 +107,7 @@ class H5PViewConfigTest extends TestCase
         $resourceApi
             ->expects($this->atLeastOnce())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '' , '', '', $content->title));
+            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $data = app(H5PViewConfig::class)
             ->setUserId($userId)
@@ -163,7 +163,7 @@ class H5PViewConfigTest extends TestCase
         $resourceApi
             ->expects($this->atLeastOnce())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '' , '', '', $content->title));
+            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $data = app(H5PViewConfig::class)
             ->loadContent($content->id)
@@ -189,7 +189,7 @@ class H5PViewConfigTest extends TestCase
         $resourceApi
             ->expects($this->atLeastOnce())
             ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '' , '', '', $content->title));
+            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         Session::put(SessionKeys::EXT_BEHAVIOR_SETTINGS, BehaviorSettingsDataObject::create([
             'presetmode' => 'exam',
