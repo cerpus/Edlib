@@ -3,108 +3,110 @@
 namespace App\Libraries\H5P;
 
 use App\H5PContent;
-use App\H5PLibrary;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
+use H5PContentValidator;
 use H5PCore;
 use H5PExport as H5PDefaultExport;
 use Illuminate\Support\Collection;
+use JsonException;
+use UnexpectedValueException;
+use function json_decode;
+use function property_exists;
+use const JSON_THROW_ON_ERROR;
 
-class H5PExport
+readonly class H5PExport
 {
-    private $content;
-    private $export;
-    private $adapter;
-    private $externalProviders;
+    /**
+     * @var array<mixed, H5PExternalProviderInterface>
+     */
+    private array $externalProviders;
 
-    public function __construct(H5PContent $content, H5PDefaultExport $export, H5PAdapterInterface $adapter)
-    {
-        $this->content = $content;
-        $this->export = $export;
-        $this->adapter = $adapter;
-
+    public function __construct(
+        private H5PDefaultExport $export,
+        H5PAdapterInterface $adapter,
+        private H5PContentValidator $validator,
+        private bool $convertMediaToLocal,
+    ) {
         $this->externalProviders = $adapter->getExternalProviders();
     }
 
-    public function generateExport($convertMediaToLocal = false)
+    /**
+     * @throws JsonException
+     */
+    public function generateExport(H5PContent $content): bool
     {
-        if ($convertMediaToLocal && $this->externalProviders->isNotEmpty()) {
-            $this->processContent();
+        if ($this->convertMediaToLocal) {
+            $parameters = $this->storeContentToDisk($content);
+        } else {
+            $parameters = $content->parameters;
         }
-        /** @var H5PLibrary $h5PLibrary */
-        $h5PLibrary = $this->content->library;
-        $library = H5PCore::libraryFromString($h5PLibrary->getLibraryString());
-        $library['libraryId'] = $h5PLibrary->id;
-        $library['name'] = $h5PLibrary->name;
 
-        $contents = $this->content->toArray();
-        $contents['params'] = $this->content->parameters;
-        $contents['embedType'] = $this->content->embed_type;
+        $library = H5PCore::libraryFromString($content->library->getLibraryString())
+            ?: throw new UnexpectedValueException('Bad library string');
+        $library['libraryId'] = $content->library->id;
+        $library['name'] = $content->library->name;
+
+        $contents = $content->toArray();
+        $contents['params'] = $parameters;
+        $contents['embedType'] = $content->embed_type;
         $contents['library'] = $library;
-        $contents['metadata'] = $this->content->getMetadataStructure();
+        $contents['metadata'] = $content->getMetadataStructure();
+        $contents['filtered'] = $parameters;
 
-        /** @var \H5PContentValidator $validator */
-        $validator = resolve(\H5PContentValidator::class);
-        $params = (object)[
-            'library' => $h5PLibrary->getLibraryString(),
-            'params' => json_decode($this->content->parameters)
+        // we don't use the so-called validator for purposes other than
+        // resolving dependencies, as it likes to corrupt the data
+
+        $validatorParams = (object)[
+            'library' => $content->library->getLibraryString(),
+            'params' => json_decode($content->parameters)
         ];
-        if (!$params->params) {
-            return null;
-        }
-        $validator->validateLibrary($params, (object)['options' => [$params->library]]);
-
-        // Update content dependencies.
-        $contents['dependencies'] = $validator->getDependencies();
-        $contents['filtered'] = json_encode($params->params);
+        $this->validator->validateLibrary($validatorParams, (object) [
+            'options' => [$validatorParams->library],
+        ]);
+        $contents['dependencies'] = $this->validator->getDependencies();
 
         return $this->export->createExportFile($contents);
     }
 
-    private function processContent()
+    private function storeContentToDisk(H5PContent $content): string
     {
-        $content = json_decode($this->content->parameters);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception(json_last_error_msg());
-        }
-        $filtered = $this->traverseFiltered($this->content, collect($content));
+        $parameters = json_decode($content->parameters, flags: JSON_THROW_ON_ERROR);
+        $filtered = $this->traverseParameters(collect($parameters), $content);
 
-        $this->content->parameters = $filtered->toJson();
+        return $filtered->toJson();
     }
 
-    private function traverseFiltered(H5PContent $h5p, $parameters)
+    private function traverseParameters(Collection $parameters, H5PContent $content): Collection
     {
-        /** @var Collection $parameters */
-        $processedParams = $parameters->map(function ($value) use ($h5p) {
-            if (!empty($value->mime) && !$this->isPathLocal($value->path)) {
-                $value = $this->storeContent((array)$value, $h5p);
+        return $parameters->map(function (mixed $value) use ($content) {
+            if (is_object($value) && property_exists($value, 'mime') && !empty($value->path) && !$this->isPathLocal($value->path)) {
+                $value = $this->applyExternalProviderHandling((array)$value, $content);
             }
 
-            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
-                $value = $this->traverseFiltered($h5p, collect($value));
+            if (is_array($value) || is_object($value)) {
+                $value = $this->traverseParameters(collect($value), $content);
             }
+
             return $value;
         });
-        return $processedParams;
     }
 
-    private function storeContent($values, $content)
+    private function applyExternalProviderHandling(array $values, H5PContent $content): array
     {
-        /** @var H5PExternalProviderInterface $externalProvider */
-        $externalProvider = $this->externalProviders->first(function ($provider) use ($values) {
-            return $provider->isTargetType($values['mime'], $values['path']);
-        });
+        $externalProvider = collect($this->externalProviders)
+            ->first(fn ($provider) => $provider->isTargetType($values['mime'], $values['path']));
 
-        if (!is_null($externalProvider)) {
-            $externalProvider->setStorage($this->export->h5pC->fs);
+        if ($externalProvider instanceof H5PExternalProviderInterface) {
             $fileDetails = $externalProvider->storeContent($values, $content);
             $values = array_merge($values, $fileDetails);
         }
+
         return $values;
     }
 
-    private function isPathLocal($path)
+    private function isPathLocal(string $path): bool
     {
-        return !empty($path) && preg_match('/^(images|videos|audios|files)\//', $path, $matches);
+        return preg_match('!^(images|videos|audios|files)/!', $path);
     }
 }

@@ -5,23 +5,23 @@ namespace App\Libraries\H5P\File;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
+use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Exception;
 use GuzzleHttp\Client;
 
 class NDLATextTrack implements H5PExternalProviderInterface
 {
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private readonly Client $client,
+        private readonly CerpusStorageInterface $storage,
+        private readonly NDLAVideoAdapter $video,
+    ) {
     }
 
     public function isTargetType($mimeType, $pathToFile): bool
     {
-        return $this->isVttMime($mimeType) && $this->isSameDomain($pathToFile);
+        return parse_url($pathToFile, PHP_URL_HOST) === 'bc' ||
+            $this->isVttMime($mimeType) && $this->isSameDomain($pathToFile);
     }
 
     private function isSameDomain($pathToFile)
@@ -37,6 +37,14 @@ class NDLATextTrack implements H5PExternalProviderInterface
     public function storeContent($values, $content)
     {
         $source = $values['path'];
+        if (parse_url($source, PHP_URL_HOST) === 'bc') {
+            parse_str(parse_url($source, PHP_URL_QUERY), $result);
+            ['id' => $id, 'track' => $track] = $result;
+            $source = collect($this->video->getVideoDetails($id)->text_tracks ?? [])
+                ->firstOrFail(fn($item) => $item->id === $track)
+                ->sources[0]
+                ->src;
+        }
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
         $this->client->get($source, [
             'sink' => $tempFile
@@ -59,10 +67,5 @@ class NDLATextTrack implements H5PExternalProviderInterface
     public function getType(): string
     {
         return 'file';
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }

@@ -40,10 +40,7 @@ interface H5PAdapterInterface
      */
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion);
 
-    /**
-     * @return string|null
-     */
-    public function getAdapterName();
+    public function getAdapterName(): string;
 
     /**
      * @return void
@@ -89,7 +86,10 @@ interface H5PAdapterInterface
 
     public function enableEverybodyIsCollaborators(): bool;
 
-    public function getExternalProviders(): Collection;
+    /**
+     * @return array<H5PExternalProviderInterface>
+     */
+    public function getExternalProviders(): array;
 
     public function useMaxScore(): bool;
 

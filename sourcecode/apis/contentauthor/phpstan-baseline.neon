@@ -892,21 +892,6 @@ parameters:
 			path: app/Libraries/H5P/H5PCopyright.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PExternalProviderInterface will always evaluate to false\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
-			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PExport\\:\\:\\$adapter is never read, only written\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
 			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php
@@ -1065,11 +1050,6 @@ parameters:
 			message: "#^Variable \\$filePath might not be defined\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
-
-		-
-			message: "#^Call to an undefined method GuzzleHttp\\\\ClientInterface\\:\\:get\\(\\)\\.$#"
-			count: 3
-			path: app/Libraries/H5P/Video/NDLAVideoAdapter.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
@@ -1243,16 +1223,6 @@ parameters:
 
 		-
 			message: "#^Class App\\\\Libraries\\\\H5P\\\\EditorStorage constructor invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
-			message: "#^Variable \\$instance in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
-			message: "#^Variable \\$instance on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Providers/H5PServiceProvider.php
 

@@ -5,10 +5,8 @@ namespace Tests\Integration\Libraries\H5P;
 use App\H5PContent;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\H5PExport;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use Exception;
-use H5PExport as H5PDefaultExport;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -50,9 +48,8 @@ class H5PExportTest extends TestCase
     {
         $this->setupH5PAdapter([
             'alterLibrarySemantics' => null,
-            'getExternalProviders' => collect(),
+            'getExternalProviders' => [],
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
         $this->linkLibrariesFolder();
         $this->seed(TestH5PSeeder::class);
@@ -62,9 +59,9 @@ class H5PExportTest extends TestCase
             'library_id' => 284,
         ]);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(false));
+        config('feature.export_h5p_with_local_files', false);
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -85,9 +82,8 @@ class H5PExportTest extends TestCase
     {
         $this->setupH5PAdapter([
             'alterLibrarySemantics' => null,
-            'getExternalProviders' => collect(),
+            'getExternalProviders' => [],
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
         $this->linkLibrariesFolder();
         $this->seed(TestH5PSeeder::class);
@@ -97,9 +93,9 @@ class H5PExportTest extends TestCase
             'library_id' => 284,
         ]);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(false));
+        config('feature.export_h5p_with_local_files', false);
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -124,9 +120,8 @@ class H5PExportTest extends TestCase
     {
         $this->setupH5PAdapter([
             'alterLibrarySemantics' => null,
-            'getExternalProviders' => collect(),
+            'getExternalProviders' => [],
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
         $imageUrl = $this->faker->imageUrl();
 
@@ -138,9 +133,9 @@ class H5PExportTest extends TestCase
             'library_id' => 284,
         ]);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(false));
+        config('feature.export_h5p_with_local_files', false);
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -193,14 +188,13 @@ class H5PExportTest extends TestCase
                     ];
                 });
 
-                return collect([$imageProvider1, $imageProvider2]);
+                return [$imageProvider1, $imageProvider2];
             },
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(true));
+        config('feature.export_h5p_with_local_files', true);
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -252,14 +246,13 @@ class H5PExportTest extends TestCase
                     ];
                 });
 
-                return collect([$imageProvider, $videoProvider]);
+                return [$imageProvider, $videoProvider];
             },
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(true));
+        config('feature.export_h5p_with_local_files', false);
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -328,14 +321,12 @@ class H5PExportTest extends TestCase
                     ];
                 });
 
-                return collect([$imageProvider, $videoProvider]);
+                return [$imageProvider, $videoProvider];
             },
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(true));
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
@@ -404,14 +395,12 @@ class H5PExportTest extends TestCase
                     ];
                 });
 
-                return collect([$textTrackProvider, $videoProvider]);
+                return [$textTrackProvider, $videoProvider];
             },
         ]);
-        $adapter = resolve(H5PAdapterInterface::class);
 
-        $h5pExport = resolve(H5PDefaultExport::class);
-        $export = new H5PExport($h5p, $h5pExport, $adapter);
-        $this->assertTrue($export->generateExport(true));
+        $export = resolve(H5PExport::class);
+        $this->assertTrue($export->generateExport($h5p));
         $exportName = sprintf("%s-%s.", $h5p->slug, $h5p->id);
         $exportPath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "h5p");
         $archivePath = sprintf(ContentStorageSettings::EXPORT_PATH, $exportName . "zip");
