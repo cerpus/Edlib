@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Link;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<Link>
+ */
 class LinkFactory extends Factory
 {
     public function definition(): array

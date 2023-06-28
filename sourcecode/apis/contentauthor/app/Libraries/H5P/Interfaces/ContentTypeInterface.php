@@ -2,8 +2,8 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
+use App\Libraries\DataObjects\BehaviorSettingsDataObject;
+use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
 
 interface ContentTypeInterface
 {

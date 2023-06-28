@@ -2,9 +2,13 @@
 
 namespace Database\Factories;
 
+use App\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * @template-extends Factory<File>
+ */
 class FileFactory extends Factory
 {
     public function definition(): array

@@ -2,11 +2,11 @@
 
 namespace App\Libraries\H5P\Packages;
 
+use App\Libraries\DataObjects\BehaviorSettingsDataObject;
+use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\Libraries\H5P\Interfaces\PackageInterface;
 use App\Traits\H5PBehaviorSettings;
-use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-use Cerpus\CoreClient\DataObjects\EditorBehaviorSettingsDataObject;
 
 /**
  * @method applyEditorBehaviorSettings(EditorBehaviorSettingsDataObject $settingsDataObject)
