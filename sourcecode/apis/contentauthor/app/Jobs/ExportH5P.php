@@ -17,27 +17,12 @@ class ExportH5P implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $content;
-    public $adapter;
-    public $fileStorage;
-    public $localStorage;
-
-    /**
-     * ExportH5P constructor.
-     */
-    public function __construct(H5PContent $content)
+    public function __construct(private readonly H5PContent $content)
     {
-        $this->content = $content;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return bool
-     */
-    public function handle()
+    public function handle(H5PExport $export): void
     {
-        $export = resolve(H5PExport::class, ['content' => $this->content]);
-        return $export->generateExport(config('feature.export_h5p_with_local_files'));
+        $export->generateExport($this->content);
     }
 }

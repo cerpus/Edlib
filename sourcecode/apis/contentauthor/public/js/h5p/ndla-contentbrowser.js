@@ -514,10 +514,10 @@ class VideoBrowser extends ContentBrowserBase {
 
     setCopyright(values) {
         this.copyrightHandler.set(this.buildCopyright(values));
-        this.setTextTracks(values.text_tracks);
+        this.setTextTracks(values);
     }
 
-    setTextTracks(tracks) {
+    setTextTracks(values) {
         const field = H5PEditor.findField('textTracks', this.parent) || H5PEditor.findField('a11y', this.parent);
         if (field) {
             const trackField = field.children[0];
@@ -525,14 +525,14 @@ class VideoBrowser extends ContentBrowserBase {
                 .forEach(() => {
                     trackField.removeItem(0)
                 });
-            for (let track of tracks) {
+            for (let track of values.text_tracks) {
                 const trackData = {
                     kind: track.kind,
                     label: track.label,
                     srcLang: track.srclang.split('-')[0],
                     track: {
                         externalId: track.id,
-                        path: track.sources[0].src,
+                        path: `https://bc?id=${encodeURIComponent(values.id)}&track=${encodeURIComponent(track.id)}`,
                         mime: track.mime_type,
                     }
                 };
