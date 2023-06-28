@@ -9,8 +9,8 @@ use App\Libraries\H5P\File\NDLATextTrack;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
+use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -27,11 +27,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     /** @var H5PAlterParametersSettingsDataObject */
     private $parameterSettings;
-
-    public function __construct()
-    {
-        $this->adapterName = "ndla";
-    }
 
     /**
      * Alter parameters before added to the H5PIntegrationObject
@@ -320,14 +315,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getExternalProviders(): Collection
+    public function getExternalProviders(): array
     {
-        return collect([
+        return [
             resolve(NDLAContentBrowser::class),
-            resolve(H5PVideoInterface::class),
+            resolve(NDLAVideoAdapter::class),
             resolve(NDLAAudioBrowser::class),
             resolve(NDLATextTrack::class),
-        ]);
+        ];
     }
 
     public function useMaxScore(): bool
@@ -378,5 +373,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return [
             (string) mix('js/react-contentbrowser.js')
         ];
+    }
+
+    public function getAdapterName(): string
+    {
+        return 'ndla';
     }
 }

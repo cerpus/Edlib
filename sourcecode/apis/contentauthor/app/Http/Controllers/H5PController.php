@@ -34,6 +34,7 @@ use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
@@ -781,23 +782,21 @@ class H5PController extends Controller
         return [$oldContent, $content, $newH5pContent];
     }
 
-    public function downloadContent(H5PContent $h5p)
+    public function downloadContent(H5PContent $h5p, H5PExport $export, H5PCore $core, H5PCerpusStorage $storage)
     {
-        /** @var H5PCore $core */
-        $core = resolve(H5PCore::class);
-        $displayOptions = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
-        if (!array_key_exists('export', $displayOptions) || $displayOptions['export'] !== true) {
-            return trans('h5p-editor.download-not-available');
+        $options = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
+        $canExport = $options[H5PCore::DISPLAY_OPTION_DOWNLOAD] ?? false;
+
+        if (!$canExport) {
+            return response(trans('h5p-editor.download-not-available'), 403);
         }
 
         $fileName = sprintf("%s-%d.h5p", $h5p->slug, $h5p->id);
-        /** @var H5PExport $export */
-        $export = resolve(H5PExport::class, ['content' => $h5p]);
-        if ($core->fs->hasExport($fileName) || $export->generateExport(config('feature.export_h5p_with_local_files'))) {
-            return $core->fs->downloadContent($fileName, $h5p->title);
+        if ($storage->hasExport($fileName) || $export->generateExport($h5p)) {
+            return $storage->downloadContent($fileName, $h5p->title);
         }
 
-        return response(trans('h5p-editor.could-not-find-content'));
+        return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 
     public function browseImages(Request $request)
