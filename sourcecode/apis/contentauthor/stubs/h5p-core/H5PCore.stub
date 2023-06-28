@@ -1,0 +1,23 @@
+<?php
+
+class H5PCore
+{
+    /**
+     * @param int $id for content.
+     * @return ?array<mixed>
+     */
+    public function loadContent($id) {}
+
+    /**
+     * @param int $id for content.
+     * @param 'editor'|'preloaded'|'dynamic' $type
+     * @return array<mixed>
+     */
+    public function loadContentDependencies($id, $type = null) {}
+
+    /**
+     * @param Object|array<mixed> $content
+     * @return ?string
+     */
+    public function filterParameters(&$content) {}
+}
