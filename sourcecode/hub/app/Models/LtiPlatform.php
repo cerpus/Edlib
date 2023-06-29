@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Lti\Oauth1\Oauth1Credentials;
-use App\Lti\Oauth1\Oauth1CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,15 +39,15 @@ class LtiPlatform extends Model
         });
     }
 
-    public function getOauth1Credentials(): Oauth1Credentials
+    public function getOauth1Credentials(): Credentials
     {
-        return new Oauth1Credentials($this->key, $this->secret);
+        return new Credentials($this->key, $this->secret);
     }
 
-    public static function createOauth1CredentialsStore(): Oauth1CredentialStoreInterface
+    public static function createOauth1CredentialsStore(): CredentialStoreInterface
     {
-        return new class () implements Oauth1CredentialStoreInterface {
-            public function findByKey(string $key): Oauth1Credentials|null
+        return new class () implements CredentialStoreInterface {
+            public function findByKey(string $key): Credentials|null
             {
                 return LtiPlatform::where('key', $key)
                     ->first()

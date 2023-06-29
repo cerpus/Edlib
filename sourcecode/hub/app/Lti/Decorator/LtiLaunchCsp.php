@@ -7,8 +7,8 @@ namespace App\Lti\Decorator;
 use App\Http\Middleware\ContentSecurityPolicy;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
-use App\Lti\Oauth1\Oauth1Credentials;
-use App\Lti\Oauth1\Oauth1SignerInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Http\Request;
 
 /**
@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 class LtiLaunchCsp extends LtiLaunchBuilder
 {
     public function __construct(
-        Oauth1SignerInterface $oauth1Signer,
+        SignerInterface $oauth1Signer,
         private readonly Request $request,
     ) {
         // TODO: this class should implement an interface so we aren't bound by
@@ -26,7 +26,7 @@ class LtiLaunchCsp extends LtiLaunchBuilder
     }
 
     public function toPresentationLaunch(
-        Oauth1Credentials $credentials,
+        Credentials $credentials,
         string $url,
         string $resourceLinkId,
     ): LtiLaunch {
@@ -36,7 +36,7 @@ class LtiLaunchCsp extends LtiLaunchBuilder
     }
 
     public function toItemSelectionLaunch(
-        Oauth1Credentials $credentials,
+        Credentials $credentials,
         string $url,
         string $itemReturnUrl,
     ): LtiLaunch {

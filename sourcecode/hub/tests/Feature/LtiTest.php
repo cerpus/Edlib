@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Lti\LtiLaunchBuilder;
-use App\Lti\Oauth1\Oauth1Credentials;
 use App\Models\LtiPlatform;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,7 +22,34 @@ final class LtiTest extends TestCase
         $this->launchBuilder = $this->app->make(LtiLaunchBuilder::class);
     }
 
-    public function testAuthorizedItemSelectionRequestsRedirectToContentExplorer(): void
+    public function testCookieCheckIsTransparentWhenCookiesAllowed(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+
+        $request = $this->launchBuilder->toItemSelectionLaunch(
+            $platform->getOauth1Credentials(),
+            'https://hub.edlib.local/lti/1.1/select',
+            'http://example.com/',
+        )->getRequest();
+
+        // FIXME: would be nice if we could chain these, but Laravel doesn't
+        // support following one redirect at a time.
+
+        $this->post('/lti/1.1/select', $request->toArray())
+            ->assertStatus(307)
+            ->assertLocation('/lti/1.1/select?_edlib_cookie_check=1')
+            ->assertCookie('_edlib_cookies');
+
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('/lti/1.1/select?_edlib_cookie_check=1', $request->toArray())
+            ->assertStatus(307)
+            ->assertLocation('/lti/1.1/select');
+
+        $this->post('/lti/1.1/select', $request->toArray())
+            ->assertRedirect('https://hub.edlib.local/content');
+    }
+
+    public function testCookieCheckShowsCountermeasuresWhenCookiesNotAllowed(): void
     {
         $platform = LtiPlatform::factory()->create();
 
@@ -33,18 +60,40 @@ final class LtiTest extends TestCase
         )->getRequest();
 
         $this->post('/lti/1.1/select', $request->toArray())
+            ->assertStatus(307)
+            ->assertLocation('/lti/1.1/select?_edlib_cookie_check=1')
+            ->assertCookie('_edlib_cookies');
+
+        $this->post('/lti/1.1/select?_edlib_cookie_check=1', $request->toArray())
+            ->assertStatus(200)
+            ->assertSee('Requesting storage access');
+    }
+
+    public function testAuthorizedItemSelectionRequestsRedirectToContentExplorer(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+
+        $request = $this->launchBuilder->toItemSelectionLaunch(
+            $platform->getOauth1Credentials(),
+            'https://hub.edlib.local/lti/1.1/select',
+            'http://example.com/',
+        )->getRequest();
+
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('/lti/1.1/select', $request->toArray())
             ->assertRedirect('https://hub.edlib.local/content');
     }
 
     public function testUnauthorizedItemSelectionRequestsAreRejected(): void
     {
         $request = $this->launchBuilder->toItemSelectionLaunch(
-            new Oauth1Credentials("it's a", "fake"),
+            new Credentials("it's a", "fake"),
             'https://hub.edlib.local/lti/1.1/select',
             'http://example.com/',
         )->getRequest();
 
-        $this->post('/lti/1.1/select', $request->toArray())
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('/lti/1.1/select', $request->toArray())
             ->assertUnauthorized();
     }
 
@@ -61,7 +110,8 @@ final class LtiTest extends TestCase
             )
             ->getRequest();
 
-        $this->post('/lti/1.1/select', $request->toArray())
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('/lti/1.1/select', $request->toArray())
             ->assertRedirect('https://example.com/return?lti_errorlog=Invalid+LTI+launch+type%2C+expected+%22ContentItemSelectionRequest%22+but+got+%22basic-lti-launch-request%22');
     }
 }

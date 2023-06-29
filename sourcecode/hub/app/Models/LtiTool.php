@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Lti\Oauth1\Oauth1Credentials;
 use BadMethodCallException;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -42,7 +42,7 @@ class LtiTool extends Model
         return $this->hasMany(LtiResource::class);
     }
 
-    public function getOauth1Credentials(): Oauth1Credentials
+    public function getOauth1Credentials(): Credentials
     {
         assert($this->consumer_key !== null && $this->consumer_secret !== null);
 
@@ -52,7 +52,7 @@ class LtiTool extends Model
             );
         }
 
-        return new Oauth1Credentials(
+        return new Credentials(
             $this->consumer_key,
             $this->consumer_secret,
         );

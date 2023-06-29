@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\IndexContentRequest;
 use App\Http\Requests\StoreContentRequest;
 use App\Lti\LtiLaunchBuilder;
-use App\Lti\Oauth1\Oauth1Credentials;
 use App\Models\Content;
 use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
 use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -60,7 +60,7 @@ class ContentController extends Controller
         $version = $content->latestPublishedVersion()->firstOrFail();
 
         $credentials = $version->resource?->tool?->getOauth1Credentials();
-        assert($credentials instanceof Oauth1Credentials);
+        assert($credentials instanceof Credentials);
 
         $launchUrl = $version->resource?->view_launch_url;
         assert(is_string($launchUrl));
@@ -99,7 +99,7 @@ class ContentController extends Controller
         $version = $content->latestPublishedVersion()->firstOrFail();
 
         $credentials = $version->resource?->tool?->getOauth1Credentials();
-        assert($credentials instanceof Oauth1Credentials);
+        assert($credentials instanceof Credentials);
 
         $launchUrl = $version->resource?->edit_launch_url;
         assert(is_string($launchUrl));

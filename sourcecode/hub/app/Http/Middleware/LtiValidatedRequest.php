@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Lti\Exception\Oauth1ValidationException;
-use App\Lti\Oauth1\Oauth1Request;
-use App\Lti\Oauth1\Oauth1Validator;
+use Cerpus\EdlibResourceKit\Oauth1\Exception\ValidationException;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final readonly class LtiValidatedRequest
 {
-    public function __construct(private Oauth1Validator $oauth1Validator)
+    public function __construct(private ValidatorInterface $oauth1Validator)
     {
     }
 
@@ -30,7 +30,7 @@ final readonly class LtiValidatedRequest
 
         try {
             $this->oauth1Validator->validate($oauthRequest);
-        } catch (Oauth1ValidationException $e) {
+        } catch (ValidationException $e) {
             throw new UnauthorizedHttpException(
                 challenge: 'OAuth',
                 message: 'OAuth 1.0 validation failure: ' . $e->getMessage(),

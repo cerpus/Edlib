@@ -5,12 +5,10 @@ namespace App\Providers;
 use App\Configuration\Locales;
 use App\Lti\Decorator\LtiLaunchCsp;
 use App\Lti\LtiLaunchBuilder;
-use App\Lti\Oauth1\Oauth1CredentialStoreInterface;
-use App\Lti\Oauth1\Oauth1Signer;
-use App\Lti\Oauth1\Oauth1SignerInterface;
 use App\Models\LtiPlatform;
 use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
@@ -40,8 +38,7 @@ class AppServiceProvider extends ServiceProvider
             ->needs('$locales')
             ->giveConfig('app.allowed_locales');
 
-        $this->app->singleton(Oauth1SignerInterface::class, Oauth1Signer::class);
-        $this->app->singleton(Oauth1CredentialStoreInterface::class, LtiPlatform::createOauth1CredentialsStore(...));
+        $this->app->singleton(CredentialStoreInterface::class, LtiPlatform::createOauth1CredentialsStore(...));
 
         $this->app->singleton(LtiLaunchBuilder::class, LtiLaunchCsp::class);
     }

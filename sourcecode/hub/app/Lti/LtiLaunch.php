@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use App\Lti\Oauth1\Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\Request;
 
 class LtiLaunch
 {
     public function __construct(
-        private readonly Oauth1Request $request,
+        private readonly Request $request,
         private readonly int|null $width = null,
         private readonly int|null $height = null,
     ) {
     }
 
-    public function getRequest(): Oauth1Request
+    public function getRequest(): Request
     {
         return $this->request;
     }

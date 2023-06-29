@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Lti\Oauth1\Oauth1Request;
-use App\Lti\Oauth1\Oauth1SignerInterface;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItemPlacement;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\LtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -57,7 +57,7 @@ class Content extends Model
         ]);
 
         $serializer = app()->make(ContentItemsSerializerInterface::class);
-        $oauth1Signer = app()->make(Oauth1SignerInterface::class);
+        $oauth1Signer = app()->make(SignerInterface::class);
 
         $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
             ->firstOrFail()

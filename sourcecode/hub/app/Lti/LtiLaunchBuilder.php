@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use App\Lti\Oauth1\Oauth1Credentials;
-use App\Lti\Oauth1\Oauth1Request;
-use App\Lti\Oauth1\Oauth1SignerInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 
 class LtiLaunchBuilder
 {
@@ -21,7 +21,7 @@ class LtiLaunchBuilder
     ];
 
     public function __construct(
-        private readonly Oauth1SignerInterface $oauth1Signer,
+        private readonly SignerInterface $oauth1Signer,
     ) {
     }
 
@@ -50,7 +50,7 @@ class LtiLaunchBuilder
     }
 
     public function toPresentationLaunch(
-        Oauth1Credentials $credentials,
+        Credentials $credentials,
         string $url,
         string $resourceLinkId,
     ): LtiLaunch {
@@ -65,7 +65,7 @@ class LtiLaunchBuilder
     }
 
     public function toItemSelectionLaunch(
-        Oauth1Credentials $credentials,
+        Credentials $credentials,
         string $url,
         string $itemReturnUrl,
     ): LtiLaunch {
