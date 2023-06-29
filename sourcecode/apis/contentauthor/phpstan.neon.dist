@@ -13,3 +13,6 @@ parameters:
         - resources/lang
         - routes
         - tests
+    stubFiles:
+        - stubs/h5p-core/H5PCore.stub
+        - stubs/h5p-core/H5PExport.stub

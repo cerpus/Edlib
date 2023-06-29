@@ -261,18 +261,13 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$contents_count\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminController.php
-
-		-
 			message: "#^Called 'count' on Laravel collection, but could have been retrieved as a query\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
 			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
-			count: 2
+			count: 1
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
@@ -387,11 +382,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:getContentLicense\\(\\) should return Illuminate\\\\Http\\\\Response but returns int\\|string\\|false\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Parameter \\#2 \\$content of method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:storeContent\\(\\) expects array\\|null, ArrayAccess given\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -731,11 +721,6 @@ parameters:
 			path: app/Libraries/H5P/EditorAjax.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\CerpusStorageInterface\\:\\:getEditorDisplayPath\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorConfig.php
-
-		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
@@ -897,21 +882,6 @@ parameters:
 			path: app/Libraries/H5P/H5PCopyright.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PExternalProviderInterface will always evaluate to false\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
-			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PExport\\:\\:\\$adapter is never read, only written\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PExport.php
-
-		-
 			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php
@@ -928,11 +898,6 @@ parameters:
 
 		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PLibraryAdmin.php
-
-		-
-			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PLibraryAdmin.php
 
@@ -1077,44 +1042,9 @@ parameters:
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Call to an undefined method GuzzleHttp\\\\ClientInterface\\:\\:get\\(\\)\\.$#"
-			count: 3
-			path: app/Libraries/H5P/Video/NDLAVideoAdapter.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
 			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface\\:\\:alterConfig\\(\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Parameter \\#1 \\$parameters of method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:alterParameters\\(\\) expects string, object given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Parameter \\#2 \\$type of method H5PCore\\:\\:loadContentDependencies\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ViewConfig.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\H5P\\\\Interfaces\\\\ConfigInterface\\:\\:\\$h5pCore\\.$#"
-			count: 1
-			path: app/Libraries/H5P/h5p.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\h5p\\:\\:getContents\\(\\) should return array but returns object\\.$#"
-			count: 1
-			path: app/Libraries/H5P/h5p.php
+			path: app/Libraries/H5P/H5PViewConfig.php
 
 		-
 			message: "#^Parameter \\#1 \\$content of method H5peditor\\:\\:processParameters\\(\\) expects stdClass, int given\\.$#"
@@ -1257,16 +1187,6 @@ parameters:
 			path: app/Providers/H5PServiceProvider.php
 
 		-
-			message: "#^Variable \\$instance in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
-			message: "#^Variable \\$instance on left side of \\?\\? always exists and is not nullable\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/QuestionSet.php
@@ -1393,11 +1313,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/H5PControllerTest.php
-
-		-
-			message: "#^Variable \\$h5pContentLibs in PHPDoc tag @var does not exist\\.$#"
 			count: 1
 			path: tests/Integration/Http/Controllers/H5PControllerTest.php
 

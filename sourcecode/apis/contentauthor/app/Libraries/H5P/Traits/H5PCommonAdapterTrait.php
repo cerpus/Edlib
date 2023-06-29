@@ -10,8 +10,6 @@ use App\Libraries\HTMLPurify\Config\MathMLConfig;
 
 trait H5PCommonAdapterTrait
 {
-    protected $adapterName;
-
     protected $config;
 
     public function hasVideoLibrary(array $scripts, int $minimumMajorVersion = 1, int $minimumMinorVersion = 1)
@@ -50,11 +48,6 @@ trait H5PCommonAdapterTrait
         }
     }
 
-    public function getAdapterName()
-    {
-        return $this->adapterName;
-    }
-
     public static function getAllAdapters()
     {
         return [
@@ -71,7 +64,7 @@ trait H5PCommonAdapterTrait
 
     public function adapterIs($adapter)
     {
-        return strtolower($this->adapterName) === strtolower($adapter);
+        return strtolower($this->getAdapterName()) === strtolower($adapter);
     }
 
     public function setConfig(ConfigInterface $config)

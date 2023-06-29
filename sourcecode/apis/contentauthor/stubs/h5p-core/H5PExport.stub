@@ -1,0 +1,11 @@
+<?php
+
+class H5PExport
+{
+    /**
+     * @param array<mixed> $content
+     */
+    public function createExportFile(array $content): bool
+    {
+    }
+}

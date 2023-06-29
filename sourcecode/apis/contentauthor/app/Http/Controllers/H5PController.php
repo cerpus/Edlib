@@ -20,11 +20,13 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use App\Libraries\H5P\EditorConfig;
 use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PCreateConfig;
+use App\Libraries\H5P\H5PEditConfig;
+use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\H5PCopyright;
-use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PExport;
+use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
@@ -32,7 +34,7 @@ use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
-use App\Libraries\H5P\ViewConfig;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
@@ -93,21 +95,22 @@ class H5PController extends Controller
         if (!$h5pContent->canShow($preview)) {
             return view('layouts.draft-resource', compact('styles'));
         }
-        $viewConfig = (resolve(ViewConfig::class))
-            ->setId($id)
-            ->setUserId(Session::get('userId', false))
-            ->setUserName(Session::get('name', false))
-            ->setEmail(Session::get('email', false))
-            ->setPreview($preview)
-            ->setContext($context);
-        $viewConfig->setAlterParametersSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
 
+        $viewConfig = (app(H5PViewConfig::class))
+            ->setUserId(Session::get('authId', false))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setPreview($preview)
+            ->setContext($context)
+            ->loadContent($id)
+            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
         $h5pView = $this->h5p->createView($viewConfig);
-        $content = $this->h5p->getContents($viewConfig, $id);
+        $content = $viewConfig->getContent();
         $settings = $h5pView->getSettings();
         $styles = array_merge($h5pView->getStyles(), $styles);
 
-        $viewData = [
+        return view('h5p.show', [
             'id' => $id,
             'title' => $content['title'],
             'language' => $content['language'],
@@ -119,9 +122,7 @@ class H5PController extends Controller
             'inDraftState' => !$h5pContent->isActuallyPublished(),
             'preview' => $preview,
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
-        ];
-
-        return view('h5p.show', $viewData);
+        ]);
     }
 
     /**
@@ -140,7 +141,6 @@ class H5PController extends Controller
     public function create(Request $request, H5PCore $core, $contenttype = null): View
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
-        $redirectToken = $request->input('redirectToken');
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
@@ -148,18 +148,17 @@ class H5PController extends Controller
         } catch (Exception) {
         }
 
-        /** @var EditorConfig $editorConfig */
-        $editorConfig = (resolve(EditorConfig::class))
+        $editorConfig = (app(H5PCreateConfig::class))
             ->setUserId(Session::get('authId', false))
-            ->setUserName(Session::get('userName', false))
-            ->setEmail(Session::get('email', false))
-            ->setName(Session::get('name', false))
-            ->setRedirectToken($redirectToken)
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
             ->setDisplayHub(empty($contenttype))
-            ->setLanguage(Iso639p3::code2letters($language))
-            ->hideH5pJS();
-
+            ->setRedirectToken($request->input('redirectToken'))
+            ->setDisplayHub(empty($contenttype))
+            ->setLanguage(Iso639p3::code2letters($language));
         $h5pView = $this->h5p->createView($editorConfig);
+
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
@@ -245,18 +244,17 @@ class H5PController extends Controller
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
 
-        $editorConfig = (resolve(EditorConfig::class))
-            ->setId($id)
+        $editorConfig = (app(H5PEditConfig::class))
             ->setUserId(Session::get('authId', false))
-            ->setUserName(Session::get('userName', false))
-            ->setEmail(Session::get('email', false))
-            ->setName(Session::get('name', false))
-            ->setRedirectToken($request->get('redirectToken'))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setRedirectToken($request->input('redirectToken'))
             ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
-            ->hideH5pJS();
-
+            ->loadContent($id);
         $h5pView = $this->h5p->createView($editorConfig);
-        $content = $this->h5p->getContents($editorConfig, $id);
+        $content = $editorConfig->getContent();
+
         if (empty($content)) {
             Log::error(__METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),
@@ -784,23 +782,21 @@ class H5PController extends Controller
         return [$oldContent, $content, $newH5pContent];
     }
 
-    public function downloadContent(H5PContent $h5p)
+    public function downloadContent(H5PContent $h5p, H5PExport $export, H5PCore $core, H5PCerpusStorage $storage)
     {
-        /** @var H5PCore $core */
-        $core = resolve(H5PCore::class);
-        $displayOptions = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
-        if (!array_key_exists('export', $displayOptions) || $displayOptions['export'] !== true) {
-            return trans('h5p-editor.download-not-available');
+        $options = $core->getDisplayOptionsForView($h5p->disable, $h5p->id);
+        $canExport = $options[H5PCore::DISPLAY_OPTION_DOWNLOAD] ?? false;
+
+        if (!$canExport) {
+            return response(trans('h5p-editor.download-not-available'), 403);
         }
 
         $fileName = sprintf("%s-%d.h5p", $h5p->slug, $h5p->id);
-        /** @var H5PExport $export */
-        $export = resolve(H5PExport::class, ['content' => $h5p]);
-        if ($core->fs->hasExport($fileName) || $export->generateExport(config('feature.export_h5p_with_local_files'))) {
-            return $core->fs->downloadContent($fileName, $h5p->title);
+        if ($storage->hasExport($fileName) || $export->generateExport($h5p)) {
+            return $storage->downloadContent($fileName, $h5p->title);
         }
 
-        return response(trans('h5p-editor.could-not-find-content'));
+        return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 
     public function browseImages(Request $request)
