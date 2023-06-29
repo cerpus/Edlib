@@ -34,7 +34,8 @@ final readonly class SignedOauth10Request
         $oauth1Request = new Oauth10Request(
             $request->getMethod(),
             $request->url(),
-            $params,
+            // undo empty string => null conversion
+            array_map(fn ($v) => $v === null ? '' : $v, $params),
         );
 
         try {
