@@ -7,6 +7,7 @@ namespace App\EdlibResource;
 use Cerpus\EdlibResourceKit\Oauth1\Claim;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
+
 use function request;
 
 /**
