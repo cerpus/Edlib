@@ -172,9 +172,10 @@ final class FrameworkTest extends TestCase
                 'patchVersionInFolderName' => $library->patch_version_in_folder_name,
             ]);
 
-        $this->assertDatabaseHas('h5p_libraries', ['id' => $library->id]);
-        $this->framework->deleteLibrary($library);
-        $this->assertDatabaseMissing('h5p_libraries', ['id' => $library->id]);
+        $lib = ['id' => $library->id];
+        $this->assertDatabaseHas('h5p_libraries', $lib);
+        $this->framework->deleteLibrary((object) $lib);
+        $this->assertDatabaseMissing('h5p_libraries', $lib);
     }
 
     /** @dataProvider provider_usePatch */
