@@ -1387,21 +1387,6 @@ parameters:
 			path: tests/Integration/Libraries/H5P/Package/VideoTest.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 2
-			path: tests/Integration/Libraries/H5P/ViewConfigTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 2
-			path: tests/Integration/Libraries/H5P/ViewConfigTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/ViewConfigTest.php
-
-		-
 			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"
 			count: 2
 			path: tests/Integration/Libraries/QuestionSetConverterTest.php
