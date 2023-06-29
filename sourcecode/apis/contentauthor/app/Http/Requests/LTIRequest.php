@@ -14,7 +14,7 @@ class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
                     $request->method(),
                     $request->url(),
                     // undo empty string => null conversion
-                    array_map(fn($v) => $v === null ? '' : $v, $request->all()),
+                    array_map(fn ($v) => $v === null ? '' : $v, $request->all()),
                 )
                 : null;
 

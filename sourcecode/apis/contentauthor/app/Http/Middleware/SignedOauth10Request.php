@@ -35,7 +35,7 @@ final readonly class SignedOauth10Request
             $request->getMethod(),
             $request->url(),
             // undo empty string => null conversion
-            array_map(fn($v) => $v === null ? '' : $v, $params),
+            array_map(fn ($v) => $v === null ? '' : $v, $params),
         );
 
         try {
