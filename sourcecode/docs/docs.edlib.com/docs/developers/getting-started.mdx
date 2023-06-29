@@ -10,13 +10,18 @@ We are still working on documentation for setting up Edlib on-premise and in the
 
 ## Prerequisites
 
-- A recent version of [Docker](https://docs.docker.com/get-docker/)
+- A recent version of [Docker](https://docs.docker.com/get-docker/). Make sure you're on the latest (non distro-provided) version of `docker-compose`. 
 - The [git](https://git-scm.com/downloads) command-line utility
 - Ports 80, 443, 3306, 5432, 5672, 6379, 9200, and 15672 on the host machine must be unoccupied
 
 :::note
 
-Avoid using distro-provided versions of Docker, as these tend to be years out of date and might not support the features used by Edlib.
+1. Edlib is a complex web application with the need of mulitple ports and HTTPS.
+2. Check the error log if there are problems with services not starting. 
+3. Note that the following services will have the status `Exited (0)` after their run:
+- certs
+- common-startup
+- elasticsearch_password
 
 :::
 
