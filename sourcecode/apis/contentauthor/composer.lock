@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1fd674e156313954899ecd7a6d284612",
+    "content-hash": "8dd21089be96538bc9d9d836ddb9b0eb",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -2444,12 +2444,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/h5p/h5p-php-library.git",
-                "reference": "06dab4041b7ae59a4f579d14a12297507145b7f8"
+                "reference": "0a82667e00175dea55e37ad8bbebedbfed25b5b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/06dab4041b7ae59a4f579d14a12297507145b7f8",
-                "reference": "06dab4041b7ae59a4f579d14a12297507145b7f8",
+                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/0a82667e00175dea55e37ad8bbebedbfed25b5b6",
+                "reference": "0a82667e00175dea55e37ad8bbebedbfed25b5b6",
                 "shasum": ""
             },
             "require": {
@@ -2498,7 +2498,7 @@
                 "issues": "https://github.com/h5p/h5p-php-library/issues",
                 "source": "https://github.com/h5p/h5p-php-library/tree/master"
             },
-            "time": "2023-03-09T14:48:41+00:00"
+            "time": "2023-06-27T13:26:01+00:00"
         },
         {
             "name": "h5p/h5p-editor",
