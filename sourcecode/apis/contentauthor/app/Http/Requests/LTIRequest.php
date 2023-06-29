@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Oauth10\Oauth10Request;
 use Illuminate\Support\Facades\Session;
 
-class LTIRequest extends Oauth10Request
+class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 {
     public static function fromRequest(\Illuminate\Http\Request $request): self|null
     {
         if (!$request->attributes->has('lti_request')) {
             $ltiRequest = $request->has('lti_message_type')
-                ? new self($request->url(), $request->all())
+                ? new self($request->method(), $request->url(), $request->all())
                 : null;
 
             $request->attributes->set('lti_request', $ltiRequest);
@@ -21,10 +20,11 @@ class LTIRequest extends Oauth10Request
     }
 
     public function __construct(
-        string $requestUri,
+        string $method,
+        string $url,
         private readonly array $params,
     ) {
-        parent::__construct("POST", $requestUri, $params, '');
+        parent::__construct($method, $url, $params);
     }
 
     public function getLaunchPresentationReturnUrl(): string|null
@@ -32,14 +32,9 @@ class LTIRequest extends Oauth10Request
         return $this->params['launch_presentation_return_url'] ?? null;
     }
 
-    public function hasParam($name): bool
-    {
-        return array_key_exists($name, $this->params);
-    }
-
     public function param($name, $default = null)
     {
-        return $this->params[$name] ?? $default;
+        return $this->has($name) ? $this->get($name) : $default;
     }
 
     public function getUserId()

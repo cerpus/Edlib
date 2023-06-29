@@ -68,7 +68,6 @@ const buildLtiRequest = (
             `${uuidv4()}-${Math.random()}-${process.hrtime()}`
         ).toString(),
         oauth_timestamp: moment().unix(),
-        oauth_token: '',
         oauth_signature_method: 'HMAC-SHA1',
         ...filteredExtras,
     };
