@@ -142,7 +142,7 @@ class H5PViewConfig extends H5PConfigAbstract
         }
     }
 
-    private function getSaveFrequency(): int
+    private function getSaveFrequency(): int|false
     {
         if (array_key_exists("library", $this->content) &&
             array_key_exists("name", $this->content["library"]) &&
