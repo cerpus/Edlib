@@ -90,7 +90,7 @@ Route::controller(UserController::class)->group(function () {
         Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
 
         Route::get('/my-account', 'myAccount')->name('user.my-account');
-        Route::post('/updateAccount', 'updateAccount')->name('user.update-account');
+        Route::post('/update-account', 'updateAccount')->name('user.update-account');
     });
 });
 

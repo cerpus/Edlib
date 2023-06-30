@@ -114,7 +114,7 @@
                                     <li>
                                         <form action="{{ route('log_out') }}" method="POST">
                                             @csrf
-                                            <button class="dropdown-item" id="log_out">
+                                            <button class="dropdown-item">
                                                 <x-icon name="box-arrow-right" class="me-2" />
                                                 {{ trans('messages.log-out') }}
                                             </button>

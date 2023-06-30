@@ -13,7 +13,7 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('password_reset_token')->nullable()->after('password');
+            $table->string('password_reset_token')->nullable();
         });
     }
 

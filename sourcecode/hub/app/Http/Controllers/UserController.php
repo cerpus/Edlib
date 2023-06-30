@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -110,11 +111,14 @@ class UserController extends Controller
     {
         $user = User::where('password_reset_token', $token)->where('email', $email)->first();
 
-        if ($user) {
-            return view('user.reset-password', compact('token', 'email'));
+        if (!$user) {
+            abort(Response::HTTP_NOT_FOUND);
         }
 
-        return redirect()->back()->with('alert', trans('messages.alert-password-reset-invalid-token'));
+        return view('user.reset-password', [
+            'token' => $token,
+            'email' => $email,
+        ]);
     }
 
     public function resetPassword(Request $request, string $token): View|RedirectResponse
@@ -126,7 +130,7 @@ class UserController extends Controller
                 'password' => 'required|confirmed|min:8',
             ]);
 
-            $user->password = bcrypt($request->password);
+            $user->password = Hash::make($request->password);
             $user->password_reset_token = null;
             $user->save();
             return redirect('/')->with('alert', trans('messages.alert-password-reset-success'));

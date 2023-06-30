@@ -124,21 +124,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | View Path
-    |--------------------------------------------------------------------------
-    |
-    | The base directory path for the mail views. This is used when the mail
-    | views are not explicitly specified in the mailer configuration.
-    |
-    */
-
-    'view' => [
-        'paths' => [
-            resource_path('views/mail'),
-        ],
-    ],
-
 ];

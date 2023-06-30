@@ -45,7 +45,7 @@
     <p>{{ trans('messages.reset-password-email-action') }} <a href="{{ $resetLink }}">{{ trans('messages.reset-password') }}</a></p>
     <p>{{ trans('messages.reset-password-email-note') }}</p>
     <p>{{ trans('messages.reset-password-email-ignore') }}</p>
-    <p>{{ trans('messages.reset-password-email-thanks') }}</p>
+    <p>{{ trans('messages.reset-password-email-thanks', ['site' => config('app.name')]) }}</p>
 </div>
 <div class="footer">
     <p>{{ config('app.name') }}</p>

@@ -3,10 +3,9 @@
 
     <x-form action="{{ route('reset-password-update', ['token' => $token, 'email' => $email]) }}">
         <x-form.field
-            name="email"
             type="email"
             :label="trans('messages.email-address')"
-            value="{{ $email }}"
+            :value="$email"
             readonly
         />
 

@@ -128,7 +128,7 @@ final class UserTest extends DuskTestCase
                 ->press('Save')
                 ->assertSee('Account updated successfully')
                 ->click('.navbar-nav .nav-link.dropdown-toggle')
-                ->click('#log_out')
+                ->press('Log out')
                 ->assertGuest()
                 ->visit('/login')
                 ->type('email', 'john@example.com')
