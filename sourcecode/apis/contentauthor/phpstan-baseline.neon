@@ -531,16 +531,6 @@ parameters:
 			path: app/Http/Middleware/QuestionSetAccess.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: app/Http/Middleware/SignedOauth10Request.php
-
-		-
-			message: "#^Using nullsafe method call on non\\-nullable type Symfony\\\\Component\\\\HttpFoundation\\\\InputBag\\. Use \\-\\> instead\\.$#"
-			count: 1
-			path: app/Http/Middleware/SignedOauth10Request.php
-
-		-
 			message: "#^PHPDoc type array of property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers is not covariant with PHPDoc type int of overridden property Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers\\.$#"
 			count: 1
 			path: app/Http/Middleware/TrustProxies.php
