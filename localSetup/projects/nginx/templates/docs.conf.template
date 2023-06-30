@@ -1,17 +1,15 @@
 server {
   listen 80;
 
-  server_name docs.edlib.local;
+  server_name docs.${EDLIB_ROOT_DOMAIN};
 
-  return 301 https://docs.edlib.local$request_uri;
+  return 301 https://docs.${EDLIB_ROOT_DOMAIN}$request_uri;
 }
 
 server {
-  listen 443 ssl;
-  ssl_certificate  /etc/ssl/private/cerpus.crt;
-  ssl_certificate_key  /etc/ssl/private/cerpus.key;
+  include includes/https.conf;
 
-  server_name  docs.edlib.local;
+  server_name  docs.${EDLIB_ROOT_DOMAIN};
 
   location / {
     set $upstream http://docs;

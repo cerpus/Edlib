@@ -1,17 +1,15 @@
 server {
   listen 80;
 
-  server_name www.edlib.local;
+  server_name www.${EDLIB_ROOT_DOMAIN};
 
-  return 301 https://$host$request_uri;
+  return 301 https://www.${EDLIB_ROOT_DOMAIN}$request_uri;
 }
 
 server {
-  listen 443 ssl;
-  ssl_certificate  /etc/ssl/private/cerpus.crt;
-  ssl_certificate_key  /etc/ssl/private/cerpus.key;
+  include includes/https.conf;
 
-  server_name  www.edlib.local;
+  server_name  www.${EDLIB_ROOT_DOMAIN};
 
   location /ws {
     set $upstream  http://www:3001;

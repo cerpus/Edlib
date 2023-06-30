@@ -26,7 +26,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'contentAuthor' => [
-        'url' => env('EDLIBCOMMON_CONTENTAUTHOR_URL', 'https://ca.edlib.local'),
+        'url' => env('EDLIBCOMMON_CONTENTAUTHOR_URL', 'https://ca.' . env('EDLIB_ROOT_DOMAIN', 'edlib.test')),
         'internalKey' => env('EDLIBCOMMON_CONTENTAUTHOR_INTERNAL_KEY')
     ]
 ];
