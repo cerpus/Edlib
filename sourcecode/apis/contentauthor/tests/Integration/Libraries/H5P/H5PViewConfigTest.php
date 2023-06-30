@@ -83,9 +83,11 @@ class H5PViewConfigTest extends TestCase
         ];
     }
 
-    public function test_loadContent(): void
+    /** @dataProvider provider_saveFrequency */
+    public function test_loadContent(int|false $frequency): void
     {
         $faker = Factory::create();
+        config()->set('h5p.saveFrequency', $frequency);
 
         $resourceId = $faker->uuid;
         $context = $faker->uuid;
@@ -131,6 +133,13 @@ class H5PViewConfigTest extends TestCase
         $this->assertStringContainsString("/s/resources/$resourceId", $contentData->embedCode);
         $this->assertNotEmpty($data->url);
         $this->assertSame($content->title, $contentData->title);
+        $this->assertSame($frequency, $data->saveFreq);
+
+        if ($frequency === false) {
+            $this->assertObjectNotHasAttribute('user', $data);
+        } else {
+            $this->assertObjectHasAttribute('user', $data);
+        }
 
         $this->assertSame('Emily Quackfaster', $contentData->metadata['authors'][0]->name);
         $this->assertSame('CC BY-NC-ND', $contentData->metadata['license']);
@@ -145,6 +154,12 @@ class H5PViewConfigTest extends TestCase
         $this->assertNull($contentData->displayOptions->copy);
 
         $this->assertFalse($contentData->contentUserData['state']);
+    }
+
+    public function provider_saveFrequency()
+    {
+        yield [15];
+        yield [false];
     }
 
     public function test_setAlterParameterSettings(): void

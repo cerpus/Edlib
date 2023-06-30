@@ -43,10 +43,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
             'url' => $this->h5pCore->fs->getDisplayPath(false),
             'postUserStatistics' => false,
             'ajaxPath' => '/ajax?action=',
-            'user' => [
-                'name' => trans('h5p-editor.anonymous'),
-                'mail' => false,
-            ],
             'canGiveScore' => false,
             'hubIsEnabled' => false,
             'ajax' => [
@@ -90,7 +86,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
             $this->config['user'] = (object) [
                 'name' => $name,
-                'mail' => $this->userEmail,
+                'mail' => $this->userEmail ?? false,
             ];
         }
 
