@@ -11,7 +11,6 @@ RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         gettext \
         igbinary \
         intl \
-        oauth \
         opcache \
         pcntl \
         pdo_mysql \
