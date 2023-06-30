@@ -99,7 +99,7 @@ class UserController extends Controller
             $user->password_reset_token = $token;
             $user->save();
 
-            $resetLink = route('reset-password', ['token' => $token, 'email' => $user->email]);
+            $resetLink = route('reset-password', ['token' => $token]);
 
             Mail::to($user->email)->send(new ResetPasswordEmail($resetLink));
         }
@@ -107,9 +107,9 @@ class UserController extends Controller
         return redirect()->route('login')->with('alert', trans('messages.alert-password-reset'));
     }
 
-    public function showResetPasswordForm(string $token, string $email): View|RedirectResponse
+    public function showResetPasswordForm(string $token): View|RedirectResponse
     {
-        $user = User::where('password_reset_token', $token)->where('email', $email)->first();
+        $user = User::where('password_reset_token', $token)->first();
 
         if (!$user) {
             abort(Response::HTTP_NOT_FOUND);
@@ -117,11 +117,10 @@ class UserController extends Controller
 
         return view('user.reset-password', [
             'token' => $token,
-            'email' => $email,
         ]);
     }
 
-    public function resetPassword(Request $request, string $token): View|RedirectResponse
+    public function resetPassword(Request $request, string $token): RedirectResponse
     {
         $user = User::where('password_reset_token', $token)->first();
 

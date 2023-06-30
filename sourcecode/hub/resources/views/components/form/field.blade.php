@@ -18,17 +18,9 @@
         @endif
     </label>
 
-    @php
-        $fieldType = $type ?? 'text';
-    @endphp
-
-    @if ($fieldType === 'email')
-        <input type="hidden" name="{{ $name }}" value="{{ $value }}">
-    @endif
-
     <x-form.input
         :name="$name"
-        :type="$fieldType"
+        :type="$type"
         :aria-describedby="$errors->has($name) ? 'errors-' . $name : null"
         :required="$required"
         :value="$value"

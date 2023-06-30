@@ -82,8 +82,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
     Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
 
-    Route::get('/reset-password/{token}/{email}', 'showResetPasswordForm')->name('reset-password');
-    Route::post('/reset-password/{token}/{email}', 'resetPassword')->name('reset-password-update');
+    Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('reset-password');
+    Route::post('/reset-password/{token}', 'resetPassword')->name('reset-password-update');
 
     Route::middleware('auth:web')->group(function () {
         Route::get('/preferences', 'preferences')->name('user.preferences');
