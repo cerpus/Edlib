@@ -86,4 +86,55 @@ final class UserTest extends DuskTestCase
                 ->assertSeeIn('aside summary', 'Debug');
         });
     }
+
+    public function testUserCanChangeProfileName(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('supersecret'),
+            'locale' => 'en',
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->type('name', 'User1_New')
+                ->press('Save')
+                ->assertSee('User1_New');
+        });
+    }
+
+    public function testUserCanChangePassword(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('supersecret'),
+            'locale' => 'en',
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->type('password', '00000000')
+                ->type('password_confirmation', '00000000')
+                ->press('Save')
+                ->assertSee('Account updated successfully')
+                ->click('.navbar-nav .nav-link.dropdown-toggle')
+                ->press('Log out')
+                ->assertGuest()
+                ->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', '00000000')
+                ->press('Log in')
+                ->assertAuthenticated();
+        });
+    }
 }

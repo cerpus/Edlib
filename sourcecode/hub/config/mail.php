@@ -43,6 +43,10 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'views' => [
+                'html' => 'emails',
+                'text' => 'emails',
+            ],
         ],
 
         'ses' => [
@@ -120,5 +124,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
 ];

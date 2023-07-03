@@ -1,31 +1,33 @@
+@props([
+    'name' => '',
+    'type' => 'text',
+    'label' => '',
+    'required' => false,
+    'value' => '',
+    'autocomplete' => null,
+    'text' => null,
+])
+
 <div class="mb-3 {{ $errors->has($name) ? 'has-validation' : '' }}">
     <label for="{{ $name }}">
-        {{ $label ?? $name }}
-        @if ($required ?? false)
+        {{ $label ?: $name }}
+        @if ($required)
             <small class="text-secondary text-lowercase" aria-hidden="true" role="presentation">
                 ({{ trans('messages.required') }})
             </small>
         @endif
     </label>
 
-    @switch($type ?? 'text')
-        @case('text')
-        @case('password')
-        @case('search')
-        @case('email')
-        @default
-            <x-form.input
-                name="{{ $name }}"
-                type="{{ $type ?? 'text' }}"
-                :aria-describedby="$errors->has($name) ? 'errors-'.$name : null"
-                :required="$required ?? false"
-                :value="$value ?? ''"
-                :autocomplete="$autocomplete ?? null"
-            />
-            @break
-    @endswitch
+    <x-form.input
+        :name="$name"
+        :type="$type"
+        :aria-describedby="$errors->has($name) ? 'errors-' . $name : null"
+        :required="$required"
+        :value="$value"
+        :autocomplete="$autocomplete"
+    />
 
-    @if (isset($text))
+    @if ($text)
         <div class="form-text">
             {{ $text }}
         </div>

@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Configuration\Locales;
 use App\Http\Requests\SavePreferencesRequest;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Mail\ResetPasswordEmail;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 use function app;
 use function to_route;
@@ -62,15 +67,74 @@ class UserController extends Controller
         return view('user.my-account', ['user' => $user]);
     }
 
-    public function saveName(StoreUserRequest $request): RedirectResponse
+    public function updateAccount(UpdateUserRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
         /** @var User $user */
         $user = Auth::user();
+        $user->name = $validatedData['name'];
 
-        $user->update(['name' => $validatedData['name']]);
+        if (!empty($validatedData['password'])) {
+            $user->password = Hash::make($validatedData['password']);
+        }
 
-        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-profile-name-update'));
+        $user->save();
+
+        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-account-update'));
+    }
+
+    public function showForgotPasswordForm(): View
+    {
+        return view('user.forgot-password');
+    }
+
+    public function sendResetLink(Request $request): View|RedirectResponse
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $token = base64_encode(random_bytes(48));
+
+            $user->password_reset_token = $token;
+            $user->save();
+
+            $resetLink = route('reset-password', ['token' => $token]);
+
+            Mail::to($user->email)->send(new ResetPasswordEmail($resetLink));
+        }
+
+        return redirect()->route('login')->with('alert', trans('messages.alert-password-reset'));
+    }
+
+    public function showResetPasswordForm(string $token): View|RedirectResponse
+    {
+        $user = User::where('password_reset_token', $token)->first();
+
+        if (!$user) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        return view('user.reset-password', [
+            'token' => $token,
+        ]);
+    }
+
+    public function resetPassword(Request $request, string $token): RedirectResponse
+    {
+        $user = User::where('password_reset_token', $token)->first();
+
+        if ($user) {
+            $request->validate([
+                'password' => 'required|confirmed|min:8',
+            ]);
+
+            $user->password = Hash::make($request->password);
+            $user->password_reset_token = null;
+            $user->save();
+            return redirect('/')->with('alert', trans('messages.alert-password-reset-success'));
+        }
+
+        return redirect()->back()->with('alert', trans('messages.alert-password-reset-invalid-token'));
     }
 }
