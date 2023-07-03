@@ -80,12 +80,18 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/register', 'store');
 
+    Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
+    Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
+
+    Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('reset-password');
+    Route::post('/reset-password/{token}', 'resetPassword')->name('reset-password-update');
+
     Route::middleware('auth:web')->group(function () {
         Route::get('/preferences', 'preferences')->name('user.preferences');
         Route::post('/preferences', 'savePreferences')->name('user.save-preferences');
 
         Route::get('/my-account', 'myAccount')->name('user.my-account');
-        Route::post('/save-name', 'saveName')->name('user.save-name');
+        Route::post('/update-account', 'updateAccount')->name('user.update-account');
     });
 });
 
