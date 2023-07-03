@@ -54,7 +54,7 @@ return [
     'reset-password-email-action' => 'To reset your password, click the following link:',
     'reset-password-email-note' => 'If you did not request a password reset, no further action is required',
     'reset-password-email-ignore' => 'If you ignore this message, your password will not be changed',
-    'reset-password-email-thanks' => 'Thank you for using :site application!',
+    'reset-password-email-thanks' => 'Thank you for using :site',
     'alert-password-reset-success' => 'Password has been reset successfully',
     'alert-password-reset-invalid-token' => 'Invalid or expired password reset token',
     'version-history' => 'Version history',
