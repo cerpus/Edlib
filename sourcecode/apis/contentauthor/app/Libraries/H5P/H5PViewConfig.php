@@ -26,6 +26,7 @@ class H5PViewConfig extends H5PConfigAbstract
     private ?string $context = null;
     private ?Resource $resource = null;
     private ?H5PAlterParametersSettingsDataObject $alterParametersSettings = null;
+    private ?string $filterParams = null;
 
     public function __construct(H5PAdapterInterface $adapter, \H5PCore $h5pCore)
     {
@@ -157,6 +158,7 @@ class H5PViewConfig extends H5PConfigAbstract
 
     private function setDependentFiles(): void
     {
+        $this->filterParams = $this->h5pCore->filterParameters($this->content);
         $assets = $this->h5pCore->getDependenciesFiles(
             $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded")
         );
@@ -189,7 +191,7 @@ class H5PViewConfig extends H5PConfigAbstract
     private function behaviorSettings(): false|string
     {
         $parameters = $this->adapter->alterParameters(
-            $this->h5pCore->filterParameters($this->content),
+            $this->filterParams ?? '',
             $this->alterParametersSettings
         );
 

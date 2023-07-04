@@ -15,7 +15,7 @@ module.exports = {
     }) {
         if (target === 'web' && dev) {
             webpackConfig.devServer.quiet = false;
-            webpackConfig.devServer.public = 'www.edlib.local:443';
+            webpackConfig.devServer.public = `www.${process.env.RAZZLE_EDLIB_ROOT_DOMAIN}:443`;
             webpackConfig.devServer.proxy = {
                 context: () => true,
                 target: 'http://localhost:3000',

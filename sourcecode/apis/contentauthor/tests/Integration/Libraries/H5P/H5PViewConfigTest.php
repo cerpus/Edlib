@@ -7,6 +7,7 @@ use App\Apis\ResourceApiService;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
+use App\H5PLibraryLibrary;
 use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\H5PViewConfig;
@@ -93,9 +94,16 @@ class H5PViewConfigTest extends TestCase
         $context = $faker->uuid;
         $userId = 42;
         $library = H5PLibrary::factory()->create();
+        $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
+        H5PLibraryLibrary::create([
+            'library_id' => $library->id,
+            'required_library_id' => $dependency->id,
+            'dependency_type' => 'preloaded',
+        ]);
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'disable' => 8,
+            'parameters' =>  '{"title":"something else"}',
         ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content->id,
@@ -116,6 +124,9 @@ class H5PViewConfigTest extends TestCase
             ->setContext($context)
             ->loadContent($content->id)
             ->getConfig();
+
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $library->id, 'dependency_type' => 'preloaded']);
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $dependency->id, 'dependency_type' => 'preloaded']);
 
         $this->assertTrue($data->postUserStatistics);
         $this->assertObjectHasAttribute('cid-' . $content->id, $data->contents);

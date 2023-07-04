@@ -12,10 +12,9 @@ jwt:
         pub.str: https://ndla-test.eu.auth0.com/.well-known/jwks.json
 #    expiration-leeway-hours: 24
 
-cerpus.application.profile: http://localhost:8080/config/ndla.json
 cerpus:
   application:
-    profile: https://edlibfacade.local/config/ndla.json
+    profile: https://facade.edlib.test/config/ndla.json
   auto-publish: "true"
   enableEdlib2: "true"
 #server:
