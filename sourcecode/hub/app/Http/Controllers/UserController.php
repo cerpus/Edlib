@@ -94,7 +94,7 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-            $token = base64_encode(random_bytes(48));
+            $token = hash('xxh128', random_bytes(48));
 
             $user->password_reset_token = $token;
             $user->save();
