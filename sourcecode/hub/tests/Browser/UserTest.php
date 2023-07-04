@@ -138,7 +138,7 @@ final class UserTest extends DuskTestCase
         });
     }
 
-    public function testUserCanChangeEmail():void
+    public function testUserCanChangeEmail(): void
     {
         User::factory()->create([
             'email' => 'john@example.com',
