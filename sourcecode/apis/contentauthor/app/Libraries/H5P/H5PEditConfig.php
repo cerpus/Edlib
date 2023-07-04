@@ -37,6 +37,11 @@ class H5PEditConfig extends H5PConfigAbstract
         $this->config['ajax']['contentUserData'] = '/api/progress?action=h5p_preview&c=1';
         $this->config['ajax']['setFinished'] = '/api/progress?action=h5p_preview&f=1';
 
+        $editorSettings = $this->adapter->getEditorSettings();
+        if (!empty($editorSettings)) {
+            $this->editorConfig = array_merge($this->editorConfig, $editorSettings);
+        }
+
         $this->addCoreAssets();
         $this->addDefaultEditorAssets();
         $this->addCustomEditorStyles();
@@ -58,6 +63,7 @@ class H5PEditConfig extends H5PConfigAbstract
         if ($this->content) {
             $this->editorConfig['ajaxPath'] = sprintf("/ajax?redirectToken=%s&h5p_id=%s&action=", $this->redirectToken, $this->content['id']);
         }
+
         $this->config['editor'] = (object) $this->editorConfig;
     }
 }
