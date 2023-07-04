@@ -38,7 +38,5 @@
         <x-form.button class="btn-primary">
             {{ trans('messages.save') }}
         </x-form.button>
-
-
     </x-form>
 </x-layout>
