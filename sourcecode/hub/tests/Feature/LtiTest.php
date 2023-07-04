@@ -28,7 +28,7 @@ final class LtiTest extends TestCase
 
         $request = $this->launchBuilder->toItemSelectionLaunch(
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.local/lti/1.1/select',
+            'https://hub.edlib.test/lti/1.1/select',
             'http://example.com/',
         )->getRequest();
 
@@ -46,7 +46,7 @@ final class LtiTest extends TestCase
             ->assertLocation('/lti/1.1/select');
 
         $this->post('/lti/1.1/select', $request->toArray())
-            ->assertRedirect('https://hub.edlib.local/content');
+            ->assertRedirect('https://hub.edlib.test/content');
     }
 
     public function testCookieCheckShowsCountermeasuresWhenCookiesNotAllowed(): void
@@ -55,7 +55,7 @@ final class LtiTest extends TestCase
 
         $request = $this->launchBuilder->toItemSelectionLaunch(
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.local/lti/1.1/select',
+            'https://hub.edlib.test/lti/1.1/select',
             'http://example.com/',
         )->getRequest();
 
@@ -75,20 +75,20 @@ final class LtiTest extends TestCase
 
         $request = $this->launchBuilder->toItemSelectionLaunch(
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.local/lti/1.1/select',
+            'https://hub.edlib.test/lti/1.1/select',
             'http://example.com/',
         )->getRequest();
 
         $this->withCookie('_edlib_cookies', '1')
             ->post('/lti/1.1/select', $request->toArray())
-            ->assertRedirect('https://hub.edlib.local/content');
+            ->assertRedirect('https://hub.edlib.test/content');
     }
 
     public function testUnauthorizedItemSelectionRequestsAreRejected(): void
     {
         $request = $this->launchBuilder->toItemSelectionLaunch(
             new Credentials("it's a", "fake"),
-            'https://hub.edlib.local/lti/1.1/select',
+            'https://hub.edlib.test/lti/1.1/select',
             'http://example.com/',
         )->getRequest();
 
@@ -105,7 +105,7 @@ final class LtiTest extends TestCase
             ->withClaim('launch_presentation_return_url', 'https://example.com/return')
             ->toPresentationLaunch(
                 $platform->getOauth1Credentials(),
-                'https://hub.edlib.local/lti/1.1/select',
+                'https://hub.edlib.test/lti/1.1/select',
                 'some-resource-link',
             )
             ->getRequest();

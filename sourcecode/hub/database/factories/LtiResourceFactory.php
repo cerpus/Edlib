@@ -20,8 +20,8 @@ final class LtiResourceFactory extends Factory
             'title' => $title,
             'title_html' => $title,
             'lti_tool_id' => LtiTool::factory(),
-            'view_launch_url' => 'https://ca.edlib.local/lti-content/'.$contentAuthorId,
-            'edit_launch_url' => 'https://ca.edlib.local/lti-content/'.$contentAuthorId.'/edit',
+            'view_launch_url' => 'https://ca.edlib.test/lti-content/'.$contentAuthorId,
+            'edit_launch_url' => 'https://ca.edlib.test/lti-content/'.$contentAuthorId.'/edit',
         ];
     }
 }

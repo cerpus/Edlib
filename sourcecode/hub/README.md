@@ -19,7 +19,7 @@ TODO: write the rest of the README
    open in your browser for development.
 
    ```dotenv
-   APP_URL=https://hub.edlib.local
+   APP_URL=https://hub.edlib.test
    ```
 5. Run the browser tests.
 
@@ -30,7 +30,7 @@ providers to allow OAuth redirects. ngrok can be used for this purpose:
 
 ```shell
 docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
-    ngrok/ngrok:latest http hub.edlib.local:443 \
+    ngrok/ngrok:latest http hub.edlib.test:443 \
     --hostname=edlib-hub-your-domain-here.ngrok.dev
 ```
 

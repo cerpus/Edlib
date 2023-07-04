@@ -21,15 +21,15 @@ class DatabaseSeeder extends Seeder
             ->state([
                 'name' => 'Content Author',
                 'lti_version' => LtiVersion::Lti1_1,
-                'creator_launch_url' => 'https://ca.edlib.local/lti-content/create',
+                'creator_launch_url' => 'https://ca.edlib.test/lti-content/create',
             ])
             ->create();
 
         $ltiResourceFactory = LtiResource::factory()
             ->state([
                 'lti_tool_id' => $ltiTool->id,
-                'view_launch_url' => 'https://ca.edlib.local/lti-content/1',
-                'edit_launch_url' => "https://ca.edlib.local/lti-content/1/edit",
+                'view_launch_url' => 'https://ca.edlib.test/lti-content/1',
+                'edit_launch_url' => "https://ca.edlib.test/lti-content/1/edit",
             ]);
 
         $contentVersionFactory = ContentVersion::factory()
