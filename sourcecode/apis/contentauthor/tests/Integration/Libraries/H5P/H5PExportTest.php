@@ -60,8 +60,8 @@ class H5PExportTest extends TestCase
 
         if ($usePatchFolder) {
             $lib = H5PLibrary::find(284);
-            $lib->minor_version = 12;
-            $lib->patch_version = 2;
+            $lib->minor_version = 14;
+            $lib->patch_version = 6;
             $lib->patch_version_in_folder_name = true;
             $lib->save();
         }

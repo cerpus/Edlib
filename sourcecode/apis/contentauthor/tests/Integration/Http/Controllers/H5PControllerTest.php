@@ -27,7 +27,8 @@ class H5PControllerTest extends TestCase
     use RefreshDatabase;
     use MockAuthApi;
 
-    public function testCreate(): void
+    /** @dataProvider provider_testCreate */
+    public function testCreate(?string $contentType): void
     {
         $faker = Factory::create();
         $this->session([
@@ -44,11 +45,15 @@ class H5PControllerTest extends TestCase
             'redirectToken' => $faker->uuid,
         ]);
 
+        H5PLibrary::factory()->create();
+
         /** @var H5PCore $h5pCore */
         $h5pCore = app(H5pCore::class);
+
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
-        $result = $articleController->create($request, $h5pCore);
+        $result = $articleController->create($request, $h5pCore, $contentType);
+
         $this->assertInstanceOf(View::class, $result);
 
         $data = $result->getData();
@@ -62,9 +67,14 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
         $this->assertArrayHasKey('configJs', $data);
+        $this->assertSame($contentType, $data['libName']);
 
         $config = json_decode(substr($result['config'], 25, -9), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertTrue($config['hubIsEnabled']);
+        if ($contentType === null) {
+            $this->assertTrue($config['hubIsEnabled']);
+        } else {
+            $this->assertFalse($config['hubIsEnabled']);
+        }
         $this->assertEmpty($config['contents']);
         $this->assertSame('nb-no', $config['locale']);
         $this->assertSame('nb', $config['localeConverted']);
@@ -85,13 +95,20 @@ class H5PControllerTest extends TestCase
         $this->assertEquals('Emily Quackfaster', $editorSetup['creatorName']);
 
         $state = json_decode($data['state'], true, flags: JSON_THROW_ON_ERROR);
+
         $this->assertNull($state['id']);
         $this->assertNull($state['title']);
         $this->assertFalse($state['isPublished']);
-        $this->assertNull($state['library']);
+        $this->assertSame($contentType, $state['library']);
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
+    }
+
+    public function provider_testCreate(): \Generator
+    {
+        yield 'withoutContentType' => [null];
+        yield 'withContentType' => ['H5P.Toolbar 1.2'];
     }
 
     public function testEdit(): void
