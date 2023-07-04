@@ -59,4 +59,5 @@ return [
     'alert-password-reset-invalid-token' => 'Invalid or expired password reset token',
     'version-history' => 'Version history',
     'published' => 'Published',
+    'change-email' => 'Change email',
 ];
