@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bad76ecae7092883dc8eda732e02555",
+    "content-hash": "a12752af85d256cb5f8864ffe7b6b431",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -11658,9 +11658,9 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "h5p/h5p-core": 20,
         "cerpus/edlib-resource-kit": 20,
         "cerpus/edlib-resource-kit-laravel": 20,
+        "h5p/h5p-core": 20,
         "h5p/h5p-editor": 20
     },
     "prefer-stable": false,
