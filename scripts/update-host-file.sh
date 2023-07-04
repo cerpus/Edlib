@@ -4,21 +4,15 @@ cd "$(dirname "$0")"
 
 default_ip="127.0.0.1"
 ip=${1:-$default_ip}
+root=${EDLIB_ROOT_DOMAIN:-edlib.test}
 
 read -r -d '' hosts << EOM
-$ip\tedlib.internal.auth.local
-$ip\tedlib.internal.resource.local
-$ip\tedlib.internal.lti.local
-$ip\tedlib.internal.common.local
-$ip\tedlib.internal.version.local
-$ip\tedlibfacade.local
-$ip\ttest.edlibfacade.local
-$ip\tlocalhost
-$ip\tca.edlib.local
-$ip\tapi.edlib.local
-$ip\tdocs.edlib.local
-$ip\twww.edlib.local
-$ip\tnpm.components.edlib.local
+$ip\tapi.$root
+$ip\tca.$root
+$ip\tdocs.$root
+$ip\tfacade.$root
+$ip\tnpm.components.$root
+$ip\twww.$root
 EOM
 
 replaceStringWithoutNewline=${hosts//$'\n'/\\n}
