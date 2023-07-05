@@ -26,6 +26,15 @@
             :label="trans('messages.password-confirmation')"
         />
 
+        <h5>{{ trans('messages.change-email') }}</h5>
+
+        <x-form.field
+            name="email"
+            type="email"
+            :label="trans('messages.email-address')"
+            :value="old('email', $user->email)"
+        />
+
         <x-form.button class="btn-primary">
             {{ trans('messages.save') }}
         </x-form.button>

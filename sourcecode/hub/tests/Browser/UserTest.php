@@ -137,4 +137,30 @@ final class UserTest extends DuskTestCase
                 ->assertAuthenticated();
         });
     }
+
+    public function testUserCanChangeEmail(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('supersecret'),
+            'locale' => 'en',
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->type('email', 'john_new@example.com')
+                ->press('Save')
+                ->assertSee('Account updated successfully')
+                ->visit('/login')
+                ->type('email', 'john_new@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated();
+        });
+    }
 }

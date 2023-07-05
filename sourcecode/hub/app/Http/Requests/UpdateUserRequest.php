@@ -14,9 +14,16 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->user()?->id;
         return [
             'name' => ['required', 'string', 'max:100'],
             'password' => ['sometimes', 'nullable', 'confirmed', Password::min(8)],
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                'unique:users,email,' . $userId,
+            ],
         ];
     }
 }
