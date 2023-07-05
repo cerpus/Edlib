@@ -79,12 +79,9 @@ class UserController extends Controller
             $user->password = Hash::make($validatedData['password']);
         }
 
-        if (!empty($validatedData['email']) && $user->email !== $validatedData['email']) {
-            $user->email = $validatedData['email'];
-            $user->save();
-
-            return redirect()->route('login')->with('alert', trans('messages.alert-account-update'));
-        }
+        $user->email = $validatedData['email'];
+        $user->save();
+        Auth::login($user);
 
         $user->save();
 
