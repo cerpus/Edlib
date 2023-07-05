@@ -249,7 +249,6 @@ class Article extends Content implements VersionableObject
     /**
      * Used by Eloquent to get primary key type.
      * UUID Identified as a string.
-     * @return string
      */
     public function getKeyType(): string
     {
