@@ -847,6 +847,11 @@ parameters:
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-
+			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PViewConfig.php
+
+		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Helper/H5PPackageProvider.php
