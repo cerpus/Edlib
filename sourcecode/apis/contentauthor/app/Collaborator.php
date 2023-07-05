@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Collaborator extends Model
 {
@@ -11,7 +12,7 @@ class Collaborator extends Model
 
     protected $fillable = ['email'];
 
-    public function collaboratable()
+    public function collaboratable(): MorphTo
     {
         return $this->morphTo();
     }

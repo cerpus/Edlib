@@ -9,6 +9,7 @@ use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
@@ -56,44 +57,56 @@ class Gametype extends Model implements GameTypeModelContract
         ],
     ];
 
-    public function games()
+    /**
+     * @return HasMany<Game>
+     */
+    public function games(): HasMany
     {
         return $this->hasMany(Game::class, 'gametype');
     }
 
-    public function scopeOfName($query, $machineName)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfName(Builder $query, $machineName): void
     {
-        return $query->where('name', $machineName);
+        $query->where('name', $machineName);
     }
 
-    public function scopeOfMajorVersion($query, $version)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfMajorVersion(Builder $query, $version): void
     {
-        return $query->where('major_version', $version);
+        $query->where('major_version', $version);
     }
 
-    public function scopeOfMinorVersion($query, $version)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfMinorVersion(Builder $query, $version): void
     {
-        return $query->where('minor_version', $version);
+        $query->where('minor_version', $version);
     }
 
-    public function scopeOfGameType($query, $machineName, $majorVersion, $minorVersion)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfGameType(Builder $query, $machineName, $majorVersion, $minorVersion): void
     {
-        $query = $this->scopeOfName($query, $machineName);
-        $query = $this->scopeOfMajorVersion($query, $majorVersion);
-        return $this->scopeOfMinorVersion($query, $minorVersion);
+        $this->scopeOfName($query, $machineName);
+        $this->scopeOfMajorVersion($query, $majorVersion);
+        $this->scopeOfMinorVersion($query, $minorVersion);
     }
 
-    public function getVersion()
+    public function getVersion(): string
     {
         return $this->major_version . '.' . $this->minor_version;
     }
 
     // Return the most updated game by version of a machine
 
-    /**
-     * @param string $machineName
-     */
-    public static function mostRecent($machineName = null): self|null
+    public static function mostRecent(string $machineName = null): self|null
     {
         if (!$machineName) {
             return null;
@@ -106,33 +119,33 @@ class Gametype extends Model implements GameTypeModelContract
             ->first();
     }
 
-    public function getScripts()
+    public function getScripts(): array
     {
         return $this->scripts;
     }
 
-    public function getCss()
+    public function getCss(): array
     {
         return $this->css;
     }
 
-    public function getLinks()
+    public function getLinks(): array
     {
         return $this->links;
     }
 
-    public function getPublicFolder()
+    public function getPublicFolder(): string
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
         return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder()), true) . '/';
     }
 
-    public function getMachineFolder()
+    public function getMachineFolder(): string
     {
         return 'millionaire/' . $this->getVersion() . '/';
     }
 
-    public function getAssets($type = null)
+    public function getAssets($type = null): array
     {
         $assets = collect();
         $machinePath = $this->getMachineFolder();

@@ -22,7 +22,7 @@ class ContentLanguage extends Model
     /**
      * @throws Exception
      */
-    public function setLanguageCodeAttribute($languageCode)
+    public function setLanguageCodeAttribute($languageCode): void
     {
         $languageCode = mb_strtolower($languageCode);
 
