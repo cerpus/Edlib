@@ -5,25 +5,34 @@ namespace Tests\Integration\Libraries\H5P;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
+use App\Libraries\H5P\H5PConfigAbstract;
 use App\Libraries\H5P\H5PEditConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class H5PEditConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_getConfig(): void
+    /** @dataProvider provider_adapterMode */
+    public function test_getConfig(string $adapterMode): void
     {
-        $data = app(H5PEditConfig::class)
-            ->getConfig();
+        Session::put('adapterMode', $adapterMode);
+
+        $config = app(H5PEditConfig::class);
+        $data = $config->getConfig();
 
         // Check that the common attributes are present
         $this->assertObjectHasAttribute('baseUrl', $data);
         $this->assertObjectHasAttribute('url', $data);
         $this->assertObjectHasAttribute('postUserStatistics', $data);
         $this->assertObjectHasAttribute('ajaxPath', $data);
-        $this->assertObjectHasAttribute('user', $data);
+        if (config('h5p.saveFrequency') === false) {
+            $this->assertObjectNotHasAttribute('user', $data);
+        } else {
+            $this->assertObjectHasAttribute('user', $data);
+        }
         $this->assertObjectHasAttribute('canGiveScore', $data);
         $this->assertObjectHasAttribute('hubIsEnabled', $data);
         $this->assertObjectHasAttribute('ajax', $data);
@@ -62,6 +71,35 @@ class H5PEditConfigTest extends TestCase
         $this->assertNotEmpty($data->editor->extraAllowedContent);
         $this->assertSame('en', $data->editor->language);
         $this->assertSame('en', $data->editor->defaultLanguage);
+
+        // Adapter specific
+        $adapter = $config->adapter;
+        $this->assertSame($adapterMode, $adapter->getAdapterName());
+
+        if ($adapterMode === 'ndla') {
+            $this->assertContains('/css/ndlah5p-editor.css', $data->editor->assets->css);
+            $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);
+            $this->assertContains('/css/ndlah5p-youtube.css', $data->editor->assets->css);
+
+            $this->assertContains('/js/h5p/wiris/h5peditor-html-wiris-addon.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/ndla-contentbrowser.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/h5peditor-image-popup.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/h5peditor-custom.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+
+            $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
+        } elseif ($adapterMode === 'cerpus') {
+            $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
+        }
+    }
+
+    public function provider_adapterMode(): \Generator
+    {
+        yield 'cerpus' => ['cerpus'];
+        yield 'ndla' => ['ndla'];
     }
 
     public function test_loadContent(): void

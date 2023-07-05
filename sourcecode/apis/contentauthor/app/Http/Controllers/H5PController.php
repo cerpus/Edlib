@@ -54,7 +54,6 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
 use function Cerpus\Helper\Helpers\profile as config;
 
 class H5PController extends Controller
@@ -105,6 +104,7 @@ class H5PController extends Controller
             ->setContext($context)
             ->loadContent($id)
             ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
+
         $h5pView = $this->h5p->createView($viewConfig);
         $content = $viewConfig->getContent();
         $settings = $h5pView->getSettings();
@@ -155,8 +155,8 @@ class H5PController extends Controller
             ->setUserName(Session::get('name', false))
             ->setDisplayHub(empty($contenttype))
             ->setRedirectToken($request->input('redirectToken'))
-            ->setDisplayHub(empty($contenttype))
             ->setLanguage(Iso639p3::code2letters($language));
+
         $h5pView = $this->h5p->createView($editorConfig);
 
         $jwtTokenInfo = Session::get('jwtToken', null);
@@ -252,6 +252,7 @@ class H5PController extends Controller
             ->setRedirectToken($request->input('redirectToken'))
             ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
             ->loadContent($id);
+
         $h5pView = $this->h5p->createView($editorConfig);
         $content = $editorConfig->getContent();
 
