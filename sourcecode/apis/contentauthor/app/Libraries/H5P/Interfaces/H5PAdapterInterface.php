@@ -42,11 +42,6 @@ interface H5PAdapterInterface
     public function getAdapterName(): string;
 
     /**
-     * @return void
-     */
-    public function overrideAdapterSettings();
-
-    /**
      * @return array
      */
     public static function getAllAdapters();

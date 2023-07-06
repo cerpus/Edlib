@@ -1,8 +1,6 @@
 import React from 'react';
 
 const EditorSetupContext = React.createContext({
-    adapterList: [],
-    adapterName: null,
     autoTranslateTo: '',
     canList: false,
     canPublish: false,
@@ -21,8 +19,6 @@ const EditorSetupContext = React.createContext({
 });
 
 export const EditorSetupProvider = ({
-                                        adapterList,
-                                        adapterName,
                                         autoTranslateTo,
                                         canList,
                                         canPublish,
@@ -43,8 +39,6 @@ export const EditorSetupProvider = ({
     return (
         <EditorSetupContext.Provider
             value={{
-                adapterList,
-                adapterName,
                 autoTranslateTo,
                 canList,
                 canPublish,

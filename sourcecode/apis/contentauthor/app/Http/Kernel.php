@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\RequestId;
-use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
 use App\Http\Middleware\GameAccess;
 use App\Http\Middleware\QuestionSetAccess;
@@ -93,7 +92,6 @@ class Kernel extends HttpKernel
         'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
         'game-access' => GameAccess::class,
         'questionset-access' => QuestionSetAccess::class,
-        'adaptermode' => AdapterMode::class,
     ];
 
     /**

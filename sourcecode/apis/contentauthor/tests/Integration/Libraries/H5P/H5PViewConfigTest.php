@@ -21,10 +21,10 @@ class H5PViewConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider provider_adapterMode */
-    public function test_getConfig(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function test_getConfig(string $h5pAdapter): void
     {
-        Session::put('adapterMode', $adapterMode);
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
 
         $config = app(H5PViewConfig::class);
         $data = $config->getConfig();
@@ -65,7 +65,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_h5pAdapter(): \Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
@@ -97,10 +97,10 @@ class H5PViewConfigTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_adapterMode */
-    public function test_loadContent(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function test_loadContent(string $h5pAdapter): void
     {
-        Session::put('adapterMode', $adapterMode);
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
         $faker = Factory::create();
 
         $resourceId = $faker->uuid;

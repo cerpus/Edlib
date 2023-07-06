@@ -242,51 +242,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     }
 
     /**
-     * @return void
-     */
-    public function overrideAdapterSettings()
-    {
-        config(['app.deploymentEnvironment' => 'ndlaprod']);
-        config(collect([
-            'app.enable_licensing',
-            'feature.licensing',
-            'feature.content-locking',
-            'feature.context-collaboration',
-            'feature.collaboration',
-            'feature.export_h5p_on_save',
-            'export_h5p_with_local_files',
-            'h5p.video.enable',
-            'h5p.video.url',
-            'h5p.video.key',
-            'h5p.video.secret',
-            'h5p.video.accountId',
-            'h5p.video.authUrl',
-            'h5p.video.deleteVideoSourceAfterConvertToStream',
-            'h5p.video.pingDelay',
-            'h5p.image.authDomain',
-            'h5p.image.key',
-            'h5p.image.secret',
-            'h5p.image.audience',
-            'h5p.image.url',
-            'h5p.H5P_DragQuestion',
-            'h5p.H5P_Dialogcards',
-            'h5p.isHubEnabled',
-            'h5p.displayPropertiesBox',
-            'h5p.crossOrigin',
-            'h5p.crossOriginRegexp',
-            'h5p.overrideDisableSetting',
-            'h5p.saveFrequency',
-            'h5p.defaultExportOption',
-            'h5p.defaultShareSetting',
-            'h5p.showDisplayOptions',
-        ])
-            ->mapWithKeys(function ($configKey) {
-                return [$configKey => config('ndla-mode.' . $configKey, config($configKey))];
-            })
-            ->toArray());
-    }
-
-    /**
      * @return bool
      */
     public function getDefaultImportPrivacy()

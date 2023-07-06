@@ -190,20 +190,13 @@ class H5PServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(H5PAdapterInterface::class, function () {
-            $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
-            switch ($adapterTarget) {
-                case 'ndla':
-                    $adapter = new NDLAH5PAdapter();
-                    break;
-                case 'cerpus':
-                default:
-                    $adapter = new CerpusH5PAdapter();
-                    break;
-            }
-            if (Session::has('adapterMode')) {
-                $adapter->overrideAdapterSettings();
-            }
-            return $adapter;
+            $adapter = config('h5p.h5pAdapter', 'cerpus');
+
+            return match ($adapter) {
+                'ndla' => new NDLAH5PAdapter(),
+                'cerpus' => new CerpusH5PAdapter(),
+                default => throw new \Exception("Unknown adapter '$adapter'"),
+            };
         });
 
         $this->app->singletonIf(H5peditorStorage::class, function ($app) {

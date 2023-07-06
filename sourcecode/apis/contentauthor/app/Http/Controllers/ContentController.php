@@ -28,7 +28,7 @@ class ContentController extends Controller
      * @param null $contentType
      * @return Application|\Illuminate\Contracts\View\Factory|RedirectResponse|Redirector|\Illuminate\View\View
      */
-    public function index(Request $request, H5PAdapterInterface $adapter, $contentType = null)
+    public function index(Request $request, $contentType = null)
     {
         if (config('h5p.isHubEnabled') === true) {
             return redirect(route('h5p.create'));
@@ -43,8 +43,6 @@ class ContentController extends Controller
 
         $jwtTokenInfo = Session::get('jwtToken', null);
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-        $adapterModes = json_encode($adapter::getAllAdapters());
-        $currentAdapter = $adapter->getAdapterName();
 
         if (!is_null($contentType)) {
             $route = $contentTypes->map(function (ContentType $currentType) use ($contentType) {
@@ -70,7 +68,7 @@ class ContentController extends Controller
             ->all();
 
         $view = sprintf("content.%s", config('author.contentTypeSelector'));
-        return view($view)->with(compact('contentTypes', 'jwtToken', 'adapterModes', 'currentAdapter'));
+        return view($view)->with(compact('contentTypes', 'jwtToken'));
     }
 
     /**

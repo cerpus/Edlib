@@ -32,9 +32,6 @@ use App\Http\Controllers\QuestionSetController;
 use App\Http\Controllers\SingleLogoutController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('h5p/adapter', function () {
-    return ["url" => route('create')];
-})->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
 Route::resource('/h5p', H5PController::class, ['except' => ['destroy']]);
@@ -48,14 +45,14 @@ Route::get('videos/browse/{videoId}', [H5PController::class, 'getVideo']);
 Route::get('audios/browse', [H5PController::class, 'browseAudios']);
 Route::get('audios/browse/{audioId}', [H5PController::class, 'getAudio']);
 
-Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);
+Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download');
 Route::get('content/upgrade/library', [H5PController::class, 'contentUpgradeLibrary'])->name('content-upgrade-library');
 
 Route::group(['middleware' => ['internal.handle-jwt']], function () {
     Route::get('/view', [InternalController::class, 'view']);
 });
 
-Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'adaptermode']], function () {
+Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale']], function () {
     Route::post('lti-content/create', [LtiContentController::class, 'create']);
     Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
@@ -135,7 +132,7 @@ Route::group(['middleware' => ['core.auth']], function () {
 Route::post('api/progress', [Progress::class, 'storeProgress'])->name("setProgress");
 Route::get('api/progress', [Progress::class, 'getProgress'])->name("getProgress");
 
-Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->middleware("adaptermode"); // TODO: Refactor into its own controller
+Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading']); // TODO: Refactor into its own controller
 
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', [ContentTypeController::class, 'storeH5PQuestionset']);
@@ -147,4 +144,4 @@ Route::get('article/{article}/copyright', [ArticleCopyrightController::class, 'c
 
 Route::get('/health', [HealthController::class, 'index']);
 
-Route::get('content/assets/{path?}', ContentAssetController::class)->where('path', '.*')->name('content.asset')->middleware('adaptermode');
+Route::get('content/assets/{path?}', ContentAssetController::class)->where('path', '.*')->name('content.asset');

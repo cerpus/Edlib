@@ -71,7 +71,6 @@ class H5PController extends Controller
         private h5p $h5p,
         private H5PLibraryAdmin $h5pLibraryAdmin,
     ) {
-        $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
@@ -189,8 +188,6 @@ class H5PController extends Controller
             'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'hideNewVariant' => true,
-            'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
-            'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
             'creatorName' => Session::get("name"),
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),

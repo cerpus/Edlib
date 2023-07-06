@@ -8,18 +8,16 @@ use App\H5PLibrary;
 use App\Libraries\H5P\H5PConfigAbstract;
 use App\Libraries\H5P\H5PEditConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class H5PEditConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider provider_adapterMode */
-    public function test_getConfig(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function test_getConfig(string $h5pAdapter): void
     {
-        Session::put('adapterMode', $adapterMode);
-
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
         $config = app(H5PEditConfig::class);
         $data = $config->getConfig();
 
@@ -73,7 +71,7 @@ class H5PEditConfigTest extends TestCase
         $this->assertSame('en', $data->editor->defaultLanguage);
 
         // Adapter specific
-        if ($adapterMode === 'ndla') {
+        if ($h5pAdapter === 'ndla') {
             $this->assertContains('/css/ndlah5p-editor.css', $data->editor->assets->css);
             $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);
             $this->assertContains('/css/ndlah5p-youtube.css', $data->editor->assets->css);
@@ -86,14 +84,14 @@ class H5PEditConfigTest extends TestCase
             $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
-        } elseif ($adapterMode === 'cerpus') {
+        } elseif ($h5pAdapter === 'cerpus') {
             $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
         }
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_h5pAdapter(): \Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];

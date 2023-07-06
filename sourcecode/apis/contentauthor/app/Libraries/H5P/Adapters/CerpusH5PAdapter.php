@@ -96,13 +96,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     }
 
     /**
-     * @return void
-     */
-    public function overrideAdapterSettings()
-    {
-    }
-
-    /**
      * @return bool
      */
     public function getDefaultImportPrivacy()

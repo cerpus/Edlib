@@ -224,8 +224,6 @@ const H5PEditorContainer = ({ intl }) => {
 
     const getSidebarComponents = () => {
         const {
-            adapterName = null,
-            adapterList = [],
             showDisplayOptions = false,
         } = editorSetup;
 
@@ -311,20 +309,6 @@ const H5PEditorContainer = ({ intl }) => {
                 />
             ),
         });
-
-        if (adapterName !== null) {
-            components.push({
-                id: 'adapterSelect',
-                title: 'Adapter',
-                info: <div>({adapterName})</div>,
-                component: (
-                    <AdapterSelector
-                        current={adapterName}
-                        adapters={adapterList}
-                    />
-                ),
-            });
-        }
 
         return components;
     };

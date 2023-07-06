@@ -18,7 +18,6 @@ use Faker\Factory;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -30,9 +29,10 @@ class H5PControllerTest extends TestCase
     use RefreshDatabase;
     use MockAuthApi;
 
-    /** @dataProvider provider_adapterMode */
-    public function testCreate(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function testCreate(string $h5pAdapter): void
     {
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
         $faker = Factory::create();
         $this->session([
             'authId' => $faker->uuid(),
@@ -43,7 +43,6 @@ class H5PControllerTest extends TestCase
             'jwtToken' => [
                 'raw' => 'a unique token',
             ],
-            'adapterMode' => $adapterMode,
         ]);
         $request = Request::create('lti-content/create', 'POST', [
             'redirectToken' => $faker->uuid,
@@ -97,19 +96,13 @@ class H5PControllerTest extends TestCase
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
-
-        // Adapter specific
-        if ($adapterMode === 'ndla') {
-            $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
-            $this->assertSame([], $data['configJs']);
-        }
+        $this->assertSame([], $data['configJs']);
     }
 
-    /** @dataProvider provider_adapterMode */
-    public function testEdit(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function testEdit(string $h5pAdapter): void
     {
-        Session::put('adapterMode', $adapterMode);
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
         $faker = Factory::create();
         $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
@@ -214,9 +207,9 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($state['title']);
 
         // Adapter specific
-        if ($adapterMode === 'ndla') {
+        if ($h5pAdapter === 'ndla') {
             $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
+        } elseif ($h5pAdapter === 'cerpus') {
             $this->assertSame([], $data['configJs']);
         }
     }
@@ -263,10 +256,10 @@ class H5PControllerTest extends TestCase
         yield [['language_iso_639_3' => 'eeee'], ['language_iso_639_3']];
     }
 
-    /** @dataProvider provider_adapterMode */
-    public function testDoShow(string $adapterMode): void
+    /** @dataProvider provider_h5pAdapter */
+    public function testDoShow(string $h5pAdapter): void
     {
-        Session::put('adapterMode', $adapterMode);
+        config(['h5p.h5pAdapter' => $h5pAdapter]);
         $faker = Factory::create();
         Storage::fake('test');
         $resourceId = $faker->uuid;
@@ -386,18 +379,18 @@ class H5PControllerTest extends TestCase
         $this->assertContains('//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG', $result['jsScripts']);
         $this->assertContains('/js/videos/brightcove.js', $result['jsScripts']);
 
-        if ($adapterMode === "ndla") {
+        if ($h5pAdapter === "ndla") {
             $this->assertContains('/js/h5p/wiris/view.js', $result['jsScripts']);
             $this->assertContains('/js/h5peditor-custom.js', $result['jsScripts']);
 
             $this->assertContains('/css/ndlah5p-iframe-legacy.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
             $this->assertContains('/css/ndlah5p-iframe.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
-        } elseif ($adapterMode === "cerpus") {
+        } elseif ($h5pAdapter === "cerpus") {
             $this->assertContains('/js/videos/streamps.js', $result['jsScripts']);
         }
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_h5pAdapter(): \Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];

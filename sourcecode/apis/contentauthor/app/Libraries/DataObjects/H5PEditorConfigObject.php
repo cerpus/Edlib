@@ -14,8 +14,6 @@ class H5PEditorConfigObject extends EditorConfigObject
     public $libraryUpgradeList = [];
 
     public $autoTranslateTo;
-    public $adapterName;
-    public $adapterList;
     public $hideNewVariant = false;
     public $showDisplayOptions = false;
     public $h5pLanguage;
