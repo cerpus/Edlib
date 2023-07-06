@@ -163,4 +163,51 @@ final class UserTest extends DuskTestCase
                 ->assertAuthenticated();
         });
     }
+
+    public function testUserCanDisconnectFacebookAndGoogleIDWithPassword(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('supersecret'),
+            'facebook_id' => '11198989783333222222',
+            'google_id' => '2424224242444643232356',
+            'locale' => 'en',
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->assertPresent('button[name="disconnect-facebook"]')
+                ->assertPresent('button[name="disconnect-google"]')
+                ->press('disconnect-facebook')
+                ->assertSee('Account updated successfully')
+                ->visit('/my-account')
+                ->press('disconnect-google')
+                ->assertSee('Account updated successfully');
+        });
+    }
+
+    public function testNotVisibilityOfFacebookAndGoogleDisconnectButtons(): void
+    {
+        User::factory()->create([
+            'email' => 'john@example.com',
+            'password' => Hash::make('supersecret'),
+            'locale' => 'en',
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'john@example.com')
+                ->type('password', 'supersecret')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->assertNotPresent('button[name="disconnect-facebook"]')
+                ->assertNotPresent('button[name="disconnect-google"]');
+        });
+    }
 }
