@@ -60,4 +60,8 @@ return [
     'version-history' => 'Version history',
     'published' => 'Published',
     'change-email' => 'Change email',
+    'disconnect-social-accounts' => 'Disconnect social accounts',
+    'disconnect-google' => 'Google',
+    'disconnect-facebook' => 'Facebook',
+    'alert-password-empty' => 'To disconnect social login providers, you must first set a password on your account',
 ];

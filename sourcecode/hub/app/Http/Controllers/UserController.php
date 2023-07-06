@@ -141,4 +141,22 @@ class UserController extends Controller
 
         return redirect()->back()->with('alert', trans('messages.alert-password-reset-invalid-token'));
     }
+
+    public function disconnectSocialAccounts(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($request->has('disconnect-google')) {
+            $user->google_id = null;
+        }
+
+        if ($request->has('disconnect-facebook')) {
+            $user->facebook_id = null;
+        }
+
+        $user->save();
+
+        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-account-update'));
+    }
 }

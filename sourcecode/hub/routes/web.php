@@ -92,6 +92,8 @@ Route::controller(UserController::class)->group(function () {
 
         Route::get('/my-account', 'myAccount')->name('user.my-account');
         Route::post('/update-account', 'updateAccount')->name('user.update-account');
+
+        Route::post('/disconnect-social-accounts', 'disconnectSocialAccounts')->name('user.disconnect-social-accounts');
     });
 });
 
