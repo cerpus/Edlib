@@ -33,7 +33,6 @@ class H5PControllerTest extends TestCase
     /** @dataProvider provider_adapterMode */
     public function testCreate(string $adapterMode): void
     {
-        Session::put('adapterMode', $adapterMode);
         $faker = Factory::create();
         $this->session([
             'authId' => $faker->uuid(),
@@ -44,6 +43,7 @@ class H5PControllerTest extends TestCase
             'jwtToken' => [
                 'raw' => 'a unique token',
             ],
+            'adapterMode' => $adapterMode,
         ]);
         $request = Request::create('lti-content/create', 'POST', [
             'redirectToken' => $faker->uuid,
