@@ -12,7 +12,6 @@ use App\Http\Libraries\ContentTypes\H5PContentType;
 use App\Http\Libraries\ContentTypes\QuestionsContentType;
 use App\Http\Libraries\ContentTypes\TextContentType;
 use App\Http\Libraries\ContentTypes\VideoContentType;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

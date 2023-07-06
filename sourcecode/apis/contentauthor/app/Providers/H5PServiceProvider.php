@@ -41,7 +41,6 @@ use H5PValidator;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Foundation\Application as App;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
