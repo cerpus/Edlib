@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Session;
 use App\ContentLanguage;
 
@@ -10,7 +11,10 @@ use App\ContentLanguage;
  */
 trait HasLanguage
 {
-    public function language()
+    /**
+     * @return HasOne<ContentLanguage>
+     */
+    public function language(): HasOne
     {
         return $this->hasOne(ContentLanguage::class, 'content_id');
     }

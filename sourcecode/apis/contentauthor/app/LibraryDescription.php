@@ -3,12 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LibraryDescription extends Model
 {
     protected $appends = ['capability_id'];
 
-    public function library()
+    /**
+     * @return BelongsTo<H5PLibrary, self>
+     */
+    public function library(): BelongsTo
     {
         return $this->belongsTo(H5PLibrary::class);
     }
