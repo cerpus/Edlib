@@ -198,9 +198,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         $css = [];
         $ndlaCustomCssOption = H5POption::where('option_name', H5POption::NDLA_CUSTOM_CSS_TIMESTAMP)->first();
-        if ($ndlaCustomCssOption && !empty($this->config->content)) {
+        $content = $this->config->getContent();
+        if ($ndlaCustomCssOption && !empty($content)) {
             $customCssBreakpoint = Carbon::parse($ndlaCustomCssOption->option_value);
-            $updated = $this->config->content['updated_at'];
+            $updated = $content['updated_at'];
             if ($customCssBreakpoint > $updated) {
                 $css[] = (string) mix('css/ndlah5p-iframe-legacy.css');
             }

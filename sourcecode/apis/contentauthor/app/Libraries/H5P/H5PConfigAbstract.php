@@ -14,7 +14,7 @@ use function Cerpus\Helper\Helpers\profile as config;
 
 abstract class H5PConfigAbstract implements ConfigInterface
 {
-    protected const CACHE_BUSTER_STRING = '2.0.3';
+    public const CACHE_BUSTER_STRING = '2.0.3';
     protected const EMBED_TEMPLATE = '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>';
 
     public function __construct(

@@ -53,5 +53,6 @@
         <server name="H5P_VIDEO_ADAPTER_DELETEVIDEO" value="true"/>
         <server name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
         <server name="FILESYSTEM_DRIVER" value="test"/>
+        <server name="H5P_VIDEO_ACCOUNT_ID" value="videoAccountId"/>
     </php>
 </phpunit>
