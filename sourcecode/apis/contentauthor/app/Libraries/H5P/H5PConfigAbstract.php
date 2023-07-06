@@ -18,7 +18,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     protected const EMBED_TEMPLATE = '<iframe src="%s" width=":w" height=":h" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *" title="%s"></iframe>';
 
     public function __construct(
-        public H5PAdapterInterface $adapter,
+        protected H5PAdapterInterface $adapter,
         public \H5PCore $h5pCore,
         public ?int $id = null,
         protected array $config = [],

@@ -73,9 +73,6 @@ class H5PEditConfigTest extends TestCase
         $this->assertSame('en', $data->editor->defaultLanguage);
 
         // Adapter specific
-        $adapter = $config->adapter;
-        $this->assertSame($adapterMode, $adapter->getAdapterName());
-
         if ($adapterMode === 'ndla') {
             $this->assertContains('/css/ndlah5p-editor.css', $data->editor->assets->css);
             $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);

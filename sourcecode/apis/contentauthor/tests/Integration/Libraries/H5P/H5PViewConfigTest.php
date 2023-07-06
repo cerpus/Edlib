@@ -58,9 +58,6 @@ class H5PViewConfigTest extends TestCase
         $this->assertObjectHasAttribute('pluginCacheBuster', $data);
         $this->assertObjectHasAttribute('libraryUrl', $data);
 
-        $adapter = $config->adapter;
-        $this->assertSame($adapterMode, $adapter->getAdapterName());
-
         // Attributes altered or set
         $this->assertSame('', $data->documentUrl);
         $this->assertSame([], $data->contents);
