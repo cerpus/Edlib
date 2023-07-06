@@ -7,6 +7,7 @@ use App\Apis\ResourceApiService;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
+use App\H5PLibraryLibrary;
 use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\H5PViewConfig;
@@ -20,17 +21,24 @@ class H5PViewConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_getConfig(): void
+    /** @dataProvider provider_adapterMode */
+    public function test_getConfig(string $adapterMode): void
     {
-        $data = app(H5PViewConfig::class)
-            ->getConfig();
+        Session::put('adapterMode', $adapterMode);
+
+        $config = app(H5PViewConfig::class);
+        $data = $config->getConfig();
 
         // Check that the common attributes are present
         $this->assertObjectHasAttribute('baseUrl', $data);
         $this->assertObjectHasAttribute('url', $data);
         $this->assertObjectHasAttribute('postUserStatistics', $data);
         $this->assertObjectHasAttribute('ajaxPath', $data);
-        $this->assertObjectHasAttribute('user', $data);
+        if (config('h5p.saveFrequency') === false) {
+            $this->assertObjectNotHasAttribute('user', $data);
+        } else {
+            $this->assertObjectHasAttribute('user', $data);
+        }
         $this->assertObjectHasAttribute('canGiveScore', $data);
         $this->assertObjectHasAttribute('hubIsEnabled', $data);
         $this->assertObjectHasAttribute('ajax', $data);
@@ -55,6 +63,12 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame([], $data->contents);
         $this->assertSame('', $data->ajax['contentUserData']);
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
+    }
+
+    public function provider_adapterMode(): \Generator
+    {
+        yield 'cerpus' => ['cerpus'];
+        yield 'ndla' => ['ndla'];
     }
 
     /** @dataProvider provider_setPreview */
@@ -83,19 +97,26 @@ class H5PViewConfigTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_saveFrequency */
-    public function test_loadContent(int|false $frequency): void
+    /** @dataProvider provider_adapterMode */
+    public function test_loadContent(string $adapterMode): void
     {
+        Session::put('adapterMode', $adapterMode);
         $faker = Factory::create();
-        config()->set('h5p.saveFrequency', $frequency);
 
         $resourceId = $faker->uuid;
         $context = $faker->uuid;
         $userId = 42;
         $library = H5PLibrary::factory()->create();
+        $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
+        H5PLibraryLibrary::create([
+            'library_id' => $library->id,
+            'required_library_id' => $dependency->id,
+            'dependency_type' => 'preloaded',
+        ]);
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'disable' => 8,
+            'parameters' =>  '{"title":"something else"}',
         ]);
         H5PContentsMetadata::factory()->create([
             'content_id' => $content->id,
@@ -117,6 +138,9 @@ class H5PViewConfigTest extends TestCase
             ->loadContent($content->id)
             ->getConfig();
 
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $library->id, 'dependency_type' => 'preloaded']);
+        $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $dependency->id, 'dependency_type' => 'preloaded']);
+
         $this->assertTrue($data->postUserStatistics);
         $this->assertObjectHasAttribute('cid-' . $content->id, $data->contents);
         $this->assertSame(
@@ -133,9 +157,9 @@ class H5PViewConfigTest extends TestCase
         $this->assertStringContainsString("/s/resources/$resourceId", $contentData->embedCode);
         $this->assertNotEmpty($data->url);
         $this->assertSame($content->title, $contentData->title);
-        $this->assertSame($frequency, $data->saveFreq);
+        $this->assertSame(config('h5p.saveFrequency'), $data->saveFreq);
 
-        if ($frequency === false) {
+        if (config('h5p.saveFrequency') === false) {
             $this->assertObjectNotHasAttribute('user', $data);
         } else {
             $this->assertObjectHasAttribute('user', $data);
@@ -154,12 +178,6 @@ class H5PViewConfigTest extends TestCase
         $this->assertNull($contentData->displayOptions->copy);
 
         $this->assertFalse($contentData->contentUserData['state']);
-    }
-
-    public function provider_saveFrequency()
-    {
-        yield [15];
-        yield [false];
     }
 
     public function test_setAlterParameterSettings(): void

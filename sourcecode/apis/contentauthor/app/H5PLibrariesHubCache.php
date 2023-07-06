@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $title
@@ -34,7 +35,10 @@ class H5PLibrariesHubCache extends Model
         return Carbon::parse($value)->getTimestamp();
     }
 
-    public function libraries()
+    /**
+     * @return HasMany<H5PLibrary>
+     */
+    public function libraries(): HasMany
     {
         return $this->hasMany(H5PLibrary::class, 'name', 'name');
     }

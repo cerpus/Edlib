@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NdlaArticleId extends Model
 {
@@ -13,12 +14,15 @@ class NdlaArticleId extends Model
         return json_decode($value);
     }
 
-    public function setJsonAttribute($value)
+    public function setJsonAttribute($value): void
     {
         $this->attributes['json'] = json_encode($value);
     }
 
-    public function messages()
+    /**
+     * @return HasMany<NdlaArticleImportStatus>
+     */
+    public function messages(): HasMany
     {
         return $this->hasMany(NdlaArticleImportStatus::class, 'ndla_id');
     }

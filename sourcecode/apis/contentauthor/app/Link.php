@@ -6,6 +6,7 @@ use App\Libraries\Versioning\VersionableObject;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
@@ -32,17 +33,20 @@ class Link extends Content implements VersionableObject
 
     private $parentId;
 
-    public function setParentId($parentId)
+    public function setParentId($parentId): void
     {
         $this->parentId = $parentId;
     }
 
-    public function givesScore()
+    public function givesScore(): int
     {
         return 0;
     }
 
-    public function collaborators()
+    /**
+     * @return HasMany<ArticleCollaborator>
+     */
+    public function collaborators(): HasMany
     {
         return $this->hasMany(ArticleCollaborator::class, 'article_id');
     }
@@ -99,12 +103,12 @@ class Link extends Content implements VersionableObject
         return false; // Not stored
     }
 
-    public function setVersionId(string $versionId)
+    public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
     }
 
-    public function getIsPrivateAttribute()
+    public function getIsPrivateAttribute(): false
     {
         return false; // Defaults to public / listed
     }

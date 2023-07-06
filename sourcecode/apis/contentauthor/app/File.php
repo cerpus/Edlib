@@ -4,6 +4,7 @@ namespace App;
 
 use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
@@ -14,24 +15,27 @@ class File extends Model
 {
     use HasFactory;
 
-    public function article()
+    /**
+     * @return BelongsTo<Article, self>
+     */
+    public function article(): BelongsTo
     {
         return $this->belongsTo(Article::class);
     }
 
-    public function generatePath()
+    public function generatePath(): string
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
         return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name), true);
     }
 
-    public function generateTempPath()
+    public function generateTempPath(): string
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
         return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name), true);
     }
 
-    public function moveTempToArticle(Article $article)
+    public function moveTempToArticle(Article $article): bool
     {
         $moved = false;
         $fromFile = sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name);
@@ -46,7 +50,7 @@ class File extends Model
         return $moved;
     }
 
-    public static function moveUploadedFileToTmp(UploadedFile $uploadedFile)
+    public static function moveUploadedFileToTmp(UploadedFile $uploadedFile): File
     {
         $newFile = self::moveUploadedFileTo($uploadedFile, 'tmp');
         $newFile->save();
@@ -54,7 +58,7 @@ class File extends Model
         return $newFile;
     }
 
-    public static function addUploadedFileToArticle(UploadedFile $uploadedFile, Article $article)
+    public static function addUploadedFileToArticle(UploadedFile $uploadedFile, Article $article): File
     {
         $newFile = self::moveUploadedFileTo($uploadedFile, $article->id);
         $article->files()->save($newFile);
@@ -62,7 +66,7 @@ class File extends Model
         return $newFile;
     }
 
-    private static function moveUploadedFileTo(UploadedFile $file, $path = '')
+    private static function moveUploadedFileTo(UploadedFile $file, $path = ''): File
     {
         $fileExtension = $file->getExtension();
         if (empty($fileExtension)) {

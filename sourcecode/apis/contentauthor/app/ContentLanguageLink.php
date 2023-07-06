@@ -2,14 +2,18 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ContentLanguageLink extends Model
 {
     protected $fillable = ['main_content_id', 'link_content_id', "language_code", "content_type"];
 
-    public function scopeOfContentType($query, $contentType)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfContentType(Builder $query, $contentType): void
     {
-        return $query->where("content_type", $contentType);
+        $query->where("content_type", $contentType);
     }
 }

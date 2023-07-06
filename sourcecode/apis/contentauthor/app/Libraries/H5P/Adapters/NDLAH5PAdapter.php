@@ -198,9 +198,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         $css = [];
         $ndlaCustomCssOption = H5POption::where('option_name', H5POption::NDLA_CUSTOM_CSS_TIMESTAMP)->first();
-        if ($ndlaCustomCssOption && !empty($this->config->content)) {
+        $content = $this->config->getContent();
+        if ($ndlaCustomCssOption && !empty($content)) {
             $customCssBreakpoint = Carbon::parse($ndlaCustomCssOption->option_value);
-            $updated = $this->config->content['updated_at'];
+            $updated = $content['updated_at'];
             if ($customCssBreakpoint > $updated) {
                 $css[] = (string) mix('css/ndlah5p-iframe-legacy.css');
             }
@@ -254,6 +255,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
+            'h5p.video.enable',
+            'h5p.video.url',
+            'h5p.video.key',
+            'h5p.video.secret',
+            'h5p.video.accountId',
+            'h5p.video.authUrl',
+            'h5p.video.deleteVideoSourceAfterConvertToStream',
+            'h5p.video.pingDelay',
             'h5p.image.authDomain',
             'h5p.image.key',
             'h5p.image.secret',

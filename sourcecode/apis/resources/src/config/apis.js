@@ -2,10 +2,10 @@ import { env } from '@cerpus/edlib-node-utils';
 
 const contentAuthorUrl = env(
     'EDLIBCOMMON_CONTENTAUTHOR_URL',
-    'https://ca.edlib.local'
+    `https://ca.${env('EDLIB_ROOT_DOMAIN', 'edlib.test')}`
 );
 
-const edlibUrl = env('EDLIBCOMMON_URL', 'https://api.edlib.local');
+const edlibUrl = env('EDLIBCOMMON_URL', `https://api.${env('EDLIB_ROOT_DOMAIN', 'edlib.test')}`);
 
 export default {
     version: {
