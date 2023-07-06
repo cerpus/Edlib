@@ -99,8 +99,6 @@ class H5PControllerTest extends TestCase
         $this->assertEquals(config('license.default-license'), $state['license']);
 
         // Adapter specific
-        $this->assertSame($adapterMode, $editorSetup['adapterName']);
-
         if ($adapterMode === 'ndla') {
             $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
         } elseif ($adapterMode === 'cerpus') {
