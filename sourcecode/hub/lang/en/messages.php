@@ -61,7 +61,7 @@ return [
     'published' => 'Published',
     'change-email' => 'Change email',
     'disconnect-social-accounts' => 'Disconnect social accounts',
-    'disconnect-google' => 'Google',
-    'disconnect-facebook' => 'Facebook',
+    'disconnect-google' => 'Disconnect from Google',
+    'disconnect-facebook' => 'Disconnect from Facebook',
     'alert-password-empty' => 'To disconnect social login providers, you must first set a password on your account',
 ];
