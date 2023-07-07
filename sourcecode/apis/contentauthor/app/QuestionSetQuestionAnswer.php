@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 class QuestionSetQuestionAnswer extends Model
 {
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
     public function question()
     {

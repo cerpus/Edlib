@@ -5,8 +5,8 @@ namespace App;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\Games\Contracts\GameTypeModelContract;
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Gametype extends Model implements GameTypeModelContract
 {
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
     private $scripts = [
         'c2runtime.js',
