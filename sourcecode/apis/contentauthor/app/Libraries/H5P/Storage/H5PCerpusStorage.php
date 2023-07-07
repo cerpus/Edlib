@@ -546,24 +546,19 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $this->filesystem->response($path);
     }
 
-    public function getDisplayPath(bool $fullUrl = true)
+    public function getDisplayPath(bool $fullUrl = true): string
     {
-        return route('content.asset', null, $fullUrl);
+        return $this->contentAuthorStorage->getAssetsBaseUrl();
     }
 
-    public function getEditorDisplayPath(bool $fullUrl = true)
+    public function getEditorDisplayPath(bool $fullUrl = true): string
     {
-        return route('content.asset', ['path' => ContentStorageSettings::EDITOR_PATH], $fullUrl);
+        return $this->contentAuthorStorage->getAssetUrl(ContentStorageSettings::EDITOR_PATH);
     }
 
-    public function getLibrariesPath()
+    public function getContentPath($id, $file): string
     {
-        return route('content.asset', ['path' => ContentStorageSettings::LIBRARY_DIR]);
-    }
-
-    public function getContentPath($id, $file)
-    {
-        return route('content.asset', ['path' => sprintf(ContentStorageSettings::CONTENT_PATH, $id) . $file]);
+        return $this->contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::CONTENT_PATH, $id) . $file);
     }
 
     public function getAjaxPath()
