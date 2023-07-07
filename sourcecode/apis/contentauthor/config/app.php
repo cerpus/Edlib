@@ -213,5 +213,4 @@ return [
 
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
-    'cdnPrefix' => env('CDN_WITH_PREFIX', '')
 ];

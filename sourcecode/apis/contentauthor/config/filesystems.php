@@ -32,6 +32,7 @@ return [
         'local' => [ // local app storage
             'driver' => 'local',
             'root' => storage_path('app'),
+            'url' => env('CDN_WITH_PREFIX'),
         ],
         'testDisk' => [ // disk where tests are located.
             'driver' => 'local',
@@ -47,12 +48,14 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+            'url' => env('CDN_WITH_PREFIX'),
         ],
         // temporary directory for test files
         // this has to be its own directory, or your files will go missing!
         'test' => [
             'driver' => 'local',
             'root' => '/tmp/contentauthor-test',
+            'url' => 'https://cdn.example.net/',
         ],
         'tmp' => [ // temporary folder for contentauthor
             'driver' => 'local',
