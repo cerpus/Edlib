@@ -17,6 +17,7 @@ use App\Http\Controllers\API\UnlockController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCopyrightController;
 use App\Http\Controllers\ArticleUploadController;
+use App\Http\Controllers\ContentAssetController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\EmbedController;
 use App\Http\Controllers\GameController;
@@ -145,3 +146,5 @@ Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], fu
 Route::get('article/{article}/copyright', [ArticleCopyrightController::class, 'copyright'])->name('article.copyright');
 
 Route::get('/health', [HealthController::class, 'index']);
+
+Route::get('content/assets/{path?}', ContentAssetController::class)->where('path', '.*')->name('content.asset')->middleware('adaptermode');
