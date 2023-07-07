@@ -118,10 +118,10 @@ class H5PControllerTest extends TestCase
 
     public function provider_testCreate(): \Generator
     {
-        yield 'withoutContentType' => ['cerpus', null];
-        yield 'withoutContentType' => ['ndla', null];
-        yield 'withContentType' => ['cerpus', 'H5P.Toolbar 1.2'];
-        yield 'withContentType' => ['ndla', 'H5P.Toolbar 1.2'];
+        yield 'cerpus-withoutContentType' => ['cerpus', null];
+        yield 'ndla-withoutContentType' => ['ndla', null];
+        yield 'cerpus-withContentType' => ['cerpus', 'H5P.Toolbar 1.2'];
+        yield 'ndla-withContentType' => ['ndla', 'H5P.Toolbar 1.2'];
     }
 
     /** @dataProvider provider_adapterMode */
