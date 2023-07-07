@@ -39,4 +39,27 @@
             {{ trans('messages.save') }}
         </x-form.button>
     </x-form>
+
+    @if ($user->google_id || $user->facebook_id)
+        <hr>
+        <x-form action="{{ route('user.disconnect-social-accounts') }}">
+            <h5>{{ trans('messages.disconnect-social-accounts') }}</h5>
+
+            @if ($user->google_id && !empty($user->password))
+                <x-form.button class="btn-primary" name="disconnect-google">
+                    {{ trans('messages.disconnect-google') }}
+                </x-form.button>
+            @endif
+
+            @if ($user->facebook_id && !empty($user->password))
+                <x-form.button class="btn-primary" name="disconnect-facebook">
+                    {{ trans('messages.disconnect-facebook') }}
+                </x-form.button>
+            @endif
+
+            @if (empty($user->password))
+                <p>{{ trans('messages.alert-password-empty') }}</p>
+            @endif
+        </x-form>
+    @endif
 </x-layout>
