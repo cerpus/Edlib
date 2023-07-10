@@ -21,8 +21,6 @@ use Iso639p3;
  *
  * @property Collection<Collaborator> $collaborators
  *
- * @method Link replicate(array $except = null)
- *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */
@@ -54,7 +52,7 @@ class Link extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
-    public function makeCopy($owner = null)
+    public function makeCopy($owner = null): static
     {
         $newLink = $this->replicate();
         //$newLink->id = Uuid::uuid4()->toString();
