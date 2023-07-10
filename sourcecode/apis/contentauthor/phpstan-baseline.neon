@@ -36,6 +36,11 @@ parameters:
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
+			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
+			count: 2
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
 			count: 1
 			path: app/Content.php
@@ -616,6 +621,11 @@ parameters:
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
+			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			count: 3
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
 			message: "#^Ternary operator condition is always true\\.$#"
 			count: 1
 			path: app/Libraries/H5P/ContentType/BaseH5PContent.php
@@ -844,6 +854,11 @@ parameters:
 		-
 			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:\\$request is never read, only written\\.$#"
 			count: 1
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			count: 2
 			path: app/Libraries/H5P/H5PProgress.php
 
 		-

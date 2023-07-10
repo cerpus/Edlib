@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\H5P;
+namespace Tests\Integration\Libraries\H5P;
 
 use App\Libraries\H5P\H5PCreateConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
