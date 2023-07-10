@@ -31,13 +31,6 @@ class Link extends Content implements VersionableObject
     use HasFactory;
     use HasUuids;
 
-    private $parentId;
-
-    public function setParentId($parentId): void
-    {
-        $this->parentId = $parentId;
-    }
-
     public function givesScore(): int
     {
         return 0;
