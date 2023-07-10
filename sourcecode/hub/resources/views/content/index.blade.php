@@ -1,5 +1,5 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.explore') }}</x-slot:title>
-    <x-content.search :query="$query" />
-    <x-content.grid :contents="$contents" />
+
+    <livewire:shared-content-search />
 </x-layout>

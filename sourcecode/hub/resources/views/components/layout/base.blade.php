@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
+        @livewireStyles(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
         {{ $head ?? '' }}
     </head>
 
@@ -162,5 +163,7 @@
         @endif
 
         {{ $slot }}
+
+        @livewireScripts(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
     </body>
 </html>

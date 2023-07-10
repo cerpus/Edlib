@@ -1,3 +1,4 @@
+{{-- TODO: hitting enter/the button should not reload --}}
 <form action="" method="GET" class="row g-3 mb-3">
     <div class="col-12 col-lg-6">
 
@@ -7,6 +8,7 @@
             </label>
 
             <x-form.input
+                wire:model="query"
                 name="q"
                 type="search"
                 :value="$query"
