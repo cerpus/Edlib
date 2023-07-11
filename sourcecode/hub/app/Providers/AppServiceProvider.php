@@ -49,9 +49,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Vite::useStyleTagAttributes([
-            'crossorigin' => 'anonymous',
-        ]);
+        Vite::useCspNonce();
+        Vite::useStyleTagAttributes(['crossorigin' => 'anonymous']);
 
         Paginator::useBootstrapFive();
 

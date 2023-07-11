@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Foundation\Vite;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ final class ContentSecurityPolicy
 {
     public function __construct(
         private readonly Vite $vite,
+        private readonly UrlGenerator $urlGenerator,
     ) {
     }
 
@@ -25,8 +27,6 @@ final class ContentSecurityPolicy
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $this->vite->useCspNonce();
-
         $response = $next($request);
 
         if (!self::isCspEnabled($request, $response)) {
@@ -36,11 +36,13 @@ final class ContentSecurityPolicy
         $frameSources = $request->attributes->get('csp_frame_src', ["'none'"]);
         assert(is_array($frameSources));
 
+        $default = "'self' " . $this->urlGenerator->asset('');
+
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self'" .
+            "default-src $default" .
                 "; frame-src " . implode(' ', $frameSources) .
-                "; img-src 'self' data:" .
+                "; img-src $default data:" .
                 "; script-src 'nonce-" . $this->vite->cspNonce() . "'" .
                 "; style-src 'nonce-" . $this->vite->cspNonce() . "'",
         );
