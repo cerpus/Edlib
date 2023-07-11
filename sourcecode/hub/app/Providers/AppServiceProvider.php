@@ -10,6 +10,7 @@ use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
 use Laravel\Scout\Console\ImportCommand;
@@ -48,6 +49,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Vite::useStyleTagAttributes([
+            'crossorigin' => 'anonymous',
+        ]);
+
         Paginator::useBootstrapFive();
 
         // Scout doesn't register these in non-CLI environments, but we need
