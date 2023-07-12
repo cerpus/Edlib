@@ -2,10 +2,24 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property int $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property string $filename
+ * @property string $user_id
+ * @property string $state
+ * @property ?string $file_hash
+ * @property ?string $external_reference
+ * @property int $content_id
+ * @property ?string $requestId
+ * @property ?string $params
+ * @property ?Carbon $process_start
+ *
  * @method static null|Builder ofFileUploadFromRequestId($requestId)
  * @method static null|Builder ofFileUploadFromContent($contentId)
  */

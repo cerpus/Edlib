@@ -31,14 +31,23 @@ use const LIBXML_HTML_NOIMPLIED;
 
 /**
  * @property string $id
- * @property string $parent_id
- * @property string $parent_version_id
- * @property string $original_id
+ * @property ?string $parent_id
+ * @property ?string $parent_version_id
+ * @property ?string $version_id
+ * @property ?string $original_id
  * @property string $owner_id
+ * @property string $title
  * @property string $content
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property Carbon $deleted_at
- * @property string $note_id
- * @property string $ndla_url
+ * @property ?string $node_id
+ * @property ?string $ndla_url
+ * @property ?int $max_score
+ * @property int $bulk_calculated
+ * @property int $is_published
+ * @property string $license
+ * @property int $is_draft
  *
  * @property Collection<Collaborator> $collaborators
  *

@@ -2,10 +2,24 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property int $content_id
+ * @property string $user_id
+ * @property int $sub_content_id
+ * @property string $data_id
+ * @property string $data
+ * @property int $preload
+ * @property int $invalidate
+ * @property Carbon $updated_at
+ * @property ?string $context
+ */
 
 class H5PContentsUserData extends Model
 {

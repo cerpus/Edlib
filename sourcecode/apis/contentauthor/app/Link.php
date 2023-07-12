@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Libraries\Versioning\VersionableObject;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,12 +13,19 @@ use Iso639p3;
 
 /**
  * @property string $id
+ * @property ?string $title
  * @property string $link_url
  * @property string $link_type
- * @property string $owner_id
+ * @property ?string $owner_id
+ * @property ?string $version_id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property int $deleted_at
  * @property string $link_text
  * @property string $metadata
+ * @property boolean $is_published
+ * @property string $license
+ * @property boolean $is_draft
  *
  * @property Collection<Collaborator> $collaborators
  *

@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $library_id
+ * @property string $translation
+ */
+
 class H5PLibraryLanguage extends Model
 {
     protected $table = 'h5p_libraries_languages';

@@ -4,6 +4,7 @@ namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Traits\Collaboratable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,10 +13,18 @@ use Illuminate\Http\Request;
 use Iso639p3;
 
 /**
+ * @property string $id
+ * @property string $title
  * @property string $language_code
  * @property string $owner
- * @property string $external_reference
+ * @property ?string $external_reference
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property boolean $is_private
  * @property string $tags
+ * @property boolean $is_published
+ * @property string $license
+ * @property boolean $is_draft
  * @property Collection<QuestionSetQuestion> $questions
  *
  * @method static self find($id, $columns = ['*'])

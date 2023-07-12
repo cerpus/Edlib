@@ -2,12 +2,23 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * @property int $id
+ * @property string $ndla_id
+ * @property string $cd_id
+ * @property string $type
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property ?string $core_id
+ * @property ?string $lanuch_url
+ * @property ?string $ndla_checksum
+ * @property ?string $language_code
  * @property int|null $metadata_fetch
  *
  * @method static Builder withH5PMetadata()

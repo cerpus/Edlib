@@ -2,10 +2,21 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Lang;
+
+/**
+ * @property int $id
+ * @property int $library_id
+ * @property string $name
+ * @property int $score
+ * @property int $enabled
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 
 class H5PLibraryCapability extends Model
 {

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
+ * @property int $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property string $name
+ * @property string $title
+ * @property int $major_version
+ * @property int $minor_version
+ * @property int $patch_version
+ * @property int $runnable
+ * @property int $restricted
+ * @property int $fullscreen
+ * @property string $embed_types
+ * @property ?string $preloaded_js
+ * @property ?string $preloaded_css
+ * @property ?string $drop_library_css
+ * @property string $semantics
+ * @property string $tutorial_url
+ * @property int $has_icon
+ * @property string $metadata_settings
+ * @property string $add_to
+ *
  * @property-read Collection<array-key, H5PLibraryLibrary> $libraries
  *
  * @see H5PLibrary::scopeFromLibrary()

@@ -8,6 +8,7 @@ use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Libraries\Versioning\VersionableObject;
+use Carbon\Carbon;
 use H5PCore;
 use H5PFrameworkInterface;
 use H5PMetadata;
@@ -20,24 +21,32 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Iso639p3;
+use phpseclib3\File\ASN1\Maps\Time;
 
 /**
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property string $user_id
+ * @property string $title
  * @property int $library_id
  * @property string $parameters
  * @property string $filtered
  * @property string $slug
  * @property string $embed_type
  * @property int $disable
- * @property string $content_type
- * @property string $author
- * @property string $keywords
- * @property string $description
- * @property string $content_create_mode
- * @property string $language_iso_639_3
- * @property string|null $title_clean
+ * @property ?string $content_type
+ * @property ?string $author
+ * @property ?string $license
+ * @property ?string $keywords
+ * @property ?string $description
+ * @property ?string $version_id
  * @property ?int $max_score
+ * @property string $content_create_mode
  * @property int $bulk_calculated
+ * @property boolean $is_published
+ * @property ?string $language_iso_639_3
+ * @property boolean $is_draft
+ * @property string|null $title_clean
  *
  * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library

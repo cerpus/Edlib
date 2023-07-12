@@ -2,8 +2,16 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\Attribution;
+
+/**
+ * @property  string $content_id
+ * @property object $attribution
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 
 class ContentAttribution extends Model
 {

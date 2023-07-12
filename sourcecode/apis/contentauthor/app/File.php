@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Libraries\ContentAuthorStorage;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
@@ -10,6 +11,17 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+/**
+ * @property int $id
+ * @property string $article_id
+ * @property string $name
+ * @property string $original_name
+ * @property int $size
+ * @property string $mime
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 
 class File extends Model
 {

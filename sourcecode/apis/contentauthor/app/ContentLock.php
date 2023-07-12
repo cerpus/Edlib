@@ -9,6 +9,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property string $auth_id
+ * @property ?string $email
+ * @property ?string $name
+ * @property Carbon $created_at
  * @property Carbon $updated_at
  */
 

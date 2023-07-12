@@ -6,6 +6,7 @@ use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,11 +16,17 @@ use Iso639p3;
 /**
  * @property string $id
  * @property string $gametype
+ * @property string $title
  * @property string $language_code
  * @property string $owner
  * @property object $game_settings
- * @property int $deleted_at
- *
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ * @property ?string $version_id
+ * @property boolean $is_published
+ * @property string $license
+ * @property boolean $is_draft
  * @property Gametype $gameType
  *
  * @method static self find($id, $columns = ['*'])

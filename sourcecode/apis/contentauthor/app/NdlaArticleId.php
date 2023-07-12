@@ -2,8 +2,19 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $language
+ * @property string $type
+ * @property string $json
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 
 class NdlaArticleId extends Model
 {

@@ -5,6 +5,16 @@ namespace App;
 /**
  * A central place to name session keys, use if one key is used in more than one source file.
  */
+
+/**
+ * @property string $id
+ * @property ?int $user_id
+ * @property ?string $ip_address
+ * @property ?string $user_agent
+ * @property string $payload
+ * @property int $last_activity
+ */
+
 class SessionKeys
 {
     /*

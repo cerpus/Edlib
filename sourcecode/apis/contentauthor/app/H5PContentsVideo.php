@@ -2,9 +2,19 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property int $h5p_content_id
+ * @property string $video_id
+ * @property string $source_file
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 
 class H5PContentsVideo extends Model
 {

@@ -8,6 +8,15 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property  string $system_id
+ * @property string $context_id
+ * @property string $type
+ * @property string $collaborator_id
+ * @property string $content_id
+ * @property Carbon $timestamp
+ */
+
 class CollaboratorContext extends Model
 {
     use HasFactory;

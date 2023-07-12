@@ -5,6 +5,7 @@ namespace App;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\Games\Contracts\GameTypeModelContract;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
+ * @property string $title
+ * @property string $name
+ * @property int $major_version
+ * @property int $minor_version
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  * @see Gametype::scopeOfName()
  * @method static Builder ofName($machineName)

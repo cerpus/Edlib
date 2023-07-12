@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
+ * @property int $library_id
+ * @property int $required_library_id
  * @property string $dependency_type
  * @property-read H5PLibrary $library
  * @property-read H5PLibrary $requiredLibrary

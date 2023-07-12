@@ -2,12 +2,16 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property int $id
  * @property int $content_id
  * @property string $language_code
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  *
  * @method static firstOrCreate(array $attributes = [], array $values = [])
  */

@@ -2,8 +2,19 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property string $ndla_id
+ * @property string $message
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property string $import_id
+ * @property ?int $log_level
+ */
 
 /**
  * @todo remove

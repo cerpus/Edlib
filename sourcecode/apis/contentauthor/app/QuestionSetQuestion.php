@@ -9,11 +9,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 /**
  * @property string $id
  * @property string $question_text
  * @property string $image
+ * @property string $question_set_id
+ * @property int $order
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property ?string $external_reference
+ * @property boolean $is_private
  *
  * @property Collection<QuestionSetQuestionAnswer> $answers
  */
