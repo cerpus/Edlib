@@ -27,9 +27,9 @@ class EditorStorage implements \H5peditorStorage
         $this->core = $core;
     }
 
-    public function getLanguage($name, $majorVersion, $minorVersion, $language)
+    public function getLanguage($machineName, $majorVersion, $minorVersion, $language)
     {
-        $library = H5PLibraryLanguage::fromLibrary([$name, $majorVersion, $minorVersion])
+        $library = H5PLibraryLanguage::fromLibrary([$machineName, $majorVersion, $minorVersion])
             ->where('language_code', $language)
             ->select('translation')
             ->first();
@@ -42,7 +42,11 @@ class EditorStorage implements \H5peditorStorage
         // TODO: No longer a tmp file.
     }
 
-    public function getLibraries($libraries = null)
+    /**
+     * @param null|array{object} $libraries
+     * @return array
+     */
+    public function getLibraries($libraries = null): array
     {
         if ($libraries !== null) {
             $libraries = collect($libraries);
@@ -62,8 +66,7 @@ class EditorStorage implements \H5peditorStorage
                     });
                 })
                 ->values()
-                ->map(function ($h5pLibrary) {
-                    /** @var H5PLibrary $h5pLibrary */
+                ->map(function (H5PLibrary $h5pLibrary) {
                     $library = [
                         'uberName' => $h5pLibrary->getLibraryString(),
                         'name' => $h5pLibrary->name,
@@ -73,7 +76,7 @@ class EditorStorage implements \H5peditorStorage
                         'tutorialUrl' => $h5pLibrary->tutorial_url,
                         'title' => $h5pLibrary->title,
                         'runnable' => $h5pLibrary->runnable,
-                        'restricted' => $h5pLibrary->restricted === '1' ? true : false,
+                        'restricted' => $h5pLibrary->restricted === 1,
                         'metadataSettings' => json_decode($h5pLibrary->metadata_settings)
                     ];
                     return (object)$library;
@@ -83,7 +86,7 @@ class EditorStorage implements \H5peditorStorage
 
         return H5PLibrary::whereNotNull('semantics')
             ->runnable()
-            ->select(['id', 'name', 'title', 'major_version', 'minor_version', 'tutorial_url AS tutorialUrl', 'restricted', 'metadata_settings'])
+            ->select(['id', 'name', 'title', 'major_version', 'minor_version', 'tutorial_url', 'restricted', 'metadata_settings'])
             ->orderBy('name')
             ->orderBy('major_version')
             ->orderBy('minor_version')
@@ -93,21 +96,25 @@ class EditorStorage implements \H5peditorStorage
                 return $libraryGroup
                     ->reverse()
                     ->values()
-                    ->map(function ($library, $index) {
-                        /** @var H5PLibrary $library */
-                        $library->restricted = $library->restricted === '1' ? true : false;
-                        $library->metadataSettings = json_decode($library->metadata_settings);
-                        $library->majorVersion = $library->major_version;
-                        $library->minorVersion = $library->minor_version;
+                    ->map(function (H5PLibrary $library, $index) {
+                        $data = (object) [
+                            'id' => $library->id,
+                            'name' => $library->name,
+                            'title' => $library->title,
+                            'tutorialUrl' => $library->tutorial_url,
+                            'restricted' => $library->restricted === 1,
+                            'metadata_settings' => $library->metadata_settings,
+                            'metadataSettings' => json_decode($library->metadata_settings),
+                            'majorVersion' => $library->major_version,
+                            'minorVersion' => $library->minor_version,
+                            'uberName' => $library->getLibraryString(),
+                        ];
 
-                        // Add new library
-                        $library->uberName = $library->getLibraryString();
                         if ($index > 0) {
-                            $library->isOld = true;
+                            $data->isOld = true;
                         }
-                        unset($library->major_version, $library->minor_version);
-                        $library = $library->toArray();
-                        return (object)$library;
+
+                        return $data;
                     });
             })
             ->flatten()

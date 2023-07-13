@@ -267,41 +267,6 @@ parameters:
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$majorVersion\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$metadataSettings\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$minorVersion\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$uberName\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Property App\\\\H5PLibrary\\:\\:\\$restricted \\(int\\) does not accept false\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between int and '1' will always evaluate to false\\.$#"
-			count: 2
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
 			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PCopyright.php
