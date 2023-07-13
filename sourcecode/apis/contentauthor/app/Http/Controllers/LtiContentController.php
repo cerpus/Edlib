@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Content;
 use App\Libraries\ModelRetriever;
-use H5PCore;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

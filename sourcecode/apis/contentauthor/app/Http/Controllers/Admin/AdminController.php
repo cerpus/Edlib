@@ -6,7 +6,6 @@ use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
-use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\H5PLibraryAdmin;
@@ -23,7 +22,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        return view('admin.index',[
+        return view('admin.index', [
             'editLockCount' => ContentLock::active()->count(),
         ]);
     }

@@ -165,7 +165,6 @@ class ArticleController extends Controller implements LtiTypeInterface
      * @param int $id
      * @param ?string $context
      * @param bool $preview
-     * @return View
      */
     public function doShow($id, $context, $preview = false): View
     {
@@ -196,9 +195,7 @@ class ArticleController extends Controller implements LtiTypeInterface
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Request $request
      * @param string $id
-     * @return View
      */
     public function edit(Request $request, $id): View
     {

@@ -22,7 +22,7 @@ class EditorStorageTest extends TestCase
         $languages = $es->getAvailableLanguages($lib->name, $lib->major_version, $lib->minor_version);
 
         $this->assertEquals('en', $languages[0]);
-        foreach($langCodes as $langCode) {
+        foreach ($langCodes as $langCode) {
             $this->assertContains($langCode->language_code, $languages);
         }
     }
