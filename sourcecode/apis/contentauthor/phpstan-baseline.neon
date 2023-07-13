@@ -1,9 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Method GuzzleHttp\\\\ClientInterface\\:\\:request\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
-			count: 1
-			path: app/Article.php
 
 		-
 			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"

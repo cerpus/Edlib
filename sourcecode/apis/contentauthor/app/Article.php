@@ -197,7 +197,7 @@ class Article extends Content implements VersionableObject
                     $decodedUrl = urldecode($url);
 
                     $client = Client::getClient(OauthSetup::create(['coreUrl' => $decodedUrl]));
-                    $response = $client->request("GET");
+                    $response = $client->request("GET", $decodedUrl);
                     $metadata = GuzzleUtils::jsonDecode($response->getBody());
                     if ($haltIfNotCalculated === true && is_null($metadata->resource->maxScore ?? null)) {
                         throw new Exception("Not calculated");
