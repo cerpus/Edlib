@@ -66,16 +66,6 @@ parameters:
 			path: app/H5PContent.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{email\\: string, created_at\\: float\\|int\\|string\\}, Closure\\(App\\\\Collaborator\\)\\: array\\{email\\: string, created_at\\: float\\|int\\|string\\} given\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/ArticleInfoController.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/ContentInfoController.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/H5PInfoController.php

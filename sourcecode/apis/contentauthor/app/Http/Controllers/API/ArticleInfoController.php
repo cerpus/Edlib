@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Article;
-use App\Collaborator;
+use App\ArticleCollaborator;
 use App\Http\Controllers\Controller;
 
 class ArticleInfoController extends Controller
@@ -18,7 +18,7 @@ class ArticleInfoController extends Controller
                     'id' => $article->id,
                     'owner_id' => $article->owner_id,
                     'is_private' => $article->is_private,
-                    'shares' => $article->collaborators->map(function (Collaborator $collaborator) {
+                    'shares' => $article->collaborators->map(function (ArticleCollaborator $collaborator) {
                         return [
                             'email' => $collaborator->email,
                             'created_at' => $collaborator->created_at->timestamp,

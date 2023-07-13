@@ -40,7 +40,7 @@ use const LIBXML_HTML_NOIMPLIED;
  * @property string $note_id
  * @property string $ndla_url
  *
- * @property Collection<Collaborator> $collaborators
+ * @property Collection<int, ArticleCollaborator> $collaborators
  *
  * @method null|self noMaxScore()
  * @method null|self ofBulkCalculated($type)
