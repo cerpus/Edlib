@@ -15,7 +15,6 @@ use App\Http\Controllers\H5PController;
 use App\Http\Libraries\License;
 use App\Libraries\H5P\H5PConfigAbstract;
 use Faker\Factory;
-use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\ResourceSaved;
-use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
 use Exception;

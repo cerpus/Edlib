@@ -5,7 +5,6 @@ namespace App\Libraries\H5P\Traits;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
-use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 
 trait H5PCommonAdapterTrait
