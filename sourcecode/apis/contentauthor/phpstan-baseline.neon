@@ -46,16 +46,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
-			count: 1
-			path: app/Events/ArticleWasCopied.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$reason\\.$#"
-			count: 1
-			path: app/Events/ArticleWasCopied.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/Game.php

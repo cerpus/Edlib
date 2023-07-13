@@ -9,6 +9,9 @@ class ArticleWasCopied extends Event
 {
     use SerializesModels;
 
+    public $article;
+    public $reason;
+
     public function __construct(Article $article, $reason)
     {
         $this->article = $article;
