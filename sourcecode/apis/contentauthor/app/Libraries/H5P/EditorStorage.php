@@ -44,7 +44,6 @@ class EditorStorage implements \H5peditorStorage
 
     /**
      * @param null|array{object} $libraries
-     * @return array
      */
     public function getLibraries($libraries = null): array
     {
