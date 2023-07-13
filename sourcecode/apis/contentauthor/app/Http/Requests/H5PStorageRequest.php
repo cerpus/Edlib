@@ -18,7 +18,7 @@ class H5PStorageRequest extends FormRequest
 {
     public function rules(): array
     {
-        $content = $this->route()->parameter('h5p') ?? H5PContent::make();
+        $content = $this->route()->parameter('h5p') ?? new H5PContent();
         assert($content instanceof H5PContent);
 
         return [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Session;
 use App\ContentLock;
 use Illuminate\Http\Response;
@@ -11,10 +12,8 @@ class UnlockController extends Controller
 {
     /**
      * Unlocks a resource if user owns the lock
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index($id): JsonResponse
     {
         if (empty(config('feature.content-locking'))) {
             abort(Response::HTTP_NOT_FOUND);
@@ -27,7 +26,7 @@ class UnlockController extends Controller
         $code = Response::HTTP_OK;
 
         // Don't care if the lock is expired or not
-        $lock = ContentLock::where("content_id", $id)->get()->first();
+        $lock = ContentLock::where("content_id", $id)->first();
 
         if (!$lock) {
             $status = 'not found';

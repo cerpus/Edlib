@@ -20,5 +20,6 @@ class H5PCollaborator extends Model
     public function setUpdatedAt($value)
     {
         // Do nothing.
+        return $this;
     }
 }

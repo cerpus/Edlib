@@ -29,7 +29,7 @@ abstract class BaseH5PContent
 
     public function setId($id, $hashId = true)
     {
-        $this->id = $this->libraryId . '-' . $hashId ? md5($id) : $id;
+        $this->id = $this->libraryId . '-' . ($hashId ? md5($id) : $id);
 
         return $this;
     }

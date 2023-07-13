@@ -57,7 +57,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use function Cerpus\Helper\Helpers\profile as config;
 
-class H5PController extends Controller
+class H5PController extends Controller implements LtiTypeInterface
 {
     use LtiTrait;
     use ReturnToCore;
@@ -139,9 +139,10 @@ class H5PController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, H5PCore $core, $contenttype = null): View
+    public function create(Request $request, $contenttype = null): View
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
+        $core = app(H5PCore::class);
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
@@ -225,8 +226,10 @@ class H5PController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param int $id
      */
-    public function edit(Request $request, int $id): View
+    public function edit(Request $request, $id): View
     {
         Log::info("Edit H5P: $id, user: " . Session::get('authId', 'not-logged-in-user'));
 
@@ -713,7 +716,7 @@ class H5PController extends Controller
      */
     public function hasUserProgress(H5PContent $h5p): bool
     {
-        return $h5p->contentUserData()->get()->isNotEmpty();
+        return $h5p->contentUserData()->exists();
     }
 
     protected function getScoringForContent(H5PContent $content): int

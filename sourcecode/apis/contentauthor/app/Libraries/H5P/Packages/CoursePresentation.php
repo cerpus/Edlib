@@ -102,7 +102,7 @@ class CoursePresentation extends H5PBase
             ->each(function ($slide) use ($sourceFile, $newSource) {
                 collect($slide->elements)
                     ->pluck('action')
-                    ->each(function ($element, $elementIndex) use ($sourceFile, $newSource, $slide) {
+                    ->each(function ($element) use ($sourceFile, $newSource) {
                         if (!is_object($element)) {
                             \Log::error(__METHOD__ . sprintf(" '%s' is of type %s. Source is: %s", $element, gettype($element), $sourceFile));
                             return;
@@ -113,7 +113,7 @@ class CoursePresentation extends H5PBase
                                 throw new \Exception("Could not update source");
                             }
                             $element->params = $package->getPackageStructure();
-                        } catch (UnknownH5PPackageException $exception) {
+                        } catch (UnknownH5PPackageException) {
                         }
                     });
             });

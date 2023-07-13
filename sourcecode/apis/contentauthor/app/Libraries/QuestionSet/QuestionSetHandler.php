@@ -24,7 +24,7 @@ class QuestionSetHandler
     public function store($values, Request $request)
     {
         /** @var QuestionSet $questionSet */
-        $questionSet = QuestionSet::make();
+        $questionSet = new QuestionSet();
         $questionSet->title = $values['title'];
         $questionSet->owner = Session::get('authId');
         $questionSet->language_code = $request->session()->get('locale', '');
@@ -67,14 +67,14 @@ class QuestionSetHandler
     {
         foreach ($questions as $card) {
             /** @var QuestionSetQuestion $question */
-            $question = QuestionSetQuestion::make();
+            $question = new QuestionSetQuestion();
             $question->question_text = QuestionBankClient::stripMathContainer($card['question']['text']);
             $question->image = !empty($card['question']['image']['id']) ? $card['question']['image']['id'] : null;
             $question->order = $card['order'];
             $questionSet->questions()->save($question);
 
             foreach ($card['answers'] as $answerIndex => $answer) {
-                $questionAnswer = QuestionSetQuestionAnswer::make();
+                $questionAnswer = new QuestionSetQuestionAnswer();
                 $questionAnswer->answer_text = QuestionBankClient::stripMathContainer($answer['answerText']);
                 $questionAnswer->correct = $answer['isCorrect'];
                 $questionAnswer->image = !empty($answer['image']['id']) ? $answer['image']['id'] : null;
@@ -169,7 +169,7 @@ class QuestionSetHandler
                     $providedAnswers
                         ->diffKeys($existingAnswers)
                         ->each(function ($newAnswer) use ($question) {
-                            $answer = QuestionSetQuestionAnswer::make();
+                            $answer = new QuestionSetQuestionAnswer();
                             $answer->answer_text = QuestionBankClient::stripMathContainer($newAnswer['answerText']);
                             $answer->correct = $newAnswer['isCorrect'];
                             $answer->image = !empty($newAnswer['image']['id']) ? $newAnswer['image']['id'] : null;

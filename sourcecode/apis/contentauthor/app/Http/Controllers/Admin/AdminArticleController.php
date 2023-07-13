@@ -86,10 +86,8 @@ class AdminArticleController extends Controller
 
         if (is_scalar($context)) {
             $lines[] = (string)$context;
-        } else {
-            if (is_array($context) && count($context) > 0) {
-                $lines[] = json_encode($context);
-            }
+        } elseif (is_array($context) && count($context) > 0) {
+            $lines[] = json_encode($context);
         }
 
         $this->log->append(self::logFile, implode(" ", $lines));
@@ -106,11 +104,14 @@ class AdminArticleController extends Controller
     {
         $resources = Article::ofBulkCalculated(Article::BULK_FAILED)
             ->get()
-            ->each(function (Article $resource) {
-                /** @var ResourceUserDataObject $ownerData */
+            ->map(function (Article $resource) {
                 $ownerData = $resource->getOwnerData();
-                $resource->ownerName = $ownerData->getNameAndEmail();
-                return $resource;
+                return (object) [
+                    'id' => $resource->id,
+                    'title' => $resource->title,
+                    'created_at' => $resource->created_at,
+                    'ownerName' => $ownerData->getNameAndEmail(),
+                ];
             });
         return view('admin.articles.maxscore-failed-overview', compact('resources'));
     }

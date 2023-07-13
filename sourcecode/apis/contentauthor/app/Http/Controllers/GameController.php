@@ -13,18 +13,16 @@ use App\Traits\ReturnToCore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
-class GameController extends Controller
+class GameController extends Controller implements LtiTypeInterface
 {
     use LtiTrait;
     use ArticleAccess;
     use ReturnToCore;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private H5pLti $lti)
     {
-        $this->lti = $h5pLti;
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('game-access', ['only' => ['ltiEdit']]);
     }
@@ -34,7 +32,7 @@ class GameController extends Controller
         return $this->doShow($id, null);
     }
 
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context, $preview = false): View
     {
         $game = Game::findOrFail($id);
         if (!$game->canShow($preview)) {
@@ -49,7 +47,7 @@ class GameController extends Controller
         return $gameType->view($game, $context, $preview);
     }
 
-    public function edit(Request $request, $gameId)
+    public function edit(Request $request, $gameId): View
     {
         /** @var Game $game */
         $game = Game::with('gametype')->findOrFail($gameId);
@@ -87,5 +85,10 @@ class GameController extends Controller
         ];
 
         return response()->json($responseValues, Response::HTTP_OK);
+    }
+
+    public function create(Request $request): View
+    {
+        abort(501, 'Not available for this type');
     }
 }

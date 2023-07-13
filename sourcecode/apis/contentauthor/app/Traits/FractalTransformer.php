@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Transformers\Serializers\ArraySerializer;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
@@ -86,11 +87,8 @@ trait FractalTransformer
 
     /**
      * Create the response for an item.
-     *
-     * @param  int $status
-     * @return Response
      */
-    protected function buildItemResponse($item, TransformerAbstract $transformer, $status = 200, array $headers = [])
+    protected function buildItemResponse($item, TransformerAbstract $transformer, int $status = 200, array $headers = []): JsonResponse
     {
         $resource = new Item($item, $transformer);
 
@@ -99,11 +97,8 @@ trait FractalTransformer
 
     /**
      * Create the response for a resource.
-     *
-     * @param  int $status
-     * @return Response
      */
-    protected function buildResourceResponse(ResourceAbstract $resource, $status = 200, array $headers = [])
+    protected function buildResourceResponse(ResourceAbstract $resource, int $status = 200, array $headers = []): JsonResponse
     {
         $manager = $this->getManager();
 
@@ -116,11 +111,8 @@ trait FractalTransformer
 
     /**
      * Create the response for a collection.
-     *
-     * @param  int $status
-     * @return Response
      */
-    protected function buildCollectionResponse($collection, TransformerAbstract $transformer, $status = 200, array $headers = [])
+    protected function buildCollectionResponse($collection, TransformerAbstract $transformer, int $status = 200, array $headers = []): JsonResponse
     {
         $resource = new Collection($collection, $transformer);
 

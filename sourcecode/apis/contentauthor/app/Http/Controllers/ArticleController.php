@@ -32,22 +32,18 @@ use Illuminate\View\View;
 
 use function Cerpus\Helper\Helpers\profile as config;
 
-class ArticleController extends Controller
+class ArticleController extends Controller implements LtiTypeInterface
 {
     use ArticleAccess;
     use LtiTrait;
     use ReturnToCore;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private H5pLti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
-
-        $this->lti = $h5pLti;
     }
 
     /**
@@ -167,11 +163,12 @@ class ArticleController extends Controller
      * Display the specified resource.
      *
      * @param int $id
+     * @param ?string $context
+     * @param bool $preview
      * @return View
      */
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context, $preview = false): View
     {
-        /** @var Article $article */
         $article = Article::findOrFail($id);
         $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
         if (!$article->canShow($preview)) {
@@ -199,12 +196,12 @@ class ArticleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request $request
      * @param string $id
      * @return View
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $id): View
     {
-        /** @var Article $article */
         $article = Article::findOrFail($id);
 
         if (!$this->canUpdateArticle($article)) {
@@ -375,7 +372,7 @@ class ArticleController extends Controller
 
     protected function moveTempFiles(Article $article)
     {
-        $files = collect(Session::get(Article::TMP_UPLOAD_SESSION_KEY), []);
+        $files = collect(Session::get(Article::TMP_UPLOAD_SESSION_KEY, []));
 
         $files->each(function ($file) use ($article) {
             if ($file->moveTempToArticle($article)) {

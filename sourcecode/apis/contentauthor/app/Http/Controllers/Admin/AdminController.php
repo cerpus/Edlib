@@ -23,8 +23,9 @@ class AdminController extends Controller
 
     public function index()
     {
-        $editLockCount = ContentLock::active()->get()->count();
-        return view('admin.index')->with(compact('editLockCount'));
+        return view('admin.index',[
+            'editLockCount' => ContentLock::active()->count(),
+        ]);
     }
 
     public function contentUpgrade(Request $request)
@@ -72,11 +73,15 @@ class AdminController extends Controller
         $resources = H5PContent::with('library')
             ->where('bulk_calculated', H5PLibraryAdmin::BULK_FAILED)
             ->get()
-            ->each(function ($resource) {
-                /** @var ResourceUserDataObject $ownerData */
+            ->map(function (H5PContent $resource) {
                 $ownerData = $resource->getOwnerData();
-                $resource->ownerName = $ownerData->getNameAndEmail();
-                return $resource;
+                return (object)[
+                    'id' => $resource->id,
+                    'title' => $resource->title,
+                    'library' => sprintf('%s (%s %d.%d.%d)', $resource->library->title, $resource->library->name, $resource->library->major_version, $resource->library->minor_version, $resource->library->patch_version),
+                    'created_at' => $resource->created_at,
+                    'ownerName' => $ownerData->getNameAndEmail(),
+                ];
             });
         return view('admin.maxscore-failed-overview', compact('resources'));
     }

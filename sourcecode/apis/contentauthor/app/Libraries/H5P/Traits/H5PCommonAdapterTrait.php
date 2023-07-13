@@ -40,7 +40,6 @@ trait H5PCommonAdapterTrait
     {
         try {
             if (!is_null($machineName)) {
-                /** @var H5PBase $library */
                 $library = H5PPackageProvider::make($machineName);
                 $library->alterSemantics($semantics);
             }

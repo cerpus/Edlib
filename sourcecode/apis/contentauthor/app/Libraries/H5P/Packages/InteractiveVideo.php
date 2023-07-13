@@ -25,7 +25,8 @@ class InteractiveVideo extends H5PBase
                         'package' => H5PPackageProvider::make($item->action->library, $item->action->params),
                         'index' => $index,
                     ];
-                } catch (UnknownH5PPackageException $exception) {
+                } catch (UnknownH5PPackageException) {
+                    return null;
                 }
             })->reject(function ($items) {
                 /** @var PackageInterface|null $item */

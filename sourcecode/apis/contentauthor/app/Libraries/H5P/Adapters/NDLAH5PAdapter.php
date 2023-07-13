@@ -8,12 +8,10 @@ use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\File\NDLATextTrack;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
-
 use Illuminate\Support\Facades\Session;
 
 use function Cerpus\Helper\Helpers\profile as config;
@@ -22,8 +20,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
 
-    /** @var H5PImageAdapterInterface */
-    private $imageBrowser;
+    private NDLAContentBrowser $imageBrowser;
 
     /** @var H5PAlterParametersSettingsDataObject */
     private $parameterSettings;

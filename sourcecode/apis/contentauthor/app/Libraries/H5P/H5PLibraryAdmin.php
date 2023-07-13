@@ -64,7 +64,7 @@ class H5PLibraryAdmin
             );
         }
 
-        $this->storage->savePackage(null, null, true, $upgradeOnly);
+        $this->storage->savePackage(null, null, true);
 
         return $this->storage->contentId;
     }
@@ -129,7 +129,7 @@ class H5PLibraryAdmin
                 ->map(function ($content) {
                     $metadata = $content->metadata()->first();
                     if (is_null($metadata)) {
-                        $metadata = H5PContentsMetadata::make([
+                        $metadata = new H5PContentsMetadata([
                             'title' => $content->title,
                         ]);
                     }

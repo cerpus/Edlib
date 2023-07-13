@@ -15,8 +15,14 @@ parameters:
         - routes
         - tests
     stubFiles:
+        - stubs/cerpus/UriInterface.stub
+        - stubs/cerpus/VersionData.stub
         - stubs/h5p-core/H5PCore.stub
         - stubs/h5p-core/H5PExport.stub
+        - stubs/h5p-core/H5PFileStorage.stub
+        - stubs/h5p-core/H5PFrameworkInterface.stub
+        - stubs/h5p-core/H5PStorage.stub
+        - stubs/h5p-editor/H5peditor.stub
     banned_code:
         nodes:
             -

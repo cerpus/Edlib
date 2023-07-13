@@ -50,7 +50,6 @@ class PingVideoApi implements ShouldQueue
         if (!empty($children)) {
             /** @var VersionData $child */
             foreach ($children as $child) {
-                /** @var H5PContent $content */
                 $content = H5PContent::find($child->getExternalReference());
                 if (!is_null($content)) {
                     if ($content->contentVideos()->first() === null) {
@@ -99,7 +98,6 @@ class PingVideoApi implements ShouldQueue
     public function handle(H5PVideoInterface $adapter)
     {
         if ($adapter->isVideoReadyForStreaming($this->contentVideo->video_id)) {
-            /** @var H5PContent $h5pcontent */
             $h5pcontent = H5PContent::find($this->contentVideo->h5p_content_id);
             if (empty($h5pcontent)) {
                 return false;

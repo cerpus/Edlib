@@ -49,11 +49,9 @@ class H5PControllerTest extends TestCase
             'redirectToken' => $faker->uuid,
         ]);
 
-        /** @var H5PCore $h5pCore */
-        $h5pCore = app(H5pCore::class);
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
-        $result = $articleController->create($request, $h5pCore);
+        $result = $articleController->create($request);
         $this->assertInstanceOf(View::class, $result);
 
         $data = $result->getData();

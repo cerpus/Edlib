@@ -1,0 +1,34 @@
+<?php
+
+namespace Cerpus\VersionClient;
+
+class VersionData
+{
+    /**
+     * @return string
+     */
+    public function getUserId() {}
+
+    /**
+     * @param string $userId
+     * @return VersionData
+     */
+    public function setUserId($userId) {}
+
+    /**
+     * @return int|string
+     */
+    public function getExternalReference() {}
+
+    /**
+     * @param int|string $externalReference
+     * @return VersionData
+     */
+    public function setExternalReference($externalReference) {}
+
+    /**
+     * @param \Psr\Http\Message\UriInterface|string $externalUrl
+     * @return VersionData
+     */
+    public function setExternalUrl($externalUrl) {}
+}

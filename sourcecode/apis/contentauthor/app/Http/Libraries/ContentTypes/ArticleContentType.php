@@ -4,18 +4,15 @@ namespace App\Http\Libraries\ContentTypes;
 
 class ArticleContentType implements ContentTypeInterface
 {
-    /**
-     * Return an array with title an id for each contenttype provided
-     * @return array
-     */
-    public function getContentTypes($redirectToken)
+    public function getContentTypes($redirectToken): ContentType
     {
-        return [new ContentType(
+        return ContentType::create(
             trans("article.Article"),
             "article/create?redirectToken=$redirectToken",
             "articleId",
             '',
-            "fa fa-newspaper-o"
-        )];
+            "fa fa-newspaper-o",
+            "article"
+        );
     }
 }

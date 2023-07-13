@@ -1,0 +1,13 @@
+<?php
+
+class H5PStorage {
+
+    /**
+     * @param null|array<mixed>|int|string $content
+     * @param int $contentMainId
+     * @param bool $skipContent
+     * @param array<mixed> $options
+     * @return bool
+     */
+    public function savePackage($content = NULL, $contentMainId = NULL, $skipContent = FALSE, $options = array()) {}
+}

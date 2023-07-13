@@ -194,7 +194,7 @@ class Framework implements \H5PFrameworkInterface, Result
      *
      * @param string $message
      *  The english string to be translated.
-     * @param type $replacements
+     * @param array $replacements
      *   An associative array of replacements to make after translation. Incidences
      *   of any key in this array are replaced with the corresponding value. Based
      *   on the first character of the key, the value is escaped and/or themed:
@@ -283,43 +283,6 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Saving the unsupported library list
-     *
-     * @param array
-     *   A list of unsupported libraries. Each list entry contains:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function setUnsupportedLibraries($libraries)
-    {
-    }
-
-    /**
-     * Returns unsupported libraries
-     *
-     * @return array
-     *   A list of unsupported libraries. Each entry contains an associative array with:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function getUnsupportedLibraries()
-    {
-    }
-
-
-    /**
      * Returns the URL to the library admin page
      *
      * @return string
@@ -328,6 +291,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function getAdminUrl()
     {
+        return $this->adminUrl;
     }
 
     /**
@@ -347,7 +311,7 @@ class Framework implements \H5PFrameworkInterface, Result
      *   The librarys major version
      * @param int $minorVersion
      *   The librarys minor version
-     * @return int
+     * @return int|false
      *   The id of the specified library or FALSE
      */
     public function getLibraryId($machineName, $majorVersion = null, $minorVersion = null)
@@ -406,12 +370,7 @@ class Framework implements \H5PFrameworkInterface, Result
     /**
      * Is the library a patched version of an existing library?
      *
-     * @param object $library
-     *   An associateve array containing:
-     *   - machineName: The library machineName
-     *   - majorVersion: The librarys majorVersion
-     *   - minorVersion: The librarys minorVersion
-     *   - patchVersion: The librarys patchVersion
+     * @param array{machineName: string, majorVersion: int, minorVersion: int, patchVersion: int} $library
      * @return boolean
      *   TRUE if the library is a patched version of an existing library
      *   FALSE otherwise
@@ -425,8 +384,7 @@ class Framework implements \H5PFrameworkInterface, Result
             $library['minorVersion']
         ])
             ->where('patch_version', "<", $library['patchVersion'])
-            ->get()
-            ->isNotEmpty();
+            ->exists();
     }
 
     /**
@@ -535,10 +493,10 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $metadataRaw = (array)$content['metadata'] ?? [];
+        $metadataRaw = isset($content['metadata']) ? (array)$content['metadata'] : [];
         $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
-        $H5PContent = H5PContent::make();
+        $H5PContent = new H5PContent();
         $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
         $H5PContent->parameters = $content['params'];
         $H5PContent->filtered = '';
@@ -559,8 +517,7 @@ class Framework implements \H5PFrameworkInterface, Result
 
         if (!empty($metadata)) {
             $metadata['content_id'] = $H5PContent->id;
-            /** @var H5PContentsMetadata $H5PContentMetadata */
-            $H5PContentMetadata = H5PContentsMetadata::make($metadata);
+            $H5PContentMetadata = new H5PContentsMetadata($metadata);
             $H5PContentMetadata->save();
         }
 
@@ -1129,16 +1086,11 @@ class Framework implements \H5PFrameworkInterface, Result
      * Determines if content slug is used.
      *
      * @param string $slug
-     * @return boolean
+     * @return bool
      */
     public function isContentSlugAvailable($slug)
     {
-        $sql = "select slug from h5p_contents where slug=?";
-        $res = $this->db->prepare($sql)->execute([$slug])->fetch(PDO::FETCH_ASSOC);
-        if (sizeof($res) > 0) {
-            return false;
-        }
-        return true;
+        return (!H5PContent::where('slug', $slug)->exists());
     }
 
     /**
@@ -1169,6 +1121,7 @@ class Framework implements \H5PFrameworkInterface, Result
     public function getNumAuthors()
     {
         // TODO: Implement getNumAuthors() method.
+        return 0;
     }
 
     public function saveCachedAssets($key, $libraries)
@@ -1201,7 +1154,7 @@ class Framework implements \H5PFrameworkInterface, Result
             ->filter(function ($library) {
                 return $library->runnable != "0" && $library->contents()->count() > 0;
             })
-            ->transform(function ($library) {
+            ->map(function (H5PLibrary $library) {
                 $item = new \stdClass();
                 $item->key = sprintf(
                     "%s %s.%s",
@@ -1230,19 +1183,18 @@ class Framework implements \H5PFrameworkInterface, Result
         // TODO: Implement afterExportCreated() method.
     }
 
-    public function hasPermission($permission, $id = null)
+    public function hasPermission($permission, $id = null): bool
     {
         switch ($permission) {
-            case \H5PPermission::DOWNLOAD_H5P:
-            case \H5PPermission::EMBED_H5P:
-                return false;
-
-            case \H5PPermission::CREATE_RESTRICTED:
-                return false;
-
             case \H5PPermission::INSTALL_RECOMMENDED:
             case \H5PPermission::UPDATE_LIBRARIES:
                 return Request::is('admin/*');
+
+            case \H5PPermission::DOWNLOAD_H5P:
+            case \H5PPermission::EMBED_H5P:
+            case \H5PPermission::CREATE_RESTRICTED:
+            default:
+                return false;
         }
     }
 
@@ -1309,7 +1261,7 @@ class Framework implements \H5PFrameworkInterface, Result
      */
     public function loadAddons()
     {
-        return H5PLibrary::make()->getAddons();
+        return H5PLibrary::getAddons();
     }
 
     /**

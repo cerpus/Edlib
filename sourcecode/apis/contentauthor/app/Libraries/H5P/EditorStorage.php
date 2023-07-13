@@ -198,7 +198,6 @@ class EditorStorage implements \H5peditorStorage
     {
         return H5PLibraryLanguage::fromLibrary([$machineName, $majorVersion, $minorVersion])
             ->select('language_code')
-            ->get()
             ->pluck('language_code')
             ->prepend('en')
             ->toArray();

@@ -26,7 +26,7 @@ class H5PContentType implements ContentTypeInterface
                 if (empty($realLibrary->capability) || $realLibrary->capability->enabled) {
                     if (property_exists($library, 'isOld') === false || $library->isOld !== true) {
                         $title = LibraryDescription::getTranslatedName($realLibrary->id, $locale);
-                        $contentTypes[] = new ContentType(
+                        $contentTypes[] = ContentType::create(
                             $title,
                             route("create.h5pContenttype", [
                                 'contenttype' => rawurlencode($library->uberName),
@@ -34,12 +34,13 @@ class H5PContentType implements ContentTypeInterface
                             ]),
                             $library->uberName,
                             (!empty($realLibrary->description) ? $realLibrary->description->description : ''),
-                            $this->getH5PIcon($library->name)
+                            $this->getH5PIcon($library->name),
+                            'h5p'
                         );
                     }
                 }
             } else {
-                $contentTypes[] = new ContentType(
+                $contentTypes[] = ContentType::create(
                     $library->title . ' (DEV)',
                     route("create.h5pContenttype", [
                         'contenttype' => rawurlencode($library->uberName),
@@ -47,7 +48,8 @@ class H5PContentType implements ContentTypeInterface
                     ]),
                     $library->uberName,
                     null,
-                    $this->getH5PIcon($library->name)
+                    $this->getH5PIcon($library->name),
+                    'h5p'
                 );
             }
         }

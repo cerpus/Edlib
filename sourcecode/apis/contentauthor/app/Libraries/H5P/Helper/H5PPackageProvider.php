@@ -2,6 +2,7 @@
 
 namespace App\Libraries\H5P\Helper;
 
+use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\H5P\Packages\Video;
 use App\Libraries\H5P\Packages\Column;
 use App\Libraries\H5P\Packages\DragText;
@@ -15,17 +16,14 @@ use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Packages\InteractiveVideo;
 use App\Libraries\H5P\Packages\OpenEndedQuestion;
 use App\Libraries\H5P\Packages\SimpleMultiChoice;
-use App\Libraries\H5P\Interfaces\PackageInterface;
 use App\Libraries\H5P\Packages\CoursePresentation;
 
 class H5PPackageProvider
 {
     /**
-     * @param string $structure
-     * @return PackageInterface
      * @throws UnknownH5PPackageException
      */
-    public static function make($machineName, $structure = '')
+    public static function make(string $machineName, $structure = ''): H5PBase
     {
         switch (self::getMachineName($machineName)) {
             case OpenEndedQuestion::$machineName:
@@ -68,10 +66,9 @@ class H5PPackageProvider
                 $className = ImagePair::class;
                 break;
             default:
-                $message = sprintf("Missing adapter for %s", $machineName);
-
-                throw new UnknownH5PPackageException($message);
-                break;
+                throw new UnknownH5PPackageException(
+                    sprintf("Missing adapter for %s", $machineName)
+                );
         }
 
         if (!is_string($structure)) {

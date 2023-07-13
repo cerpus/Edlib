@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Article;
+use App\Collaborator;
 use App\Http\Controllers\Controller;
 
 class ArticleInfoController extends Controller
@@ -12,13 +13,12 @@ class ArticleInfoController extends Controller
         $response = Article::whereIn('id', explode(',', $id))
             ->with('collaborators')
             ->get()
-            ->map(function ($article) {
-                /** @var Article $article */
+            ->map(function (Article $article) {
                 return [
                     'id' => $article->id,
                     'owner_id' => $article->owner_id,
                     'is_private' => $article->is_private,
-                    'shares' => $article->collaborators->map(function ($collaborator) {
+                    'shares' => $article->collaborators->map(function (Collaborator $collaborator) {
                         return [
                             'email' => $collaborator->email,
                             'created_at' => $collaborator->created_at->timestamp,

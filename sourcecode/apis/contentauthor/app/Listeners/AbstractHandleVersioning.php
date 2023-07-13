@@ -70,9 +70,9 @@ abstract class AbstractHandleVersioning
         try {
             return $this->versionClient->createVersion($versionData);
         } catch (LinearVersioningException $e) {
-            /** @var $leafs VersionData[] */
+            /** @var VersionData[] $leafs */
             $leafs = $e->getLeafNodes();
-            /** @var $mostRecentLeaf VersionData */
+            /** @var ?VersionData $mostRecentLeaf */
             $mostRecentLeaf = null;
             foreach ($leafs as $leaf) {
                 if ($mostRecentLeaf === null || $mostRecentLeaf->getCreatedAt() < $leaf->getCreatedAt()) {

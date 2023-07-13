@@ -4,15 +4,10 @@ namespace App\Libraries\DataObjects;
 
 class Attribution
 {
-    /** @var string */
-    public $origin = null;
-    /** @var array */
-    public $originators = [];
+    public ?string $origin = null;
+    public array $originators = [];
 
-    /**
-     * @return null
-     */
-    public function getOrigin()
+    public function getOrigin(): ?string
     {
         return $this->origin;
     }
@@ -67,8 +62,6 @@ class Attribution
             $attributionStrings[] = "Originator: $origin.";
         }
 
-        $attributionString = implode(' ', $attributionStrings);
-
-        return $attributionString;
+        return implode(' ', $attributionStrings);
     }
 }

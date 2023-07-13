@@ -19,24 +19,20 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
-class LinkController extends Controller
+class LinkController extends Controller implements LtiTypeInterface
 {
     use LtiTrait;
     use ReturnToCore;
     use ArticleAccess;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private H5pLti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
-
-        $this->lti = $h5pLti;
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         if (!$this->canCreate()) {
             abort(403);
@@ -100,7 +96,7 @@ class LinkController extends Controller
         return response()->json($responseValues, Response::HTTP_CREATED);
     }
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $id): View
     {
         $link = Link::findOrFail($id);
         /** @var H5PAdapterInterface $adapter */
@@ -211,7 +207,6 @@ class LinkController extends Controller
     public function doShow($id, $context, $preview = false): View
     {
         $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
-        /** @var Link $link */
         $link = Link::findOrFail($id);
         if (!$link->canShow($preview)) {
             return view('layouts.draft-resource', [
@@ -224,7 +219,7 @@ class LinkController extends Controller
         return view('link.show')->with(compact('link', 'customCSS', 'metadata'));
     }
 
-    public function show($id)
+    public function show($id): View
     {
         return $this->doShow($id, null);
     }

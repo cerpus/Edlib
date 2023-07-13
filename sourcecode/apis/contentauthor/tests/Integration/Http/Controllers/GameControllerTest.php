@@ -64,6 +64,7 @@ class GameControllerTest extends TestCase
         $this->assertArrayHasKey('state', $data);
         $state = json_decode($data['state'], true);
         $this->assertEquals('AllMine!', $state['license']);
+        $this->assertNotEmpty($state['questionset']);
 
         $this->assertArrayHasKey('game', $data);
         $this->assertInstanceOf(Game::class, $data['game']);

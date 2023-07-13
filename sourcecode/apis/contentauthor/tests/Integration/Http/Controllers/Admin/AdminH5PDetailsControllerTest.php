@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Controllers;
+namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ApiModels\Resource;
 use App\H5PContent;

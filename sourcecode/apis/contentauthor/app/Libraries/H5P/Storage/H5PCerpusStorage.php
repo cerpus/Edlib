@@ -14,7 +14,7 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Cerpus\VersionClient\VersionClient;
 use Exception;
 use H5PFileStorage;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,8 +26,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
-    private Filesystem $filesystem;
-    private Filesystem $uploadDisk;
+    private FilesystemAdapter $filesystem;
+    private FilesystemAdapter $uploadDisk;
     private string $diskName;
     private ContentAuthorStorage $contentAuthorStorage;
 
@@ -93,7 +93,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             $this->triggerVideoConvert($fromId, $toId, $file);
         }
 
-        $pendingFile = H5PFile::ofFileUploadFromContent($toId)->where('filename', $file)->get()->isNotEmpty();
+        $pendingFile = H5PFile::ofFileUploadFromContent($toId)->where('filename', $file)->exists();
         if (!$pendingFile && $this->filesystem->exists($fromPath) && $this->filesystem->missing($toPath)) {
             $result = $this->filesystem->copy($fromPath, $toPath);
             if (!$result) {
