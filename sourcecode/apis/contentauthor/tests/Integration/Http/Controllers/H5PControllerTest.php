@@ -5,6 +5,7 @@ namespace Tests\Integration\Http\Controllers;
 use App\ApiModels\Resource;
 use App\ApiModels\User;
 use App\Apis\ResourceApiService;
+use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PContentsMetadata;
@@ -17,6 +18,7 @@ use App\Libraries\H5P\H5PConfigAbstract;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -29,10 +31,15 @@ class H5PControllerTest extends TestCase
     use RefreshDatabase;
     use MockAuthApi;
 
-    /** @dataProvider provider_adapterMode */
-    public function testCreate(string $adapterMode): void
+    /** @dataProvider provider_testCreate */
+    public function testCreate(string $adapterMode, ?string $contentType, null|string|false $expectedLibrary): void
     {
         $faker = Factory::create();
+
+        if ($expectedLibrary) {
+            H5PLibrary::factory()->create();
+        }
+
         $this->session([
             'authId' => $faker->uuid(),
             'name' => 'Emily Quackfaster',
@@ -50,7 +57,7 @@ class H5PControllerTest extends TestCase
 
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
-        $result = $articleController->create($request);
+        $result = $articleController->create($request, $contentType);
         $this->assertInstanceOf(View::class, $result);
 
         $data = $result->getData();
@@ -66,7 +73,11 @@ class H5PControllerTest extends TestCase
         $this->assertArrayHasKey('configJs', $data);
 
         $config = json_decode(substr($result['config'], 25, -9), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertTrue($config['hubIsEnabled']);
+        if ($contentType === null) {
+            $this->assertTrue($config['hubIsEnabled']);
+        } else {
+            $this->assertFalse($config['hubIsEnabled']);
+        }
         $this->assertEmpty($config['contents']);
         $this->assertSame('nb-no', $config['locale']);
         $this->assertSame('nb', $config['localeConverted']);
@@ -90,7 +101,7 @@ class H5PControllerTest extends TestCase
         $this->assertNull($state['id']);
         $this->assertNull($state['title']);
         $this->assertFalse($state['isPublished']);
-        $this->assertNull($state['library']);
+        $this->assertSame($expectedLibrary, $state['library']);
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
@@ -103,12 +114,33 @@ class H5PControllerTest extends TestCase
         }
     }
 
+    public function provider_testCreate(): \Generator
+    {
+        // Cerpus adapter, without content type
+        yield 'cerpus-withoutContentType' => ['cerpus', null, null];
+
+        // NDLA adapter, without content type
+        yield 'ndla-withoutContentType' => ['ndla', null, null];
+
+        // Cerpus adapter, content type that has version
+        yield 'cerpus-withContentType' => ['cerpus', 'H5P.Foobar 1.2', 'H5P.Foobar 1.2'];
+
+        // NDLA adapter, content type that has version
+        yield 'ndla-withContentType' => ['ndla', 'H5P.Foobar 1.2', 'H5P.Foobar 1.2'];
+
+        // Adapter has no influence, content type without version, non-existing library
+        yield 'contentTypeNoVersion' => ['cerpus', 'H5P.Foobar', false];
+
+        // Adapter has no influence, content type without version, library exist
+        yield 'contentTypeNoVersionExistingLibrary' => ['cerpus', 'H5P.Foobar', 'H5P.Foobar 1.2'];
+    }
+
     /** @dataProvider provider_adapterMode */
     public function testEdit(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
         $faker = Factory::create();
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
             'getUser' => $user,
         ]);
@@ -158,6 +190,17 @@ class H5PControllerTest extends TestCase
 
         H5PContentLibrary::factory()->create(['content_id' => $h5pContent->id, 'library_id' => $upgradeLib->id]);
 
+        if ($adapterMode === 'cerpus') {
+            H5PCollaborator::factory()->create([
+                'h5p_id' => $h5pContent->id,
+                'email' => 'dd@duckburg.quack',
+            ]);
+            H5PCollaborator::factory()->create([
+                'h5p_id' => $h5pContent->id,
+                'email' => 'donald.duck@duckburg.quack',
+            ]);
+        }
+
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
         $result = $articleController->edit($request, $h5pContent->id);
@@ -175,7 +218,10 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
         $this->assertNotEmpty($data['libName']);
-        $this->assertSame('', $data['emails']);
+        $this->assertSame(
+            $adapterMode === 'cerpus' ? 'dd@duckburg.quack,donald.duck@duckburg.quack' : '',
+            $data['emails']
+        );
         $this->assertNotEmpty($data['hasUserProgress']);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
@@ -398,5 +444,30 @@ class H5PControllerTest extends TestCase
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
+    }
+
+    /** @dataProvider provider_getContentLicense */
+    public function test_getContentLicense_withContent(string $license): void
+    {
+        Config::set('license.default-license', 'CC BY-SA');
+
+        $content = H5PContent::factory()->create([
+            'license' => $license,
+        ]);
+
+        $contentLicense = app(H5PController::class)->getContentLicense($content->id);
+
+        $this->assertSame(empty($license) ? 'CC BY-SA' : $license, $contentLicense);
+    }
+
+    public function provider_getContentLicense(): \Generator
+    {
+        yield 'withLicense' => ['CC BY-NC'];
+        yield 'emptyLicense' => [''];
+    }
+
+    public function test_getContentLicense_noContent(): void
+    {
+        $this->assertFalse(app(H5PController::class)->getContentLicense(42));
     }
 }

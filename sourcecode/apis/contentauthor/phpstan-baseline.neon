@@ -1,6 +1,5 @@
 parameters:
 	ignoreErrors:
-
 		-
 			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
 			count: 2
@@ -130,21 +129,6 @@ parameters:
 			message: "#^Cannot access property \\$resource on array\\|bool\\|float\\|int\\|object\\|string\\.$#"
 			count: 1
 			path: app/Http/Controllers/ArticleCopyrightController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:getContentLicense\\(\\) should return Illuminate\\\\Http\\\\Response but returns int\\|string\\|false\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Variable \\$emails in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Variable \\$library in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
 
 		-
 			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
@@ -495,11 +479,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
 			count: 2
 			path: tests/Integration/Http/Controllers/GameControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/H5PControllerTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"

@@ -165,13 +165,12 @@ class H5PController extends Controller implements LtiTypeInterface
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $displayOptions = $core->getDisplayOptionsForEdit();
-        $core->getStorableDisplayOptions($displayOptions, null);
+        $core->getStorableDisplayOptions($displayOptions, 0);
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
         if (!is_null($contenttype) && !H5PCore::libraryFromString($contenttype)) {
-            /** @var H5PLibrary $library */
             $library = H5PLibrary::fromMachineName($contenttype)
                 ->latestVersion()
                 ->first();
@@ -645,19 +644,14 @@ class H5PController extends Controller implements LtiTypeInterface
     /**
      * Get license for h5p resource.
      */
-    public function getContentLicense(int $id): Response
+    public function getContentLicense(int $id): string|false
     {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT license FROM h5p_contents WHERE id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetchColumn();
-        if (isset($result)) {
-            return $result;
+        $content = H5PContent::select('license')->find($id);
+        if ($content) {
+            return !empty($content->license) ? $content->license : License::getDefaultLicense();
         }
 
-        return License::getDefaultLicense();
+        return false;
     }
 
     /**
@@ -676,22 +670,10 @@ class H5PController extends Controller implements LtiTypeInterface
      */
     private function get_content_shares(int $id): string
     {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT email FROM cerpus_contents_shares WHERE h5p_id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetchAll($db::FETCH_COLUMN, 0);
-        $emails = [];
-        foreach ($result as $email_raw) {
-            $emails[] = $email_raw;
-        }
-        $emails_str = implode(',', $emails);
-        if (isset($emails)) {
-            return $emails_str;
-        } else {
-            return '';
-        }
+        return H5PCollaborator::select('email')
+            ->where('h5p_id', $id)
+            ->get()
+            ->implode('email', ',');
     }
 
     /**
