@@ -2,11 +2,6 @@ parameters:
 	ignoreErrors:
 
 		-
-			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
-			count: 1
-			path: app/Auth/Guards/EdlibGuard.php
-
-		-
 			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
 			count: 2
 			path: app/Console/Commands/VersionAllUnversionedContent.php
