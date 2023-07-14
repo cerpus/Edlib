@@ -22,10 +22,10 @@ class H5PConfigAbstractTest extends TestCase
     public function test_setUserId(): void
     {
         $data = app(H5PCreateConfig::class)
-            ->setUserId(42)
+            ->setUserId('9071ace1-79ab-4c26-9255-69ea29fa74d1')
             ->getConfig();
 
-        $this->assertSame('42', $data->user->name);
+        $this->assertSame('9071ace1-79ab-4c26-9255-69ea29fa74d1', $data->user->name);
     }
 
     public function test_setUserUserName(): void

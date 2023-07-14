@@ -105,7 +105,7 @@ class H5PViewConfigTest extends TestCase
 
         $resourceId = $faker->uuid;
         $context = $faker->uuid;
-        $userId = 42;
+        $userId = '9071ace1-79ab-4c26-9255-69ea29fa74d1';
         $library = H5PLibrary::factory()->create();
         $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
         H5PLibraryLibrary::create([

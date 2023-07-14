@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Session;
  * @property-read NdlaIdMapper|null $ndlaMapper
  *
  * @method static Collection findMany($ids, $columns = ['*'])
- * @method static Builder select($columns = ['*'])
+ * @method static Builder|static select($columns = ['*'])
  * @method static int count($columns = '*')
  * @method static Builder where($column, $operator = null, $value = null, $boolean = 'and')
  */
