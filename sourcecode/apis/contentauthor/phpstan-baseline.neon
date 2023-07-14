@@ -1,9 +1,5 @@
 parameters:
 	ignoreErrors:
-		-
-			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
-			count: 2
-			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
