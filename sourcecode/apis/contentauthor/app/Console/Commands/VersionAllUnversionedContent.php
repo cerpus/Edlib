@@ -58,7 +58,7 @@ class VersionAllUnversionedContent extends Command
                     $article->save();
                 }
 
-                echo "Article: $article->version_id, $article->title, $article->updated_at<br>\n";
+                $this->info("Article: $article->version_id, $article->title, $article->updated_at");
             });
         });
 
@@ -81,7 +81,7 @@ class VersionAllUnversionedContent extends Command
                     $h5p->save();
                 }
 
-                echo "H5P: Time: $time   | $h5p->version_id | $h5p->title | $h5p->updated_at<br>\n";
+                $this->info("H5P: Time: $time   | $h5p->version_id | $h5p->title | $h5p->updated_at");
             });
         });
     }
