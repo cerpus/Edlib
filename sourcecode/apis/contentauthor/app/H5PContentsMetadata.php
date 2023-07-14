@@ -5,6 +5,7 @@ namespace App;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @method static self make(array $attributes = [])
@@ -19,7 +20,10 @@ class H5PContentsMetadata extends Model
 
     protected $table = 'h5p_contents_metadata';
 
-    public function content()
+    /**
+     * @return BelongsTo<H5PContent, self>
+     */
+    public function content(): BelongsTo
     {
         return $this->belongsTo(H5PContent::class, 'content_id');
     }

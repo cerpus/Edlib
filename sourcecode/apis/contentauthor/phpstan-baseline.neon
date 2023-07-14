@@ -36,6 +36,11 @@ parameters:
 			path: app/Console/Commands/VersionAllUnversionedContent.php
 
 		-
+			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
+			count: 2
+			path: app/Console/Commands/VersionAllUnversionedContent.php
+
+		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
 			count: 1
 			path: app/Content.php
@@ -56,17 +61,7 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
 			path: app/Content.php
 
@@ -111,11 +106,6 @@ parameters:
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Access to an undefined property App\\\\File\\:\\:\\$article\\.$#"
-			count: 1
-			path: app/File.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/Game.php
@@ -124,11 +114,6 @@ parameters:
 			message: "#^Method App\\\\H5PCollaborator\\:\\:setUpdatedAt\\(\\) should return \\$this\\(App\\\\H5PCollaborator\\) but return statement is missing\\.$#"
 			count: 1
 			path: app/H5PCollaborator.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$contentLibraries\\.$#"
-			count: 1
-			path: app/H5PContent.php
 
 		-
 			message: "#^Call to function is_null\\(\\) with App\\\\H5PContentsMetadata will always evaluate to false\\.$#"
@@ -156,11 +141,6 @@ parameters:
 			path: app/Http/Controllers/API/ArticleInfoController.php
 
 		-
-			message: "#^Relation 'collaborators' is not found in App\\\\Article model\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/ArticleInfoController.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/ContentInfoController.php
@@ -174,16 +154,6 @@ parameters:
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/H5PInfoController.php
-
-		-
-			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/H5PInfoController.php
-
-		-
-			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/H5PTypeApi.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
@@ -202,11 +172,6 @@ parameters:
 
 		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\LinkInfoController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LinkInfoController.php
-
-		-
-			message: "#^Relation 'collaborators' is not found in App\\\\Link model\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/LinkInfoController.php
 
@@ -266,11 +231,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminController.php
-
-		-
 			message: "#^Static call to instance method App\\\\H5PContent\\:\\:noMaxScoreScope\\(\\)\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminController.php
@@ -309,16 +269,6 @@ parameters:
 			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:store\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminUserController.php
-
-		-
-			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/Capability.php
-
-		-
-			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/CapabilityController.php
 
 		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
@@ -376,6 +326,11 @@ parameters:
 			path: app/Http/Controllers/GameController.php
 
 		-
+			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
+			count: 1
+			path: app/Http/Controllers/H5PController.php
+
+		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\H5PController\\:\\:create\\(\\) invoked with 1 parameter, 2\\-3 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -387,11 +342,6 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$current of method H5PCore\\:\\:getStorableDisplayOptions\\(\\) expects int, null given\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
 
@@ -464,11 +414,6 @@ parameters:
 			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
-			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/InteractivityContentType.php
 
 		-
 			message: "#^PHPDoc tag @return with type array is incompatible with native type App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\.$#"
@@ -676,39 +621,14 @@ parameters:
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
+			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			count: 3
+			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
 			message: "#^Ternary operator condition is always true\\.$#"
 			count: 1
 			path: app/Libraries/H5P/ContentType/BaseH5PContent.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrariesHubCache\\:\\:\\$libraries\\.$#"
-			count: 2
-			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$capability\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibraryLanguage\\:\\:\\$library\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Relation 'capability' is not found in App\\\\H5PLibrary model\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Relation 'libraries' is not found in App\\\\H5PLibrariesHubCache model\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorAjax.php
-
-		-
-			message: "#^Relation 'library' is not found in App\\\\H5PLibraryLanguage model\\.$#"
-			count: 2
-			path: app/Libraries/H5P/EditorAjax.php
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
@@ -852,11 +772,6 @@ parameters:
 			path: app/Libraries/H5P/Framework.php
 
 		-
-			message: "#^Relation 'library' is not found in App\\\\H5PContent model\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Framework.php
-
-		-
 			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PCopyright.php
@@ -940,6 +855,16 @@ parameters:
 			message: "#^Property App\\\\Libraries\\\\H5P\\\\H5PProgress\\:\\:\\$request is never read, only written\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
+			count: 2
+			path: app/Libraries/H5P/H5PProgress.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
+			count: 1
+			path: app/Libraries/H5P/H5PViewConfig.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
@@ -1032,11 +957,6 @@ parameters:
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PViewConfig.php
-
-		-
 			message: "#^Parameter \\#1 \\$content of method H5peditor\\:\\:processParameters\\(\\) expects stdClass, int given\\.$#"
 			count: 1
 			path: app/Libraries/H5P/h5p.php
@@ -1090,11 +1010,6 @@ parameters:
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 4
 			path: app/Libraries/QuestionSet/QuestionSetHandler.php
-
-		-
-			message: "#^Access to an undefined property App\\\\LibraryDescription\\:\\:\\$library\\.$#"
-			count: 1
-			path: app/LibraryDescription.php
 
 		-
 			message: "#^PHPDoc tag @var has invalid value \\(\\$leafs VersionData\\[\\]\\)\\: Unexpected token \"\\$leafs\", expected type at offset 9$#"
@@ -1157,11 +1072,6 @@ parameters:
 			path: app/Listeners/H5P/HandleVersioning.php
 
 		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:h5p\\(\\)\\.$#"
-			count: 1
-			path: app/NdlaIdMapper.php
-
-		-
 			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"
 			count: 1
 			path: app/Providers/AuthServiceProvider.php
@@ -1180,11 +1090,6 @@ parameters:
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/QuestionSet.php
-
-		-
-			message: "#^Access to an undefined property App\\\\QuestionSetQuestion\\:\\:\\$questionset\\.$#"
-			count: 1
-			path: app/Transformers/QuestionSetsQuestionTransformer.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
@@ -1255,11 +1160,6 @@ parameters:
 			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) should return string but return statement is missing\\.$#"
 			count: 1
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Article\\:\\:\\$files\\.$#"
-			count: 1
-			path: tests/Integration/Article/ArticleFileVersionerTest.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"

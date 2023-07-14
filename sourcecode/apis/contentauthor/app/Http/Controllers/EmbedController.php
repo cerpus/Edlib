@@ -44,8 +44,7 @@ class EmbedController extends Controller
         $licenses = License::getLicenses($ltiRequest);
         $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
-        /** @var Link $link */
-        $link = app(Link::class);
+        $link = new Link();
         $redirectToken = $request->get('redirectToken');
         $userPublishEnabled = false;
         $canPublish = true;

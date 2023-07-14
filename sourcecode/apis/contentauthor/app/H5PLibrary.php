@@ -36,7 +36,7 @@ class H5PLibrary extends Model
 
     protected $guarded = ['id'];
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -51,17 +51,26 @@ class H5PLibrary extends Model
         return $this->name;
     }
 
-    public function capability()
+    /**
+     * @return HasOne<H5PLibraryCapability>
+     */
+    public function capability(): HasOne
     {
         return $this->hasOne(H5PLibraryCapability::class, 'library_id');
     }
 
+    /**
+     * @return HasOne<LibraryDescription>
+     */
     public function description(): HasOne
     {
         return $this->hasOne(LibraryDescription::class, 'library_id');
     }
 
-    public function contents()
+    /**
+     * @return HasMany<H5PContent>
+     */
+    public function contents(): HasMany
     {
         return $this->hasMany(H5PContent::class, 'library_id');
     }
@@ -71,38 +80,56 @@ class H5PLibrary extends Model
         return $this->contents()->whereNull('max_score');
     }
 
-    public function languages()
+    /**
+     * @return HasMany<H5PLibraryLanguage>
+     */
+    public function languages(): HasMany
     {
         return $this->hasMany(H5PLibraryLanguage::class, 'library_id');
     }
 
+    /**
+     * @return HasMany<H5PLibraryLibrary>
+     */
     public function libraries(): HasMany
     {
         return $this->hasMany(H5PLibraryLibrary::class, 'library_id');
     }
 
-    public function scopeFromMachineName($query, $machineName)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeFromMachineName(Builder $query, $machineName): void
     {
-        return $query->where('name', $machineName);
+        $query->where('name', $machineName);
     }
 
-    public function scopeLatestVersion($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeLatestVersion(Builder $query): void
     {
-        return $query->orderBy('major_version', 'DESC')
+        $query->orderBy('major_version', 'DESC')
             ->orderBy('minor_version', 'DESC')
             ->limit(1);
     }
 
-    public function scopeVersion($query, $majorVersion, $minorVersion)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeVersion(Builder $query, $majorVersion, $minorVersion): void
     {
-        return $query
+        $query
             ->where('major_version', $majorVersion)
             ->where('minor_version', $minorVersion);
     }
 
-    public function scopeRunnable($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeRunnable(Builder $query): void
     {
-        return $query->where('runnable', 1);
+        $query->where('runnable', 1);
     }
 
     public function getVersions($asModels = false)
@@ -136,10 +163,13 @@ class H5PLibrary extends Model
         return \H5PCore::libraryToString($this->getLibraryH5PFriendly('title'));
     }
 
-    public function scopeFromLibrary($query, $value)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeFromLibrary(Builder $query, array $value): void
     {
         list($machineName, $majorVersion, $minorVersion) = array_values($value);
-        return $query->where('name', $machineName)
+        $query->where('name', $machineName)
             ->where('major_version', $majorVersion)
             ->where('minor_version', $minorVersion);
     }
@@ -166,17 +196,17 @@ class H5PLibrary extends Model
         return $toArray === true ? $upgradeVersions->toArray() : $upgradeVersions;
     }
 
-    public function isUpgradable()
+    public function isUpgradable(): bool
     {
         return $this->getUpgrades(false)->isNotEmpty() && $this->contents()->count() > 0;
     }
 
-    public function isLibraryTypeIdentical(H5PLibrary $comparingLibrary)
+    public function isLibraryTypeIdentical(H5PLibrary $comparingLibrary): bool
     {
         return $this->name === $comparingLibrary->name;
     }
 
-    public function isLibraryNewer(H5PLibrary $compareLibrary)
+    public function isLibraryNewer(H5PLibrary $compareLibrary): bool
     {
         return $this->getUpgrades(false)
             ->filter(function ($library) use ($compareLibrary) {

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class H5PContentsUserData extends Model
 {
@@ -13,25 +14,28 @@ class H5PContentsUserData extends Model
     public $timestamps = false;
     protected $table = "h5p_contents_user_data";
 
-    public function content()
+    /**
+     * @return BelongsTo<H5PContent, self>
+     */
+    public function content(): BelongsTo
     {
         return $this->belongsTo(H5PContent::class, 'content_id');
     }
 
     /**
-     * @param Builder $query
+     * @param Builder<self> $query
      */
-    public function scopeOfContext($query, string $context)
+    public function scopeOfContext(Builder $query, string $context): void
     {
-        return $this->scopeOfContexts($query, [$context]);
+        $this->scopeOfContexts($query, [$context]);
     }
 
     /**
-     * @param Builder $query
+     * @param Builder<self> $query
      */
-    public function scopeOfContexts($query, array $contexts)
+    public function scopeOfContexts(Builder $query, array $contexts): void
     {
-        return $query->whereIn('context', array_map(function ($context) {
+        $query->whereIn('context', array_map(function ($context) {
             return trim($context);
         }, $contexts));
     }

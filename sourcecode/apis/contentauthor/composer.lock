@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bad76ecae7092883dc8eda732e02555",
+    "content-hash": "f8f90b383667fa459cb93c1d1c6f8360",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -9507,6 +9507,71 @@
                 }
             ],
             "time": "2022-12-30T00:23:10+00:00"
+        },
+        {
+            "name": "ekino/phpstan-banned-code",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ekino/phpstan-banned-code.git",
+                "reference": "4f0d7c8a0c9f5d222ffc24234aa6c5b3b71bf4c3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ekino/phpstan-banned-code/zipball/4f0d7c8a0c9f5d222ffc24234aa6c5b3b71bf4c3",
+                "reference": "4f0d7c8a0c9f5d222ffc24234aa6c5b3b71bf4c3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ^8.0",
+                "phpstan/phpstan": "^1.0"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.6",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "nikic/php-parser": "^4.3",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "symfony/var-dumper": "^5.0"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                },
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ekino\\PHPStanBannedCode\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rémi Marseille",
+                    "email": "remi.marseille@ekino.com",
+                    "homepage": "https://www.ekino.com"
+                }
+            ],
+            "description": "Detected banned code using PHPStan",
+            "homepage": "https://github.com/ekino/phpstan-banned-code",
+            "keywords": [
+                "PHPStan",
+                "code quality"
+            ],
+            "support": {
+                "issues": "https://github.com/ekino/phpstan-banned-code/issues",
+                "source": "https://github.com/ekino/phpstan-banned-code/tree/v1.0.0"
+            },
+            "time": "2021-11-02T08:37:34+00:00"
         },
         {
             "name": "fakerphp/faker",

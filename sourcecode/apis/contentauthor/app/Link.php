@@ -3,9 +3,10 @@
 namespace App;
 
 use App\Libraries\Versioning\VersionableObject;
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
@@ -20,29 +21,23 @@ use Iso639p3;
  *
  * @property Collection<Collaborator> $collaborators
  *
- * @method Link replicate(array $except = null)
- *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */
 class Link extends Content implements VersionableObject
 {
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
-    private $parentId;
-
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-    }
-
-    public function givesScore()
+    public function givesScore(): int
     {
         return 0;
     }
 
-    public function collaborators()
+    /**
+     * @return HasMany<ArticleCollaborator>
+     */
+    public function collaborators(): HasMany
     {
         return $this->hasMany(ArticleCollaborator::class, 'article_id');
     }
@@ -57,7 +52,7 @@ class Link extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
-    public function makeCopy($owner = null)
+    public function makeCopy($owner = null): static
     {
         $newLink = $this->replicate();
         //$newLink->id = Uuid::uuid4()->toString();
@@ -99,12 +94,12 @@ class Link extends Content implements VersionableObject
         return false; // Not stored
     }
 
-    public function setVersionId(string $versionId)
+    public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
     }
 
-    public function getIsPrivateAttribute()
+    public function getIsPrivateAttribute(): false
     {
         return false; // Defaults to public / listed
     }
