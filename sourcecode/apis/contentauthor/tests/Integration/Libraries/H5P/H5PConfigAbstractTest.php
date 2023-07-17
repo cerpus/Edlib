@@ -91,8 +91,8 @@ class H5PConfigAbstractTest extends TestCase
     {
         $h5pCore = $this->h5PConfig->getH5PCore();
 
-        $this->assertSame($this->h5pCore , $h5pCore);
-        $this->assertSame($this->h5PConfig->h5pCore , $h5pCore);
+        $this->assertSame($this->h5pCore, $h5pCore);
+        $this->assertSame($this->h5PConfig->h5pCore, $h5pCore);
     }
 
     public function test_content(): void
