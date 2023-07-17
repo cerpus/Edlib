@@ -12,7 +12,6 @@ use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Helpers\MockMQ;
 use Tests\Helpers\MockResourceApi;
@@ -38,7 +37,7 @@ class CRUTest extends TestCase
     /** @test */
     public function test_environment()
     {
-        $this->assertEquals(true, env('MAIL_PRETEND'));
+        $this->assertTrue(env('MAIL_PRETEND'));
         $this->assertEquals('/tmp', env('TEST_FS_ROOT'));
 
         $dest = env('TEST_FS_ROOT') . '/tree.jpg';
@@ -52,8 +51,11 @@ class CRUTest extends TestCase
     /** @test */
     public function create_and_update_h5p_using_web_request()
     {
+        /** @var User $owner */
         $owner = User::factory()->make();
+        /** @var User $collaborator */
         $collaborator = User::factory()->make(['email' => 'a@b.com']);
+        /** @var User $copyist */
         $copyist = User::factory()->make();
 
         $this->setUpH5PLibrary();
@@ -203,30 +205,42 @@ class CRUTest extends TestCase
         $this->assertCount(0, H5PContent::find(4)->collaborators); //No collaborators on new resource
     }
 
-    private function setUpH5PLibrary()
+    private function setUpH5PLibrary(): void
     {
-        DB::insert('INSERT INTO `h5p_libraries` (`id`, `created_at`, `updated_at`, `name`, `title`, `major_version`, `minor_version`, `patch_version`, `runnable`, `restricted`, `fullscreen`, `embed_types`, `preloaded_js`, `preloaded_css`, `drop_library_css`, `semantics`, `tutorial_url`) VALUES (NULL, \'2017-02-24 12:08:27\', \'0000-00-00 00:00:00\', \'H5P.Dialogcards\', \'Dialog Cards\', \'1\', \'5\', \'0\', \'1\', \'0\', \'0\', \'\', \'js/dialogcards.js\', \'css/dialogcards.css\', \'\', \'[ { "name": "title", "type": "text", "widget": "html", "label": "Title", "importance": "high", "optional": true, "tags": [ "p", "br", "strong", "em" ] }, { "name": "description", "type": "text", "widget": "html", "label": "Task description", "importance": "medium", "default": "", "optional": true, "tags": [ "p", "br", "strong", "em" ] }, { "name": "dialogs", "type": "list", "importance": "high", "widgets": [ { "name": "VerticalTabs", "label": "Default" } ], "label": "Dialogs", "entity": "dialog", "min": 1, "defaultNum": 1, "field": { "name": "question", "type": "group", "label": "Question", "importance": "high", "fields": [ { "name": "text", "type": "text", "widget": "html", "tags": [ "p", "br", "strong", "em" ], "label": "Text", "importance": "high", "description": "Hint for the first part of the dialogue" }, { "name": "answer", "type": "text", "widget": "html", "tags": [ "p", "br", "strong", "em" ], "label": "Answer", "importance": "high", "description": "Hint for the second part of the dialogue" }, { "name": "image", "type": "image", "label": "Image", "importance": "high", "optional": true, "description": "Optional image for the card. (The card may use just an image, just a text or both)" }, { "name": "audio", "type": "audio", "label": "Audio files", "importance": "low", "optional": true }, { "name": "tips", "type": "group", "label": "Tips", "importance": "low", "fields": [ { "name": "front", "type": "text", "label": "Tip for text", "importance": "low", "optional": true, "description": "Tip for the first part of the dialogue" }, { "name": "back", "type": "text", "label": "Tip for answer", "importance": "low", "optional": true, "description": "Tip for the second part of the dialogue" } ] } ] } }, { "name": "behaviour", "type": "group", "label": "Behavioural settings.", "importance": "low", "description": "These options will let you control how the task behaves.", "optional": true, "fields": [ { "name": "enableRetry", "type": "boolean", "label": "Enable \\"Retry\\" button", "importance": "low", "default": true, "optional": true }, { "name": "disableBackwardsNavigation", "type": "boolean", "label": "Disable backwards navigation", "importance": "low", "description": "This option will only allow you to move forward with Dialog Cards", "optional": true, "default": false }, { "name": "scaleTextNotCard", "type": "boolean", "label": "Scale the text to fit inside the card", "importance": "low", "description": "Unchecking this option will make the card adapt its size to the size of the text", "default": false } ] }, { "label": "Text for the turn button", "importance": "low", "name": "answer", "type": "text", "default": "Turn", "common": true }, { "label": "Text for the next button", "importance": "low", "type": "text", "name": "next", "default": "Next", "common": true }, { "name": "prev", "type": "text", "label": "Text for the previous button", "importance": "low", "default": "Previous", "common": true }, { "name": "retry", "type": "text", "label": "Text for the retry button", "importance": "low", "default": "Retry", "common": true }, { "name": "progressText", "type": "text", "label": "Progress text", "importance": "low", "description": "Available variables are @card and @total.", "default": "Card @card of @total", "common": true } ] \', \'\')');
+        H5PLibrary::factory()->create([
+            'name' => 'H5P.Dialogcards',
+            'title' => 'Dialog Cards',
+            'major_version' => 1,
+            'minor_version' => 5,
+            'patch_version' => 0,
+            'restricted' => 0,
+            'fullscreen' => false,
+            'embed_types' => '',
+            'preloaded_js' => 'js/dialogcards.js',
+            'preloaded_css' => 'css/dialogcards.css',
+            'drop_library_css' => '',
+            'semantics' => '[ { "name": "title", "type": "text", "widget": "html", "label": "Title", "importance": "high", "optional": true, "tags": [ "p", "br", "strong", "em" ] }, { "name": "description", "type": "text", "widget": "html", "label": "Task description", "importance": "medium", "default": "", "optional": true, "tags": [ "p", "br", "strong", "em" ] }, { "name": "dialogs", "type": "list", "importance": "high", "widgets": [ { "name": "VerticalTabs", "label": "Default" } ], "label": "Dialogs", "entity": "dialog", "min": 1, "defaultNum": 1, "field": { "name": "question", "type": "group", "label": "Question", "importance": "high", "fields": [ { "name": "text", "type": "text", "widget": "html", "tags": [ "p", "br", "strong", "em" ], "label": "Text", "importance": "high", "description": "Hint for the first part of the dialogue" }, { "name": "answer", "type": "text", "widget": "html", "tags": [ "p", "br", "strong", "em" ], "label": "Answer", "importance": "high", "description": "Hint for the second part of the dialogue" }, { "name": "image", "type": "image", "label": "Image", "importance": "high", "optional": true, "description": "Optional image for the card. (The card may use just an image, just a text or both)" }, { "name": "audio", "type": "audio", "label": "Audio files", "importance": "low", "optional": true }, { "name": "tips", "type": "group", "label": "Tips", "importance": "low", "fields": [ { "name": "front", "type": "text", "label": "Tip for text", "importance": "low", "optional": true, "description": "Tip for the first part of the dialogue" }, { "name": "back", "type": "text", "label": "Tip for answer", "importance": "low", "optional": true, "description": "Tip for the second part of the dialogue" } ] } ] } }, { "name": "behaviour", "type": "group", "label": "Behavioural settings.", "importance": "low", "description": "These options will let you control how the task behaves.", "optional": true, "fields": [ { "name": "enableRetry", "type": "boolean", "label": "Enable \\"Retry\\" button", "importance": "low", "default": true, "optional": true }, { "name": "disableBackwardsNavigation", "type": "boolean", "label": "Disable backwards navigation", "importance": "low", "description": "This option will only allow you to move forward with Dialog Cards", "optional": true, "default": false }, { "name": "scaleTextNotCard", "type": "boolean", "label": "Scale the text to fit inside the card", "importance": "low", "description": "Unchecking this option will make the card adapt its size to the size of the text", "default": false } ] }, { "label": "Text for the turn button", "importance": "low", "name": "answer", "type": "text", "default": "Turn", "common": true }, { "label": "Text for the next button", "importance": "low", "type": "text", "name": "next", "default": "Next", "common": true }, { "name": "prev", "type": "text", "label": "Text for the previous button", "importance": "low", "default": "Previous", "common": true }, { "name": "retry", "type": "text", "label": "Text for the retry button", "importance": "low", "default": "Retry", "common": true }, { "name": "progressText", "type": "text", "label": "Progress text", "importance": "low", "description": "Available variables are @card and @total.", "default": "Card @card of @total", "common": true } ]',
+            'tutorial_url' => '',
+        ]);
     }
 
     /**
      * @throws Exception
      */
-    private function createUnitTestDirectories()
+    private function createUnitTestDirectories(): void
     {
-        $tmpDir = $this->getTempDirectory();
         $editorDirectory = $this->getEditorDirectory();
         if (!is_dir($editorDirectory) && (mkdir($editorDirectory, 0777, true)) !== true) {
             throw new Exception("Can't create EditorFilesDirectory");
         }
-        $this->editorFilesDirectory = realpath($tmpDir);
     }
 
-    private function getTempDirectory()
+    private function getTempDirectory(): string
     {
         return sys_get_temp_dir() . '/' . self::testDirectory;
     }
 
-    private function getEditorDirectory()
+    private function getEditorDirectory(): string
     {
         return $this->getTempDirectory() . '/' . self::testEditorDirectory;
     }
@@ -239,6 +253,7 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(TestH5PSeeder::class);
+        /** @var User $owner */
         $owner = User::factory()->make();
         $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
@@ -289,6 +304,7 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(TestH5PSeeder::class);
+        /** @var User $owner */
         $owner = User::factory()->make();
         $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
@@ -344,6 +360,7 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
         $this->seed(TestH5PSeeder::class);
 
+        /** @var User $owner */
         $owner = User::factory()->make();
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
@@ -413,6 +430,7 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublishActionAndLTISupport_invalidPublishFlag_thenFails()
     {
+        /** @var User $owner */
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
 
@@ -445,6 +463,7 @@ class CRUTest extends TestCase
      */
     public function disabledUserPublishAction_invalidPublishFlag_thenFails()
     {
+        /** @var User $owner */
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
 
@@ -478,7 +497,9 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublish_NotOwner()
     {
+        /** @var User $owner */
         $owner = User::factory()->make();
+        /** @var User $me */
         $me = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->setUpResourceApi();

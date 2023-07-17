@@ -14,6 +14,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 /**
  * A dummy user that is not actually bound to a database table.
  *
+ * @property string $auth_id
  * @property string $name
  * @property string $email
  * @property string $password

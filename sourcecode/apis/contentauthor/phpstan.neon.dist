@@ -16,6 +16,7 @@ parameters:
         - tests
     stubFiles:
         - stubs/cerpus/UriInterface.stub
+        - stubs/cerpus/CreateTrait.stub
         - stubs/cerpus/VersionData.stub
         - stubs/h5p-core/H5PCore.stub
         - stubs/h5p-core/H5PExport.stub
