@@ -106,11 +106,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminUserController.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$hubCacheLibraries\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LocksController.php
