@@ -61,7 +61,12 @@ class ArticleCopyrightController extends Controller
 
             $client = $this->getClient($params['url']);
             $response = $client->request('GET', '');
-            $ltiData = GuzzleUtils::jsonDecode($response->getBody());
+            $responseBody = (string) $response->getBody();
+
+            $ltiData = json_decode($responseBody);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return null;
+            }
 
             return $ltiData->resource->h5pId;
         }
