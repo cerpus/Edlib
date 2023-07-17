@@ -186,11 +186,6 @@ parameters:
 			path: app/Http/Middleware/QuestionSetAccess.php
 
 		-
-			message: "#^Call to an undefined static method object\\|string\\:\\:isUserPublishEnabled\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Requests/ArticleRequest.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with App\\\\H5PFile will always evaluate to false\\.$#"
 			count: 1
 			path: app/Jobs/H5PFileUpload.php
