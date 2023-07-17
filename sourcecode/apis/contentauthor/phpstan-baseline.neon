@@ -456,21 +456,6 @@ parameters:
 			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
 
 		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php
-
-		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Package/CoursePresentationTest.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
-
-		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/Package/VideoTest.php

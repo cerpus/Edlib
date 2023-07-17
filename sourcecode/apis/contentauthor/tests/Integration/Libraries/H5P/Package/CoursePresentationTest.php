@@ -25,7 +25,7 @@ class CoursePresentationTest extends TestCase
         $coursePresentation = new CoursePresentation($coursePresentationSemantics);
         $sourceFile = 'videos/sources-5a37b375db9b1.mp4';
         $newFileUrl = $this->faker->url;
-        $mimeType = $this->faker->mimeType;
+        $mimeType = $this->faker->mimeType();
 
         $newSource = [
             $newFileUrl,
@@ -43,7 +43,7 @@ class CoursePresentationTest extends TestCase
         $coursePresentation = new CoursePresentation($coursePresentationSemantics);
         $sourceFile = 'videos/sources-5a37b375db9b1.mp4';
         $newFileUrl = $this->faker->url;
-        $mimeType = $this->faker->mimeType;
+        $mimeType = $this->faker->mimeType();
 
         $newSource = [
             $newFileUrl,
@@ -67,7 +67,7 @@ class CoursePresentationTest extends TestCase
         $coursePresentation = new CoursePresentation($coursePresentationSemantics);
         $sourceFile = 'videos/sources-5a37b375db9b1.mp4';
         $newFileUrl = $this->faker->url;
-        $mimeType = $this->faker->mimeType;
+        $mimeType = $this->faker->mimeType();
 
         $newSource = [
             $newFileUrl,
