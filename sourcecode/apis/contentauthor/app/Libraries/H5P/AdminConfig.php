@@ -20,6 +20,16 @@ class AdminConfig implements ConfigInterface
         $this->fileStorage = $core->fs;
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCore(): H5PCore
+    {
+        return $this->core;
+    }
+
     /**
      * @return AdminConfig
      */
