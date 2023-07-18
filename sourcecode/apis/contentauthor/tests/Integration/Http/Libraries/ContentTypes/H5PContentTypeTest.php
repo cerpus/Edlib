@@ -5,7 +5,6 @@ namespace Tests\Integration\Http\Libraries\ContentTypes;
 use App\H5PLibrary;
 use App\Http\Libraries\ContentTypes\ContentType;
 use App\Http\Libraries\ContentTypes\H5PContentType;
-use App\LibraryDescription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

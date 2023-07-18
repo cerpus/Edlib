@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Lang;
 class H5PContentType implements ContentTypeInterface
 {
     /**
-     * @param $redirectToken
      * @return ContentType[]
      */
     public function getContentTypes($redirectToken): array
