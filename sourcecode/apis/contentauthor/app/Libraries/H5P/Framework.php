@@ -1151,7 +1151,7 @@ class Framework implements \H5PFrameworkInterface, Result
     public function getLibraryContentCount()
     {
         $libraries = H5PLibrary::all()
-            ->filter(function ($library) {
+            ->filter(function (H5PLibrary $library) {
                 return $library->runnable != "0" && $library->contents()->count() > 0;
             })
             ->map(function (H5PLibrary $library) {
