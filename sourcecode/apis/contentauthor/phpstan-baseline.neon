@@ -96,11 +96,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminUserController.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LocksController.php

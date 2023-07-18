@@ -58,7 +58,7 @@ class AdminUserController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
-        if ((int)$id === (int)Auth::user()->id) {
+        if ((int)$id === (int)Auth::id()) {
             request()->session()->flash('message', "You can not delete yourself!");
         } else {
             $user = Administrator::findOrFail($id);
