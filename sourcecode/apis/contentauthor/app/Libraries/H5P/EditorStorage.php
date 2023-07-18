@@ -42,9 +42,6 @@ class EditorStorage implements \H5peditorStorage
         // TODO: No longer a tmp file.
     }
 
-    /**
-     * @param null|array{object} $libraries
-     */
     public function getLibraries($libraries = null): array
     {
         if ($libraries !== null) {

@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\Lang;
 
 class H5PContentType implements ContentTypeInterface
 {
-    public function getContentTypes($redirectToken)
+    /**
+     * @param $redirectToken
+     * @return ContentType[]
+     */
+    public function getContentTypes($redirectToken): array
     {
         $locale = Lang::getLocale();
         $contentTypes = [];
@@ -17,9 +21,7 @@ class H5PContentType implements ContentTypeInterface
         $editor = resolve(H5peditor::class);
 
         $libraries = $editor->getLibraries();
-        if (is_string($libraries)) {
-            $libraries = json_decode($libraries);
-        }
+
         foreach ($libraries as $library) {
             if (config('h5p.developmentMode') !== true || !empty($library->id)) {
                 $realLibrary = H5PLibrary::find($library->id);

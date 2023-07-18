@@ -126,16 +126,6 @@ parameters:
 			path: app/Http/Libraries/ContentTypes/ContentType.php
 
 		-
-			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
 			message: "#^PHPDoc tag @return with type array is incompatible with native type App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/LinkContentType.php
