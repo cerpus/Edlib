@@ -36,7 +36,8 @@ class AdminController extends Controller
     {
         $libraries = H5PLibrary::withCount([
             'contents' => function ($query) {
-                H5PContent::noMaxScoreScope($query);
+                $h5pContent = new H5PContent();
+                $h5pContent->applyNoMaxScoreScope($query);
             }
         ])
             ->groupBy('id')

@@ -365,4 +365,9 @@ class H5PContent extends Content implements VersionableObject
 
         return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
     }
+
+    public function applyNoMaxScoreScope(Builder $query): void
+    {
+        $this->noMaxScoreScope($query);
+    }
 }
