@@ -161,16 +161,6 @@ parameters:
 			path: app/Http/Middleware/LtiBehaviorSettings.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\QuestionSetAccess\\:\\:\\$request\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
-
-		-
-			message: "#^Method App\\\\Content\\:\\:isExternalCollaborator\\(\\) invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with App\\\\H5PFile will always evaluate to false\\.$#"
 			count: 1
 			path: app/Jobs/H5PFileUpload.php

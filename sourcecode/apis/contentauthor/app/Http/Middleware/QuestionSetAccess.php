@@ -20,13 +20,13 @@ class QuestionSetAccess
         if ($game->isOwner(Session::get('authId', false))
             || $game->isCollaborator()
             || $game->isCopyable()
-            || $game->isExternalCollaborator()) {
+            || $game->isExternalCollaborator(Session::get('authId', false))) {
             return $next($request);
         }
 
-        Log::error(__METHOD__ . ': Access denied. QuestionSet: ' . $this->request->h5p
+        Log::error(__METHOD__ . ': Access denied. QuestionSet: ' . $request->h5p
             . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'));
-        Log::debug(['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
+        Log::debug(['user' => Session::get('userId', 'not-logged-in-user'), 'url' => $request->url(), 'request' => $request->all()]);
 
         abort(403, 'Access denied, you are not the owner of the Question Set or it is not shared with you.');
     }
