@@ -24,6 +24,9 @@ class LtiBehaviorSettings
         if ($ltiRequest && $ltiRequest->getExtBehaviorSettings()) {
             $extBehaviorSettings = json_decode($ltiRequest->getExtBehaviorSettings(), true);
 
+            $registerSettings = null;
+            $validator = null;
+
             if ($context === 'view') {
                 $validator = Validator::make($extBehaviorSettings, BehaviorSettingsDataObject::$rules);
                 $registerSettings = function ($behaviorSettings) {
