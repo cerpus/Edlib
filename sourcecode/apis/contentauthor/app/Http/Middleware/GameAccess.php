@@ -24,7 +24,7 @@ class GameAccess
             return $next($request);
         }
 
-        Log::error(__METHOD__ . ': Access denied. Game: ' . $this->request->h5p
+        Log::error(__METHOD__ . ': Access denied. Game: ' . $request->h5p
             . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'));
         Log::debug(__METHOD__, ['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
 
