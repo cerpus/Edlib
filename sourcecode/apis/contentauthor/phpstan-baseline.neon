@@ -196,16 +196,6 @@ parameters:
 			path: app/Libraries/H5P/H5PImport.php
 
 		-
-			message: "#^Undefined variable\\: \\$dev_lib$#"
-			count: 1
-			path: app/Libraries/H5P/H5PLibraryAdmin.php
-
-		-
-			message: "#^Variable \\$dev_lib in isset\\(\\) is never defined\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PLibraryAdmin.php
-
-		-
 			message: "#^Dead catch \\- Exception is never thrown in the try block\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PProgress.php
