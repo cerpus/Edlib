@@ -99,4 +99,27 @@ class EditorStorageTest extends TestCase
             ]
         ];
     }
+
+    public function test_getLanguage(): void
+    {
+        /** @var H5PLibrary $lib */
+        $lib = H5PLibrary::factory()->create();
+        H5PLibraryLanguage::factory(1)->create([
+            'library_id' => $lib->id,
+        ]);
+        $langCode = H5PLibraryLanguage::factory()->create([
+            'library_id' => $lib->id,
+            'translation' => '{"test":"success"}',
+        ]);
+
+        $es = app(EditorStorage::class);
+        $result = $es->getLanguage(
+            $lib->name,
+            $lib->major_version,
+            $lib->minor_version,
+            $langCode->language_code
+        );
+        $translation = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame('success', $translation['test']);
+    }
 }
