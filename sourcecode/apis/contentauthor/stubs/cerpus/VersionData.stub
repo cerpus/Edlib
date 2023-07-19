@@ -31,4 +31,9 @@ class VersionData
      * @return VersionData
      */
     public function setExternalUrl($externalUrl) {}
+
+    /**
+     * @return ?VersionData
+     */
+    public function getParent() {}
 }

@@ -91,19 +91,9 @@ parameters:
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LocksController.php
-
-		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/VersioningController.php
 
 		-
 			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
