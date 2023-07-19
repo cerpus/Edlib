@@ -104,7 +104,7 @@ class EditorStorageTest extends TestCase
     {
         /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->create();
-        H5PLibraryLanguage::factory(1)->create([
+        H5PLibraryLanguage::factory()->create([
             'library_id' => $lib->id,
         ]);
         $langCode = H5PLibraryLanguage::factory()->create([

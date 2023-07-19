@@ -14,7 +14,7 @@ class H5PLibraryLanguageFactory extends Factory
     {
         return [
             'library_id' => $this->faker->numberBetween(),
-            'language_code' => $this->faker->languageCode,
+            'language_code' => $this->faker->unique()->languageCode(),
             'translation' => '',
         ];
     }
