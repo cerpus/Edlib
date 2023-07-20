@@ -57,7 +57,7 @@ class H5PContentsMetadata extends Model
             'licenseVersion' => $this->license_version,
             'licenseExtras' => $this->license_extras,
             'authorComments' => $this->author_comments,
-            'changes' => $this->changes,
+            'changes' => $this->getAttribute('changes'),
             'defaultLanguage' => $this->default_language,
         ]);
     }

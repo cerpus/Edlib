@@ -115,7 +115,6 @@ class H5PContent extends Content implements VersionableObject
 
     public function getMetadataStructure(): array
     {
-        /** @var ?H5PContentsMetadata $h5pmetadata */
         $h5pmetadata = $this->metadata()->first();
         if (is_null($h5pmetadata)) {
             $h5pmetadata = new H5PContentsMetadata(['title' => $this->title]);
