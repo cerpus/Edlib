@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Middleware;
+namespace Tests\Integration\Http\Middleware;
 
 use App\Http\Middleware\LtiBehaviorSettings;
 use App\Libraries\DataObjects\BehaviorSettingsDataObject;
@@ -8,7 +8,7 @@ use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
 use App\SessionKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class LtiBehaviorSettingsTest extends TestCase
 {
