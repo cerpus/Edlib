@@ -214,7 +214,7 @@ class LinkController extends Controller implements LtiTypeInterface
             ]);
         }
 
-        $metadata = !is_null($link->metadata) ? json_decode($link->metadata) : null;
+        $metadata = !empty($link->metadata) ? json_decode($link->metadata) : null;
 
         return view('link.show')->with(compact('link', 'customCSS', 'metadata'));
     }
