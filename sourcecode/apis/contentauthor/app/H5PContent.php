@@ -135,7 +135,7 @@ class H5PContent extends Content implements VersionableObject
             })
             ->map(function ($value, $index) {
                 if (in_array($index, ['authors', 'changes'])) {
-                    return json_decode($value);
+                    return json_decode((string) $value);
                 }
                 return $value;
             })
