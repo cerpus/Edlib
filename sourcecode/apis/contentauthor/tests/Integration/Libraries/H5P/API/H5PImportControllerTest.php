@@ -31,7 +31,7 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
 
-    use function base_path;
+use function base_path;
     use function fopen;
 
     class H5PImportControllerTest extends TestCase
