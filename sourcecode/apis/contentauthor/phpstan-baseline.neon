@@ -326,31 +326,6 @@ parameters:
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 10
-			path: tests/Integration/Article/ArticleVersioningTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 11
-			path: tests/Integration/Article/ArticleVersioningTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 10
-			path: tests/Integration/Content/LockStatusTest.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$type\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 7
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php

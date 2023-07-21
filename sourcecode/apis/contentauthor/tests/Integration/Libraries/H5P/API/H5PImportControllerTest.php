@@ -3,7 +3,7 @@
 namespace App\Libraries\H5P {
     function is_uploaded_file($filename)
     {
-        $prefix = realpath(__DIR__.'/../../../../files');
+        $prefix = realpath(__DIR__ . '/../../../../files');
 
         return in_array($filename, array_map(fn ($name) => "$prefix/$name", [
             'sample-blanks-1.6.h5p',
@@ -31,7 +31,7 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
 
-use function base_path;
+    use function base_path;
     use function fopen;
 
     class H5PImportControllerTest extends TestCase
@@ -64,7 +64,7 @@ use function base_path;
             ]);
         }
 
-        private function setupAdapter($isUserPublishEnabled, $isPublic)
+        private function setupAdapter($isUserPublishEnabled, $isPublic): void
         {
             $testAdapter = $this->createStub(H5PAdapterInterface::class);
             $testAdapter->method('isUserPublishEnabled')->willReturn($isUserPublishEnabled);
@@ -101,6 +101,7 @@ use function base_path;
                 ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) {
                     $machineName = "H5P.Blanks";
                     $file = new File('sample.h5p', fopen(base_path($path), 'r'));
+                    /** @var User $user */
                     $user = User::factory()->make();
                     $parameters = [
                         'h5p' => $file,
@@ -148,6 +149,7 @@ use function base_path;
             $this->_setUp();
             $this->setupAdapter(false, true);
 
+            /** @var User $user */
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
 
@@ -176,6 +178,7 @@ use function base_path;
             ]);
             $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
 
+            /** @var H5PContent $h5pContent */
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
                 ->where('library_id', $library->id)
@@ -209,6 +212,7 @@ use function base_path;
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
             $file = new File('sample-with-license-and-authors.h5p', fopen(base_path('tests/files/sample-with-license-and-authors.h5p'), 'r'));
+            /** @var User $user */
             $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
@@ -232,6 +236,7 @@ use function base_path;
             ]);
             $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
 
+            /** @var H5PContent $h5pContent */
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
                 ->where('library_id', $library->id)
@@ -278,6 +283,7 @@ use function base_path;
         public function testFailsOnInvalidH5pFile(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
+            /** @var User $user */
             $user = User::factory()->make();
 
             $this
@@ -292,6 +298,7 @@ use function base_path;
         public function testFailsOnInvalidDisablePublishMetadataFlag(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
+            /** @var User $user */
             $user = User::factory()->make();
 
             $this
@@ -307,6 +314,7 @@ use function base_path;
         public function testFailsOnInvalidIsPublicFlag(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
+            /** @var User $user */
             $user = User::factory()->make();
 
             $this
