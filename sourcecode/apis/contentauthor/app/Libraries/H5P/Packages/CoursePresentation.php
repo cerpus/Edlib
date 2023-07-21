@@ -43,7 +43,7 @@ class CoursePresentation extends H5PBase
 
                 /** @var PackageInterface $item */
                 $item = $items['package'];
-                return is_null($item) || $item->canExtractAnswers() === false || $item->validate() !== true;
+                return $item->canExtractAnswers() === false || $item->validate() !== true;
             })
             ->map(function ($items) {
                 /** @var PackageInterface $item */
