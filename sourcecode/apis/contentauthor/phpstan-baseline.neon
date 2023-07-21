@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$main_content_id\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 1
 			path: app/Content.php
