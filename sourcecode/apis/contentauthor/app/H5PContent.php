@@ -39,7 +39,7 @@ use Iso639p3;
  * @property ?int $max_score
  * @property int $bulk_calculated
  *
- * @property Collection<Collaborator> $collaborators
+ * @property Collection<int, H5PCollaborator> $collaborators
  * @property H5PLibrary $library
  *
  * @method static Builder noMaxScore() // H5PContent::noMaxScoreScope()

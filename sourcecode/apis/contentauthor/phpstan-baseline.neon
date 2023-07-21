@@ -11,11 +11,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 3
-			path: app/Content.php
-
-		-
 			message: "#^Right side of && is always true\\.$#"
 			count: 1
 			path: app/Content.php
@@ -34,26 +29,6 @@ parameters:
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/Game.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/H5PInfoController.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/H5PInfoController.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$created_at\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LinkInfoController.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LinkInfoController.php
 
 		-
 			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"

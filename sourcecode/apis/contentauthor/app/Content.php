@@ -37,7 +37,7 @@ use Illuminate\Support\Facades\Session;
  * @property bool $is_published
  * @property string $license
  * @property string $node_id
- * @property Collection $collaborators
+ * @property Collection<int, Collaborator> $collaborators
  * @property bool $is_draft
  * @property-read NdlaIdMapper|null $ndlaMapper
  *
