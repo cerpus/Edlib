@@ -26,11 +26,6 @@ parameters:
 			path: app/Http/Controllers/API/LinkInfoController.php
 
 		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LockStatusController.php
-
-		-
 			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/QuestionsetController.php
