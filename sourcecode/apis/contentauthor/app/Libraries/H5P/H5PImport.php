@@ -8,7 +8,6 @@ use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use H5PStorage;
 use Illuminate\Http\UploadedFile;
 use LogicException;
-use Illuminate\Support\Collection;
 
 class H5PImport
 {
@@ -40,7 +39,7 @@ class H5PImport
         $displayOptions = $core->getDisplayOptionsForEdit();
         $metadata = collect($core->mainJsonData)
             ->whenEmpty(function ($metadata) {
-                return $metadata->put('license',  "U");
+                return $metadata->put('license', "U");
             })
             ->only(H5PMetadataObject::H5PMetadataFieldsInOrder);
         $content = array_merge($core->mainJsonData, [
