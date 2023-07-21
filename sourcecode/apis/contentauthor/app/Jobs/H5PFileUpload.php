@@ -48,7 +48,7 @@ class H5PFileUpload implements ShouldQueue
      */
     public function handle()
     {
-        /** @var H5PFile $file */
+        /** @var ?H5PFile $file */
         $file = H5PFile::ofFileUploadFromContent($this->contentId)
             ->where('id', $this->h5pFileId)
             ->where('state', H5PFile::FILE_CLONEFILE)

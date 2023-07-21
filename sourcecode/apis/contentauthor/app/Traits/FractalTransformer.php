@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Transformers\Serializers\ArraySerializer;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -13,8 +12,7 @@ use League\Fractal\TransformerAbstract;
 
 trait FractalTransformer
 {
-    /** @var Manager */
-    protected $fractalManager;
+    protected Manager $fractalManager;
 
     protected $arraySerializer;
 
@@ -69,7 +67,7 @@ trait FractalTransformer
      */
     private function getManager()
     {
-        if (is_null($this->fractalManager)) {
+        if (!isset($this->fractalManager)) {
             $this->init();
         }
         return $this->fractalManager

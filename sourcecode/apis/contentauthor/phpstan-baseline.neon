@@ -21,16 +21,6 @@ parameters:
 			path: app/Game.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LinkInfoController.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
 			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchAnswers\\(\\) expects null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
 			count: 2
 			path: app/Http/Controllers/API/QuestionsetController.php
@@ -46,29 +36,14 @@ parameters:
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/QuestionSetController.php
-
-		-
 			message: "#^Property App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\:\\:\\$guarded is never read, only written\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/ContentType.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with App\\\\H5PFile will always evaluate to false\\.$#"
-			count: 1
-			path: app/Jobs/H5PFileUpload.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
 			count: 1
 			path: app/Jobs/ReplaceVideoRefId.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Libraries/Games/GameBase.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
