@@ -20,9 +20,6 @@ class ContentType
 
     private $subContentTypes = [];
 
-    private $guarded = ['subContentTypes'];
-
-
     public function addSubContentTypes(array $subContentTypes)
     {
         $this->subContentTypes = $subContentTypes;

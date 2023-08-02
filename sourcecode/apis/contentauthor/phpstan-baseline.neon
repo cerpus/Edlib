@@ -36,11 +36,6 @@ parameters:
 			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
-			message: "#^Property App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\:\\:\\$guarded is never read, only written\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/ContentType.php
-
-		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
 			count: 1
 			path: app/Jobs/ReplaceVideoRefId.php
