@@ -29,7 +29,7 @@ class HandleCollaborationInviteEmails
             ->filter(function ($newCollaborator) use ($oldCollaborators) {
                 //Remove emails that exist as collaborators in the old article
                 return !in_array($newCollaborator, $oldCollaborators);
-            })->each(function ($collaborator) use ($mailer, $event) {
+            })->each(function ($collaborator) use ($event) {
                 if ($collaborator) {// Send mails to the new additions
                     $mailData = new \stdClass();
                     $mailData->emailTo = $collaborator;

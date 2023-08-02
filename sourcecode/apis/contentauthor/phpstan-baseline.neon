@@ -146,11 +146,6 @@ parameters:
 			path: app/Libraries/HTMLPurify/HTMLModule/MathML.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$mailer\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Listeners/H5P/Copy/HandleVersioning.php
