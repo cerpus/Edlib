@@ -75,7 +75,6 @@ class MultiChoiceTest extends TestCase
      */
     public function populateSemanticsWithImage()
     {
-        $this->markTestIncomplete();
         $multiChoice = new MultiChoice();
         $questionText = 'Hvem er regent i Norge?';
         $answers = [
