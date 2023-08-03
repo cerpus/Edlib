@@ -141,11 +141,6 @@ parameters:
 			path: app/Libraries/HTMLPurify/HTMLModule/MathML.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Listeners/H5P/Copy/HandleVersioning.php
-
-		-
 			message: "#^Access to an undefined property H5PCore\\:\\:\\$aggregateAssets\\.$#"
 			count: 1
 			path: app/Providers/H5PServiceProvider.php
