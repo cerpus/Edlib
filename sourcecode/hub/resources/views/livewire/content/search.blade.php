@@ -1,5 +1,9 @@
 <div>
     <x-content.search :query="$query"/>
 
-    <x-content.grid :contents="$results"/>
+    @if ($results->isEmpty())
+        <p>{{ trans('messages.alert-no-results-found') }}</p>
+    @else
+        <x-content.grid :contents="$results"/>
+    @endif
 </div>
