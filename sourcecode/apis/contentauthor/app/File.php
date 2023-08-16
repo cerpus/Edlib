@@ -26,13 +26,13 @@ class File extends Model
     public function generatePath(): string
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
-        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name));
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name), true);
     }
 
     public function generateTempPath(): string
     {
         $contentAuthorStorage = app(ContentAuthorStorage::class);
-        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name));
+        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name), true);
     }
 
     public function moveTempToArticle(Article $article): bool

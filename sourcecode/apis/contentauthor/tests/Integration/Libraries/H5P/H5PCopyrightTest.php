@@ -113,7 +113,7 @@ class H5PCopyrightTest extends TestCase
                 ]
             ],
             'contentType' => "Image",
-            'thumbnail' => 'https://cdn.example.net/content/' . $h5pContent->id . '/images/image-5c6e5e7364254.jpg',
+            'thumbnail' => 'http://localhost/content/assets/content/' . $h5pContent->id . '/images/image-5c6e5e7364254.jpg',
         ]);
         $this->assertEquals([
             'h5p' => null,
@@ -142,7 +142,7 @@ class H5PCopyrightTest extends TestCase
                     'role' => "Author",
                 ]
             ],
-            'thumbnail' => 'https://cdn.example.net/content/' . $h5pContent->id . '/images/backgroundimage.jpg',
+            'thumbnail' => 'http://localhost/content/assets/content/' . $h5pContent->id . '/images/backgroundimage.jpg',
             'contentType' => 'Image',
         ])->toArray();
 
@@ -167,7 +167,7 @@ class H5PCopyrightTest extends TestCase
             'license' => "C",
             'source' => 'http://stoneage.old',
             'contentType' => 'Image',
-            'thumbnail' => 'https://cdn.example.net/content/' . $h5pContent->id . '/images/einstein.jpg'
+            'thumbnail' => 'http://localhost/content/assets/content/' . $h5pContent->id . '/images/einstein.jpg'
         ])->toArray();
         $expectedTextCopyright = H5PCopyrightDataObject::create([
             'license' => "CC BY-SA",
@@ -191,7 +191,7 @@ class H5PCopyrightTest extends TestCase
                     'role' => "Author",
                 ]
             ],
-            'thumbnail' => 'https://cdn.example.net/content/' . $h5pContent->id . '/images/monalisa.jpg',
+            'thumbnail' => 'http://localhost/content/assets/content/' . $h5pContent->id . '/images/monalisa.jpg',
             'contentType' => 'Image',
         ])->toArray();
 
@@ -477,7 +477,7 @@ class H5PCopyrightTest extends TestCase
             'license' => "CC BY",
             'licenseVersion' => "4.0",
             'contentType' => 'Image',
-            'thumbnail' => sprintf('https://cdn.example.net/content/%s/images/testimage.jpg', $h5pContent->id),
+            'thumbnail' => sprintf('http://localhost/content/assets/content/%s/images/testimage.jpg', $h5pContent->id),
         ])->toArray();
 
         $this->assertEquals([

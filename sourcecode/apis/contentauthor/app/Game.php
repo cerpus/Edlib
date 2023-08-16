@@ -6,7 +6,7 @@ use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
-use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class Game extends Content implements VersionableObject
 {
     use Collaboratable;
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
     public string $editRouteName = 'game.edit';
     /**

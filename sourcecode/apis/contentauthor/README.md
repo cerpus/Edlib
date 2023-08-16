@@ -28,6 +28,18 @@ To expose the permanent file storage
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
 
+## Configure Article Storage
+
+The default is to use the `public/h5pstorage` directory. It should not be neccessary to configure this unless you have a more production / scaled-up setup like using Amazon S3 for storage for instance.
+
+In `.env`
+
+```
+UPLOAD_STORAGE_DRIVER=<local>
+```
+
+UPLOAD_STORAGE_DRIVER: the driver to be used, defaults to local
+
 # Running scheduled tasks
 
 Content author will take care of running scheduled tasks when required provided the `php artisan schedule:run` task is run periodically.
