@@ -24,7 +24,7 @@ class ColumnTest extends TestCase
 
         $source = 'videos/myVideo.mp4';
         $newFileUrl = $this->faker->url;
-        $mimeType = $this->faker->mimeType;
+        $mimeType = $this->faker->mimeType();
         $newSource = [
             $newFileUrl,
             $mimeType,

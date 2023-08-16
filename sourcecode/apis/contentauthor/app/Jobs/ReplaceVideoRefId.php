@@ -71,8 +71,10 @@ class ReplaceVideoRefId implements ShouldQueue
     {
         /** @var Collection $parameters */
         $processedParams = $parameters->map(function ($value) {
-            if (!empty($value->mime) && $this->videoAdapter->isTargetType($value->mime, $value->path)) {
-                $value = $this->replaceRef($value);
+            if (is_object($value) && property_exists($value, 'mime') && property_exists($value, 'path')) {
+                if (!empty($value->mime) && $this->videoAdapter->isTargetType($value->mime, $value->path)) {
+                    $value = $this->replaceRef($value);
+                }
             }
 
             if ((bool)(array)$value && (is_array($value) || is_object($value))) {

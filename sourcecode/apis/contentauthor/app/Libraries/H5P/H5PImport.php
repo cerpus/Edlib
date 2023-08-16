@@ -39,7 +39,7 @@ class H5PImport
         $displayOptions = $core->getDisplayOptionsForEdit();
         $metadata = collect($core->mainJsonData)
             ->whenEmpty(function ($metadata) {
-                return $metadata->put(['license' => "U"]);
+                return $metadata->put('license', "U");
             })
             ->only(H5PMetadataObject::H5PMetadataFieldsInOrder);
         $content = array_merge($core->mainJsonData, [

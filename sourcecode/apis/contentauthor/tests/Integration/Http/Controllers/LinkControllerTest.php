@@ -45,7 +45,7 @@ class LinkControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->session([
             'authId' => $user->getId(),
         ]);
@@ -111,7 +111,7 @@ class LinkControllerTest extends TestCase
 
     public function testUpdate(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->session([
             'authId' => $user->getId(),
         ]);

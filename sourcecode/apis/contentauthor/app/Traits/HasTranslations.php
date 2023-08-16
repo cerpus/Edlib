@@ -12,7 +12,7 @@ trait HasTranslations
         $translations = ContentLanguageLink::where('main_content_id', $this->id)
             ->orWhere('link_content_id', $this->id)
             ->get()
-            ->map(function ($translation) {
+            ->map(function (ContentLanguageLink $translation) {
                 if (!$translation->link_content_id) {
                     return $translation->main_content_id;
                 }
@@ -20,15 +20,13 @@ trait HasTranslations
             })
             ->values();
 
-        $content = self::whereIn('id', $translations)
+        return self::whereIn('id', $translations)
             ->get()
             ->map(function ($content) {
                 return (object)['language' => $content->getLanguage(), 'content' => $content];
             })
             ->sortBy('language')
             ->toArray();
-
-        return $content;
     }
 
     public function setAsMasterTranslation(): bool

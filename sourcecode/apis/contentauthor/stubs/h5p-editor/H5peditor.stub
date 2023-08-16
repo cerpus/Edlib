@@ -1,0 +1,26 @@
+<?php
+
+class H5peditor {
+
+    /**
+     * @param string $machineName
+     * @param int $majorVersion
+     * @param int $minorVersion
+     * @param string $languageCode
+     * @param string $prefix
+     * @param string $fileDir
+     * @param string $defaultLanguage
+     * @return object
+     */
+    public function getLibraryData($machineName, $majorVersion, $minorVersion, $languageCode, $prefix = '', $fileDir = '', $defaultLanguage = '') {}
+
+    /**
+     * @param int $content
+     * @param array<mixed> $newLibrary
+     * @param array<mixed> $newParameters
+     * @param array<mixed> $oldLibrary
+     * @param array<mixed> $oldParameters
+     * @return void
+     */
+    public function processParameters($content, $newLibrary, $newParameters, $oldLibrary = null, $oldParameters = null) {}
+}

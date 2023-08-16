@@ -1,0 +1,11 @@
+<?php
+
+interface H5PFrameworkInterface {
+    /**
+     * Is the library a patched version of an existing library?
+     *
+     * @param array{machineName: string, majorVersion: int, minorVersion: int, patchVersion: int} $library
+     * @return boolean
+     */
+    public function isPatchedLibrary($library);
+}

@@ -5,7 +5,7 @@ namespace App\Http\Libraries\ContentTypes;
 interface ContentTypeInterface
 {
     /**
-     * @return ContentType
+     * @return ContentType|ContentType[]
      */
     public function getContentTypes($redirectToken);
 

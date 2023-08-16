@@ -35,6 +35,6 @@ class HandleVersioning extends AbstractHandleVersioning
 
     protected function getExternalUrl(VersionableObject $object)
     {
-        return route('h5p.show', $object->id);
+        return route('h5p.show', $object->getId());
     }
 }

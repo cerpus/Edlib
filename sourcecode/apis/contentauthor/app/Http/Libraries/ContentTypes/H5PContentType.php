@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Lang;
 
 class H5PContentType implements ContentTypeInterface
 {
-    public function getContentTypes($redirectToken)
+    /**
+     * @return ContentType[]
+     */
+    public function getContentTypes($redirectToken): array
     {
         $locale = Lang::getLocale();
         $contentTypes = [];
@@ -17,16 +20,14 @@ class H5PContentType implements ContentTypeInterface
         $editor = resolve(H5peditor::class);
 
         $libraries = $editor->getLibraries();
-        if (is_string($libraries)) {
-            $libraries = json_decode($libraries);
-        }
+
         foreach ($libraries as $library) {
             if (config('h5p.developmentMode') !== true || !empty($library->id)) {
                 $realLibrary = H5PLibrary::find($library->id);
                 if (empty($realLibrary->capability) || $realLibrary->capability->enabled) {
                     if (property_exists($library, 'isOld') === false || $library->isOld !== true) {
                         $title = LibraryDescription::getTranslatedName($realLibrary->id, $locale);
-                        $contentTypes[] = new ContentType(
+                        $contentTypes[] = ContentType::create(
                             $title,
                             route("create.h5pContenttype", [
                                 'contenttype' => rawurlencode($library->uberName),
@@ -34,12 +35,13 @@ class H5PContentType implements ContentTypeInterface
                             ]),
                             $library->uberName,
                             (!empty($realLibrary->description) ? $realLibrary->description->description : ''),
-                            $this->getH5PIcon($library->name)
+                            $this->getH5PIcon($library->name),
+                            'h5p'
                         );
                     }
                 }
             } else {
-                $contentTypes[] = new ContentType(
+                $contentTypes[] = ContentType::create(
                     $library->title . ' (DEV)',
                     route("create.h5pContenttype", [
                         'contenttype' => rawurlencode($library->uberName),
@@ -47,7 +49,8 @@ class H5PContentType implements ContentTypeInterface
                     ]),
                     $library->uberName,
                     null,
-                    $this->getH5PIcon($library->name)
+                    $this->getH5PIcon($library->name),
+                    'h5p'
                 );
             }
         }

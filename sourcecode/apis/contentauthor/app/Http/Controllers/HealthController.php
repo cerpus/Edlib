@@ -26,7 +26,7 @@ class HealthController extends Controller
         $connection = DB::connection()->getPdo();
 
         $query = $connection->query("SELECT '1'");
-        if (!$query || $query->fetchColumn(0) !== '1') {
+        if ($query->fetchColumn() !== '1') {
             return response('db test failed', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

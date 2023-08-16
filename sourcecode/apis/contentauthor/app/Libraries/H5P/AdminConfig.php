@@ -20,6 +20,16 @@ class AdminConfig implements ConfigInterface
         $this->fileStorage = $core->fs;
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCore(): H5PCore
+    {
+        return $this->core;
+    }
+
     /**
      * @return AdminConfig
      */
@@ -80,10 +90,10 @@ class AdminConfig implements ConfigInterface
             }, []);
         $contents = $library->contents()->count();
 
-        $settings = [
+        return [
             'containerSelector' => '#h5p-admin-container',
             'libraryInfo' => [
-                'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->majorVersion, $library->minorVersion),
+                'message' => sprintf('You are about to upgrade %s(version %s.%s). Please select upgrade version.', $library->title, $library->major_version, $library->minor_version),
                 'inProgress' => 'Upgrading to %ver...', $library->title,
                 'error' => 'An error occurred while processing parameters:', $library->title,
                 'errorData' => 'Could not load data for library %lib.', $library->title,
@@ -105,7 +115,6 @@ class AdminConfig implements ConfigInterface
                 'token' => csrf_token()
             ]
         ];
-        return $settings;
     }
 
     public function getMaxScoreSettings()

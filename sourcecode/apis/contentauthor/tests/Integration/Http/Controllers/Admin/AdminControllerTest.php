@@ -2,15 +2,20 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
+use App\ApiModels\User;
+use App\Apis\AuthApiService;
+use App\ContentLock;
 use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use Faker\Factory;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -114,5 +119,66 @@ class AdminControllerTest extends TestCase
             'max_score' => 3,
             'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
         ]);
+    }
+
+    /** @dataProvider provider_index */
+    public function test_index(int $lockCount): void
+    {
+        ContentLock::factory($lockCount)->create();
+        $result = app(AdminController::class)->index();
+
+        $this->assertInstanceOf(View::class, $result);
+        $data = $result->getData();
+        $this->assertEquals($lockCount, $data['editLockCount']);
+    }
+
+    public function provider_index(): \Generator
+    {
+        yield [0];
+        yield [3];
+    }
+
+    public function test_viewFailedCalculations(): void
+    {
+        $faker = Factory::create();
+        $authMock = $this->createMock(AuthApiService::class);
+        $this->instance(AuthApiService::class, $authMock);
+
+        $userId = $faker->uuid;
+        $user = new User($userId, 'Emily', 'QuackFaster', 'eq@duckburg.quack');
+
+        $authMock->expects($this->once())
+            ->method('getUser')
+            ->willReturn($user);
+
+        $library = H5PLibrary::factory()->create();
+
+        H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+        H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_UNTOUCHED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+        $failedResource = H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_FAILED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+
+        $controller = app(AdminController::class);
+        $result = $controller->viewFailedCalculations();
+        $this->assertInstanceOf(View::class, $result);
+
+        $data = $result->getData();
+        $this->assertCount(1, $data['resources']);
+
+        $resource = $data['resources']->first();
+        $this->assertSame($failedResource->id, $resource->id);
+
+        $this->assertStringContainsString($user->getEmail(), $resource->ownerName);
     }
 }

@@ -40,11 +40,11 @@ use const LIBXML_HTML_NOIMPLIED;
  * @property string $note_id
  * @property string $ndla_url
  *
- * @property Collection<Collaborator> $collaborators
+ * @property Collection<int, ArticleCollaborator> $collaborators
  *
  * @method null|self noMaxScore()
  * @method null|self ofBulkCalculated($type)
- * @method static self find($id, $columns = ['*'])
+ * @method static self|null find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */
 class Article extends Content implements VersionableObject
@@ -197,7 +197,7 @@ class Article extends Content implements VersionableObject
                     $decodedUrl = urldecode($url);
 
                     $client = Client::getClient(OauthSetup::create(['coreUrl' => $decodedUrl]));
-                    $response = $client->request("GET");
+                    $response = $client->request("GET", $decodedUrl);
                     $metadata = GuzzleUtils::jsonDecode($response->getBody());
                     if ($haltIfNotCalculated === true && is_null($metadata->resource->maxScore ?? null)) {
                         throw new Exception("Not calculated");

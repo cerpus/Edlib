@@ -12,6 +12,7 @@ abstract class AuthJwtParser
     protected function getBestName($identity, $default = 'noname')
     {
         $name = $default;
+        $names = [];
         if ($this->hasNonEmpty($identity, 'displayName')) {
             $name = $identity->displayName;
         } elseif ($this->hasNonEmpty($identity, 'firstName')

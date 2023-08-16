@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Libraries\H5P;
 
 use App\Content;
+use App\H5PLibrary;
 use App\Libraries\H5P\Dataobjects\H5PView;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use H5PCore;
@@ -60,6 +61,7 @@ class h5p
             $content['library']['majorVersion'],
             $content['library']['minorVersion'],
         );
+        $library = H5PLibrary::find($content['library']['libraryId']);
 
         // Get title
         $content['title'] = $request->get("title");

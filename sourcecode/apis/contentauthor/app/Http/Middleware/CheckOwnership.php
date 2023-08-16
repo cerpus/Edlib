@@ -11,7 +11,6 @@ use Closure;
 class CheckOwnership
 {
     private $request;
-    private $content;
 
     /**
      * Handle an incoming request.
@@ -31,7 +30,7 @@ class CheckOwnership
         }
         Log::error(__METHOD__ . ': Access denied. H5P: ' . $this->request->h5p
             . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'));
-        Log::error([
+        Log::error(__METHOD__, [
             'user' => Session::get('userId', 'not-logged-in-user'),
             'url' => request()->url(),
             'request' => request()->all()

@@ -100,8 +100,6 @@ class Kernel extends HttpKernel
      * The priority-sorted list of middleware.
      *
      * This forces non-global middleware to always be in the given order.
-     *
-     * @var array
      */
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,

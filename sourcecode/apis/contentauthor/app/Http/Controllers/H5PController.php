@@ -57,7 +57,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use function Cerpus\Helper\Helpers\profile as config;
 
-class H5PController extends Controller
+class H5PController extends Controller implements LtiTypeInterface
 {
     use LtiTrait;
     use ReturnToCore;
@@ -139,9 +139,10 @@ class H5PController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, H5PCore $core, $contenttype = null): View
+    public function create(Request $request, $contenttype = null): View
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
+        $core = app(H5PCore::class);
 
         $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
         try {
@@ -164,13 +165,12 @@ class H5PController extends Controller
         $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $displayOptions = $core->getDisplayOptionsForEdit();
-        $core->getStorableDisplayOptions($displayOptions, null);
+        $core->getStorableDisplayOptions($displayOptions, 0);
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
 
         if (!is_null($contenttype) && !H5PCore::libraryFromString($contenttype)) {
-            /** @var H5PLibrary $library */
             $library = H5PLibrary::fromMachineName($contenttype)
                 ->latestVersion()
                 ->first();
@@ -225,8 +225,10 @@ class H5PController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @param int $id
      */
-    public function edit(Request $request, int $id): View
+    public function edit(Request $request, $id): View
     {
         Log::info("Edit H5P: $id, user: " . Session::get('authId', 'not-logged-in-user'));
 
@@ -642,19 +644,14 @@ class H5PController extends Controller
     /**
      * Get license for h5p resource.
      */
-    public function getContentLicense(int $id): Response
+    public function getContentLicense(int $id): string|false
     {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT license FROM h5p_contents WHERE id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetchColumn();
-        if (isset($result)) {
-            return $result;
+        $content = H5PContent::select('license')->find($id);
+        if ($content) {
+            return !empty($content->license) ? $content->license : License::getDefaultLicense();
         }
 
-        return License::getDefaultLicense();
+        return false;
     }
 
     /**
@@ -673,22 +670,10 @@ class H5PController extends Controller
      */
     private function get_content_shares(int $id): string
     {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT email FROM cerpus_contents_shares WHERE h5p_id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetchAll($db::FETCH_COLUMN, 0);
-        $emails = [];
-        foreach ($result as $email_raw) {
-            $emails[] = $email_raw;
-        }
-        $emails_str = implode(',', $emails);
-        if (isset($emails)) {
-            return $emails_str;
-        } else {
-            return '';
-        }
+        return H5PCollaborator::select('email')
+            ->where('h5p_id', $id)
+            ->get()
+            ->implode('email', ',');
     }
 
     /**
@@ -713,7 +698,7 @@ class H5PController extends Controller
      */
     public function hasUserProgress(H5PContent $h5p): bool
     {
-        return $h5p->contentUserData()->get()->isNotEmpty();
+        return $h5p->contentUserData()->exists();
     }
 
     protected function getScoringForContent(H5PContent $content): int

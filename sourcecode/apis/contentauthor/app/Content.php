@@ -37,12 +37,12 @@ use Illuminate\Support\Facades\Session;
  * @property bool $is_published
  * @property string $license
  * @property string $node_id
- * @property Collection $collaborators
+ * @property Collection<int, Collaborator> $collaborators
  * @property bool $is_draft
  * @property-read NdlaIdMapper|null $ndlaMapper
  *
  * @method static Collection findMany($ids, $columns = ['*'])
- * @method static Builder select($columns = ['*'])
+ * @method static Builder|static select($columns = ['*'])
  * @method static int count($columns = '*')
  * @method static Builder where($column, $operator = null, $value = null, $boolean = 'and')
  */
@@ -318,7 +318,7 @@ abstract class Content extends Model
 
         if ($ownerData) {
             $user->firstname = $ownerData->getFirstName() ?? '';
-            $user->lastName = $ownerData->getLastName() ?? '';
+            $user->lastname = $ownerData->getLastName() ?? '';
             $user->email = $ownerData->getEmail() ?? '';
         }
 

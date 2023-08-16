@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 
 class EdlibGuard implements StatefulGuard
 {
-    protected ?GenericUser $user;
+    protected ?Authenticatable $user;
     protected Request $request;
 
     public function __construct(Request $request)

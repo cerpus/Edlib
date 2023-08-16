@@ -42,7 +42,6 @@ class RemoveOldContentLocks extends Command
         // with transactions that does not use primary keys.
         $staleLocks = ContentLock::select('content_id')
             ->where('updated_at', '<', Carbon::now()->subMinutes(ContentLock::EXPIRES))
-            ->get()
             ->pluck('content_id')
             ->all();
 

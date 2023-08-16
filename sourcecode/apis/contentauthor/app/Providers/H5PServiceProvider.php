@@ -206,10 +206,8 @@ class H5PServiceProvider extends ServiceProvider
             return $adapter;
         });
 
-        $this->app->singletonIf(H5peditorStorage::class, function ($app) {
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
+        $this->app->singletonIf(H5peditorStorage::class, function () {
+            return new EditorStorage(resolve(H5PCore::class));
         });
 
         $this->app->singletonIf(H5PFrameworkInterface::class, function () {

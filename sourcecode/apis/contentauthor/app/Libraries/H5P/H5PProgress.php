@@ -8,14 +8,11 @@ use Illuminate\Http\Request;
 
 class H5PProgress implements ProgressInterface
 {
-    /**
-     * @var $db PDO
-     */
-    private $db;
+    private \PDO $db;
 
     private $currentUserId;
 
-    private $tableName = 'h5p_contents_user_data';
+    private string $tableName = 'h5p_contents_user_data';
 
     private $request;
 
@@ -113,16 +110,17 @@ class H5PProgress implements ProgressInterface
     /**
      * Get the progress
      *
-     * @return bool|string  False if no data
+     * @return bool|string|null  False if no data
      */
-    public function getProgress(Request $request)
+    public function getProgress(Request $request): bool|string|null
     {
         if ($this->currentUserId !== false) {
-            $sql = "SELECT data FROM h5p_contents_user_data WHERE";
-            $sql .= " content_id = :contentId AND";
-            $sql .= " user_id = :user AND";
-            $sql .= " sub_content_id = :subContentId AND";
-            $sql .= " data_id = :data_type AND";
+            $sql = "SELECT data
+                FROM h5p_contents_user_data
+                WHERE content_id = :contentId
+                AND user_id = :user
+                AND sub_content_id = :subContentId
+                AND data_id = :data_type";
 
             $params = [
                 ':contentId' => $request->get('content_id'),
@@ -132,10 +130,10 @@ class H5PProgress implements ProgressInterface
             ];
 
             if (!is_null($request->get("context"))) {
-                $sql .= " context = :context";
+                $sql .= " AND context = :context";
                 $params[':context'] = $request->get("context");
             } else {
-                $sql .= " context IS NULL";
+                $sql .= " AND context IS NULL";
             }
 
             $stmt = $this->db->prepare($sql);
@@ -220,7 +218,7 @@ class H5PProgress implements ProgressInterface
         ];
 
         $sql = "select context from $this->tableName where content_id=:content_id and user_id=:user_id and data_id=:data_id and sub_content_id=:sub_content_id and (context = :context OR context IS NULL)";
-        /** @var PDOStatement $stmt */
+        /** @var \PDOStatement $stmt */
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
 

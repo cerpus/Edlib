@@ -56,7 +56,7 @@ class LockStatusController extends Controller
 
         /** @var ContentLock $lock */
         $lock = ContentLock::notExpiredById($id);
-        if ($lock && $lock->auth_id === $userId && Carbon::now()->subHours(config('feature.lock-max-hours'))->lessThan($lock->created_at)) {
+        if ($lock !== null && $lock->auth_id === $userId && Carbon::now()->subHours(config('feature.lock-max-hours'))->lessThan($lock->created_at)) {
             $lock->updated_at = Carbon::now();
             $lock->save();
         }

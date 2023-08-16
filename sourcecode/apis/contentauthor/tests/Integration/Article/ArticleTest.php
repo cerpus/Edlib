@@ -304,4 +304,86 @@ class ArticleTest extends TestCase
         $this->get(route('article.create'))
             ->assertStatus(Response::HTTP_FOUND);
     }
+
+    public function testRewriteUrls()
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create([
+            'content' => 'This is the original content',
+        ]);
+
+        $originalUrl = 'original-url';
+        $newUrl = 'new-url';
+
+        $article->content = 'This is the original content with the original URL: ' . $originalUrl;
+        $article->save();
+
+        $article->rewriteUrls($originalUrl, $newUrl);
+
+        $this->assertStringNotContainsString($originalUrl, $article->content);
+        $this->assertStringContainsString($newUrl, $article->content);
+    }
+
+    public function testParent()
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create();
+
+        $parentArticle = Article::factory()->create();
+
+        $article->parent()->associate($parentArticle);
+        $article->save();
+
+        $retrievedParent = $article->parent;
+
+        $this->assertEquals($parentArticle->id, $retrievedParent->id);
+    }
+
+    public function testGetISO6393Language()
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create();
+
+        $language = $article->getISO6393Language();
+
+        $this->assertEquals('eng', $language);
+    }
+
+    public function testSetParentVersionId()
+    {
+        /** @var Article $article */
+        $article = Article::factory()->create([
+            'parent_version_id' => 'original_parent_version_id',
+        ]);
+
+        $parentVersionId = 'new_parent_version_id';
+
+        $isChanged = $article->setParentVersionId($parentVersionId);
+
+        $this->assertTrue($isChanged);
+        $this->assertEquals($parentVersionId, $article->parent_version_id);
+    }
+
+    public function testScopeNoMaxScore()
+    {
+        Article::factory()->create(['max_score' => null]);
+        Article::factory()->create(['max_score' => 10]);
+
+        $articles = Article::noMaxScore()->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertNull($articles[0]->max_score);
+    }
+
+    public function testScopeOfBulkCalculated()
+    {
+        Article::factory()->create(['bulk_calculated' => 0]);
+        Article::factory()->create(['bulk_calculated' => 1]);
+        Article::factory()->create(['bulk_calculated' => 2]);
+
+        $articles = Article::ofBulkCalculated(1)->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertEquals(1, $articles[0]->bulk_calculated);
+    }
 }

@@ -14,6 +14,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 /**
  * A dummy user that is not actually bound to a database table.
  *
+ * @property string $auth_id
  * @property string $name
  * @property string $email
  * @property string $password
@@ -31,22 +32,16 @@ class User extends Model implements
 
     /**
      * The database table used by the model.
-     *
-     * @var string
      */
     protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = ['name', 'email', 'password'];
 
     /**
      * The attributes excluded from the model's JSON form.
-     *
-     * @var array
      */
     protected $hidden = ['password', 'remember_token'];
 }

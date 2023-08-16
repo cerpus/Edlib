@@ -39,13 +39,13 @@ use Iso639p3;
  * @property ?int $max_score
  * @property int $bulk_calculated
  *
- * @property Collection<Collaborator> $collaborators
+ * @property Collection<int, H5PCollaborator> $collaborators
  * @property H5PLibrary $library
  *
- * @see H5PContent::noMaxScoreScope()
- * @method static Builder noMaxScore()
+ * @method static Builder noMaxScore() // H5PContent::noMaxScoreScope()
+ *
  * @method self replicate(array $except = null)
- * @method static self find($id, $columns = ['*'])
+ * @method static self|null find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */
 class H5PContent extends Content implements VersionableObject
@@ -115,10 +115,9 @@ class H5PContent extends Content implements VersionableObject
 
     public function getMetadataStructure(): array
     {
-        /** @var H5PContentsMetadata $h5pmetadata */
         $h5pmetadata = $this->metadata()->first();
         if (is_null($h5pmetadata)) {
-            $h5pmetadata = H5PContentsMetadata::make(['title' => $this->title]);
+            $h5pmetadata = new H5PContentsMetadata(['title' => $this->title]);
         }
 
         $metadataObject = $h5pmetadata->convertToMetadataObject($this->title);
@@ -135,7 +134,7 @@ class H5PContent extends Content implements VersionableObject
             })
             ->map(function ($value, $index) {
                 if (in_array($index, ['authors', 'changes'])) {
-                    return json_decode($value);
+                    return json_decode((string) $value);
                 }
                 return $value;
             })
@@ -156,7 +155,7 @@ class H5PContent extends Content implements VersionableObject
             $metadataRaw = (array) $parameters->metadata;
             $metadata = H5PMetadata::toDBArray($metadataRaw);
 
-            $h5pMetadata = H5PContentsMetadata::make($metadata);
+            $h5pMetadata = new H5PContentsMetadata($metadata);
             $metadataObject = $h5pMetadata->convertToMetadataObject($this->getRequestTitle($request));
             $parsedMetadata = $this->parseStructure($metadataObject);
         } else {
@@ -364,5 +363,10 @@ class H5PContent extends Content implements VersionableObject
         }
 
         return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
+    }
+
+    public function applyNoMaxScoreScope(Builder $query): void
+    {
+        $this->noMaxScoreScope($query);
     }
 }

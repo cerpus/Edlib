@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use App\Game;
 
@@ -23,9 +24,9 @@ class GameAccess
             return $next($request);
         }
 
-        Log::error(__METHOD__ . ': Access denied. Game: ' . $this->request->h5p
+        Log::error(__METHOD__ . ': Access denied. Game: ' . $request->h5p
             . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'));
-        Log::debug(['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
+        Log::debug(__METHOD__, ['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
 
         abort(403, 'Access denied, you are not the owner of the game or it is not shared with you.');
     }

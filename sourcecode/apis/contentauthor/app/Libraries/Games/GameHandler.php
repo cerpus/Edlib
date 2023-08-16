@@ -17,7 +17,7 @@ class GameHandler
 {
     public function store($values, GameTypeContract $gametype)
     {
-        $game = Game::make();
+        $game = new Game();
 
         $game->title = $values['title'];
         $game->gametype = $gametype->getGameType();

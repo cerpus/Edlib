@@ -5,7 +5,6 @@ namespace Tests;
 use Illuminate\Foundation\Mix;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\HtmlString;
-use Tests\Helpers\MockMQ;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -22,17 +21,6 @@ abstract class TestCase extends BaseTestCase
 
         $this->app['config']['auth.edlib-jwt-pubkey'] =
             file_get_contents(__DIR__ . '/jwt-test.key.pub');
-    }
-
-    public function setUpTraits()
-    {
-        parent::setUpTraits();
-
-        $uses = array_flip(class_uses_recursive(static::class));
-
-        if (isset($uses[MockMQ::class])) {
-            $this->setUpMockMQ();
-        }
     }
 
     /**

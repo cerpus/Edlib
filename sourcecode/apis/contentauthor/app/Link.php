@@ -19,7 +19,7 @@ use Iso639p3;
  * @property string $link_text
  * @property string $metadata
  *
- * @property Collection<Collaborator> $collaborators
+ * @property Collection<int, Collaborator> $collaborators
  *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])

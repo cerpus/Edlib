@@ -25,7 +25,7 @@ class LocksController extends Controller
                 'title' => sprintf("[%s] %s", $type, $content->title),
                 'name' => $aLock->name ?? '-',
                 'email' => $aLock->email ?? '-',
-                'locked_to' => $aLock->updated_at->addMinutes(60)->setTimeZone("Europe/Oslo")->toDateTimeLocalString() ?? '-',
+                'locked_to' => optional($aLock->updated_at)->addMinutes(60)->setTimeZone("Europe/Oslo")->toDateTimeLocalString() ?? '-',
             ];
         }
 

@@ -30,18 +30,15 @@ use Illuminate\View\View;
 
 use function Cerpus\Helper\Helpers\profile as config;
 
-class QuestionSetController extends Controller
+class QuestionSetController extends Controller implements LtiTypeInterface
 {
     use LtiTrait;
     use ReturnToCore;
     use ArticleAccess;
     use FractalTransformer;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private H5pLti $lti)
     {
-        $this->lti = $h5pLti;
         $this->middleware('core.auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
@@ -245,7 +242,7 @@ class QuestionSetController extends Controller
         return $this->doShow($id, null);
     }
 
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context, $preview = false): string
     {
         return trans("questions.preview");
     }

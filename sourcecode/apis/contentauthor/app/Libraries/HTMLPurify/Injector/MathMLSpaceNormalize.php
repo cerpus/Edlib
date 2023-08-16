@@ -14,7 +14,7 @@ class MathMLSpaceNormalize extends HTMLPurifier_Injector
     protected $tags = ['mi', 'mn', 'mo', 'ms', 'mtext', 'ci', 'cn', 'csymbol', 'annotation'];
 
     /**
-     * @param HTMLPurifier_Token $token
+     * @param \HTMLPurifier_Token_Text|\HTMLPurifier_Token_Empty $token
      */
     public function handleText(&$token)
     {

@@ -16,12 +16,6 @@ class ContentLockProcessorTest extends TestCase
     use RefreshDatabase;
     use MockRabbitMQPubsub;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->setupRabbitMQPubSub();
-    }
-
     public function testRemovesContentLocksBasedOnAuthId()
     {
         $authId = $this->faker->uuid;

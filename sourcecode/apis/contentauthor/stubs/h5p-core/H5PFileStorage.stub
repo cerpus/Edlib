@@ -1,0 +1,10 @@
+<?php
+
+interface H5PFileStorage {
+  /**
+   * @param ?string $source
+   * @param ?string $contentId
+   * @return ?object
+   */
+  public function moveContentDirectory($source, $contentId = NULL) {}
+}

@@ -2,7 +2,7 @@
 
 namespace App\Libraries\H5P\Traits;
 
-use Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Log;
 use Exception;
 use App\H5PFile;
@@ -17,8 +17,7 @@ trait FileUploadTrait
     protected $contentId;
     protected $h5pFileId;
 
-    /** @var Filesystem */
-    protected $filesystem;
+    protected FilesystemAdapter $filesystem;
 
     public $timeout = 120;
 

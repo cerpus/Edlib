@@ -63,12 +63,9 @@ interface H5PAdapterInterface
 
     public function useEmbedLink(): int;
 
-    /** @return bool */
-    public function emptyArticleImportLog($sessionKey): void;
+    public function emptyArticleImportLog($sessionKey = 'message'): void;
 
-    /** @return bool */
-    public function resetNdlaIdTracking($sessionKey): void;
-
+    public function resetNdlaIdTracking($sessionKey = 'message'): void;
 
     public function showArticleImportExportFunctionality(): bool;
 

@@ -14,8 +14,6 @@ class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that should not be reported.
-     *
-     * @var array
      */
     protected $dontReport = [
         \App\Auth\Jwt\JwtException::class,
@@ -37,19 +35,14 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @return void
      */
     public function report(\Throwable $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**
      * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
      */
     public function render($request, \Throwable $e)
     {

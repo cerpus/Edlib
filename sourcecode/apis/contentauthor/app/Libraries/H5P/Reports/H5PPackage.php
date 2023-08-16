@@ -30,8 +30,10 @@ class H5PPackage
                             'context' => $userData->context,
                         ];
                     }
-                } catch (UnknownH5PPackageException $e) {
+                } catch (UnknownH5PPackageException) {
                 }
+
+                return null;
             })->reject(function ($content) {
                 return is_null($content) || !$content->package->validate();
             })->map(function ($content) {

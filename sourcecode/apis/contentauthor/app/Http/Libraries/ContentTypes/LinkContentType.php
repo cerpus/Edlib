@@ -6,7 +6,6 @@ class LinkContentType implements ContentTypeInterface
 {
     /**
      * Return an array with title an id for each contenttype provided
-     * @return array
      */
     public function getContentTypes($redirectToken): ContentType
     {

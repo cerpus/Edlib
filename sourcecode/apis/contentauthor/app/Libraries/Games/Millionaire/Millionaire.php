@@ -213,24 +213,24 @@ class Millionaire extends GameBase
 
     private function convertDataToQuestionSet(Game $game)
     {
-        $questionSet = QuestionSet::make();
+        $questionSet = new QuestionSet();
         $questionSet->title = $game->title;
         $questionSet->questions = collect($game->game_settings->questionSet->questions)
             ->map(function ($question, $index) {
-                $questionSetQuestion = QuestionSetQuestion::make();
+                $questionSetQuestion = new QuestionSetQuestion();
                 $questionSetQuestion->question_text = $question->questionText;
                 $questionSetQuestion->image = $question->image;
                 $questionSetQuestion->id = Uuid::uuid4();
                 $questionSetQuestion->order = $index;
 
-                $questionSetQuestion->answers = array_map(function ($answer) {
-                    $questionSetAnswer = QuestionSetQuestionAnswer::make();
-                    $questionSetAnswer->correct = $answer->isCorrect;
-                    $questionSetAnswer->answer_text = $answer->answer;
-                    $questionSetAnswer->id = Uuid::uuid4();
-                    return $questionSetAnswer;
-                }, $question->answers);
-
+                $questionSetQuestion->answers = collect($question->answers)
+                    ->map(function ($answer) {
+                        $questionSetAnswer = new QuestionSetQuestionAnswer();
+                        $questionSetAnswer->correct = $answer->isCorrect;
+                        $questionSetAnswer->answer_text = $answer->answer;
+                        $questionSetAnswer->id = Uuid::uuid4();
+                        return $questionSetAnswer;
+                    });
                 return $questionSetQuestion;
             });
         return $this->buildItem($questionSet, new QuestionSetsTransformer());

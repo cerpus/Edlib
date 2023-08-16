@@ -111,7 +111,7 @@ class AjaxRequest
                 $minor_version,
                 $request->get('language'),
                 app(CerpusStorageInterface::class)->getAjaxPath(),
-                null,
+                '',
                 $request->get('default-language')
             );
             $settings = $this->handleEditorBehaviorSettings($request, $name);

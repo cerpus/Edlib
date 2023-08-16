@@ -26,6 +26,7 @@ class LockStatusTest extends TestCase
             'content_id' => $h5p->id,
             'updated_at' => Carbon::now()->subSeconds(30)
         ]);
+        /** @var User $user */
         $user = User::factory()->make();
 
         $this->withSession(['authId' => $user->auth_id])
@@ -40,6 +41,7 @@ class LockStatusTest extends TestCase
     public function testLockStatusExpired()
     {
         $this->setUpVersioningClient();
+        /** @var User $user */
         $user = User::factory()->make();
         $originalArticle = Article::factory()->create(
             [
@@ -77,6 +79,7 @@ class LockStatusTest extends TestCase
             'feature.lock-max-hours' => 20,
         ]);
         $this->setUpVersioningClient();
+        /** @var User $user */
         $user = User::factory()->make();
         $originalArticle = Article::factory()->create(
             [
@@ -121,6 +124,7 @@ class LockStatusTest extends TestCase
     public function testYouNeedToBeLoggedIn()
     {
         $this->setUpVersioningClient();
+        /** @var User $user */
         $user = User::factory()->make();
         $originalArticle = Article::factory()->create(['owner_id' => $user->auth_id]);
 

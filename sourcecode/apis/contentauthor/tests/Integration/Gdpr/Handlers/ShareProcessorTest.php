@@ -22,12 +22,6 @@ class ShareProcessorTest extends TestCase
     use RefreshDatabase;
     use MockRabbitMQPubsub;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->setupRabbitMQPubSub();
-    }
-
     public function testRemovesSharesFromArticles()
     {
         $email = 'test@example.com';

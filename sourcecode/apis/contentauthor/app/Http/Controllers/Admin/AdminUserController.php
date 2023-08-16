@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Administrator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class AdminUserController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): View
     {
         $adminUsers = Administrator::select('id', 'username', 'name')->where('id', '<>', 1)->get();
 
@@ -25,10 +25,8 @@ class AdminUserController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate(
             [
@@ -57,13 +55,10 @@ class AdminUserController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id): RedirectResponse
     {
-        if ((int)$id === (int)Auth::user()->id) {
+        if ((int)$id === (int)Auth::id()) {
             request()->session()->flash('message', "You can not delete yourself!");
         } else {
             $user = Administrator::findOrFail($id);

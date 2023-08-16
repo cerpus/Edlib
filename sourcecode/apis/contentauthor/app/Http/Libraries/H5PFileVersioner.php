@@ -20,20 +20,18 @@ class H5PFileVersioner
     {
         $originalPath = "/content/{$this->originalH5P->id}";
         $storage = Storage::disk();
-        $originalH5P = $this->originalH5P;
-        $newH5P = $this->newH5P;
 
         //Create all directories
         collect($storage->allDirectories($originalPath))
-            ->each(function ($originalDirectory) use ($originalH5P, $newH5P, $storage) {
-                $theNewDirectory = str_replace($originalH5P->id, $this->newH5P->id, $originalDirectory);
+            ->each(function ($originalDirectory) use ($storage) {
+                $theNewDirectory = str_replace($this->originalH5P->id, $this->newH5P->id, $originalDirectory);
                 $storage->makeDirectory($theNewDirectory);
             });
 
         // Copy all files
         collect($storage->allFiles($originalPath))
-            ->each(function ($theOriginalFile) use ($originalH5P, $newH5P, $storage) {
-                $theNewFile = str_replace($originalH5P->id, $newH5P->id, $theOriginalFile);
+            ->each(function ($theOriginalFile) use ($storage) {
+                $theNewFile = str_replace($this->originalH5P->id, $this->newH5P->id, $theOriginalFile);
                 $storage->copy($theOriginalFile, $theNewFile);
             });
 
