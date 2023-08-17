@@ -128,3 +128,5 @@ Route::prefix('facebook')->name('facebook.')->group(function () {
 });
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');
+
+Route::get('/sitemap.xml', [ContentController::class, 'sitemap']);

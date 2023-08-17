@@ -15,6 +15,7 @@ use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 use function app;
@@ -171,5 +172,14 @@ class ContentController extends Controller
         });
 
         return view('lti.close-edlib');
+    }
+
+    public function sitemap(): Response
+    {
+        $document = Content::generateSiteMap();
+
+        return new Response($document->saveXML(), headers: [
+            'Content-Type' => 'application/xml',
+        ]);
     }
 }

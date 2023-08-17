@@ -10,6 +10,7 @@ use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use DOMDocument;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
@@ -180,5 +182,28 @@ class Content extends Model
                 'latestVersion',
                 'latestVersion.resource'
             ]));
+    }
+
+    public static function generateSiteMap(): DOMDocument
+    {
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $root = $document->createElementNS('http://www.sitemaps.org/schemas/sitemap/0.9', 'urlset');
+
+        /** @var Collection<int, Content> $contents */
+        $contents = self::findShared()->get();
+
+        $contents->each(function (Content $content) use ($document, $root) {
+            assert($content->updated_at !== null);
+
+            $item = $document->createElement('url');
+            $item->appendChild($document->createElement('loc', route('content.preview', [$content])));
+            $item->appendChild($document->createElement('lastmod', $content->updated_at->toIso8601String()));
+
+            $root->appendChild($item);
+        });
+
+        $document->appendChild($root);
+
+        return $document;
     }
 }
