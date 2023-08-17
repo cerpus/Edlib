@@ -115,8 +115,6 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     });
 });
 
-Route::get('/oembed', OembedController::class)->name('oembed');
-
 Route::prefix('google')->name('google.')->group(function () {
     Route::get('login', [GoogleController::class, 'loginWithGoogle'])->name('login');
     Route::any('callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
@@ -128,5 +126,3 @@ Route::prefix('facebook')->name('facebook.')->group(function () {
 });
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');
-
-Route::get('/sitemap.xml', [ContentController::class, 'sitemap']);

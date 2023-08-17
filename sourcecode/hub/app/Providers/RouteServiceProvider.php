@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use function base_path;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,9 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
+
+            Route::middleware('stateless')
+                ->group(base_path('routes/stateless.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

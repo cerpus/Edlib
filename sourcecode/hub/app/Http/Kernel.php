@@ -40,6 +40,11 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ],
 
+        'stateless' => [
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ContentSecurityPolicy::class,
+        ],
+
         'api' => [
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
