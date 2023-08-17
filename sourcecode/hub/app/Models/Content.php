@@ -69,6 +69,7 @@ class Content extends Model
                 flags: JSON_THROW_ON_ERROR,
             ),
             'lti_message_type' => 'ContentItemSelection',
+            'lti_version' => 'LTI-1p0',
         ]), $credentials);
     }
 

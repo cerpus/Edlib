@@ -36,13 +36,10 @@ final class StoreContentRequest extends FormRequest
      */
     public function rules(): array
     {
-        $propTitle = str_replace('.', '\.', ContentItems::PROP_TITLE);
-        $propUrl = str_replace('.', '\.', ContentItems::PROP_URL);
-
         return [
             "content_items.@graph.0.@type" => ['required', 'in:LtiLinkItem'],
-            "content_items.@graph.0.$propTitle" => ['required', 'string'],
-            "content_items.@graph.0.$propUrl" => ['required', 'url'],
+            "content_items.@graph.0.title" => ['required', 'string'],
+            "content_items.@graph.0.url" => ['required', 'url'],
         ];
     }
 }
