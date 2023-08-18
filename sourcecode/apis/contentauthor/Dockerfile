@@ -147,4 +147,5 @@ FROM nginx:1-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=prod /app/public /app/public
+COPY docker/no-security-theatre.conf /etc/nginx/conf.d/
 COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
