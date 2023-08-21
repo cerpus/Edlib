@@ -66,6 +66,7 @@ FROM nginx:1.19-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 COPY --from=base /var/www/edlibcommon/public /var/www/edlibcommon/public
 COPY docker/nginx/common.conf.template /etc/nginx/templates/common.conf.template
+COPY docker/nginx/no-security-theatre.conf /etc/nginx/conf.d/no-security-theatre.conf
 
 FROM prod AS deploy
 CMD [ "php", "artisan", "migrate", "--force" ]
