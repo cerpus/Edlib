@@ -47,7 +47,7 @@ function ImageLayout(props) {
         );
         if ( readOnly === false ) {
             icon = (
-                <DropZone
+                <Dropzone
                     ref={dropzoneRef}
                     onDropAccepted={onDrop}
                     multiple={false}
