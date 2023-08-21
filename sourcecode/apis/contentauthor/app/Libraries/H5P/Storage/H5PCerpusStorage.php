@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\StorageAttributes;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
@@ -536,16 +537,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $upload;
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     * @throws Exception
-     */
-    public function downloadContent($filename, $title)
+    public function downloadContent(string $filename, string $title): StreamedResponse
     {
-        return response()->streamDownload(function () use ($filename) {
-            $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
-            echo $this->filesystem->response($path)->sendContent();
-        }, $filename);
+        $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
+
+        return $this->filesystem->response($path);
     }
 
     public function getDisplayPath(bool $fullUrl = true)

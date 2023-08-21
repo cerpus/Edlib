@@ -17,6 +17,8 @@ use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Iso639p3;
@@ -73,27 +75,36 @@ class Article extends Content implements VersionableObject
         return self::rewriteUploadUrls($this->content);
     }
 
-    public function collaborators()
+    /**
+     * @return HasMany<ArticleCollaborator>
+     */
+    public function collaborators(): HasMany
     {
         return $this->hasMany(ArticleCollaborator::class);
     }
 
-    public function files()
+    /**
+     * @return HasMany<File>
+     */
+    public function files(): HasMany
     {
         return $this->hasMany(File::class);
     }
 
-    public function rewriteUrls($original, $new)
+    public function rewriteUrls($original, $new): void
     {
         $this->content = str_replace($original, $new, $this->content);
     }
 
-    public function givesScore()
+    public function givesScore(): int
     {
         return 0;
     }
 
-    public function parent()
+    /**
+     * @return BelongsTo<Article, self>
+     */
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Article::class, 'parent_id');
     }
@@ -108,12 +119,12 @@ class Article extends Content implements VersionableObject
     }
 
     // Abstract method implementations
-    protected function getContentContent()
+    protected function getContentContent(): string
     {
         return $this->content;
     }
 
-    protected function getRequestContent(Request $request)
+    protected function getRequestContent(Request $request): mixed
     {
         return $request->get('content');
     }
@@ -128,7 +139,7 @@ class Article extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
-    public function makeCopy($owner = null)
+    public function makeCopy($owner = null): self
     {
         $newArticle = $this->replicate();
         $newArticle->id = Uuid::uuid4()->toString();
@@ -154,21 +165,23 @@ class Article extends Content implements VersionableObject
         return Content::TYPE_ARTICLE;
     }
 
-    public function scopeOfBulkCalculated($query, $type)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeOfBulkCalculated(Builder $query, $type): void
     {
         $query->where('bulk_calculated', $type);
     }
 
     /**
-     * @param Builder $query
+     * @param Builder<self> $query
      */
-    public function scopeNoMaxScore($query)
+    public function scopeNoMaxScore(Builder $query): void
     {
         $query->whereNull('max_score');
     }
 
-
-    public function getMaxScoreHelper($content, $haltIfNotCalculated = false)
+    public function getMaxScoreHelper($content, $haltIfNotCalculated = false): int
     {
         $pattern = '/src=.\/lti\/launch\?url=([^"]+)"?/m';
         preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
@@ -203,7 +216,7 @@ class Article extends Content implements VersionableObject
             ->sum();
     }
 
-    public function getMaxScore()
+    public function getMaxScore(): int
     {
         return $this->getMaxScoreHelper($this->content);
     }
@@ -228,7 +241,7 @@ class Article extends Content implements VersionableObject
         }
     }
 
-    public function setVersionId(string $versionId)
+    public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
     }
@@ -236,9 +249,8 @@ class Article extends Content implements VersionableObject
     /**
      * Used by Eloquent to get primary key type.
      * UUID Identified as a string.
-     * @return string
      */
-    public function getKeyType()
+    public function getKeyType(): string
     {
         return 'string';
     }

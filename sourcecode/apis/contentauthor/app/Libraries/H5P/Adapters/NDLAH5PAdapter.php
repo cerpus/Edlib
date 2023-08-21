@@ -9,8 +9,8 @@ use App\Libraries\H5P\File\NDLATextTrack;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
+use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -27,11 +27,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     /** @var H5PAlterParametersSettingsDataObject */
     private $parameterSettings;
-
-    public function __construct()
-    {
-        $this->adapterName = "ndla";
-    }
 
     /**
      * Alter parameters before added to the H5PIntegrationObject
@@ -203,9 +198,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     {
         $css = [];
         $ndlaCustomCssOption = H5POption::where('option_name', H5POption::NDLA_CUSTOM_CSS_TIMESTAMP)->first();
-        if ($ndlaCustomCssOption && !empty($this->config->content)) {
+        $content = $this->config->getContent();
+        if ($ndlaCustomCssOption && !empty($content)) {
             $customCssBreakpoint = Carbon::parse($ndlaCustomCssOption->option_value);
-            $updated = $this->config->content['updated_at'];
+            $updated = $content['updated_at'];
             if ($customCssBreakpoint > $updated) {
                 $css[] = (string) mix('css/ndlah5p-iframe-legacy.css');
             }
@@ -259,6 +255,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.collaboration',
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
+            'h5p.video.enable',
+            'h5p.video.url',
+            'h5p.video.key',
+            'h5p.video.secret',
+            'h5p.video.accountId',
+            'h5p.video.authUrl',
+            'h5p.video.deleteVideoSourceAfterConvertToStream',
+            'h5p.video.pingDelay',
             'h5p.image.authDomain',
             'h5p.image.key',
             'h5p.image.secret',
@@ -320,14 +324,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getExternalProviders(): Collection
+    public function getExternalProviders(): array
     {
-        return collect([
+        return [
             resolve(NDLAContentBrowser::class),
-            resolve(H5PVideoInterface::class),
+            resolve(NDLAVideoAdapter::class),
             resolve(NDLAAudioBrowser::class),
             resolve(NDLATextTrack::class),
-        ]);
+        ];
     }
 
     public function useMaxScore(): bool
@@ -378,5 +382,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return [
             (string) mix('js/react-contentbrowser.js')
         ];
+    }
+
+    public function getAdapterName(): string
+    {
+        return 'ndla';
     }
 }

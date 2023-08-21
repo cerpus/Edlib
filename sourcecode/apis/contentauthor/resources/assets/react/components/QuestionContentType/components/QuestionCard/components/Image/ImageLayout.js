@@ -1,10 +1,11 @@
-import React from 'react';
+import { React, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import Popover from '@material-ui/core/Popover';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ImageIcon from '@material-ui/icons/Image';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { useIntl } from 'react-intl';
 
 function ImageLayout(props) {
     const {
@@ -19,16 +20,44 @@ function ImageLayout(props) {
         uploading,
     } = props;
 
+    const { formatMessage }  = useIntl();
+    const [focused, setFocused] = useState(false);
+    const dropzoneRef = useRef(null);
+
+    const handleIconKeyPress = (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            dropzoneRef.current.open();
+        }
+    };
+
     let icon = null;
     if ( previewImage === null) {
-        icon = <ImageIcon />;
+        icon = (
+            <ImageIcon
+                style={{
+                    cursor: 'pointer',
+                    boxShadow: focused ? '0 0 0 1px' : 'none',
+                }}
+                tabIndex={0}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                onKeyPress={handleIconKeyPress}
+            />
+        );
         if ( readOnly === false ) {
             icon = (
-                <Dropzone
+                <DropZone
+                    ref={dropzoneRef}
                     onDropAccepted={onDrop}
                     multiple={false}
-                    className="imageDropzone"
+                    className={`imageDropzone ${focused ? 'focused' : ''}`}
                     disabled={readOnly}
+                    inputProps={{
+                        'aria-label': formatMessage({
+                            id: 'QUESTIONCARD.ADD_IMAGE_LABEL',
+                        })
+                    }}
                 >
                     {({getRootProps, getInputProps}) => (
                         <section>

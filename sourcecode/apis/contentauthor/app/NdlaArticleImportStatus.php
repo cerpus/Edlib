@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @todo remove
@@ -37,12 +38,15 @@ class NdlaArticleImportStatus extends Model
         return self::orderBy('id', 'desc')->limit(500)->get();
     }
 
-    public function ndlaArticle()
+    /**
+     * @return BelongsTo<NdlaArticleId, self>
+     */
+    public function ndlaArticle(): BelongsTo
     {
         return $this->belongsTo(NdlaArticleId::class, 'ndla_id');
     }
 
-    public static function addStatus($id, $message, $importId = null, $logLevel = self::LOG_LEVEL_DEBUG)
+    public static function addStatus($id, $message, $importId = null, $logLevel = self::LOG_LEVEL_DEBUG): self
     {
         $status = [
             'ndla_id' => $id,
@@ -59,12 +63,12 @@ class NdlaArticleImportStatus extends Model
         return $response;
     }
 
-    public static function logDebug($id, $message, $importId = null)
+    public static function logDebug($id, $message, $importId = null): self
     {
         return self::addStatus($id, $message, $importId, self::LOG_LEVEL_DEBUG);
     }
 
-    public static function logError($id, $message, $importId = null)
+    public static function logError($id, $message, $importId = null): self
     {
         return self::addStatus($id, $message, $importId, self::LOG_LEVEL_ERROR);
     }

@@ -383,7 +383,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 <Content>
                     <div style={{ marginTop: 20 }}>
                         {loading && <CircularProgress />}
-                        {error && <div>{t('something went wrong')}</div>}
+                        {error && <div>{t('something_happened')}</div>}
                         {!loading && !error && resources && !isGridView && (
                             <ResourceTable
                                 totalCount={pagination.totalCount}

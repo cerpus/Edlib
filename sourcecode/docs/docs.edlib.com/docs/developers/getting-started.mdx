@@ -6,17 +6,22 @@ sidebar_position: 1
 
 The goal of this guide is to get you up and running with a **development** environment for Edlib.
 
-We are still working on documentation for setting up Edlib on-premise and in the cloud. Be sure to check back later if you are interested in this.
+We are still working on documentation for setting up Edlib on-premise and in the cloud. Be sure to check back later if you are interested in this or [contact us](mailto:support@edlib.com) directly if you need any help or have any questions. You can also visit the [discussions section on GitHub](https://github.com/cerpus/Edlib/discussions) to se what other users have asked for or start your own discussion thread. 
 
 ## Prerequisites
 
-- A recent version of [Docker](https://docs.docker.com/get-docker/)
+- A recent version of [Docker](https://docs.docker.com/get-docker/). Make sure you're on the latest (non distro-provided) version of `docker-compose`. 
 - The [git](https://git-scm.com/downloads) command-line utility
 - Ports 80, 443, 3306, 5432, 5672, 6379, 9200, and 15672 on the host machine must be unoccupied
 
 :::note
 
-Avoid using distro-provided versions of Docker, as these tend to be years out of date and might not support the features used by Edlib.
+1. Edlib is a complex web application with the need of mulitple ports and HTTPS.
+2. Check the error log if there are problems with services not starting. 
+3. Note that the following services will have the status `Exited (0)` after their run:
+- certs
+- common-startup
+- elasticsearch_password
 
 :::
 
@@ -63,10 +68,9 @@ Avoid using distro-provided versions of Docker, as these tend to be years out of
 
 * **To access the user-facing side of Edlib:**
 
-  https://npm.components.edlib.local/
+  https://npm.components.edlib.test/
 
 * **To access the admin interface:**
 
-  https://api.edlib.local/admin
+  https://api.edlib.test/admin
 
-Documentation describing how to get quickly up and running with Edlib is currently being worked on.

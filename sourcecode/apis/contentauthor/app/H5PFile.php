@@ -29,46 +29,22 @@ class H5PFile extends Model
     }
 
     /**
-     * @param Builder $query
-     * @param string $requestId
+     * @param Builder<self> $query
      */
-    protected function getFileUploadStatusFromRequestIdScope($query, $requestId)
+    public function scopeOfFileUploadFromRequestId(Builder $query, $requestId): void
     {
         $query->where('requestId', $requestId);
     }
 
     /**
-     * @param Builder $query
-     * @param string $requestId
+     * @param Builder<self> $query
      */
-    public function scopeOfFileUploadFromRequestId($query, $requestId)
-    {
-        return $this->getFileUploadStatusFromRequestIdScope($query, $requestId);
-    }
-
-    /**
-     * @param Builder $query
-     * @param int $contentId
-     */
-    protected function getFileUploadStatusFromContentScope($query, $contentId)
+    public function scopeOfFileUploadFromContent(Builder $query, int $contentId): void
     {
         $query->where('content_id', $contentId);
     }
 
-    /**
-     * @param Builder $query
-     * @param int $contentId
-     */
-    public function scopeOfFileUploadFromContent($query, $contentId)
-    {
-        return $this->getFileUploadStatusFromContentScope($query, $contentId);
-    }
-
-    /**
-     * @param int $contentId
-     * @param string $filePath
-     */
-    protected function deleteContentPendingUpload($contentId, $filePath)
+    protected function deleteContentPendingUpload(int $contentId, string $filePath): void
     {
         self::ofFileUploadFromContent($contentId)
             ->get()

@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class H5PLibraryLanguage extends Model
 {
@@ -16,15 +18,22 @@ class H5PLibraryLanguage extends Model
 
     public $timestamps = false;
 
-    public function library()
+    /**
+     * @return BelongsTo<H5PLibrary, self>
+     */
+    public function library(): BelongsTo
     {
         return $this->belongsTo(H5PLibrary::class);
     }
 
-    public function scopeFromLibrary($query, $library)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeFromLibrary(Builder $query, array $library): void
     {
         list($machineName, $majorVersion, $minorVersion) = array_values($library);
-        $query->whereHas('library', function ($query) use ($machineName, $majorVersion, $minorVersion) {
+        $query->whereHas('library', function (Builder $query) use ($machineName, $majorVersion, $minorVersion) {
+            /** @var Builder<self> $query */
             $query->fromLibrary([$machineName, $majorVersion, $minorVersion]);
         });
     }

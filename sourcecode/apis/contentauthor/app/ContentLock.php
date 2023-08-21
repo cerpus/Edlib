@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Session;
 use Carbon\Carbon;
@@ -80,8 +81,11 @@ class ContentLock extends Model
         return "???";
     }
 
-    public function scopeActive($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeActive(Builder $query): void
     {
-        return $query->where('updated_at', '>', Carbon::now()->subSeconds(self::EXPIRES));
+        $query->where('updated_at', '>', Carbon::now()->subSeconds(self::EXPIRES));
     }
 }

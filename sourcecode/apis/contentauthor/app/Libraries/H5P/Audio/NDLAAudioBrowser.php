@@ -12,18 +12,14 @@ use Illuminate\Http\File;
 
 class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterface
 {
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
     public const FIND_AUDIOS_URL = '/audio-api/v1/audio';
     public const GET_AUDIO_URL = '/audio-api/v1/audio/%s';
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        private readonly Client $client,
+        private readonly CerpusStorageInterface $storage
+    ) {
     }
-
 
     public function findAudio($filterParameters)
     {
@@ -118,10 +114,5 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     public function getType(): string
     {
         return "audio";
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
     }
 }

@@ -1,6 +1,6 @@
 root = true
 
-[localSetup/projects/nginx/**.conf]
+[localSetup/projects/nginx/**]
 charset = utf-8
 end_of_line = lf
 indent_size = 2

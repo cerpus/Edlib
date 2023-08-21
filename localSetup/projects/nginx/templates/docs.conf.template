@@ -1,0 +1,21 @@
+server {
+  listen 80;
+
+  server_name docs.${EDLIB_ROOT_DOMAIN};
+
+  return 301 https://docs.${EDLIB_ROOT_DOMAIN}$request_uri;
+}
+
+server {
+  include includes/https.conf;
+
+  server_name  docs.${EDLIB_ROOT_DOMAIN};
+
+  location / {
+    set $upstream http://docs;
+    proxy_pass              $upstream;
+    proxy_set_header        Host            $host;
+    proxy_set_header        X-Real-IP       $remote_addr;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+}

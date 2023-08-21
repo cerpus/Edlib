@@ -104,16 +104,20 @@ services:
 
   nginx:
     image: nginx:1-alpine
-    command: [sh, -c, 'update-ca-certificates && nginx -g "daemon off;"']
     depends_on:
       certs:
         condition: service_completed_successfully
+    environment:
+      - EDLIB_ROOT_DOMAIN=${EDLIB_ROOT_DOMAIN:-edlib.test}
     healthcheck:
       test: [CMD, curl, -f, https://localhost]
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./data/nginx/certs:/etc/ssl/private:ro
-      - ./localSetup/projects/nginx/nginx-conf.d:/etc/nginx/conf.d:ro
+      - ./localSetup/projects/nginx/defaults.conf:/etc/nginx/conf.d/defaults.conf:ro
+      - ./localSetup/projects/nginx/docker-entrypoint.d/update-ca-certificates.sh:/docker-entrypoint.d/update-ca-certificates.sh:ro
+      - ./localSetup/projects/nginx/includes:/etc/nginx/includes:ro
+      - ./localSetup/projects/nginx/templates:/etc/nginx/templates:ro
       - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
     ports:
       - "80:80"
@@ -121,9 +125,8 @@ services:
     networks:
       default:
         aliases:
-          - api.edlib.local
-          - ca.edlib.local
-          - edlibcommon
+          - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
   versionapi:
     image: maven:3-openjdk-11
@@ -152,15 +155,16 @@ services:
     working_dir: /app
 
   contentauthor:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      target: web
+    image: nginx:1-alpine
     healthcheck:
       test: [CMD, curl, -f, http://localhost]
     volumes:
+      - ./sourcecode/apis/contentauthor/docker/contentAuthor.conf.template:/etc/nginx/templates/contentAuthor.conf.template:ro
+      - ./sourcecode/apis/contentauthor/docker/no-security-theatre.conf:/etc/nginx/conf.d/no-security-theatre.conf:ro
       - ./sourcecode/apis/contentauthor/public:/app/public
       - ./sourcecode/apis/contentauthor/storage/app:/app/public/h5pstorage
-      - ./sourcecode/apis/contentauthor/vendor:/app/vendor
+      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-editor:/app/public/h5p-editor-php-library:ro
+      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-core:/app/public/h5p-php-library:ro
     environment:
       PHP_FPM_HOST: "contentauthor-fpm:9000"
     depends_on:
@@ -381,8 +385,9 @@ services:
       certs:
         condition: service_completed_successfully
     environment:
-      CLIENT_PUBLIC_PATH: https://www.edlib.local/
-      PUBLIC_PATH: https://www.edlib.local/
+      CLIENT_PUBLIC_PATH: https://www.${EDLIB_ROOT_DOMAIN:-edlib.test}/
+      PUBLIC_PATH: https://www.${EDLIB_ROOT_DOMAIN:-edlib.test}/
+      RAZZLE_EDLIB_ROOT_DOMAIN: ${EDLIB_ROOT_DOMAIN:-edlib.test}
     env_file:
       - ./localSetup/.env
     healthcheck:
@@ -482,6 +487,8 @@ services:
     build:
       context: ./sourcecode/npm/components
       dockerfile: Dockerfile
+    environment:
+      - STORYBOOK_EDLIB_ROOT_DOMAIN=${EDLIB_ROOT_DOMAIN:-edlib.test}
     healthcheck:
       test: [CMD, curl, -f, http://localhost:9009]
     volumes:
@@ -576,7 +583,7 @@ services:
   #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
   #    environment:
   #      CONFIGSERVICE_URI: http://configserver:8888
-  #      EDLIB_API_URL: https://api.edlib.local
+  #      EDLIB_API_URL: https://api.edlib.test
   #      HEAPSPACE_MAX: 128m
   #      DEBUGGING_ENABLED: "yes"
   #    healthcheck:

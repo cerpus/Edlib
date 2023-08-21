@@ -4,9 +4,10 @@ namespace App;
 
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Traits\Collaboratable;
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
@@ -24,22 +25,25 @@ class QuestionSet extends Content
 {
     use Collaboratable;
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
     public string $editRouteName = 'questionset.edit';
 
-    public function questions()
+    /**
+     * @return HasMany<QuestionSetQuestion>
+     */
+    public function questions(): HasMany
     {
         return $this->hasMany(QuestionSetQuestion::class)->ordered();
     }
 
-    protected function getRequestContent(Request $request)
+    protected function getRequestContent(Request $request): true
     {
         // TODO: Implement getRequestContent() method.
         return true;
     }
 
-    protected function getContentContent()
+    protected function getContentContent(): true
     {
         // TODO: Implement getContentContent() method.
         return true;

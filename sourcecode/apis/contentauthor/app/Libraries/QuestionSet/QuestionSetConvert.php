@@ -4,14 +4,14 @@ namespace App\Libraries\QuestionSet;
 
 use App\Content;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
+use App\Libraries\DataObjects\Answer;
+use App\Libraries\DataObjects\MultiChoiceQuestion;
+use App\Libraries\DataObjects\Questionset as QuestionSetData;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Packages\QuestionSet as H5PQuestionSet;
 use App\QuestionSet as QuestionSetModel;
-use Cerpus\CoreClient\DataObjects\Answer;
-use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
-use Cerpus\CoreClient\DataObjects\Questionset as CoreClientQuestionset;
 
 class QuestionSetConvert
 {
@@ -34,7 +34,7 @@ class QuestionSetConvert
 
     public function createH5PQuestionSet(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): array
     {
-        $h5pQuiz = CoreClientQuestionset::create([
+        $h5pQuiz = QuestionSetData::create([
             'title' => $questionSet->title,
             'license' => $metaData->license,
             'share' => $metaData->share,

@@ -87,7 +87,7 @@ final class Lti13Controller extends Controller
 
         if ($launch->isDeepLinkLaunch()) {
             return view('lti.deepLinkingLaunch', [
-                'iframeUrl' => 'https://www.edlib.local/s/lti/browser?jwt=' . $token,
+                'iframeUrl' => 'https://www.edlib.test/s/lti/browser?jwt=' . $token,
                 'returnUrl' => route('lti.deepLinkingReturn', [
                     'launchId' => $launch->getLaunchId()
                 ])

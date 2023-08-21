@@ -194,7 +194,7 @@ class AjaxRequest
             $package->applyEditorBehaviorSettings($settings);
             $styles = $package->getCSS(true);
         } catch (UnknownH5PPackageException) {
-            $editorConfig = resolve(EditorConfig::class);
+            $editorConfig = resolve(H5PEditConfig::class);
             $editorConfig->applyEditorBehaviorSettings($settings);
             $styles = $editorConfig->getCSS(true);
         }

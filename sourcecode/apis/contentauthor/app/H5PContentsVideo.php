@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class H5PContentsVideo extends Model
 {
@@ -17,7 +18,10 @@ class H5PContentsVideo extends Model
         'source_file'
     ];
 
-    public function content()
+    /**
+     * @return BelongsTo<H5PContent, self>
+     */
+    public function content(): BelongsTo
     {
         return $this->belongsTo(H5PContent::class);
     }

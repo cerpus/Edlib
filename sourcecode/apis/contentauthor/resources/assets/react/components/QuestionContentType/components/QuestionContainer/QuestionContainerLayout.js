@@ -37,11 +37,12 @@ const QuestionContainerLayout = props => {
                     onChange={event => onTitleChange(event.currentTarget.value, true)}
                     value={title}
                     InputLabelProps={{
-                        shrink: true,
+                        shrink: true
                     }}
                     margin="normal"
                     inputProps={{
                         onBlur: event => onTitleChange(event.currentTarget.value, false),
+                        style: { fontSize: "2.3rem" }
                     }}
                 />
                 <TagsManager

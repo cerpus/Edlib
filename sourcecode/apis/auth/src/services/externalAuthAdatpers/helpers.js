@@ -23,17 +23,17 @@ export const getUserDataFromToken = (payload, propertyPaths) => {
     if (propertyPaths.name) {
         const fullName = _.get(payload, propertyPaths.name);
 
-        if (fullName.split(' ').length > 1) {
+        if (fullName && fullName.split(' ').length > 1) {
             const lastIndexOfSpace = fullName.lastIndexOf(' ');
             data.lastName = fullName.substring(lastIndexOfSpace + 1);
             data.firstName = fullName.substring(0, lastIndexOfSpace);
         } else {
-            data.firstName = fullName;
+            data.firstName = fullName || '';
             data.lastName = '';
         }
     } else {
-        data.firstName = _.get(payload, propertyPaths.firstName);
-        data.lastName = _.get(payload, propertyPaths.lastName);
+        data.firstName = _.get(payload, propertyPaths.firstName) || '';
+        data.lastName = _.get(payload, propertyPaths.lastName) || '';
     }
 
     if (!propertyPaths.isAdminMethod) {
