@@ -1,5 +1,5 @@
 import React from 'react';
-import { useToken } from '@cerpus/edlib-components';
+import useToken from '../hooks/useToken';
 import store from 'store';
 import storageKeys from '../constants/storageKeys.js';
 import apiConfig from '../config/api.js';
