@@ -118,7 +118,7 @@ const useToken = ((getJwt) => {
         log('Check if token must be updated');
 
         if (jwtLoading) {
-            log('Not refreshing token as it is already loading a new.');
+            log('Not refreshing token as it is already loading a new');
             return;
         }
 
@@ -137,7 +137,7 @@ const useToken = ((getJwt) => {
         }
 
         updateToken();
-    }, [updateToken, jwtLoading, jwtError, jwt]);
+    }, [updateToken, jwtLoading, jwtError, jwt, retry]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -152,12 +152,12 @@ const useToken = ((getJwt) => {
                 updateTokenIfRequired();
             }, 5000);
         }
-    }, [retry]);
+    }, [retry, updateTokenIfRequired]);
 
     useEffect(() => {
         log('Triggering initial token loading');
         updateTokenIfRequired();
-    }, []);
+    }, [updateTokenIfRequired]);
 
     useEffect(() => {
         log('Jwt updated to ', jwt);

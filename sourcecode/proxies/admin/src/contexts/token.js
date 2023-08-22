@@ -2,7 +2,6 @@ import React from 'react';
 import useToken from '../hooks/useToken';
 import store from 'store';
 import storageKeys from '../constants/storageKeys.js';
-import apiConfig from '../config/api.js';
 
 const tokenContext = React.createContext({});
 export const useTokenContext = () => React.useContext(tokenContext);
@@ -17,7 +16,7 @@ const ContextWithToken = ({
         return externalToken;
     }, [externalToken]);
 
-    const { token, loading, error, getToken } = useToken(getJwt, apiConfig.url);
+    const { token, loading, error, getToken } = useToken(getJwt);
 
     React.useEffect(() => {
         if (error && !loading) {
