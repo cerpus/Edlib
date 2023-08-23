@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
 use function app;
-use function str_replace;
 
 final class StoreContentRequest extends FormRequest
 {

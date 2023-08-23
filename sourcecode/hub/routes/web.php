@@ -8,7 +8,6 @@ use App\Http\Controllers\CookieController;
 use App\Http\Controllers\FacebookController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\OembedController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
