@@ -47,6 +47,7 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+            'url' => env('CDN_WITH_PREFIX'),
         ],
         // temporary directory for test files
         // this has to be its own directory, or your files will go missing!
