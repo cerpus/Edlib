@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Events\LinkWasSaved;
 use App\H5pLti;
 use App\Http\Libraries\License;
@@ -54,7 +50,7 @@ class LinkController extends Controller
         $license = License::getDefaultLicense($ltiRequest);
 
         $emails = '';
-        $link = app(Link::class);
+        $link = new Link();
         $redirectToken = $request->get('redirectToken');
         $userPublishEnabled = $adapter->isUserPublishEnabled();
         $canPublish = true;
@@ -69,8 +65,6 @@ class LinkController extends Controller
      */
     public function store(LinksRequest $request): JsonResponse
     {
-        event(new ContentCreating($request));
-
         if (!$this->canCreate()) {
             abort(403);
         }
@@ -78,8 +72,7 @@ class LinkController extends Controller
         $inputs = $request->all();
         $metadata = json_decode($inputs['linkMetadata']);
 
-        /** @var Link $link */
-        $link = app(Link::class);
+        $link = new Link();
         $link->link_type = $inputs['linkType'];
         $link->link_url = $inputs['linkUrl'];
         $link->owner_id = Session::get('authId');
@@ -91,8 +84,6 @@ class LinkController extends Controller
         $link->save();
 
         event(new LinkWasSaved($link, VersionData::CREATE));
-
-        event(new ContentCreated($link));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $link->id,
@@ -154,11 +145,8 @@ class LinkController extends Controller
 
     public function update(LinksRequest $request, $id)
     {
-        /** @var Link $link */
-        $link = app(Link::class);
+        $link = new Link();
         $oldLink = $link::findOrFail($id);
-
-        event(new ContentUpdating($oldLink, $request));
 
         if (!$this->canCreate()) {
             abort(403);
@@ -188,7 +176,6 @@ class LinkController extends Controller
                     $link = $oldLink->makeCopy(Session::get('authId'));
                     break;
             }
-            $link->setParentId($oldLink->version_id);
         }
 
         $metadata = json_decode($inputs['linkMetadata']);
@@ -202,8 +189,6 @@ class LinkController extends Controller
         $link->save();
 
         event(new LinkWasSaved($link, $reason));
-
-        event(new ContentUpdated($link));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $link->id,

@@ -37,7 +37,7 @@ class ContentAttribution extends Model
     /**
      * @throws \Exception
      */
-    public function setAttributionAttribute(Attribution $attribution)
+    public function setAttributionAttribute(Attribution $attribution): void
     {
         $serializedAttribution = json_encode($attribution);
 

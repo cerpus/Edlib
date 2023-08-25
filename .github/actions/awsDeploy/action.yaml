@@ -69,7 +69,6 @@ runs:
       run: |
         echo "" >> ./chart/Chart.yaml
         echo "appVersion: \"${{ inputs.version }}\"" >> ./chart/Chart.yaml
-        cat ./chart/Chart.yaml
 
     - name: Create values string for helm command
       id: helm-values
@@ -79,11 +78,9 @@ runs:
         if  kubectl -n edlib get configmap edlib-helm-config; then
           kubectl -n edlib get configmap edlib-helm-config -o jsonpath="{.data.values}" > values.yaml
           HELM_VALUES="$HELM_VALUES -f ./values.yaml "
-          cat values.yaml
         elif [ -f "./chart/values/${{ inputs.environment }}.yaml" ]; then
           HELM_VALUES="$HELM_VALUES -f ./chart/values/${{ inputs.environment }}.yaml "
         fi
-        echo $HELM_VALUES
         echo "helm-values=$HELM_VALUES" >> $GITHUB_OUTPUT
 
     - name: helm deploy

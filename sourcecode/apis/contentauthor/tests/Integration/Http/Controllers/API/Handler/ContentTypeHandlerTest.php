@@ -3,11 +3,11 @@
 namespace Tests\Integration\Http\Controllers\API\Handler;
 
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
+use App\Libraries\DataObjects\Answer;
+use App\Libraries\DataObjects\MultiChoiceQuestion;
+use App\Libraries\DataObjects\Questionset;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
-use Cerpus\CoreClient\DataObjects\Answer;
-use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
-use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;

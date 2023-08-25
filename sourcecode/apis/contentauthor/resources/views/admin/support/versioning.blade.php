@@ -5,12 +5,12 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Versioning debug o'matic 3000 Ultra HighSpeed SuperGrip</div>
+                    <div class="panel-heading">Content version info (and more)</div>
                     <div class="panel-body">
                         <form>
                             <div class="form-group">
                                 <label for="contentId">Content Id:</label>
-                                <input class="form-control" type="text" name="contentId" value="{{$contentId ?? ""}}" id="contentId" placeholder="Currently you have no id(ea)">
+                                <input class="form-control" type="text" name="contentId" value="{{$contentId ?? ""}}" id="contentId" placeholder="Paste or type in the ID of the content">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>

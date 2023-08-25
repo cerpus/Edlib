@@ -6,7 +6,7 @@ use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
-use App\Traits\UuidForKey;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class Game extends Content implements VersionableObject
 {
     use Collaboratable;
     use HasFactory;
-    use UuidForKey;
+    use HasUuids;
 
     public string $editRouteName = 'game.edit';
     /**
@@ -59,6 +59,9 @@ class Game extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
+    /**
+     * @return BelongsTo<Gametype, self>
+     */
     public function gameType(): BelongsTo
     {
         return $this->belongsTo(Gametype::class, 'gametype');
@@ -71,20 +74,17 @@ class Game extends Content implements VersionableObject
 
 
     /**
-     * @return Libraries\Games\Contracts\GameTypeContract
      * @throws \Exception
      */
-    public function getGameTypeHandler()
+    public function getGameTypeHandler(): Libraries\Games\Contracts\GameTypeContract
     {
         return GameHandler::makeGameTypeFromId($this->gametype);
     }
 
     /**
-     * @param null|string $owner
-     * @return Game
      * @throws \Exception
      */
-    public function makeCopy($owner = null)
+    public function makeCopy(string|null $owner = null): Game
     {
         $game = $this->replicate();
         if (!is_null($owner)) {
@@ -118,7 +118,7 @@ class Game extends Content implements VersionableObject
         return false;
     }
 
-    public function setVersionId(string $versionId)
+    public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
     }

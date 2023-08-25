@@ -7,17 +7,16 @@
     "license": "GPL-3.0-only",
     "type": "project",
     "require": {
-        "php": "8.1.*",
+        "php": "8.2.*",
         "ext-dom": "*",
         "ext-iconv": "*",
         "ext-json": "*",
         "ext-libxml": "*",
-        "ext-oauth": "*",
         "ext-pdo": "*",
         "ext-zip": "*",
         "cerpus/cerpushelper": "^2.1",
-        "cerpus/coreclient": "^1.4.0",
-        "cerpus/edlib-resource-kit-laravel": "^0.6.0",
+        "cerpus/edlib-resource-kit": "0.5.x-dev",
+        "cerpus/edlib-resource-kit-laravel": "0.6.x-dev",
         "cerpus/imageservice-client": "^2.1",
         "cerpus/laravel-rabbitmq-pubsub": "^2.1",
         "cerpus/questionbank-client": "^2.3.1",
@@ -49,6 +48,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
+        "ekino/phpstan-banned-code": "^1.0",
         "fakerphp/faker": "^1.16",
         "mockery/mockery": "^1.0",
         "nunomaduro/larastan": "^2.0",
@@ -86,6 +86,9 @@
     },
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }

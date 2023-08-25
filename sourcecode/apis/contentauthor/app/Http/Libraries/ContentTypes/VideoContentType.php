@@ -6,9 +6,6 @@ use App\Libraries\H5P\Packages\InteractiveVideo;
 
 class VideoContentType implements ContentTypeInterface
 {
-    /**
-     * @param $redirectToken
-     */
     public function getContentTypes($redirectToken): ContentType
     {
         return ContentType::create(

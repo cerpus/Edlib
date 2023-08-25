@@ -4,8 +4,6 @@ namespace Tests\Integration\Http\Controllers;
 
 use App\Article;
 use App\Events\ArticleWasSaved;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
 use App\Http\Controllers\ArticleController;
 use App\Http\Libraries\License;
 use Faker\Provider\Uuid;
@@ -24,7 +22,7 @@ class ArticleControllerTest extends TestCase
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
-            'launch_presentation_return_url' => "https://api.edlib.local/lti/v2/editors/contentauthor/return",
+            'launch_presentation_return_url' => "https://api.edlib.test/lti/v2/editors/contentauthor/return",
             'ext_user_id' => "1",
             'launch_presentation_locale' => "nb",
         ]);
@@ -53,9 +51,7 @@ class ArticleControllerTest extends TestCase
         ]);
 
         $this->expectsEvents([
-            ContentCreating::class,
             ArticleWasSaved::class,
-            ContentCreated::class,
         ]);
 
         $response = $this->post(route('article.store'), [

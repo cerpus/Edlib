@@ -12,10 +12,6 @@ use Illuminate\Http\File;
 
 class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProviderInterface
 {
-    private $client;
-    /** @var CerpusStorageInterface */
-    private $storage;
-
     private $mappings = [
         'startX' => 'cropStartX',
         'startY' => 'cropStartY',
@@ -25,19 +21,15 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         'height' => 'height',
     ];
 
-    public const FIND_IMAGES_URL = '/image-api/v2/images';
-    public const GET_IMAGE_URL = '/image-api/v2/images/%s';
+    public const FIND_IMAGES_URL = '/image-api/v3/images';
+    public const GET_IMAGE_URL = '/image-api/v3/images/%s';
     public const GET_IMAGE_ID = '/image-api/raw/id/%s';
     public const GET_IMAGE_NAME = '/image-api/raw/%s';
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
-    public function setStorage(CerpusStorageInterface $storage)
-    {
-        $this->storage = $storage;
+    public function __construct(
+        private readonly Client $client,
+        private readonly CerpusStorageInterface $storage,
+    ) {
     }
 
     public function findImages($filterParameters)
@@ -116,8 +108,6 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     }
 
     /**
-     * @param $values
-     * @param $content
      * @return array
      * @throws Exception
      */

@@ -194,7 +194,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
 
     const sortOrderDropDown = (
         <FormControl variant="outlined" fullWidth>
-            <InputLabel>{t('Sortering')}</InputLabel>
+            <InputLabel sx={{ fontSize: '0.875rem !important', fontWeight: '400'}}>{t('Sortering')}</InputLabel>
             <Select
                 MenuProps={{
                     style: { zIndex: 2051 },
@@ -383,7 +383,7 @@ const ResourcePage = ({ filters, showDeleteButton = false }) => {
                 <Content>
                     <div style={{ marginTop: 20 }}>
                         {loading && <CircularProgress />}
-                        {error && <div>{t('something went wrong')}</div>}
+                        {error && <div>{t('something_happened')}</div>}
                         {!loading && !error && resources && !isGridView && (
                             <ResourceTable
                                 totalCount={pagination.totalCount}

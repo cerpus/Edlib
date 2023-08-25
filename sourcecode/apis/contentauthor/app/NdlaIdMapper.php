@@ -2,8 +2,10 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int|null $metadata_fetch
@@ -22,7 +24,7 @@ class NdlaIdMapper extends Model
         'language_code',
     ];
 
-    public function getOerLink()
+    public function getOerLink(): string|false
     {
         if (!empty($this->launch_url)) {
             return route("lti.launch", [], false) . "?" . http_build_query(['url' => $this->launch_url]);
@@ -42,32 +44,32 @@ class NdlaIdMapper extends Model
         return $url;
     }
 
-    public static function byNdlaId($id)
+    public static function byNdlaId($id): ?self
     {
         return self::where('ndla_id', $id)->first();
     }
 
-    public static function articleByNdlaId($id)
+    public static function articleByNdlaId($id): ?self
     {
         return self::where('ndla_id', $id)->where('type', 'article')->first();
     }
 
-    public static function articlesByNdlaId($id)
+    public static function articlesByNdlaId($id): Collection
     {
         return self::where('ndla_id', $id)->where('type', 'article')->get();
     }
 
-    public static function h5pByNdlaId($id)
+    public static function h5pByNdlaId($id): ?self
     {
         return self::where('ndla_id', $id)->where('type', 'h5p')->first();
     }
 
-    public static function byNdlaIdAndLanguage($id, $language)
+    public static function byNdlaIdAndLanguage($id, $language): ?self
     {
         return self::where('ndla_id', $id)->where('language_code', $language)->first();
     }
 
-    public static function articleByNdlaIdAndLanguage($id, $language)
+    public static function articleByNdlaIdAndLanguage($id, $language): ?self
     {
         return self::where('ndla_id', $id)
             ->where('language_code', $language)
@@ -75,7 +77,7 @@ class NdlaIdMapper extends Model
             ->first();
     }
 
-    public static function h5pByNdlaIdAndLanguage($id, $language)
+    public static function h5pByNdlaIdAndLanguage($id, $language): ?self
     {
         return self::where('ndla_id', $id)
             ->where('language_code', $language)
@@ -83,35 +85,38 @@ class NdlaIdMapper extends Model
             ->first();
     }
 
-    public static function byNdlaChecksum($checksum)
+    public static function byNdlaChecksum($checksum): ?self
     {
         return self::where('ndla_checksum', $checksum)->latest()->first();
     }
 
-    public function scopeH5P($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeH5P(Builder $query): void
     {
-        return $query->where('type', 'h5p');
+        $query->where('type', 'h5p');
     }
 
-    public function h5pContents()
+    /**
+     * @return BelongsTo<H5PContent, self>
+     */
+    public function h5pContents(): BelongsTo
     {
         return $this->belongsTo(H5PContent::class, 'ca_id');
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder<self> $query
      */
-    public function scopeWithH5PMetadata($query)
+    public function scopeWithH5PMetadata(Builder $query): void
     {
         $query
             ->with('h5pContents.metadata')
             ->h5p()
             ->whereNull('metadata_fetch')
-            ->where(function ($query) {
-                /** @var \Illuminate\Database\Eloquent\Builder $query */
-                $query->whereHas('h5pContents.metadata', function ($query) {
-                    /** @var \Illuminate\Database\Eloquent\Builder $query */
+            ->where(function (Builder $query) {
+                $query->whereHas('h5pContents.metadata', function (Builder $query) {
                     $query->whereNull('license')
                         ->orWhereNull('authors')
                         ->orWhere('authors', '[]')
@@ -119,16 +124,18 @@ class NdlaIdMapper extends Model
                 })
                     ->orDoesntHave('h5pContents.metadata');
             });
-        return $query;
     }
 
-    public static function byLaunchUrl($url)
+    public static function byLaunchUrl($url): ?self
     {
         return self::where('launch_url', $url)->first();
     }
 
-    public function scopeArticle($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeArticle(Builder $query): void
     {
-        return $query->where('type', 'article');
+        $query->where('type', 'article');
     }
 }

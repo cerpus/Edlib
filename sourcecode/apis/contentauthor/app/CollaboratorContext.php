@@ -15,7 +15,7 @@ class CollaboratorContext extends Model
     public $incrementing = false;
     public $timestamps = false;
 
-    public static function contextShouldUpdate($systemId, $contextId, $timestamp)
+    public static function contextShouldUpdate($systemId, $contextId, $timestamp): bool
     {
         if (!config('feature.context-collaboration', false)) {
             return false;
@@ -27,7 +27,7 @@ class CollaboratorContext extends Model
             ->doesntExist();
     }
 
-    public static function deleteContext($systemId, $contextId)
+    public static function deleteContext($systemId, $contextId): void
     {
         if (!config('feature.context-collaboration', false)) {
             return;
@@ -38,7 +38,7 @@ class CollaboratorContext extends Model
             ->delete();
     }
 
-    public static function updateContext($systemId, $contextId, $collaborators, $resources, $timestamp)
+    public static function updateContext($systemId, $contextId, $collaborators, $resources, $timestamp): void
     {
         if (!config('feature.context-collaboration', false)) {
             return;
@@ -74,12 +74,9 @@ class CollaboratorContext extends Model
     }
 
     /**
-     * @param $collaboratorId
-     * @param $resourceId
-     * @return bool
      * @throws Exception
      */
-    public static function isUserCollaborator($collaboratorId, $resourceId)
+    public static function isUserCollaborator($collaboratorId, $resourceId): bool
     {
         if (!config('feature.context-collaboration', false)) {
             return false;

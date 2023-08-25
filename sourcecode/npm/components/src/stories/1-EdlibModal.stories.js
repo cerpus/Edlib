@@ -9,7 +9,7 @@ export default {
     title: 'EdlibModal',
 };
 
-const edlibApiUrl = 'https://api.edlib.local';
+const edlibApiUrl = `https://api.${process.env.STORYBOOK_EDLIB_ROOT_DOMAIN || 'edlib.test'}`;
 
 export const EdlibModal = () => {
     return (
@@ -76,7 +76,7 @@ export const EditResourceModal = () => {
                     >
                         <EditEdlibResourceModal
                             ltiLaunchUrl={
-                                'https://api.edlib.local/lti/v2/lti-links/3e2cac24-622e-4fe0-95f3-6e3f3689fea7'
+                                'https://api.edlib.test/lti/v2/lti-links/3e2cac24-622e-4fe0-95f3-6e3f3689fea7'
                             }
                             onUpdateDone={action('Resource update done')}
                             onClose={action('onClose')}
@@ -100,7 +100,7 @@ export const EditResourceModalFrame = () => {
                         <EditEdlibResourceModal
                             removePadding
                             ltiLaunchUrl={
-                                'https://api.edlib.local/lti/v2/lti-links/15071fd6-af90-45e6-b499-3a49800c5336'
+                                'https://api.edlib.test/lti/v2/lti-links/15071fd6-af90-45e6-b499-3a49800c5336'
                             }
                             onUpdateDone={action('Resource update done')}
                         />

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -46,5 +48,10 @@ class LoginController extends Controller
     public function ssoFromEdlibAdmin()
     {
         return redirect('admin');
+    }
+
+    protected function guard(): Guard
+    {
+        return Auth::guard('admin');
     }
 }

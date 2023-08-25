@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Game;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<Game>
+ */
 class GameFactory extends Factory
 {
     public function definition(): array

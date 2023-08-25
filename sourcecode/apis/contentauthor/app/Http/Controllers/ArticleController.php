@@ -6,10 +6,6 @@ use App\ACL\ArticleAccess;
 use App\Article;
 use App\Content;
 use App\Events\ArticleWasSaved;
-use App\Events\ContentCreated;
-use App\Events\ContentCreating;
-use App\Events\ContentUpdated;
-use App\Events\ContentUpdating;
 use App\Exceptions\UnhandledVersionReasonException;
 use App\H5pLti;
 use App\Http\Libraries\License;
@@ -123,8 +119,6 @@ class ArticleController extends Controller
             abort(403);
         }
 
-        event(new ContentCreating($request));
-
         $inputs = $request->all();
         if (!empty($inputs['content'])) {
             $inputs['content'] = $this->cleanContent($inputs['content']);
@@ -153,9 +147,6 @@ class ArticleController extends Controller
 
         // Handles privacy, collaborators, and registering a new version
         event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
-
-        // A more Laravelly event system
-        event(new ContentCreated($article));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $article->id,
@@ -300,8 +291,6 @@ class ArticleController extends Controller
             abort(403);
         }
 
-        event(new ContentUpdating($article, $request));
-
         $oldLicense = $oldArticle->getContentLicense();
         $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
 
@@ -349,8 +338,6 @@ class ArticleController extends Controller
         }
 
         event(new ArticleWasSaved($article, $request, $collaborators, Session::get('authId'), $reason, Session::all()));
-
-        event(new ContentUpdated($article, $oldArticle));
 
         $urlToCore = $this->getRedirectToCoreUrl(
             $article->id,

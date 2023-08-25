@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P\Interfaces;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use Illuminate\Support\Collection;
 
 interface H5PAdapterInterface
 {
@@ -36,15 +35,11 @@ interface H5PAdapterInterface
     public function getCustomViewCss(): array;
 
     /**
-     * @param $semantics
      * @return void
      */
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion);
 
-    /**
-     * @return string|null
-     */
-    public function getAdapterName();
+    public function getAdapterName(): string;
 
     /**
      * @return void
@@ -74,10 +69,10 @@ interface H5PAdapterInterface
     /** @return bool */
     public function resetNdlaIdTracking($sessionKey): void;
 
-    /** @return bool */
+
     public function showArticleImportExportFunctionality(): bool;
 
-    /** @return void */
+
     public function runPresaveCommand(): void;
 
     public static function getCoreExtraTags(): array;
@@ -87,10 +82,13 @@ interface H5PAdapterInterface
 
     public function isUserPublishEnabled(): bool;
 
-    /** @return bool */
+
     public function enableEverybodyIsCollaborators(): bool;
 
-    public function getExternalProviders(): Collection;
+    /**
+     * @return array<H5PExternalProviderInterface>
+     */
+    public function getExternalProviders(): array;
 
     public function useMaxScore(): bool;
 

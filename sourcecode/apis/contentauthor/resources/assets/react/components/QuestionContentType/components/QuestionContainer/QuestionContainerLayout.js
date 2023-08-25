@@ -32,17 +32,19 @@ const QuestionContainerLayout = props => {
         <div className="questionSetSurface">
             <div>
                 <TextField
+                    className="placeholder"
                     placeholder={placeholder}
                     label={<FormattedMessage id="QUESTIONCONTAINER.TITLE_LABEL" />}
                     fullWidth={true}
                     onChange={event => onTitleChange(event.currentTarget.value, true)}
                     value={title}
                     InputLabelProps={{
-                        shrink: true,
+                        shrink: true
                     }}
                     margin="normal"
                     inputProps={{
                         onBlur: event => onTitleChange(event.currentTarget.value, false),
+                        style: { fontSize: "2.3rem" }
                     }}
                 />
                 <TagsManager

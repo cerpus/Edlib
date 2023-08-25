@@ -12,7 +12,7 @@ return [
     |
     */
     'defaults' => [
-        'guard' => 'admin',
+        'guard' => 'sso',
         'passwords' => 'users',
     ],
     /*
@@ -40,9 +40,13 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+        'sso' => [
+            'driver' => 'edlib',
+        ],
         'admin' => [
-            'driver' => 'edlib'
-        ]
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
     ],
     /*
     |--------------------------------------------------------------------------

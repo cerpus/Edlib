@@ -1,0 +1,8 @@
+component_management:
+  individual_components:
+    - component_id: "contentauthor"
+      paths:
+        - "sourcecode/apis/contentauthor/**"
+
+comment:
+  layout: "header, diff, flags, components"  # show component info in the PR comment

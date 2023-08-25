@@ -15,6 +15,7 @@ use Cerpus\VersionClient\VersionClient;
 use Exception;
 use H5PFileStorage;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -33,6 +34,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     public function __construct(
         ContentAuthorStorage $contentAuthorStorage,
         private readonly LoggerInterface $logger,
+        private readonly H5PVideoInterface $videoAdapter,
     ) {
         $this->filesystem = Storage::disk();
         $this->diskName = Storage::getDefaultDriver();
@@ -54,9 +56,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             unlink($tmpfile);
         }
 
-        /** @var H5PVideoInterface $adapter */
-        $adapter = app(H5PVideoInterface::class);
-        $uploadJsonData = $adapter->upload($this->filesystem->readStream($sourcepath), $hash);
+        $uploadJsonData = $this->videoAdapter->upload($this->filesystem->readStream($sourcepath), $hash);
 
         $h5pContentsVideo = H5PContentsVideo::firstOrCreate([
             'h5p_content_id' => $toId,
@@ -115,7 +115,6 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     }
 
     /**
-     * @param $library
      * @return bool
      */
     private function deleteLibraryFromPath($library)
@@ -538,18 +537,11 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $upload;
     }
 
-    /**
-     * @param $filename
-     * @param $title
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     * @throws Exception
-     */
-    public function downloadContent($filename, $title)
+    public function downloadContent(string $filename, string $title): RedirectResponse
     {
-        return response()->streamDownload(function () use ($filename) {
-            $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
-            echo $this->filesystem->response($path)->sendContent();
-        }, $filename);
+        $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
+
+        return new RedirectResponse($this->filesystem->url($path));
     }
 
     public function getDisplayPath(bool $fullUrl = true)

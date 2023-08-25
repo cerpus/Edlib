@@ -11,6 +11,8 @@ const useStyles = makeStyles()((theme) => {
             '&:hover': {
                 color: theme.palette.secondary.main,
             },
+            fontSize: '1.125rem !important',
+            fontWeight: '400 !important',
         },
         activeButton: {
             color: theme.palette.secondary.main,

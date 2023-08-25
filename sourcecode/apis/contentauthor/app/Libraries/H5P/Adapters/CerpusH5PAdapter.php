@@ -6,18 +6,12 @@ use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
-
-    public function __construct()
-    {
-        $this->adapterName = "cerpus";
-    }
 
     /**
      * Alter parameters before added to the H5PIntegrationObject
@@ -50,7 +44,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getCustomEditorScripts(): array
     {
-        return ['/js/videos/streamps.js', asset('js/videos/brightcove.js')];
+        return ['/js/videos/streamps.js', '/js/videos/brightcove.js'];
     }
 
 
@@ -78,12 +72,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return [];
     }
 
-    /**
-     * @param $semantics
-     * @param $machineName
-     * @param $majorVersion
-     * @param $minorVersion
-     */
+
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
     {
         $this->alterPackageSemantics($semantics, $machineName);
@@ -158,9 +147,9 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getExternalProviders(): Collection
+    public function getExternalProviders(): array
     {
-        return collect();
+        return [];
     }
 
     public function useMaxScore(): bool
@@ -191,5 +180,10 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getCustomEditorStyles(): array
     {
         return [];
+    }
+
+    public function getAdapterName(): string
+    {
+        return 'cerpus';
     }
 }

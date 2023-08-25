@@ -14,6 +14,7 @@ use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
@@ -35,6 +36,8 @@ use Iso639p3;
  * @property string $content_create_mode
  * @property string $language_iso_639_3
  * @property string|null $title_clean
+ * @property ?int $max_score
+ * @property int $bulk_calculated
  *
  * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library
@@ -70,32 +73,47 @@ class H5PContent extends Content implements VersionableObject
         return htmlspecialchars_decode($this->title, ENT_HTML5 | ENT_QUOTES);
     }
 
+    /**
+     * @return HasMany<H5PCollaborator>
+     */
     public function collaborators(): HasMany
     {
         return $this->hasMany(H5PCollaborator::class, 'h5p_id');
     }
 
-    public function library()
+    /**
+     * @return BelongsTo<H5PLibrary, self>
+     */
+    public function library(): BelongsTo
     {
         return $this->belongsTo(H5PLibrary::class, 'library_id');
     }
 
-    public function contentUserData()
+    /**
+     * @return HasMany<H5PContentsUserData>
+     */
+    public function contentUserData(): HasMany
     {
         return $this->hasMany(H5PContentsUserData::class, 'content_id');
     }
 
-    public function contentLibraries()
+    /**
+     * @return HasMany<H5PContentLibrary>
+     */
+    public function contentLibraries(): HasMany
     {
         return $this->hasMany(H5PContentLibrary::class, 'content_id');
     }
 
+    /**
+     * @return HasOne<H5PContentsMetadata>
+     */
     public function metadata(): HasOne
     {
         return $this->hasOne(H5PContentsMetadata::class, 'content_id');
     }
 
-    public function getMetadataStructure()
+    public function getMetadataStructure(): array
     {
         /** @var H5PContentsMetadata $h5pmetadata */
         $h5pmetadata = $this->metadata()->first();
@@ -107,7 +125,7 @@ class H5PContent extends Content implements VersionableObject
         return $this->parseStructure($metadataObject);
     }
 
-    public function parseStructure(H5PMetadataObject $metadataObject)
+    public function parseStructure(H5PMetadataObject $metadataObject): array
     {
         return collect(H5PMetadataObject::H5PMetadataFieldsInOrder)
             ->flip()
@@ -125,13 +143,13 @@ class H5PContent extends Content implements VersionableObject
     }
 
     // Abstract method implementations
-    protected function getContentContent()
+    protected function getContentContent(): string
     {
         $metadata = $this->getMetadataStructure();
         return sprintf('{"params":%s,"metadata":%s}', $this->parameters, json_encode($metadata));
     }
 
-    protected function getRequestContent(Request $request)
+    protected function getRequestContent(Request $request): string
     {
         $parameters = json_decode($request->get('parameters'));
         if (!empty($parameters->metadata)) {
@@ -151,7 +169,7 @@ class H5PContent extends Content implements VersionableObject
         ]);
     }
 
-    protected function getRequestLibrary(Request $request)
+    protected function getRequestLibrary(Request $request): string
     {
         return $request->get('library');
     }
@@ -166,7 +184,7 @@ class H5PContent extends Content implements VersionableObject
         return Iso639p3::code3letters($this->language_iso_639_3 ?? $this->metadata->default_language ?? 'eng');
     }
 
-    public function makeCopy($owner = null)
+    public function makeCopy($owner = null): self
     {
         $newH5P = $this->replicate();
         $newH5P->version_id = null;
@@ -186,7 +204,10 @@ class H5PContent extends Content implements VersionableObject
         return $newH5P;
     }
 
-    public function contentVideos()
+    /**
+     * @return HasMany<H5PContentsVideo>
+     */
+    public function contentVideos(): HasMany
     {
         return $this->hasMany(H5PContentsVideo::class, 'h5p_content_id');
     }
@@ -228,19 +249,14 @@ class H5PContent extends Content implements VersionableObject
         return Str::lower($this->library->name);
     }
 
-    /**
-     * @param  Builder  $query
-     */
-    protected function noMaxScoreScope($query)
+    protected function noMaxScoreScope(Builder $query): void
     {
         $query
             ->whereNull('max_score')
-            ->orWhere(function ($query) {
-                /** @var Builder $query */
+            ->orWhere(function (Builder $query) {
                 $query->where('bulk_calculated', H5PLibraryAdmin::BULK_UNTOUCHED)
                     ->where('max_score', 0)
-                    ->whereIn('library_id', function ($query) {
-                        /** @var Builder $query */
+                    ->whereIn('library_id', function (\Illuminate\Database\Query\Builder $query) {
                         $query->select('id')
                             ->from('h5p_libraries')
                             ->where('name', QuestionSet::$machineName);
@@ -248,16 +264,18 @@ class H5PContent extends Content implements VersionableObject
             });
     }
 
-    public function scopeNoMaxScore($query)
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeNoMaxScore(Builder $query): void
     {
         $this->noMaxScoreScope($query);
     }
 
     /**
-     * @param  Builder  $query
-     * @param $type
+     * @param Builder<self> $query
      */
-    public function scopeOfBulkCalculated($query, $type)
+    public function scopeOfBulkCalculated(Builder $query, $type): void
     {
         $query->where('bulk_calculated', $type);
     }
@@ -273,7 +291,7 @@ class H5PContent extends Content implements VersionableObject
         return false;
     }
 
-    public function setVersionId(string $versionId)
+    public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
     }
@@ -284,17 +302,17 @@ class H5PContent extends Content implements VersionableObject
     }
 
     // Overrides Method from trait
-    public function getPublicId()
+    public function getPublicId(): string
     {
         return "h5p-".$this->id;
     }
 
-    public function getMaxScore()
+    public function getMaxScore(): int|null
     {
         return $this->max_score;
     }
 
-    public function getAuthorOverwrite()
+    public function getAuthorOverwrite(): string|null
     {
         $contentMetadata = $this->metadata()->first();
         if (is_null($contentMetadata)) {

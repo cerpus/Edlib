@@ -19,11 +19,17 @@ class H5PLibraryLibrary extends Model
 
     public $timestamps = false;
 
+    /**
+     * @return BelongsTo<H5PLibrary, self>
+     */
     public function library(): BelongsTo
     {
         return $this->belongsTo(H5PLibrary::class);
     }
 
+    /**
+     * @return HasOne<H5PLibrary>
+     */
     public function requiredLibrary(): HasOne
     {
         return $this->hasOne(H5PLibrary::class, 'id', 'required_library_id');

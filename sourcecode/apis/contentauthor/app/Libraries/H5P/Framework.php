@@ -1146,7 +1146,6 @@ class Framework implements \H5PFrameworkInterface, Result
      */
 
     /**
-     * @param $sql
      * @param array $params
      * @param bool $returnFirst
      */

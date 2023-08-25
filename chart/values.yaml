@@ -3,8 +3,8 @@ enableDocs: false
 deploymentEnvironment: "prod"
 enableDebug: false
 urls:
-  api: "https://api.edlib.local"
-  www: "https://www.edlib.local"
+  api: "https://api.edlib.test"
+  www: "https://www.edlib.test"
 masterAuth:
   adapter: "auth0"
   wellKnownEndpoint: "https://auth0.com/.well-known/jwks.json"
@@ -25,7 +25,7 @@ features:
   enableAutoLinking: "false"
 contentauthor:
   appKey: "randomkey"
-  url: "https://ca.edlib.local"
+  url: "https://ca.edlib.test"
   h5pConsumerKey: "key"
   h5pConsumerSecret: "secret"
   internalKey: "internalKey"

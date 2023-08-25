@@ -20,6 +20,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -99,6 +100,9 @@ abstract class Content extends Model
 
     abstract public function getContentType(bool $withSubType = false);
 
+    /**
+     * @return HasOne<NdlaIdMapper>
+     */
     public function ndlaMapper(): HasOne
     {
         return $this->hasOne(NdlaIdMapper::class, 'ca_id');
@@ -109,7 +113,10 @@ abstract class Content extends Model
         return License::isContentCopyable($this->license);
     }
 
-    public function locks()
+    /**
+     * @return HasMany<ContentLock>
+     */
+    public function locks(): HasMany
     {
         return $this->hasMany(ContentLock::class, 'content_id');
     }
@@ -151,11 +158,9 @@ abstract class Content extends Model
     }
 
     /**
-     * @param $currentUserId
-     * @return bool
      * @throws Exception
      */
-    public function isExternalCollaborator($currentUserId)
+    public function isExternalCollaborator($currentUserId): bool
     {
         if (CollaboratorContext::isUserCollaborator($currentUserId, $this->id)) {
             return true;
@@ -188,7 +193,7 @@ abstract class Content extends Model
         return $this->isOwner($userId) || $this->isCollaborator();
     }
 
-    public function shouldCreateForkBasedOnSession($username = 'authId')
+    public function shouldCreateForkBasedOnSession($username = 'authId'): bool
     {
         return $this->shouldCreateFork(Session::get($username, false));
     }
@@ -291,12 +296,11 @@ abstract class Content extends Model
     }
 
     /**
-     * @param Builder $query
-     * @return Builder
+     * @param Builder<self> $query
      */
-    public function scopeUnversioned($query)
+    public function scopeUnversioned(Builder $query): void
     {
-        return $query->where('version_id', null);
+        $query->where('version_id', null);
     }
 
     /**
@@ -344,7 +348,7 @@ abstract class Content extends Model
         return $ndlaMapperCollection->isNotEmpty();
     }
 
-    private function getVersionedIds(VersionData $version)
+    private function getVersionedIds(VersionData $version): array
     {
         $id = [$version->getExternalReference()];
         if (!is_null($version->getParent())) {
@@ -384,9 +388,9 @@ abstract class Content extends Model
         return $adapter->isUserPublishEnabled();
     }
 
-    public function canList(Request $request)
+    public function canList(Request $request): bool
     {
-        if (self::isUserPublishEnabled() !== true || $this->exists === false) {
+        if (!self::isUserPublishEnabled() || !$this->exists) {
             return true;
         }
 
@@ -394,31 +398,24 @@ abstract class Content extends Model
         return $this->isOwner($authId) || $this->isCollaborator() || $this->isExternalCollaborator($authId);
     }
 
-    public function canPublish(Request $request)
+    public function canPublish(Request $request): bool
     {
-        if (self::isUserPublishEnabled() !== true || $this->exists === false || $request->importRequest ?? false === true) {
+        if (self::isUserPublishEnabled() || !$this->exists || ($request->importRequest ?? false)) {
             return true;
         }
 
         return $this->canList($request) || $this->isCopyable();
     }
 
-    /**
-     * @param boolean $preview
-     * @return boolean
-     */
-    public function canShow($preview = false)
+    public function canShow(bool $preview = false): bool
     {
-        return $preview === true || $this->isActuallyPublished();
+        return $preview || $this->isActuallyPublished();
     }
 
     /**
-     * @param $contentId
-     * @return H5PContent|Article|Game|Link|QuestionSet|null
-     *
      * Poor mans morphism...
      */
-    public static function findContentById($contentId)
+    public static function findContentById($contentId): H5PContent|Article|Game|Link|QuestionSet|null
     {
         if ((preg_match('/^\d+$/', $contentId) && ($content = H5PContent::find($contentId))) ||
             ($content = Article::find($contentId)) ||
@@ -428,6 +425,8 @@ abstract class Content extends Model
         ) {
             return $content;
         }
+
+        return null;
     }
 
     public function getEditUrl($latest = false): ?string
@@ -449,12 +448,12 @@ abstract class Content extends Model
         return $editUrl;
     }
 
-    public function getMaxScore()
+    public function getMaxScore(): int|null
     {
         return null;
     }
 
-    public function getAuthorOverwrite()
+    public function getAuthorOverwrite(): string|null
     {
         return null;
     }

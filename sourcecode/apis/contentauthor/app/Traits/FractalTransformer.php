@@ -46,7 +46,6 @@ trait FractalTransformer
     }
 
     /**
-     * @param $item
      * @return array
      */
     protected function buildItem($item, TransformerAbstract $transformer)
@@ -78,7 +77,6 @@ trait FractalTransformer
     }
 
     /**
-     * @param $collection
      * @return array
      */
     protected function buildCollection($collection, TransformerAbstract $transformer)

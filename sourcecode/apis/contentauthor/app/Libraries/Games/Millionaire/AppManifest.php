@@ -9,7 +9,6 @@ class AppManifest
 
     /**
      * AppManifest constructor.
-     * @param $manifest
      */
     public function __construct($manifest)
     {
