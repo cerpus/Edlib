@@ -12,21 +12,23 @@
     "node": ">= 16.0.0"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.20.2",
     "@cerpus/edlib-node-utils": "1.11.0",
     "@hapi/joi": "^17.1.1",
     "amqplib": "^0.8.0",
     "axios": "^0.27.2",
     "babel-plugin-transform-default-import": "^1.0.0",
-    "jest": "^27.5.1",
     "prettier": "^2.8.4",
     "pug": "^3.0.2",
-    "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",
+    "tar": "^6.1.15",
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "jest": "^29.0.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }
