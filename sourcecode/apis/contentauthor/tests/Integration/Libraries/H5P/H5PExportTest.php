@@ -263,7 +263,7 @@ class H5PExportTest extends TestCase
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
-        $this->assertEquals(100, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
+        $this->assertEquals(99, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
         $this->assertJson($contentJson);
         $zipArchive->close();
         $contentDecoded = json_decode($contentJson);
@@ -337,8 +337,8 @@ class H5PExportTest extends TestCase
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
-        $this->assertEquals(101, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
-        $this->assertEquals(100, $zipArchive->locateName("content/images/tree.jpg"));
+        $this->assertEquals(100, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
+        $this->assertEquals(99, $zipArchive->locateName("content/images/tree.jpg"));
         $this->assertJson($contentJson);
         $zipArchive->close();
         $contentDecoded = json_decode($contentJson);
@@ -411,8 +411,8 @@ class H5PExportTest extends TestCase
         $this->assertTrue($zipArchive->open($this->exportDisk->path($archivePath)));
         $contentJson = $zipArchive->getFromName('content/content.json');
         $zipArchive->extractTo($this->exportDisk->path(sprintf(ContentStorageSettings::EXPORT_PATH, $exportName)));
-        $this->assertEquals(100, $zipArchive->locateName("content/files/videoCaption.vtt"));
-        $this->assertEquals(101, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
+        $this->assertEquals(99, $zipArchive->locateName("content/files/videoCaption.vtt"));
+        $this->assertEquals(100, $zipArchive->locateName("content/videos/sampleVideo.mp4"));
         $this->assertJson($contentJson);
         $zipArchive->close();
         $contentDecoded = json_decode($contentJson);
