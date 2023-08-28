@@ -27,7 +27,7 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "moment-hooks": "^2.0.0",
+    "moment-hooks": "2.0.0",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.3",
