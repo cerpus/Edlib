@@ -1,7 +1,48 @@
-@import "bootstrap/scss/bootstrap";
 @import '@fontsource/lato';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
-:root {
-    --bs-font-sans-serif: Lato, sans-serif;
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+$font-family-sans-serif: Lato, sanf-serif;
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+// 4. Include any default map overrides here
+
+// 5. Include remainder of required parts
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+
+// 6. Optionally include any other parts as needed
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/close";
+
+// 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import "bootstrap/scss/utilities/api";
+
+// 8. Add additional custom code here
+[data-bs-theme="edlib"] {
+    --bs-body-color: var(--bs-gray-700);
+    --bs-border-color: var(--bs-gray-400);
+
+    .btn-primary {
+        @include button-variant($green-100, $gray-400, $gray-900, lighten($green-100, 5%), $green-100, $gray-900);
+    }
 }
