@@ -1,0 +1,24 @@
+//Logo image
+.navbar-brand {
+    @include media-breakpoint-down(md) {
+        display: none;
+    }
+    img {
+        width: 175px;
+        height: auto;
+    }
+}
+
+// Laravel Telescope debug icon
+.btn-debug {
+    left: 10px;
+    top: 10px;
+    font-size: 1.2rem;
+}
+
+// Add margin when bottom navigation is displayed
+.body-nav-margin {
+    @include media-breakpoint-down(md) {
+        margin-bottom: 82px;
+    }
+}

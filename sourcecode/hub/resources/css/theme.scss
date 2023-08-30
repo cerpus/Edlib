@@ -1,0 +1,16 @@
+// The Edlib theme
+
+[data-bs-theme="edlib"] {
+    --bs-body-color: var(--bs-gray-700); //Default text color
+    --bs-border-color: var(--bs-gray-400); //Default border color for input, buttons, etc
+
+    // Primary button
+    .btn-primary {
+        @include button-variant($green-100, $gray-400, $gray-900, $green-200, $green-100, $gray-900);
+    }
+
+    //Mobile / small screen nav bar
+    .navbar-bottom {
+        background-color: $green-200;
+    }
+}
