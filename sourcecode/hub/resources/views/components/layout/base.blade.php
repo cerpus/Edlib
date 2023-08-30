@@ -9,7 +9,7 @@
         {{ $head ?? '' }}
     </head>
 
-    <body class="@if ($nav) body-nav-margin @endif">
+    <body class="@if ($nav ?? true) body-nav-margin @endif">
         @if ($nav ?? true)
             <x-navbar.navbar-top />
         @endif
