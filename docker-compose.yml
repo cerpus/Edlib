@@ -389,6 +389,13 @@ services:
       - ./sourcecode/hub:/srv/www/hub
     working_dir: /srv/www/hub
 
+  hub-vite:
+    image: node:16-alpine
+    command: [sh, -c, 'npm i && npm run dev']
+    volumes:
+      - ./sourcecode/hub:/srv/www/hub
+    working_dir: /srv/www/hub
+
   mailpit:
     image: axllent/mailpit
     environment:

@@ -38,6 +38,13 @@ final class ContentSecurityPolicy
 
         $default = "'self' " . $this->urlGenerator->asset('');
 
+        if ($this->vite->isRunningHot()) {
+            $viteBaseUrl = $this->vite->asset('');
+            $viteWssBaseUrl = preg_replace('!^https?://!', 'wss://', $viteBaseUrl);
+
+            $default .= " $viteBaseUrl $viteWssBaseUrl";
+        }
+
         $response->headers->set(
             'Content-Security-Policy',
             "default-src $default" .
