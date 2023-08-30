@@ -64,4 +64,7 @@ return [
     'disconnect-google' => 'Disconnect from Google',
     'disconnect-facebook' => 'Disconnect from Facebook',
     'alert-password-empty' => 'To disconnect social login providers, you must first set a password on your account',
+    'add-an-lti-resource' => 'Add an LTI resource',
+    'title' => 'Title',
+    'launch-url' => 'Launch URL',
 ];

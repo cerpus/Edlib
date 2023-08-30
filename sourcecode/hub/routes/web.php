@@ -42,12 +42,22 @@ Route::controller(ContentController::class)->group(function () {
         ->middleware('auth')
         ->name('content.mine');
 
+    Route::get('/content/add-lti-resource', 'addLtiResource')
+        ->name('content.add-lti-resource')
+        ->can('create', \App\Models\Content::class);
+
+    Route::post('/content/add-lti-resource', 'storeLtiResource')
+        ->name('content.store-lti-resource')
+        ->can('create', \App\Models\Content::class);
+
     Route::get('/content/{content}', 'show')
         ->name('content.preview')
         ->whereUlid('content')
         ->can('view', 'content');
 
-    Route::get('/content/create', 'create')->name('content.create');
+    Route::get('/content/create', 'create')
+        ->name('content.create')
+        ->can('create', \App\Models\Content::class);
 
     Route::post('/content/{content}/copy', 'copy')
         ->can('copy', 'content')

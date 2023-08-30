@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexContentRequest;
 use App\Http\Requests\StoreContentRequest;
+use App\Http\Requests\StoreLtiResourceRequest;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
 use App\Models\LtiTool;
+use App\Models\LtiVersion;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Exception;
@@ -85,6 +87,44 @@ class ContentController extends Controller
         return view('content.create', [
             'types' => $tools,
         ]);
+    }
+
+    public function addLtiResource(): View
+    {
+        return view('content.lti-add');
+    }
+
+    public function storeLtiResource(StoreLtiResourceRequest $request): RedirectResponse
+    {
+        $contentId = DB::transaction(function () use ($request) {
+            $ltiTool = new LtiTool();
+            $ltiTool->name = base64_encode(random_bytes(48));
+            $ltiTool->consumer_key = $request->validated('consumer_key');
+            $ltiTool->consumer_secret = $request->validated('consumer_secret');
+            $ltiTool->lti_version = LtiVersion::Lti1_1;
+            $ltiTool->creator_launch_url = 'https://none.example/'; // TODO
+            $ltiTool->save();
+
+            $ltiResource = new LtiResource();
+            $ltiResource->lti_tool_id = $ltiTool->id;
+            $ltiResource->title = $request->validated('title');
+            $ltiResource->view_launch_url = $request->validated('launch_url');
+            $ltiResource->edit_launch_url = 'https://none.example/'; // TODO
+            $ltiResource->save();
+
+            $content = new Content();
+            $content->save();
+
+            $contentVersion = new ContentVersion();
+            $contentVersion->content_id = $content->id;
+            $contentVersion->lti_resource_id = $ltiResource->id;
+            $contentVersion->published = true;
+            $contentVersion->save();
+
+            return $content->id;
+        });
+
+        return to_route('content.preview', [$contentId]);
     }
 
     public function copy(Content $content): RedirectResponse
