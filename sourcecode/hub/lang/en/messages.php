@@ -64,4 +64,10 @@ return [
     'disconnect-google' => 'Disconnect from Google',
     'disconnect-facebook' => 'Disconnect from Facebook',
     'alert-password-empty' => 'To disconnect social login providers, you must first set a password on your account',
+    'alert-no-content-found-header' => 'The page has no content',
+    'alert-no-content-found-description' => 'No content has been saved or created yet...',
+    'find-content' => 'Find content',
+    'create-content' => 'Create content',
+    'alert-no-search-content-found-header' => 'Sorry! No results found :(',
+    'alert-no-search-content-found-description' => 'We could not find any content based on your search. Try a different search',
 ];

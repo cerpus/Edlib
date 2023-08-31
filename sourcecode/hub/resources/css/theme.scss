@@ -13,4 +13,35 @@
     .navbar-bottom {
         background-color: $green-200;
     }
+
+    p, h1 {
+        font-family: Helvetica Neue;
+    }
+
+    .btn-custom {
+        background: linear-gradient(0deg, #FFFFFF, #FFFFFF);
+        border: 1px solid #CED4DA;
+    }
+
+    .no-content-found-title {
+        font-size: 40px;
+        font-weight: 500;
+        line-height: 48px;
+        text-align: left;
+        color: #000000;
+    }
+
+    .no-content-found-description {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 21px;
+    }
+
+    .no-content-found {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 50vh;
+    }
 }
