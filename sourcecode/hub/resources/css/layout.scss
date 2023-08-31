@@ -1,0 +1,63 @@
+//Logo image
+.navbar-brand {
+    @include media-breakpoint-down(md) {
+        display: none;
+    }
+    img {
+        width: 175px;
+        height: auto;
+    }
+}
+
+// Laravel Telescope debug icon
+.btn-debug {
+    left: 10px;
+    top: 10px;
+    font-size: 1.2rem;
+}
+
+// Add margin when bottom navigation is displayed
+.body-nav-margin {
+    @include media-breakpoint-down(md) {
+        margin-bottom: 82px;
+    }
+}
+
+.navbar-bottom {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+.navbar-bottom .navbar-nav {
+    flex-direction: row;
+}
+.navbar-bottom .navbar-nav .dropdown-menu {
+    position: absolute;
+}
+.navbar-bottom .navbar-nav .nav-link {
+    padding-right: var(--bs-navbar-nav-link-padding-x);
+    padding-left: var(--bs-navbar-nav-link-padding-x);
+}
+.navbar-bottom .navbar-nav-scroll {
+    overflow: visible;
+}
+.navbar-bottom .offcanvas {
+    position: static;
+    z-index: auto;
+    flex-grow: 1;
+    width: auto !important;
+    height: auto !important;
+    visibility: visible !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    transform: none !important;
+    transition: none;
+}
+.navbar-bottom .offcanvas .offcanvas-header {
+    display: none;
+}
+.navbar-bottom .offcanvas .offcanvas-body {
+    display: flex;
+    flex-grow: 0;
+    padding: 0;
+    overflow-y: visible;
+}
