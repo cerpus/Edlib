@@ -5,6 +5,8 @@ on:
     paths:
       - "sourcecode/hub/**"
       - ".github/workflows/hub-deploy-sandbox.yaml"
+    branches:
+      - hubbub
 
 defaults:
   run:
