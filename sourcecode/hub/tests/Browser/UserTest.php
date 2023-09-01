@@ -225,11 +225,11 @@ final class UserTest extends DuskTestCase
                 ->type('password', 'secret123')
                 ->press('Log in')
                 ->assertAuthenticated()
-                ->assertPresent('[data-bs-theme="edlib"])')
+                ->assertPresent('[data-bs-theme="edlib"]')
                 ->visit('/preferences')
                 ->select('theme', 'dark')
                 ->press('Save')
-                ->assertPresent('[data-bs-theme="dark"])');
+                ->assertPresent('[data-bs-theme="dark"]');
         });
     }
 }
