@@ -49,7 +49,7 @@ FROM node:16-alpine AS frontend
 
 WORKDIR /app
 
-RUN npm i -g npm node-gyp
+RUN npm i -g node-gyp
 
 COPY package.json package-lock.json ./
 RUN npm i --legacy-peer-deps
