@@ -44,8 +44,6 @@ FROM node:16-alpine AS frontend
 
 WORKDIR /app
 
-RUN npm i -g npm node-gyp
-
 COPY package.json package-lock.json ./
 RUN npm ci
 

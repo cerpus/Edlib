@@ -210,4 +210,26 @@ final class UserTest extends DuskTestCase
                 ->assertNotPresent('button[name="disconnect-google"]');
         });
     }
+
+    public function testUserCanChangeTheme(): void
+    {
+        User::factory()->create([
+            'email' => 'art.vandelay@example.com',
+            'password' => Hash::make('secret123'),
+            'theme' => null,
+        ]);
+
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/login')
+                ->type('email', 'art.vandelay@example.com')
+                ->type('password', 'secret123')
+                ->press('Log in')
+                ->assertAuthenticated()
+                ->assertPresent('[data-bs-theme="edlib"]')
+                ->visit('/preferences')
+                ->select('theme', 'dark')
+                ->press('Save')
+                ->assertPresent('[data-bs-theme="dark"]');
+        });
+    }
 }

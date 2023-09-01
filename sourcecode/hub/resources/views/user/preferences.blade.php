@@ -2,6 +2,15 @@
     <x-slot:title>{{ trans('messages.preferences') }}</x-slot:title>
 
     <x-form action="{{ route('user.save-preferences') }}">
+        {{-- TODO: errors on each form field --}}
+        @if ($errors->any())
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+
         <div class="mb-3 row">
             <label class="form-label col-12 col-md-2 col-form-label" for="locale">
                 {{ trans('messages.language') }}
@@ -14,6 +23,26 @@
                         <option
                             value="{{ $locale }}"
                             @selected(old('locale', $user->locale) === $locale)
+                        >
+                            {{ $name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <label class="form-label col-12 col-md-2 col-form-label" for="theme">
+                {{ trans('messages.theme') }}
+            </label>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <select class="form-select" name="theme" id="theme">
+                    <option value="">{{ trans('messages.default') }}</option>
+                    @foreach ($themes as $theme => $name)
+                        <option
+                            value="{{ $theme }}"
+                            @selected(old('theme', $user->theme) === $theme)
                         >
                             {{ $name }}
                         </option>
