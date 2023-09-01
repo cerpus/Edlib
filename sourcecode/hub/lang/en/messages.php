@@ -8,7 +8,7 @@ return [
     'log-in-google' => 'Log in with Google',
     'log-in-facebook' => 'Log in with Facebook',
     'log-out' => 'Log out',
-    'forgot-password' => 'Forgot Password',
+    'forgot-password' => 'I forgot my password',
     'my-account' => 'My Account',
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',

@@ -15,19 +15,25 @@
             required
         />
 
-        <x-form.button class="btn-primary">
-            {{ trans('messages.log-in') }}
-        </x-form.button>
+        <div class="d-grid d-md-block gap-2">
+            <x-form.button class="btn-primary">
+                {{ trans('messages.log-in') }}
+            </x-form.button>
 
-        <a href="{{ route('forgot-password') }}" class="btn btn-primary btn-user btn-block">
-            {{ trans('messages.forgot-password') }}
-        </a>
+            <a href="{{ route('forgot-password') }}" class="btn btn-secondary">
+                {{ trans('messages.forgot-password') }}
+            </a>
+        </div>
     </x-form>
+
     <hr>
-    <a href="{{ route('google.login') }}" class="btn btn-primary btn-user btn-block">
-        {{ trans('messages.log-in-google') }}
-    </a>
-    <a href="{{ route('facebook.login') }}" class="btn btn-primary btn-user btn-block">
-        {{ trans('messages.log-in-facebook') }}
-    </a>
+
+    <div class="d-grid d-md-block gap-2">
+        <a href="{{ route('google.login') }}" class="btn btn-primary">
+            {{ trans('messages.log-in-google') }}
+        </a>
+        <a href="{{ route('facebook.login') }}" class="btn btn-primary">
+            {{ trans('messages.log-in-facebook') }}
+        </a>
+    </div>
 </x-layout>

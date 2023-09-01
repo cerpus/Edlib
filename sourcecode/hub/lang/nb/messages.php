@@ -5,7 +5,10 @@ return [
     'password' => 'Passord',
     'password-confirmation' => 'Bekreft passord',
     'log-in' => 'Logg inn',
+    'log-in-google' => 'Logg inn med Google',
+    'log-in-facebook' => 'Logg inn med Facebook',
     'log-out' => 'Logg ut',
+    'forgot-password' => 'Glemt passord?',
     'manage-lti-platforms' => 'Administrer LTI-plattformer',
     'manage-lti-tools' => 'Administrer LTI-verktøy',
     'preview' => 'Forhåndsvis',
@@ -42,4 +45,5 @@ return [
     'published' => 'Publisert',
     'theme' => 'Tema',
     'default' => 'Standard',
+    'my-account' => 'Min konto',
 ];
