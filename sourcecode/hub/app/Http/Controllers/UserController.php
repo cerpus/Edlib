@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Configuration\Locales;
+use App\Configuration\Themes;
 use App\Http\Requests\SavePreferencesRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -44,10 +45,11 @@ class UserController extends Controller
         return to_route('home');
     }
 
-    public function preferences(Locales $locales): View
+    public function preferences(Locales $locales, Themes $themes): View
     {
         return view('user.preferences', [
             'locales' => $locales->getTranslatedMap(app()->getLocale()),
+            'themes' => $themes->getTranslatedMap(app()->getLocale()),
             'user' => $this->getUser(),
         ]);
     }

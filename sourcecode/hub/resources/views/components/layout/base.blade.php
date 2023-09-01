@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="edlib">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    data-bs-theme="{{ request()->user()->theme ?? app()->make(\App\Configuration\Themes::class)->getDefault() }}"
+>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">

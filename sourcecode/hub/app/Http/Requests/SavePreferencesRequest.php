@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Configuration\Locales;
+use App\Configuration\Themes;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,15 +18,20 @@ final class SavePreferencesRequest extends FormRequest
         if (!$parameters->has('debug_mode')) {
             $parameters->set('debug_mode', false);
         }
+
+        if (!$parameters->get('theme')) {
+            $parameters->set('theme', null);
+        }
     }
 
     /**
      * @return mixed[]
      */
-    public function rules(Locales $locales): array
+    public function rules(Locales $locales, Themes $themes): array
     {
         return [
             'locale' => ['required', Rule::in($locales->all())],
+            'theme' => ['sometimes', 'nullable', Rule::in($themes->all())],
             'debug_mode' => ['required', 'boolean'],
         ];
     }
