@@ -17,7 +17,7 @@
 
                 <a
                     href="{{ route('content.preview', [$content->id]) }}"
-                    class="text-decoration-none link-dark"
+                    class="text-decoration-none link-body-emphasis"
                 >
                     {{ $version->resource->title }}
                 </a>
