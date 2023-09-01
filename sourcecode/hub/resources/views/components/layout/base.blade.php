@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    data-bs-theme="{{ request()->user()->theme ?? app()->make(\App\Configuration\Themes::class)->getDefault() }}"
+    data-bs-theme="{{ auth()->user()?->theme ?? app()->make(\App\Configuration\Themes::class)->getDefault() }}"
 >
     <head>
         <meta charset="utf-8">
