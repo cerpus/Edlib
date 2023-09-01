@@ -2,6 +2,8 @@ name: Deploy-sandbox
 
 on:
   push:
+    branches:
+      - hubbub
     paths:
       - "sourcecode/hub/**"
       - ".github/workflows/hub-deploy-sandbox.yaml"
