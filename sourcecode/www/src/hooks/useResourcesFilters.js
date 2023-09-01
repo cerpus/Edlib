@@ -1,6 +1,6 @@
-import { useDebounce } from 'moment-hooks';
 import React from 'react';
 import useArray from './useArray';
+import useDebounce from './useDebounce';
 
 const useResourcesFilters = (contentFilter = 'myContent') => {
     const [searchInput, setSearchInput] = React.useState('');
