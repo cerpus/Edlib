@@ -1,5 +1,5 @@
 {
-    "name": "proxy-resource",
+    "id": "proxy-resource",
     "collectCoverage": true,
     "coverageReporters": ["text"],
     "transformIgnorePatterns": [
