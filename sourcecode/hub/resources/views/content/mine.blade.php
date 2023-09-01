@@ -5,7 +5,7 @@
         <livewire:my-content-search :user="auth()->user()" wire:model="query"/>
     @else
         <div class="no-content-found d-flex flex-column justify-content-center align-items-center">
-            <h1 class="no-content-found-title d-flex">{{ trans('messages.alert-no-content-found-header') }}</h1>
+            <h1 class="text-secondary d-flex">{{ trans('messages.alert-no-content-found-header') }}</h1>
             <p class="d-flex">{{ trans('messages.alert-no-content-found-description') }}</p>
 
             <div class="d-flex gap-3 flex-column flex-md-row">
