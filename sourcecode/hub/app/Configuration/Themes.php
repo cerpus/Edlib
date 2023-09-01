@@ -45,7 +45,7 @@ final readonly class Themes
     public function getTranslatedMap(string $locale): array
     {
         return array_combine($this->all(), array_map(
-            fn(string $key) => $this->getName($key, $locale) ?? $key,
+            fn (string $key) => $this->getName($key, $locale) ?? $key,
             $this->all(),
         ));
     }
