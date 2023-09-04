@@ -15,6 +15,7 @@ use Cerpus\VersionClient\VersionClient;
 use Exception;
 use H5PFileStorage;
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -22,7 +23,6 @@ use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\StorageAttributes;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusStorageInterface
 {
@@ -539,26 +539,31 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
         return $upload;
     }
 
-    public function downloadContent(string $filename, string $title): StreamedResponse
+    public function downloadContent(string $filename, string $title): RedirectResponse
     {
         $path = sprintf(ContentStorageSettings::EXPORT_PATH, $filename);
 
-        return $this->filesystem->response($path);
+        return new RedirectResponse($this->filesystem->url($path));
     }
 
-    public function getDisplayPath(bool $fullUrl = true): string
+    public function getDisplayPath(bool $fullUrl = true)
     {
-        return $this->contentAuthorStorage->getAssetsBaseUrl();
+        return route('content.asset', null, $fullUrl);
     }
 
-    public function getEditorDisplayPath(bool $fullUrl = true): string
+    public function getEditorDisplayPath(bool $fullUrl = true)
     {
-        return $this->contentAuthorStorage->getAssetUrl(ContentStorageSettings::EDITOR_PATH);
+        return route('content.asset', ['path' => ContentStorageSettings::EDITOR_PATH], $fullUrl);
     }
 
-    public function getContentPath($id, $file): string
+    public function getLibrariesPath()
     {
-        return $this->contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::CONTENT_PATH, $id) . $file);
+        return route('content.asset', ['path' => ContentStorageSettings::LIBRARY_DIR]);
+    }
+
+    public function getContentPath($id, $file)
+    {
+        return route('content.asset', ['path' => sprintf(ContentStorageSettings::CONTENT_PATH, $id) . $file]);
     }
 
     public function getAjaxPath()

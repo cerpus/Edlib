@@ -9,14 +9,6 @@ server {
     charset utf-8;
     client_max_body_size 2G;
 
-    location /content/assets/ {
-        alias /app/public/h5pstorage;
-    }
-
-    location /storage {
-        alias /app/public/h5pstorage;
-    }
-
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
     }

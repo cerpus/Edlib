@@ -32,7 +32,6 @@ return [
         'local' => [ // local app storage
             'driver' => 'local',
             'root' => storage_path('app'),
-            'url' => env('CDN_WITH_PREFIX'),
         ],
         'testDisk' => [ // disk where tests are located.
             'driver' => 'local',
@@ -55,7 +54,6 @@ return [
         'test' => [
             'driver' => 'local',
             'root' => '/tmp/contentauthor-test',
-            'url' => 'https://cdn.example.net/',
         ],
         'tmp' => [ // temporary folder for contentauthor
             'driver' => 'local',

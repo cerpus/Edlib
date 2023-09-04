@@ -48,6 +48,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.10",
+        "ekino/phpstan-banned-code": "^1.0",
         "fakerphp/faker": "^1.16",
         "mockery/mockery": "^1.0",
         "nunomaduro/larastan": "^2.0",

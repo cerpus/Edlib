@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Libraries\Versioning\VersionableObject;
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -21,22 +21,13 @@ use Iso639p3;
  *
  * @property Collection<Collaborator> $collaborators
  *
- * @method Link replicate(array $except = null)
- *
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */
 class Link extends Content implements VersionableObject
 {
     use HasFactory;
-    use UuidForKey;
-
-    private $parentId;
-
-    public function setParentId($parentId): void
-    {
-        $this->parentId = $parentId;
-    }
+    use HasUuids;
 
     public function givesScore(): int
     {
@@ -61,7 +52,7 @@ class Link extends Content implements VersionableObject
         return Iso639p3::code3letters('eng');
     }
 
-    public function makeCopy($owner = null)
+    public function makeCopy($owner = null): static
     {
         $newLink = $this->replicate();
         //$newLink->id = Uuid::uuid4()->toString();

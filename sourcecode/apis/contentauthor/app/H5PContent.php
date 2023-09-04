@@ -307,7 +307,7 @@ class H5PContent extends Content implements VersionableObject
         return "h5p-".$this->id;
     }
 
-    public function getMaxScore(): int
+    public function getMaxScore(): int|null
     {
         return $this->max_score;
     }

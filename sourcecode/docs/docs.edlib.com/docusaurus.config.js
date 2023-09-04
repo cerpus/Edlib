@@ -64,7 +64,6 @@ module.exports = {
         {to: '/docs/developers/getting-started', label: 'Developers', position: 'left'},
         {to: '/docs/support/faq', label: 'Support', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
-        {to: '/careers', label: 'Careers', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
         {
           href: 'https://github.com/cerpus/Edlib',
@@ -143,10 +142,6 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'Careers',
-              to: '/careers',
-            },
-            {
               label: 'Contact us',
               to: '/contact-us',
             },
@@ -176,7 +171,7 @@ module.exports = {
           showReadingTime: true,
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [require.resolve('./src/css/custom.css')],
         },
       },
     ],

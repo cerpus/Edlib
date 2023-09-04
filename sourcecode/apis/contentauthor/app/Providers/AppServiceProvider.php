@@ -69,7 +69,9 @@ class AppServiceProvider extends ServiceProvider
             return new H5POptionsCache();
         });
 
-        $this->app->singleton(ContentAuthorStorage::class);
+        $this->app->singleton(ContentAuthorStorage::class, function () {
+            return new ContentAuthorStorage(config('app.cdnPrefix'));
+        });
 
         $this->app
             ->when(AddExtQuestionSetToRequestMiddleware::class)

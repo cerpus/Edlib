@@ -50,7 +50,7 @@ class LinkController extends Controller
         $license = License::getDefaultLicense($ltiRequest);
 
         $emails = '';
-        $link = app(Link::class);
+        $link = new Link();
         $redirectToken = $request->get('redirectToken');
         $userPublishEnabled = $adapter->isUserPublishEnabled();
         $canPublish = true;
@@ -72,8 +72,7 @@ class LinkController extends Controller
         $inputs = $request->all();
         $metadata = json_decode($inputs['linkMetadata']);
 
-        /** @var Link $link */
-        $link = app(Link::class);
+        $link = new Link();
         $link->link_type = $inputs['linkType'];
         $link->link_url = $inputs['linkUrl'];
         $link->owner_id = Session::get('authId');
@@ -146,8 +145,7 @@ class LinkController extends Controller
 
     public function update(LinksRequest $request, $id)
     {
-        /** @var Link $link */
-        $link = app(Link::class);
+        $link = new Link();
         $oldLink = $link::findOrFail($id);
 
         if (!$this->canCreate()) {
@@ -178,7 +176,6 @@ class LinkController extends Controller
                     $link = $oldLink->makeCopy(Session::get('authId'));
                     break;
             }
-            $link->setParentId($oldLink->version_id);
         }
 
         $metadata = json_decode($inputs['linkMetadata']);
