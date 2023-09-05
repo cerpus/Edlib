@@ -6,6 +6,7 @@ volumes:
   edlib-resources_nodemodules:
   elasticsearch:
   maven_cache:
+  moodle_data:
   mysql:
   npm_cache:
   npm-components-storybook_nodemodules:
@@ -45,7 +46,7 @@ services:
       - 5432:5432
 
   mysql:
-    image: mariadb:10.5.12
+    image: mariadb:11
     environment:
       MYSQL_ROOT_PASSWORD: mysqlpassword
       MYSQL_INITDB_SKIP_TZINFO: 1
@@ -374,6 +375,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  moodle:
+    build: ./localSetup/projects/moodle
+    volumes:
+      - moodle_data:/var/www/moodledata
+      - ./localSetup/projects/moodle/php.ini:/usr/local/etc/php/conf.d/zz-moodle.ini:ro
 
   www:
     build:
