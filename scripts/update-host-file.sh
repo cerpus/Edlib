@@ -11,6 +11,7 @@ $ip\tapi.$root
 $ip\tca.$root
 $ip\tdocs.$root
 $ip\tfacade.$root
+$ip\tmoodle.$root
 $ip\tnpm.components.$root
 $ip\twww.$root
 EOM
