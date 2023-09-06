@@ -7,8 +7,8 @@
         <div class="bg-success-subtle border border-success border-1 p-3 pb-0 mb-3" role="alert">
             <p>{{ trans('messages.lti-platform-created-success', ['name' => $createdPlatform->name]) }}</p>
             <p>
-                {{ trans('messages.key') }}: <kbd>{{ $createdPlatform->key }}</kbd><br>
-                {{ trans('messages.secret') }}: <kbd>{{ $createdPlatform->secret }}</kbd>
+                {{ trans('messages.key') }}: <kbd class="user-select-all">{{ $createdPlatform->key }}</kbd><br>
+                {{ trans('messages.secret') }}: <kbd class="user-select-all">{{ $createdPlatform->secret }}</kbd>
             <p>
             <p>{{ trans('messages.lti-platform-secret-shown-only-once') }}</p>
         </div>
@@ -31,7 +31,7 @@
                         <dt>{{ trans('messages.name') }}</dt>
                         <dd>{{ $platform->name }}</dd>
                         <dt>{{ trans('messages.key') }}</dt>
-                        <dd><kbd>{{ $platform->key }}</kbd></dd>
+                        <dd><kbd class="user-select-all">{{ $platform->key }}</kbd></dd>
                         <dt>{{ trans('messages.created') }}</dt>
                         <dd>{{ $platform->created_at }}</dd>
                     </dl>
