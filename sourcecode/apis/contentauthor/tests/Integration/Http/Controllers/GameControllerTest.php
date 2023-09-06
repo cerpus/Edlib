@@ -51,7 +51,6 @@ class GameControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
         /** @var GameController $gameController */
         $gameController = app(GameController::class);
         $result = $gameController->edit($request, $game->id);

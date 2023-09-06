@@ -41,8 +41,6 @@ class ContentController extends Controller
                 return $currentContentType->getContentTypes($request->get('redirectToken'));
             });
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
         $adapterModes = json_encode($adapter::getAllAdapters());
         $currentAdapter = $adapter->getAdapterName();
 
@@ -70,7 +68,7 @@ class ContentController extends Controller
             ->all();
 
         $view = sprintf("content.%s", config('author.contentTypeSelector'));
-        return view($view)->with(compact('contentTypes', 'jwtToken', 'adapterModes', 'currentAdapter'));
+        return view($view)->with(compact('contentTypes', 'adapterModes', 'currentAdapter'));
     }
 
     /**

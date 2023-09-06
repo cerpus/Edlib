@@ -30,7 +30,7 @@ class LinkController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
 
         $this->lti = $h5pLti;

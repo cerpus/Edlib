@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\Auth\Jwt\JwtDecoder;
-use App\Auth\Jwt\JwtDecoderInterface;
 use App\EdlibResource\CachedOauth1Validator;
 use App\EdlibResource\Oauth1Credentials;
 use App\H5POption;
@@ -96,28 +94,6 @@ class AppServiceProvider extends ServiceProvider
                 return new AuthApiService();
             }
         );
-
-        $this->app->singleton(JwtDecoderInterface::class, JwtDecoder::class);
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs('$publicKeyOrJwksUri')
-            ->giveConfig('auth.edlib-jwt-pubkey');
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs('$leewaySeconds')
-            ->giveConfig('auth.edlib-jwt-leeway-seconds');
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs(ClientInterface::class)
-            ->give(Client::class);
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs(RequestFactoryInterface::class)
-            ->give(HttpFactory::class);
 
         $this->app->when(RequestId::class)
             ->needs(Logger::class)

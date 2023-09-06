@@ -42,7 +42,7 @@ class QuestionSetController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->lti = $h5pLti;
-        $this->middleware('core.auth')->only(['create', 'edit', 'store', 'update']);
+        $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
         $this->middleware('lti.qs-to-request')->only(['create']);
@@ -78,9 +78,6 @@ class QuestionSetController extends Controller
             abort(403);
         }
 
-        $jwtTokenInfo = $request->session()->get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
@@ -109,7 +106,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.create')->with(compact([
-            'jwtToken',
             'emails',
             'editorSetup',
             'state',
@@ -149,9 +145,6 @@ class QuestionSetController extends Controller
         }
 
         $questionset = QuestionSet::findOrFail($id);
-
-        $jwtTokenInfo = $request->session()->get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $links = (object)[
             "store" => route('questionset.store'),
@@ -200,7 +193,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.edit')->with(compact([
-            'jwtToken',
             'emails',
             'emails',
             'state',

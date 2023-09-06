@@ -23,8 +23,6 @@ use App\Http\Controllers\EmbedController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\H5PController;
 use App\Http\Controllers\HealthController;
-use App\Http\Controllers\InternalController;
-use App\Http\Controllers\JWTUpdateController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\LtiContentController;
 use App\Http\Controllers\Progress;
@@ -51,11 +49,7 @@ Route::get('audios/browse/{audioId}', [H5PController::class, 'getAudio']);
 Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);
 Route::get('content/upgrade/library', [H5PController::class, 'contentUpgradeLibrary'])->name('content-upgrade-library');
 
-Route::group(['middleware' => ['internal.handle-jwt']], function () {
-    Route::get('/view', [InternalController::class, 'view']);
-});
-
-Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'adaptermode']], function () {
+Route::group(['middleware' => ['core.return', 'lti.add-auth-to-session', 'lti.verify-auth', 'core.locale', 'adaptermode']], function () {
     Route::post('lti-content/create', [LtiContentController::class, 'create']);
     Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
@@ -80,7 +74,7 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
 
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
 
-    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["core.auth", "lti.question-set", 'core.behavior-settings:editor'])->name('create');
+    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["lti.verify-auth", "lti.question-set", 'core.behavior-settings:editor'])->name('create');
 
     Route::resource('questionset', QuestionSetController::class, ['except' => ['destroy']]);
     Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
@@ -93,8 +87,6 @@ Route::group(['middleware' => ['core.return', 'core.ltiauth', 'core.locale', 'ad
         Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
     });
 });
-
-Route::post('/jwt/update', [JWTUpdateController::class, 'updateJwtEndpoint']);
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
 
@@ -126,7 +118,7 @@ Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index']
 Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.status');
 Route::match(['GET', 'POST'], 'v1/content/{id}/unlock', [UnlockController::class, 'index'])->name('lock.unlock');
 
-Route::group(['middleware' => ['core.auth']], function () {
+Route::group(['middleware' => ['lti.verify-auth']], function () {
     Route::get('v1/gdpr/user/byemail', [GdprSubjectDataController::class, 'getUserDataByEmail'])->name('gdpr.user.data.byemail');
     Route::get('v1/gdpr/user/{userId}', [GdprSubjectDataController::class, 'getUserData'])->name('gdpr.user.data');
 });

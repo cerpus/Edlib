@@ -73,7 +73,7 @@ class H5PController extends Controller
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
@@ -160,9 +160,6 @@ class H5PController extends Controller
 
         $h5pView = $this->h5p->createView($editorConfig);
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $displayOptions = $core->getDisplayOptionsForEdit();
         $core->getStorableDisplayOptions($displayOptions, null);
 
@@ -210,7 +207,6 @@ class H5PController extends Controller
         return view(
             'h5p.create',
             [
-                'jwtToken' => $jwtToken,
                 'config' => $h5pView->getSettings(),
                 'jsScript' => $h5pView->getScripts(false),
                 'styles' => $h5pView->getStyles(false),
@@ -274,9 +270,6 @@ class H5PController extends Controller
         ]);
 
         $params = $adapter->alterParameters($params, H5PAlterParametersSettingsDataObject::create(['useImageWidth' => false]));
-
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $library = $h5pContent->library;
         $settings = [];
@@ -351,7 +344,6 @@ class H5PController extends Controller
         return view(
             'h5p.edit',
             [
-                'jwtToken' => $jwtToken,
                 'id' => $id,
                 'h5p' => $h5pContent,
                 'config' => $h5pView->getSettings(),

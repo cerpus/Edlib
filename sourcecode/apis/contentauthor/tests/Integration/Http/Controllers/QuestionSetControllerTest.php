@@ -59,7 +59,6 @@ class QuestionSetControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
 
         /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
@@ -147,7 +146,6 @@ class QuestionSetControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
 
         /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);

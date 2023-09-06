@@ -25,7 +25,7 @@ class GameController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->lti = $h5pLti;
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('game-access', ['only' => ['ltiEdit']]);
     }
 
