@@ -14,6 +14,7 @@ $ip\tfacade.$root
 $ip\thub.$root
 $ip\thub-vite-hmr.$root
 $ip\tmailpit.$root
+$ip\tmoodle.$root
 $ip\tnpm.components.$root
 $ip\twww.$root
 EOM
