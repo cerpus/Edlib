@@ -48,10 +48,10 @@ services:
   mysql:
     image: mariadb:11
     environment:
-      MYSQL_ROOT_PASSWORD: mysqlpassword
-      MYSQL_INITDB_SKIP_TZINFO: 1
+      MARIADB_ROOT_PASSWORD: mysqlpassword
+      MARIADB_INITDB_SKIP_TZINFO: 1
     healthcheck:
-      test: [CMD, mysql, -uroot, -pmysqlpassword, "-eSELECT 1"]
+      test: [CMD, mariadb, -uroot, -pmysqlpassword, "-eSELECT 1"]
     command: --init-file /data/application/init.sql
     volumes:
       - ./localSetup/projects/mysql/init.sql:/data/application/init.sql
