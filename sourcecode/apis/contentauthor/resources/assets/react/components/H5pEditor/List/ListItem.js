@@ -32,7 +32,7 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
         >
             <div className="path">{prettifyPath(path)}</div>
             <div><strong><FormattedMessage id="H5P_EDITOR.FIELD_NAME" /></strong>: {label}</div>
-            {viewOldValue && typeof startValue !== 'undefined' && (
+            {viewOldValue && typeof startValue !== 'undefined' && startValue !== '' && (
                 <div className="start-value">
                     <i><FormattedMessage id="H5P_EDITOR.SAVED_TEXT" />: </i>
                     {inputType === 'html' && (
@@ -45,7 +45,7 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                     {inputType === 'textarea' && <span>{startValue}</span>}
                 </div>
             )}
-            {viewOldValue && typeof startValue === 'undefined' && (
+            {viewOldValue && (typeof startValue === 'undefined' || startValue === '') && (
                 <div className="start-value">
                     <i><FormattedMessage id="H5P_EDITOR.INFO_NEW_UNSAVED" /></i>
                 </div>

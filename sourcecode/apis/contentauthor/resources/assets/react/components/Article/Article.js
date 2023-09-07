@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Sidebar from '../Sidebar';
 import EditorContainer from '../EditorContainer/EditorContainer';
 import { FormActions, useForm } from '../../contexts/FormContext';
-import CKEditor from 'ckeditor4-react';
+import  { CKEditor } from 'ckeditor4-react';
 import { injectIntl } from 'react-intl';
 import TextField from '@material-ui/core/TextField';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -93,7 +93,7 @@ const Article = (props) => {
             <div style={{margin: '10px 0'}}>
                 <FormLabel>{intl.formatMessage({ id: 'ARTICLE.CONTENT' })}</FormLabel>
                 <CKEditor
-                    data={content}
+                    initData={content}
                     onChange={(e) =>
                         dispatch({
                             type: FormActions.setContent,

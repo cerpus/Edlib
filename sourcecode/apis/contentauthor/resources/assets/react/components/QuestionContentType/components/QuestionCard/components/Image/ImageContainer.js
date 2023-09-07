@@ -56,7 +56,7 @@ export default class ImageContainer extends Component {
     handleDropImage(files) {
         files.forEach(file => {
             this.setState({
-                previewImage: file.preview,
+                previewImage: URL.createObjectURL(file),
                 uploading: true,
             });
 
