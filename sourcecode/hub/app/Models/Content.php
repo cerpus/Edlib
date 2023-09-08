@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Lti\ContentItemSelectionFactory;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItemPlacement;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\LtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use DOMDocument;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,10 +23,11 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
+use function app;
+use function assert;
 use function is_string;
 use function session;
-
-use const JSON_THROW_ON_ERROR;
+use function url;
 
 class Content extends Model
 {
@@ -39,40 +39,34 @@ class Content extends Model
 
     public function toItemSelectionRequest(): Oauth1Request
     {
+        $contentItems = new ContentItems([$this->toLtiLinkItem()]);
+
         $returnUrl = session()->get('lti.content_item_return_url')
             ?? throw new BadMethodCallException('Not in LTI selection context');
         assert(is_string($returnUrl));
-
-        $version = $this->latestPublishedVersion
-            ?? throw new BadMethodCallException('Calling the thing on content without published version');
-        assert($version->resource !== null);
-
-        $contentItems = new ContentItems([
-            new LtiLinkItem(
-                mediaType: 'application/vnd.ims.lti.v1.ltilink',
-                title: $version->resource->title,
-                url: url()->route('content.preview', [$this->id]),
-                placementAdvice: new ContentItemPlacement(
-                    presentationDocumentTarget: PresentationDocumentTarget::Iframe,
-                ),
-            ),
-        ]);
-
-        $serializer = app()->make(ContentItemsSerializerInterface::class);
-        $oauth1Signer = app()->make(SignerInterface::class);
 
         $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
             ->firstOrFail()
             ->getOauth1Credentials();
 
-        return $oauth1Signer->sign(new Oauth1Request('POST', $returnUrl, [
-            'content_items' => json_encode(
-                $serializer->serialize($contentItems),
-                flags: JSON_THROW_ON_ERROR,
+        return app()->make(ContentItemSelectionFactory::class)
+            ->createItemSelection($contentItems, $returnUrl, $credentials);
+    }
+
+    public function toLtiLinkItem(): LtiLinkItem
+    {
+        $version = $this->latestPublishedVersion
+            ?? throw new BadMethodCallException('Calling the thing on content without published version');
+        assert($version->resource !== null);
+
+        return new LtiLinkItem(
+            mediaType: 'application/vnd.ims.lti.v1.ltilink',
+            title: $version->resource->title,
+            url: url()->route('content.preview', [$this->id]),
+            placementAdvice: new ContentItemPlacement(
+                presentationDocumentTarget: PresentationDocumentTarget::Iframe,
             ),
-            'lti_message_type' => 'ContentItemSelection',
-            'lti_version' => 'LTI-1p0',
-        ]), $credentials);
+        );
     }
 
     public function createCopyBelongingTo(User $user): self

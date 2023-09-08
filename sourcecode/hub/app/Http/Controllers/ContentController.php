@@ -174,9 +174,23 @@ class ContentController extends Controller
 
             return $content;
         });
+        assert($content instanceof Content);
 
+        // return to platform consuming Edlib
+        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
+            $ltiRequest = $content->toItemSelectionRequest();
+
+            return view('lti.close-editor', [
+                'url' => $ltiRequest->getUrl(),
+                'method' => $ltiRequest->getMethod(),
+                'parameters' => $ltiRequest->toArray(),
+            ]);
+        }
+
+        // return to Edlib
         return view('lti.close-editor', [
-            'redirectUrl' => route('content.preview', $content),
+            'url' => route('content.preview', $content),
+            'method' => 'GET',
         ]);
     }
 
