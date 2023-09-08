@@ -148,7 +148,7 @@ class ContentController extends Controller
         $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
             ->firstOrFail();
 
-        /*$content = */DB::transaction(function () use ($item, $tool) {
+        $content = DB::transaction(function () use ($item, $tool) {
             $title = $item->getTitle() ?? throw new Exception('Missing title');
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
@@ -175,7 +175,9 @@ class ContentController extends Controller
             return $content;
         });
 
-        return view('lti.close-edlib');
+        return view('lti.close-editor', [
+            'redirectUrl' => route('content.preview', $content),
+        ]);
     }
 
     public function sitemap(): Response
