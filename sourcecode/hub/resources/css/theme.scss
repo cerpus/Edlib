@@ -1,8 +1,54 @@
-// The Edlib theme
+// Default style for the preview count on card
+.card {
+    --bs-card-cap-color: var(--bs-body-color);
 
+    .card-preview-badge {
+        background-color: var(--bs-card-cap-bg);
+        color: var(--bs-card-cap-color) !important;
+
+        @include media-breakpoint-down(md) {
+            background-color:  transparent;
+        }
+    }
+}
+
+// Adjustments to the styles for Bootstrap themes
+[data-bs-theme="light"] {
+    .navbar-bottom {
+        background-color: var(--bs-primary-bg-subtle);
+
+        .navbar-nav {
+            --bs-navbar-color: #{$gray-800};
+            --bs-nav-link-hover-color: #{$black};
+            --bs-navbar-active-color: #{$black};
+        }
+    }
+}
+
+[data-bs-theme="dark"] {
+    .navbar-bottom {
+        background-color: var(--bs-primary-bg-subtle);
+
+        .navbar-nav {
+            --bs-navbar-color: var(--bs-body-color);
+        }
+    }
+}
+
+
+// The Edlib theme
 [data-bs-theme="edlib"] {
     --bs-body-color: #{$gray-700}; //Default text color
     --bs-border-color: #{$gray-400}; //Default border color for input, buttons, etc
+
+    $component-active-color: var(--bs-body-color);
+    $component-active-bg: $green-100;
+    $edlib-input-box-shadow: 0 0 0 0.25rem rgba($green-300, $focus-ring-opacity);
+
+    // Change background color for mobile / small-screen view
+    @include media-breakpoint-down(md) {
+        --bs-body-bg: #E7F1FF;
+    }
 
     // Primary button
     .btn-primary {
@@ -14,13 +60,84 @@
         @include button-variant($white, $gray-400, $gray-900, $gray-200, $gray-400, $gray-900);
     }
 
-    // Mobile / small screen nav bar
-    .navbar-bottom {
-        background-color: $green-200;
+    .text-bg-primary {
+        color: var(--bs-body-color) !important;
+        background-color: $green-100 !important;
     }
 
+    // Mobile / small-screen nav bar
+    .navbar-bottom {
+        background-color: $green-200;
+
+        .navbar-nav {
+            --bs-navbar-color: #{$gray-900};
+            --bs-nav-link-hover-color: #{$black};
+            --bs-navbar-active-color: #{$black};
+        }
+    }
+
+    // Dropdown/-up menu-items in small-screen / mobile nav-bar
     .dropdown-menu {
+        --bs-dropdown-bg: #{$white};
         --bs-dropdown-link-active-color: #{$gray-900};
         --bs-dropdown-link-active-bg: #{$green-100};
+    }
+
+    // Content card
+    .card {
+        background-color: $white;
+        --bs-card-cap-bg: #{$gray-100};
+        --bs-card-cap-color: #{$gray-700};
+        @include media-breakpoint-down(md) {
+            --bs-card-cap-bg: transparent;
+        }
+
+        .card-header {
+            color: var(--bs-body-color);
+            @include media-breakpoint-up(md) {
+                color: $black;
+            }
+        }
+
+        .card-footer {
+            background-color: unset;
+            border-color: unset;
+        }
+    }
+
+    // Select input
+    .form-select {
+        &:focus {
+            border-color: $green-100;
+            box-shadow: $edlib-input-box-shadow;
+        }
+    }
+
+    // Checkbox
+    .form-check-input {
+        &:focus {
+            border-color: #86b7fe;
+            box-shadow: $edlib-input-box-shadow;
+        }
+
+        &:checked {
+            background-color: $green-500;
+        }
+    }
+
+    // Focused input
+    .form-control:focus {
+        box-shadow: $edlib-input-box-shadow;
+    }
+
+    // Underline for menu items in contrast mode
+    @media (forced-colors: active) {
+        .nav-underline .nav-link {
+            border-bottom: none;
+
+            &.active {
+                border-bottom: var(--bs-nav-underline-border-width) solid currentColor;
+            }
+        }
     }
 }

@@ -26,38 +26,74 @@
 .navbar-bottom {
     flex-wrap: nowrap;
     justify-content: flex-start;
+
+    .navbar-nav .nav-link {
+        padding-right: var(--bs-navbar-nav-link-padding-x);
+        padding-left: var(--bs-navbar-nav-link-padding-x);
+    }
+
+    .navbar-nav-scroll {
+        overflow: visible;
+    }
+
+    .offcanvas {
+        position: static;
+        z-index: auto;
+        flex-grow: 1;
+        width: auto !important;
+        height: auto !important;
+        visibility: visible !important;
+        background-color: transparent !important;
+        border: 0 !important;
+        transform: none !important;
+        transition: none;
+
+        .offcanvas-header {
+            display: none;
+        }
+
+        .offcanvas-body {
+            display: flex;
+            flex-grow: 0;
+            padding: 0;
+            overflow-y: visible;
+        }
+    }
 }
-.navbar-bottom .navbar-nav {
-    flex-direction: row;
-}
-.navbar-bottom .navbar-nav .dropdown-menu {
-    position: absolute;
-}
-.navbar-bottom .navbar-nav .nav-link {
-    padding-right: var(--bs-navbar-nav-link-padding-x);
-    padding-left: var(--bs-navbar-nav-link-padding-x);
-}
-.navbar-bottom .navbar-nav-scroll {
-    overflow: visible;
-}
-.navbar-bottom .offcanvas {
-    position: static;
-    z-index: auto;
-    flex-grow: 1;
-    width: auto !important;
-    height: auto !important;
-    visibility: visible !important;
-    background-color: transparent !important;
-    border: 0 !important;
-    transform: none !important;
-    transition: none;
-}
-.navbar-bottom .offcanvas .offcanvas-header {
-    display: none;
-}
-.navbar-bottom .offcanvas .offcanvas-body {
-    display: flex;
-    flex-grow: 0;
-    padding: 0;
-    overflow-y: visible;
+
+.card {
+    --bs-card-height: 225px;
+    min-width: 250px;
+
+    .card-header {
+        // Cut text after two lines and show ellipsis
+        .text-line-clamp-2 {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @include media-breakpoint-up(md) {
+            min-height: ($line-height-lg * 2.5) + rem;
+            padding-bottom: 0;
+        }
+
+        .card-header-updated {
+            font-size: #{$sub-sup-font-size};
+        }
+    }
+
+    .card-preview-badge {
+        border-radius: 0 0 0 10px;
+    }
+
+    .dropup .dropdown-toggle:after {
+        content: none;
+    }
+
+    .dropdown-toggle:after {
+        content: none;
+    }
 }
