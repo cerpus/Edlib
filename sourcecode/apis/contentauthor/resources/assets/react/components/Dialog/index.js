@@ -47,7 +47,7 @@ class DialogComponent extends Component {
                 scroll={scroll}
                 fullWidth={true}
                 maxWidth={maxWidth}
-                onBackdropClick={this.handleToggle}
+                onClose={this.handleToggle}
             >
                 <DialogContent>
                     {this.props.children}

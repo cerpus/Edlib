@@ -5,6 +5,7 @@ import { CardContainer } from '../QuestionCard';
 import AddCard from '../QuestionCard/components/AddCard';
 import InfoBox from '../InfoBox';
 import FooterBox from '../FooterBox';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 function H5PQuizLayout(props) {
     const {
@@ -20,6 +21,7 @@ function H5PQuizLayout(props) {
         infoText,
         processingForm,
         onChangeProcessing,
+        handleDragEnd,
     } = props;
 
     return (
@@ -34,15 +36,27 @@ function H5PQuizLayout(props) {
                 processingForm={processingForm}
                 onChangeProcessing={onChangeProcessing}
             />
-            {cards.map((card, index) => (
-                <CardContainer
-                    key={'card_' + card.id}
-                    cardNumber={index + 1}
-                    onDeleteCard={() => onDeleteCard(card.id)}
-                    card={card}
-                    collectData={onChange}
-                />
-            ))}
+            <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="questionSetDropZone">
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                        >
+                            {cards.map((card, index) => (
+                                <CardContainer
+                                    key={'card_' + card.id}
+                                    cardNumber={index + 1}
+                                    onDeleteCard={() => onDeleteCard(card.id)}
+                                    card={card}
+                                    collectData={onChange}
+                                />
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
             {typeof onAddCard === 'function' && (
                 <AddCard
                     onClick={onAddCard}
