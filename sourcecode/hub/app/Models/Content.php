@@ -142,6 +142,8 @@ class Content extends Model
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'license' => $version->resource->license,
+            'language_iso_639_3' => $version->resource->language_iso_639_3,
         ];
     }
 

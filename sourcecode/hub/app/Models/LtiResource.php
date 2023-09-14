@@ -15,6 +15,13 @@ class LtiResource extends Model
     public const UPDATED_AT = null;
 
     /**
+     * @var array<string, string>
+     */
+    protected $attributes = [
+        'language_iso_639_3' => 'und',
+    ];
+
+    /**
      * @return BelongsTo<LtiTool, self>
      */
     public function tool(): BelongsTo
