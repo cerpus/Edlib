@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lti\Serializer;
 
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
+
 use function array_is_list;
 use function is_array;
 
