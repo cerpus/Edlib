@@ -66,4 +66,9 @@ return [
     'alert-password-empty' => 'To disconnect social login providers, you must first set a password on your account',
     'theme' => 'Theme',
     'default' => 'Default',
+    'filter-section' => 'Filter Section',
+    'media' => 'Media',
+    'visuals' => 'Visuals',
+    'task' => 'Task',
+    'quizzes' => 'Quizzes',
 ];
