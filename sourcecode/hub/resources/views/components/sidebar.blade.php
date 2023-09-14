@@ -5,7 +5,6 @@
             @foreach (['language', 'media', 'visuals', 'task', 'quizzes'] as $filterKey)
                 @php
                     $filterLabel = trans("messages.$filterKey");
-                    $filterKey = str_replace(' ', '-', $filterKey);
                 @endphp
 
                 <div class="accordion-item">
