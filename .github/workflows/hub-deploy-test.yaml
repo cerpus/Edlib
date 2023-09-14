@@ -1,10 +1,10 @@
-name: Deploy-sandbox
+name: Deploy-cerpus-test
 
 on:
   push:
     paths:
       - "sourcecode/hub/**"
-      - ".github/workflows/hub-deploy-sandbox.yaml"
+      - ".github/workflows/hub-deploy-test.yaml"
     branches:
       - hubbub
 
