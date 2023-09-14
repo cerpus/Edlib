@@ -10,7 +10,7 @@ use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
 use App\Models\LtiTool;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -140,10 +140,7 @@ class ContentController extends Controller
         StoreContentRequest $request,
         ContentItemsMapperInterface $mapper,
     ): View {
-        $item = $mapper->map(json_encode(
-            $request->input('content_items'),
-            flags: JSON_THROW_ON_ERROR,
-        ))[0];
+        $item = $mapper->map($request->input('content_items'))[0];
 
         $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
             ->firstOrFail();

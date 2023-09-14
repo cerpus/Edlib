@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Cerpus\EdlibResourceKit\Lti\ContentItem\Mapper\ContentItemsMapperInterface;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Illuminate\Foundation\Http\FormRequest;
 
 use function app;
@@ -17,16 +17,14 @@ final class StoreContentRequest extends FormRequest
         $serializer = app()->make(ContentItemsSerializerInterface::class);
         $mapper = app()->make(ContentItemsMapperInterface::class);
 
-        $value = $this->input('content_items');
+        $value = json_decode($this->input('content_items'), associative: true);
 
-        if (!is_string($value)) {
-            return;
+        if (is_array($value)) {
+            // normalize content items
+            $this->merge([
+                'content_items' => $serializer->serialize($mapper->map($value)),
+            ]);
         }
-
-        // normalize content items
-        $this->merge([
-            'content_items' => $serializer->serialize($mapper->map($value)),
-        ]);
     }
 
     /**

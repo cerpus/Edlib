@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00c18bca7fe425527a823cc53e6d4ec9",
+    "content-hash": "b5f0550884b50398f58e6018747ec53e",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -216,17 +216,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit.git",
-                "reference": "4f64ff4341752b06e9709d7f2f3d73ba77efc966"
+                "reference": "bf3037f5b51ba3c7294e492a37644d98b5e2be3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/4f64ff4341752b06e9709d7f2f3d73ba77efc966",
-                "reference": "4f64ff4341752b06e9709d7f2f3d73ba77efc966",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/bf3037f5b51ba3c7294e492a37644d98b5e2be3f",
+                "reference": "bf3037f5b51ba3c7294e492a37644d98b5e2be3f",
                 "shasum": ""
             },
             "require": {
                 "cerpus/pubsub": "^1.0",
-                "ml/json-ld": "^1.2",
                 "php": "8.2.*",
                 "php-http/discovery": "^1.14.1",
                 "psr/clock": "^1.0",
@@ -249,7 +248,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.5.x-dev"
+                    "dev-master": "0.6.x-dev"
                 }
             },
             "autoload": {
@@ -277,7 +276,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/master"
             },
-            "time": "2023-08-14T09:44:45+00:00"
+            "time": "2023-09-12T12:38:49+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
@@ -285,19 +284,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit-laravel.git",
-                "reference": "89d6cbff7ddd8b2e78334db2375d5a632738f13d"
+                "reference": "383796183b39e1d9b4cd1fe6d61b5ef1ce5c3087"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/89d6cbff7ddd8b2e78334db2375d5a632738f13d",
-                "reference": "89d6cbff7ddd8b2e78334db2375d5a632738f13d",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/383796183b39e1d9b4cd1fe6d61b5ef1ce5c3087",
+                "reference": "383796183b39e1d9b4cd1fe6d61b5ef1ce5c3087",
                 "shasum": ""
             },
             "require": {
-                "cerpus/edlib-resource-kit": "^0.5",
+                "cerpus/edlib-resource-kit": "^0.6",
                 "cerpus/pubsub": "^1.0",
-                "illuminate/support": "^8.0|^9.0|^10.0",
-                "php": "8.0.*|8.1.*|8.2.*",
+                "illuminate/support": "^9.0|^10.0",
+                "php": "8.2.*",
                 "php-http/discovery": "^1.14",
                 "psr/http-client-implementation": "^1.0",
                 "psr/http-factory-implementation": "^1.0"
@@ -314,7 +313,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.6.x-dev"
+                    "dev-master": "0.7.x-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -344,7 +343,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/master"
             },
-            "time": "2023-06-28T13:32:08+00:00"
+            "time": "2023-09-13T11:26:21+00:00"
         },
         {
             "name": "cerpus/pubsub",
@@ -2775,110 +2774,6 @@
                 "source": "https://github.com/meilisearch/meilisearch-php/tree/v1.1.1"
             },
             "time": "2023-04-03T10:05:59+00:00"
-        },
-        {
-            "name": "ml/iri",
-            "version": "1.1.4",
-            "target-dir": "ML/IRI",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lanthaler/IRI.git",
-                "reference": "cbd44fa913e00ea624241b38cefaa99da8d71341"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lanthaler/IRI/zipball/cbd44fa913e00ea624241b38cefaa99da8d71341",
-                "reference": "cbd44fa913e00ea624241b38cefaa99da8d71341",
-                "shasum": ""
-            },
-            "require": {
-                "lib-pcre": ">=4.0",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "ML\\IRI": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Markus Lanthaler",
-                    "email": "mail@markus-lanthaler.com",
-                    "homepage": "http://www.markus-lanthaler.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "IRI handling for PHP",
-            "homepage": "http://www.markus-lanthaler.com",
-            "keywords": [
-                "URN",
-                "iri",
-                "uri",
-                "url"
-            ],
-            "support": {
-                "issues": "https://github.com/lanthaler/IRI/issues",
-                "source": "https://github.com/lanthaler/IRI/tree/master"
-            },
-            "time": "2014-01-21T13:43:39+00:00"
-        },
-        {
-            "name": "ml/json-ld",
-            "version": "1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lanthaler/JsonLD.git",
-                "reference": "537e68e87a6bce23e57c575cd5dcac1f67ce25d8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lanthaler/JsonLD/zipball/537e68e87a6bce23e57c575cd5dcac1f67ce25d8",
-                "reference": "537e68e87a6bce23e57c575cd5dcac1f67ce25d8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ml/iri": "^1.1.1",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "json-ld/tests": "1.0",
-                "phpunit/phpunit": "^4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "ML\\JsonLD\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Markus Lanthaler",
-                    "email": "mail@markus-lanthaler.com",
-                    "homepage": "http://www.markus-lanthaler.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "JSON-LD Processor for PHP",
-            "homepage": "http://www.markus-lanthaler.com",
-            "keywords": [
-                "JSON-LD",
-                "jsonld"
-            ],
-            "support": {
-                "issues": "https://github.com/lanthaler/JsonLD/issues",
-                "source": "https://github.com/lanthaler/JsonLD/tree/1.2.1"
-            },
-            "time": "2022-09-29T08:45:17+00:00"
         },
         {
             "name": "monolog/monolog",
