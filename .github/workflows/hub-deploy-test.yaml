@@ -26,8 +26,12 @@ jobs:
           tools: composer:v2
           coverage: none
       
-      - name: Require Vapor CLI
-        run: composer global require laravel/vapor-cli
+      - name: Install Vapor CLI
+        working-directory: sourcecode/hub/tools/vapor-cli
+        run: composer install --prefer-dist
+
+      - name: Add Vapor to path
+        run: echo "$PWD/tools/vapor-cli/vendor/bin" >> "$GITHUB_PATH"
 
       - name: Install Project Dependencies
         run: composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
