@@ -32,6 +32,9 @@ class User extends Model implements AuthenticatableContract
 
     protected $hidden = [
         'password',
+        'password_reset_token',
+        'google_id',
+        'facebook_id',
     ];
 
     /**
