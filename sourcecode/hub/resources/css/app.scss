@@ -31,10 +31,13 @@ $font-family-sans-serif: Lato, sanf-serif;
 @import "bootstrap/scss/dropdown";
 @import "bootstrap/scss/nav";
 @import "bootstrap/scss/navbar";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/list-group";
 @import "bootstrap/scss/alert";
 @import "bootstrap/scss/close";
 @import "bootstrap/scss/tooltip";
 @import "bootstrap/scss/helpers";
+@import "bootstrap/scss/pagination";
 
 // 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
 @import "bootstrap/scss/utilities/api";

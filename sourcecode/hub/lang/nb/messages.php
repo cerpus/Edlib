@@ -5,7 +5,10 @@ return [
     'password' => 'Passord',
     'password-confirmation' => 'Bekreft passord',
     'log-in' => 'Logg inn',
+    'log-in-google' => 'Logg inn med Google',
+    'log-in-facebook' => 'Logg inn med Facebook',
     'log-out' => 'Logg ut',
+    'forgot-password' => 'Glemt passord?',
     'manage-lti-platforms' => 'Administrer LTI-plattformer',
     'manage-lti-tools' => 'Administrer LTI-verktøy',
     'preview' => 'Forhåndsvis',
@@ -40,4 +43,7 @@ return [
     'debug-mode-form-help' => 'Feilsøkingsmodus vil avsløre tekniske detaljer som kan være behjelpelige under feilsøking eller utvikling av innholdstyper.',
     'version-history' => 'Versjonshistorikk',
     'published' => 'Publisert',
+    'theme' => 'Tema',
+    'default' => 'Standard',
+    'my-account' => 'Min konto',
 ];

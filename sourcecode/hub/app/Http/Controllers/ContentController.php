@@ -70,6 +70,7 @@ class ContentController extends Controller
             ->withWidth(640)
             ->withHeight(480)
             ->withClaim('launch_presentation_locale', app()->getLocale())
+            ->withClaim('user_id', $this->getUser()->id)
             ->toPresentationLaunch($credentials, $launchUrl, $content->id);
 
         return view('content.show', [
@@ -106,6 +107,8 @@ class ContentController extends Controller
         assert(is_string($launchUrl));
 
         $launch = $builder
+            ->withClaim('launch_presentation_locale', app()->getLocale())
+            ->withClaim('user_id', $this->getUser()->id)
             ->toPresentationLaunch($credentials, $launchUrl, $content->id);
 
         return view('content.edit', [
@@ -120,6 +123,7 @@ class ContentController extends Controller
             ->withWidth(640)
             ->withHeight(480)
             ->withClaim('launch_presentation_locale', app()->getLocale())
+            ->withClaim('user_id', $this->getUser()->id)
             ->toItemSelectionLaunch(
                 $tool->getOauth1Credentials(),
                 $tool->creator_launch_url,
@@ -144,7 +148,7 @@ class ContentController extends Controller
         $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
             ->firstOrFail();
 
-        /*$content = */DB::transaction(function () use ($item, $tool) {
+        $content = DB::transaction(function () use ($item, $tool) {
             $title = $item->getTitle() ?? throw new Exception('Missing title');
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
@@ -170,8 +174,24 @@ class ContentController extends Controller
 
             return $content;
         });
+        assert($content instanceof Content);
 
-        return view('lti.close-edlib');
+        // return to platform consuming Edlib
+        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
+            $ltiRequest = $content->toItemSelectionRequest();
+
+            return view('lti.close-editor', [
+                'url' => $ltiRequest->getUrl(),
+                'method' => $ltiRequest->getMethod(),
+                'parameters' => $ltiRequest->toArray(),
+            ]);
+        }
+
+        // return to Edlib
+        return view('lti.close-editor', [
+            'url' => route('content.preview', $content),
+            'method' => 'GET',
+        ]);
     }
 
     public function sitemap(): Response

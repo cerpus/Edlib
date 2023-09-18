@@ -43,20 +43,9 @@
 
                     <dt>Presentation launch URL</dt>
                     <dd><kbd>{{ $version->resource->view_launch_url }}</kbd></dd>
-
-                    <dt>LTI launch URL</dt>
-                    <dd><kbd>{{ $launch->getRequest()->getUrl() }}</kbd></dd>
-
-                    <dt>LTI parameters</dt>
-                    <dd>
-                        <dl>
-                            @foreach ($launch->getRequest()->toArray() as $key => $parameter)
-                                <dt>{{ $key }}</dt>
-                                <dd><kbd>{{ $parameter }}</kbd></dd>
-                            @endforeach
-                        </dl>
-                    </dd>
                 </dl>
+
+                <x-lti-debug :request="$launch->getRequest()" />
             </details>
         @endif
     </x-slot:sidebar>

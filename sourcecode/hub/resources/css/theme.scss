@@ -23,4 +23,9 @@
         --bs-dropdown-link-active-color: #{$gray-900};
         --bs-dropdown-link-active-bg: #{$green-100};
     }
+
+    .accordion-button:not(.collapsed) {
+        background-color: #{$green-100};
+        color:  var(--bs-body-color);
+    }
 }
