@@ -23,11 +23,8 @@ use Illuminate\Support\Facades\DB;
 use function app;
 use function assert;
 use function is_string;
-use function json_encode;
 use function to_route;
 use function view;
-
-use const JSON_THROW_ON_ERROR;
 
 class ContentController extends Controller
 {
