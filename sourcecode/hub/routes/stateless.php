@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Routes that should not start sessions
 
 use App\Http\Controllers\ContentController;

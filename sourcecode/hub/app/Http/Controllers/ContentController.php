@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IndexContentRequest;
@@ -123,7 +125,7 @@ class ContentController extends Controller
             ->withWidth(640)
             ->withHeight(480)
             ->withClaim('launch_presentation_locale', app()->getLocale())
-            ->withClaim('user_id', $this->getUser())
+            ->withClaim('user_id', $this->getUser()->id)
             ->toItemSelectionLaunch(
                 $tool->getOauth1Credentials(),
                 $tool->creator_launch_url,

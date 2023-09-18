@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Events\UserSaved;
@@ -32,6 +34,9 @@ class User extends Model implements AuthenticatableContract
 
     protected $hidden = [
         'password',
+        'password_reset_token',
+        'google_id',
+        'facebook_id',
     ];
 
     /**

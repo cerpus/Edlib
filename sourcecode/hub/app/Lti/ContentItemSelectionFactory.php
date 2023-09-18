@@ -9,6 +9,7 @@ use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+
 use const JSON_THROW_ON_ERROR;
 
 /**

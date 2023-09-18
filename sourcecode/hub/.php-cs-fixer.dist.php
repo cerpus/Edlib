@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         'array_push' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'declare_strict_types' => true,
         'native_function_casing' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,
