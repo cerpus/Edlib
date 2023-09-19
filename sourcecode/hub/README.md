@@ -34,6 +34,19 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
     --hostname=edlib-hub-your-domain-here.ngrok.dev
 ```
 
+## LTI Deep-Linking 1.0 extensions
+
+The following attributes can be used with items of the `LtiLinkItem` type to
+communicate extra information that isn't part of the LTI Deep-Linking spec:
+
+* `license`
+    * `@id`: `https://spec.edlib.com/lti/vocab#license`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+
+* `languageIso639_3`
+    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+
 ## Useful resources
 
 * [Laravel 10 documentation](https://laravel.com/docs/10.x)

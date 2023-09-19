@@ -6,7 +6,9 @@ namespace Feature;
 
 use App\Models\User;
 use Tests\TestCase;
+
 use function json_decode;
+
 use const JSON_THROW_ON_ERROR;
 
 class UserTest extends TestCase

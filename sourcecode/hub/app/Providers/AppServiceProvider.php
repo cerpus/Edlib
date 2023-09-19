@@ -7,9 +7,13 @@ namespace App\Providers;
 use App\Configuration\Locales;
 use App\Lti\Decorator\LtiLaunchCsp;
 use App\Lti\LtiLaunchBuilder;
+use App\Lti\Serializer\ContentItemsSerializer;
+use App\Lti\Serializer\LtiContentSerializer;
 use App\Models\LtiPlatform;
 use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\LtiLinkItemSerializerInterface;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Vite;
@@ -44,6 +48,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(CredentialStoreInterface::class, LtiPlatform::createOauth1CredentialsStore(...));
 
         $this->app->singleton(LtiLaunchBuilder::class, LtiLaunchCsp::class);
+
+        $this->app->extend(
+            ContentItemsSerializerInterface::class,
+            fn (ContentItemsSerializerInterface $serializer) => new ContentItemsSerializer($serializer),
+        );
+        $this->app->extend(
+            LtiLinkItemSerializerInterface::class,
+            fn (LtiLinkItemSerializerInterface $serializer) => new LtiContentSerializer($serializer),
+        );
     }
 
     /**

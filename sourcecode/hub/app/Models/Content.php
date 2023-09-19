@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Lti\ContentItemSelectionFactory;
+use App\Lti\LtiContent;
 use BadMethodCallException;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItemPlacement;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\LtiLinkItem;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\PresentationDocumentTarget;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DOMDocument;
 use Exception;
@@ -41,8 +38,6 @@ class Content extends Model
 
     public function toItemSelectionRequest(): Oauth1Request
     {
-        $contentItems = new ContentItems([$this->toLtiLinkItem()]);
-
         $returnUrl = session()->get('lti.content_item_return_url')
             ?? throw new BadMethodCallException('Not in LTI selection context');
         assert(is_string($returnUrl));
@@ -52,22 +47,20 @@ class Content extends Model
             ->getOauth1Credentials();
 
         return app()->make(ContentItemSelectionFactory::class)
-            ->createItemSelection($contentItems, $returnUrl, $credentials);
+            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
     }
 
-    public function toLtiLinkItem(): LtiLinkItem
+    public function toLtiLinkItem(): LtiContent
     {
         $version = $this->latestPublishedVersion
             ?? throw new BadMethodCallException('Calling the thing on content without published version');
         assert($version->resource !== null);
 
-        return new LtiLinkItem(
-            mediaType: 'application/vnd.ims.lti.v1.ltilink',
+        return new LtiContent(
             title: $version->resource->title,
             url: url()->route('content.preview', [$this->id]),
-            placementAdvice: new ContentItemPlacement(
-                presentationDocumentTarget: PresentationDocumentTarget::Iframe,
-            ),
+            languageIso639_3: $version->resource->language_iso_639_3,
+            license: $version->resource->license,
         );
     }
 
@@ -151,6 +144,8 @@ class Content extends Model
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'license' => $version->resource?->license,
+            'language_iso_639_3' => $version->resource?->language_iso_639_3,
         ];
     }
 

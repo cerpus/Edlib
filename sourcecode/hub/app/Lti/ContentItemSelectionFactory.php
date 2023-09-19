@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use Cerpus\EdlibResourceKit\Lti\ContentItem\ContentItems;
-use Cerpus\EdlibResourceKit\Lti\ContentItem\Serializer\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
@@ -23,8 +23,11 @@ final readonly class ContentItemSelectionFactory
     ) {
     }
 
+    /**
+     * @param array<ContentItem> $items
+     */
     public function createItemSelection(
-        ContentItems $items,
+        array $items,
         string $returnUrl,
         Credentials $credentials,
     ): Request {
