@@ -32,11 +32,15 @@ class User extends Model implements AuthenticatableContract
         'theme',
     ];
 
-    protected $hidden = [
-        'password',
-        'password_reset_token',
-        'google_id',
-        'facebook_id',
+    protected $visible = [
+        'id',
+        'name',
+        'admin',
+        'created_at',
+        'updated_at',
+        'locale',
+        'debug_mode',
+        'theme',
     ];
 
     /**

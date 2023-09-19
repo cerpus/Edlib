@@ -33,6 +33,23 @@ class UserFactory extends Factory
         return $this->state(['email' => $email]);
     }
 
+    public function withPasswordResetToken(): static
+    {
+        return $this->state([
+            'password_reset_token' => hash('xxh128', $this->faker->randomAscii),
+        ]);
+    }
+
+    public function withGoogleId(): static
+    {
+        return $this->state(['google_id' => $this->faker->randomAscii]);
+    }
+
+    public function withFacebookId(): static
+    {
+        return $this->state(['facebook_id' => $this->faker->randomAscii]);
+    }
+
     public function admin(): static
     {
         return $this->state(['admin' => true]);
