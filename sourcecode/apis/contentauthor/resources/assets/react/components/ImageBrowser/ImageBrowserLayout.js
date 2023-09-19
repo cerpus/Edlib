@@ -18,7 +18,6 @@ function ImageBrowserLayout({
     return (
         <Dialog
             maxWidth={maxWidth}
-            onBackdropClick={onCancel}
             onToggle={onToggle}
         >
             <NDLAImage

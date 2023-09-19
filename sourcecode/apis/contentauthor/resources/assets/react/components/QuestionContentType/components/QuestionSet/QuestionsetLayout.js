@@ -5,6 +5,7 @@ import AddCard from '../QuestionCard/components/AddCard';
 import { FormattedMessage } from 'react-intl';
 import { PresentationContainer } from '../Presentation';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 function QuestionSetLayout(props) {
     const {
@@ -14,18 +15,31 @@ function QuestionSetLayout(props) {
         cards,
         onPresentationChange,
         contentTypes,
+        handleDragEnd,
     } = props;
     return (
         <Fragment>
-            {cards.map((card, index) => (
-                <CardContainer
-                    key={'card_' + card.id}
-                    cardNumber={index + 1}
-                    onDeleteCard={handleDeleteCard}
-                    card={card}
-                    collectData={onChange}
-                />)
-            )}
+            <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="questionSetDropZone">
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                        >
+                            {cards.map((card, index) => (
+                                <CardContainer
+                                    key={'card_' + card.id}
+                                    cardNumber={index + 1}
+                                    onDeleteCard={handleDeleteCard}
+                                    card={card}
+                                    collectData={onChange}
+                                />
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
             {typeof onAddCard === 'function' && (
                 <AddCard
                     onClick={onAddCard}
