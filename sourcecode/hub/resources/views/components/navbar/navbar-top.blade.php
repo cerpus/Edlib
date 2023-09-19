@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md mb-3">
     <div class="container-md">
-        <a href="{{ route('home') }}" class="navbar-brand">
+        <a href="{{ route('home') }}" class="navbar-brand" aria-hidden=true>
             <img
                 src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/logo.png') }}"
                 width="350"
@@ -47,14 +47,15 @@
             <ul class="navbar-nav justify-content-end">
                 @auth
                     <li class="nav-item dropdown">
-                        <a
-                            href="#"
+                        <button
                             class="nav-link dropdown-toggle"
                             aria-expanded="false"
                             data-bs-toggle="dropdown"
+                            type="button"
+                            aria-label="{{ trans('messages.toggle-menu') }}"
                         >
                             {{ auth()->user()->name }}
-                        </a>
+                        </button>
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
