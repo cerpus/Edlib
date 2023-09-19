@@ -76,7 +76,13 @@ class QuestionContainer extends Component {
     }
 
     handleDeleteCard(cardId) {
-        this.handleChange({ cards: this.props.questions.filter(card => card.id !== cardId) });
+        this.handleChange({ cards: this.props.questions
+            .filter(card => card.id !== cardId)
+            .map((card, index) => {
+                card.order = index;
+                return card;
+            })
+        });
     }
 
     handleEditTitle(title, inEditMode) {
@@ -202,6 +208,7 @@ class QuestionContainer extends Component {
                         onToggleDialog={this.handleToggleDialog}
                         tags={this.props.tags}
                         onSave={this.props.onSave}
+                        handleDragEnd={this.handleDragEnd}
                     />);
                 break;
             case 'CERPUS.MILLIONAIRE':
@@ -217,6 +224,7 @@ class QuestionContainer extends Component {
                         tags={this.props.tags}
                         editMode={this.props.editMode}
                         onSave={this.props.onSave}
+                        handleDragEnd={this.handleDragEnd}
                     />);
                 break;
             default:
@@ -229,6 +237,7 @@ class QuestionContainer extends Component {
                         onAddCard={this.handleChange}
                         onPresentationChange={this.handlePresentationSelect}
                         contentTypes={this.props.contentTypes}
+                        handleDragEnd={this.handleDragEnd}
                     />
                 );
         }
@@ -239,7 +248,6 @@ class QuestionContainer extends Component {
     render() {
         return (
             <QuestionContainerLayout
-                onAddCard={this.handleAddCard}
                 cards={this.props.questions}
                 cardsComponents={this.getCards(this.props.currentContainer)}
                 onTitleChange={this.handleEditTitle}
@@ -252,7 +260,6 @@ class QuestionContainer extends Component {
                 loadingText={this.state.contentText}
                 loadingTitle={this.state.contentTitle}
                 editMode={this.props.editMode}
-                handleDragEnd={this.handleDragEnd}
                 searchTitle={this.state.title}
                 placeholder={this.props.intl.formatMessage({ id: 'QUESTIONCONTAINER.TITLE_PLACEHOLDER' })}
             />

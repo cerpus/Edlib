@@ -5,6 +5,7 @@ import { CardContainer } from '../QuestionCard';
 import InfoBox from '../InfoBox';
 import FooterBox from '../FooterBox';
 import AddCard from '../QuestionCard/components/AddCard';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 function MillionaireLayout(props) {
     const {
@@ -23,6 +24,7 @@ function MillionaireLayout(props) {
         minimumNumberOfQuestions,
         onAddCard,
         onDisplayAddAnswerButton,
+        handleDragEnd,
     } = props;
 
     return (
@@ -39,15 +41,28 @@ function MillionaireLayout(props) {
                     onChangeProcessing={onChangeProcessing}
                 />
             )}
-            {cards.map((card, index) => (
-                <CardContainer
-                    key={'card_' + card.id}
-                    cardNumber={index + 1}
-                    onDeleteCard={() => onDeleteCard(card.id)}
-                    card={card}
-                    collectData={onChange}
-                    showAddAnswerButton={onDisplayAddAnswerButton(card.answers)}
-                />))}
+            <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="questionSetDropZone">
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                        >
+                            {cards.map((card, index) => (
+                                <CardContainer
+                                    key={'card_' + card.id}
+                                    cardNumber={index + 1}
+                                    onDeleteCard={() => onDeleteCard(card.id)}
+                                    card={card}
+                                    collectData={onChange}
+                                    showAddAnswerButton={onDisplayAddAnswerButton(card.answers)}
+                                />
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
             {cards.length < minimumNumberOfQuestions && typeof onAddCard === 'function' && (
                 <AddCard
                     onClick={onAddCard}

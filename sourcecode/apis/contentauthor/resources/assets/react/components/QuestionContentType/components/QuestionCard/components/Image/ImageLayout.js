@@ -1,6 +1,6 @@
 import { React, useState, useRef} from 'react';
 import PropTypes from 'prop-types';
-import DropZone from 'react-dropzone';
+import Dropzone from 'react-dropzone';
 import Popover from '@material-ui/core/Popover';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ImageIcon from '@material-ui/icons/Image';
@@ -47,7 +47,7 @@ function ImageLayout(props) {
         );
         if ( readOnly === false ) {
             icon = (
-                <DropZone
+                <Dropzone
                     ref={dropzoneRef}
                     onDropAccepted={onDrop}
                     multiple={false}
@@ -59,15 +59,21 @@ function ImageLayout(props) {
                         })
                     }}
                 >
-                    {icon}
-                </DropZone>);
+                    {({getRootProps, getInputProps}) => (
+                        <section>
+                            <div {...getRootProps()}>
+                                <input {...getInputProps()} />
+                                <ImageIcon />
+                            </div>
+                        </section>
+                    )}
+                </Dropzone>
+            );
         }
     }
 
     return (
-        <div
-            className={'imageContainer ' + (previewImage !== null ? 'withImage' : null)}
-        >
+        <div className={'imageContainer ' + (previewImage !== null ? 'withImage' : null)}>
             {icon}
             {previewImage !== null && (
                 <div>

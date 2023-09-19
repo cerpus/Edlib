@@ -15,7 +15,6 @@ function VideoBrowserLayout({
     return (
         <Dialog
             maxWidth={maxWidth}
-            onBackdropClick={onCancel}
             onToggle={onToggle}
         >
             <NDLAVideo

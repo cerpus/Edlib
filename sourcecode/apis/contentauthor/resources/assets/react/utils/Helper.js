@@ -1,4 +1,4 @@
-import iso6392 from 'iso-639-2';
+import { iso6392 } from 'iso-639-2';
 
 /**
  * Miscellaneous helper function
