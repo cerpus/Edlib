@@ -1,4 +1,4 @@
-<section id="filterSection" class="col-md-3 col-lg-2 d-md-block bg-white sidebar" role="complementary" aria-labelledby="filterSectionLabel">
+<section id="filterSection" class="col-md-3 col-lg-2 d-md-block bg-white sidebar d-none" role="complementary" aria-labelledby="filterSectionLabel">
     <h2 id="filterSectionLabel" class="visually-hidden">{{ trans('messages.filter-section') }}</h2>
     <div class="position-sticky">
         <div class="accordion p-3 m-0 border-0 bd-example m-0 border-0" id="filterAccordion">

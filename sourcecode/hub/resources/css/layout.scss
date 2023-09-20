@@ -100,3 +100,11 @@
 .no-content-found {
     height: 50vh;
 }
+.offcanvas.offcanvas-bottom {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 35px;
+    right: 35px;
+    height: calc(100% - 35px);
+}

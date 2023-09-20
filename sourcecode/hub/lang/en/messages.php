@@ -87,4 +87,5 @@ return [
     'result-list' => 'Display results as list',
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
+    'filter' => 'Filter',
 ];

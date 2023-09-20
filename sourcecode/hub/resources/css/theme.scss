@@ -146,3 +146,61 @@
         }
     }
 }
+
+/* Desktop-specific styles */
+@media (min-width: 769px) {
+    .accordion-button:not(.collapsed) {
+        background-color: #{$green-100};
+        color: var(--bs-body-color);
+    }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .accordion-item {
+        border-left: none;
+        border-right: none;
+    }
+
+    .first-accordion-item {
+        border-top: none;
+    }
+
+    .accordion-button:not(.collapsed) {
+        color: dodgerblue;
+        background-color: #E7F1FF !important;
+        box-shadow: none !important;
+        border: 1px solid lightgrey !important;
+
+    }
+
+    .accordion-item:first-of-type .accordion-button {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .accordion-item:last-of-type .accordion-button.collapsed {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .offcanvas-body {
+        background-color: white;
+    }
+
+    .accordion-button {
+        background-color: white !important;
+    }
+
+    .accordion-item {
+        background-color: white !important;
+    }
+
+    .list-group-item {
+        background-color: white !important;
+    }
+
+    .form-check-input {
+        background-color: white !important;
+    }
+}
