@@ -190,33 +190,23 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Translation function
-     *
-     * @param string $message
-     *  The english string to be translated.
-     * @param type $replacements
-     *   An associative array of replacements to make after translation. Incidences
-     *   of any key in this array are replaced with the corresponding value. Based
-     *   on the first character of the key, the value is escaped and/or themed:
-     *    - !variable: inserted as is
-     *    - @variable: escape plain text to HTML
-     *    - %variable: escape text and theme as a placeholder for user-submitted
-     *      content
-     * @return string
-     *   Translated string
-     * TODO: Implement this for real....
+     * @inheritDoc
      */
     public function t($message, $replacements = [])
     {
+        $key = 'h5p.' . $message;
+        $translated = trans($key);
+        $translated = ($translated === $key) ? $message : $translated;
+
         foreach ($replacements as $key => $replacement) {
             $firstCharacter = $key[0];
             if ($firstCharacter == "!") {
-                $message = str_replace($key, $replacement, $message);
+                $translated = str_replace($key, $replacement, $translated);
             } elseif ($firstCharacter == "@" || $firstCharacter == "%") {
-                $message = str_replace($key, htmlentities($replacement), $message);
+                $translated = str_replace($key, htmlentities($replacement), $translated);
             }
         }
-        return $message;
+        return $translated;
     }
 
     public function getH5pPath(string $path)
