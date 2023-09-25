@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Integration\Models;
 
 use App\H5PLibrary;
 use Tests\TestCase;

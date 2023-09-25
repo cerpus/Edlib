@@ -7,8 +7,8 @@ namespace Tests\Integration\Libraries\H5P;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLibrary;
+use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
-use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use ArrayObject;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -16,6 +16,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use PDO;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -156,26 +157,29 @@ final class FrameworkTest extends TestCase
     /** @dataProvider provider_usePatch */
     public function test_deleteLibrary($usePatch): void
     {
+        $disk = Storage::fake();
+        $caStorage = App(ContentAuthorStorage::class);
+        $tmpDisk = Storage::fake($caStorage->getH5pTmpDiskName());
+
         /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
+        $path = 'libraries/' . $library->getFolderName();
 
-        $storage = $this->createMock(H5PCerpusStorage::class);
-        $this->instance(H5PCerpusStorage::class, $storage);
-        $storage
-            ->expects($this->once())
-            ->method('deleteLibrary')
-            ->with([
-                'machineName' => $library->name,
-                'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version,
-                'patchVersion' => $library->patch_version,
-                'patchVersionInFolderName' => $library->patch_version_in_folder_name,
-            ]);
+        $this->assertFalse($disk->exists($path));
+        $disk->put($path . '/library.json', 'just testing');
+        $this->assertTrue($disk->exists($path . '/library.json'));
+
+        $this->assertFalse($tmpDisk->exists($path));
+        $tmpDisk->put($path . '/library.json', 'just testing');
+        $this->assertTrue($tmpDisk->exists($path . '/library.json'));
 
         $lib = ['id' => $library->id];
         $this->assertDatabaseHas('h5p_libraries', $lib);
         $this->framework->deleteLibrary((object) $lib);
         $this->assertDatabaseMissing('h5p_libraries', $lib);
+
+        $this->assertFalse($disk->exists($path));
+        $this->assertFalse($tmpDisk->exists($path));
     }
 
     /** @dataProvider provider_usePatch */
