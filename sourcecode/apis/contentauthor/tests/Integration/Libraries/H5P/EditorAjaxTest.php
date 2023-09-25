@@ -70,6 +70,5 @@ class EditorAjaxTest extends TestCase
         $data = json_decode($translations[$libTest->getLibraryString(false)], true, JSON_THROW_ON_ERROR);
         $this->assertSame($libTest->getLibraryString(false), $data['lib']);
         $this->assertSame('nb', $data['lang']);
-
     }
 }
