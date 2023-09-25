@@ -7,75 +7,52 @@ return [
     "3.0 Unported" => "3.0 Ikkje-portert",
     "4.0 International" => "4.0 Internasjonalt",
 
-    "Any additional information about the license",
+    "Any additional information about the license" => "Any additional information about the license",
     "Attempting to submit stored results." => "Forsøkjer å leggje inn lagra resultat.",
-    "Attribution (CC BY)",
+    "Attribution (CC BY)" => "Namngjeving (CC BY)",
     "Attribution" => "Namngjeving",
-    "Attribution-NoDerivs (CC BY-ND)",
+    "Attribution-NoDerivs (CC BY-ND)" => "Namngjeving-IngaBearbeiding (CC BY-ND)",
     "Attribution-NoDerivs" => "Namngjeving-IngaBearbeiding",
-    "Attribution-NonCommercial (CC BY",
+    "Attribution-NonCommercial (CC BY-NC)" => "Namngjeving-IkkjeKommersiell (CC BY-NC)",
     "Attribution-NonCommercial" => "Namngjeving-IkkjeKommersiell",
-    "Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)",
+    "Attribution-NonCommercial-NoDerivs (CC BY-NC-ND)" => "Namngjeving-IkkjeKommersiell-IngaBearbeiding (CC BY-NC-ND)",
     "Attribution-NonCommercial-NoDerivs" => "Namngjeving-IkkjeKommersiell-IngaBearbeiding",
-    "Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)",
+    "Attribution-NonCommercial-ShareAlike (CC BY-NC-SA)" => "Namngjeving-IkkjeKommersiell-DelPåSameVilkår (CC BY-NC-SA)",
     "Attribution-NonCommercial-ShareAlike" => "Namngjeving-IkkjeKommersiell-DelPåSameVilkår",
-    "Attribution-ShareAlike (CC BY-SA)",
+    "Attribution-ShareAlike (CC BY-SA)" => "Namngjeving-DelPåSameVilkår (CC BY-SA)",
     "Attribution-ShareAlike" => "Namngjeving-DelPåSameVilkår",
-    "Author comments",
     "Author" => "Opphavar",
-    "Author's name",
-    "Author's role",
 
     "by" => "av",
 
-    "Cancel",
     "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication" => "CC0 1.0 Universell (CC0 1.0) Offentleg domene dedikert",
-    "Changed by",
     "Changelog" => "Endringslogg",
     "Close" => "Lukk",
-    "Comments for the editor of the content (This text will not be published as a part of copyright info)",
     "Confirm action" => "Bekreft handling",
     "Confirm" => "Bekreft",
     "Connection lost. Results will be stored and sent when you regain connection." => "Tilkoblinga vart brutt. Resultata vert lagra og sendt så snart du vert tilkobla igjen.",
     "Connection reestablished." => "Tilkoblinga vert gjenoppretta.",
     "Content is copied to the clipboard" => "Innhaldet er kopiert til utklippstavla.",
     "Content Type" => "Innhaldstype",
-    "Copyright information",
-    "Copyright" => "Copyright",
-    "Creative Commons",
 
-    "Date",
-    "Description of change",
     "Disable fullscreen" => "Skru av fullskjerm",
     "Download this content as a H5P file." => "Last ned innhaldet som ei H5P-fil.",
     "Download" => "Last ned",
 
-    "Editor",
     "Embed" => "Byggje inn",
 
     "Fullscreen" => "Fullskjerm",
 
-    "General Public License v3",
     "General Public License" => "Generell offentleg lisens",
 
     "Hide advanced" => "Gøym avansert",
 
-    "Include this script on your website if you want dynamic sizing of the embedded content:" => "Inkluder dette skriptet på nettsida di om du ynskjer ein dynamisk storleik på det innebygde innhaldet:",
-
     "License Extras" => "Lisens-tillegg",
-    "License Version",
     "License" => "Lisens",
-    "Licensee",
 
     "No copyright information available for this content." => "Ingen opphavsrett-informasjon er tilgjengeleg for dette innhaldet.",
 
-    "Originator",
-
-    "Photo cropped, text changed, etc.",
     "Please confirm that you wish to proceed. This action is not reversible." => "Ver vennleg og bekreft at du ynskjer å fortsette. Dette valet kan ikkje bli reversert.",
-    "Public Domain Dedication (CC0)",
-    "Public Domain Dedication and Licence",
-    "Public Domain Mark (PDM)",
     "Public Domain Mark" => "Public Domain-Merket",
     "Public Domain" => "Offentleg eie",
 
@@ -110,8 +87,6 @@ return [
     "We were unable to send information about your completion of this task. Please check your internet connection." => "Me klarte ikkje å senda informasjonen om at du fullførte oppgaven. Ver vennleg og sjekk tilkoblinga til Internett.",
 
     "Year" => "År",
-    "Years (from)",
-    "Years (to)",
     "You'll be starting over." => "Du kjem til å starte på nytt.",
     "Your connection to the server was lost" => "Tilkoblinga di til serveren vart tapt.",
 ];
