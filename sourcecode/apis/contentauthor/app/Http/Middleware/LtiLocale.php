@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Support\Facades\App;
-use Closure;
-use Illuminate\Support\Facades\Session;
 use App\H5pLti;
+use Closure;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Session;
 
 class LtiLocale
 {
@@ -23,11 +23,28 @@ class LtiLocale
         $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
         if ($ltiRequest != null) {
             if ($ltiRequest->getLocale()) {
+                // Store the original code, even if we don't have this locale, maybe H5P does
                 Session::put('locale', $ltiRequest->getLocale());
             }
         }
-        App::setLocale(Session::get('locale', config('app.fallback_locale')));
+        App::setLocale($this->resolveLocale(Session::get('locale', config('app.fallback_locale'))));
 
         return $next($request);
+    }
+
+    /**
+     * Check if we have a translation for the code. If that failes, and a code longer than two characters is
+     * given, check if we have a translation for the two-code version. Failing that the original code is returned.
+     */
+    private function resolveLocale(string $locale): string
+    {
+        if (!file_exists(resource_path('lang/' . $locale)) && strlen($locale) > 2) {
+            $lang = \Iso639p3::code2letters($locale);
+            if (file_exists(resource_path('lang/' . $lang))) {
+                return $lang;
+            }
+        }
+
+        return $locale;
     }
 }
