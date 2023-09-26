@@ -285,7 +285,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
     private function languageFileExists($preferredLanguage): bool
     {
-        $path = public_path('h5p-editor-php-library/language/' . $preferredLanguage . '.js');
+        $path = base_path('vendor/h5p/h5p-editor/language/' . $preferredLanguage . '.js');
 
         return file_exists($path);
     }

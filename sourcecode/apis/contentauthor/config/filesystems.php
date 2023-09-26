@@ -32,6 +32,7 @@ return [
         'local' => [ // local app storage
             'driver' => 'local',
             'root' => storage_path('app'),
+            'url' => '/h5pstorage/',
         ],
         'testDisk' => [ // disk where tests are located.
             'driver' => 'local',
