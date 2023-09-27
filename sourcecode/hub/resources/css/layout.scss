@@ -109,7 +109,7 @@
     height: calc(100% - 35px);
 }
 /* Mobile-specific styles */
-@include media-breakpoint-up(xs) {
+@include media-breakpoint-down(md) {
     .accordion-item {
         border-left: none;
         border-right: none;

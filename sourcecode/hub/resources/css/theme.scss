@@ -48,6 +48,18 @@
     // Change background color for mobile / small-screen view
     @include media-breakpoint-down(md) {
         --bs-body-bg: #E7F1FF;
+        .offcanvas {
+            --bs-offcanvas-bg: #{$white};
+        }
+        .accordion-button {
+            --bs-accordion-btn-bg: #{$white};
+        }
+        .list-group-item {
+            --bs-list-group-bg: #{$white};
+        }
+        .form-check-input {
+            --bs-form-check-bg: #{$white};
+        }
     }
 
     // Primary button
@@ -145,42 +157,16 @@
             }
         }
     }
-}
-
-/* Desktop-specific styles */
-@include media-breakpoint-up(md) {
+    /* Desktop-specific styles */
     .accordion-button:not(.collapsed) {
         background-color: #{$green-100};
         color: var(--bs-body-color);
     }
+
+
 }
 
-/* Mobile-specific styles */
-@include media-breakpoint-up(xs) {
-    .accordion-button:not(.collapsed) {
-        color: dodgerblue;
-        background-color: #E7F1FF !important;
-        box-shadow: none !important;
-        border: 1px solid lightgrey !important;
-    }
 
-    .offcanvas-body {
-        background-color: white;
-    }
 
-    .accordion-button {
-        background-color: white !important;
-    }
 
-    .accordion-item {
-        background-color: white !important;
-    }
 
-    .list-group-item {
-        background-color: white !important;
-    }
-
-    .form-check-input {
-        background-color: white !important;
-    }
-}
