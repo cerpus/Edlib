@@ -108,3 +108,24 @@
     right: 35px;
     height: calc(100% - 35px);
 }
+/* Mobile-specific styles */
+@include media-breakpoint-up(xs) {
+    .accordion-item {
+        border-left: none;
+        border-right: none;
+    }
+
+    .first-accordion-item {
+        border-top: none;
+    }
+
+    .accordion-item:first-of-type .accordion-button {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .accordion-item:last-of-type .accordion-button.collapsed {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
