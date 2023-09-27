@@ -8,6 +8,7 @@ use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Support\Facades\Session;
+use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
 use function Cerpus\Helper\Helpers\profile as config;
@@ -272,22 +273,28 @@ abstract class H5PConfigAbstract implements ConfigInterface
         }
     }
 
+    /**
+     * Language file to load for H5P Editor
+     */
     private function getLanguage(): string
     {
-        $preferredH5PLanguage = LtiToH5PLanguage::convert(Session::get('locale'));
-
-        if ($this->languageFileExists($preferredH5PLanguage)) {
-            return "language/$preferredH5PLanguage.js";
-        }
-
-        return 'language/en.js';
+        return "language/" . $this->resolveEditorLocale(Session::get('locale')) . ".js";
     }
 
-    private function languageFileExists($preferredLanguage): bool
+    private function resolveEditorLocale($locale): string
     {
-        $path = public_path('h5p-editor-php-library/language/' . $preferredLanguage . '.js');
+        if (is_string($locale)) {
+            if (file_exists(base_path('vendor/h5p/h5p-editor/language/' . $locale . '.js'))) {
+                return $locale;
+            } elseif (strlen($locale) > 2) {
+                $lang = Iso639p3::code2letters($locale);
+                if (file_exists(base_path('vendor/h5p/h5p-editor/language/' . $lang . '.js'))) {
+                    return $lang;
+                }
+            }
+        }
 
-        return file_exists($path);
+        return 'en';
     }
 
     private function getL10n(): array
