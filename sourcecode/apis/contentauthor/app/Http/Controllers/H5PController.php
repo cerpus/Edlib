@@ -332,7 +332,7 @@ class H5PController extends Controller
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
-            'library' => $library->getLibraryString(),
+            'library' => $library->getLibraryString(false),
             'libraryid' => $h5pContent->library_id,
             'parameters' => $params,
             'language_iso_639_3' => $contentLanguage,

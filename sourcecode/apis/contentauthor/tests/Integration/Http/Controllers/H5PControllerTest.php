@@ -30,8 +30,8 @@ class H5PControllerTest extends TestCase
     use RefreshDatabase;
     use MockAuthApi;
 
-    /** @dataProvider provider_adapterMode */
-    public function testCreate(string $adapterMode): void
+    /** @dataProvider provider_testCreate */
+    public function testCreate(string $adapterMode, ?string $contentType): void
     {
         $faker = Factory::create();
         $this->session([
@@ -49,11 +49,15 @@ class H5PControllerTest extends TestCase
             'redirectToken' => $faker->uuid,
         ]);
 
+        H5PLibrary::factory()->create();
+
         /** @var H5PCore $h5pCore */
         $h5pCore = app(H5pCore::class);
+
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
-        $result = $articleController->create($request, $h5pCore);
+        $result = $articleController->create($request, $h5pCore, $contentType);
+
         $this->assertInstanceOf(View::class, $result);
 
         $data = $result->getData();
@@ -67,9 +71,14 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
         $this->assertArrayHasKey('configJs', $data);
+        $this->assertSame($contentType, $data['libName']);
 
         $config = json_decode(substr($result['config'], 25, -9), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertTrue($config['hubIsEnabled']);
+        if ($contentType === null) {
+            $this->assertTrue($config['hubIsEnabled']);
+        } else {
+            $this->assertFalse($config['hubIsEnabled']);
+        }
         $this->assertEmpty($config['contents']);
         $this->assertSame('nb-no', $config['locale']);
         $this->assertSame('nb', $config['localeConverted']);
@@ -90,10 +99,11 @@ class H5PControllerTest extends TestCase
         $this->assertEquals('Emily Quackfaster', $editorSetup['creatorName']);
 
         $state = json_decode($data['state'], true, flags: JSON_THROW_ON_ERROR);
+
         $this->assertNull($state['id']);
         $this->assertNull($state['title']);
         $this->assertFalse($state['isPublished']);
-        $this->assertNull($state['library']);
+        $this->assertSame($contentType, $state['library']);
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
@@ -104,6 +114,14 @@ class H5PControllerTest extends TestCase
         } elseif ($adapterMode === 'cerpus') {
             $this->assertSame([], $data['configJs']);
         }
+    }
+
+    public function provider_testCreate(): \Generator
+    {
+        yield 'cerpus-withoutContentType' => ['cerpus', null];
+        yield 'ndla-withoutContentType' => ['ndla', null];
+        yield 'cerpus-withContentType' => ['cerpus', 'H5P.Toolbar 1.2'];
+        yield 'ndla-withContentType' => ['ndla', 'H5P.Toolbar 1.2'];
     }
 
     /** @dataProvider provider_adapterMode */
@@ -201,6 +219,7 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($config['editor']['ajaxPath']);
 
         $editorSetup = json_decode($data['editorSetup'], true, flags: JSON_THROW_ON_ERROR);
+        $this->assertEquals($lib->title . ' 1.6.3', $editorSetup['contentProperties']['type']);
         $this->assertEquals('Emily Quackfaster', $editorSetup['contentProperties']['ownerName']);
         $this->assertSame($upgradeLib->id, $editorSetup['libraryUpgradeList'][0]['id']);
         $this->assertSame('nb', $editorSetup['h5pLanguage']);
