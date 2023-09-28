@@ -24,17 +24,16 @@ class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $request->attributes->get('lti_request');
     }
 
-    public function __construct(
-        string $method,
-        string $url,
-        private readonly array $params,
-    ) {
-        parent::__construct($method, $url, $params);
+    public function getReturnUrl(): string|null
+    {
+        return $this->param('launch_presentation_return_url')
+            ?? $this->param('content_item_return_url')
+            ?? null;
     }
 
-    public function getLaunchPresentationReturnUrl(): string|null
+    public function isContentItemSelectionRequest(): bool
     {
-        return $this->params['launch_presentation_return_url'] ?? null;
+        return $this->param('lti_message_type') === 'ContentItemSelectionRequest';
     }
 
     public function param($name, $default = null)

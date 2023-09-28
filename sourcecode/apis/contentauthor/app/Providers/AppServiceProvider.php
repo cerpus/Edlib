@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\EdlibResource\CachedOauth1Validator;
 use App\EdlibResource\Oauth1Credentials;
 use App\H5POption;
 use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
@@ -58,10 +57,6 @@ class AppServiceProvider extends ServiceProvider
             ->giveConfig('app.consumer-secret');
 
         $this->app->singleton(CredentialStoreInterface::class, Oauth1Credentials::class);
-
-        $this->app->extend(ValidatorInterface::class, function (ValidatorInterface $validator) {
-            return new CachedOauth1Validator($validator);
-        });
 
         $this->app->singleton(H5POptionsCache::class, function () {
             return new H5POptionsCache();

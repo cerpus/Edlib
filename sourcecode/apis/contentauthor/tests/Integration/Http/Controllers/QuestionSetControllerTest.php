@@ -97,13 +97,7 @@ class QuestionSetControllerTest extends TestCase
         $questionSetConvertMock
             ->expects($this->once())
             ->method('convert')
-            ->willReturn([
-                $game->id,
-                $game->title,
-                "Game",
-                route('game.edit', $game['id']),
-                Content::TYPE_GAME,
-            ]);
+            ->willReturn($game);
 
         $requestData = [
             'title' => 'Something',
@@ -117,8 +111,8 @@ class QuestionSetControllerTest extends TestCase
         $this->withSession(['authid' => $user->getId()])
             ->post('/questionset', ['questionSetJsonData' => json_encode($requestData)])
             ->assertCreated()
-            ->assertJsonStructure([
-                'url',
+            ->assertJson([
+                'url' => 'http://localhost/game/' . $game->id . '/edit',
             ]);
     }
 

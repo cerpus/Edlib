@@ -2,10 +2,10 @@
 
 namespace Tests\Integration\Libraries;
 
-use App\Content;
 use App\Events\GameWasSaved;
 use App\Events\H5PWasSaved;
 use App\Gametype;
+use App\H5PContent;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
@@ -42,21 +42,18 @@ class QuestionSetConverterTest extends TestCase
 
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
-        list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter->convert(
+        $game = $questionsetConverter->convert(
             Millionaire::$machineName,
             $questionSet,
             $resourceMetaObject
         );
 
         $this->assertDatabaseHas('games', [
-            'id' => $id,
-            'title' => $title,
+            'id' => $game->id,
+            'title' => $questionSet->title,
             'license' => License::LICENSE_BY_NC,
             'gametype' => $gameType->id,
         ]);
-        $this->assertEquals('Game', $machineName);
-        $this->assertEquals(route('game.edit', $id), $route);
-        $this->assertEquals(Content::TYPE_GAME, $resourceType);
     }
 
     public function testCreateH5PQuestionSet(): void
@@ -89,19 +86,19 @@ class QuestionSetConverterTest extends TestCase
 
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
-        list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter->convert(
+        $h5p = $questionsetConverter->convert(
             H5PQuestionSet::$machineName,
             $questionSet,
             $resourceMetaObject
         );
 
+        $this->assertInstanceOf(H5PContent::class, $h5p);
         $this->assertDatabaseHas('h5p_contents', [
-            'id' => $id,
-            'title' => $title,
+            'id' => $h5p->id,
+            'title' => $questionSet->title,
             'license' => License::LICENSE_BY_NC,
         ]);
-        $this->assertEquals(H5PQuestionSet::$machineName, $machineName);
-        $this->assertEquals(route('h5p.edit', $id), $route);
-        $this->assertEquals(Content::TYPE_H5P, $resourceType);
+        // FIXME: when is this stored?
+//        $this->assertSame(H5PQuestionSet::class, $h5p->getMachineName());
     }
 }

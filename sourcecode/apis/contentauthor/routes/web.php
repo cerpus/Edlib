@@ -27,8 +27,13 @@ use App\Http\Controllers\LinkController;
 use App\Http\Controllers\LtiContentController;
 use App\Http\Controllers\Progress;
 use App\Http\Controllers\QuestionSetController;
+use App\Http\Controllers\ReturnToCoreController;
 use App\Http\Controllers\SingleLogoutController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/lti-return', ReturnToCoreController::class)
+    ->middleware('signed')
+    ->name('lti-return');
 
 Route::post('h5p/adapter', function () {
     return ["url" => route('create')];
@@ -65,7 +70,6 @@ Route::group(['middleware' => ['core.return', 'lti.add-auth-to-session', 'lti.ve
     Route::post('/embed/{id}', [EmbedController::class, 'ltiShow']);
 
     Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
-    Route::post('questionset/{id}', [QuestionSetController::class,'ltiShow']);
     Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
 
     Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor']);

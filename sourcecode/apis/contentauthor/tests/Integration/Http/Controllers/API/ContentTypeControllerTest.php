@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Http\Controllers\API;
 
+use App\H5PContent;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\H5P\Packages\MultiChoice;
 use App\Libraries\H5P\Packages\QuestionSet;
@@ -33,12 +34,12 @@ class ContentTypeControllerTest extends TestCase
         $title = $this->faker->sentence;
         $question = $this->faker->sentence;
         $options = $this->faker->sentences(3);
-        $contentId = $this->faker->numberBetween(1, 1000);
+        $content = H5PContent::factory()->create();
 
         $contentHandler = $this->createPartialMock(ContentTypeHandler::class, [
             'storeQuestionset'
         ]);
-        $contentHandler->method('storeQuestionset')->willReturn(['id' => $contentId]);
+        $contentHandler->method('storeQuestionset')->willReturn($content);
         app()->instance(ContentTypeHandler::class, $contentHandler);
 
         $data = [
@@ -73,7 +74,7 @@ class ContentTypeControllerTest extends TestCase
         $response
             ->assertSuccessful()
             ->assertExactJson([
-                'id' => $contentId,
+                'id' => $content->id,
                 'type' => QuestionSet::$machineName
             ]);
     }

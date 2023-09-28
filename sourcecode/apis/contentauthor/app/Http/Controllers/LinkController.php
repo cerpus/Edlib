@@ -85,19 +85,9 @@ class LinkController extends Controller
 
         event(new LinkWasSaved($link, VersionData::CREATE));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $link->id,
-            $link->title,
-            'Link',
-            $link->givesScore(),
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($link->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route('link.edit', $link->id),
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
 
     public function edit(Request $request, $id)
@@ -190,19 +180,9 @@ class LinkController extends Controller
 
         event(new LinkWasSaved($link, $reason));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $link->id,
-            $link->title,
-            'Link',
-            $link->givesScore(),
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($link->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route('link.edit', $link->id),
-        ];
-
-        return response()->json($responseValues, Response::HTTP_OK);
+        return response()->json(['url' => $url], Response::HTTP_OK);
     }
 
     /**

@@ -121,21 +121,11 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
-        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
+        $questionSet = $questionsetHandler->store($questionsetData, $request);
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $id,
-            $title,
-            $type,
-            $score,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : $fallbackUrl
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
 
     public function edit(Request $request, $id): View
@@ -209,27 +199,15 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
-        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update(
+        $questionSet = $questionsetHandler->update(
             $questionset,
             $questionsetData,
             $request
         );
 
-        $content = QuestionSet::find($id);
+        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $id,
-            $title,
-            $type,
-            $score,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
-
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : $fallbackUrl
-        ];
-
-        return response()->json($responseValues, Response::HTTP_OK);
+        return response()->json(['url' => $url], Response::HTTP_OK);
     }
 
     public function show($id)

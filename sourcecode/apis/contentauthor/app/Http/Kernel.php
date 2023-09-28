@@ -76,7 +76,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // App middleware
-        'core.return' => \App\Http\Middleware\CoreReturnUrl::class,
+        'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
         'core.ownership' => \App\Http\Middleware\CheckOwnership::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
