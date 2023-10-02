@@ -3,10 +3,14 @@
 namespace Tests\Integration\Models;
 
 use App\H5PLibrary;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class H5PLibraryTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @dataProvider provider_getLibraryString
      */
@@ -96,5 +100,30 @@ class H5PLibraryTest extends TestCase
         yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], null, 'H5P.Foobar 2.1'];
         yield 2 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], false, 'H5P.Foobar 2.1'];
         yield 3 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], true, 'H5P.Foobar 2.1.4'];
+    }
+
+    public function test_getUpgrades()
+    {
+        $originalLib = H5PLibrary::factory()->create();
+        $noPatchLibrary = H5PLibrary::factory()->create([
+            'minor_version' => 3,
+        ]);
+        $withPatchLibrary = H5PLibrary::factory()->create([
+            'minor_version' => 4,
+            'patch_version_in_folder_name' => true,
+        ]);
+
+        /** @var Collection $availableUpdates */
+        $availableUpdates = $originalLib->getUpgrades(false);
+
+        $this->assertCount(2, $availableUpdates);
+
+        $noPatch = $availableUpdates->where('id', $noPatchLibrary->id)->first();
+        $this->assertSame('H5P.Foobar 1.3', $noPatch['name']);
+        $this->assertSame('1.3.3', $noPatch['version']);
+
+        $withPatch = $availableUpdates->where('id', $withPatchLibrary->id)->first();
+        $this->assertSame('H5P.Foobar 1.4', $withPatch['name']);
+        $this->assertSame('1.4.3', $withPatch['version']);
     }
 }

@@ -252,7 +252,7 @@ class H5PLibrary extends Model
                 return [
                     'id' => $id,
                     'version' => $version,
-                    'name' => $library->getLibraryString(),
+                    'name' => $library->getLibraryString(false),
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
                     'minorVersion' => $library->minor_version,
