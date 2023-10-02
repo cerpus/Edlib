@@ -9,12 +9,10 @@ use App\Lti\Decorator\LtiLaunchCsp;
 use App\Lti\LtiLaunchBuilder;
 use App\Lti\Serializer\ContentItemsSerializer;
 use App\Lti\Serializer\LtiContentSerializer;
-use App\Models\LtiPlatform;
 use App\Support\CarbonToPsrClockAdapter;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\LtiLinkItemSerializerInterface;
-use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -44,8 +42,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(Locales::class)
             ->needs('$locales')
             ->giveConfig('app.allowed_locales');
-
-        $this->app->singleton(CredentialStoreInterface::class, LtiPlatform::createOauth1CredentialsStore(...));
 
         $this->app->singleton(LtiLaunchBuilder::class, LtiLaunchCsp::class);
 

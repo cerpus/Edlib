@@ -43,16 +43,4 @@ class LtiPlatform extends Model
     {
         return new Credentials($this->key, $this->secret);
     }
-
-    public static function createOauth1CredentialsStore(): CredentialStoreInterface
-    {
-        return new class () implements CredentialStoreInterface {
-            public function findByKey(string $key): Credentials|null
-            {
-                return LtiPlatform::where('key', $key)
-                    ->first()
-                    ?->getOauth1Credentials();
-            }
-        };
-    }
 }

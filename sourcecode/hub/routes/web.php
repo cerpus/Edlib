@@ -64,7 +64,7 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('tool');
 
     Route::post('/lti/1.1/item-selection-return', 'store')
-        ->middleware(LtiValidatedRequest::class)
+        ->middleware(LtiValidatedRequest::class . ':tool')
         ->middleware('lti.launch-type:ContentItemSelection')
         ->name('content.store');
 });
@@ -72,7 +72,7 @@ Route::controller(ContentController::class)->group(function () {
 Route::prefix('/lti/1.1')->group(function () {
     Route::post('/select', [LtiController::class, 'select'])
         ->middleware(EnsureFrameCookies::class)
-        ->middleware(LtiValidatedRequest::class)
+        ->middleware(LtiValidatedRequest::class . ':platform')
         ->middleware('lti.launch-type:ContentItemSelectionRequest')
         ->name('lti.select');
 });
