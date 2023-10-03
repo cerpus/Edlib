@@ -3,7 +3,6 @@
 namespace Tests\Integration\Http\Controllers;
 
 use App\ApiModels\User;
-use App\Content;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Game;

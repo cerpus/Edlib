@@ -7,6 +7,7 @@ namespace App\Traits;
 use App\Libraries\DataObjects\LtiContent;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
+
 use function now;
 use function serialize;
 

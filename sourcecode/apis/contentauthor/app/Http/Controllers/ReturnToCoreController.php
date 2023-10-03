@@ -14,6 +14,7 @@ use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+
 use function assert;
 use function http_build_query;
 use function redirect;

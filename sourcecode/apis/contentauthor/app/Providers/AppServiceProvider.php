@@ -12,15 +12,10 @@ use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
-use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\HttpFactory;
 use Illuminate\Log\Logger;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
