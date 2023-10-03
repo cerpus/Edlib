@@ -9,7 +9,6 @@ use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\EmbedRequest;
 use App\Libraries\DataObjects\EmbedStateDataObject;
-use App\Libraries\DataObjects\LtiContent;
 use App\Link;
 use App\Traits\ReturnToCore;
 use Exception;
