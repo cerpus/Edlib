@@ -14,6 +14,7 @@ use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\Result;
+use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
@@ -861,6 +862,15 @@ class Framework implements \H5PFrameworkInterface, Result
             ->version($majorVersion, $minorVersion)
             ->select('semantics')
             ->first();
+
+        if (!$row) {
+            throw new Exception(sprintf(
+                'Could not load library semantics for %s-%d.%d',
+                $machineName,
+                $majorVersion,
+                $minorVersion,
+            ));
+        }
 
         return $row['semantics'];
     }
