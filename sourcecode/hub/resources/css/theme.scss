@@ -98,6 +98,11 @@
     .accordion-button:not(.collapsed) {
         background-color: #{$green-100};
         color:  var(--bs-body-color);
+        box-shadow: $edlib-input-box-shadow;
+    }
+
+    .accordion-button:focus {
+        box-shadow: $edlib-input-box-shadow;
     }
 
     // Content card
@@ -157,16 +162,10 @@
             }
         }
     }
+
     /* Desktop-specific styles */
     .accordion-button:not(.collapsed) {
         background-color: #{$green-100};
         color: var(--bs-body-color);
     }
-
-
 }
-
-
-
-
-

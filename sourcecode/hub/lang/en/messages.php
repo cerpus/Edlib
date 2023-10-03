@@ -89,7 +89,7 @@ return [
     'result-list-desc' => 'Toggle results between list and grid view',
     'filter' => 'Filter',
     'search-results' => 'Search Results',
-    'search-results-mobile' => 'Show 378 results',
+    'search-results-mobile' => 'Show :num results',
     'back' => 'Back',
     'filter-types' => 'Filter Types',
 ];

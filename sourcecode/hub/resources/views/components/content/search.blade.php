@@ -25,14 +25,15 @@
 
         <button
             id="filterButton"
-            class="btn btn-secondary d-lg-none d-md-none filter-button"
+            class="btn btn-secondary d-md-none"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasBottomMobile"
             aria-controls="offcanvasBottomMobile"
             aria-label="{{ trans('messages.filter') }}"
         >
-            <i class="bi bi-filter me-1"></i>{{ trans('messages.filter') }}
+            <x-icon name="filter" />
+            {{ trans('messages.filter') }}
         </button>
     </div>
 </form>
