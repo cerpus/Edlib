@@ -6,8 +6,7 @@ use App\H5PLibrary;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
