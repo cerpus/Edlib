@@ -61,20 +61,32 @@
     }
 }
 
+.text-line-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.clamp-2-lines {
+        -webkit-line-clamp: 2;
+    }
+
+    &.clamp-3-lines {
+        -webkit-line-clamp: 3;
+    }
+}
+
 .card {
-    --bs-card-height: 225px;
-    min-width: 250px;
+    &.card-grid {
+        min-width: 250px;
+        --bs-card-height: 225px;
+    }
+
+    &.card-list {
+        min-width: 450px;
+    }
 
     .card-header {
-        // Cut text after two lines and show ellipsis
-        .text-line-clamp-2 {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
         @include media-breakpoint-up(md) {
             min-height: ($line-height-lg * 2.5) + rem;
             padding-bottom: 0;
@@ -97,6 +109,7 @@
         content: none;
     }
 }
+
 .no-content-found {
     height: 50vh;
 }
