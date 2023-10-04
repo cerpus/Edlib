@@ -87,4 +87,5 @@ return [
     'result-list' => 'Display results as list',
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
+    'alert-delete-content-success' => 'Your resource has been successfully deleted',
 ];
