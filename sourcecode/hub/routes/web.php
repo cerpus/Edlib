@@ -54,11 +54,12 @@ Route::controller(ContentController::class)->group(function () {
         ->name('content.create');
 
     Route::post('/content/{content}/copy', 'copy')
-        ->can('copy', \App\Models\Content::class)
+        ->can('copy', 'content')
         ->name('content.copy');
 
     Route::get('/content/{content}/edit', 'edit')
         ->name('content.edit')
+        ->can('edit', 'content')
         ->whereUlid('content');
 
     Route::get('/content/create/{tool}', 'launchCreator')
