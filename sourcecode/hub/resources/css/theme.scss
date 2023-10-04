@@ -162,10 +162,4 @@
             }
         }
     }
-
-    /* Desktop-specific styles */
-    .accordion-button:not(.collapsed) {
-        background-color: #{$green-100};
-        color: var(--bs-body-color);
-    }
 }
