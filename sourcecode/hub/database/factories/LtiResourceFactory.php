@@ -23,7 +23,6 @@ final class LtiResourceFactory extends Factory
             'title_html' => $title,
             'lti_tool_id' => LtiTool::factory(),
             'view_launch_url' => 'https://ca.edlib.test/lti-content/'.$contentAuthorId,
-            'edit_launch_url' => 'https://ca.edlib.test/lti-content/'.$contentAuthorId.'/edit',
             'language_iso_639_3' => $this->faker->randomElement(['eng', 'nob']),
             'license' => $this->faker->randomElement(['CC0-1.0', 'CC-BY-2.5', null]),
         ];

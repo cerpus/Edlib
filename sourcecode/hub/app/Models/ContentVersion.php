@@ -17,6 +17,11 @@ class ContentVersion extends Model
 
     public const UPDATED_AT = null;
 
+    /** @var string[] */
+    protected $fillable = [
+        'published',
+    ];
+
     protected $casts = [
         'published' => 'boolean',
     ];

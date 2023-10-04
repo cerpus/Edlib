@@ -1,4 +1,7 @@
-@php use App\Models\LtiVersion; @endphp
+@php
+use App\Models\LtiToolEditMode;
+use App\Models\LtiVersion;
+@endphp
 
 <x-layout>
     <x-slot:title>Add LTI tool</x-slot:title>
@@ -51,8 +54,57 @@
             </label>
         </p>
 
+        <fieldset>
+            <legend>{{ trans('messages.edit-mode') }}</legend>
+
+            <div class="position-relative form-check">
+                <div class="form-check">
+                    <input
+                        type="radio"
+                        name="edit_mode"
+                        value="{{ LtiToolEditMode::Replace }}"
+                        aria-describedby="edit-mode-replace-help"
+                        class="form-check-input"
+                        id="edit-mode-replace"
+                        @checked(old('edit_mode', true))
+                    >
+                    <label
+                        class="form-check-label stretched-link"
+                        for="edit-mode-replace"
+                    >
+                        <b>{{ trans('messages.edit-mode-replace') }}</b>
+                    </label>
+                    <p class="form-text" id="edit-mode-replace-help">
+                        {{ trans('messages.edit-mode-replace-help') }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="position-relative form-check">
+                <div class="form-check">
+                    <input
+                        type="radio"
+                        name="edit_mode"
+                        value="{{ LtiToolEditMode::DeepLinkingRequestToContentUrl }}"
+                        class="form-check-input"
+                        id="edit-mode-deep-linking-request-to-content-url"
+                        @checked(old('edit_mode', false))
+                    >
+                    <label
+                        class="form-check-label stretched-link"
+                        for="edit-mode-deep-linking-request-to-content-url"
+                    >
+                        <b>{{ trans('messages.edit-mode-deep-linking-request-to-content-url') }}</b>
+                    </label>
+                    <p class="form-text" id="edit-mode-deep-linking-request-to-content-url-help">
+                        {{ trans('messages.edit-mode-deep-linking-request-to-content-url-help') }}
+                    </p>
+                </div>
+            </div>
+        </fieldset>
+
         <p>
-            <button>Add</button>
+            <button class="btn btn-primary">{{ trans('messages.add') }}</button>
         </p>
     </form>
 </x-layout>

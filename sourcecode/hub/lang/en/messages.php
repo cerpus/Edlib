@@ -87,4 +87,10 @@ return [
     'result-list' => 'Display results as list',
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
+    'add' => 'Add',
+    'edit-mode' => 'Edit mode',
+    'edit-mode-replace' => 'Replace content',
+    'edit-mode-replace-help' => 'Launch the tool to select content which will replace the existing content. This works with every tool, but the tool will not know which content to edit.',
+    'edit-mode-deep-linking-request-to-content-url' => 'Deep Linking request to content URL',
+    'edit-mode-deep-linking-request-to-content-url-help' => 'Make a Deep Linking request to the URL of the content. Tools that support this will know which content to edit, but not every tool supports it.',
 ];

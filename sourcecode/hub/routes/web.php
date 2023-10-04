@@ -49,10 +49,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
-    Route::get('/content/create', 'create')->name('content.create');
+    Route::get('/content/create', 'create')
+        ->can('create', \App\Models\Content::class)
+        ->name('content.create');
 
     Route::post('/content/{content}/copy', 'copy')
-        ->can('copy', 'content')
+        ->can('copy', \App\Models\Content::class)
         ->name('content.copy');
 
     Route::get('/content/{content}/edit', 'edit')
@@ -61,13 +63,25 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
+        ->can('create', \App\Models\Content::class)
         ->whereUlid('tool');
-
-    Route::post('/lti/1.1/item-selection-return', 'store')
-        ->middleware(LtiValidatedRequest::class . ':tool')
-        ->middleware('lti.launch-type:ContentItemSelection')
-        ->name('content.store');
 });
+
+Route::prefix('/lti/deep-linking-return')
+    ->middleware(LtiValidatedRequest::class . ':tool')
+    ->middleware('lti.launch-type:ContentItemSelection')
+    ->group(function () {
+        Route::post('/store-content')
+            ->uses([ContentController::class, 'ltiStore'])
+            ->can('create', \App\Models\Content::class)
+            ->name('content.lti-store');
+
+        Route::post('/update-content/{content}')
+            ->uses([ContentController::class, 'ltiUpdate'])
+            ->can('edit', 'content')
+            ->name('content.lti-update')
+            ->whereUlid('content');
+    });
 
 Route::prefix('/lti/1.1')->group(function () {
     Route::post('/select', [LtiController::class, 'select'])

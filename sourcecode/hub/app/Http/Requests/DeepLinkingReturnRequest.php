@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use function app;
 
-final class StoreContentRequest extends FormRequest
+final class DeepLinkingReturnRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
