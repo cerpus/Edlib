@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
+use function route;
+
 /**
  * @property string $id
  * @property string $link_url
@@ -28,6 +30,8 @@ class Link extends Content implements VersionableObject
 {
     use HasFactory;
     use HasUuids;
+
+    public string $editRouteName = 'link.edit';
 
     public function givesScore(): int
     {
@@ -102,5 +106,15 @@ class Link extends Content implements VersionableObject
     public function getIsPrivateAttribute(): false
     {
         return false; // Defaults to public / listed
+    }
+
+    public function getUrl(): string
+    {
+        return route('link.show', [$this->id]);
+    }
+
+    public function getMachineName(): string
+    {
+        return 'Link';
     }
 }

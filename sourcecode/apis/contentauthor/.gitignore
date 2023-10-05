@@ -23,11 +23,9 @@ Homestead.json
 /public/js/h5p/*
 !/public/js/h5p-editor.js
 !/public/js/jsrequestintercept.js
-!/public/js/jwtclient.js
 !/public/js/listener.js
 !/public/js/mathquillEditor
 !/public/js/question-editor.js
-!/public/js/resource-common.js
 !/public/js/videos/brightcove.js
 !/public/js/videos/streamps.js
 !/public/js/h5p/ndlah5p-youtube.js

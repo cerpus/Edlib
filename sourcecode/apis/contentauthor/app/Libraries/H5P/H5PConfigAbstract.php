@@ -137,7 +137,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
         return $this;
     }
 
-    public function setRedirectToken(string $token): static
+    public function setRedirectToken(string|null $token): static
     {
         $this->redirectToken = $token;
         return $this;

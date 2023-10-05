@@ -40,9 +40,6 @@ class H5PControllerTest extends TestCase
             'userName' => 'QuackMaster',
             'email' => 'emily.quackfaster@duckburg.quack',
             'locale' => 'nb-no',
-            'jwtToken' => [
-                'raw' => 'a unique token',
-            ],
             'adapterMode' => $adapterMode,
         ]);
         $request = Request::create('lti-content/create', 'POST', [
@@ -62,7 +59,6 @@ class H5PControllerTest extends TestCase
 
         $data = $result->getData();
 
-        $this->assertSame('a unique token', $data['jwtToken']);
         $this->assertNotEmpty($data['config']);
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
@@ -139,9 +135,6 @@ class H5PControllerTest extends TestCase
             'userName' => 'QuackMaster',
             'email' => $user->getEmail(),
             'locale' => 'nn-no',
-            'jwtToken' => [
-                'raw' => 'a unique token',
-            ],
         ]);
         $request = Request::create('lti-content/create', 'POST', [
             'redirectToken' => $faker->uuid,
@@ -186,7 +179,6 @@ class H5PControllerTest extends TestCase
         $this->assertInstanceOf(View::class, $result);
         $data = $result->getData();
 
-        $this->assertSame('a unique token', $data['jwtToken']);
         $this->assertSame($h5pContent->id, $data['id']);
         $this->assertInstanceOf(H5PContent::class, $data['h5p']);
         $this->assertSame($h5pContent->id, $data['h5p']->id);

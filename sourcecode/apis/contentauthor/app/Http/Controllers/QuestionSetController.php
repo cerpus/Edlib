@@ -42,7 +42,7 @@ class QuestionSetController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->lti = $h5pLti;
-        $this->middleware('core.auth')->only(['create', 'edit', 'store', 'update']);
+        $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
         $this->middleware('lti.qs-to-request')->only(['create']);
@@ -78,9 +78,6 @@ class QuestionSetController extends Controller
             abort(403);
         }
 
-        $jwtTokenInfo = $request->session()->get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
@@ -109,7 +106,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.create')->with(compact([
-            'jwtToken',
             'emails',
             'editorSetup',
             'state',
@@ -125,21 +121,11 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
-        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->store($questionsetData, $request);
+        $questionSet = $questionsetHandler->store($questionsetData, $request);
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $id,
-            $title,
-            $type,
-            $score,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : $fallbackUrl
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
 
     public function edit(Request $request, $id): View
@@ -149,9 +135,6 @@ class QuestionSetController extends Controller
         }
 
         $questionset = QuestionSet::findOrFail($id);
-
-        $jwtTokenInfo = $request->session()->get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
 
         $links = (object)[
             "store" => route('questionset.store'),
@@ -200,7 +183,6 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         return view('question.edit')->with(compact([
-            'jwtToken',
             'emails',
             'emails',
             'state',
@@ -217,27 +199,15 @@ class QuestionSetController extends Controller
 
         /** @var QuestionSetHandler $questionsetHandler */
         $questionsetHandler = app(QuestionSetHandler::class);
-        [$id, $title, $type, $score, $fallbackUrl] = $questionsetHandler->update(
+        $questionSet = $questionsetHandler->update(
             $questionset,
             $questionsetData,
             $request
         );
 
-        $content = QuestionSet::find($id);
+        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $id,
-            $title,
-            $type,
-            $score,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
-
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : $fallbackUrl
-        ];
-
-        return response()->json($responseValues, Response::HTTP_OK);
+        return response()->json(['url' => $url], Response::HTTP_OK);
     }
 
     public function show($id)

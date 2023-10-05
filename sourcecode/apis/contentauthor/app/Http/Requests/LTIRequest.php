@@ -24,17 +24,16 @@ class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $request->attributes->get('lti_request');
     }
 
-    public function __construct(
-        string $method,
-        string $url,
-        private readonly array $params,
-    ) {
-        parent::__construct($method, $url, $params);
+    public function getReturnUrl(): string|null
+    {
+        return $this->param('launch_presentation_return_url')
+            ?? $this->param('content_item_return_url')
+            ?? null;
     }
 
-    public function getLaunchPresentationReturnUrl(): string|null
+    public function isContentItemSelectionRequest(): bool
     {
-        return $this->params['launch_presentation_return_url'] ?? null;
+        return $this->param('lti_message_type') === 'ContentItemSelectionRequest';
     }
 
     public function param($name, $default = null)
@@ -44,16 +43,27 @@ class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 
     public function getUserId()
     {
-        $userId = $this->param("user_id");
-        if (is_null($userId)) {
-            $userId = Session::get('userId', null);
-        }
-        return $userId;
+        return $this->param('user_id')
+            ?? $this->param('ext_user_id')
+            ?? Session::get('userId') // FIXME: i question the wisdom of this
+        ;
     }
 
-    public function getExtUserId()
+    /**
+     * Get the user's full name if supplied by the LTI platform, or assemble one
+     * from the given name and family name.
+     */
+    public function getUserName(): string|null
     {
-        return $this->param("ext_user_id");
+        return $this->getUserFullName() ?: trim(
+            ($this->getUserGivenName() ?? '') . ' ' .
+            ($this->getUserFamilyName() ?? '')
+        ) ?: null;
+    }
+
+    public function getUserFullName(): string|null
+    {
+        return $this->param('lis_person_name_full');
     }
 
     public function getUserGivenName()
@@ -89,11 +99,6 @@ class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     public function getExtActivityTitle()
     {
         return $this->param("ext_activity_title");
-    }
-
-    public function getExtJwtToken()
-    {
-        return $this->param("ext_jwt_token");
     }
 
     public function getToolConsumerInfoProductFamilyCode()
