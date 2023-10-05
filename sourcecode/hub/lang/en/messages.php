@@ -87,4 +87,9 @@ return [
     'result-list' => 'Display results as list',
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
+    'filter' => 'Filter',
+    'search-results' => 'Search Results',
+    'search-results-mobile' => 'Show :num results',
+    'back' => 'Back',
+    'filter-types' => 'Filter Types',
 ];
