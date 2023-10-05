@@ -48,6 +48,18 @@
     // Change background color for mobile / small-screen view
     @include media-breakpoint-down(md) {
         --bs-body-bg: #E7F1FF;
+        .offcanvas {
+            --bs-offcanvas-bg: #{$white};
+        }
+        .accordion-button {
+            --bs-accordion-btn-bg: #{$white};
+        }
+        .list-group-item {
+            --bs-list-group-bg: #{$white};
+        }
+        .form-check-input {
+            --bs-form-check-bg: #{$white};
+        }
     }
 
     // Primary button
@@ -86,6 +98,11 @@
     .accordion-button:not(.collapsed) {
         background-color: #{$green-100};
         color:  var(--bs-body-color);
+        box-shadow: $edlib-input-box-shadow;
+    }
+
+    .accordion-button:focus {
+        box-shadow: $edlib-input-box-shadow;
     }
 
     // Content card

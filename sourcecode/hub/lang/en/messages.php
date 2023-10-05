@@ -92,4 +92,9 @@ return [
     'views' => 'Views',
     'title' => 'Title',
     'content-type' => 'Content type',
+    'filter' => 'Filter',
+    'search-results' => 'Search Results',
+    'search-results-mobile' => 'Show :num results',
+    'back' => 'Back',
+    'filter-types' => 'Filter Types',
 ];
