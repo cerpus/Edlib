@@ -6,6 +6,7 @@ use App\Events\GameWasSaved;
 use App\Events\H5PWasSaved;
 use App\Gametype;
 use App\H5PContent;
+use App\H5PLibrary;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
@@ -84,6 +85,12 @@ class QuestionSetConverterTest extends TestCase
             tags: ['List', 'of', 'tags'],
         );
 
+        H5PLibrary::factory([
+            'name' => 'H5P.QuestionSet',
+            'major_version' => 1,
+            'minor_version' => 12,
+        ])->create();
+
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
         $h5p = $questionsetConverter->convert(
@@ -98,7 +105,6 @@ class QuestionSetConverterTest extends TestCase
             'title' => $questionSet->title,
             'license' => License::LICENSE_BY_NC,
         ]);
-        // FIXME: when is this stored?
-//        $this->assertSame(H5PQuestionSet::class, $h5p->getMachineName());
+        $this->assertSame('H5P.QuestionSet', $h5p->getMachineName());
     }
 }
