@@ -100,32 +100,3 @@
 .no-content-found {
     height: 50vh;
 }
-.offcanvas.offcanvas-bottom {
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 35px;
-    right: 35px;
-    height: calc(100% - 35px);
-}
-/* Mobile-specific styles */
-@include media-breakpoint-down(md) {
-    .accordion-item {
-        border-left: none;
-        border-right: none;
-    }
-
-    .first-accordion-item {
-        border-top: none;
-    }
-
-    .accordion-item:first-of-type .accordion-button {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-
-    .accordion-item:last-of-type .accordion-button.collapsed {
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-}
