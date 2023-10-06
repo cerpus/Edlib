@@ -65,7 +65,7 @@ class EditorStorage implements \H5peditorStorage
                 ->map(function ($h5pLibrary) {
                     /** @var H5PLibrary $h5pLibrary */
                     $library = [
-                        'uberName' => $h5pLibrary->getLibraryString(),
+                        'uberName' => $h5pLibrary->getLibraryString(false),
                         'name' => $h5pLibrary->name,
                         'majorVersion' => $h5pLibrary->major_version,
                         'minorVersion' => $h5pLibrary->minor_version,
@@ -101,7 +101,7 @@ class EditorStorage implements \H5peditorStorage
                         $library->minorVersion = $library->minor_version;
 
                         // Add new library
-                        $library->uberName = $library->getLibraryString();
+                        $library->uberName = $library->getLibraryString(false);
                         if ($index > 0) {
                             $library->isOld = true;
                         }

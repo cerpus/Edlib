@@ -166,8 +166,6 @@ class Millionaire extends GameBase
 
     public function edit(Game $game, Request $request)
     {
-        $jwtTokenInfo = $request->session()->get('jwtToken', null);
-
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
 
@@ -207,7 +205,6 @@ class Millionaire extends GameBase
             'editorSetup' => $editorSetup->toJson(),
             'state' => $state->toJson(),
             'emails' => $game->getCollaboratorEmails(),
-            'jwtToken' => $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null,
         ]);
     }
 

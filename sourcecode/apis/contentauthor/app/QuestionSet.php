@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Iso639p3;
 
+use function route;
+
 /**
  * @property string $language_code
  * @property string $owner
@@ -67,6 +69,16 @@ class QuestionSet extends Content
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getUrl(): string
+    {
+        return route('questionset.show', [$this->id]);
+    }
+
+    public function getMachineName(): string
+    {
+        return 'QuestionSet';
     }
 
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject

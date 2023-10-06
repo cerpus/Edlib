@@ -1,50 +1,31 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: oddaj
- * Date: 9/7/16
- * Time: 8:34 AM
- */
+
+declare(strict_types=1);
 
 namespace App\Traits;
 
+use App\Libraries\DataObjects\LtiContent;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+
+use function now;
+use function serialize;
 
 trait ReturnToCore
 {
-    public function getRedirectToCoreUrl($id, $title, $type, $score, $redirectToken)
-    {
-        $returnUrl = $this->getCoreBaseUrl($redirectToken);
-
-        if ($returnUrl == null) {
-            return;
+    public function getRedirectToCoreUrl(
+        LtiContent $content,
+        string|null $sessionKey = null,
+    ): string {
+        if ($sessionKey === null) {
+            return $content->editUrl ?? $content->url;
         }
 
-        $params = [
-            'title' => $title,
-            'id' => $id,
-            'type' => $type,
-            'score' => $score,
-        ];
+        $ltiRequest = Session::get('lti_requests.' . $sessionKey);
 
-        return $returnUrl . '?' . http_build_query($params);
-    }
-
-    private function getCoreBaseUrl($redirectToken)
-    {
-        $redirectKey = 'list.returnUrls.' . $redirectToken;
-
-        if (Session::has($redirectKey)) {
-            $returnUrl = Session::get($redirectKey);
-            Session::forget($redirectKey);
-
-            return $returnUrl;
-        } elseif (Session::has('returnUrl')) {
-            $returnUrl = Session::get('returnUrl');
-            Session::forget('returnUrl');
-        } else {
-            return null;
-        }
-        return $returnUrl;
+        return URL::signedRoute('lti-return', [
+            'lti_content' => serialize($content),
+            'lti_request' => serialize($ltiRequest),
+        ], now()->addHour());
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Libraries\QuestionSet;
 
 use App\Content;
+use App\Game;
+use App\H5PContent;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\DataObjects\Answer;
 use App\Libraries\DataObjects\MultiChoiceQuestion;
@@ -15,24 +17,22 @@ use App\QuestionSet as QuestionSetModel;
 
 class QuestionSetConvert
 {
-    /**
-     * @return array|null
-     * @throws \Exception
-     */
-    public function convert($convertTo, QuestionSetModel $questionSet, ResourceMetadataDataObject $metadata)
-    {
-        switch ($convertTo) {
-            case H5PQuestionSet::$machineName:
-                return $this->createH5PQuestionSet($questionSet, $metadata);
-            case Millionaire::$machineName:
-                return $this->createMillionaireGame($questionSet, $metadata);
-            default:
-                throw new \Exception("Presentation '$convertTo' is not currently supported'");
-        }
+    public function __construct(
+        private readonly ContentTypeHandler $contentTypeHandler,
+        private readonly GameHandler $gameHandler,
+    ) {
     }
 
+    public function convert(string $convertTo, QuestionSetModel $questionSet, ResourceMetadataDataObject $metadata): Content
+    {
+        return match ($convertTo) {
+            H5PQuestionSet::$machineName => $this->createH5PQuestionSet($questionSet, $metadata),
+            Millionaire::$machineName => $this->createMillionaireGame($questionSet, $metadata),
+            default => throw new \InvalidArgumentException("Presentation '$convertTo' is not currently supported'"),
+        };
+    }
 
-    public function createH5PQuestionSet(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): array
+    public function createH5PQuestionSet(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): H5PContent
     {
         $h5pQuiz = QuestionSetData::create([
             'title' => $questionSet->title,
@@ -55,26 +55,13 @@ class QuestionSetConvert
             $h5pQuestion->addAnswers($answers);
             $h5pQuiz->addQuestion($h5pQuestion);
         });
-        /** @var ContentTypeHandler $contentTypeHandler */
-        $contentTypeHandler = app(ContentTypeHandler::class);
-        $content = $contentTypeHandler->storeQuestionset($h5pQuiz->toArray());
 
-        return [
-            $content['id'],
-            $content['title'],
-            H5PQuestionSet::$machineName,
-            route('h5p.edit', $content['id']),
-            Content::TYPE_H5P
-        ];
+        return $this->contentTypeHandler->storeQuestionset($h5pQuiz->toArray());
     }
 
-    public function createMillionaireGame(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): array
+    public function createMillionaireGame(QuestionSetModel $questionSet, ResourceMetadataDataObject $metaData): Game
     {
-        /** @var Millionaire $millionaire */
-        $millionaire = app(Millionaire::class);
-        /** @var GameHandler $gameHandler */
-        $gameHandler = app(GameHandler::class);
-        $game = $gameHandler->store([
+        return $this->gameHandler->store([
             'title' => $questionSet->title,
             'cards' => $questionSet,
             'license' => $metaData->license,
@@ -82,14 +69,6 @@ class QuestionSetConvert
             'authId' => $questionSet->owner,
             'tags' => $metaData->tags,
             'is_published' => $questionSet->is_published,
-        ], $millionaire);
-
-        return [
-            $game['id'],
-            $game['title'],
-            "Game", //TODO: need to change this to what type of game when "the Core" gets back
-            route('game.edit', $game['id']),
-            Content::TYPE_GAME
-        ];
+        ], new Millionaire());
     }
 }

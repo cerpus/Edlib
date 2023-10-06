@@ -43,7 +43,7 @@ class ArticleController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
 
@@ -74,9 +74,6 @@ class ArticleController extends Controller
         $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $config = json_encode([
             'editor' => [
                 'extraAllowedContent' => implode(" ", CerpusH5PAdapter::getCoreExtraTags()),
@@ -106,7 +103,7 @@ class ArticleController extends Controller
         ])->toJson();
 
         return view('article.create')->with(compact([
-            'jwtToken', 'emails', 'config', 'editorSetup', 'state'
+            'emails', 'config', 'editorSetup', 'state'
         ]));
     }
 
@@ -148,19 +145,9 @@ class ArticleController extends Controller
         // Handles privacy, collaborators, and registering a new version
         event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $article->id,
-            $article->title,
-            'Article',
-            $article->givesScore(),
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route('article.edit', $article->id),
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
 
     /**
@@ -218,9 +205,6 @@ class ArticleController extends Controller
 
         $emails = $this->getCollaboratorsEmails($article);
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $config = json_encode([
             'editor' => [
                 'extraAllowedContent' => implode(" ", CerpusH5PAdapter::getCoreExtraTags()),
@@ -276,7 +260,7 @@ class ArticleController extends Controller
         ])->toJson();
 
         return view('article.edit')
-            ->with(compact('jwtToken', 'article', 'emails', 'id', 'config', 'origin', 'originators', 'state', 'editorSetup'));
+            ->with(compact('article', 'emails', 'id', 'config', 'origin', 'originators', 'state', 'editorSetup'));
     }
 
     private function getCollaboratorsEmails(Article $article)
@@ -339,19 +323,11 @@ class ArticleController extends Controller
 
         event(new ArticleWasSaved($article, $request, $collaborators, Session::get('authId'), $reason, Session::all()));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $article->id,
-            $article->title,
-            'Article',
-            $article->givesScore(),
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route('article.edit', $article->id),
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        return response()->json([
+            'url' => $url,
+        ], Response::HTTP_CREATED);
     }
 
 

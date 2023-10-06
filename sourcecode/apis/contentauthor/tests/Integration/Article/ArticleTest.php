@@ -132,7 +132,7 @@ class ArticleTest extends TestCase
 
     public function testCreateAndEditArticleWithIframeContent()
     {
-        $this->setupVersion();
+        $this->setupVersion(['getVersion' => false]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -175,7 +175,7 @@ class ArticleTest extends TestCase
 
     public function testEditArticle()
     {
-        $this->setupVersion();
+        $this->setupVersion(['getVersion' => false]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -218,7 +218,7 @@ class ArticleTest extends TestCase
 
     public function testEditArticleWithDraftEnabled()
     {
-        $this->setupVersion();
+        $this->setupVersion(['getVersion' => false]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -285,7 +285,7 @@ class ArticleTest extends TestCase
 
     public function testViewArticle()
     {
-        $this->setupVersion();
+        $this->setupVersion(['getVersion' => false]);
 
         /** @var Article $article */
         $article = Article::factory()->create([

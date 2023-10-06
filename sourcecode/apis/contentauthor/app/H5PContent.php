@@ -21,6 +21,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Iso639p3;
 
+use function route;
+
 /**
  * @property string $user_id
  * @property int $library_id
@@ -35,7 +37,6 @@ use Iso639p3;
  * @property string $description
  * @property string $content_create_mode
  * @property string $language_iso_639_3
- * @property string|null $title_clean
  * @property ?int $max_score
  * @property int $bulk_calculated
  *
@@ -67,11 +68,6 @@ class H5PContent extends Content implements VersionableObject
         'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
-
-    public function getTitleCleanAttribute(): string|null
-    {
-        return htmlspecialchars_decode($this->title, ENT_HTML5 | ENT_QUOTES);
-    }
 
     /**
      * @return HasMany<H5PCollaborator>
@@ -344,14 +340,7 @@ class H5PContent extends Content implements VersionableObject
 
         if ($library->has_icon) {
             $h5pFramework = app(H5PFrameworkInterface::class);
-
-            $library_folder = H5PCore::libraryToString([
-                'machineName' => $library->machine_name,
-                'majorVersion' => $library->major_version,
-                'minorVersion' => $library->minor_version
-            ], true);
-
-
+            $library_folder = $library->getFolderName();
             $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
 
             if (!empty($icon_path)) {
@@ -364,5 +353,15 @@ class H5PContent extends Content implements VersionableObject
         }
 
         return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
+    }
+
+    public function getUrl(): string
+    {
+        return route('h5p.show', [$this->id]);
+    }
+
+    public function getMachineName(): string
+    {
+        return $this->library()->firstOrFail()->name;
     }
 }
