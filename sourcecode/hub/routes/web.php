@@ -113,6 +113,9 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
         Route::get('', 'index')->name('admin.lti-tools.index');
         Route::get('/add', 'add')->name('admin.lti-tools.add');
         Route::post('', 'store')->name('admin.lti-tools.store');
+        Route::delete('/{tool}', 'destroy')
+            ->name('admin.lti-tools.remove')
+            ->whereUlid('tool');
     });
 });
 

@@ -31,6 +31,7 @@ return [
     'name-form-help' => 'Your name will be displayed to those with whom you share content.',
     'rebuild-content-index' => 'Rebuild content index',
     'alert-lti-tool-added' => 'LTI tool added.',
+    'alert-lti-tool-removed' => 'The LTI tool ":name" was removed.',
     'alert-rebuilding-content-index' => 'Rebuilding content index…',
     'close' => 'Close',
     'create' => 'Create',
@@ -92,4 +93,5 @@ return [
     'search-results-mobile' => 'Show :num results',
     'back' => 'Back',
     'filter-types' => 'Filter Types',
+    'remove' => 'Remove',
 ];

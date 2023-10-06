@@ -29,6 +29,7 @@ return [
     'name-form-help' => 'Navnet ditt vil vises til de du deler innhold med.',
     'rebuild-content-index' => 'Gjenoppbygg innholdsindeks',
     'alert-lti-tool-added' => 'LTI-verktøy lagt til.',
+    'alert-lti-tool-removed' => 'LTI-verktøyet «:name» ble fjernet.',
     'alert-rebuilding-content-index' => 'Bygger om innholdsindeksen…',
     'close' => 'Lukk',
     'create' => 'Opprett',
@@ -56,4 +57,5 @@ return [
     'result-list' => 'Vis resultatet som liste',
     'result-grid' => 'Vis resultatet som rutenett',
     'result-list-desc' => 'Bytt resultatvisning mellom liste og rutenett',
+    'remove' => 'Fjern',
 ];
