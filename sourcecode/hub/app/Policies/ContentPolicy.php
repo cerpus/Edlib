@@ -18,6 +18,11 @@ class ContentPolicy
         return $content->latestPublishedVersion()->exists();
     }
 
+    public function create(User $user): bool
+    {
+        return true;
+    }
+
     public function edit(User $user, Content $content): bool
     {
         if ($user->admin) {

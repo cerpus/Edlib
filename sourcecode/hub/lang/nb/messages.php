@@ -57,5 +57,11 @@ return [
     'result-list' => 'Vis resultatet som liste',
     'result-grid' => 'Vis resultatet som rutenett',
     'result-list-desc' => 'Bytt resultatvisning mellom liste og rutenett',
+    'add' => 'Legg til',
     'remove' => 'Fjern',
+    'edit-mode' => 'Redigeringsmodus',
+    'edit-mode-replace' => 'Erstatt innhold',
+    'edit-mode-replace-help' => 'Start verktøyet for å velge innholdet som skal erstatte det eksisterende. Dette fungerer med alle verktøy, men verktøyet kan ikke vite hvilket innhold som skal redigeres.',
+    'edit-mode-deep-linking-request-to-content-url' => '«Deep Linking»-forespørsel til innholdslenke',
+    'edit-mode-deep-linking-request-to-content-url-help' => 'Send en «Deep Linking»-forespørsel til selve innholdslenken. Verktøy som støtter dette vil vite hvilket innhold som skal redigeres, men ikke alle verktøy støtter dette.',
 ];
