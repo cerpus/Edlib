@@ -30,7 +30,6 @@ class VerifyCsrfToken extends Middleware
         'api/v1/contenttypes/*',
         'api/v1/resources/*/publish',
         'api/v1/h5p/import',
-        'jwt/update',
         'game/*',
         "v1/content/*/unlock", // The unlock endpoint now responds to both GET and POST methods
     ];

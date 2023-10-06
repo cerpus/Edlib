@@ -2,8 +2,6 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-use App\H5PLibrary;
-
 interface CerpusStorageInterface
 {
     public function getDisplayPath(bool $fullUrl = true);
@@ -17,8 +15,6 @@ interface CerpusStorageInterface
     public function getAjaxPath();
 
     public function alterLibraryFiles($files);
-
-    public function deleteLibrary(H5PLibrary $library);
 
     public function getFileUrl(string $path);
 

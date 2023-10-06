@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\API\Handler;
 
 use App\Content;
+use App\H5PContent;
 use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Http\Controllers\H5PController;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 class ContentTypeHandler
 {
     private $data;
 
-    public function storeQuestionset($questionsetData)
+    public function storeQuestionset($questionsetData): H5PContent
     {
         $this->data = $questionsetData;
         $parsedData = $this->parseQuestionsetData();
@@ -42,7 +44,7 @@ class ContentTypeHandler
         return $this->storeContentType($request, $questionsetData['authId']);
     }
 
-    private function parseQuestionsetData()
+    private function parseQuestionsetData(): Collection
     {
         return collect($this->data['questions'])->map(function ($element) {
             /** @var H5PBase $contentType */
@@ -57,10 +59,10 @@ class ContentTypeHandler
         });
     }
 
-    private function storeContentType($request, $userId)
+    private function storeContentType($request, $userId): H5PContent
     {
         /** @var H5PController $h5p */
         $h5p = app(H5PController::class);
-        return $h5p->persistContent($request, $userId)->toArray();
+        return $h5p->persistContent($request, $userId);
     }
 }

@@ -31,6 +31,8 @@ final class FrameworkTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->history = new ArrayObject();
         $this->mockedResponses = new MockHandler();
 
@@ -85,6 +87,30 @@ final class FrameworkTest extends TestCase
             'foo=bar',
             $this->history[0]['request']->getBody()->getContents(),
         );
+    }
+
+    public function testFetchExternalDataWithFullData(): void
+    {
+        $this->mockedResponses->append(new Response(200, [], 'Some body'));
+
+        $response = $this->framework->fetchExternalData(
+            'http://www.example.com',
+            [
+                'foo' => 'bar',
+            ],
+            fullData: true,
+        );
+
+        $this->assertSame(
+            'foo=bar',
+            $this->history[0]['request']->getBody()->getContents(),
+        );
+        $this->assertIsArray($response);
+        $this->assertArrayHasKey('status', $response);
+        $this->assertArrayHasKey('headers', $response);
+        $this->assertArrayHasKey('data', $response);
+        $this->assertSame(200, $response['status']);
+        $this->assertSame('Some body', $response['data']);
     }
 
     public function testFetchExternalDataWithGuzzleError(): void

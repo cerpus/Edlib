@@ -26,6 +26,7 @@ use Ramsey\Uuid\Uuid;
 
 use function libxml_use_internal_errors;
 use function preg_replace_callback;
+use function route;
 
 use const LIBXML_HTML_NOIMPLIED;
 
@@ -244,6 +245,16 @@ class Article extends Content implements VersionableObject
     public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
+    }
+
+    public function getUrl(): string
+    {
+        return route('article.show', [$this->id]);
+    }
+
+    public function getMachineName(): string
+    {
+        return 'Article';
     }
 
     /**

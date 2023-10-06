@@ -73,7 +73,7 @@ class H5PController extends Controller
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
@@ -160,9 +160,6 @@ class H5PController extends Controller
 
         $h5pView = $this->h5p->createView($editorConfig);
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $displayOptions = $core->getDisplayOptionsForEdit();
         $core->getStorableDisplayOptions($displayOptions, null);
 
@@ -210,7 +207,6 @@ class H5PController extends Controller
         return view(
             'h5p.create',
             [
-                'jwtToken' => $jwtToken,
                 'config' => $h5pView->getSettings(),
                 'jsScript' => $h5pView->getScripts(false),
                 'styles' => $h5pView->getStyles(false),
@@ -275,9 +271,6 @@ class H5PController extends Controller
 
         $params = $adapter->alterParameters($params, H5PAlterParametersSettingsDataObject::create(['useImageWidth' => false]));
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
-
         $library = $h5pContent->library;
         $settings = [];
         $scripts = $h5pView->getScripts(false);
@@ -332,7 +325,7 @@ class H5PController extends Controller
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
-            'library' => $library->getLibraryString(),
+            'library' => $library->getLibraryString(false),
             'libraryid' => $h5pContent->library_id,
             'parameters' => $params,
             'language_iso_639_3' => $contentLanguage,
@@ -351,7 +344,6 @@ class H5PController extends Controller
         return view(
             'h5p.edit',
             [
-                'jwtToken' => $jwtToken,
                 'id' => $id,
                 'h5p' => $h5pContent,
                 'config' => $h5pView->getSettings(),
@@ -419,24 +411,15 @@ class H5PController extends Controller
 
         $core->fs->deleteExport(sprintf("%s-%d.h5p", $h5p->slug, $h5p->id));
 
-        $scoring = $this->getScoringForContent($newH5pContent);
         $h5p->unlock();
 
-        $newContent = H5PContent::find($newH5pContent["id"]);
-        $oldContent = H5PContent::find($oldContent["id"]);
-
-        event(new ResourceSaved($newContent->getEdlibDataObject()));
-
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $content['id'],
-            $content['title'],
-            $content['library']['machineName'],
-            $scoring,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        event(new ResourceSaved($newH5pContent->getEdlibDataObject()));
 
         $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route("h5p.show", $content['id'])
+            'url' => $this->getRedirectToCoreUrl(
+                $newH5pContent->toLtiContent(),
+                $request->input('redirectToken'),
+            ),
         ];
         /** @var Collection $filesToProcess */
         $filesToProcess = H5PFile::ofFileUploadFromContent($content['id'])->get()
@@ -537,21 +520,13 @@ class H5PController extends Controller
         ]);
 
         $content = $this->persistContent($request, Session::get('authId'));
-        $scoring = $this->getScoringForContent($content);
 
         Cache::forget($this->viewDataCacheName . $content->id);
 
         event(new ResourceSaved($content->getEdlibDataObject()));
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $content->id,
-            $content->title,
-            $content->library()->first()->name,
-            $scoring,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
         $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route("h5p.show", $content['id']),
+            'url' => $this->getRedirectToCoreUrl($content->toLtiContent(), $request->input('redirectToken')),
         ];
 
         /** @var Collection $filesToProcess */
@@ -716,17 +691,13 @@ class H5PController extends Controller
         return $h5p->contentUserData()->get()->isNotEmpty();
     }
 
-    protected function getScoringForContent(H5PContent $content): int
-    {
-        return $content->max_score > 0 ? 1 : 0;
-    }
-
     public function contentUpgradeLibrary(Request $request, H5PCore $core)
     {
         return response()->json($this->h5pLibraryAdmin->upgradeLibrary($core, $request->get('library')));
     }
 
     /**
+     * @return array{array, array, H5PContent}
      * @throws Exception
      */
     private function performUpdate(Request $request, H5PContent $h5pContent, $authId, $versionPurpose): array

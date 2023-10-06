@@ -2,50 +2,39 @@
 
 namespace App\Http\Middleware;
 
-use App\Auth\Jwt\JwtDecoderInterface;
-use App\Auth\Jwt\JwtException;
 use App\H5pLti;
 use App\Http\Libraries\License;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
-class LtiRequestAuth
+/**
+ * Add LTI parameters to session
+ */
+class LtiAddAuthToSession
 {
     public function __construct(
         private readonly H5pLti $h5pLti,
-        private readonly JwtDecoderInterface $jwtDecoder,
     ) {
     }
 
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request $request
+     * @param (Closure(Request): Response) $next
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
         $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
 
         if ($ltiRequest != null) {
             Session::put('userId', $ltiRequest->getUserId());
-            if ($ltiRequest->getExtUserId() != null) {
-                Session::put('authId', $ltiRequest->getExtUserId());
-                if ($ltiRequest->getUserGivenName() != null && $ltiRequest->getUserFamilyName() != null) {
-                    Session::put('name', $ltiRequest->getUserGivenName().' '.$ltiRequest->getUserFamilyName());
-                }
+
+            if ($ltiRequest->getUserId() != null) {
+                Session::put('authId', $ltiRequest->getUserId());
+                Session::put('name', $ltiRequest->getUserName());
                 Session::put('email', $ltiRequest->getUserEmail() ?? 'noemail');
             }
-            $jwt = $ltiRequest->getExtJwtToken();
-            if ($jwt !== null && $jwt !== '') {
-                try {
-                    $this->jwtDecoder->getVerifiedPayload($jwt);
-                    Session::put('jwtToken', ['raw' => $jwt]);
-                } catch (JwtException) {
-                    Session::remove('jwtToken');
-                }
-            } else {
-                Session::remove('jwtToken');
-            }
+
             $allowedLicenses = implode(',', [
                 License::LICENSE_PRIVATE,
                 License::LICENSE_CC0,
@@ -63,6 +52,7 @@ class LtiRequestAuth
             Session::put('defaultLicense', $ltiRequest->getDefaultLicense($defaultLicense));
             Session::put('originalSystem', $ltiRequest->getToolConsumerInfoProductFamilyCode());
         }
+
         return $next($request);
     }
 }
