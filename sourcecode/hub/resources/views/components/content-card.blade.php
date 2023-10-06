@@ -59,9 +59,14 @@
                 </button>
             </form>
         @endif
-        <button class="btn btn-secondary btn-sm d-none d-md-inline-block me-1">
-            {{ trans('messages.edit-content') }}
-        </button>
+        @can('edit', $content)
+            <a
+                href="{{ route('content.edit', [$content]) }}"
+                class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
+            >
+                {{ trans('messages.edit-content') }}
+            </a>
+        @endcan
         <div class="dropup">
             <button
                 type="button"
