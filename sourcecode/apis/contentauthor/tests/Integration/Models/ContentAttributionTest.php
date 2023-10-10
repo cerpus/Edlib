@@ -63,6 +63,7 @@ class ContentAttributionTest extends TestCase
         $this->expectException(TypeError::class);
         $article = Article::factory()->create();
 
+        /** @phpstan-ignore-next-line  */
         $article->setAttribution("A string");
     }
 

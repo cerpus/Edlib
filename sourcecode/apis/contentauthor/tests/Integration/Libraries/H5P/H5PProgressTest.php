@@ -56,7 +56,7 @@ class H5PProgressTest extends TestCase
         $h5pprogress = $this->getH5PProgress();
         $this->assertEquals(
             $expectedResult,
-            $h5pprogress->storeProgress(new Request(['action' => "h5p_contents_user_data"]))
+            $h5pprogress->storeProgress(Request::create('', parameters: ['action' => "h5p_contents_user_data"]))
         );
     }
 

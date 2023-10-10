@@ -107,7 +107,7 @@ class h5pTest extends TestCase
      */
     public function createWithOutVersioningContent()
     {
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
@@ -169,7 +169,7 @@ class h5pTest extends TestCase
      */
     public function createWithVersioningContent()
     {
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
@@ -195,7 +195,7 @@ class h5pTest extends TestCase
         $this->assertDatabaseHas("h5p_contents", ["id" => 1]);
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, "license" => "U"]);
 
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "Updated Test Title",
             'parameters' => '{"params": {"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'

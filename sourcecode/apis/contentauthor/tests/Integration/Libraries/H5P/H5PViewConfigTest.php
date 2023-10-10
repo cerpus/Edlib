@@ -12,14 +12,15 @@ use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\H5PViewConfig;
 use App\SessionKeys;
-use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class H5PViewConfigTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
     /** @dataProvider provider_adapterMode */
     public function test_getConfig(string $adapterMode): void
@@ -101,11 +102,9 @@ class H5PViewConfigTest extends TestCase
     public function test_loadContent(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $faker = Factory::create();
 
-        $resourceId = $faker->uuid;
-        $context = $faker->uuid;
-        $userId = 42;
+        $resourceId = $this->faker->uuid;
+        $context = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
         H5PLibraryLibrary::create([
@@ -133,7 +132,7 @@ class H5PViewConfigTest extends TestCase
             ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $data = app(H5PViewConfig::class)
-            ->setUserId($userId)
+            ->setUserId($this->faker->uuid)
             ->setContext($context)
             ->loadContent($content->id)
             ->getConfig();
@@ -182,9 +181,7 @@ class H5PViewConfigTest extends TestCase
 
     public function test_setAlterParameterSettings(): void
     {
-        $faker = Factory::create();
-
-        $resourceId = $faker->uuid;
+        $resourceId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
@@ -208,9 +205,7 @@ class H5PViewConfigTest extends TestCase
 
     public function test_behaviorSettings(): void
     {
-        $faker = Factory::create();
-
-        $resourceId = $faker->uuid;
+        $resourceId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,

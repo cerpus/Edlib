@@ -5,6 +5,7 @@ namespace Tests\Integration\Http\Controllers;
 use App\ApiModels\Resource;
 use App\ApiModels\User;
 use App\Apis\ResourceApiService;
+use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PContentsMetadata;
@@ -14,9 +15,10 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\H5PController;
 use App\Http\Libraries\License;
 use App\Libraries\H5P\H5PConfigAbstract;
-use Faker\Factory;
+use Generator;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -29,13 +31,13 @@ class H5PControllerTest extends TestCase
 {
     use RefreshDatabase;
     use MockAuthApi;
+    use WithFaker;
 
     /** @dataProvider provider_testCreate */
     public function testCreate(string $adapterMode, ?string $contentType): void
     {
-        $faker = Factory::create();
         $this->session([
-            'authId' => $faker->uuid(),
+            'authId' => $this->faker->uuid(),
             'name' => 'Emily Quackfaster',
             'userName' => 'QuackMaster',
             'email' => 'emily.quackfaster@duckburg.quack',
@@ -43,7 +45,7 @@ class H5PControllerTest extends TestCase
             'adapterMode' => $adapterMode,
         ]);
         $request = Request::create('lti-content/create', 'POST', [
-            'redirectToken' => $faker->uuid,
+            'redirectToken' => $this->faker->uuid,
         ]);
 
         H5PLibrary::factory()->create();
@@ -112,7 +114,7 @@ class H5PControllerTest extends TestCase
         }
     }
 
-    public function provider_testCreate(): \Generator
+    public function provider_testCreate(): Generator
     {
         yield 'cerpus-withoutContentType' => ['cerpus', null];
         yield 'ndla-withoutContentType' => ['ndla', null];
@@ -124,20 +126,19 @@ class H5PControllerTest extends TestCase
     public function testEdit(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $faker = Factory::create();
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
             'getUser' => $user,
         ]);
         $this->session([
-            'authId' => $faker->uuid(),
+            'authId' => $this->faker->uuid(),
             'name' => 'Emily Quackfaster',
             'userName' => 'QuackMaster',
             'email' => $user->getEmail(),
             'locale' => 'nn-no',
         ]);
         $request = Request::create('lti-content/create', 'POST', [
-            'redirectToken' => $faker->uuid,
+            'redirectToken' => $this->faker->uuid,
         ]);
 
         /** @var H5PLibrary $lib */
@@ -162,7 +163,7 @@ class H5PControllerTest extends TestCase
         H5PContentsUserData::factory()->create([
             'content_id' => $h5pContent->id,
             'user_id' => $user->getId(),
-            'data' => $faker->sentence,
+            'data' => $this->faker->sentence,
         ]);
 
         H5PContentsMetadata::factory()->create([
@@ -171,6 +172,13 @@ class H5PControllerTest extends TestCase
         ]);
 
         H5PContentLibrary::factory()->create(['content_id' => $h5pContent->id, 'library_id' => $upgradeLib->id]);
+
+        if ($adapterMode === 'cerpus') {
+            H5PCollaborator::factory()->create([
+                'h5p_id' => $h5pContent->id,
+                'email' => 'dd@duckburg.quack',
+            ]);
+        }
 
         /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
@@ -188,7 +196,7 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
         $this->assertNotEmpty($data['libName']);
-        $this->assertSame('', $data['emails']);
+        $this->assertSame($adapterMode === 'cerpus' ? 'dd@duckburg.quack' : '', $data['emails']);
         $this->assertNotEmpty($data['hasUserProgress']);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
@@ -278,9 +286,8 @@ class H5PControllerTest extends TestCase
     public function testDoShow(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $faker = Factory::create();
         Storage::fake('test');
-        $resourceId = $faker->uuid;
+        $resourceId = $this->faker->uuid;
         $resourceApi = $this->createMock(ResourceApiService::class);
         $this->instance(ResourceApiService::class, $resourceApi);
 
@@ -349,7 +356,7 @@ class H5PControllerTest extends TestCase
             ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $controller = app(H5PController::class);
-        $result = $controller->doShow($content->id, $faker->sha1, false)->getData();
+        $result = $controller->doShow($content->id, $this->faker->sha1)->getData();
 
         $this->assertEquals($content->id, $result['id']);
         $this->assertFalse($result['preview']);
@@ -408,7 +415,7 @@ class H5PControllerTest extends TestCase
         }
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];

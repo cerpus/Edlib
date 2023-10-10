@@ -14,8 +14,7 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
         } else {
-            Log::error(__METHOD__ . " Not a LTI request for showing H5P: $id.");
-            Log::error([
+            Log::error(__METHOD__ . " Not a LTI request for showing H5P: $id.", [
                 'user' => Session::get('userId', 'not-logged-in-user'),
                 'url' => request()->url(),
                 'request' => request()->all()
@@ -30,8 +29,11 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->create($request);
         } else {
-            Log::error(__METHOD__ . "Not a LTI request for H5P create.");
-            Log::error(['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
+            Log::error(__METHOD__ . "Not a LTI request for H5P create.", [
+                'user' => Session::get('userId', 'not-logged-in-user'),
+                'url' => request()->url(),
+                'request' => request()->all()]
+            );
             throw new \Exception('No valid LTI request');
         }
     }
@@ -42,8 +44,11 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->edit($request, $id);
         } else {
-            Log::error(__METHOD__ . ": Not a LTI request for H5P: $id");
-            Log::error(['user' => Session::get('userId', 'not-logged-in-user'), 'url' => request()->url(), 'request' => request()->all()]);
+            Log::error(__METHOD__ . ": Not a LTI request for H5P: $id", [
+                'user' => Session::get('userId', 'not-logged-in-user'),
+                'url' => request()->url(),
+                'request' => request()->all()]
+            );
             throw new \Exception('No valid LTI request');
         }
     }

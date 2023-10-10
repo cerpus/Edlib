@@ -103,7 +103,7 @@ class ArticleCopyrightControllerTest extends TestCase
                     'h5pId' => $h5pContent->id,
                     'tags' => '',
                     'shares' => [],
-                    'h5pType' => $h5pContent->library->type,
+                    'h5pType' => $h5pContent->library->name,
                     'api' => 'http://core/v1/ltitools?uri=http%3A%2F%2Fca.cerpus-course.com%2Frandom%2Fid%2Ff559e66e-a51a-4722-8529-eb523ee374e3',
                     'resourceType' => 'H5P_RESOURCE',
                     'linkCount' => 2,

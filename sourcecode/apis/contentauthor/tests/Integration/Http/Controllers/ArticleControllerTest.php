@@ -18,7 +18,7 @@ class ArticleControllerTest extends TestCase
 
     public function testCreate(): void
     {
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',

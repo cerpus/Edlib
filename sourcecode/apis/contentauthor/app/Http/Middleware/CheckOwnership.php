@@ -30,12 +30,13 @@ class CheckOwnership
             }
         }
         Log::error(__METHOD__ . ': Access denied. H5P: ' . $this->request->h5p
-            . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'));
-        Log::error([
-            'user' => Session::get('userId', 'not-logged-in-user'),
-            'url' => request()->url(),
-            'request' => request()->all()
-        ]);
+            . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'),
+            [
+                'user' => Session::get('userId', 'not-logged-in-user'),
+                'url' => request()->url(),
+                'request' => request()->all()
+            ]
+        );
         abort(403, 'Access denied, you are not the owner of the resource or it is not shared with you.');
     }
 

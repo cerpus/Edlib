@@ -43,8 +43,9 @@ class ArticleVersioningTest extends TestCase
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
         $authId = Str::uuid();
+        /** @var Article $article */
         $article = Article::factory()->create(['owner_id' => $authId]);
-        $startCount = Article::all()->count();
+        $startCount = $article->count();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
                 'title' => 'Title',
@@ -58,7 +59,7 @@ class ArticleVersioningTest extends TestCase
                 'title' => $article->title,
                 'content' => $article->content,
             ])
-            ->assertEquals($startCount + 1, Article::all()->count()) // New version added
+            ->assertEquals($startCount + 1, Article::count()) // New version added
         ;
     }
 
@@ -66,6 +67,7 @@ class ArticleVersioningTest extends TestCase
     {
         $request = new Request();
         $authId = Str::uuid();
+        /** @var Article $originalArticle */
         $originalArticle = Article::factory()->create([
             'owner_id' => $authId,
             'license' => 'BY',
@@ -152,9 +154,13 @@ class ArticleVersioningTest extends TestCase
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
+        /** @var User $owner */
         $owner = User::factory()->make();
+        /** @var User $collaborator */
         $collaborator = User::factory()->make();
+        /** @var User $copyist */
         $copyist = User::factory()->make();
+        /** @var User $eve */
         $eve = User::factory()->make();
 
         $article = Article::factory()->create([
@@ -198,6 +204,7 @@ class ArticleVersioningTest extends TestCase
 
         $this->assertCount(3, Article::all());
         $this->assertDatabaseHas('articles', ['title' => 'Another new title', 'owner_id' => $copyist->auth_id]);
+        /** @var Article $copiedArticle */
         $copiedArticle = Article::where('owner_id', $copyist->auth_id)->first();
         $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
         $this->assertCount(2, ArticleCollaborator::all());

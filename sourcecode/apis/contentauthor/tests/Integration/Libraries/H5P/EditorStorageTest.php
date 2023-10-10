@@ -3,6 +3,7 @@
 namespace Tests\Integration\Libraries\H5P;
 
 use App\H5PLibrary;
+use App\H5PLibraryLanguage;
 use App\Libraries\H5P\EditorStorage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -54,5 +55,43 @@ class EditorStorageTest extends TestCase
 
         $this->assertSame('H5P.Foobar 1.2', $ret[0]->uberName);
         $this->assertSame('H5P.Headphones 1.2', $ret[1]->uberName);
+    }
+
+    public function test_getAvailableLanguages()
+    {
+        /** @var H5PLibrary $lib */
+        $lib = H5PLibrary::factory()->create();
+        $langCodes = H5PLibraryLanguage::factory(2)->create(['library_id' => $lib->id]);
+
+        $es = app(EditorStorage::class);
+        $languages = $es->getAvailableLanguages($lib->name, $lib->major_version, $lib->minor_version);
+
+        $this->assertEquals('en', $languages[0]);
+        foreach ($langCodes as $langCode) {
+            $this->assertContains($langCode->language_code, $languages);
+        }
+    }
+
+    public function test_getLanguage(): void
+    {
+        /** @var H5PLibrary $lib */
+        $lib = H5PLibrary::factory()->create();
+        H5PLibraryLanguage::factory()->create([
+            'library_id' => $lib->id,
+        ]);
+        $langCode = H5PLibraryLanguage::factory()->create([
+            'library_id' => $lib->id,
+            'translation' => '{"test":"success"}',
+        ]);
+
+        $es = app(EditorStorage::class);
+        $result = $es->getLanguage(
+            $lib->name,
+            $lib->major_version,
+            $lib->minor_version,
+            $langCode->language_code
+        );
+        $translation = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame('success', $translation['test']);
     }
 }

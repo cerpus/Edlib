@@ -49,7 +49,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testCreateQuestionSet(): void
     {
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -86,7 +86,7 @@ class QuestionSetControllerTest extends TestCase
             ResourceSaved::class,
         ]);
 
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
 
         /** @var Game $game */
         $game = Game::factory()->create(['license' => License::LICENSE_BY_NC_SA]);
@@ -117,7 +117,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
             'getUser' => $user,
         ]);
@@ -130,7 +130,7 @@ class QuestionSetControllerTest extends TestCase
 
         /** @var QuestionSet $qs */
         $qs = QuestionSet::factory()->create(['owner' => $user->getId()]);
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -217,7 +217,7 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        /** @var QuestionSetController $questionSetController */
+        /** @var QuestionSetController $questionsetController */
         $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 

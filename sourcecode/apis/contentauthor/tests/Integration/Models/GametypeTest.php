@@ -12,11 +12,7 @@ class GametypeTest extends TestCase
 
     public function testMostRecent()
     {
-        $this->assertNull(Gametype::mostRecent());
-        $this->assertNull(Gametype::mostRecent('CERPUS.GameA'));
-
-        /** @var Gametype $gameA10 */
-        $gameA10 = Gametype::factory()->create(['title' => 'Game A 1.0']);
+        Gametype::factory()->create(['title' => 'Game A 1.0']);
         /** @var Gametype $gameA11 */
         $gameA11 = Gametype::factory()->create(['title' => 'Game A 1.1', 'minor_version' => 1]);
         $this->assertEquals($gameA11->id, Gametype::mostRecent('CERPUS.GameA')?->id);
@@ -35,6 +31,7 @@ class GametypeTest extends TestCase
         $this->assertCount(4, Gametype::all());
 
         // Return null if the game type does not exist
+        $this->assertNull(Gametype::mostRecent());
         $this->assertNull(Gametype::mostRecent('CERPUS.DOES_NOT_EXIST'));
     }
 }

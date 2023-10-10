@@ -341,7 +341,7 @@ abstract class Content extends Model
 
         if ($ownerData) {
             $user->firstname = $ownerData->getFirstName() ?? '';
-            $user->lastName = $ownerData->getLastName() ?? '';
+            $user->lastname = $ownerData->getLastName() ?? '';
             $user->email = $ownerData->getEmail() ?? '';
         }
 
