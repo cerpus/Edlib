@@ -29,7 +29,9 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->create($request);
         } else {
-            Log::error(__METHOD__ . "Not a LTI request for H5P create.", [
+            Log::error(
+                __METHOD__ . "Not a LTI request for H5P create.",
+                [
                 'user' => Session::get('userId', 'not-logged-in-user'),
                 'url' => request()->url(),
                 'request' => request()->all()]
@@ -44,7 +46,9 @@ trait LtiTrait
         if ($ltiRequest != null) {
             return $this->edit($request, $id);
         } else {
-            Log::error(__METHOD__ . ": Not a LTI request for H5P: $id", [
+            Log::error(
+                __METHOD__ . ": Not a LTI request for H5P: $id",
+                [
                 'user' => Session::get('userId', 'not-logged-in-user'),
                 'url' => request()->url(),
                 'request' => request()->all()]

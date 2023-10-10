@@ -29,7 +29,8 @@ class CheckOwnership
                 return $next($request);
             }
         }
-        Log::error(__METHOD__ . ': Access denied. H5P: ' . $this->request->h5p
+        Log::error(
+            __METHOD__ . ': Access denied. H5P: ' . $this->request->h5p
             . ' is not owned or shared with user:' . Session::get('authId', 'not-logged-in-user'),
             [
                 'user' => Session::get('userId', 'not-logged-in-user'),
