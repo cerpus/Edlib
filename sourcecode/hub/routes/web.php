@@ -7,13 +7,13 @@ use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CookieController;
-use App\Http\Controllers\FacebookController;
-use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
+use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -134,14 +134,17 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     });
 });
 
-Route::prefix('google')->name('google.')->group(function () {
-    Route::get('login', [GoogleController::class, 'loginWithGoogle'])->name('login');
-    Route::any('callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
-});
+Route::prefix('/{provider}')
+    ->name('social.')
+    ->whereIn('provider', User::SOCIAL_PROVIDERS)
+    ->group(function () {
+        Route::get('/login')
+            ->uses([SocialController::class, 'login'])
+            ->name('login');
 
-Route::prefix('facebook')->name('facebook.')->group(function () {
-    Route::get('login', [FacebookController::class, 'loginWithFacebook'])->name('login');
-    Route::any('callback', [FacebookController::class, 'callbackFromFacebook'])->name('callback');
-});
+        Route::any('/callback')
+            ->uses([SocialController::class, 'callback'])
+            ->name('callback');
+    });
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');
