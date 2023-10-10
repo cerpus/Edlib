@@ -40,9 +40,9 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function withGoogleId(string|null $id = null): static
+    public function withGoogleId(): static
     {
-        return $this->state(['google_id' => $id ?? $this->faker->randomAscii]);
+        return $this->state(['google_id' => $this->faker->randomAscii]);
     }
 
     public function withFacebookId(): static
