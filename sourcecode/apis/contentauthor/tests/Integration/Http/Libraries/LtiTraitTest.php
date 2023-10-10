@@ -7,6 +7,7 @@ namespace Tests\Integration\Http\Libraries;
 use App\H5pLti;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\LTIRequest;
+use Exception;
 use Illuminate\Http\Request;
 use Tests\TestCase;
 
@@ -14,21 +15,22 @@ class LtiTraitTestClass
 {
     use LtiTrait;
 
-    public function __construct(private H5pLti $lti)
+    /** @phpstan-ignore-next-line */
+    public function __construct(private readonly H5pLti $lti)
     {
     }
 
-    public function create()
+    public function create(): string
     {
         return 'create';
     }
 
-    public function doShow()
+    public function doShow(): string
     {
         return 'doShow';
     }
 
-    public function edit()
+    public function edit(): string
     {
         return 'edit';
     }
@@ -36,7 +38,7 @@ class LtiTraitTestClass
 
 class LtiTraitTest extends TestCase
 {
-    public function setupLti()
+    public function setupLti(): void
     {
         $ltiRequest = $this->createMock(LTIRequest::class);
 
@@ -51,7 +53,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiShow_exception(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitTestClass::class);
@@ -67,7 +69,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiCreate_exception(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitTestClass::class);
@@ -83,7 +85,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiEdit_exception(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitTestClass::class);
