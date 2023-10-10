@@ -15,7 +15,8 @@ class LtiTraitTestClass
     use LtiTrait;
 
     public function __construct(private H5pLti $lti)
-    {}
+    {
+    }
 
     public function create()
     {
