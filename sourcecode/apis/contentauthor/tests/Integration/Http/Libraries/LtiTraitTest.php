@@ -15,22 +15,21 @@ class LtiTraitTestClass
 {
     use LtiTrait;
 
-    /** @phpstan-ignore-next-line */
     public function __construct(private readonly H5pLti $lti)
     {
     }
 
-    public function create(): string
+    public function create(Request $request): string
     {
         return 'create';
     }
 
-    public function doShow(): string
+    public function doShow($id, $context, $preview = false): string
     {
         return 'doShow';
     }
 
-    public function edit(): string
+    public function edit(Request $request, $id): string
     {
         return 'edit';
     }
