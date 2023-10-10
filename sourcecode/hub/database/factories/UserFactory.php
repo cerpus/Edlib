@@ -14,8 +14,7 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    public function definition(): array
-    {
+    public function definition(): array{
         $name = $this->faker->name;
         $email = Str::slug($name).'@example.com';
 
@@ -40,9 +39,9 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function withGoogleId(): static
+    public function withGoogleId(string|null $id = null): static
     {
-        return $this->state(['google_id' => $this->faker->randomAscii]);
+        return $this->state(['google_id' => $id ?? $this->faker->randomAscii]);
     }
 
     public function withFacebookId(): static

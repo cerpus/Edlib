@@ -7,6 +7,7 @@ return [
     'log-in' => 'Log in',
     'log-in-google' => 'Log in with Google',
     'log-in-facebook' => 'Log in with Facebook',
+    'log-in-auth0' => 'Log in with Auth0',
     'log-out' => 'Log out',
     'forgot-password' => 'I forgot my password',
     'my-account' => 'My Account',
