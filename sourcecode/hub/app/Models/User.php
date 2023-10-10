@@ -35,8 +35,6 @@ class User extends Model implements AuthenticatableContract
         'locale',
         'debug_mode',
         'email',
-        'google_id',
-        'facebook_id',
         'theme',
     ];
 
