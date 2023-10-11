@@ -45,7 +45,7 @@ class ArticleVersioningTest extends TestCase
         $authId = Str::uuid();
         /** @var Article $article */
         $article = Article::factory()->create(['owner_id' => $authId]);
-        $startCount = $article->count();
+        $startCount = Article::count();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
                 'title' => 'Title',
