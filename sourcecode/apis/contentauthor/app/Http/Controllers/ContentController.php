@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Libraries\ContentTypes\ArticleContentType;
 use App\Http\Libraries\ContentTypes\ContentType;
 use App\Http\Libraries\ContentTypes\ContentTypeInterface;
-use App\Http\Libraries\ContentTypes\EmbedContentType;
 use App\Http\Libraries\ContentTypes\InteractivityContentType;
 use App\Http\Libraries\ContentTypes\LinkContentType;
 use App\Http\Libraries\ContentTypes\H5PContentType;
@@ -83,10 +82,6 @@ class ContentController extends Controller
                     InteractivityContentType::class,
                     QuestionsContentType::class,
                 ]);
-
-                if (config('feature.use-add-link-resource') === true) {
-                    $activeContentTypes->push(EmbedContentType::class);
-                }
                 break;
             case "grid":
             default:

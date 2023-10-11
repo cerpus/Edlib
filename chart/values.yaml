@@ -59,5 +59,3 @@ services:
     user: "rabbitmq"
     password: "rabbitmq"
     secure: "true"
-  embedly:
-    key: "key"
