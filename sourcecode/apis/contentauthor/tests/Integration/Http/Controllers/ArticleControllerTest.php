@@ -31,7 +31,6 @@ class ArticleControllerTest extends TestCase
             'authId' => Uuid::uuid(),
         ]);
 
-        /** @var ArticleController $articleController */
         $articleController = app(ArticleController::class);
         $result = $articleController->create($request);
 

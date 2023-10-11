@@ -25,7 +25,6 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
     {
         parent::setUp();
 
-        /** @var H5PLibrary $library42 */
         $library42 = H5PLibrary::factory()->create([
             'name' => 'H5P.UnitTest',
             'major_version' => 4,

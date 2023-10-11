@@ -27,7 +27,6 @@ class EmbedControllerTest extends TestCase
             'ext_user_id' => "1",
             'launch_presentation_locale' => "nb",
         ]);
-        /** @var EmbedController $articleController */
         $articleController = app(EmbedController::class);
         $result = $articleController->create($request);
 

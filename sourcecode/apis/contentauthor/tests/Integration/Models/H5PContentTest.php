@@ -17,7 +17,6 @@ class H5PContentTest extends TestCase
 
     public function test_getMetadataStructure_HasMetadata(): void
     {
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create();
 
         H5PContentsMetadata::factory()->create([
@@ -52,7 +51,6 @@ class H5PContentTest extends TestCase
 
     public function test_getMetadataStructure_NoMetadata(): void
     {
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create();
 
         $result = $content->getMetadataStructure();

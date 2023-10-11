@@ -62,7 +62,6 @@ class H5pCerpusStorageTest extends TestCase
     {
         $disk = Storage::fake();
 
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create($libConfig);
         $file = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, $library->getFolderName());
 

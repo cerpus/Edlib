@@ -23,9 +23,7 @@ class ContentTest extends TestCase
     /** @test */
     public function test_ArticleIsCollaborator()
     {
-        /** @var User $user */
         $user = User::factory()->make();
-        /** @var Article $article */
         $article = Article::factory()->create(['owner_id' => $user->auth_id]);
         /** @var Collection<ArticleCollaborator> $collaborators */
         $collaborators = ArticleCollaborator::factory()->count(3)->make();
@@ -41,9 +39,7 @@ class ContentTest extends TestCase
 
     public function test_H5PIsCollaborator()
     {
-        /** @var User $user */
         $user = User::factory()->make();
-        /** @var H5PContent $h5p */
         $h5p = H5PContent::factory()->create(['user_id' => $user->auth_id]);
         /** @var Collection<ArticleCollaborator> $collaborators */
         $collaborators = H5PCollaborator::factory()->count(3)->make();

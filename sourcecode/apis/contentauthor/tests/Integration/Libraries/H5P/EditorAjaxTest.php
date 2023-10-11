@@ -16,9 +16,7 @@ class EditorAjaxTest extends TestCase
 
     public function test_getTranslations(): void
     {
-        /** @var H5PLibrary $libFoo */
         $libFoo = H5PLibrary::factory()->create();
-        /** @var H5PLibrary $libTest */
         $libTest = H5PLibrary::factory()->create([
             'name' => 'H5P.UnitTest',
             'major_version' => 3,
@@ -27,25 +25,25 @@ class EditorAjaxTest extends TestCase
             'patch_version_in_folder_name' => 1,
         ]);
 
-        H5PLibraryLanguage::create([
+        H5PLibraryLanguage::factory()->create([
             'library_id' => $libFoo->id,
             'language_code' => 'nb',
             'translation' => json_encode(['lib' => $libFoo->getLibraryString(false), 'lang' => 'nb']),
         ]);
 
-        H5PLibraryLanguage::create([
+        H5PLibraryLanguage::factory()->create([
             'library_id' => $libTest->id,
             'language_code' => 'nb',
             'translation' => json_encode(['lib' => $libTest->getLibraryString(false), 'lang' => 'nb']),
         ]);
 
-        H5PLibraryLanguage::create([
+        H5PLibraryLanguage::factory()->create([
             'library_id' => $libFoo->id,
             'language_code' => 'nn',
             'translation' => json_encode(['lib' => $libFoo->getLibraryString(false), 'lang' => 'nn']),
         ]);
 
-        H5PLibraryLanguage::create([
+        H5PLibraryLanguage::factory()->create([
             'library_id' => $libTest->id,
             'language_code' => 'en',
             'translation' => json_encode(['lib' => $libTest->getLibraryString(false), 'lang' => 'en']),

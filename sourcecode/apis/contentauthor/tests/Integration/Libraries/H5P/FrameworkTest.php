@@ -34,16 +34,14 @@ final class FrameworkTest extends TestCase
 
     private Framework $framework;
 
-    private MockHandler $mockedResponses;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->history = new ArrayObject();
-        $this->mockedResponses = new MockHandler();
+        $mockedResponses = new MockHandler();
 
-        $handler = HandlerStack::create($this->mockedResponses);
+        $handler = HandlerStack::create($mockedResponses);
         $handler->push(Middleware::history($this->history));
 
         $client = new Client(['handler' => $handler]);
@@ -99,7 +97,6 @@ final class FrameworkTest extends TestCase
             'translation' => 'Norsk Nynorsk',
         ]);
 
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::find($input['libraryId']);
 
         $this->assertSame('H5P.UnitTest', $library->name);
@@ -130,12 +127,10 @@ final class FrameworkTest extends TestCase
             'minor_version' => 2,
             'patch_version' => 2,
         ]);
-        /** @var H5PLibrary $editDep */
         $editDep = H5PLibrary::factory()->create([
             'name' => 'H5PEditor.Foobar',
             'patch_version_in_folder_name' => true,
         ]);
-        /** @var H5PLibrary $saved */
         $saved = H5PLibrary::factory()->create([
             'patch_version_in_folder_name' => true,
         ]);
@@ -164,7 +159,6 @@ final class FrameworkTest extends TestCase
         $caStorage = App(ContentAuthorStorage::class);
         $tmpDisk = Storage::fake($caStorage->getH5pTmpDiskName());
 
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
         $path = 'libraries/' . $library->getFolderName();
 
@@ -188,9 +182,7 @@ final class FrameworkTest extends TestCase
     /** @dataProvider provider_usePatch */
     public function test_loadContent($usePatch): void
     {
-        /** @var H5PLibrary $h5pLibrary */
         $h5pLibrary = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
-        /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::factory()->create(['library_id' => $h5pLibrary->id]);
 
         $content = $this->framework->loadContent($h5pContent->id);
@@ -210,7 +202,6 @@ final class FrameworkTest extends TestCase
     /** @dataProvider provider_isPatchedLibrary */
     public function test_isPatchedLibrary(int $patchVersion, bool $expected)
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
 
         $this->assertSame($expected, $this->framework->isPatchedLibrary([
@@ -230,7 +221,6 @@ final class FrameworkTest extends TestCase
 
     public function test_insertContent(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
         $input = [
             'title' => 'Some title',
@@ -289,7 +279,6 @@ final class FrameworkTest extends TestCase
 
     public function test_getLibraryContentCount(): void
     {
-        /** @var H5PLibrary $nr */
         $nr = H5PLibrary::factory()->create([
             'name' => 'H5P.NotRunnable',
             'runnable' => false,
@@ -303,7 +292,6 @@ final class FrameworkTest extends TestCase
             'runnable' => true,
         ]);
 
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
         H5PContent::factory(3)->create([
             'library_id' => $library->id,

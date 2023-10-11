@@ -101,9 +101,7 @@ class H5PConfigAbstractTest extends TestCase
 
     public function test_content(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
         ]);

@@ -101,7 +101,6 @@ use function base_path;
                 ->eachSpread(function ($title, $path, $majorVersion, $minorVersion, $expectedParameterStructure) {
                     $machineName = "H5P.Blanks";
                     $file = new File('sample.h5p', fopen(base_path($path), 'r'));
-                    /** @var User $user */
                     $user = User::factory()->make();
                     $parameters = [
                         'h5p' => $file,
@@ -149,7 +148,6 @@ use function base_path;
             $this->_setUp();
             $this->setupAdapter(false, true);
 
-            /** @var User $user */
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
 
@@ -211,7 +209,6 @@ use function base_path;
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
             $file = new File('sample-with-license-and-authors.h5p', fopen(base_path('tests/files/sample-with-license-and-authors.h5p'), 'r'));
-            /** @var User $user */
             $user = User::factory()->make();
             $parameters = [
                 'h5p' => $file,
@@ -281,7 +278,6 @@ use function base_path;
         public function testFailsOnInvalidH5pFile(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
-            /** @var User $user */
             $user = User::factory()->make();
 
             $this
@@ -296,7 +292,6 @@ use function base_path;
         public function testFailsOnInvalidDisablePublishMetadataFlag(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
-            /** @var User $user */
             $user = User::factory()->make();
 
             $this
@@ -312,7 +307,6 @@ use function base_path;
         public function testFailsOnInvalidIsPublicFlag(): void
         {
             $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
-            /** @var User $user */
             $user = User::factory()->make();
 
             $this

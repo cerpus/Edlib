@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Helpers\MockVersioningTrait;
 use Tests\Helpers\VersionedH5PTrait;
 use Tests\Seeds\TestH5PSeeder;
@@ -59,7 +60,7 @@ class PingVideoApiTest extends TestCase
         $adapter = $this->createMock(H5PVideoInterface::class);
         $adapter->method('isVideoReadyForStreaming')->willReturn(false);
 
-        /** @var H5PContentsVideo $contentVideo */
+        /** @var H5PContentsVideo|MockObject $contentVideo */
         $contentVideo = $this->createMock(H5PContentsVideo::class);
         $versionClient = new VersionClient();
 
@@ -91,10 +92,9 @@ class PingVideoApiTest extends TestCase
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-        ])->each(function ($h5pContent) use ($videoSource) {
+        ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
-            /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
                 ->save(H5PContentsVideo::factory()
@@ -504,10 +504,9 @@ class PingVideoApiTest extends TestCase
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-        ])->each(function ($h5pContent) use ($videoSource) {
+        ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
-            /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
                 ->save(H5PContentsVideo::factory()
@@ -563,7 +562,6 @@ class PingVideoApiTest extends TestCase
         ]);
         $this->setupContentDirectories($h5pContent->id);
         $this->createVideo($h5pContent->id, $videoSource);
-        /** @var H5PContent $h5pContent */
         $h5pContent
             ->contentVideos()
             ->save(H5PContentsVideo::factory()

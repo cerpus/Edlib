@@ -25,7 +25,6 @@ class ArticleTest extends TestCase
 
     public function testRewriteUploadUrls(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
         ]);
@@ -38,7 +37,6 @@ class ArticleTest extends TestCase
 
     public function testLeavesNonUploadUrlsAlone(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
         ]);
@@ -51,7 +49,6 @@ class ArticleTest extends TestCase
 
     public function testRendersArticleWithBrokenHtml(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<div>Foo<b></div>bar</b>',
         ]);
@@ -181,7 +178,6 @@ class ArticleTest extends TestCase
         ]);
         Event::fake();
         $authId = Str::uuid();
-        /** @var Article $article */
         $article = Article::factory()->create([
             'owner_id' => $authId,
             'is_published' => 1,
@@ -206,6 +202,7 @@ class ArticleTest extends TestCase
             'license' => 'BY-NC',
         ]);
 
+        /** @var Article $newArticle */
         $newArticle = Article::where('title', "Title")
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -264,6 +261,7 @@ class ArticleTest extends TestCase
             'license' => 'BY-ND',
         ]);
 
+        /** @var Article $article */
         $article = Article::where('title', 'Title')->first();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
@@ -274,6 +272,8 @@ class ArticleTest extends TestCase
                 'isPublished' => 1,
             ])->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+
+        /** @var Article $article */
         $article = Article::where('title', 'Title')
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -287,7 +287,6 @@ class ArticleTest extends TestCase
     {
         $this->setupVersion(['getVersion' => false]);
 
-        /** @var Article $article */
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
@@ -307,7 +306,6 @@ class ArticleTest extends TestCase
 
     public function testRewriteUrls()
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => 'This is the original content',
         ]);
@@ -326,7 +324,6 @@ class ArticleTest extends TestCase
 
     public function testParent()
     {
-        /** @var Article $article */
         $article = Article::factory()->create();
 
         $parentArticle = Article::factory()->create();
@@ -341,7 +338,6 @@ class ArticleTest extends TestCase
 
     public function testGetISO6393Language()
     {
-        /** @var Article $article */
         $article = Article::factory()->create();
 
         $language = $article->getISO6393Language();
@@ -351,7 +347,6 @@ class ArticleTest extends TestCase
 
     public function testSetParentVersionId()
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'parent_version_id' => 'original_parent_version_id',
         ]);

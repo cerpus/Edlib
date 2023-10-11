@@ -29,7 +29,6 @@ class LinkControllerTest extends TestCase
         $request = Request::create('', parameters: [
             'redirectToken' => 'UniqueToken',
         ]);
-        /** @var LinkController $linkController */
         $linkController = app(LinkController::class);
 
         $response = $linkController->create($request);
@@ -49,7 +48,6 @@ class LinkControllerTest extends TestCase
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Link $link */
         $link = Link::factory()->create([
             'license' => License::LICENSE_BY_NC_ND,
             'owner_id' => $user->getId(),
@@ -64,7 +62,6 @@ class LinkControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
 
-        /** @var LinkController $linkController */
         $linkController = app(LinkController::class);
         $result = $linkController->edit($request, $link->getId());
 
@@ -120,7 +117,6 @@ class LinkControllerTest extends TestCase
             LinkWasSaved::class,
         ]);
 
-        /** @var Link $link */
         $link = Link::factory()->create([
             'link_type' => 'external_link',
             'link_url' => 'https://nowhere.not',

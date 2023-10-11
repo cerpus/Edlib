@@ -43,7 +43,6 @@ class ArticleVersioningTest extends TestCase
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
         $authId = Str::uuid();
-        /** @var Article $article */
         $article = Article::factory()->create(['owner_id' => $authId]);
         $startCount = Article::count();
         $this->withSession(['authId' => $authId])
@@ -67,7 +66,6 @@ class ArticleVersioningTest extends TestCase
     {
         $request = new Request();
         $authId = Str::uuid();
-        /** @var Article $originalArticle */
         $originalArticle = Article::factory()->create([
             'owner_id' => $authId,
             'license' => 'BY',
@@ -154,13 +152,9 @@ class ArticleVersioningTest extends TestCase
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
         ]);
-        /** @var User $owner */
         $owner = User::factory()->make();
-        /** @var User $collaborator */
         $collaborator = User::factory()->make();
-        /** @var User $copyist */
         $copyist = User::factory()->make();
-        /** @var User $eve */
         $eve = User::factory()->make();
 
         $article = Article::factory()->create([

@@ -28,7 +28,6 @@ class ContentTest extends TestCase
             ->method('getUser')
             ->willReturn($user);
 
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'user_id' => $userId,
         ]);

@@ -50,10 +50,8 @@ class H5PControllerTest extends TestCase
 
         H5PLibrary::factory()->create();
 
-        /** @var H5PCore $h5pCore */
         $h5pCore = app(H5pCore::class);
 
-        /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
         $result = $articleController->create($request, $h5pCore, $contentType);
 
@@ -141,18 +139,15 @@ class H5PControllerTest extends TestCase
             'redirectToken' => $this->faker->uuid,
         ]);
 
-        /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->create([
             'major_version' => 1,
             'minor_version' => 6,
         ]);
-        /** @var H5PLibrary $upgradeLib */
         $upgradeLib = H5PLibrary::factory()->create([
             'major_version' => 1,
             'minor_version' => 12,
         ]);
 
-        /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::factory()->create([
             'user_id' => $user->getId(),
             'library_id' => $lib->id,
@@ -180,7 +175,6 @@ class H5PControllerTest extends TestCase
             ]);
         }
 
-        /** @var H5PController $articleController */
         $articleController = app(H5PController::class);
         $result = $articleController->edit($request, $h5pContent->id);
         $this->assertNotEmpty($result);
@@ -293,7 +287,6 @@ class H5PControllerTest extends TestCase
 
         $depH5PVideo = H5PLibrary::factory()->create(['name' => 'H5P.Video', 'major_version' => 2, 'minor_version' => 9]);
         $depCerpusVideo = H5PLibrary::factory()->create(['name' => 'H5P.CerpusVideo', 'major_version' => 3, 'minor_version' => 8]);
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create([
             'minor_version' => 18,
         ]);
@@ -321,7 +314,6 @@ class H5PControllerTest extends TestCase
         H5PContent::factory()->create([
             'library_id' => $library->id,
         ]);
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'is_published' => true,

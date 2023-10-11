@@ -29,11 +29,9 @@ class GameControllerTest extends TestCase
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Gametype $gameType */
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
-        /** @var Game $game */
         $game = Game::factory()->create([
             'owner' => $user->getId(),
             'gametype' => $gameType->id,
@@ -50,7 +48,6 @@ class GameControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        /** @var GameController $gameController */
         $gameController = app(GameController::class);
         $result = $gameController->edit($request, $game->id);
 
@@ -84,11 +81,9 @@ class GameControllerTest extends TestCase
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Gametype $gameType */
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
-        /** @var Game $game */
         $game = Game::factory()->create([
             'owner' => $user->getId(),
             'gametype' => $gameType->id,

@@ -35,13 +35,10 @@ class AdminControllerTest extends TestCase
         Storage::put('libraries/H5P.Foobar-1.42/presave.js', 'the content');
         Storage::put('libraries/H5P.Toolbar-1.2/presave.js', 'the content');
 
-        /** @var H5PLibrary $library1 */
         $library1 = H5PLibrary::factory()->create();
-        /** @var H5PLibrary $library2 */
         $library2 = H5PLibrary::factory()->create([
             'minor_version' => 42,
         ]);
-        /** @var H5PLibrary $library3 */
         $library3 = H5PLibrary::factory()->create([
             'name' => 'H5P.Toolbar',
         ]);
@@ -91,9 +88,7 @@ class AdminControllerTest extends TestCase
 
     public function test_updateMaxScore(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'max_score' => null,
@@ -151,7 +146,6 @@ class AdminControllerTest extends TestCase
             ->method('getUser')
             ->willReturn($user);
 
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
 
         H5PContent::factory()->create([

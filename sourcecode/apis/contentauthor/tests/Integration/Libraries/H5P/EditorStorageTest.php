@@ -14,7 +14,6 @@ class EditorStorageTest extends TestCase
 
     public function test_getLibraries_forLibrary(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create(['semantics' => 'something']);
         $libraries = (object) [
             'uberName' => $library->getLibraryString(false),
@@ -26,7 +25,6 @@ class EditorStorageTest extends TestCase
         $core = $this->createMock(\H5PCore::class);
         $this->instance(\H5PCore::class, $core);
 
-        /** @var EditorStorage $editorStorage */
         $editorStorage = app(EditorStorage::class);
         $ret = $editorStorage->getLibraries([$libraries]);
 
@@ -37,15 +35,12 @@ class EditorStorageTest extends TestCase
 
     public function test_getLibrary_allLibraries(): void
     {
-        /** @var H5PLibrary $lib1 */
         $lib1 = H5PLibrary::factory()->create(['semantics' => 'something']);
-        /** @var H5PLibrary $lib2 */
         $lib2 = H5PLibrary::factory()->create(['name' => 'H5P.Headphones', 'semantics' => 'something']);
 
         $core = $this->createMock(\H5PCore::class);
         $this->instance(\H5PCore::class, $core);
 
-        /** @var EditorStorage $editorStorage */
         $editorStorage = app(EditorStorage::class);
         $ret = $editorStorage->getLibraries();
 
@@ -59,7 +54,6 @@ class EditorStorageTest extends TestCase
 
     public function test_getAvailableLanguages()
     {
-        /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->create();
         $langCodes = H5PLibraryLanguage::factory(2)->create(['library_id' => $lib->id]);
 
@@ -74,7 +68,6 @@ class EditorStorageTest extends TestCase
 
     public function test_getLanguage(): void
     {
-        /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->create();
         H5PLibraryLanguage::factory()->create([
             'library_id' => $lib->id,

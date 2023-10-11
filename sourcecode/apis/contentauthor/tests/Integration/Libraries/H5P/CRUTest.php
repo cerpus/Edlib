@@ -51,11 +51,8 @@ class CRUTest extends TestCase
     /** @test */
     public function create_and_update_h5p_using_web_request()
     {
-        /** @var User $owner */
         $owner = User::factory()->make();
-        /** @var User $collaborator */
         $collaborator = User::factory()->make(['email' => 'a@b.com']);
-        /** @var User $copyist */
         $copyist = User::factory()->make();
 
         $this->setUpH5PLibrary();
@@ -93,7 +90,6 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
 
         $this->assertCount(1, H5PContent::all());
-        /** @var H5PContent $h5p */
         $h5p = H5PContent::find(1);
         $this->assertCount(1, $h5p->collaborators);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
@@ -253,7 +249,6 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(TestH5PSeeder::class);
-        /** @var User $owner */
         $owner = User::factory()->make();
         $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
@@ -304,7 +299,6 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
 
         $this->seed(TestH5PSeeder::class);
-        /** @var User $owner */
         $owner = User::factory()->make();
         $content = H5PContent::factory()->create([
             'user_id' => $owner->auth_id,
@@ -360,7 +354,6 @@ class CRUTest extends TestCase
         $this->expectsEvents(ResourceSaved::class);
         $this->seed(TestH5PSeeder::class);
 
-        /** @var User $owner */
         $owner = User::factory()->make();
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
@@ -430,7 +423,6 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublishActionAndLTISupport_invalidPublishFlag_thenFails()
     {
-        /** @var User $owner */
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
 
@@ -463,7 +455,6 @@ class CRUTest extends TestCase
      */
     public function disabledUserPublishAction_invalidPublishFlag_thenFails()
     {
-        /** @var User $owner */
         $owner = User::factory()->make();
         $this->createUnitTestDirectories();
 
@@ -497,9 +488,7 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublish_NotOwner()
     {
-        /** @var User $owner */
         $owner = User::factory()->make();
-        /** @var User $me */
         $me = User::factory()->make();
         $this->createUnitTestDirectories();
         $this->setUpResourceApi();
@@ -515,10 +504,7 @@ class CRUTest extends TestCase
             'license' => 'PRIVATE',
         ]);
 
-        /** @var H5PContent $newContent */
-        $newContent = $contents->first();
-        /** @var H5PLibrary $library */
-        $library = $newContent->library()->first();
+        $library = $contents->library;
 
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => true,
@@ -531,7 +517,7 @@ class CRUTest extends TestCase
             'email' => $me->email,
             'verifiedEmails' => [$me->email],
         ])
-            ->put(route('h5p.update', $newContent->id), [
+            ->put(route('h5p.update', $contents->id), [
                 '_token' => csrf_token(),
                 'title' => 'New resource',
                 'action' => 'create',
@@ -543,11 +529,11 @@ class CRUTest extends TestCase
                 'isPublished' => '1',
             ])
             ->assertStatus(Response::HTTP_FORBIDDEN);
-        $this->assertDatabaseHas('h5p_contents', ['id' => $newContent->id, 'title' => $newContent->title, 'is_published' => 0]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => $contents->id, 'title' => $contents->title, 'is_published' => 0]);
 
         $collaborator = new H5PCollaborator();
         $collaborator->email = $me->email;
-        $newContent->collaborators()->save($collaborator);
+        $contents->collaborators()->save($collaborator);
 
         $this->withSession([
             'authId' => $me->auth_id,
@@ -555,9 +541,9 @@ class CRUTest extends TestCase
             'email' => $me->email,
             'verifiedEmails' => [$me->email],
         ])
-            ->put(route('h5p.update', $newContent->id), [
+            ->put(route('h5p.update', $contents->id), [
                 '_token' => csrf_token(),
-                'title' => $newContent->title,
+                'title' => $contents->title,
                 'library' => $library->getLibraryString(false),
                 'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
                 'license' => "PRIVATE",
@@ -567,6 +553,6 @@ class CRUTest extends TestCase
                 'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas('h5p_contents', ['id' => ++$newContent->id, 'title' => $newContent->title, 'is_published' => 1]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => ++$contents->id, 'title' => $contents->title, 'is_published' => 1]);
     }
 }

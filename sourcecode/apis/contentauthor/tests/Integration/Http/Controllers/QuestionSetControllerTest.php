@@ -59,7 +59,6 @@ class QuestionSetControllerTest extends TestCase
         ]);
         $request->setLaravelSession(app(Session::class));
 
-        /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
         $result = $questionSetController->create($request);
 
@@ -88,7 +87,6 @@ class QuestionSetControllerTest extends TestCase
 
         $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
 
-        /** @var Game $game */
         $game = Game::factory()->create(['license' => License::LICENSE_BY_NC_SA]);
 
         $questionSetConvertMock = $this->createMock(QuestionSetConvert::class);
@@ -128,7 +126,6 @@ class QuestionSetControllerTest extends TestCase
         ]);
         Gametype::factory()->create(['name' => Millionaire::$machineName]);
 
-        /** @var QuestionSet $qs */
         $qs = QuestionSet::factory()->create(['owner' => $user->getId()]);
         $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
@@ -140,7 +137,6 @@ class QuestionSetControllerTest extends TestCase
         ]);
         $request->setLaravelSession(app(Session::class));
 
-        /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
         $result = $questionSetController->edit($request, $qs->id);
 
@@ -173,7 +169,7 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        /** @var Collection $questionsets */
+        /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
@@ -190,7 +186,9 @@ class QuestionSetControllerTest extends TestCase
 
         /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
+        /** @var QuestionSetQuestion $question */
         $question = $questionset->questions()->first();
+        /** @var QuestionSetQuestionAnswer $answer */
         $answer = $question->answers()->first();
         $json = [
             'title' => "New title",
@@ -217,7 +215,6 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        /** @var QuestionSetController $questionsetController */
         $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 
@@ -334,7 +331,7 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        /** @var Collection $questionsets */
+        /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
@@ -351,7 +348,9 @@ class QuestionSetControllerTest extends TestCase
 
         /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
+        /** @var QuestionSetQuestion $question */
         $question = $questionset->questions()->first();
+        /** @var QuestionSetQuestionAnswer $answer */
         $answer = $question->answers()->first();
         $json = [
             'title' => "New title",
@@ -381,7 +380,6 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        /** @var QuestionSetController $questionsetController */
         $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 

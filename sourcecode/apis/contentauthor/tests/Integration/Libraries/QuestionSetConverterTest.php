@@ -27,11 +27,9 @@ class QuestionSetConverterTest extends TestCase
     {
         $this->expectsEvents([GameWasSaved::class]);
 
-        /** @var QuestionSet $questionSet */
         $questionSet = QuestionSet::factory()->create([
             'is_published' => false,
         ]);
-        /** @var Gametype $gameType */
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
@@ -41,7 +39,6 @@ class QuestionSetConverterTest extends TestCase
             tags: ['List', 'of', 'tags'],
         );
 
-        /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
         $game = $questionsetConverter->convert(
             Millionaire::$machineName,
@@ -67,12 +64,10 @@ class QuestionSetConverterTest extends TestCase
             ->expects($this->once())
             ->method('processParameters');
 
-        /** @var QuestionSet $questionSet */
         $questionSet = QuestionSet::factory()->create([
             'is_published' => false,
             'license' => License::LICENSE_BY_ND,
         ]);
-        /** @var QuestionSetQuestion $question */
         $question = QuestionSetQuestion::factory()->create([
             'question_set_id' => $questionSet->id,
         ]);
@@ -91,7 +86,6 @@ class QuestionSetConverterTest extends TestCase
             'minor_version' => 12,
         ])->create();
 
-        /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
         $h5p = $questionsetConverter->convert(
             H5PQuestionSet::$machineName,
