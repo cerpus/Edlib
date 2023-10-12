@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class H5PLibrariesHubCache extends Model
 {
+    use HasFactory;
+
     protected $table = 'h5p_libraries_hub_cache';
 
     protected $guarded = [];
