@@ -18,7 +18,7 @@ class H5PConfigAbstractTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    private H5PConfigAbstract|MockObject $h5PConfig;
+    private H5PConfigAbstract&MockObject $h5PConfig;
     private H5PCore $h5pCore;
 
     public function setUp(): void

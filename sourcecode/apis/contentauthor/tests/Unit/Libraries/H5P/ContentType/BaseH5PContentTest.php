@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class BaseH5PContentTest extends TestCase
 {
-    private BaseH5PContent|MockObject $abstractClass;
+    private BaseH5PContent&MockObject $abstractClass;
 
     public function setUp(): void
     {

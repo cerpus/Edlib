@@ -420,7 +420,7 @@ class Framework implements \H5PFrameworkInterface, Result
      *   FALSE otherwise
      * TODO: Implement this for real....
      */
-    public function isPatchedLibrary($library)
+    public function isPatchedLibrary($library): bool
     {
         return H5PLibrary::fromLibrary([
             $library['machineName'],
@@ -1150,11 +1150,10 @@ class Framework implements \H5PFrameworkInterface, Result
      * Determines if content slug is used.
      *
      * @param string $slug
-     * @return boolean
      */
-    public function isContentSlugAvailable($slug)
+    public function isContentSlugAvailable($slug): bool
     {
-        return !H5PContent::where('slug', $slug)->exists();
+        return H5PContent::where('slug', $slug)->doesntExist();
     }
 
     /**

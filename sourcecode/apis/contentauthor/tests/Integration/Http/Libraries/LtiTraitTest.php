@@ -5,35 +5,11 @@ declare(strict_types=1);
 namespace Tests\Integration\Http\Libraries;
 
 use App\H5pLti;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\LTIRequest;
 use Exception;
 use Illuminate\Http\Request;
+use Tests\Integration\Http\Libraries\Stubs\LtiTraitStubClass;
 use Tests\TestCase;
-
-class LtiTraitTestClass
-{
-    use LtiTrait;
-
-    public function __construct(private readonly H5pLti $lti)
-    {
-    }
-
-    public function create(Request $request): string
-    {
-        return 'create';
-    }
-
-    public function doShow($id, $context, $preview = false): string
-    {
-        return 'doShow';
-    }
-
-    public function edit(Request $request, $id): string
-    {
-        return 'edit';
-    }
-}
 
 class LtiTraitTest extends TestCase
 {
@@ -55,14 +31,14 @@ class LtiTraitTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
-        $class = app(LtiTraitTestClass::class);
+        $class = app(LtiTraitStubClass::class);
         $class->ltiShow(1);
     }
 
     public function test_ltiShow(): void
     {
         $this->setupLti();
-        $testClass = app(LtiTraitTestClass::class);
+        $testClass = app(LtiTraitStubClass::class);
         $this->assertSame('doShow', $testClass->ltiShow(42));
     }
 
@@ -71,14 +47,14 @@ class LtiTraitTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
-        $class = app(LtiTraitTestClass::class);
+        $class = app(LtiTraitStubClass::class);
         $class->ltiCreate(Request::create(''));
     }
 
     public function test_ltiCreate(): void
     {
         $this->setupLti();
-        $testClass = app(LtiTraitTestClass::class);
+        $testClass = app(LtiTraitStubClass::class);
         $this->assertSame('create', $testClass->ltiCreate(Request::create('')));
     }
 
@@ -87,14 +63,14 @@ class LtiTraitTest extends TestCase
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('No valid LTI request');
 
-        $class = app(LtiTraitTestClass::class);
+        $class = app(LtiTraitStubClass::class);
         $class->ltiEdit(Request::create(''), 1);
     }
 
     public function test_ltiEdit(): void
     {
         $this->setupLti();
-        $testClass = app(LtiTraitTestClass::class);
+        $testClass = app(LtiTraitStubClass::class);
         $this->assertSame('edit', $testClass->ltiEdit(Request::create(''), 42));
     }
 }
