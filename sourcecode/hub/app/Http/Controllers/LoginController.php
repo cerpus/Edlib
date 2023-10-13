@@ -19,7 +19,11 @@ final class LoginController extends Controller
 {
     public function login(): View
     {
-        return view('login.index');
+        return view('login.index', [
+            'has_google' => (bool) config('services.google.client_id'),
+            'has_facebook' => (bool) config('services.facebook.client_id'),
+            'has_auth0' => (bool) config('services.auth0.client_id'),
+        ]);
     }
 
     public function check(LoginRequest $request): RedirectResponse

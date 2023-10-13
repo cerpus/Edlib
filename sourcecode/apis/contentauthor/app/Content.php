@@ -7,6 +7,7 @@ use App\Apis\ResourceApiService;
 use App\EdlibResource\CaEdlibResource;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ContentTypeDataObject;
+use App\Libraries\DataObjects\LtiContent;
 use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\Attributable;
@@ -25,6 +26,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
+use function htmlspecialchars_decode;
+
+use const ENT_HTML5;
+use const ENT_QUOTES;
+
 /**
  * @property string|int $id
  * @property Carbon $created_at
@@ -39,6 +45,7 @@ use Illuminate\Support\Facades\Session;
  * @property string $node_id
  * @property Collection $collaborators
  * @property bool $is_draft
+ * @property-read string|null $title_clean
  * @property-read NdlaIdMapper|null $ndlaMapper
  *
  * @method static Collection findMany($ids, $columns = ['*'])
@@ -89,6 +96,22 @@ abstract class Content extends Model
     abstract public function getContentOwnerId();
 
     abstract public function getISO6393Language();
+
+    /**
+     * Get the URL for displaying the content
+     */
+    abstract public function getUrl(): string;
+
+    abstract public function getMachineName(): string;
+
+    public function getTitleCleanAttribute(): string|null
+    {
+        if ($this->title === null) {
+            return null;
+        }
+
+        return htmlspecialchars_decode($this->title, ENT_HTML5 | ENT_QUOTES);
+    }
 
     public function isOwner($currentUserId): bool
     {
@@ -481,6 +504,19 @@ abstract class Content extends Model
                 ->values()
                 ->toArray(),
             $this->getAuthorOverwrite()
+        );
+    }
+
+    public function toLtiContent(): LtiContent
+    {
+        return new LtiContent(
+            id: $this->id,
+            url: $this->getUrl(),
+            title: $this->title_clean,
+            machineName: $this->getMachineName(),
+            hasScore: ($this->getMaxScore() ?? 0) > 0,
+            editUrl: $this->getEditUrl(),
+            titleHtml: $this->title,
         );
     }
 

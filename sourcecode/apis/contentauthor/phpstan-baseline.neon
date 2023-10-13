@@ -381,11 +381,6 @@ parameters:
 			path: app/Http/Kernel.php
 
 		-
-			message: "#^Variable \\$names might not be defined\\.$#"
-			count: 1
-			path: app/Http/Libraries/AuthJwtParser.php
-
-		-
 			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/ArticleContentType.php

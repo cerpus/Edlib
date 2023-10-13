@@ -16,9 +16,16 @@
                     <dt>Associated resources
                     <dd>{{ $tool->resources_count }}
                 </dl>
+                @can('remove', $tool)
+                    <x-form :action="route('admin.lti-tools.remove', [$tool])" method="DELETE">
+                        <x-form.button class="btn-sm btn-danger">
+                            {{ trans('messages.remove') }}
+                        </x-form.button>
+                    </x-form>
+                @endcan
             </li>
         @endforeach
     </ul>
 
-    <p><a href="{{ route('admin.lti-tools.add') }}">Add LTI tool</a></p>
+    <p><a href="{{ route('admin.lti-tools.add') }}" class="btn btn-outline-primary">Add LTI tool</a></p>
 </x-layout>

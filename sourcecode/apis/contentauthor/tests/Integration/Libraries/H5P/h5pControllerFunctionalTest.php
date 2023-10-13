@@ -95,7 +95,7 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $responseData = json_decode($response->getContent());
         $this->assertObjectHasAttribute('url', $responseData);
-        $this->assertEquals("http://localhost/h5p/1", $responseData->url);
+        $this->assertEquals("http://localhost/h5p/1/edit", $responseData->url);
 
         $this->assertDatabaseHas("h5p_contents", ["id" => 1, 'license' => 'BY-NC']);
         $this->assertDatabaseMissing("h5p_contents", ["id" => 2]);
@@ -167,7 +167,7 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $responseData = json_decode($response->getContent());
         $this->assertObjectHasAttribute('url', $responseData);
-        $this->assertEquals("http://localhost/h5p/2", $responseData->url);
+        $this->assertEquals("http://localhost/h5p/2/edit", $responseData->url);
 
         $this->assertDatabaseHas("h5p_contents", ["id" => 2]);
         $this->assertDatabaseMissing("h5p_contents", ["id" => 3]);

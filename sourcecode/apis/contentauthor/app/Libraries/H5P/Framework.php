@@ -14,6 +14,7 @@ use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\Result;
+use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
@@ -21,6 +22,7 @@ use H5PCore;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Stringable;
 use InvalidArgumentException;
 use PDO;
 use Psr\Http\Message\ResponseInterface;
@@ -132,18 +134,34 @@ class Framework implements \H5PFrameworkInterface, Result
         ];
     }
 
-    public function fetchExternalData($url, $data = null, $blocking = true, $stream = null): string|null
-    {
+    public function fetchExternalData(
+        $url,
+        $data = null,
+        $blocking = true,
+        $stream = null,
+        $fullData = false,
+        $headers = [],
+        $files = [],
+        $method = 'POST'
+    ): string|array|null {
         $method = $data ? 'POST' : 'GET';
         $options = [RequestOptions::FORM_PARAMS => $data];
         if ($stream !== null) {
             $options[RequestOptions::SINK] = $stream;
         }
+        $options[RequestOptions::HEADERS] = $headers;
 
         return $this->httpClient->requestAsync($method, $url, $options)
-            ->then(static function (ResponseInterface $response) use ($blocking) {
+            ->then(static function (ResponseInterface $response) use ($blocking, $fullData) {
                 if (!$blocking) {
                     return null;
+                }
+                if ($fullData) {
+                    return [
+                        'status' => $response->getStatusCode(),
+                        'headers' => $response->getHeaders(),
+                        'data' => $response->getBody()->getContents(),
+                    ];
                 }
 
                 return $response->getBody()->getContents();
@@ -490,7 +508,8 @@ class Framework implements \H5PFrameworkInterface, Result
             'metadata_settings' => $libraryData['metadataSettings'],
             'add_to' => $libraryData['addTo'],
             'has_icon' => $libraryData['hasIcon'] ?? 0,
-            'tutorial_url' => ''
+            'tutorial_url' => '',
+            'patch_version_in_folder_name' => true,
         ]);
         $libraryData['libraryId'] = $h5pLibrary->id;
 
@@ -809,6 +828,7 @@ class Framework implements \H5PFrameworkInterface, Result
             'preloadedCss' => $h5pLibrary->preloaded_css,
             'dropLibraryCss' => $h5pLibrary->drop_library_css,
             'semantics' => $h5pLibrary->semantics,
+            'patchVersionInFolderName' => $h5pLibrary->patch_version_in_folder_name,
         ];
 
         foreach ($h5pLibrary->libraries as $dependency) {
@@ -816,6 +836,8 @@ class Framework implements \H5PFrameworkInterface, Result
                 'machineName' => $dependency->requiredLibrary->name,
                 'majorVersion' => $dependency->requiredLibrary->major_version,
                 'minorVersion' => $dependency->requiredLibrary->minor_version,
+                'patchVersion' => $dependency->requiredLibrary->patch_version,
+                'patchVersionInFolderName' => $dependency->requiredLibrary->patch_version_in_folder_name,
             ];
         }
 
@@ -840,6 +862,15 @@ class Framework implements \H5PFrameworkInterface, Result
             ->version($majorVersion, $minorVersion)
             ->select('semantics')
             ->first();
+
+        if (!$row) {
+            throw new Exception(sprintf(
+                'Could not load library semantics for %s-%d.%d',
+                $machineName,
+                $majorVersion,
+                $minorVersion,
+            ));
+        }
 
         return $row['semantics'];
     }
@@ -897,10 +928,11 @@ class Framework implements \H5PFrameworkInterface, Result
             throw new TypeError(sprintf('Expected object, %s given', get_debug_type($library)));
         }
 
+        /** @var H5PLibrary $libraryModel */
         $libraryModel = H5PLibrary::findOrFail($library->id);
         $libraryModel->deleteOrFail();
 
-        app(CerpusStorageInterface::class)->deleteLibrary($libraryModel);
+        app(\H5PFileStorage::class)->deleteLibrary($libraryModel->getLibraryH5PFriendly());
     }
 
     /**
@@ -943,6 +975,8 @@ class Framework implements \H5PFrameworkInterface, Result
             'libraryName' => $h5pcontent->library->name,
             'libraryMajorVersion' => $h5pcontent->library->major_version,
             'libraryMinorVersion' => $h5pcontent->library->minor_version,
+            'libraryPatchVersion' => $h5pcontent->library->patch_version,
+            'libraryFullVersionName' => $h5pcontent->library->getLibraryString(),
             'libraryEmbedTypes' => $h5pcontent->library->embed_types,
             'libraryFullscreen' => $h5pcontent->library->fullscreen,
             'language' => $h5pcontent->metadata->default_language ?? null,
@@ -976,6 +1010,8 @@ class Framework implements \H5PFrameworkInterface, Result
      *   - preloadedJs(optional): comma separated string with js file paths
      *   - preloadedCss(optional): comma separated sting with css file paths
      *   - dropCss(optional): csv of machine names
+     *   - dependencyType: editor or preloaded
+     *   - patchVersionInFolderName: Is patch version a part of the folder name
      */
     public function loadContentDependencies($id, $type = null)
     {
@@ -993,6 +1029,7 @@ class Framework implements \H5PFrameworkInterface, Result
               , hl.preloaded_js AS preloadedJs
               , hcl.drop_css AS dropCss
               , hcl.dependency_type AS dependencyType
+              , hl.patch_version_in_folder_name AS patchVersionInFolderName
         FROM h5p_contents_libraries hcl
         JOIN h5p_libraries hl ON hcl.library_id = hl.id
         WHERE hcl.content_id = ?";
@@ -1323,5 +1360,28 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         $h5pLibrary = H5PLibrary::fromLibrary($library)->first();
         return !is_null($h5pLibrary) && $h5pLibrary->isUpgradable();
+    }
+
+    public function replaceContentHubMetadataCache($metadata, $lang)
+    {
+        // H5P Content Hub is not in use
+    }
+
+    public function getContentHubMetadataCache($lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return new Stringable();
+    }
+
+    public function getContentHubMetadataChecked($lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return now()->toRfc7231String();
+    }
+
+    public function setContentHubMetadataChecked($time, $lang = 'en')
+    {
+        // H5P Content Hub is not in use
+        return true;
     }
 }

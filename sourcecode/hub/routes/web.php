@@ -7,13 +7,13 @@ use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CookieController;
-use App\Http\Controllers\FacebookController;
-use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
+use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,7 +49,9 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
-    Route::get('/content/create', 'create')->name('content.create');
+    Route::get('/content/create', 'create')
+        ->can('create', \App\Models\Content::class)
+        ->name('content.create');
 
     Route::post('/content/{content}/copy', 'copy')
         ->can('copy', 'content')
@@ -57,17 +59,30 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/{content}/edit', 'edit')
         ->name('content.edit')
+        ->can('edit', 'content')
         ->whereUlid('content');
 
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
+        ->can('create', \App\Models\Content::class)
         ->whereUlid('tool');
-
-    Route::post('/lti/1.1/item-selection-return', 'store')
-        ->middleware(LtiValidatedRequest::class . ':tool')
-        ->middleware('lti.launch-type:ContentItemSelection')
-        ->name('content.store');
 });
+
+Route::prefix('/lti/deep-linking-return')
+    ->middleware(LtiValidatedRequest::class . ':tool')
+    ->middleware('lti.launch-type:ContentItemSelection')
+    ->group(function () {
+        Route::post('/store-content')
+            ->uses([ContentController::class, 'ltiStore'])
+            ->can('create', \App\Models\Content::class)
+            ->name('content.lti-store');
+
+        Route::post('/update-content/{content}')
+            ->uses([ContentController::class, 'ltiUpdate'])
+            ->can('edit', 'content')
+            ->name('content.lti-update')
+            ->whereUlid('content');
+    });
 
 Route::prefix('/lti/1.1')->group(function () {
     Route::post('/select', [LtiController::class, 'select'])
@@ -113,17 +128,23 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
         Route::get('', 'index')->name('admin.lti-tools.index');
         Route::get('/add', 'add')->name('admin.lti-tools.add');
         Route::post('', 'store')->name('admin.lti-tools.store');
+        Route::delete('/{tool}', 'destroy')
+            ->name('admin.lti-tools.remove')
+            ->whereUlid('tool');
     });
 });
 
-Route::prefix('google')->name('google.')->group(function () {
-    Route::get('login', [GoogleController::class, 'loginWithGoogle'])->name('login');
-    Route::any('callback', [GoogleController::class, 'callbackFromGoogle'])->name('callback');
-});
+Route::prefix('/{provider}')
+    ->name('social.')
+    ->whereIn('provider', User::SOCIAL_PROVIDERS)
+    ->group(function () {
+        Route::get('/login')
+            ->uses([SocialController::class, 'login'])
+            ->name('login');
 
-Route::prefix('facebook')->name('facebook.')->group(function () {
-    Route::get('login', [FacebookController::class, 'loginWithFacebook'])->name('login');
-    Route::any('callback', [FacebookController::class, 'callbackFromFacebook'])->name('callback');
-});
+        Route::any('/callback')
+            ->uses([SocialController::class, 'callback'])
+            ->name('callback');
+    });
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');

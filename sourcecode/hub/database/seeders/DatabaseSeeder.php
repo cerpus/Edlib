@@ -31,7 +31,6 @@ class DatabaseSeeder extends Seeder
             ->state([
                 'lti_tool_id' => $ltiTool->id,
                 'view_launch_url' => 'https://ca.edlib.test/lti-content/1',
-                'edit_launch_url' => "https://ca.edlib.test/lti-content/1/edit",
             ]);
 
         $contentVersionFactory = ContentVersion::factory()

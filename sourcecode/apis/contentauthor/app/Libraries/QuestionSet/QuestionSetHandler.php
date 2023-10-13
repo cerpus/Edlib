@@ -18,10 +18,9 @@ use Illuminate\Support\Facades\Session;
 class QuestionSetHandler
 {
     /**
-     * @return array
      * @throws \Exception
      */
-    public function store($values, Request $request)
+    public function store($values, Request $request): Content
     {
         /** @var QuestionSet $questionSet */
         $questionSet = QuestionSet::make();
@@ -43,19 +42,13 @@ class QuestionSetHandler
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::CREATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
-            list($id, $title, $type, $score, $fallbackUrl) = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
+            $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
             event(new ResourceSaved($questionSet->getEdlibDataObject()));
-        } else {
-            list($id, $title, $type, $score, $fallbackUrl) = [
-                $questionSet->id,
-                $questionSet->title,
-                "QuestionSet",
-                true,
-                route('questionset.edit', $questionSet->id)
-            ];
+
+            return $presentation;
         }
 
-        return [$id, $title, $type, $score, $fallbackUrl];
+        return $questionSet;
     }
 
 
@@ -86,30 +79,27 @@ class QuestionSetHandler
         }
     }
 
-    private function createPresentation($selectedPresentation, Request $request, QuestionSet $questionSet)
+    private function createPresentation($selectedPresentation, Request $request, QuestionSet $questionSet): Content
     {
         /** @var QuestionSetConvert $questionsetConverter */
         $questionsetConverter = app(QuestionSetConvert::class);
-        list($id, $title, $machineName, $route, $resourceType) = $questionsetConverter
-            ->convert(
-                $selectedPresentation,
-                $questionSet,
-                new ResourceMetadataDataObject(
-                    license: $request->get('license'),
-                    share: $request->get('share'),
-                    tags: $request->get('tags'),
-                ),
-            );
 
-        return [$id, $title, $machineName, true, $route, $resourceType];
+        return $questionsetConverter->convert(
+            $selectedPresentation,
+            $questionSet,
+            new ResourceMetadataDataObject(
+                license: $request->get('license'),
+                share: $request->get('share'),
+                tags: $request->get('tags'),
+            ),
+        );
     }
 
 
     /**
-     * @return array
      * @throws \Throwable
      */
-    public function update(QuestionSet $questionSet, $values, Request $request)
+    public function update(QuestionSet $questionSet, $values, Request $request): Content
     {
         $questionSet->title = $values['title'];
         $questionSet->is_published = $questionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
@@ -193,19 +183,12 @@ class QuestionSetHandler
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::UPDATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
-            list($id, $title, $type, $score, $fallbackUrl, $resourceType) = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
+            $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
             event(new ResourceSaved($questionSet->getEdlibDataObject()));
-        } else {
-            list($id, $title, $type, $score, $fallbackUrl, $resourceType) = [
-                $questionSet->id,
-                $questionSet->title,
-                "QuestionSet",
-                false,
-                route('questionset.edit', $questionSet->id),
-                Content::TYPE_QUESTIONSET,
-            ];
+
+            return $presentation;
         }
 
-        return [$id, $title, $type, $score, $fallbackUrl, $resourceType];
+        return $questionSet;
     }
 }

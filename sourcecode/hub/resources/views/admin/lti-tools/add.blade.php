@@ -1,4 +1,7 @@
-@php use App\Models\LtiVersion; @endphp
+@php
+use App\Models\LtiToolEditMode;
+use App\Models\LtiVersion;
+@endphp
 
 <x-layout>
     <x-slot:title>Add LTI tool</x-slot:title>
@@ -51,8 +54,46 @@
             </label>
         </p>
 
+        <fieldset>
+            <legend>{{ trans('messages.edit-mode') }}</legend>
+
+            <div class="position-relative form-check">
+                <label class="form-check-label stretched-link">
+                    <input
+                        type="radio"
+                        name="edit_mode"
+                        value="{{ LtiToolEditMode::Replace }}"
+                        aria-describedby="edit-mode-replace-help"
+                        class="form-check-input"
+                        @checked(old('edit_mode', true))
+                    >
+                    <b>{{ trans('messages.edit-mode-replace') }}</b>
+                </label>
+                <p class="form-text" id="edit-mode-replace-help">
+                    {{ trans('messages.edit-mode-replace-help') }}
+                </p>
+            </div>
+
+            <div class="position-relative form-check">
+                <label class="form-check-label stretched-link">
+                    <input
+                        type="radio"
+                        name="edit_mode"
+                        value="{{ LtiToolEditMode::DeepLinkingRequestToContentUrl }}"
+                        aria-describedby="edit-mode-deep-linking-request-to-content-url-help"
+                        class="form-check-input"
+                        @checked(old('edit_mode', false))
+                    >
+                    <b>{{ trans('messages.edit-mode-deep-linking-request-to-content-url') }}</b>
+                </label>
+                <p class="form-text" id="edit-mode-deep-linking-request-to-content-url-help">
+                    {{ trans('messages.edit-mode-deep-linking-request-to-content-url-help') }}
+                </p>
+            </div>
+        </fieldset>
+
         <p>
-            <button>Add</button>
+            <button class="btn btn-primary">{{ trans('messages.add') }}</button>
         </p>
     </form>
 </x-layout>

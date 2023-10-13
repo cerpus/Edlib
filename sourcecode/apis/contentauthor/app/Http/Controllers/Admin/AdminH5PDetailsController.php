@@ -31,7 +31,7 @@ class AdminH5PDetailsController extends Controller
 
     public function checkLibrary(H5PLibrary $library): View
     {
-        $h5pDataFolderName = $library->getLibraryString(true);
+        $h5pDataFolderName = $library->getFolderName();
         $tmpLibrariesRelative = 'libraries';
         $tmpLibraryRelative = 'libraries/' . $h5pDataFolderName;
         // Download files from bucket to tmp folder

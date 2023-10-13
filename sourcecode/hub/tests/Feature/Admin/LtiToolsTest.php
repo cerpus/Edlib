@@ -27,7 +27,8 @@ final class LtiToolsTest extends TestCase
             'consumer_key' => 'foo',
             'consumer_secret' => 'bar',
             'creator_launch_url' => 'http://example.com',
-            'lti_version' => '1.3',
+            'lti_version' => '1.1',
+            'edit_mode' => 'replace',
         ])
             ->assertForbidden();
     }

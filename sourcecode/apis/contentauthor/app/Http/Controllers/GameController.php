@@ -25,7 +25,7 @@ class GameController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->lti = $h5pLti;
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('game-access', ['only' => ['ltiEdit']]);
     }
 
@@ -74,18 +74,8 @@ class GameController extends Controller
             $game->setCollaborators($collaborators)->notifyNewCollaborators();
         }
 
-        $urlToCore = $this->getRedirectToCoreUrl(
-            $updatedGame->id,
-            $updatedGame->title,
-            "Game",
-            true,
-            $request->get('redirectToken')
-        ); // Will not return if we have a returnURL
+        $url = $this->getRedirectToCoreUrl($game->toLtiContent(), $request->input('redirectToken'));
 
-        $responseValues = [
-            'url' => !is_null($urlToCore) ? $urlToCore : route("game.show", ['game' => $updatedGame->id])
-        ];
-
-        return response()->json($responseValues, Response::HTTP_OK);
+        return response()->json(['url' => $url], Response::HTTP_OK);
     }
 }

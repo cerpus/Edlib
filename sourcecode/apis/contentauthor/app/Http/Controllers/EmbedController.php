@@ -11,6 +11,7 @@ use App\Http\Requests\EmbedRequest;
 use App\Libraries\DataObjects\EmbedStateDataObject;
 use App\Link;
 use App\Traits\ReturnToCore;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,7 +28,7 @@ class EmbedController extends Controller
     public function __construct(H5pLti $h5pLti)
     {
         $this->middleware('core.return', ['only' => ['create']]);
-        $this->middleware('core.auth', ['only' => ['create', 'edit', 'store', 'update']]);
+        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
 
         $this->lti = $h5pLti;
@@ -91,15 +92,19 @@ class EmbedController extends Controller
             ]);
         }
 
-        $urlToCore = $this->getCoreBaseUrl($request->get('redirectToken'));
-
-        $responseValues = [
-            'url' => $urlToCore . "?" . http_build_query([
-                    "return_type" => "link",
-                    "url" => $inputs['link'],
-                ])
-        ];
-
-        return response()->json($responseValues, Response::HTTP_CREATED);
+        throw new Exception('remove me');
+//        $urlToCore = $this->getRedirectToCoreUrl(
+//            // ...
+//            $request->get('redirectToken'),
+//        );
+//
+//        $responseValues = [
+//            'url' => $urlToCore . "?" . http_build_query([
+//                    "return_type" => "link",
+//                    "url" => $inputs['link'],
+//                ])
+//        ];
+//
+//        return response()->json($responseValues, Response::HTTP_CREATED);
     }
 }

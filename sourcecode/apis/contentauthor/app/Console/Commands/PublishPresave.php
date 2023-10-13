@@ -57,7 +57,7 @@ class PublishPresave extends Command
 
     private static function getDestination(H5PLibrary $library): string
     {
-        $directory = $library->getLibraryString(true);
+        $directory = $library->getFolderName();
 
         return "libraries/$directory/presave.js";
     }

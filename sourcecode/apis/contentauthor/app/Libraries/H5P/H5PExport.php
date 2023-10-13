@@ -44,7 +44,7 @@ readonly class H5PExport
             $parameters = $content->parameters;
         }
 
-        $library = H5PCore::libraryFromString($content->library->getLibraryString())
+        $library = H5PCore::libraryFromString($content->library->getLibraryString(false))
             ?: throw new UnexpectedValueException('Bad library string');
         $library['libraryId'] = $content->library->id;
         $library['name'] = $content->library->name;
@@ -60,7 +60,7 @@ readonly class H5PExport
         // resolving dependencies, as it likes to corrupt the data
 
         $validatorParams = (object)[
-            'library' => $content->library->getLibraryString(),
+            'library' => $content->library->getLibraryString(false),
             'params' => json_decode($content->parameters)
         ];
         $this->validator->validateLibrary($validatorParams, (object) [

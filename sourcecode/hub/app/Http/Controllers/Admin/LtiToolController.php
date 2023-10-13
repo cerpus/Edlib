@@ -33,4 +33,14 @@ final class LtiToolController extends Controller
         return to_route('admin.lti-tools.index')
             ->with('alert', trans('messages.alert-lti-tool-added'));
     }
+
+    public function destroy(LtiTool $tool): RedirectResponse
+    {
+        $tool->delete();
+
+        return redirect()->back()
+            ->with('alert', trans('messages.alert-lti-tool-removed', [
+                'name' => $tool->name,
+            ]));
+    }
 }

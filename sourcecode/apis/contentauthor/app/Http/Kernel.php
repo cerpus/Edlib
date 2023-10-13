@@ -75,22 +75,16 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // Edlib middleware
-        'edlib.parse-jwt' => \App\Http\Middleware\EdlibParseJwt::class,
-
-        // Edlib internal middleware
-        'internal.handle-jwt' => \App\Http\Middleware\InternalHandleJwt::class,
-
         // App middleware
-        'core.return' => \App\Http\Middleware\CoreReturnUrl::class,
-        'core.auth' => \App\Http\Middleware\EdlibParseJwt::class,
+        'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
         'core.ownership' => \App\Http\Middleware\CheckOwnership::class,
-        'core.ltiauth' => \App\Http\Middleware\LtiRequestAuth::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
+        'lti.add-auth-to-session' => \App\Http\Middleware\LtiAddAuthToSession::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
+        'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,
         'game-access' => GameAccess::class,
         'questionset-access' => QuestionSetAccess::class,
         'adaptermode' => AdapterMode::class,
@@ -106,7 +100,8 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \App\Http\Middleware\EdlibParseJwt::class,
+        \App\Http\Middleware\LtiAddAuthToSession::class,
+        \App\Http\Middleware\LtiVerifyAuth::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
