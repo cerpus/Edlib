@@ -92,4 +92,5 @@ return [
     'search-results-mobile' => 'Show :num results',
     'back' => 'Back',
     'filter-types' => 'Filter Types',
+    'last-changed' => 'Last changed',
 ];

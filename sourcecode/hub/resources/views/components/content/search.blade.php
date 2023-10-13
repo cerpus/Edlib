@@ -41,6 +41,6 @@
     </div>
 </form>
 
-<x-search-query/>
+<x-selected-filter-options/>
 
 <x-mobile-filter-options />
