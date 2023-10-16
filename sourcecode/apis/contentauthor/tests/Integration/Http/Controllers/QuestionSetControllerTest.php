@@ -172,14 +172,11 @@ class QuestionSetControllerTest extends TestCase
         /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
-            ->each(function (QuestionSet $questionset, $index) {
-                $questionset->questions()
-                    ->save(QuestionSetQuestion::factory()->make(['order' => $index]))
-                    ->each(function (QuestionSetQuestion $question, $index) {
-                        $question
-                            ->answers()
-                            ->save(QuestionSetQuestionAnswer::factory()->make(['order' => $index]));
-                    });
+            ->each(function (QuestionSet $questionset) {
+                /** @var QuestionSetQuestion $qsq */
+                $qsq = $questionset->questions()->save(QuestionSetQuestion::factory()->make(['order' => 0]));
+                $qsq->answers()->save(QuestionSetQuestionAnswer::factory()->make(['order' => 0, 'correct' => true]));
+                $qsq->answers()->save(QuestionSetQuestionAnswer::factory()->make(['order' => 1, 'correct' => false]));
             });
 
         $this->withSession(["authId" => "user_1"]);
@@ -234,14 +231,14 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][] = (object)[
-            'id' => $this->faker->md5,
+            'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
@@ -250,7 +247,7 @@ class QuestionSetControllerTest extends TestCase
                     'order' => $answer->order
                 ],
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
@@ -279,7 +276,7 @@ class QuestionSetControllerTest extends TestCase
 
         $json['cards'][0]->answers = [
             (object)[
-                'id' => $this->faker->md5,
+                'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
                 'isCorrect' => (bool)$answer->correct,
                 'showToggle' => false,
@@ -399,14 +396,14 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][] = (object)[
-            'id' => $this->faker->md5,
+            'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
@@ -415,7 +412,7 @@ class QuestionSetControllerTest extends TestCase
                     'order' => $answer->order
                 ],
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
@@ -444,7 +441,7 @@ class QuestionSetControllerTest extends TestCase
 
         $json['cards'][0]->answers = [
             (object)[
-                'id' => $this->faker->md5,
+                'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
                 'isCorrect' => (bool)$answer->correct,
                 'showToggle' => false,
