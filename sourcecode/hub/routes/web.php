@@ -69,8 +69,10 @@ Route::controller(ContentController::class)->group(function () {
 });
 
 Route::prefix('/lti/deep-linking-return')
-    ->middleware(LtiValidatedRequest::class . ':tool')
-    ->middleware('lti.launch-type:ContentItemSelection')
+    ->middleware([
+        LtiValidatedRequest::class . ':tool',
+        'lti.launch-type:ContentItemSelection',
+    ])
     ->group(function () {
         Route::post('/store-content')
             ->uses([ContentController::class, 'ltiStore'])
@@ -86,9 +88,11 @@ Route::prefix('/lti/deep-linking-return')
 
 Route::prefix('/lti/1.1')->group(function () {
     Route::post('/select', [LtiController::class, 'select'])
-        ->middleware(EnsureFrameCookies::class)
-        ->middleware(LtiValidatedRequest::class . ':platform')
-        ->middleware('lti.launch-type:ContentItemSelectionRequest')
+        ->middleware([
+            EnsureFrameCookies::class,
+            LtiValidatedRequest::class . ':platform',
+            'lti.launch-type:ContentItemSelectionRequest',
+        ])
         ->name('lti.select');
 });
 
