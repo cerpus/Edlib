@@ -11,11 +11,11 @@
                         :value="$query"
                         :aria-label="trans('messages.search')"
                         class="form-control border-0"
-                        placeholder="Type to Search..."
+                        placeholder="{{ trans('messages.type-to-search') }}"
                     />
                     <div class="input-group-prepend">
                         <span class="input-group-text bg-transparent border-0" id="search-icon">
-                            <i class="bi bi-search"></i>
+                            <x-icon name="search" />
                         </span>
                     </div>
                 </div>

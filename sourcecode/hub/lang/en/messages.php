@@ -93,4 +93,5 @@ return [
     'back' => 'Back',
     'filter-types' => 'Filter Types',
     'last-changed' => 'Last changed',
+    'type-to-search' => 'Type to Search...',
 ];
