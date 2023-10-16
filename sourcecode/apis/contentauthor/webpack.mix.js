@@ -39,7 +39,6 @@ mix
     .sass('resources/assets/entrypoints/ndlah5p-iframe-legacy.scss', 'css/ndlah5p-iframe-legacy.css')
     .js('resources/assets/entrypoints/react-article.js', 'js/react-article.js')
     .js('resources/assets/entrypoints/react-contentbrowser.js', 'js/react-contentbrowser.js')
-    .js('resources/assets/entrypoints/react-embed.js', 'js/react-embed.js')
     .js('resources/assets/entrypoints/react-h5p.js', 'js/react-h5p.js')
     .js('resources/assets/entrypoints/react-questionset.js', 'js/react-questionset.js')
     .webpackConfig({

@@ -34,8 +34,7 @@
     "Lukk": "Close",
     "urlDisplayTypes": {
         "ndla": "NDLA",
-        "card": "Card",
-        "embedly": "Integrated"
+        "card": "Card"
     },
     "bruk": "Use",
     "Forhåndsvisning": "Preview",

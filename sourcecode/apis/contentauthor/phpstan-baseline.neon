@@ -301,16 +301,6 @@ parameters:
 			path: app/Http/Controllers/ArticleCopyrightController.php
 
 		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:doShow\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/EmbedController.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:edit\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/EmbedController.php
-
-		-
 			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
 			count: 1
 			path: app/Http/Controllers/GameController.php

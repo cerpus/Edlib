@@ -3,7 +3,6 @@
 use App\Http\Controllers\API\ArticleInfoController;
 use App\Http\Controllers\API\ContentInfoController;
 use App\Http\Controllers\API\ContentTypeController;
-use App\Http\Controllers\API\EmbedlyController;
 use App\Http\Controllers\API\GameInfoController;
 use App\Http\Controllers\API\GdprSubjectDataController;
 use App\Http\Controllers\API\H5PImportController;
@@ -19,7 +18,6 @@ use App\Http\Controllers\ArticleCopyrightController;
 use App\Http\Controllers\ArticleUploadController;
 use App\Http\Controllers\ContentAssetController;
 use App\Http\Controllers\ContentController;
-use App\Http\Controllers\EmbedController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\H5PController;
 use App\Http\Controllers\HealthController;
@@ -66,9 +64,6 @@ Route::group(['middleware' => ['core.return', 'lti.add-auth-to-session', 'lti.ve
     Route::post('/link/create', [LinkController::class, 'ltiCreate']);
     Route::post('/link/{id}', [LinkController::class, 'ltiShow']);
 
-    Route::post('/embed/create', [EmbedController::class, 'ltiCreate']);
-    Route::post('/embed/{id}', [EmbedController::class, 'ltiShow']);
-
     Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
     Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
 
@@ -96,7 +91,6 @@ Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Si
 
 Route::resource('/article', ArticleController::class, ['except' => ['destroy']]);
 Route::resource('/link', LinkController::class, ['except' => ['destroy']]);
-Route::resource('/embed', EmbedController::class, ['except' => ['destroy']]);
 
 Route::post('/article/create/upload', [ArticleUploadController::class, 'uploadToNewArticle'])->name('article-upload.new');
 Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToExistingArticle'])->name('article-upload.existing');
@@ -115,7 +109,6 @@ Route::get('v1/link/{id}/info', [LinkInfoController::class, 'index']);
 Route::get('v1/questionset/{id}/info', [QuestionSetInfoController::class, 'index']);
 Route::get('v1/game/{id}/info', [GameInfoController::class, 'index']);
 Route::get('v1/link/embeddata', [LinkInfoController::class, 'embed']);
-Route::get('v1/embed/embedly', [EmbedlyController::class, 'get']);
 
 
 Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index'])->name('lock.status');

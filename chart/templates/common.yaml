@@ -39,8 +39,6 @@
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_PASSWORD" .Global.Values.services.rabbitmq.password -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_RABBITMQ_SECURE" .Global.Values.services.rabbitmq.secure -}}
 
-{{- $_ := set $commonEnvConfig "EDLIBCOMMON_EMBEDLY_KEY" .Global.Values.services.embedly.key -}}
-
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_URL" .Global.Values.contentauthor.url -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_KEY" .Global.Values.contentauthor.h5pConsumerKey -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_CONTENTAUTHOR_CONSUMER_SECRET" .Global.Values.contentauthor.h5pConsumerSecret -}}
