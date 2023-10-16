@@ -20,9 +20,11 @@
                 {{ trans('messages.log-in') }}
             </x-form.button>
 
-            <a href="{{ route('forgot-password') }}" class="btn btn-secondary">
-                {{ trans('messages.forgot-password') }}
-            </a>
+            @if ($features->isForgotPasswordEnabled())
+                <a href="{{ route('forgot-password') }}" class="btn btn-secondary">
+                    {{ trans('messages.forgot-password') }}
+                </a>
+            @endif
         </div>
     </x-form>
 
