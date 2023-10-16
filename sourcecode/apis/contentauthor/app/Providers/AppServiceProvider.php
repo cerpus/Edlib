@@ -4,9 +4,6 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\Auth\Jwt\JwtDecoder;
-use App\Auth\Jwt\JwtDecoderInterface;
-use App\EdlibResource\CachedOauth1Validator;
 use App\EdlibResource\Oauth1Credentials;
 use App\H5POption;
 use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
@@ -15,15 +12,10 @@ use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
-use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\HttpFactory;
 use Illuminate\Log\Logger;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,10 +53,6 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(CredentialStoreInterface::class, Oauth1Credentials::class);
 
-        $this->app->extend(ValidatorInterface::class, function (ValidatorInterface $validator) {
-            return new CachedOauth1Validator($validator);
-        });
-
         $this->app->singleton(H5POptionsCache::class, function () {
             return new H5POptionsCache();
         });
@@ -96,28 +84,6 @@ class AppServiceProvider extends ServiceProvider
                 return new AuthApiService();
             }
         );
-
-        $this->app->singleton(JwtDecoderInterface::class, JwtDecoder::class);
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs('$publicKeyOrJwksUri')
-            ->giveConfig('auth.edlib-jwt-pubkey');
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs('$leewaySeconds')
-            ->giveConfig('auth.edlib-jwt-leeway-seconds');
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs(ClientInterface::class)
-            ->give(Client::class);
-
-        $this->app
-            ->when(JwtDecoder::class)
-            ->needs(RequestFactoryInterface::class)
-            ->give(HttpFactory::class);
 
         $this->app->when(RequestId::class)
             ->needs(Logger::class)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
@@ -24,6 +25,24 @@ final class AdminTest extends DuskTestCase
                 ->press('Rebuild content index')
                 ->assertPathIs('/admin')
                 ->assertSee('Rebuilding content index…');
+        });
+    }
+
+    public function testCanRemoveUnusedLtiTools(): void
+    {
+        $this->browse(function (Browser $browser) {
+            LtiTool::factory()->withName('Unused tool')->create();
+            $user = User::factory()->admin()->create();
+
+            $browser
+                ->loginAs($user->email)
+                ->visit('/admin/lti-tools')
+                ->with('main', function (Browser $main) {
+                    $main
+                        ->assertSee('Unused tool')
+                        ->press('Remove')
+                        ->assertSee('LTI tool "Unused tool" was removed');
+                });
         });
     }
 }

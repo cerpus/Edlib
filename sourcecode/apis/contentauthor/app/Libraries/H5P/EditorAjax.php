@@ -102,7 +102,7 @@ class EditorAjax implements \H5PEditorAjaxInterface
             })
             ->get()
             ->mapWithKeys(function ($library) {
-                return [$library->library->getLibraryString() => $library->translation];
+                return [$library->library->getLibraryString(false) => $library->translation];
             })
             ->toArray();
     }

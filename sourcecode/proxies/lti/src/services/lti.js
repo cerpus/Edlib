@@ -76,6 +76,10 @@ const buildLtiRequest = (
         fields.ext_jwt_token = authorization.jwt;
     }
 
+    if (authorization && authorization.userId) {
+        fields.ext_user_id = authorization.userId;
+    }
+
     if (fields.ext_preview === '1' || fields.ext_preview === true) {
         fields.ext_preview = 'true';
     }

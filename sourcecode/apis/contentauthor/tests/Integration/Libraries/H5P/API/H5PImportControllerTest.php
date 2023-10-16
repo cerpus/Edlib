@@ -121,7 +121,7 @@ use function base_path;
                         'title' => $title,
                         'library_id' => $library->id,
                     ]);
-                    $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+                    $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getFolderName())));
 
                     /** @var H5PContent $h5pContent */
                     $h5pContent = H5PContent::with('metadata')
@@ -174,7 +174,7 @@ use function base_path;
                 'title' => $title,
                 'library_id' => $library->id,
             ]);
-            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getFolderName())));
 
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
@@ -230,7 +230,7 @@ use function base_path;
                 'title' => $title,
                 'library_id' => $library->id,
             ]);
-            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getLibraryString(true))));
+            $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getFolderName())));
 
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)

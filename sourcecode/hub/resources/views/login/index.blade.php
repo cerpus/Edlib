@@ -28,12 +28,26 @@
 
     <hr>
 
-    <div class="d-grid d-md-block gap-2">
-        <a href="{{ route('google.login') }}" class="btn btn-primary">
-            {{ trans('messages.log-in-google') }}
-        </a>
-        <a href="{{ route('facebook.login') }}" class="btn btn-primary">
-            {{ trans('messages.log-in-facebook') }}
-        </a>
+    <div class="d-flex flex-wrap gap-2">
+        @if ($has_google)
+            <a href="{{ route('social.login', ['google']) }}" class="btn btn-secondary d-flex gap-2">
+                <x-icon name="google" />
+                {{ trans('messages.log-in-google') }}
+            </a>
+        @endif
+
+        @if ($has_facebook)
+            <a href="{{ route('social.login', ['facebook']) }}" class="btn btn-secondary d-flex gap-2">
+                <x-icon name="facebook" />
+                {{ trans('messages.log-in-facebook') }}
+            </a>
+        @endif
+
+        @if ($has_auth0)
+            <a href="{{ route('social.login', ['auth0']) }}" class="btn btn-secondary d-flex gap-2">
+                <x-icon name="door-open-fill" /> {{-- TODO: real auth0 icon --}}
+                {{ trans('messages.log-in-auth0') }}
+            </a>
+        @endif
     </div>
 </x-layout>

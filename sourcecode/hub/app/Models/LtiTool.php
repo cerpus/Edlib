@@ -22,6 +22,7 @@ class LtiTool extends Model
 
     protected $casts = [
         'lti_version' => LtiVersion::class,
+        'edit_mode' => LtiToolEditMode::class,
     ];
 
     protected $hidden = [

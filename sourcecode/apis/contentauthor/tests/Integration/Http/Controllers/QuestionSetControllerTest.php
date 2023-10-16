@@ -3,7 +3,6 @@
 namespace Tests\Integration\Http\Controllers;
 
 use App\ApiModels\User;
-use App\Content;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Game;
@@ -59,7 +58,6 @@ class QuestionSetControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
 
         /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
@@ -98,13 +96,7 @@ class QuestionSetControllerTest extends TestCase
         $questionSetConvertMock
             ->expects($this->once())
             ->method('convert')
-            ->willReturn([
-                $game->id,
-                $game->title,
-                "Game",
-                route('game.edit', $game['id']),
-                Content::TYPE_GAME,
-            ]);
+            ->willReturn($game);
 
         $requestData = [
             'title' => 'Something',
@@ -118,8 +110,8 @@ class QuestionSetControllerTest extends TestCase
         $this->withSession(['authid' => $user->getId()])
             ->post('/questionset', ['questionSetJsonData' => json_encode($requestData)])
             ->assertCreated()
-            ->assertJsonStructure([
-                'url',
+            ->assertJson([
+                'url' => 'http://localhost/game/' . $game->id . '/edit',
             ]);
     }
 
@@ -147,7 +139,6 @@ class QuestionSetControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
 
         /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
