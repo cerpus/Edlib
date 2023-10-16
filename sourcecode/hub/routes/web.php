@@ -97,14 +97,18 @@ Route::prefix('/lti/1.1')->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('/register', 'register')->name('register');
-    Route::post('/register', 'store');
+    Route::middleware('feature:sign-up')->group(function () {
+        Route::get('/register', 'register')->name('register');
+        Route::post('/register', 'store');
+    });
 
-    Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
-    Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
+    Route::middleware('feature:forgot-password')->group(function () {
+        Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
+        Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
 
-    Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('reset-password');
-    Route::post('/reset-password/{token}', 'resetPassword')->name('reset-password-update');
+        Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('reset-password');
+        Route::post('/reset-password/{token}', 'resetPassword')->name('reset-password-update');
+    });
 
     Route::middleware('auth:web')->group(function () {
         Route::get('/preferences', 'preferences')->name('user.preferences');

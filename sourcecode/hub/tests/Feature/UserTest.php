@@ -17,6 +17,30 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function testSignupsAreUsuallyEnabled(): void
+    {
+        $this->get('/register')->assertOk();
+    }
+
+    public function testSignupCanBeDisabled(): void
+    {
+        config(['features.sign-up' => false]);
+
+        $this->get('/register')->assertNotFound();
+    }
+
+    public function testForgotPasswordIsUsuallyEnabled(): void
+    {
+        $this->get('/forgot-password')->assertOk();
+    }
+
+    public function testForgotPasswordCanBeDisabled(): void
+    {
+        config(['features.forgot-password' => false]);
+
+        $this->get('/forgot-password')->assertNotFound();
+    }
+
     public function testSerialisation(): void
     {
         $user = User::factory()

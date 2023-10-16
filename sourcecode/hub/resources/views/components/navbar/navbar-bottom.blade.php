@@ -99,14 +99,16 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a
-                            href="{{ route('register') }}"
-                            class="nav-link @if(request()->routeIs('register')) active @endif"
-                        >
-                            {{ trans('messages.sign-up') }}
-                        </a>
-                    </li>
+                    @if ($features->isSignupEnabled())
+                        <li class="nav-item">
+                            <a
+                                href="{{ route('register') }}"
+                                class="nav-link @if(request()->routeIs('register')) active @endif"
+                            >
+                                {{ trans('messages.sign-up') }}
+                            </a>
+                        </li>
+                    @endif
                 @endauth
             </ul>
         </div>
