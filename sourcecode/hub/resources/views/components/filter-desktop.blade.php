@@ -4,17 +4,9 @@
 @endphp
 
 <div class="col-md-3 col-lg-3 d-md-block d-none">
-    <x-filter-dropdown-select id="languageDropdown" ariaLabel="{{ trans('messages.language') }}">
-        @foreach ($languageOptions as $label)
-            <option value="{{ $label }}">{{ $label }}</option>
-        @endforeach
-    </x-filter-dropdown-select>
+    <x-filter-dropdown-select id="languageDropdown" ariaLabel="{{ trans('messages.language') }}" :options="$languageOptions" />
 </div>
 
 <div class="col-md-4 col-lg-3 d-md-block d-none">
-    <x-filter-dropdown-select id="lastChangedDropdown" ariaLabel="{{ trans('messages.last-changed') }}">
-        @foreach ($lastChangedOptions as $label)
-            <option value="{{ $label }}">{{ $label }}</option>
-        @endforeach
-    </x-filter-dropdown-select>
+    <x-filter-dropdown-select id="lastChangedDropdown" ariaLabel="{{ trans('messages.last-changed') }}" :options="$lastChangedOptions" />
 </div>
