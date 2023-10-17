@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Add LTI parameters to session
  */
-class LtiAddAuthToSession
+final readonly class LtiAddToSession
 {
     public function __construct(
         private readonly H5pLti $h5pLti,
@@ -27,6 +27,7 @@ class LtiAddAuthToSession
         $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
 
         if ($ltiRequest != null) {
+            Session::put('signedLaunch', true);
             Session::put('userId', $ltiRequest->getUserId());
 
             if ($ltiRequest->getUserId() != null) {
