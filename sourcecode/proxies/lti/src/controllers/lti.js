@@ -19,6 +19,11 @@ export default {
             {
                 jwt: req.authorizationJwt,
                 userId: req.user.id,
+                user: {
+                    firstName: req?.user?.firstName,
+                    lastName: req?.user?.lastName,
+                    email: req?.user?.email,
+                },
             },
             extras
         );
@@ -39,6 +44,11 @@ export default {
                 req.authorizationJwt && {
                     jwt: req.authorizationJwt,
                     userId: req.user.id,
+                    user: {
+                        firstName: req?.user?.firstName,
+                        lastName: req?.user?.lastName,
+                        email: req?.user?.email,
+                    },
                 },
                 extras
             );
