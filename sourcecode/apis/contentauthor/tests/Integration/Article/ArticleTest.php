@@ -300,8 +300,7 @@ class ArticleTest extends TestCase
 
     public function testMustBeLoggedInToCreateArticle()
     {
-        $_SERVER['QUERY_STRING'] = 'forTestingPurposes';
         $this->get(route('article.create'))
-            ->assertStatus(Response::HTTP_FOUND);
+            ->assertForbidden();
     }
 }

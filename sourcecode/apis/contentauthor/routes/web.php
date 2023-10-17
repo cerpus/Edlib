@@ -52,7 +52,7 @@ Route::get('audios/browse/{audioId}', [H5PController::class, 'getAudio']);
 Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);
 Route::get('content/upgrade/library', [H5PController::class, 'contentUpgradeLibrary'])->name('content-upgrade-library');
 
-Route::group(['middleware' => ['core.return', 'lti.add-auth-to-session', 'lti.verify-auth', 'core.locale', 'adaptermode']], function () {
+Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'core.locale', 'adaptermode'])->group(function () {
     Route::post('lti-content/create', [LtiContentController::class, 'create']);
     Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
