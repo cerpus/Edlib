@@ -80,6 +80,18 @@ const buildLtiRequest = (
         fields.ext_user_id = authorization.userId;
     }
 
+    if (authorization?.user?.firstName) {
+        fields.lis_person_name_given = authorization.user.firstName;
+    }
+    
+    if (authorization?.user?.lastName) {
+        fields.lis_person_name_family = authorization.user.lastName;
+    }
+
+    if (authorization?.user?.email) {
+        fields.lis_person_contact_email_primary = authorization.user.email;
+    }
+
     if (fields.ext_preview === '1' || fields.ext_preview === true) {
         fields.ext_preview = 'true';
     }
@@ -167,10 +179,6 @@ const editResourceRequest = async (
             launch_presentation_return_url:
                 reqProtoHost +
                 `/lti/v2/editors/${resourceVersion.externalSystemName.toLowerCase()}/return`,
-            ext_user_id: authorization.userId,
-            lis_person_name_given: authorization.user.firstName,
-            lis_person_name_family: authorization.user.lastName,
-            lis_person_contact_email_primary: authorization.user.email,
         }
     );
 };
