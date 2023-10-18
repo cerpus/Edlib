@@ -7,7 +7,6 @@ use App\Article;
 use App\Content;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
-use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ArticleRequest;
@@ -18,6 +17,7 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
+use App\Lti\Lti;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-
 use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
@@ -38,16 +37,12 @@ class ArticleController extends Controller
     use LtiTrait;
     use ReturnToCore;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private readonly Lti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
-
-        $this->lti = $h5pLti;
     }
 
     /**
@@ -69,7 +64,7 @@ class ArticleController extends Controller
             abort(403);
         }
 
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
+        $ltiRequest = $this->lti->getRequest($request);
 
         $license = License::getDefaultLicense($ltiRequest);
         $emails = '';
@@ -160,7 +155,7 @@ class ArticleController extends Controller
     {
         /** @var Article $article */
         $article = Article::findOrFail($id);
-        $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
+        $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
         if (!$article->canShow($preview)) {
             return view('layouts.draft-resource', [
                 'styles' => !is_null($customCSS) ? [$customCSS] : [],

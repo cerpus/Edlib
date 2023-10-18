@@ -8,7 +8,6 @@ use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
 use App\H5PLibrary;
-use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\H5PStorageRequest;
@@ -21,20 +20,21 @@ use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PCopyright;
 use App\Libraries\H5P\H5PCreateConfig;
 use App\Libraries\H5P\H5PEditConfig;
-use App\Libraries\H5P\H5PViewConfig;
-use App\Libraries\H5P\H5PCopyright;
 use App\Libraries\H5P\H5PExport;
 use App\Libraries\H5P\H5PInfo;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
+use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
+use App\Lti\Lti;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Cerpus\VersionClient\VersionData;
@@ -56,6 +56,7 @@ use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use function Cerpus\Helper\Helpers\profile as config;
+use function request;
 
 class H5PController extends Controller
 {
@@ -67,7 +68,7 @@ class H5PController extends Controller
     private bool $sendEmail = true;
 
     public function __construct(
-        private H5pLti $lti,
+        private Lti $lti,
         private h5p $h5p,
         private H5PLibraryAdmin $h5pLibraryAdmin,
     ) {
@@ -87,9 +88,10 @@ class H5PController extends Controller
     public function doShow($id, $context, $preview = false): View
     {
         $styles = [];
-        if (!empty($this->lti->getValidatedLtiRequest()) && !is_null($this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl())) {
-            $styles[] = $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl();
-            Session::flash(SessionKeys::EXT_CSS_URL, $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl());
+        $style = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
+        if ($style) {
+            $styles[] = $style;
+            Session::flash(SessionKeys::EXT_CSS_URL, $style);
         }
         $h5pContent = H5PContent::findOrFail($id);
         if (!$h5pContent->canShow($preview)) {
@@ -379,14 +381,8 @@ class H5PController extends Controller
 
     private function getTargetLanguage(?string $language)
     {
-        $contentLanguage = $language;
-        if (($ltiRequest = $this->lti->getValidatedLtiRequest()) !== null) {
-            $ltiLanguage = $ltiRequest->getExtTranslationLanguage();
-            if (!empty($ltiLanguage)) {
-                $contentLanguage = $ltiLanguage;
-            }
-        }
-        return $contentLanguage;
+        return $this->lti->getRequest(request())?->getExtTranslationLanguage()
+            ?? $language;
     }
 
     /**
