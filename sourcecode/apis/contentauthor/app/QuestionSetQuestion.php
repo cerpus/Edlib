@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $id
  * @property string $question_text
  * @property string $image
+ * @property int $order
  *
  * @property Collection<QuestionSetQuestionAnswer> $answers
  */

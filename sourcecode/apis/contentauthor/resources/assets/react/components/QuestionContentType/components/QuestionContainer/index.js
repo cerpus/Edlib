@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import QuestionContainerLayout from './QuestionContainerLayout';
 import { H5PQuizContainer } from '../H5PQuiz';
 import { QuestionsetContainer } from '../QuestionSet';
-import { Card, uniqueId } from '../utils';
+import { Card } from '../utils';
 import { MillionaireContainer } from '../Millionaire';
 
 export default QuestionContainerLayout;
@@ -51,7 +51,6 @@ class QuestionContainer extends Component {
         this.handleDeleteCard = this.handleDeleteCard.bind(this);
         this.handleEditTitle = this.handleEditTitle.bind(this);
         this.handleCollectAnswersAndQuestions = this.handleCollectAnswersAndQuestions.bind(this);
-        this.handleQuestionBankSelection = this.handleQuestionBankSelection.bind(this);
         this.handleTagsChange = this.handleTagsChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handlePresentationSelect = this.handlePresentationSelect.bind(this);
@@ -93,28 +92,6 @@ class QuestionContainer extends Component {
                 title: title,
             });
         }
-    }
-
-    handleQuestionBankSelection(selection) {
-        const questions = this.props.questions
-            .filter(question => {
-                return question.question.text !== '' || question.answers.filter(answer => answer.answerText !== '').length > 0;
-            })
-            .concat(
-                selection.map((question, index) => {
-                    const q = question.clone();
-                    q.order = (this.props.questions.length + index);
-                    q.useImage = true;
-                    q.externalId = q.id;
-                    q.id = uniqueId();
-                    q.answers.forEach(answer => {
-                        answer.readonly = false;
-                    });
-                    return q;
-                }));
-
-
-        this.handleChange({ cards: questions });
     }
 
     handleTagsChange(tags) {
@@ -248,19 +225,15 @@ class QuestionContainer extends Component {
     render() {
         return (
             <QuestionContainerLayout
-                cards={this.props.questions}
                 cardsComponents={this.getCards(this.props.currentContainer)}
                 onTitleChange={this.handleEditTitle}
                 title={this.props.title}
-                onQuestionBankSelect={null} // this.handleQuestionBankSelection
                 tags={this.props.tags}
                 onTagsChange={this.handleTagsChange}
                 displayDialog={this.state.displayDialog}
                 loadingIcon={this.state.contentIcon}
                 loadingText={this.state.contentText}
                 loadingTitle={this.state.contentTitle}
-                editMode={this.props.editMode}
-                searchTitle={this.state.title}
                 placeholder={this.props.intl.formatMessage({ id: 'QUESTIONCONTAINER.TITLE_PLACEHOLDER' })}
             />
         );

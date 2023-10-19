@@ -43,7 +43,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\QuestionsetWasSaved::class => [
             \App\Listeners\Questionset\HandlePrivacy::class,
-            \App\Listeners\Questionset\HandleQuestionbank::class,
         ],
 
         \App\Events\GameWasSaved::class => [

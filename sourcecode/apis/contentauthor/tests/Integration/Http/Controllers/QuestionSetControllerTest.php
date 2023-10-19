@@ -546,7 +546,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', [
             'title' => "New title",
-            "tags" => "",
+            "tags" => "list,of,tags,goes,here",
             "is_published" => 1,
             'license' => 'BY',
         ]);
@@ -555,6 +555,7 @@ class QuestionSetControllerTest extends TestCase
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
+        $json['tags'] = ['list', 'of', 'tags', 'has', 'changed'];
         $this->withSession(["authId" => $authId])
             ->put(route('questionset.update', $storedQuestionSet->id), [
                 'license' => "BY",
@@ -565,7 +566,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', [
             'title' => "Updated title",
-            "tags" => "",
+            "tags" => "list,of,tags,has,changed",
             "is_published" => 1,
             'license' => 'BY',
         ]);
@@ -622,12 +623,17 @@ class QuestionSetControllerTest extends TestCase
                 'isPublished' => 0,
             ])
             ->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas('question_sets', ['title' => "New title", "tags" => "", "is_published" => 0]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "New title",
+            "tags" => "list,of,tags,goes,here",
+            "is_published" => 0,
+        ]);
 
         /** @var QuestionSet $storedQuestionSet */
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
+        $json['tags'] = ['list', 'of', 'tags', 'has', 'changed'];
         $this->withSession(["authId" => $authId])
             ->put(route('questionset.update', $storedQuestionSet->id), [
                 'license' => "BY",
@@ -638,7 +644,11 @@ class QuestionSetControllerTest extends TestCase
             ])
             ->assertStatus(Response::HTTP_OK);
 
-        $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 1]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "Updated title",
+            "tags" => "list,of,tags,has,changed",
+            "is_published" => 1,
+        ]);
 
         $this->withSession(["authId" => $authId])
             ->put(route('questionset.update', $storedQuestionSet->id), [
@@ -650,7 +660,11 @@ class QuestionSetControllerTest extends TestCase
             ])
             ->assertStatus(Response::HTTP_OK);
 
-        $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 0]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "Updated title",
+            "tags" => "list,of,tags,has,changed",
+            "is_published" => 0,
+        ]);
         $this->assertCount(1, QuestionSet::all());
     }
 }

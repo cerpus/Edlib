@@ -5,7 +5,6 @@ namespace App\Libraries\H5P\Adapters;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
-use Cerpus\QuestionBankClient\QuestionBankClient;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +20,12 @@ class CerpusH5PAdapter implements H5PAdapterInterface
      */
     public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
     {
-        return QuestionBankClient::convertMathToInlineDisplay($parameters);
+        $pattern = [
+            '/\$\$(.+?)\$\$/i',
+        ];
+        $replace = '\\\\\\\\( $1 \\\\\\\\)';
+
+        return preg_replace($pattern, $replace, $parameters);
     }
 
     public function getEditorExtraTags($field): array

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import MillionaireLayout from './MillionaireLayout';
 import { Answer, Card, Image, Question, rerenderMathJax } from '../utils';
-import Axios from '../../../../utils/axiosSetup';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { stripHTML } from '../../../../utils/Helper';
 
@@ -76,7 +75,7 @@ class MillionaireContainer extends Component {
                     />
                 );
             }
-            this.loadAlternativesFromServer();
+            this.addQuestions();
         }
         if (qCheck === 1) {
             messages.push(<FormattedMessage key="TMQ" id="MILLIONAIRE.TOO_MANY_QUESTIONS" tagName="div" />);
@@ -196,43 +195,6 @@ class MillionaireContainer extends Component {
         this.props.onBulkChange({ cards: millionaireCards });
     }
 
-    handleLoadedQuestions(loadedQuestions) {
-        if (Array.isArray(loadedQuestions)) {
-            const questions = loadedQuestions.map(loadedQuestion => {
-                const question = new Question();
-                question.text = loadedQuestion.text;
-                if (loadedQuestion.imageObject !== null) {
-                    const image = new Image();
-                    image.id = loadedQuestion.imageObject;
-                    image.url = loadedQuestion.imageUrl;
-                    question.image = image;
-                }
-
-                const answers = loadedQuestion.answers.map(loadedAnswer => {
-                    const answer = new Answer();
-                    answer.externalId = loadedAnswer.id;
-                    answer.answerText = loadedAnswer.text;
-                    answer.isCorrect = loadedAnswer.isCorrect;
-                    answer.showToggle = true;
-                    answer.canDelete = true;
-                    return answer;
-                });
-
-                const card = new Card();
-                card.externalId = loadedQuestion.id;
-                card.question = question;
-                card.answers = answers;
-                return card;
-            });
-            this.setState({
-                additionalQuestions: questions,
-                additionalAnswers: this.state.additionalAnswers.concat(questions.map(question => question.answers).reduce((accumulator, current) => accumulator.concat(current), [])),
-            }, this.addQuestions);
-        } else {
-            this.addQuestions();
-        }
-    }
-
     prepareCard() {
         const answers = [];
         for (let i = 0; i < this.REQUIRED_NUM_ALTERNATIVES; i++) {
@@ -255,17 +217,6 @@ class MillionaireContainer extends Component {
         this.props.onBulkChange({
             cards: [].concat(this.props.cards, [this.prepareCard()]),
         });
-    }
-
-    loadAlternativesFromServer() {
-        Axios.get(this.props.questionSearchUrl, {
-            params: {
-                randomize: 1,
-                tags: this.props.tags,
-                title: this.props.title,
-            },
-        })
-            .then(response => this.handleLoadedQuestions(response.data));
     }
 
     handleOnGenerate() {

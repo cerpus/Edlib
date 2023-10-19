@@ -9,7 +9,6 @@ use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
-use Cerpus\QuestionBankClient\QuestionBankClient;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,14 +21,14 @@ class QuestionSetHandler
      */
     public function store($values, Request $request): Content
     {
-        /** @var QuestionSet $questionSet */
-        $questionSet = QuestionSet::make();
+        $questionSet = new QuestionSet();
         $questionSet->title = $values['title'];
         $questionSet->owner = Session::get('authId');
         $questionSet->language_code = $request->session()->get('locale', '');
         $questionSet->is_published = $questionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $questionSet->license = $request->get('license', '');
         $questionSet->is_draft = $request->input('isDraft', 0);
+        $questionSet->tags = join(',', $values['tags']);
         if ($questionSet->save() !== true) {
             throw new \Exception("Could not store Question Set");
         }
@@ -59,16 +58,15 @@ class QuestionSetHandler
     private function storeNewQuestionsWithAnswers(QuestionSet $questionSet, $questions)
     {
         foreach ($questions as $card) {
-            /** @var QuestionSetQuestion $question */
-            $question = QuestionSetQuestion::make();
-            $question->question_text = QuestionBankClient::stripMathContainer($card['question']['text']);
+            $question = new QuestionSetQuestion();
+            $question->question_text = self::stripMathContainer($card['question']['text']);
             $question->image = !empty($card['question']['image']['id']) ? $card['question']['image']['id'] : null;
             $question->order = $card['order'];
             $questionSet->questions()->save($question);
 
             foreach ($card['answers'] as $answerIndex => $answer) {
-                $questionAnswer = QuestionSetQuestionAnswer::make();
-                $questionAnswer->answer_text = QuestionBankClient::stripMathContainer($answer['answerText']);
+                $questionAnswer = new QuestionSetQuestionAnswer();
+                $questionAnswer->answer_text = self::stripMathContainer($answer['answerText']);
                 $questionAnswer->correct = $answer['isCorrect'];
                 $questionAnswer->image = !empty($answer['image']['id']) ? $answer['image']['id'] : null;
                 $questionAnswer->order = $answerIndex;
@@ -105,18 +103,19 @@ class QuestionSetHandler
         $questionSet->is_published = $questionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $questionSet->is_draft = $request->input('isDraft', 0);
         $questionSet->license = $request->input('license', $questionSet->license);
+        $questionSet->tags = join(',', $values['tags']);
         $questionSet->save();
 
         DB::transaction(function () use ($values, $questionSet) {
             $storeQuestion = function ($question, $newValues) {
-                $question->question_text = QuestionBankClient::stripMathContainer($newValues['question']['text']);
+                $question->question_text = self::stripMathContainer($newValues['question']['text']);
                 $question->image = !empty($newValues['question']['image']['id']) ? $newValues['question']['image']['id'] : null;
                 $question->order = $newValues['order'];
                 $question->save();
             };
 
             $storeAnswer = function ($answer, $newValues) {
-                $answer->answer_text = QuestionBankClient::stripMathContainer($newValues['answerText']);
+                $answer->answer_text = self::stripMathContainer($newValues['answerText']);
                 $answer->correct = (bool)$newValues['isCorrect'];
                 $answer->image = !empty($newValues['image']['id']) ? $newValues['image']['id'] : null;
                 $answer->order = $newValues['order'];
@@ -159,8 +158,8 @@ class QuestionSetHandler
                     $providedAnswers
                         ->diffKeys($existingAnswers)
                         ->each(function ($newAnswer) use ($question) {
-                            $answer = QuestionSetQuestionAnswer::make();
-                            $answer->answer_text = QuestionBankClient::stripMathContainer($newAnswer['answerText']);
+                            $answer = new QuestionSetQuestionAnswer();
+                            $answer->answer_text = self::stripMathContainer($newAnswer['answerText']);
                             $answer->correct = $newAnswer['isCorrect'];
                             $answer->image = !empty($newAnswer['image']['id']) ? $newAnswer['image']['id'] : null;
                             $answer->order = $newAnswer['order'];
@@ -190,5 +189,16 @@ class QuestionSetHandler
         }
 
         return $questionSet;
+    }
+
+    private static function stripMathContainer($text): string
+    {
+        $pattern = [
+            '/<span.+?class=.math_container.*?>([\s\S]+?)<\/span>/i',
+            '/\${2}\\\\\(([\s\S]+?)\\\\\)\${2}/i',
+        ];
+        $replace = '\\$\\$$1\\$\\$';
+
+        return preg_replace($pattern, $replace, $text);
     }
 }

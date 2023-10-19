@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Answer, Card, Question, rerenderMathJax } from '../utils';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import Axios from '../../../../utils/axiosSetup';
 import H5PQuizLayout from './H5PQuizLayout';
 
 class H5PQuizContainer extends Component {
@@ -54,7 +53,7 @@ class H5PQuizContainer extends Component {
                     />
                 ),
             });
-            this.loadAlternativesFromServer();
+            this.addAlternatives();
         } else {
             this.setState({
                 infoText: <FormattedMessage id="H5PQUIZ.ALL_SET_AND_READY_TO_GO" />,
@@ -101,23 +100,6 @@ class H5PQuizContainer extends Component {
         this.props.onToggleDialog();
     }
 
-    handleLoadedAlternatives(alternatives) {
-        if (Array.isArray(alternatives)) {
-            const answers = alternatives.map(loadedAnswer => {
-                const answer = new Answer();
-                answer.externalId = loadedAnswer.id;
-                answer.answerText = loadedAnswer.text;
-                answer.isCorrect = loadedAnswer.isCorrect;
-                return answer;
-            });
-            this.setState({
-                additionalAnswers: answers,
-            }, this.addAlternatives);
-        } else {
-            this.addAlternatives();
-        }
-    }
-
     handleAddCard() {
         const answers = [];
         for (let i = 0; i < this.props.minimumNumberOfAnswers; i++) {
@@ -138,18 +120,6 @@ class H5PQuizContainer extends Component {
         this.props.onBulkChange({
             cards: cards,
         });
-    }
-
-    loadAlternativesFromServer() {
-        Axios.get('/v1/questionsets/search/answers', {
-            params: {
-                onlyWrong: 1,
-                randomize: 1,
-                tags: this.props.tags,
-                title: this.props.title,
-            },
-        })
-            .then(response => this.handleLoadedAlternatives(response.data));
     }
 
     handleOnGenerate() {
