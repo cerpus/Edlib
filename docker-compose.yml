@@ -1,3 +1,8 @@
+#
+# For development purposes ONLY
+# See https://docs.edlib.com/docs/developers/getting-started/
+#
+
 version: "3.7"
 
 volumes:

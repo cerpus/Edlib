@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Content;
+use App\Models\LtiTool;
 use App\Models\User;
 use App\Policies\ContentPolicy;
+use App\Policies\LtiToolPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Content::class => ContentPolicy::class,
+        LtiTool::class => LtiToolPolicy::class,
     ];
 
     /**

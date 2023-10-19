@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Exception\ValidationException;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth10Request;
 use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
@@ -15,8 +16,10 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 final readonly class SignedOauth10Request
 {
-    public function __construct(private ValidatorInterface $validator)
-    {
+    public function __construct(
+        private ValidatorInterface $validator,
+        private CredentialStoreInterface $credentialStore,
+    ) {
     }
 
     /**
@@ -39,7 +42,7 @@ final readonly class SignedOauth10Request
         );
 
         try {
-            $this->validator->validate($oauth1Request);
+            $this->validator->validate($oauth1Request, $this->credentialStore);
         } catch (ValidationException $e) {
             throw new UnauthorizedHttpException(
                 challenge: 'OAuth',

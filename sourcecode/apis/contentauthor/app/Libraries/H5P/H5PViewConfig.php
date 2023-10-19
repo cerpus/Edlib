@@ -76,7 +76,7 @@ class H5PViewConfig extends H5PConfigAbstract
         );
 
         $this->contentConfig['exportUrl'] = route('content-download', ['h5p' => $this->content['id']]);
-        $this->contentConfig['library'] = $this->h5pCore->libraryToString($this->content['library']);
+        $this->contentConfig['library'] = $this->content['libraryFullVersionName'];
         $this->contentConfig['fullScreen'] = $this->content['library']['fullscreen'];
         $this->contentConfig['title'] = $this->content['title'];
         $this->contentConfig['metadata'] = $this->content['metadata'];

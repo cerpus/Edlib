@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class H5PLibrariesHubCache extends Model
 {
+    use HasFactory;
+
     protected $table = 'h5p_libraries_hub_cache';
 
     protected $guarded = [];
@@ -45,10 +48,16 @@ class H5PLibrariesHubCache extends Model
 
     public function getLibraryString($folderName = false)
     {
-        return \H5PCore::libraryToString([
-            'machineName' => $this->name,
-            'majorVersion' => $this->major_version,
-            'minorVersion' => $this->minor_version,
-        ], $folderName);
+        return $folderName ?
+            \H5PCore::libraryToFolderName([
+                'machineName' => $this->name,
+                'majorVersion' => $this->major_version,
+                'minorVersion' => $this->minor_version,
+            ]) :
+            \H5PCore::libraryToString([
+                'machineName' => $this->name,
+                'majorVersion' => $this->major_version,
+                'minorVersion' => $this->minor_version,
+            ]);
     }
 }

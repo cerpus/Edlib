@@ -39,11 +39,13 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LtiShareWithView::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ShareFeaturesWithView::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ],
 
         'stateless' => [
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ShareFeaturesWithView::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ],
 
@@ -66,6 +68,7 @@ class Kernel extends HttpKernel
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'feature' => \App\Http\Middleware\ToggleFeature::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'lti.launch-type' => \App\Http\Middleware\LtiLaunchType::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,

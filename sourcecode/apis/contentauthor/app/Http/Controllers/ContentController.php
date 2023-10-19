@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Libraries\ContentTypes\ArticleContentType;
 use App\Http\Libraries\ContentTypes\ContentType;
 use App\Http\Libraries\ContentTypes\ContentTypeInterface;
-use App\Http\Libraries\ContentTypes\EmbedContentType;
 use App\Http\Libraries\ContentTypes\InteractivityContentType;
 use App\Http\Libraries\ContentTypes\LinkContentType;
 use App\Http\Libraries\ContentTypes\H5PContentType;
@@ -18,7 +17,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
 class ContentController extends Controller
@@ -41,8 +39,6 @@ class ContentController extends Controller
                 return $currentContentType->getContentTypes($request->get('redirectToken'));
             });
 
-        $jwtTokenInfo = Session::get('jwtToken', null);
-        $jwtToken = $jwtTokenInfo && isset($jwtTokenInfo['raw']) ? $jwtTokenInfo['raw'] : null;
         $adapterModes = json_encode($adapter::getAllAdapters());
         $currentAdapter = $adapter->getAdapterName();
 
@@ -70,7 +66,7 @@ class ContentController extends Controller
             ->all();
 
         $view = sprintf("content.%s", config('author.contentTypeSelector'));
-        return view($view)->with(compact('contentTypes', 'jwtToken', 'adapterModes', 'currentAdapter'));
+        return view($view)->with(compact('contentTypes', 'adapterModes', 'currentAdapter'));
     }
 
     /**
@@ -86,10 +82,6 @@ class ContentController extends Controller
                     InteractivityContentType::class,
                     QuestionsContentType::class,
                 ]);
-
-                if (config('feature.use-add-link-resource') === true) {
-                    $activeContentTypes->push(EmbedContentType::class);
-                }
                 break;
             case "grid":
             default:

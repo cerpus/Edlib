@@ -311,16 +311,6 @@ parameters:
 			path: app/Http/Controllers/ArticleCopyrightController.php
 
 		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:doShow\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/EmbedController.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\EmbedController\\:\\:edit\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/EmbedController.php
-
-		-
 			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
 			count: 1
 			path: app/Http/Controllers/GameController.php
@@ -379,11 +369,6 @@ parameters:
 			message: "#^PHPDoc type array of property App\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Foundation\\\\Http\\\\Kernel\\:\\:\\$middlewarePriority\\.$#"
 			count: 1
 			path: app/Http/Kernel.php
-
-		-
-			message: "#^Variable \\$names might not be defined\\.$#"
-			count: 1
-			path: app/Http/Libraries/AuthJwtParser.php
 
 		-
 			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"

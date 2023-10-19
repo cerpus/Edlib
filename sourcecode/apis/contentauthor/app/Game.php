@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Iso639p3;
 
+use function route;
+
 /**
  * @property string $id
  * @property string $gametype
@@ -121,6 +123,16 @@ class Game extends Content implements VersionableObject
     public function setVersionId(string $versionId): void
     {
         $this->version_id = $versionId;
+    }
+
+    public function getUrl(): string
+    {
+        return route('game.show', [$this->id]);
+    }
+
+    public function getMachineName(): string
+    {
+        return 'Game';
     }
 
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject

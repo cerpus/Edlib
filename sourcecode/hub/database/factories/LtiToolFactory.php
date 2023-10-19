@@ -22,4 +22,9 @@ final class LtiToolFactory extends Factory
             'consumer_secret' => $this->faker->password(32),
         ];
     }
+
+    public function withName(string $name): self
+    {
+        return $this->state(['name' => $name]);
+    }
 }

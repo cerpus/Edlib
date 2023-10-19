@@ -3,13 +3,18 @@
 namespace App;
 
 use App\Http\Requests\LTIRequest;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Exception\ValidationException;
 use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
+use Psr\Log\LoggerInterface;
 
 class H5pLti
 {
-    public function __construct(private readonly ValidatorInterface $validator)
-    {
+    public function __construct(
+        private readonly ValidatorInterface $validator,
+        private readonly CredentialStoreInterface $credentialStore,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function getValidatedLtiRequest(): LTIRequest|null
@@ -21,10 +26,14 @@ class H5pLti
         }
 
         try {
-            $this->validator->validate($ltiRequest);
+            $this->validator->validate($ltiRequest, $this->credentialStore);
 
             return $ltiRequest;
-        } catch (ValidationException) {
+        } catch (ValidationException $e) {
+            $this->logger->warning('The request was not a valid OAuth 1.0 request', [
+                'exception' => $e,
+            ]);
+
             return null;
         }
     }

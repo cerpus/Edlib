@@ -12,7 +12,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
@@ -51,7 +50,6 @@ class GameControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        $request->session()->push('jwtToken', 'token');
         /** @var GameController $gameController */
         $gameController = app(GameController::class);
         $result = $gameController->edit($request, $game->id);
@@ -118,10 +116,8 @@ class GameControllerTest extends TestCase
             ])
             ->json('url');
 
-        $newId = Arr::last(explode('/', $newUrl));
-
         $this->assertDatabaseHas('games', [
-            'id' => $newId,
+            'title' => 'Something',
             'license' => License::LICENSE_BY_NC,
             'game_settings' => '{"questionSet":{"questions":[{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]},{"questionText":"Updated question","image":null,"answers":[{"answer":"First answer","isCorrect":true},{"answer":"Next answer","isCorrect":false},{"answer":"Another answer","isCorrect":false},{"answer":"Last answer","isCorrect":false}]}]},"locale":"nb-no"}',
         ]);
