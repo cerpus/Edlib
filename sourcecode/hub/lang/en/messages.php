@@ -88,4 +88,9 @@ return [
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
     'alert-delete-content-success' => 'Your resource has been successfully deleted',
+    'alert-delete-content-header' => 'Are you sure you want to delete the content?',
+    'alert-delete-content-description' => 'The content will be permanently deleted on Edlib and in other contexts',
+    'delete' => 'Delete',
+    'cancel' => 'Cancel',
+    'go-back' => 'Go back',
 ];
