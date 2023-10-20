@@ -140,7 +140,6 @@ return [
 
         Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
 
-        Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
         App\Providers\HTMLPurifierServiceProvider::class,
@@ -194,7 +193,6 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
-        'QuestionBank' => \Cerpus\QuestionBankClient\QuestionBankClient::class,
         'ImageService' => \Cerpus\ImageServiceClient\ImageServiceClient::class,
     ],
 
