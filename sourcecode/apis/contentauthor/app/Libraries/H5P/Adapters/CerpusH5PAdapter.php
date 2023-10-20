@@ -20,6 +20,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
      */
     public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
     {
+        // Convert Math to inline display
         $pattern = [
             '/\$\$(.+?)\$\$/i',
         ];
