@@ -12,7 +12,6 @@ class MillionaireContainer extends Component {
         cards: [],
         tags: [],
         title: null,
-        questionSearchUrl: '/v1/questionsets/search/questions',
         editMode: false,
     };
 
@@ -26,7 +25,6 @@ class MillionaireContainer extends Component {
         onSave: PropTypes.func,
         tags: PropTypes.array,
         title: PropTypes.string,
-        questionSearchUrl: PropTypes.string,
         editMode: PropTypes.bool,
         handleDragEnd: PropTypes.func,
     };
