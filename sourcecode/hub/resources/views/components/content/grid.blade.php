@@ -41,3 +41,4 @@
 </div>
 
 {{ $contents->links() }}
+<x-preview-modal />
