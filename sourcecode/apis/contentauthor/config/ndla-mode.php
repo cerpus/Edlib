@@ -32,11 +32,10 @@ return [
         'overrideDisableSetting' => env("NDLA_H5P_OVERRIDE_DISABLE_SETTING", false),
         'h5pAdapter' => 'ndla',
         'image' => [
-            'authDomain' => env("NDLA_H5P_IMAGE_AUTH_DOMAIN"),
-            'key' => env("NDLA_H5P_IMAGE_AUTH_KEY"),
-            'secret' => env("NDLA_H5P_IMAGE_AUTH_SECRET"),
-            'audience' => env("NDLA_H5P_IMAGE_AUDIENCE"),
             'url' => env("NDLA_H5P_IMAGE_URL"),
+        ],
+        'audio' => [
+            'url' => env("NDLA_H5P_AUDIO_URL"),
         ],
         'video' => [
             'enable' => env("NDLA_H5P_VIDEO_STREAM_ENABLED", true),
