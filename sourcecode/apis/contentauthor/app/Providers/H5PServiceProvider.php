@@ -23,7 +23,6 @@ use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use App\Libraries\H5P\Video\NullVideoAdapter;
-use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
