@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
 
-        $this->app->singleton(CredentialStoreInterface::class, fn() => new Credentials(
+        $this->app->singleton(CredentialStoreInterface::class, fn () => new Credentials(
             config('app.consumer-key'),
             config('app.consumer-secret'),
         ));
