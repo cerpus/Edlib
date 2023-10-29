@@ -4,7 +4,6 @@ namespace Tests\Integration\Article;
 
 use App\Article;
 use App\ArticleCollaborator;
-use App\Listeners\Article\HandleCollaborationInviteEmails;
 use App\User;
 use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -144,10 +143,6 @@ class ArticleVersioningTest extends TestCase
 
     public function testVersioning()
     {
-        $inviteEmail = $this->createMock(HandleCollaborationInviteEmails::class);
-        $inviteEmail->expects($this->exactly(3))->method('handle');
-        $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
-
         $this->setUpResourceApi();
         $this->setupAuthApi([
             'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
@@ -198,9 +193,6 @@ class ArticleVersioningTest extends TestCase
 
         $this->assertCount(3, Article::all());
         $this->assertDatabaseHas('articles', ['title' => 'Another new title', 'owner_id' => $copyist->auth_id]);
-        $copiedArticle = Article::where('owner_id', $copyist->auth_id)->first();
-        $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
-        $this->assertCount(2, ArticleCollaborator::all());
 
         $article->license = 'PRIVATE';
         $article->save();
@@ -213,7 +205,6 @@ class ArticleVersioningTest extends TestCase
         ])
         ->get(route('article.edit', $article->id))
         ->assertStatus(Response::HTTP_FORBIDDEN);
-        $this->assertCount(2, ArticleCollaborator::all());
 
         // Well, maybe if i post directly? PURE GENIUS!
         $this->withSession([
@@ -226,7 +217,6 @@ class ArticleVersioningTest extends TestCase
             'title' => 'Evil edit',
             'content' => 'Muahahaha',
             'license' => 'BY',
-            'collaborators' => 'a@b.com,c@d.com',
         ])
         ->assertStatus(Response::HTTP_FORBIDDEN);
 
@@ -246,6 +236,5 @@ class ArticleVersioningTest extends TestCase
 
         $this->assertCount(4, Article::all());
         $this->assertDatabaseHas('articles', ['title' => 'Another new title', 'owner_id' => $owner->auth_id]);
-        $this->assertCount(3, ArticleCollaborator::all());
     }
 }

@@ -34,9 +34,6 @@ class QuestionSetHandler
             throw new \Exception("Could not store Question Set");
         }
 
-        $collaborators = explode(',', $request->input('col-emails', ''));
-        $questionSet->setCollaborators($collaborators)->notifyNewCollaborators();
-
         $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
 
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::CREATE, Session::all()));
@@ -174,11 +171,6 @@ class QuestionSetHandler
 
             $this->storeNewQuestionsWithAnswers($questionSet, $newQuestions);
         });
-
-        if ($questionSet->isOwner(Session::get('authId'))) {
-            $collaborators = explode(',', $request->input('col-emails', ''));
-            $questionSet->setCollaborators($collaborators)->notifyNewCollaborators();
-        }
 
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::UPDATE, Session::all()));
 
