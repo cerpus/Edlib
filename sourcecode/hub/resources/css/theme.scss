@@ -162,4 +162,9 @@
             }
         }
     }
+
+    .search-container {
+        border-color: var(--components-input-focused-border, #ccc);
+    }
 }
+
