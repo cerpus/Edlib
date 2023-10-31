@@ -3,22 +3,17 @@
     <div class="mt-3">
         <div class="row g-3 align-items-center">
             <div class="col-8 col-md-5 col-lg-6">
-                <div class="input-group search-container">
+                <label class="input-group">
                     <x-form.input
                         wire:model="query"
                         name="q"
                         type="search"
                         :value="$query"
-                        :aria-label="trans('messages.search')"
-                        class="form-control border-0"
+                        :aria-label="trans('messages.search-query')"
                         placeholder="{{ trans('messages.type-to-search') }}"
                     />
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-transparent border-0" id="search-icon">
-                            <x-icon name="search" />
-                        </span>
-                    </div>
-                </div>
+                    <x-icon name="search" class="input-group-text" />
+                </label>
             </div>
 
             <x-filter-desktop/>
