@@ -23,7 +23,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header text-center border-0">
-                <h2 class="w-100">{{ trans('messages.alert-delete-content-success') }}</h2>
+                <h2 class="w-100" id="deletionConfirmationModalLabel">{{ trans('messages.alert-delete-content-success') }}</h2>
             </div>
 
             <div class="modal-body text-center display-5">
