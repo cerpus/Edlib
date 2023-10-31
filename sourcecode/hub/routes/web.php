@@ -67,10 +67,9 @@ Route::controller(ContentController::class)->group(function () {
         ->can('create', \App\Models\Content::class)
         ->whereUlid('tool');
 
-    Route::get('/content/{content}/standalone','showStandalonePage')
+    Route::get('/content/{content}/standalone', 'showStandalonePage')
         ->name('content.standalone-view')
         ->whereUlid('content');
-
 });
 
 Route::prefix('/lti/deep-linking-return')
