@@ -43,7 +43,8 @@ final readonly class AddAuthToLtiLaunch
             $familyName = '';
         }
 
-        $event->setLaunch($event->getLaunch()
+        $event->setLaunch(
+            $event->getLaunch()
             ->withClaim('lis_person_name_full', $user->name)
             ->withClaim('lis_person_name_given', $givenName)
             ->withClaim('lis_person_name_family', $familyName)

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
-use App\Lti\LtiLaunchBuilder;
 use App\Lti\Serializer\ContentItemsSerializer;
 use App\Lti\Serializer\LtiContentSerializer;
 use App\Support\CarbonToPsrClockAdapter;

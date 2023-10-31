@@ -14,14 +14,12 @@ use App\Models\LtiResource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
-use function app;
 use function assert;
 use function is_string;
 use function to_route;
