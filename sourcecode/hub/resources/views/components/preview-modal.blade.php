@@ -1,6 +1,6 @@
 <!-- Preview Modal -->
 <div class="modal fade" id="previewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-height: 80vh;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0 mb-5">
                 <h2 class="w-100" id="previewModalLabel"></h2>
