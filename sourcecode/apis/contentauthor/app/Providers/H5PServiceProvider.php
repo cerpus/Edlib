@@ -23,7 +23,6 @@ use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use App\Libraries\H5P\Video\NullVideoAdapter;
-use Cerpus\Helper\Clients\Auth0Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
@@ -103,13 +102,9 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->when(NDLAContentBrowser::class)
             ->needs(Client::class)
-            ->give(fn () => Auth0Client::getClient(OauthSetup::create([
-                'key' => config('h5p.image.key'),
-                'secret' => config('h5p.image.secret'),
-                'authUrl' => config('h5p.image.authDomain'),
-                'coreUrl' => config('h5p.image.url'),
-                'audience' => config('h5p.image.audience'),
-            ])));
+            ->give(fn () => new Client([
+                'base_uri' => config('h5p.image.url'),
+            ]));
 
         $this->app->bind(H5PImageAdapterInterface::class, function () {
             $adapter = $this->app->make(H5PAdapterInterface::class);
@@ -122,27 +117,9 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->when(NDLAAudioBrowser::class)
             ->needs(Client::class)
-            ->give(function () {
-                if (!is_null(config('h5p.audio.url'))) {
-                    $authSetup = OauthSetup::create([
-                        'key' => config('h5p.audio.key'),
-                        'secret' => config('h5p.audio.secret'),
-                        'authUrl' => config('h5p.audio.authDomain'),
-                        'coreUrl' => config('h5p.audio.url'),
-                        'audience' => config('h5p.audio.audience'),
-                    ]);
-                } else {
-                    $authSetup = OauthSetup::create([
-                        'key' => config('h5p.image.key'),
-                        'secret' => config('h5p.image.secret'),
-                        'authUrl' => config('h5p.image.authDomain'),
-                        'coreUrl' => config('h5p.image.url'),
-                        'audience' => config('h5p.image.audience'),
-                    ]);
-                }
-
-                return Auth0Client::getClient($authSetup);
-            });
+            ->give(fn () => new Client([
+                'base_uri' => config('h5p.audio.url') ?: config('h5p.image.url'),
+            ]));
 
         $this->app->bind(H5PAudioInterface::class, function () {
             $adapter = $this->app->make(H5PAdapterInterface::class);
