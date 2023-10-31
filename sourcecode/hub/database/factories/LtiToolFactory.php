@@ -16,7 +16,7 @@ final class LtiToolFactory extends Factory
     {
         return [
             'name' => $this->faker->words(asText: true),
-            'lti_version' => $this->faker->randomElement(['1.1', '1.3']),
+            'lti_version' => '1.1',
             'creator_launch_url' => $this->faker->url,
             'consumer_key' => $this->faker->unique()->word(),
             'consumer_secret' => $this->faker->password(32),

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Events\LaunchLti;
 use App\Events\UserSaved;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+
+use function app;
 
 final readonly class UserLocaleListener
 {
@@ -43,13 +46,14 @@ final readonly class UserLocaleListener
     }
 
     /**
-     * @return array<class-string, string>
+     * Include the locale in LTI launches
      */
-    public function subscribe(): array
+    public function handleLtiLaunch(LaunchLti $event): void
     {
-        return [
-            Login::class => 'handleUserLogin',
-            UserSaved::class => 'handleUserSaved',
-        ];
+        $locale = app()->getLocale();
+
+        $event->setLaunch(
+            $event->getLaunch()->withClaim('launch_presentation_locale', $locale),
+        );
     }
 }

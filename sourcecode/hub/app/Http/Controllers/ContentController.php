@@ -60,8 +60,8 @@ class ContentController extends Controller
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
 
-        $credentials = $version->resource?->tool?->getOauth1Credentials();
-        assert($credentials instanceof Credentials);
+        $tool = $version->resource?->tool;
+        assert($tool instanceof LtiTool);
 
         $launchUrl = $version->resource?->view_launch_url;
         assert(is_string($launchUrl));
@@ -69,9 +69,7 @@ class ContentController extends Controller
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
-            ->withClaim('launch_presentation_locale', app()->getLocale())
-            ->withClaim('user_id', $this->getUser()->id)
-            ->toPresentationLaunch($credentials, $launchUrl, $content->id);
+            ->toPresentationLaunch($tool, $launchUrl, $content->id);
 
         return view('content.show', [
             'content' => $content,
@@ -106,14 +104,11 @@ class ContentController extends Controller
             LtiToolEditMode::DeepLinkingRequestToContentUrl => $resource->view_launch_url,
         };
 
-        $launch = $builder
-            ->withClaim('launch_presentation_locale', app()->getLocale())
-            ->withClaim('user_id', $this->getUser()->id)
-            ->toItemSelectionLaunch(
-                $tool->getOauth1Credentials(),
-                $launchUrl,
-                route('content.lti-update', [$content]),
-            );
+        $launch = $builder->toItemSelectionLaunch(
+            $tool,
+            $launchUrl,
+            route('content.lti-update', [$content]),
+        );
 
         return view('content.edit', [
             'content' => $content,
@@ -126,10 +121,8 @@ class ContentController extends Controller
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
-            ->withClaim('launch_presentation_locale', app()->getLocale())
-            ->withClaim('user_id', $this->getUser()->id)
             ->toItemSelectionLaunch(
-                $tool->getOauth1Credentials(),
+                $tool,
                 $tool->creator_launch_url,
                 route('content.lti-store'),
             );
