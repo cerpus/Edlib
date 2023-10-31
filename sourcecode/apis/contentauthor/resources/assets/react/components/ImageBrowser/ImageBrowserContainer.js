@@ -13,6 +13,7 @@ class ImageBrowserContainer extends Component {
         searchPlaceholder: PropTypes.string,
         onToggle: PropTypes.func,
         getCurrentLanguage: PropTypes.func,
+        apiDetailsUrl: PropTypes.string.isRequired,
     };
 
     static defaultProps = {
@@ -46,7 +47,7 @@ class ImageBrowserContainer extends Component {
     }
 
     handleFetchImageDetails(imageId) {
-        return Axios.get( this.props.searchUrl + '/' + imageId, {
+        return Axios.get( this.props.apiDetailsUrl + '/' + imageId, {
             params: {
                 language: this.props.getCurrentLanguage(),
             },
