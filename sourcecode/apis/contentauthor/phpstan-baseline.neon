@@ -181,31 +181,6 @@ parameters:
 			path: app/Http/Controllers/API/LockStatusController.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\QuestionsetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
-			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchAnswers\\(\\) expects null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
-			count: 2
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
-			message: "#^Parameter \\#1 \\$searchParams of static method Cerpus\\\\QuestionBankClient\\\\Adapters\\\\QuestionBankAdapter\\:\\:searchQuestions\\(\\) expects Illuminate\\\\Support\\\\Collection\\|null, Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject given\\.$#"
-			count: 2
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
-			message: "#^Static method Cerpus\\\\QuestionBankClient\\\\DataObjects\\\\SearchDataObject\\:\\:create\\(\\) invoked with 2 parameters, 0\\-1 required\\.$#"
-			count: 6
-			path: app/Http/Controllers/API/QuestionsetController.php
-
-		-
 			message: "#^Called 'first' on Laravel collection, but could have been retrieved as a query\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/UnlockController.php
@@ -970,11 +945,6 @@ parameters:
 			message: "#^Parameter \\$token of method App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\MathMLSpaceNormalize\\:\\:handleText\\(\\) has invalid type App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
 			count: 1
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 4
-			path: app/Libraries/QuestionSet/QuestionSetHandler.php
 
 		-
 			message: "#^PHPDoc tag @var has invalid value \\(\\$leafs VersionData\\[\\]\\)\\: Unexpected token \"\\$leafs\", expected type at offset 9$#"

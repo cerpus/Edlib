@@ -5,16 +5,13 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { FormattedMessage } from 'react-intl';
 
-import { QuestionBankBrowser } from '../QuestionBankBrowser';
 import TagsManager from '../../../TagsManager';
 import LoadingModal from '../LoadingModal';
 
 const QuestionContainerLayout = props => {
     const {
-        cards,
         onTitleChange,
         title,
-        onQuestionBankSelect,
         tags,
         onTagsChange,
         cardsComponents,
@@ -22,8 +19,6 @@ const QuestionContainerLayout = props => {
         loadingIcon,
         loadingText,
         loadingTitle,
-        editMode,
-        searchTitle,
         placeholder,
     } = props;
     return (
@@ -51,16 +46,6 @@ const QuestionContainerLayout = props => {
                 />
                 {cardsComponents}
             </div>
-            {typeof onQuestionBankSelect === 'function' && (
-                <div>
-                    <QuestionBankBrowser
-                        onSelect={onQuestionBankSelect}
-                        cards={cards}
-                        title={searchTitle}
-                        tags={tags}
-                    />
-                </div>
-            )}
             <LoadingModal
                 open={displayDialog}
                 contentTitle={loadingTitle}
@@ -72,11 +57,8 @@ const QuestionContainerLayout = props => {
 };
 
 QuestionContainerLayout.propTypes = {
-    cards: PropTypes.array,
     onTitleChange: PropTypes.func,
     title: PropTypes.string,
-    searchTitle: PropTypes.string,
-    onQuestionBankSelect: PropTypes.func,
     tags: PropTypes.array,
     onTagsChange: PropTypes.func,
     cardsComponents: PropTypes.array,
@@ -84,8 +66,6 @@ QuestionContainerLayout.propTypes = {
     loadingTitle: PropTypes.string,
     loadingIcon: PropTypes.string,
     loadingText: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    editMode: PropTypes.bool,
-    handleDragEnd: PropTypes.func,
     placeholder: PropTypes.string,
 };
 

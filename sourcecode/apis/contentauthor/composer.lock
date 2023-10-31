@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "25e225a8d36f93ae5d863214cea63ffc",
+    "content-hash": "8b160413295e7944eb2cb0d9c7c15b3d",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -688,67 +688,6 @@
                 "source": "https://github.com/cerpus/php-pubsub/tree/v1.1.0"
             },
             "time": "2022-12-08T13:51:01+00:00"
-        },
-        {
-            "name": "cerpus/questionbank-client",
-            "version": "2.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cerpus/php-questionbank-client.git",
-                "reference": "d8ba87034d040dd1c23224bc32ba26d02e6eb309"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-questionbank-client/zipball/d8ba87034d040dd1c23224bc32ba26d02e6eb309",
-                "reference": "d8ba87034d040dd1c23224bc32ba26d02e6eb309",
-                "shasum": ""
-            },
-            "require": {
-                "cerpus/cerpushelper": "^2.0",
-                "ext-json": "*",
-                "guzzlehttp/guzzle": "^6.0|^7.0",
-                "illuminate/support": "^8.0|^9.0",
-                "php": "^7.4 || ^8.0"
-            },
-            "require-dev": {
-                "fakerphp/faker": "^1.16",
-                "mockery/mockery": "^1.4",
-                "phpunit/phpunit": "^9.5",
-                "shrikeh/teapot": "^2.3"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "\\Cerpus\\QuestionBankClient\\Providers\\QuestionBankClientServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cerpus\\QuestionBankClient\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Thomas Horn Sivertsen",
-                    "email": "thomass@cerpus.com"
-                },
-                {
-                    "name": "Odd-Arne Johansen",
-                    "email": "odd-arne@gamilab.com"
-                }
-            ],
-            "description": "Client to talk do the Cerpus Questionbank Service",
-            "support": {
-                "issues": "https://github.com/cerpus/php-questionbank-client/issues",
-                "source": "https://github.com/cerpus/php-questionbank-client/tree/2.3.1"
-            },
-            "time": "2023-02-03T11:47:14+00:00"
         },
         {
             "name": "cerpus/version-client",
