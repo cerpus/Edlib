@@ -5,6 +5,7 @@ namespace Tests\Integration\Libraries\H5P;
 use App\Libraries\H5P\H5PConfigAbstract;
 use App\Libraries\H5P\H5PCreateConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
@@ -15,6 +16,9 @@ class H5PCreateConfigTest extends TestCase
     /** @dataProvider provider_adapterMode */
     public function test_getConfig(string $adapterMode): void
     {
+        Config::set('ndla-mode.h5p.audio.url', 'https://audio.url');
+        Config::set('ndla-mode.h5p.image.url', 'https://ndla-image.url');
+
         Session::put('adapterMode', $adapterMode);
 
         $config = app(H5PCreateConfig::class);
@@ -84,10 +88,14 @@ class H5PCreateConfigTest extends TestCase
             $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
+            $this->assertSame('https://audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
+            $this->assertSame('https://ndla-image.url/image-api/v3/images', $data->imageBrowserDetailsUrl);
         } elseif ($adapterMode === 'cerpus') {
             $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
+            $this->assertObjectNotHasAttribute('audioBrowserDetailsUrl', $data);
+            $this->assertObjectNotHasAttribute('imageBrowserDetailsUrl', $data);
         }
     }
 

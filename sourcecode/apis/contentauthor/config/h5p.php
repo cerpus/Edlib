@@ -31,20 +31,12 @@ return [
     'overrideDisableSetting' => env("H5P_OVERRIDE_DISABLE_SETTING", false),
     'h5pAdapter' => env('H5P_ADAPTER', 'cerpus'),
     'image' => [
-        'authDomain' => env("H5P_IMAGE_AUTH_DOMAIN"),
-        'key' => env("H5P_IMAGE_AUTH_KEY"),
-        'secret' => env("H5P_IMAGE_AUTH_SECRET"),
-        'audience' => env("H5P_IMAGE_AUDIENCE"),
         'url' => env("H5P_IMAGE_URL"),
         'properties' => [
             'width' => env("H5P_IMAGE_PROPERTIES_WIDTH", 2500),
         ]
     ],
     'audio' => [
-        'authDomain' => env("H5P_AUDIO_AUTH_DOMAIN"),
-        'key' => env("H5P_AUDIO_AUTH_KEY"),
-        'secret' => env("H5P_AUDIO_AUTH_SECRET"),
-        'audience' => env("H5P_AUDIO_AUDIENCE"),
         'url' => env("H5P_AUDIO_URL"),
     ],
     'saveFrequency' => env('H5P_SAVE_FREQUENCY', 15),

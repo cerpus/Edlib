@@ -310,6 +310,7 @@ class AudioBrowser extends ContentBrowserBase {
             onToggleCallback: cb => this.toggleContentBrowser = cb,
             locale: H5PIntegration.locale,
             getCurrentLanguage: () => H5PEditor.defaultLanguage,
+            apiDetailsUrl: H5PIntegration?.audioBrowserDetailsUrl,
         });
     }
 }
@@ -471,6 +472,7 @@ class ImageBrowser extends ContentBrowserBase {
             onToggleCallback: cb => this.toggleContentBrowser = cb,
             locale: H5PIntegration.locale,
             getCurrentLanguage: () => H5PEditor.defaultLanguage,
+            apiDetailsUrl: H5PIntegration?.imageBrowserDetailsUrl,
         });
         this.copyrightHandler.handleDisplayCopyrightButton();
     }

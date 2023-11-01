@@ -12,6 +12,7 @@ function initImageBrowser(element, settings) {
         locale,
         onToggleCallback,
         getCurrentLanguage,
+        apiDetailsUrl,
     } = settings;
 
     const i18nData = (locale !== null ? addLanguage(locale) : i18nDefault);
@@ -23,6 +24,7 @@ function initImageBrowser(element, settings) {
                 locale={locale}
                 onToggle={onToggleCallback}
                 getCurrentLanguage={getCurrentLanguage}
+                apiDetailsUrl={apiDetailsUrl}
             />
         </IntlProvider>,
         element
@@ -56,6 +58,7 @@ function initAudioBrowser(element, settings) {
         locale,
         onToggleCallback,
         getCurrentLanguage,
+        apiDetailsUrl,
     } = settings;
 
     const i18nData = (locale !== null ? addLanguage(locale) : i18nDefault);
@@ -67,6 +70,7 @@ function initAudioBrowser(element, settings) {
                 locale={locale}
                 onToggle={onToggleCallback}
                 getCurrentLanguage={getCurrentLanguage}
+                apiDetailsUrl={apiDetailsUrl}
             />
         </IntlProvider>,
         element

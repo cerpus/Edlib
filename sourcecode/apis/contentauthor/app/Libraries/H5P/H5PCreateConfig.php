@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Libraries\H5P;
 
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 
 class H5PCreateConfig extends H5PConfigAbstract
 {
@@ -55,5 +57,14 @@ class H5PCreateConfig extends H5PConfigAbstract
         $this->editorConfig['ajaxPath'] = sprintf("/ajax?redirectToken=%s&h5p_id=&action=", $this->redirectToken);
 
         $this->config['editor'] = (object) $this->editorConfig;
+
+        $imageBrowser = app(H5PImageAdapterInterface::class);
+        if ($imageBrowser) {
+            $this->config['imageBrowserDetailsUrl'] = $imageBrowser::getClientDetailsUrl();
+        }
+        $audioBrowser = app(H5PAudioInterface::class);
+        if ($audioBrowser) {
+            $this->config['audioBrowserDetailsUrl'] = $audioBrowser::getClientDetailsUrl();
+        }
     }
 }

@@ -100,6 +100,8 @@ return [
     'search-results-mobile' => 'Show :num results',
     'back' => 'Back',
     'filter-types' => 'Filter Types',
+    'last-changed' => 'Last changed',
+    'type-to-search' => 'Type to Search...',
     'add' => 'Add',
     'remove' => 'Remove',
     'edit-mode' => 'Edit mode',

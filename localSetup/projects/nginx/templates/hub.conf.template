@@ -42,7 +42,8 @@ server {
   ssl_certificate_key  /etc/ssl/private/cerpus.key;
 
   location / {
-    proxy_pass  http://hub-vite:80;
+    set $upstream http://hub-vite;
+    proxy_pass  $upstream;
 
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
