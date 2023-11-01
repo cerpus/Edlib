@@ -104,8 +104,8 @@ final class LtiPlatformTest extends TestCase
         $this->actingAs($user);
 
         $tool = LtiTool::factory()->create([
-            'send_name' => false,
-            'send_email' => false,
+            'send_name' => true,
+            'send_email' => true,
         ]);
 
         $request = $this->app->make(LtiLaunchBuilder::class)
