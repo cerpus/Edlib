@@ -1,33 +1,35 @@
-import * as i18nDataEnGb from '../language/en-gb';
-import * as i18nDataNbNo from '../language/nb-no';
-const addLanguage = (languageCode) => {
-    let i18nData;
+import defaultMessages from '../language/en.json';
+
+const loadLocale = async (locale) => {
+    if (!locale) {
+        locale = document.documentElement.lang || window.navigator.language;
+    }
+
+    if (locale === 'en') {
+        return {locale: 'en', messages: defaultMessages};
+    }
+
+    let messages;
     try {
-        switch (languageCode) {
-            case 'no':
-                //No break;
-            case 'nb':
-                //No break;
-            case 'nb-no':
-                i18nData = i18nDataNbNo;
-                break;
-            default:
-                i18nData = i18nDataEnGb;
-                break;
+        ({ default: messages } = await import(`../language/${locale}.json`));
+    } catch (e) {
+        if (locale.includes('_')) {
+            locale = locale.split('_')[0];
+
+            try {
+                ({ messages } = await loadLocale(locale));
+            } catch (e) {
+                locale = 'en';
+                messages = defaultMessages;
+            }
         }
-    } catch (ex) {
-        // Ignore and use the default language
     }
-    if (typeof i18nData === 'undefined' || i18nData === null) {
-        i18nData = i18nDataEnGb;
+
+    if (locale !== 'en') {
+        messages = Object.assign({}, defaultMessages, messages);
     }
-    return i18nData.default;
+
+    return {locale, messages, defaultLocale: 'en'};
 };
 
-const langCode = window.navigator.userLanguage || window.navigator.language;
-const defaultLanguage = addLanguage(langCode.toLowerCase());
-
-export {
-    defaultLanguage as default,
-    addLanguage,
-};
+export { loadLocale };
