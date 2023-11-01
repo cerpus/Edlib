@@ -91,7 +91,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="dropdown-item">
+                    <a href="#" class="btn btn-primary dropdown-item" data-bs-toggle="modal" data-bs-target="#deletionModal">
                         <x-icon name="x-lg" class="me-2 text-danger" />
                         {{ trans('messages.delete-content') }}
                     </a>
@@ -104,3 +104,4 @@
         </div>
     </div>
 </article>
+

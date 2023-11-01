@@ -108,6 +108,7 @@
     right: 35px;
     height: calc(100% - 35px);
 }
+
 /* Mobile-specific styles */
 @include media-breakpoint-down(md) {
     .accordion-item {
