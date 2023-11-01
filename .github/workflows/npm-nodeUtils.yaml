@@ -29,7 +29,7 @@ jobs:
         - name: "Run tests"
           run: yarn test
 
-        - uses: JS-DevTools/npm-publish@v1
+        - uses: JS-DevTools/npm-publish@v3
           if: github.event_name != 'workflow_dispatch' && env.NPM_CERPUS_SECRET != ''
           env:
             NPM_CERPUS_SECRET: ${{ secrets.NPM_CERPUS_SECRET }}
@@ -42,7 +42,7 @@ jobs:
           if: github.event_name == 'workflow_dispatch'
           run: npm version 0.0.0-${{ github.sha }}
 
-        - uses: JS-DevTools/npm-publish@v1
+        - uses: JS-DevTools/npm-publish@v3
           if: github.event_name == 'workflow_dispatch'
           with:
             package: sourcecode/npm/nodeUtils/package.json
