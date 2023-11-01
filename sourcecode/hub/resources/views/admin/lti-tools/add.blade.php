@@ -92,7 +92,35 @@ use App\Models\LtiVersion;
             </div>
         </fieldset>
 
-        <p>
+        <fieldset>
+            <legend>{{ trans('messages.privacy-settings') }}</legend>
+
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input
+                        type="checkbox"
+                        name="send_name"
+                        value="1"
+                        class="form-check-input"
+                        @checked(old('send_name', false))
+                    > {{ trans('messages.send-full-name-to-lti-tool', ['site' => config('app.name')]) }}
+                </label>
+            </div>
+
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input
+                        type="checkbox"
+                        name="send_email"
+                        value="1'"
+                        class="form-check-input"
+                        @checked(old('send_email', false))
+                    > {{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}
+                </label>
+            </div>
+        </fieldset>
+
+        <p class="mt-3">
             <button class="btn btn-primary">{{ trans('messages.add') }}</button>
         </p>
     </form>

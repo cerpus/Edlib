@@ -75,7 +75,10 @@ final class LtiPlatformTest extends TestCase
 
     public function testLaunchesFromAnonymousUsersDoNotContainUserDetails(): void
     {
-        $tool = LtiTool::factory()->create();
+        $tool = LtiTool::factory()->create([
+            'send_name' => true,
+            'send_email' => true,
+        ]);
 
         $request = $this->app->make(LtiLaunchBuilder::class)
             ->toItemSelectionLaunch(
@@ -100,7 +103,10 @@ final class LtiPlatformTest extends TestCase
         ]);
         $this->actingAs($user);
 
-        $tool = LtiTool::factory()->create();
+        $tool = LtiTool::factory()->create([
+            'send_name' => false,
+            'send_email' => false,
+        ]);
 
         $request = $this->app->make(LtiLaunchBuilder::class)
             ->toItemSelectionLaunch(

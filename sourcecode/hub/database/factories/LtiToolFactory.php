@@ -20,6 +20,8 @@ final class LtiToolFactory extends Factory
             'creator_launch_url' => $this->faker->url,
             'consumer_key' => $this->faker->unique()->word(),
             'consumer_secret' => $this->faker->password(32),
+            'send_name' => $this->faker->boolean,
+            'send_email' => $this->faker->boolean,
         ];
     }
 

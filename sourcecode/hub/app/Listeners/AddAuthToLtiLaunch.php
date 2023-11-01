@@ -30,27 +30,33 @@ final readonly class AddAuthToLtiLaunch
 
     private function addUserDetails(LaunchLti $event, User $user): void
     {
-        // TODO: allow anonymising launches
+        $tool = $event->getTool();
+        $launch = $event->getLaunch()->withClaim('user_id', $user->id);
 
-        // Some systems need given & family names. We store the full name as an
-        // opaque string, so all we can provide is a best guess. A well-designed
-        // system should use the provided full name instead.
-        if (preg_match('/^(.*) (.*?)$/', $user->name, $matches)) {
-            $givenName = $matches[1];
-            $familyName = $matches[2];
-        } else {
-            $givenName = $user->name;
-            $familyName = '';
+        if ($tool->send_name) {
+            // Some systems need given & family names. We store the full name as
+            // an opaque string, so all we can provide is a best guess. A
+            // well-designed system should use the provided full name instead.
+            if (preg_match('/^(.*) (.*?)$/', $user->name, $matches)) {
+                $givenName = $matches[1];
+                $familyName = $matches[2];
+            } else {
+                $givenName = $user->name;
+                $familyName = '';
+            }
+
+            $launch = $launch
+                ->withClaim('lis_person_name_full', $user->name)
+                ->withClaim('lis_person_name_given', $givenName)
+                ->withClaim('lis_person_name_family', $familyName);
         }
 
-        $event->setLaunch(
-            $event->getLaunch()
-            ->withClaim('lis_person_name_full', $user->name)
-            ->withClaim('lis_person_name_given', $givenName)
-            ->withClaim('lis_person_name_family', $familyName)
-            ->withClaim('lis_person_contact_email_primary', $user->email)
-            ->withClaim('user_id', $user->id)
-        );
+        if ($tool->send_email) {
+            $launch = $launch
+                ->withClaim('lis_person_contact_email_primary', $user->email);
+        }
+
+        $event->setLaunch($launch);
     }
 
     private function addRoles(LaunchLti $event, User $user): void

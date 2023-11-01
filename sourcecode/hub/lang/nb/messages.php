@@ -64,4 +64,9 @@ return [
     'edit-mode-replace-help' => 'Start verktøyet for å velge innholdet som skal erstatte det eksisterende. Dette fungerer med alle verktøy, men verktøyet kan ikke vite hvilket innhold som skal redigeres.',
     'edit-mode-deep-linking-request-to-content-url' => '«Deep Linking»-forespørsel til innholdslenke',
     'edit-mode-deep-linking-request-to-content-url-help' => 'Send en «Deep Linking»-forespørsel til selve innholdslenken. Verktøy som støtter dette vil vite hvilket innhold som skal redigeres, men ikke alle verktøy støtter dette.',
+    'privacy-settings' => 'Personvernsinnstillinger',
+    'send-full-name-to-lti-tool' => 'Send fullt navn av :site-bruker til verktøy',
+    'send-email-to-lti-tool' => 'Send epostadresse av :site-bruker til verktøy',
+    'yes' => 'Ja',
+    'no' => 'Nei',
 ];

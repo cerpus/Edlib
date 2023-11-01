@@ -23,6 +23,8 @@ class StoreLtiToolRequest extends FormRequest
             'consumer_key' => ['string'],
             'consumer_secret' => ['required_with:consumer_key', 'string'],
             'edit_mode' => ['required', Rule::enum(LtiToolEditMode::class)],
+            'send_name' => ['boolean'],
+            'send_email' => ['boolean'],
         ];
     }
 }
