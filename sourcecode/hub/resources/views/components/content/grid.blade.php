@@ -41,3 +41,5 @@
 </div>
 
 {{ $contents->links() }}
+<!-- Modal -->
+<x-delete-modal />
