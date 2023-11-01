@@ -79,7 +79,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
-                    <a href="{{ route('content.preview', [$content->id]) }}" class="dropdown-item">
+                    <a href="{{ route('content.preview', [$content->id]) }}" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#previewModal">
                         <x-icon name="info-lg" class="me-2" />
                         {{ trans('messages.preview') }}
                     </a>

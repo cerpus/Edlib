@@ -41,5 +41,6 @@
 </div>
 
 {{ $contents->links() }}
-<!-- Modal -->
+
+<x-preview-modal />
 <x-delete-modal />
