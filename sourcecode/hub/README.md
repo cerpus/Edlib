@@ -6,8 +6,8 @@ TODO: write the rest of the README
 
 1. Ensure you have Google Chrome/Chromium installed.
 
-2. Download [ChromeDriver](https://chromedriver.chromium.org/home) and unpack 
-   it.
+2. Download [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/)
+   and unpack it.
 
 3. Start ChromeDriver.
 
