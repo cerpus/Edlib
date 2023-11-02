@@ -2,14 +2,14 @@
 
 namespace App\Http\Middleware;
 
-use App\H5pLti;
+use App\Lti\Lti;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
 class LtiLocale
 {
-    public function __construct(private readonly H5pLti $h5pLti)
+    public function __construct(private readonly Lti $lti)
     {
     }
 
@@ -20,7 +20,7 @@ class LtiLocale
      */
     public function handle($request, Closure $next)
     {
-        $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
+        $ltiRequest = $this->lti->getRequest($request);
         if ($ltiRequest != null) {
             if ($ltiRequest->getLocale()) {
                 // Store the original code, even if we don't have this locale, maybe H5P does

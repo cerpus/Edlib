@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
 use App\Events\LinkWasSaved;
-use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\LinksRequest;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Link;
+use App\Lti\Lti;
 use App\Traits\ReturnToCore;
 use Carbon\Carbon;
 use Cerpus\VersionClient\VersionData;
@@ -25,15 +25,11 @@ class LinkController extends Controller
     use ReturnToCore;
     use ArticleAccess;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private readonly Lti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
-
-        $this->lti = $h5pLti;
     }
 
     public function create(Request $request)
@@ -44,7 +40,7 @@ class LinkController extends Controller
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
+        $ltiRequest = $this->lti->getRequest($request);
 
         $licenses = License::getLicenses($ltiRequest);
         $license = License::getDefaultLicense($ltiRequest);
@@ -121,7 +117,7 @@ class LinkController extends Controller
         }
 
         $emails = ""; //$this->getCollaboratorsEmails($link);
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
+        $ltiRequest = $this->lti->getRequest($request);
         $licenses = License::getLicenses($ltiRequest);
         $license = $link->license;
         $redirectToken = $request->get('redirectToken');
@@ -190,7 +186,7 @@ class LinkController extends Controller
      */
     public function doShow($id, $context, $preview = false): View
     {
-        $customCSS = !empty($this->lti->getValidatedLtiRequest()) ? $this->lti->getValidatedLtiRequest()->getLaunchPresentationCssUrl() : null;
+        $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
         /** @var Link $link */
         $link = Link::findOrFail($id);
         if (!$link->canShow($preview)) {

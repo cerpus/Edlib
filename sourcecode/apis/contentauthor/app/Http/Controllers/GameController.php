@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
 use App\Game;
-use App\H5pLti;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
-use App\Http\Requests\LTIRequest;
 use App\Libraries\Games\GameHandler;
+use App\Lti\Lti;
 use App\Traits\ReturnToCore;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,11 +19,8 @@ class GameController extends Controller
     use ArticleAccess;
     use ReturnToCore;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private Lti $lti)
     {
-        $this->lti = $h5pLti;
         $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('game-access', ['only' => ['ltiEdit']]);
     }
@@ -38,10 +34,8 @@ class GameController extends Controller
     {
         $game = Game::findOrFail($id);
         if (!$game->canShow($preview)) {
-            /** @var Request $request */
-            $request = \Illuminate\Support\Facades\Request::instance();
-            $ltiRequest = LTIRequest::fromRequest($request);
-            $styles = $ltiRequest && $ltiRequest->getLaunchPresentationCssUrl() ? [$ltiRequest->getLaunchPresentationCssUrl()] : [];
+            $ltiRequest = app()->make(Lti::class)->getRequest(request());
+            $styles = $ltiRequest?->getLaunchPresentationCssUrl() ? [$ltiRequest->getLaunchPresentationCssUrl()] : [];
             return view('layouts.draft-resource', compact('styles'));
         }
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
