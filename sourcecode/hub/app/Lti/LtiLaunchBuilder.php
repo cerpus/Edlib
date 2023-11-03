@@ -81,6 +81,8 @@ class LtiLaunchBuilder
         string $itemReturnUrl,
     ): LtiLaunch {
         $launch = $this
+            ->withClaim('accept_media_types', 'application/vnd.ims.lti.v1.ltilink')
+            ->withClaim('accept_presentation_document_targets', 'iframe')
             ->withClaim('content_item_return_url', $itemReturnUrl)
             ->withClaim('lti_message_type', 'ContentItemSelectionRequest');
 
