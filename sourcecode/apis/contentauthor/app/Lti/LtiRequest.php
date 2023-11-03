@@ -1,29 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Lti;
 
 use Illuminate\Support\Facades\Session;
 
-class LTIRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
+class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 {
-    public static function fromRequest(\Illuminate\Http\Request $request): self|null
-    {
-        if (!$request->attributes->has('lti_request')) {
-            $ltiRequest = $request->has('lti_message_type')
-                ? new self(
-                    $request->method(),
-                    $request->url(),
-                    // undo empty string => null conversion
-                    array_map(fn ($v) => $v === null ? '' : $v, $request->all()),
-                )
-                : null;
-
-            $request->attributes->set('lti_request', $ltiRequest);
-        }
-
-        return $request->attributes->get('lti_request');
-    }
-
     public function getReturnUrl(): string|null
     {
         return $this->param('launch_presentation_return_url')

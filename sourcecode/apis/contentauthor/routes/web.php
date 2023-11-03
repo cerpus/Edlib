@@ -58,17 +58,17 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
     Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.ownership','core.behavior-settings:editor']);
 
-    Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view'])->name('h5p.ltishow');
-    Route::post('/game/{id}', [GameController::class, 'ltiShow']);
+    Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
+    Route::post('/game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
 
     Route::post('/link/create', [LinkController::class, 'ltiCreate']);
-    Route::post('/link/{id}', [LinkController::class, 'ltiShow']);
+    Route::post('/link/{id}', [LinkController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
 
     Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
     Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
 
     Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor']);
-    Route::post('/article/{id}', [ArticleController::class, 'ltiShow'])->middleware('core.behavior-settings:view');
+    Route::post('/article/{id}', [ArticleController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor']);
     Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor']);
 
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");

@@ -2,21 +2,26 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Support\Facades\Log;
-use Closure;
-use Validator;
+use App\Lti\Lti;
 use App\SessionKeys;
-use App\Http\Requests\LTIRequest;
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use Validator;
 
 class LtiQuestionSet
 {
-    /*
+    public function __construct(private readonly Lti $lti)
+    {
+    }
+
+    /**
      * Extract Question Set data from a LTI request, validate, add order property and add to session.
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $ltiRequest = LTIRequest::fromRequest($request);
+        $ltiRequest = $this->lti->getRequest($request);
 
         if ($ltiRequest && $ltiRequest->getExtQuestionSet()) {
             // In the LTI request the question set is a base64 encoded json string in the property "ext_question_set"

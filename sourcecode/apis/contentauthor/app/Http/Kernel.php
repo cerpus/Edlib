@@ -84,6 +84,7 @@ class Kernel extends HttpKernel
         'lti.add-to-session' => \App\Http\Middleware\LtiAddToSession::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
+        'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,
         'lti.signed-launch' => \App\Http\Middleware\LtiSignedLaunch::class,
         'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,
         'game-access' => GameAccess::class,
