@@ -4,33 +4,40 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Lti\LtiLaunchBuilder;
 use App\Models\LtiPlatform;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Cerpus\EdlibResourceKit\Oauth1\Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-final class LtiTest extends TestCase
+/**
+ * Tests suitability as an LTI tool.
+ */
+final class LtiToolTest extends TestCase
 {
     use RefreshDatabase;
 
-    private LtiLaunchBuilder $launchBuilder;
+    private SignerInterface $oauthSigner;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->launchBuilder = $this->app->make(LtiLaunchBuilder::class);
+
+        $this->oauthSigner = $this->app->make(SignerInterface::class);
     }
 
     public function testCookieCheckIsTransparentWhenCookiesAllowed(): void
     {
         $platform = LtiPlatform::factory()->create();
 
-        $request = $this->launchBuilder->toItemSelectionLaunch(
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+                'content_item_return_url' => 'http://example.com/',
+                'lti_message_type' => 'ContentItemSelectionRequest',
+            ]),
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.test/lti/1.1/select',
-            'http://example.com/',
-        )->getRequest();
+        );
 
         // FIXME: would be nice if we could chain these, but Laravel doesn't
         // support following one redirect at a time.
@@ -53,11 +60,13 @@ final class LtiTest extends TestCase
     {
         $platform = LtiPlatform::factory()->create();
 
-        $request = $this->launchBuilder->toItemSelectionLaunch(
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+                'content_item_return_url' => 'http://example.com/',
+                'lti_message_type' => 'ContentItemSelectionRequest',
+            ]),
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.test/lti/1.1/select',
-            'http://example.com/',
-        )->getRequest();
+        );
 
         $this->post('/lti/1.1/select', $request->toArray())
             ->assertStatus(307)
@@ -73,11 +82,13 @@ final class LtiTest extends TestCase
     {
         $platform = LtiPlatform::factory()->create();
 
-        $request = $this->launchBuilder->toItemSelectionLaunch(
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+                'content_item_return_url' => 'http://example.com/',
+                'lti_message_type' => 'ContentItemSelectionRequest',
+            ]),
             $platform->getOauth1Credentials(),
-            'https://hub.edlib.test/lti/1.1/select',
-            'http://example.com/',
-        )->getRequest();
+        );
 
         $this->withCookie('_edlib_cookies', '1')
             ->post('/lti/1.1/select', $request->toArray())
@@ -86,11 +97,13 @@ final class LtiTest extends TestCase
 
     public function testUnauthorizedItemSelectionRequestsAreRejected(): void
     {
-        $request = $this->launchBuilder->toItemSelectionLaunch(
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+                'content_item_return_url' => 'http://example.com/',
+                'lti_message_type' => 'ContentItemSelectionRequest',
+            ]),
             new Credentials("it's a", "fake"),
-            'https://hub.edlib.test/lti/1.1/select',
-            'http://example.com/',
-        )->getRequest();
+        );
 
         $this->withCookie('_edlib_cookies', '1')
             ->post('/lti/1.1/select', $request->toArray())
@@ -101,14 +114,13 @@ final class LtiTest extends TestCase
     {
         $platform = LtiPlatform::factory()->create();
 
-        $request = $this->launchBuilder
-            ->withClaim('launch_presentation_return_url', 'https://example.com/return')
-            ->toPresentationLaunch(
-                $platform->getOauth1Credentials(),
-                'https://hub.edlib.test/lti/1.1/select',
-                'some-resource-link',
-            )
-            ->getRequest();
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+                'launch_presentation_return_url' => 'https://example.com/return',
+                'lti_message_type' => 'basic-lti-launch-request',
+            ]),
+            $platform->getOauth1Credentials(),
+        );
 
         $this->withCookie('_edlib_cookies', '1')
             ->post('/lti/1.1/select', $request->toArray())

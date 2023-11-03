@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
-use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use App\Events\LaunchLti;
+use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use Illuminate\Contracts\Events\Dispatcher;
 
 class LtiLaunchBuilder
 {
@@ -22,7 +24,13 @@ class LtiLaunchBuilder
 
     public function __construct(
         private readonly SignerInterface $oauth1Signer,
+        private readonly Dispatcher $dispatcher,
     ) {
+    }
+
+    public function getClaim(string $name): string|null
+    {
+        return $this->claims[$name] ?? null;
     }
 
     public function withClaim(string $name, string $value): static
@@ -50,32 +58,40 @@ class LtiLaunchBuilder
     }
 
     public function toPresentationLaunch(
-        Credentials $credentials,
+        LtiTool $tool,
         string $url,
         string $resourceLinkId,
     ): LtiLaunch {
-        $request = new Oauth1Request('POST', $url, [
-            ...$this->claims,
-            'lti_message_type' => 'basic-lti-launch-request',
-            'resource_link_Id' => $resourceLinkId,
-        ]);
-        $request = $this->oauth1Signer->sign($request, $credentials);
+        $launch = $this
+            ->withClaim('lti_message_type', 'basic-lti-launch-request')
+            ->withClaim('resource_link_id', $resourceLinkId);
+
+        $event = new LaunchLti($url, $launch, $tool);
+        $this->dispatcher->dispatch($event);
+
+        $request = new Oauth1Request('POST', $url, $event->getLaunch()->claims);
+        $request = $this->oauth1Signer->sign($request, $tool->getOauth1Credentials());
 
         return new LtiLaunch($request, $this->width, $this->height);
     }
 
     public function toItemSelectionLaunch(
-        Credentials $credentials,
+        LtiTool $tool,
         string $url,
         string $itemReturnUrl,
     ): LtiLaunch {
-        $request = new Oauth1Request('POST', $url, [
-            ...$this->claims,
-            'content_item_return_url' => $itemReturnUrl,
-            'lti_message_type' => 'ContentItemSelectionRequest',
-        ]);
-        $request = $this->oauth1Signer->sign($request, $credentials);
+        $launch = $this
+            ->withClaim('accept_media_types', 'application/vnd.ims.lti.v1.ltilink')
+            ->withClaim('accept_presentation_document_targets', 'iframe')
+            ->withClaim('content_item_return_url', $itemReturnUrl)
+            ->withClaim('lti_message_type', 'ContentItemSelectionRequest');
 
-        return new LtiLaunch($request, $this->width, $this->height);
+        $event = new LaunchLti($url, $launch, $tool);
+        $this->dispatcher->dispatch($event);
+
+        $request = new Oauth1Request('POST', $url, $event->getLaunch()->claims);
+        $request = $this->oauth1Signer->sign($request, $tool->getOauth1Credentials());
+
+        return new LtiLaunch($request, $launch->width, $launch->height);
     }
 }

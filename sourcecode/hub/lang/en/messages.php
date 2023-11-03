@@ -109,4 +109,9 @@ return [
     'edit-mode-replace-help' => 'Launch the tool to select content which will replace the existing content. This works with every tool, but the tool will not know which content to edit.',
     'edit-mode-deep-linking-request-to-content-url' => 'Deep Linking request to content URL',
     'edit-mode-deep-linking-request-to-content-url-help' => 'Make a Deep Linking request to the URL of the content. Tools that support this will know which content to edit, but not every tool supports it.',
+    'privacy-settings' => 'Privacy settings',
+    'send-full-name-to-lti-tool' => 'Send full name of :site user to tool',
+    'send-email-to-lti-tool' => 'Send email address of :site user to tool',
+    'yes' => 'Yes',
+    'no' => 'No',
 ];

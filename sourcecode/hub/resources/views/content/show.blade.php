@@ -25,7 +25,7 @@
             </section>
         @endcan
 
-        @if (auth()->user()?->debug_mode ?? false)
+        @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
             @php($version = $content->latestVersion)
 
             <details>
