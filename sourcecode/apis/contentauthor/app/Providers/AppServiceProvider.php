@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\H5POption;
-use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
 use App\Http\Middleware\RequestId;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
