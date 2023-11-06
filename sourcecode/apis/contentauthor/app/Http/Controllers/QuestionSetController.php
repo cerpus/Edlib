@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\ACL\ArticleAccess;
 use App\Gametype;
 use App\H5PLibrary;
-use App\H5pLti;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
@@ -16,6 +15,7 @@ use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\Libraries\QuestionSet\QuestionSetHandler;
+use App\Lti\Lti;
 use App\QuestionSet;
 use App\SessionKeys;
 use App\Traits\FractalTransformer;
@@ -37,11 +37,8 @@ class QuestionSetController extends Controller
     use ArticleAccess;
     use FractalTransformer;
 
-    protected H5pLti $lti;
-
-    public function __construct(H5pLti $h5pLti)
+    public function __construct(private readonly Lti $lti)
     {
-        $this->lti = $h5pLti;
         $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);

@@ -44,8 +44,6 @@ h5p_nodes.sql
 content-author-23-05-2016.sql
 import.log
 laravel.log
-lti
-!/resources/views/lti
 ndladata/cerpus_export_log_package.sql
 ndladata/example-package-import-request.xml
 

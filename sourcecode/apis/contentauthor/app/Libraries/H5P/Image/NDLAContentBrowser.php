@@ -25,6 +25,7 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     public const GET_IMAGE_URL = '/image-api/v3/images/%s';
     public const GET_IMAGE_ID = '/image-api/raw/id/%s';
     public const GET_IMAGE_NAME = '/image-api/raw/%s';
+    public const GET_IMAGE_DETAILS_CLIENT = '/image-api/v3/images';
 
     public function __construct(
         private readonly Client $client,
@@ -163,5 +164,15 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
             $imageProperties->path = $this->getImageUrlFromName(basename($url['path']), $query, true);
         }
         return $imageProperties;
+    }
+
+    public static function getClientDetailsUrl(): ?string
+    {
+        $url = config('h5p.image.url');
+        if ($url !== null) {
+            return $url . self::GET_IMAGE_DETAILS_CLIENT;
+        }
+
+        return null;
     }
 }

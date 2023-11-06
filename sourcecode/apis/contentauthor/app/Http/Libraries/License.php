@@ -2,7 +2,7 @@
 
 namespace App\Http\Libraries;
 
-use App\Http\Requests\LTIRequest;
+use App\Lti\LtiRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 
@@ -109,7 +109,7 @@ class License
     /**
      * Return the OER Licenses.
      */
-    public static function getLicenses(LTIRequest $ltiRequest = null): array
+    public static function getLicenses(LtiRequest $ltiRequest = null): array
     {
         $allowedLicenses = explode(',', self::getAllowedLicenses($ltiRequest));
         return self::translateLicensesName($allowedLicenses)->all();
@@ -126,7 +126,7 @@ class License
             });
     }
 
-    protected static function getAllowedLicenses(LTIRequest $ltiRequest = null)
+    protected static function getAllowedLicenses(LtiRequest $ltiRequest = null)
     {
         if (empty($ltiRequest)) {
             return Session::get('allowedLicenses', self::ALLOWED_LICENSES);
@@ -135,7 +135,7 @@ class License
         return $ltiRequest->getAllowedLicenses(self::ALLOWED_LICENSES);
     }
 
-    public static function getDefaultLicense(LTIRequest $ltiRequest = null)
+    public static function getDefaultLicense(LtiRequest $ltiRequest = null)
     {
         $defaultLicense = config('license.default-license');
         if (empty($ltiRequest)) {
