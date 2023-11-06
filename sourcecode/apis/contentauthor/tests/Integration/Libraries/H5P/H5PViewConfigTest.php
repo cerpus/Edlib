@@ -2,8 +2,6 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\ApiModels\Resource;
-use App\Apis\ResourceApiService;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;

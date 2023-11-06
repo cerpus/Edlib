@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
-use App\ApiModels\Resource;
-use App\Apis\ResourceApiService;
-use App\Exceptions\NotFoundException;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
