@@ -56,16 +56,6 @@ class AppServiceProvider extends ServiceProvider
             return new ContentAuthorStorage(config('app.cdnPrefix'));
         });
 
-        $this->app
-            ->when(AddExtQuestionSetToRequestMiddleware::class)
-            ->needs('$environment')
-            ->giveConfig('app.env');
-
-        $this->app
-            ->when(AddExtQuestionSetToRequestMiddleware::class)
-            ->needs('$enabled')
-            ->giveConfig('feature.add-ext-question-set-to-request');
-
         $this->app->bind(
             ResourceApiService::class,
             function ($app) {
