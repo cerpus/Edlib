@@ -4,7 +4,7 @@
     <x-lti-launch :launch="$launch" />
 
     <x-slot:sidebar>
-        @if (auth()->user()?->debug_mode ?? false)
+        @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
             <details>
                 <summary>Debug</summary>
                 <x-lti-debug :request="$launch->getRequest()" />

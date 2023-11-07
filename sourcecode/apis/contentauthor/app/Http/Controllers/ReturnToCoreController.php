@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LTIRequest;
 use App\Libraries\DataObjects\LtiContent;
+use App\Lti\LtiRequest;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Cerpus\EdlibResourceKit\Oauth1\Claim;
@@ -75,12 +75,12 @@ final readonly class ReturnToCoreController
         return redirect()->away($content->url);
     }
 
-    private function getLtiRequest(Request $request): LTIRequest|null
+    private function getLtiRequest(Request $request): LtiRequest|null
     {
         $ltiRequest = unserialize($request->input('lti_request'), [
-            'allowed_classes' => [LTIRequest::class],
+            'allowed_classes' => [LtiRequest::class],
         ]);
-        assert($ltiRequest instanceof LTIRequest || $ltiRequest === null);
+        assert($ltiRequest instanceof LtiRequest || $ltiRequest === null);
 
         return $ltiRequest;
     }

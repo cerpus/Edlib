@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
-use App\Lti\Decorator\LtiLaunchCsp;
-use App\Lti\LtiLaunchBuilder;
 use App\Lti\Serializer\ContentItemsSerializer;
 use App\Lti\Serializer\LtiContentSerializer;
 use App\Support\CarbonToPsrClockAdapter;
@@ -42,8 +40,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(Locales::class)
             ->needs('$locales')
             ->giveConfig('app.allowed_locales');
-
-        $this->app->singleton(LtiLaunchBuilder::class, LtiLaunchCsp::class);
 
         $this->app->extend(
             ContentItemsSerializerInterface::class,

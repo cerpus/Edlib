@@ -20,9 +20,17 @@ class LtiTool extends Model
 
     public $timestamps = false;
 
+    /** @var mixed[] */
+    protected $attributes = [
+        'send_name' => false,
+        'send_email' => false,
+    ];
+
     protected $casts = [
         'lti_version' => LtiVersion::class,
         'edit_mode' => LtiToolEditMode::class,
+        'send_name' => 'boolean',
+        'send_email' => 'boolean',
     ];
 
     protected $hidden = [
@@ -35,6 +43,8 @@ class LtiTool extends Model
         'creator_launch_url',
         'consumer_key',
         'consumer_secret',
+        'send_name',
+        'send_email',
     ];
 
     /**

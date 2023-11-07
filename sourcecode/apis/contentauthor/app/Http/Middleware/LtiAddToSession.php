@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\H5pLti;
 use App\Http\Libraries\License;
+use App\Lti\Lti;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -14,9 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiAddToSession
 {
-    public function __construct(
-        private readonly H5pLti $h5pLti,
-    ) {
+    public function __construct(private Lti $lti)
+    {
     }
 
     /**
@@ -24,7 +23,7 @@ final readonly class LtiAddToSession
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $ltiRequest = $this->h5pLti->getValidatedLtiRequest();
+        $ltiRequest = $this->lti->getRequest($request);
 
         if ($ltiRequest != null) {
             Session::put('signedLaunch', true);
