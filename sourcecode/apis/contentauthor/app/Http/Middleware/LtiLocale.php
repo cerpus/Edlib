@@ -6,6 +6,7 @@ use App\Lti\Lti;
 use Closure;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
+use Iso639p3;
 
 class LtiLocale
 {
@@ -37,7 +38,7 @@ class LtiLocale
     private function resolveLocale(string $locale): string
     {
         if (!file_exists(resource_path('lang/' . $locale)) && strlen($locale) > 2) {
-            $lang = \Iso639p3::code2letters($locale);
+            $lang = Iso639p3::code2letters($locale);
             if (file_exists(resource_path('lang/' . $lang))) {
                 return $lang;
             }

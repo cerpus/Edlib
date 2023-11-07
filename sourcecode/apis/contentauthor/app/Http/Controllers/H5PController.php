@@ -33,7 +33,6 @@ use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
-use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Lti\Lti;
 use App\Lti\LtiRequest;
@@ -128,10 +127,6 @@ class H5PController extends Controller
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
 
         $language = Session::get('locale') ?? config("h5p.default-resource-language");
-        try {
-            $language = Iso639p3::code($language);
-        } catch (Exception) {
-        }
 
         $editorConfig = (app(H5PCreateConfig::class))
             ->setUserId(Session::get('authId', false))
@@ -181,7 +176,7 @@ class H5PController extends Controller
             'license' => License::getDefaultLicense(),
             'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isShared' => $ltiRequest?->getShared() ?? false,
-            'language_iso_639_3' => $language,
+            'language_iso_639_3' => Iso639p3::code3letters($language), // Edlib language selector
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('h5p.store'),
             '_method' => "POST",
@@ -229,7 +224,7 @@ class H5PController extends Controller
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
             ->setRedirectToken($redirectToken)
-            ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
+            ->setLanguage(Iso639p3::code2letters(Session::get('locale')))
             ->loadContent($id);
 
         $h5pView = $this->h5p->createView($editorConfig);
