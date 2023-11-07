@@ -2,25 +2,30 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Requests\LTIRequest;
 use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\DataObjects\EditorBehaviorSettingsDataObject;
+use App\Lti\Lti;
 use App\SessionKeys;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Ramsey\Uuid\Uuid;
 use Validator;
 
 class LtiBehaviorSettings
 {
+    public function __construct(private readonly Lti $lti)
+    {
+    }
+
     /*
      * Extract Behavior settings from a LTI request, validate and add to Session if valid
      */
     public function handle(Request $request, Closure $next, $context = null)
     {
-        $ltiRequest = LTIRequest::fromRequest($request);
+        $ltiRequest = $this->lti->getRequest($request);
+
         if ($ltiRequest && $ltiRequest->getExtBehaviorSettings()) {
             $extBehaviorSettings = json_decode($ltiRequest->getExtBehaviorSettings(), true);
 

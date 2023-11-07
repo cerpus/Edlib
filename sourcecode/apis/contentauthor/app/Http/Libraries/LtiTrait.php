@@ -3,57 +3,49 @@
 namespace App\Http\Libraries;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 trait LtiTrait
 {
     public function ltiShow($id)
     {
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
-        if ($ltiRequest != null) {
-            return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
-        } else {
-            Log::error(__METHOD__ . " Not a LTI request for showing H5P: $id.", [
-                'user' => Session::get('userId', 'not-logged-in-user'),
-                'url' => request()->url(),
-                'request' => request()->all()
-            ]);
-            throw new \Exception('No valid LTI request');
+        $ltiRequest = $this->lti->getRequest(request());
+
+        if (!$ltiRequest) {
+            throw new UnauthorizedHttpException(
+                challenge: 'OAuth',
+                message: 'No valid LTI request',
+            );
         }
+
+        return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
     }
 
     public function ltiCreate(Request $request)
     {
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
-        if ($ltiRequest != null) {
-            return $this->create($request);
-        } else {
-            Log::error(
-                __METHOD__ . "Not a LTI request for H5P create.",
-                [
-                'user' => Session::get('userId', 'not-logged-in-user'),
-                'url' => request()->url(),
-                'request' => request()->all()]
+        $ltiRequest = $this->lti->getRequest($request);
+
+        if (!$ltiRequest) {
+            throw new UnauthorizedHttpException(
+                challenge: 'OAuth',
+                message: 'No valid LTI request',
             );
-            throw new \Exception('No valid LTI request');
         }
+
+        return $this->create($request);
     }
 
     public function ltiEdit(Request $request, $id)
     {
-        $ltiRequest = $this->lti->getValidatedLtiRequest();
-        if ($ltiRequest != null) {
-            return $this->edit($request, $id);
-        } else {
-            Log::error(
-                __METHOD__ . ": Not a LTI request for H5P: $id",
-                [
-                'user' => Session::get('userId', 'not-logged-in-user'),
-                'url' => request()->url(),
-                'request' => request()->all()]
+        $ltiRequest = $this->lti->getRequest($request);
+
+        if (!$ltiRequest) {
+            throw new UnauthorizedHttpException(
+                challenge: 'OAuth',
+                message: 'No valid LTI request',
             );
-            throw new \Exception('No valid LTI request');
         }
+
+        return $this->edit($request, $id);
     }
 }

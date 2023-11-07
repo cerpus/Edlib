@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{Session::get('locale', 'en')}}">
+<html lang="{{ str_replace('_', '-', App::getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,7 +14,7 @@
     <script src="{{ asset('js/jsrequestintercept.js') }}"></script>
     @stack("css")
 </head>
-<body id="theBody" onunload="unlock();" data-locale="{{ Session::get('locale', config('app.fallback_locale'))}}">
+<body id="theBody" onunload="unlock();">
 <div id="mainContainer">
     <div class="mainContent" id="mainContent"></div>
 </div>

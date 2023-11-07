@@ -62,7 +62,7 @@ final class FrameworkTest extends TestCase
             'minorVersion' => 4,
             'patchVersion' => 6,
             'runnable' => 1,
-            'metadataSettings' => 'Yupp',
+            'metadataSettings' => '{"disable":false,"disableExtraTitleField":true}',
             'addTo' => ['machineName' => 'Something'],
             'hasIcon' => 1,
             'embedTypes' => ['E1', 'E2'],
@@ -113,6 +113,9 @@ final class FrameworkTest extends TestCase
         $this->assertSame('', $library->semantics);
         $this->assertSame(1, $library->has_icon);
         $this->assertSame(true, $library->patch_version_in_folder_name);
+        $metadata = json_decode($library->metadata_settings, flags: JSON_THROW_ON_ERROR);
+        $this->assertFalse($metadata->disable);
+        $this->assertTrue($metadata->disableExtraTitleField);
     }
 
     public function testLoadLibrary(): void

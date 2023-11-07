@@ -14,6 +14,7 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
 {
     public const FIND_AUDIOS_URL = '/audio-api/v1/audio';
     public const GET_AUDIO_URL = '/audio-api/v1/audio/%s';
+    public const GET_AUDIO_DETAILS_CLIENT = '/audio-api/v1/audio';
 
     public function __construct(
         private readonly Client $client,
@@ -114,5 +115,15 @@ class NDLAAudioBrowser implements H5PAudioInterface, H5PExternalProviderInterfac
     public function getType(): string
     {
         return "audio";
+    }
+
+    public static function getClientDetailsUrl(): ?string
+    {
+        $url = config('h5p.audio.url') ?: config('h5p.image.url');
+        if ($url !== null) {
+            return $url . self::GET_AUDIO_DETAILS_CLIENT;
+        }
+
+        return null;
     }
 }

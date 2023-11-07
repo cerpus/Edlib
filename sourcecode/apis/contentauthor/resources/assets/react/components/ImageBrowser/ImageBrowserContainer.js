@@ -2,24 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Axios from '../../utils/axiosSetup';
 import ImageBrowserLayout from './ImageBrowserLayout';
+import { injectIntl } from 'react-intl';
 
 class ImageBrowserContainer extends Component {
     static propTypes = {
         searchUrl: PropTypes.string,
         onSelect: PropTypes.func.isRequired,
         locale: PropTypes.string,
-        useImageText: PropTypes.string,
-        searchButtonText: PropTypes.string,
-        searchPlaceholder: PropTypes.string,
         onToggle: PropTypes.func,
         getCurrentLanguage: PropTypes.func,
+        apiDetailsUrl: PropTypes.string.isRequired,
     };
 
     static defaultProps = {
         searchUrl: '/images/browse',
         locale: 'en',
-        useImageText: 'Use',
-        searchButtonText: 'Search',
         getCurrentLanguage: () => 'en',
     };
 
@@ -46,7 +43,7 @@ class ImageBrowserContainer extends Component {
     }
 
     handleFetchImageDetails(imageId) {
-        return Axios.get( this.props.searchUrl + '/' + imageId, {
+        return Axios.get( this.props.apiDetailsUrl + '/' + imageId, {
             params: {
                 language: this.props.getCurrentLanguage(),
             },
@@ -66,10 +63,10 @@ class ImageBrowserContainer extends Component {
                 onToggle={this.props.onToggle}
                 onSearch={this.handleSearch}
                 onFetch={this.handleFetchImageDetails}
-                useImageText={this.props.useImageText}
-                searchButtonTitle={this.props.searchButtonText}
+                useImageText={this.props.intl.formatMessage({id: 'IMAGEBROWSER.USE'})}
+                searchButtonTitle={this.props.intl.formatMessage({id: 'IMAGEBROWSER.SEARCH'})}
                 locale={this.props.locale}
-                searchPlaceholder={this.props.searchPlaceholder}
+                searchPlaceholder={this.props.intl.formatMessage({id: 'IMAGEBROWSER.SEARCHPLACEHOLDER'})}
                 onSelect={this.handleOnSelect}
                 onCancel={this.props.onToggle}
             />
@@ -77,4 +74,4 @@ class ImageBrowserContainer extends Component {
     }
 }
 
-export default ImageBrowserContainer;
+export default injectIntl(ImageBrowserContainer);

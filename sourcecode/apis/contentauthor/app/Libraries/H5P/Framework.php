@@ -480,7 +480,7 @@ class Framework implements \H5PFrameworkInterface, Result
             $libraryData['fullscreen'] = 0;
         }
 
-        $libraryData['metadataSettings'] = isset($libraryData['metadataSettings']) ? \H5PMetadata::boolifyAndEncodeSettings($libraryData['metadataSettings']) : null;
+        $libraryData['metadataSettings'] = $libraryData['metadataSettings'] ?? null;
         $libraryData['addTo'] = isset($libraryData['addTo']) ? json_encode($libraryData['addTo']) : null;
 
         /** @var H5PLibrary $h5pLibrary */

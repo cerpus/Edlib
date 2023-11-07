@@ -25,6 +25,11 @@ export default {
             {
                 jwt: req.authorizationJwt,
                 userId: req.user && req.user.id,
+                user: {
+                    firstName: req?.user?.firstName,
+                    lastName: req?.user?.lastName,
+                    email: req?.user?.email,
+                },
             },
             resourceId,
             resourceVersionId
@@ -78,6 +83,11 @@ export default {
             {
                 jwt: req.authorizationJwt,
                 userId: req.user && req.user.id,
+                user: {
+                    firstName: req?.user?.firstName,
+                    lastName: req?.user?.lastName,
+                    email: req?.user?.email,
+                },
             },
             params
         );

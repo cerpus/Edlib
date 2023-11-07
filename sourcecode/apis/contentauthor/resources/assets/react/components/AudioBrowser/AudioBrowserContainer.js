@@ -11,6 +11,7 @@ class AudioBrowserContainer extends Component {
         locale: PropTypes.string,
         onToggle: PropTypes.func,
         getCurrentLanguage: PropTypes.func,
+        apiDetailsUrl: PropTypes.string.isRequired,
     };
 
     static defaultProps = {
@@ -45,7 +46,7 @@ class AudioBrowserContainer extends Component {
     }
 
     handleFetchAudioDetails(audioId) {
-        return Axios.get(this.props.searchUrl + '/' + audioId, {
+        return Axios.get(this.props.apiDetailsUrl + '/' + audioId, {
             params: {
                 language: this.props.getCurrentLanguage(),
             }
