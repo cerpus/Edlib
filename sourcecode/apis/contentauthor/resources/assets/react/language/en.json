@@ -115,7 +115,7 @@
     "TAGSMANAGER.ADD_TAGS": "Add tags",
     "TAGSMANAGER.SEARCH_OR_CREATE_NEW_TAG": "Search or create new tag",
     "TAGSMANAGER.CLOSE": "Close",
-    "VIDEOBROWSER.SEARCHPLACEHOLDER": "Search videos",
+    "VIDEOBROWSER.SEARCHPLACEHOLDER": "Search videos…",
     "VIDEOBROWSER.SEARCHBUTTONTITLE": "Search",
     "VIDEOBROWSER.LOADMOREVIDEOS": "Load more videos",
     "VIDEOBROWSER.NORESULTS": "No videos found",
@@ -199,5 +199,8 @@
     "ARTICLE.CONTENT": "Content",
     "ARTICLE.ERROR": "Whoops…",
     "unpublished_changes": "Unpublished changes",
-    "unpublished_changes_explain": "Save and close to add the changes to the published version"
+    "unpublished_changes_explain": "Save and close to add the changes to the published version",
+    "IMAGEBROWSER.SEARCHPLACEHOLDER": "Enter search…",
+    "IMAGEBROWSER.USE": "Use",
+    "IMAGEBROWSER.SEARCH": "Search"
 }

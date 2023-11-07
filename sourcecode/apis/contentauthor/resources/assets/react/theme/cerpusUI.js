@@ -1,21 +1,25 @@
-import React from 'react';
-import i18nDefault, { addLanguage } from '../components/languageSetup';
+import React, { useEffect, useState } from 'react';
+import { loadLocale } from '../components/languageSetup';
 import { IntlProvider } from 'react-intl';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import grey from '@material-ui/core/colors/grey';
 
 const CerpusUI = ({ children }) => {
-    const editorContainer = document.getElementById('theBody');
-    const bodyLanguageCode =
-        editorContainer !== null
-            ? editorContainer.getAttribute('data-locale')
-            : null;
-    const i18nData =
-        bodyLanguageCode !== null ? addLanguage(bodyLanguageCode) : i18nDefault;
+    const [locale, setLocale] = useState();
+
+    useEffect(() => {
+        (async () => {
+            setLocale(await loadLocale());
+        })();
+    }, []);
+
+    if (!locale) {
+        return null;
+    }
 
     return (
-        <IntlProvider {...i18nData} textComponent="span">
+        <IntlProvider {...locale} textComponent="span">
             <ThemeProvider
                 theme={createTheme({
                     palette: {
