@@ -5,7 +5,6 @@ namespace Tests\Integration\Libraries\H5P;
 use App\Libraries\H5P\H5PConfigAbstract;
 use App\Libraries\H5P\H5PCreateConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -17,8 +16,11 @@ class H5PCreateConfigTest extends TestCase
     #[DataProvider('provider_adapterMode')]
     public function test_getConfig(string $adapterMode): void
     {
-        Config::set('ndla-mode.h5p.audio.url', 'https://audio.url');
-        Config::set('ndla-mode.h5p.image.url', 'https://ndla-image.url');
+        config([
+            'ndla-mode.h5p.audio.url' => 'https://ndla-audio.url',
+            'ndla-mode.h5p.image.url' => 'https://ndla-image.url',
+            "h5p.default-resource-language" => 'fi',
+        ]);
 
         Session::put('adapterMode', $adapterMode);
 
@@ -72,8 +74,8 @@ class H5PCreateConfigTest extends TestCase
         $this->assertNotEmpty($data->editor->apiVersion['majorVersion']);
         $this->assertNotEmpty($data->editor->apiVersion['minorVersion']);
         $this->assertNotEmpty($data->editor->extraAllowedContent);
-        $this->assertSame('en', $data->editor->language);
-        $this->assertSame('en', $data->editor->defaultLanguage);
+        $this->assertSame('fi', $data->editor->language);
+        $this->assertSame('fi', $data->editor->defaultLanguage);
 
         // Adapter specific
         if ($adapterMode === 'ndla') {
