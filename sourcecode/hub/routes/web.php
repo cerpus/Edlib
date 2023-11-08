@@ -62,6 +62,12 @@ Route::controller(ContentController::class)->group(function () {
         ->can('edit', 'content')
         ->whereUlid('content');
 
+    Route::post('/content/{content}/use')
+        ->uses([ContentController::class, 'use'])
+        ->name('content.use')
+        ->can('use', 'content')
+        ->whereUlid('content');
+
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
         ->can('create', \App\Models\Content::class)

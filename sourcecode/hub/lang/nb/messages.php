@@ -69,4 +69,5 @@ return [
     'send-email-to-lti-tool' => 'Send epostadresse på :site-bruker til verktøy',
     'yes' => 'Ja',
     'no' => 'Nei',
+    'continue' => 'Fortsett',
 ];

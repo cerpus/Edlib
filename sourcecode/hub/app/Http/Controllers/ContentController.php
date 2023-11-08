@@ -114,6 +114,17 @@ class ContentController extends Controller
         ]);
     }
 
+    public function use(Content $content): View
+    {
+        $ltiRequest = $content->toItemSelectionRequest();
+
+        return view('lti.close-editor', [
+            'url' => $ltiRequest->getUrl(),
+            'method' => $ltiRequest->getMethod(),
+            'parameters' => $ltiRequest->toArray(),
+        ]);
+    }
+
     public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View
     {
         $launch = $launchBuilder
@@ -182,6 +193,7 @@ class ContentController extends Controller
         return view('lti.close-editor', [
             'url' => route('content.preview', $content),
             'method' => 'GET',
+            'target' => '_parent',
         ]);
     }
 
@@ -224,6 +236,7 @@ class ContentController extends Controller
         return view('lti.close-editor', [
             'url' => route('content.preview', $content),
             'method' => 'GET',
+            'target' => '_parent',
         ]);
     }
 

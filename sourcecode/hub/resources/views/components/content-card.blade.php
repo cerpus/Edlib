@@ -47,18 +47,13 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center border-0">
-        @isset($lti['content_item_return_url'])
-            @php($request = $content->toItemSelectionRequest())
-            <form
-                action="{{ $request->getUrl() }}"
-                method="{{ $request->getMethod() }}"
-            >
-                {!! $request->toHtmlFormInputs() !!}
+        @can('use', $content)
+            <x-form action="{{ route('content.use', [$content]) }}" method="POST">
                 <button class="btn btn-primary btn-sm me-1">
                     {{ trans('messages.use-content') }}
                 </button>
-            </form>
-        @endif
+            </x-form>
+        @endcan
         @can('edit', $content)
             <a
                 href="{{ route('content.edit', [$content]) }}"
