@@ -57,6 +57,7 @@ class ContentController extends Controller
     public function show(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
+        $authorName = $content->authors->pluck('name')->implode(', ');
 
         $tool = $version->resource?->tool;
         assert($tool instanceof LtiTool);
@@ -72,6 +73,7 @@ class ContentController extends Controller
         return view('content.show', [
             'content' => $content,
             'launch' => $launch,
+            'authorName' => $authorName,
         ]);
     }
 

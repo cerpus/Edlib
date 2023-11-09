@@ -115,4 +115,11 @@ return [
     'yes' => 'Yes',
     'no' => 'No',
     'continue' => 'Continue',
+    'use-resource' => 'Use resource',
+    'version-history-tooltip' => 'The version history displays the current version and previous versions that may be unpublished or published and visible on other platforms. It also indicates which resource is a draft',
+    'last-updated' => 'Last updated',
+    'licensing' => 'Licensing',
+    'user-statistics' => 'User statistics',
+    'using-resource-on-lms' => 'Using resource on LMS',
+    'version' => 'Version',
 ];
