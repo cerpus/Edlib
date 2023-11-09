@@ -240,8 +240,8 @@ class ContentController extends Controller
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
 
-        $credentials = $version->resource?->tool?->getOauth1Credentials();
-        assert($credentials instanceof Credentials);
+        $tool = $version->resource?->tool;
+        assert($tool instanceof LtiTool);
 
         $launchUrl = $version->resource?->view_launch_url;
         assert(is_string($launchUrl));
@@ -249,9 +249,7 @@ class ContentController extends Controller
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
-            ->withClaim('launch_presentation_locale', app()->getLocale())
-            ->withClaim('user_id', $this->getUser()->id)
-            ->toPresentationLaunch($credentials, $launchUrl, $content->id);
+            ->toPresentationLaunch($tool, $launchUrl, $content->id);
         // Pass content ID and title to the view
         return view('content.standalone-view', [
             'contentId' => $content->id,
