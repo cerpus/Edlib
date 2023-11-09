@@ -198,6 +198,9 @@ class Content extends Model
         return $document;
     }
 
+    /**
+     * @return BelongsToMany<User>
+     */
     public function authors(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'content_user', 'content_id', 'user_id')
