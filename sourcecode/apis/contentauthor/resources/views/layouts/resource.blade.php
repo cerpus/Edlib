@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<!-- {{ Session::get('locale') }} -->
-<!-- {{ App::getLocale() }} -->
 @php
     $locale = strtolower(str_replace('_', '-', Session::get('locale', App::getLocale())));
     if (strlen($locale) > 2 && !str_contains($locale, '-')) {
         $locale = Iso639p3::code2letters($locale);
     }
 @endphp
-<!-- {{ $locale }} -->
 <html lang="{{ $locale }}">
 <head>
     <meta charset="utf-8">

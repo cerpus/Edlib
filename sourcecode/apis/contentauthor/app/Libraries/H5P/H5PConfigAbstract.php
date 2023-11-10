@@ -23,9 +23,9 @@ abstract class H5PConfigAbstract implements ConfigInterface
         protected H5PAdapterInterface $adapter,
         public H5PCore $h5pCore,
         public ?int $id = null,
-        protected array $config = [],
-        protected array $contentConfig = [],
-        protected array $editorConfig = [],
+        protected array $config = [], // H5PIntegration object
+        protected array $contentConfig = [], // H5PIntegration['contents'], view only
+        protected array $editorConfig = [], // H5PIntegration['editor'], create and edit
         protected array $assets = ['styles' => [], 'scripts' => []],
         protected string|bool|null $userId = null,
         protected string|bool|null $userName = null,
@@ -38,7 +38,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
         $this->adapter->setConfig($this);
 
         $url = request()->getSchemeAndHttpHost() . request()->getBasePath();
-        $locale = Session::get('locale', config('app.fallback_locale'));
+        $locale = Session::get('locale', config('h5p.default-resource-language'));
 
         $this->config = [
             'baseUrl' => $url,
@@ -66,8 +66,8 @@ abstract class H5PConfigAbstract implements ConfigInterface
             'contents' => [],
             'crossorigin' => config('h5p.crossOrigin'),
             'crossoriginRegex' => config('h5p.crossOriginRegexp'),
-            'locale' => $locale,
-            'localeConverted' => Iso639p3::code2letters($locale),
+            'locale' => Iso639p3::code2letters($locale), // Locale used by NDLA image/audio/video browsers, ISO 639-1
+            'localeConverted' => Iso639p3::code2letters($locale), // Unknown
             'pluginCacheBuster' => '?v=' . self::CACHE_BUSTER_STRING,
             'libraryUrl' => '/h5p-php-library/js',
         ];
@@ -164,11 +164,15 @@ abstract class H5PConfigAbstract implements ConfigInterface
     }
 
     /**
-     * H5P Content language and content type translation
+     * Language used for 'Text overrides and translations' and content type translation
      */
     public function setLanguage(?string $languageCode): static
     {
-        $this->language = $languageCode;
+        $locale = Iso639p3::code2letters($languageCode);
+        if ($locale !== '') {
+            $this->language = $locale;
+        }
+
         return $this;
     }
 
@@ -253,7 +257,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     {
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-editor.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-init.js"));
-        $this->addAsset("scripts", $this->getAssetUrl("editor", $this->getLanguage()));
+        $this->addAsset("scripts", $this->getAssetUrl("editor", $this->getTranslationFilename()));
     }
 
     protected function addCustomEditorStyles(): void
@@ -266,11 +270,14 @@ abstract class H5PConfigAbstract implements ConfigInterface
     /**
      * Language file to load for H5P Editor
      */
-    private function getLanguage(): string
+    private function getTranslationFilename(): string
     {
         return "language/" . $this->resolveEditorLocale(Session::get('locale')) . ".js";
     }
 
+    /**
+     * Get locale for a valid H5P Editor translation file
+     */
     private function resolveEditorLocale($locale): string
     {
         if (is_string($locale)) {
@@ -284,9 +291,17 @@ abstract class H5PConfigAbstract implements ConfigInterface
             }
         }
 
+        $lang = Iso639p3::code2letters(config('h5p.default-resource-language'));
+        if (file_exists(base_path('vendor/h5p/h5p-editor/language/' . $lang . '.js'))) {
+            return $lang;
+        }
+
         return 'en';
     }
 
+    /**
+     * H5P Core translations
+     */
     private function getL10n(): array
     {
         return [

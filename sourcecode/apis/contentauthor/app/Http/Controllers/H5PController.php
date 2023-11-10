@@ -135,7 +135,7 @@ class H5PController extends Controller
             ->setUserName(Session::get('name', false))
             ->setDisplayHub(empty($contenttype))
             ->setRedirectToken($request->input('redirectToken'))
-            ->setLanguage(Iso639p3::code2letters($language));
+            ->setLanguage($language);
 
         $h5pView = $this->h5p->createView($editorConfig);
 
@@ -224,7 +224,7 @@ class H5PController extends Controller
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
             ->setRedirectToken($redirectToken)
-            ->setLanguage(Iso639p3::code2letters(Session::get('locale')))
+            ->setLanguage(Session::get('locale'))
             ->loadContent($id);
 
         $h5pView = $this->h5p->createView($editorConfig);
