@@ -83,7 +83,6 @@ class Kernel extends HttpKernel
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
         'lti.add-to-session' => \App\Http\Middleware\LtiAddToSession::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
-        'lti.qs-to-request' => \App\Http\Middleware\AddExtQuestionSetToRequestMiddleware::class,
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,
         'lti.signed-launch' => \App\Http\Middleware\LtiSignedLaunch::class,
         'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,

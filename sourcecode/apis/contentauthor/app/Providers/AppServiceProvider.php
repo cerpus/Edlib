@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
 use App\H5POption;
-use App\Http\Middleware\AddExtQuestionSetToRequestMiddleware;
 use App\Http\Middleware\RequestId;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
@@ -55,16 +54,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ContentAuthorStorage::class, function () {
             return new ContentAuthorStorage(config('app.cdnPrefix'));
         });
-
-        $this->app
-            ->when(AddExtQuestionSetToRequestMiddleware::class)
-            ->needs('$environment')
-            ->giveConfig('app.env');
-
-        $this->app
-            ->when(AddExtQuestionSetToRequestMiddleware::class)
-            ->needs('$enabled')
-            ->giveConfig('feature.add-ext-question-set-to-request');
 
         $this->app->bind(
             ResourceApiService::class,
