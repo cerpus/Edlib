@@ -20,4 +20,7 @@ export default defineConfig({
         }),
         manifestSRI(),
     ],
+    css: {
+        devSourcemap: true,
+    },
 });

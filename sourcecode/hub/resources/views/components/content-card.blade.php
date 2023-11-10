@@ -7,15 +7,15 @@
 @php($showDrafts ??= false)
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
-<article class="card">
-    <div class="card-header border-bottom-0 fw-bold position-relative">
+<article class="card content-card">
+    <div class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
             href="{{ route('content.preview', [$content->id]) }}"
             class="text-decoration-none link-body-emphasis"
             aria-label="{{ trans('messages.preview') }}"
         >
             {{-- TODO: Date and time should be displayed in users timezone --}}
-            <div class="card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
+            <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
                 {{ trans('messages.edited') }}:
                 {{
                     $content->updated_at->isToday() ? ucfirst(trans('messages.today')) . $content->updated_at->isoFormat(' LT') :
@@ -26,7 +26,7 @@
                 {{ $version->resource->title }}
             </div>
         </a>
-        <div class="badge position-absolute end-0 top-100 card-preview-badge d-none d-md-inline-block">
+        <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
             <x-icon name="eye"/>
             <span title="{{ trans('messages.views') }}">{{ $views }}</span>
         </div>
@@ -46,7 +46,7 @@
             @endforeach
         </div>
     </div>
-    <div class="card-footer d-flex align-items-center border-0">
+    <div class="card-footer content-card-footer d-flex align-items-center bg-transparent border-0">
         @can('use', $content)
             <x-form action="{{ route('content.use', [$content]) }}" method="POST">
                 <button class="btn btn-primary btn-sm me-1">
@@ -93,7 +93,7 @@
                 </li>
             </ul>
         </div>
-        <div class="badge position-absolute end-0 d-md-none card-preview-badge">
+        <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
             <x-icon name="eye"/>
             <div title="{{ trans('messages.views') }}">{{ $views }}</div>
         </div>

@@ -1,17 +1,3 @@
-// Default style for the preview count on card
-.card {
-    --bs-card-cap-color: var(--bs-body-color);
-
-    .card-preview-badge {
-        background-color: var(--bs-card-cap-bg);
-        color: var(--bs-card-cap-color) !important;
-
-        @include media-breakpoint-down(md) {
-            background-color:  transparent;
-        }
-    }
-}
-
 // Adjustments to the styles for Bootstrap themes
 [data-bs-theme="light"] {
     .navbar-bottom {
@@ -105,25 +91,17 @@
         box-shadow: $edlib-input-box-shadow;
     }
 
-    // Content card
+    // Card
     .card {
         background-color: $white;
         --bs-card-cap-bg: #{$gray-100};
         --bs-card-cap-color: #{$gray-700};
-        @include media-breakpoint-down(md) {
-            --bs-card-cap-bg: transparent;
-        }
 
         .card-header {
             color: var(--bs-body-color);
             @include media-breakpoint-up(md) {
                 color: $black;
             }
-        }
-
-        .card-footer {
-            background-color: unset;
-            border-color: unset;
         }
     }
 
