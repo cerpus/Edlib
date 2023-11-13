@@ -58,7 +58,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('reset-password', function (User|null $user) {
             $features = app()->make(Features::class);
 
-            return $features->isSignupEnabled();
+            return $features->isForgotPasswordEnabled();
         });
     }
 }
