@@ -31,11 +31,19 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::middleware('can:login')->controller(LoginController::class)->group(function () {
-    Route::get('/login', 'login')->name('login');
-    Route::post('/login', 'check')->name('login_check');
-    Route::post('/log-out', 'logout')->name('log_out');
+Route::middleware('can:log-in')->group(function () {
+    Route::get('/login')
+        ->uses([LoginController::class, 'login'])
+        ->name('login');
+
+    Route::post('/login')
+        ->uses([LoginController::class, 'check'])
+        ->name('login_check');
 });
+
+Route::post('/log-out')
+    ->uses([LoginController::class, 'logout'])
+    ->name('log_out');
 
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
