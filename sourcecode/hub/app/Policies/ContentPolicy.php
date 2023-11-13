@@ -6,22 +6,11 @@ namespace App\Policies;
 
 use App\Models\Content;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 use function request;
 
 class ContentPolicy
 {
-    public function __construct(private Request $request)
-    {
-    }
-
-    public function use(User|null $user, Content $content): bool
-    {
-        return $this->request->hasPreviousSession() &&
-            $this->request->session()->has('lti');
-    }
-
     public function view(User|null $user, Content $content): bool
     {
         if ($user?->admin) {
@@ -48,5 +37,11 @@ class ContentPolicy
     public function copy(User $user, Content $content): bool
     {
         return true;
+    }
+
+    public function use(User|null $user, Content $content): bool
+    {
+        return $content->latestPublishedVersion()->exists() &&
+            request()->session()->has('lti.content_item_return_url');
     }
 }
