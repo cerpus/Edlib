@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'locale' => 'en-gb',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en-gb',
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -199,11 +199,12 @@ return [
     ],
 
     'supported_locale' => [
-        'en-gb' => 'English',
-        'nb-no' => 'Norsk',
-        /*'sv-se' => 'Svenska',*/
-        'ko-kr' => '한국어',
-        'nn-no' => 'Nynorsk',
+        'de' => 'Deutsch',
+        'en' => 'English',
+        'ko' => '한국어',
+        'nb' => 'Norsk',
+        'nn' => 'Nynorsk',
+        'sv' => 'Svenska',
     ],
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),

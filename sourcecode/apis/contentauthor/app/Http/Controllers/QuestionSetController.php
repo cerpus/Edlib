@@ -42,7 +42,6 @@ class QuestionSetController extends Controller
         $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
         $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
-        $this->middleware('lti.qs-to-request')->only(['create']);
     }
 
     private function getQuestionsetContentTypes(): Collection

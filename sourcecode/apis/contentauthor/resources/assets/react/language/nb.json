@@ -112,7 +112,7 @@
     "TAGSMANAGER.ADD_TAGS": "Legg til knagg",
     "TAGSMANAGER.SEARCH_OR_CREATE_NEW_TAG": "Søk eller opprett ny knagg",
     "TAGSMANAGER.CLOSE": "Lukk",
-    "VIDEOBROWSER.SEARCHPLACEHOLDER": "Finn videoer",
+    "VIDEOBROWSER.SEARCHPLACEHOLDER": "Finn videoer…",
     "VIDEOBROWSER.SEARCHBUTTONTITLE": "Søk",
     "VIDEOBROWSER.LOADMOREVIDEOS": "Last flere videoer",
     "VIDEOBROWSER.NORESULTS": "Fant ingen videoer",
@@ -196,5 +196,8 @@
     "ARTICLE.CONTENT": "Innhold",
     "ARTICLE.ERROR": "Oi sann…",
     "unpublished_changes": "Upubliserte endringer",
-    "unpublished_changes_explain": "Lagre og lukk for å legge endringene til i den publiserte versjonen"
+    "unpublished_changes_explain": "Lagre og lukk for å legge endringene til i den publiserte versjonen",
+    "IMAGEBROWSER.SEARCHPLACEHOLDER": "Finn bilde…",
+    "IMAGEBROWSER.USE": "Bruk",
+    "IMAGEBROWSER.SEARCH": "Søk"
 }
