@@ -18,7 +18,7 @@
         </div>
     </div>
     <!-- Report Content Modal -->
-    <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header border-0">
@@ -45,7 +45,7 @@
         </div>
     </div>
     <!-- Report Content Success Modal -->
-    <div class="modal fade" id="reportSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade" id="reportSuccessModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" aria-label="reportSuccessModalLabel">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 text-center">
