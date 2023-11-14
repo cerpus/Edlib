@@ -99,16 +99,18 @@
                         </ul>
                     </li>
                 @else
-                    <li class="nav-item">
-                        <a
-                            href="{{ route('login') }}"
-                            class="nav-link @if(request()->routeIs('login')) active @endif"
-                        >
-                            {{ trans('messages.log-in') }}
-                        </a>
-                    </li>
+                    @can('login')
+                        <li class="nav-item">
+                            <a
+                                href="{{ route('login') }}"
+                                class="nav-link @if(request()->routeIs('login')) active @endif"
+                            >
+                                {{ trans('messages.log-in') }}
+                            </a>
+                        </li>
+                    @endcan
 
-                    @if ($features->isSignupEnabled())
+                    @can('register')
                         <li class="nav-item">
                             <a
                                 href="{{ route('register') }}"
@@ -117,7 +119,7 @@
                                 {{ trans('messages.sign-up') }}
                             </a>
                         </li>
-                    @endif
+                    @endcan
                 @endauth
             </ul>
         </div>

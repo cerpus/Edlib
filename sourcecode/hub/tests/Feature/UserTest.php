@@ -24,9 +24,9 @@ class UserTest extends TestCase
 
     public function testSignupCanBeDisabled(): void
     {
-        config(['features.sign-up' => false]);
+        config()->set('features.sign-up', false);
 
-        $this->get('/register')->assertNotFound();
+        $this->get('/register')->assertForbidden();
     }
 
     public function testForgotPasswordIsUsuallyEnabled(): void
@@ -36,9 +36,9 @@ class UserTest extends TestCase
 
     public function testForgotPasswordCanBeDisabled(): void
     {
-        config(['features.forgot-password' => false]);
+        config()->set('features.forgot-password', false);
 
-        $this->get('/forgot-password')->assertNotFound();
+        $this->get('/forgot-password')->assertForbidden();
     }
 
     public function testSerialisation(): void

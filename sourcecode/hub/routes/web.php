@@ -31,11 +31,19 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::controller(LoginController::class)->group(function () {
-    Route::get('/login', 'login')->name('login');
-    Route::post('/login', 'check')->name('login_check');
-    Route::post('/log-out', 'logout')->name('log_out');
+Route::middleware('can:login')->group(function () {
+    Route::get('/login')
+        ->uses([LoginController::class, 'login'])
+        ->name('login');
+
+    Route::post('/login')
+        ->uses([LoginController::class, 'check'])
+        ->name('login_check');
 });
+
+Route::post('/log-out')
+    ->uses([LoginController::class, 'logout'])
+    ->name('log_out');
 
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
@@ -103,12 +111,12 @@ Route::prefix('/lti/1.1')->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::middleware('feature:sign-up')->group(function () {
+    Route::middleware('can:register')->group(function () {
         Route::get('/register', 'register')->name('register');
         Route::post('/register', 'store');
     });
 
-    Route::middleware('feature:forgot-password')->group(function () {
+    Route::middleware('can:reset-password')->group(function () {
         Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
         Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
 

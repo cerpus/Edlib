@@ -32,7 +32,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -53,7 +53,7 @@ final class LtiToolTest extends TestCase
             ->assertLocation('/lti/1.1/select');
 
         $this->post('/lti/1.1/select', $request->toArray())
-            ->assertRedirect('https://hub.edlib.test/content');
+            ->assertRedirect('https://hub-test.edlib.test/content');
     }
 
     public function testCookieCheckShowsCountermeasuresWhenCookiesNotAllowed(): void
@@ -61,7 +61,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -83,7 +83,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -92,13 +92,13 @@ final class LtiToolTest extends TestCase
 
         $this->withCookie('_edlib_cookies', '1')
             ->post('/lti/1.1/select', $request->toArray())
-            ->assertRedirect('https://hub.edlib.test/content');
+            ->assertRedirect('https://hub-test.edlib.test/content');
     }
 
     public function testUnauthorizedItemSelectionRequestsAreRejected(): void
     {
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -115,7 +115,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
                 'launch_presentation_return_url' => 'https://example.com/return',
                 'lti_message_type' => 'basic-lti-launch-request',
             ]),

@@ -3,6 +3,7 @@ server {
 
   server_name
     hub.${EDLIB_ROOT_DOMAIN}
+    hub-test.${EDLIB_ROOT_DOMAIN}
     hub-vite-hmr.${EDLIB_ROOT_DOMAIN}
     ~^edlib-hub[a-z0-9-]+\.ngrok\.dev$
   ;
@@ -26,6 +27,27 @@ server {
   location ~ \.php$ {
     include fastcgi.conf;
     fastcgi_pass hub:9000;
+  }
+}
+
+server {
+  listen 443 ssl;
+  server_name  hub-test.${EDLIB_ROOT_DOMAIN};
+
+  ssl_certificate  /etc/ssl/private/cerpus.crt;
+  ssl_certificate_key  /etc/ssl/private/cerpus.key;
+
+  root /srv/www/hub/public;
+
+  location / {
+    try_files $uri /index.php$is_args$args;
+  }
+
+  location ~ \.php$ {
+    include fastcgi.conf;
+    fastcgi_pass hub:9000;
+    fastcgi_param APP_ENV 'testing';
+    fastcgi_param APP_URL https://hub-test.${EDLIB_ROOT_DOMAIN};
   }
 }
 

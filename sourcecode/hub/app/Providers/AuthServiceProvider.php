@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Configuration\Features;
 use App\Models\Content;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -11,6 +12,8 @@ use App\Policies\ContentPolicy;
 use App\Policies\LtiToolPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+
+use function request;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,31 @@ class AuthServiceProvider extends ServiceProvider
     {
         Gate::define('admin', function (User $user) {
             return $user->admin ?? false;
+        });
+
+        Gate::define('login', function (User|null $user) {
+            $request = request();
+
+            return !$request->hasPreviousSession() || !$request->session()->has('lti');
+        });
+
+        Gate::define('register', function (User|null $user) {
+            $features = app()->make(Features::class);
+
+            if (!$features->isSignupEnabled()) {
+                return false;
+            }
+
+            $request = request();
+
+            return !$request->hasPreviousSession() ||
+                !$request->session()->has('lti');
+        });
+
+        Gate::define('reset-password', function (User|null $user) {
+            $features = app()->make(Features::class);
+
+            return $features->isForgotPasswordEnabled();
         });
     }
 }

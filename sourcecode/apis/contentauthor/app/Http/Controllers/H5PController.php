@@ -87,8 +87,9 @@ class H5PController extends Controller
 
     public function doShow($id, $context, $preview = false): View
     {
+        $ltiRequest = $this->lti->getRequest(request());
         $styles = [];
-        $style = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
+        $style = $ltiRequest?->getLaunchPresentationCssUrl();
         if ($style) {
             $styles[] = $style;
             Session::flash(SessionKeys::EXT_CSS_URL, $style);
@@ -105,6 +106,8 @@ class H5PController extends Controller
             ->setUserName(Session::get('name', false))
             ->setPreview($preview)
             ->setContext($context)
+            ->setEmbedId($ltiRequest?->getExtEmbedId())
+            ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
             ->loadContent($id)
             ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
 
