@@ -53,7 +53,7 @@ final class LtiPlatformTest extends TestCase
         $this->assertSame('Edlib', $request->get('tool_consumer_info_product_family_code'));
         $this->assertSame('3', $request->get('tool_consumer_info_version'));
         $this->assertSame('EdlibTest', $request->get('tool_consumer_instance_name'));
-        $this->assertSame('https://hub.edlib.test/', $request->get('tool_consumer_instance_url'));
+        $this->assertSame('https://hub-test.edlib.test', $request->get('tool_consumer_instance_url'));
     }
 
     public function testItemSelectionLaunchContainsLocale(): void

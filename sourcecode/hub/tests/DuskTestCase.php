@@ -6,6 +6,7 @@ namespace Tests;
 
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 use function assert;
@@ -15,6 +16,7 @@ use function is_string;
 abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use DatabaseTruncation;
 
     /**
      * Create the RemoteWebDriver instance.

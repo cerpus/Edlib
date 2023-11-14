@@ -6,14 +6,11 @@ namespace Tests\Browser;
 
 use App\Models\LtiTool;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 final class AdminTest extends DuskTestCase
 {
-    use DatabaseMigrations;
-
     public function testCanRebuildIndex(): void
     {
         $this->browse(function (Browser $browser) {

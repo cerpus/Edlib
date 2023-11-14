@@ -6,15 +6,12 @@ namespace Tests\Browser;
 
 use App\Models\Content;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 final class UserTest extends DuskTestCase
 {
-    use DatabaseMigrations;
-
     public function testUserCanSignUp(): void
     {
         $this->browse(function (Browser $browser) {
