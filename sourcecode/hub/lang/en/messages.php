@@ -122,4 +122,5 @@ return [
     'user-statistics' => 'User statistics',
     'using-resource-on-lms' => 'Using resource on LMS',
     'version' => 'Version',
+    'draft' => 'Draft',
 ];

@@ -4,13 +4,13 @@
     <div class="container mt-1">
         <div class="row">
             <div class="col-6">
-                {{ trans('messages.created')}}: {{ $content->created_at->format('M d, Y') }} by {{ $authorName }}
+                {{ trans('messages.created')}}: {{ $content->created_at->isoFormat('LL') }} by {{ $authorName }}
             </div>
         </div>
 
         <div class="row mt-1">
             <div class="col-12">
-                {{ trans('messages.last-updated')}}: {{ $content->updated_at->format('M d, Y') }}
+                {{ trans('messages.last-updated')}}: {{ $content->updated_at->isoFormat('LL') }}
             </div>
         </div>
     </div>
@@ -28,16 +28,16 @@
         <div class="row justify-content-center mt-4">
             <div class="buttons-container d-flex justify-content-between w-100">
                 <div>
-                    <button type="button" class="btn btn-secondary" aria-label="{{ trans('messages.edit')}}">
+                    <button type="button" class="btn btn-secondary">
                         {{ trans('messages.edit')}}
                         <x-icon name="pencil" class="me-1" />
                     </button>
-                    <button type="button" class="btn btn-secondary" aria-label="{{ trans('messages.use-resource')}}">
+                    <button type="button" class="btn btn-secondary">
                         {{ trans('messages.use-resource')}}
                     </button>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-secondary" aria-label="{{ trans('messages.delete')}}" data-bs-toggle="modal" data-bs-target="#deletionModal">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#deletionModal">
                         {{ trans('messages.delete')}}
                         <x-icon name="trash" class="me-1" />
                     </button>
@@ -71,68 +71,18 @@
                 </h2>
                 <ul class="p-0">
                     @foreach ($content->versions->sortByDesc('created_at')->take(3) as $index => $version)
-                        <li class="d-flex flex-column p-1 mb-1 rounded {{ $loop->first ? 'border border-success bg-success-subtle' : 'border border-secondary bg-white' }}">
-                            <div class="version-details-container d-flex w-100 align-items-center justify-content-between">
-                                <div class="version-details-80">
-                                    <div class="version-number">
-                                        <b>{{ trans('messages.version') }} {{ $index + 1 }}</b>
-                                    </div>
-                                    <div class="version-date">
-                                        {{ $version->created_at }}
-                                    </div>
-                                    <div class="version-status">
-                                        @if ($version->published)
-                                            {{ trans('messages.published') }}
-                                        @else
-                                            <span>{{ trans('messages.unpublished') }}</span>
-                                        @endif
-                                    </div>
-                                </div>
-                                @unless ($version->published)
-                                    <div class="rounded-pill bg-light d-flex justify-content-center align-items-center p-2 m-2 text-black fw-bold bg-light">Draft</div>
-                                @else
-                                    <div class="version-icons-20 d-flex justify-content-center align-items-center p-2 m-2">
-                                        <span class="text-black fw-bold"><x-icon name="check2-circle" class="text-black"/></span>
-                                    </div>
-                                @endunless
-                            </div>
-                        </li>
+                        <x-version-details :version="$version" :index="$index" :loop="$loop" />
                     @endforeach
                 </ul>
 
                 @if(count($content->versions) > 3)
                     <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false">
-                        <x-icon name="chevron-down" class="text-black"/>
+                        <x-icon name="chevron-down" class="text-black" aria-hidden="true"/>
                     </button>
                     <div class="collapse" id="collapseVersions">
                         <ul class="p-0">
                             @foreach ($content->versions->sortByDesc('created_at')->slice(3) as $index => $version)
-                                <li class="d-flex flex-column p-1 mb-1 rounded {{ $loop->first ? 'border border-success bg-success-subtle' : 'border border-secondary bg-white' }}">
-                                    <div class="version-details-container d-flex w-100 align-items-center justify-content-between">
-                                        <div class="version-details-80">
-                                            <div class="version-number">
-                                                <b>{{ trans('messages.version') }} {{ $index + 1 }}</b>
-                                            </div>
-                                            <div class="version-date">
-                                                {{ $version->created_at }}
-                                            </div>
-                                            <div class="version-status">
-                                                @if ($version->published)
-                                                    {{ trans('messages.published') }}
-                                                @else
-                                                    <span>{{ trans('messages.unpublished') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @unless ($version->published)
-                                            <div class="rounded-pill bg-light d-flex justify-content-center align-items-center p-2 m-2 text-black fw-bold bg-light">Draft</div>
-                                        @else
-                                            <div class="version-icons-20 d-flex justify-content-center align-items-center p-2 m-2">
-                                                <span class="text-black fw-bold"><x-icon name="check2-circle" class="text-black"/></span>
-                                            </div>
-                                        @endunless
-                                    </div>
-                                </li>
+                                <x-version-details :version="$version" :index="$index" :loop="$loop" />
                             @endforeach
                         </ul>
                     </div>
