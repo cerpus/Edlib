@@ -20,11 +20,11 @@
                 {{ trans('messages.log-in') }}
             </x-form.button>
 
-            @if ($features->isForgotPasswordEnabled())
+            @can('reset-password')
                 <a href="{{ route('forgot-password') }}" class="btn btn-secondary">
                     {{ trans('messages.forgot-password') }}
                 </a>
-            @endif
+            @endcan
         </div>
     </x-form>
 
