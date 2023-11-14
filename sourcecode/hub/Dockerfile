@@ -95,7 +95,7 @@ RUN set -eux; \
 
 FROM prod as test
 
-COPY phpunit.xml .
+COPY phpunit.xml .env.testing .
 COPY tests tests
 
 ENV APP_ENV=testing \
