@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 use Illuminate\Routing\RouteUrlGenerator;
+
 use function array_key_exists;
 
 /**
