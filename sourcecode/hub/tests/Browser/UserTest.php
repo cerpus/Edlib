@@ -222,11 +222,12 @@ final class UserTest extends DuskTestCase
                 ->type('password', 'secret123')
                 ->press('Log in')
                 ->assertAuthenticated()
-                ->assertPresent('[data-bs-theme="edlib"]')
+                // FIXME: no way of selecting the root element?
+                ->assertSourceHas('data-bs-theme="edlib"')
                 ->visit('/preferences')
                 ->select('theme', 'dark')
                 ->press('Save')
-                ->assertPresent('[data-bs-theme="dark"]');
+                ->assertSourceHas('data-bs-theme="dark"');
         });
     }
 }

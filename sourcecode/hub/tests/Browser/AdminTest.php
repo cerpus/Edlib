@@ -37,9 +37,9 @@ final class AdminTest extends DuskTestCase
                 ->with('main', function (Browser $main) {
                     $main
                         ->assertSee('Unused tool')
-                        ->press('Remove')
-                        ->assertSee('LTI tool "Unused tool" was removed');
-                });
+                        ->press('Remove');
+                })
+                ->assertSee('The LTI tool "Unused tool" was removed');
         });
     }
 }
