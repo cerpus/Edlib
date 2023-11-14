@@ -31,7 +31,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::middleware('can:log-in')->group(function () {
+Route::middleware('can:login')->group(function () {
     Route::get('/login')
         ->uses([LoginController::class, 'login'])
         ->name('login');
