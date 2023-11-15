@@ -8,10 +8,12 @@ use App\Configuration\Locales;
 use App\Lti\Serializer\ContentItemsSerializer;
 use App\Lti\Serializer\LtiContentSerializer;
 use App\Support\CarbonToPsrClockAdapter;
+use App\Support\SessionScopeAwareRouteUrlGenerator;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\LtiLinkItemSerializerInterface;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
@@ -49,6 +51,17 @@ class AppServiceProvider extends ServiceProvider
             LtiLinkItemSerializerInterface::class,
             fn (LtiLinkItemSerializerInterface $serializer) => new LtiContentSerializer($serializer),
         );
+
+        // FIXME: get rid of this horror show when Laravel allows decorating the
+        // UrlGenerator service.
+        $this->app->extend('url', function (UrlGenerator $urlGenerator): UrlGenerator {
+            (function () use ($urlGenerator): void {
+                /** @var UrlGenerator $this */
+                $this->routeGenerator = new SessionScopeAwareRouteUrlGenerator($urlGenerator, $this->request);
+            })->call($urlGenerator);
+
+            return $urlGenerator;
+        });
     }
 
     /**

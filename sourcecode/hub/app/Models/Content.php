@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiContent;
+use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DOMDocument;
@@ -58,7 +59,10 @@ class Content extends Model
 
         return new LtiContent(
             title: $version->resource->title,
-            url: url()->route('content.preview', [$this->id]),
+            url: url()->route('content.preview', [
+                'content' => $this->id,
+                SessionScope::TOKEN_PARAM => null,
+            ]),
             languageIso639_3: $version->resource->language_iso_639_3,
             license: $version->resource->license,
         );

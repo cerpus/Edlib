@@ -51,7 +51,7 @@ final readonly class LtiValidatedRequest
             );
         }
 
-        $request->session()->put('lti', $oauthRequest->toArray());
+        $request->attributes->set('lti', $oauthRequest->toArray());
 
         return $next($request);
     }
