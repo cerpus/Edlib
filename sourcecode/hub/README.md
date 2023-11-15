@@ -31,6 +31,11 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
     --hostname=edlib-hub-your-domain-here.ngrok.dev
 ```
 
+## LTI param sources
+
+* Proper LTI requests: `$request->attributes->get('lti')`
+* LTI sessions after initial launch: `$request->session()->get('lti')`
+
 ## LTI Deep-Linking 1.0 extensions
 
 The following attributes can be used with items of the `LtiLinkItem` type to

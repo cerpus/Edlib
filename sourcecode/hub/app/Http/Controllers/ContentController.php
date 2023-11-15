@@ -150,7 +150,7 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
+        $tool = LtiTool::where('consumer_key', $request->attributes->get('lti')['oauth_consumer_key'] ?? null)
             ->firstOrFail();
 
         $content = DB::transaction(function () use ($item, $tool) {
@@ -224,7 +224,7 @@ class ContentController extends Controller
         });
 
         // return to platform consuming Edlib
-        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
+        if (($request->attributes->get('lti')['lti_message_type'] ?? null) === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
             return view('lti.close-editor', [
@@ -248,6 +248,27 @@ class ContentController extends Controller
 
         return new Response($document->saveXML(), headers: [
             'Content-Type' => 'application/xml',
+        ]);
+    }
+
+    public function showStandalonePage(Content $content, LtiLaunchBuilder $launchBuilder): View
+    {
+        $version = $content->latestPublishedVersion()->firstOrFail();
+
+        $tool = $version->resource?->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $version->resource?->view_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $content->id);
+        // Pass content ID and title to the view
+        return view('content.standalone-view', [
+            'contentId' => $content->id,
+            'launch' => $launch,
         ]);
     }
 }

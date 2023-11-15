@@ -50,12 +50,12 @@ class Handler extends ExceptionHandler
     {
         // Redirect to the LTI tool consumer in accordance with the LTI spec
         $this->renderable(function (LtiException $e, Request $request) {
-            $session = $request->session();
-            $type = $session->get('lti.lti_message_type');
+            $ltiData = $request->attributes->get('lti');
+            $type = $ltiData['lti_message_type'] ?? null;
 
             $redirectUrl = match ($type) {
-                'basic-lti-launch-request' => $session->get('lti.launch_presentation_return_url'),
-                'ContentItemSelectionRequest' => $session->get('lti.content_item_return_url'),
+                'basic-lti-launch-request' => $ltiData['launch_presentation_return_url'] ?? null,
+                'ContentItemSelectionRequest' => $ltiData['content_item_return_url'] ?? null,
                 default => null,
             };
 
