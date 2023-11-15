@@ -112,7 +112,7 @@ use App\Models\LtiVersion;
                     <input
                         type="checkbox"
                         name="send_email"
-                        value="1'"
+                        value="1"
                         class="form-check-input"
                         @checked(old('send_email', false))
                     > {{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}
