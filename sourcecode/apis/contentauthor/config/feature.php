@@ -5,8 +5,6 @@ return [
     'licensing' => env('ENABLE_LICENSING', false),
     'content-locking' => env('FEATURE_CONTENT_LOCKING', true),
     'context-collaboration' => env('FEATURE_CONTEXT_COLLABORATION', false),
-    'add-ext-question-set-to-request' => env('FEATURE_EXT_QUESTION_SET_TO_REQUEST', false),
-    'no-rabbitmq' => false,
     'collaboration' => env('FEATURE_COLLABORATION', false),
     'allow-mode-switch' => env('FEATURE_MODE_SWITCH', false),
     'enableUserPublish' => env('FEATURE_ENABLE_USER_PUBLISH', env('FEATURE_ENABLE_DRAFT_LOGIC', true)),

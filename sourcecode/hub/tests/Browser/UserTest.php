@@ -6,15 +6,12 @@ namespace Tests\Browser;
 
 use App\Models\Content;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 final class UserTest extends DuskTestCase
 {
-    use DatabaseMigrations;
-
     public function testUserCanSignUp(): void
     {
         $this->browse(function (Browser $browser) {
@@ -225,11 +222,12 @@ final class UserTest extends DuskTestCase
                 ->type('password', 'secret123')
                 ->press('Log in')
                 ->assertAuthenticated()
-                ->assertPresent('[data-bs-theme="edlib"]')
+                // FIXME: no way of selecting the root element?
+                ->assertSourceHas('data-bs-theme="edlib"')
                 ->visit('/preferences')
                 ->select('theme', 'dark')
                 ->press('Save')
-                ->assertPresent('[data-bs-theme="dark"]');
+                ->assertSourceHas('data-bs-theme="dark"');
         });
     }
 }

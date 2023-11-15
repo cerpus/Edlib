@@ -170,10 +170,8 @@ jobs:
       - name: Run tests
         run: docker run --rm --net=host
           -e MEILISEARCH_HOST=http://localhost:7700
-          -e MEILISEARCH_KEY=masterkey1234567
+          -e DB_HOST=127.0.0.1
           -e DB_DATABASE=postgres
-          -e DB_USERNAME=postgres
-          -e DB_PASSWORD=thepgpassword
           hub-test
 
       - name: Configure AWS Credentials
