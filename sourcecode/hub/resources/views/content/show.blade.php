@@ -76,7 +76,7 @@
                 </ul>
 
                 @if(count($content->versions) > 3)
-                    <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false" aria-label="collapseVersions">
+                    <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false" aria-label="{{ trans('messages.toggle-listing-of-all-versions')}}">
                         <x-icon name="chevron-down" class="text-black" aria-hidden="true"/>
                     </button>
                     <div class="collapse" id="collapseVersions">

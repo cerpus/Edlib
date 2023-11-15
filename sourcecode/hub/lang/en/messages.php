@@ -124,4 +124,5 @@ return [
     'version' => 'Version',
     'draft' => 'Draft',
     'by' => 'by',
+    'toggle-listing-of-all-versions' => 'Toggle listing of all versions',
 ];
