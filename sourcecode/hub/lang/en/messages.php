@@ -126,4 +126,5 @@ return [
     'send-email-to-lti-tool' => 'Send email address of :site user to tool',
     'yes' => 'Yes',
     'no' => 'No',
+    'continue' => 'Continue',
 ];

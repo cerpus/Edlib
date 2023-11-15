@@ -114,6 +114,17 @@ class ContentController extends Controller
         ]);
     }
 
+    public function use(Content $content): View
+    {
+        $ltiRequest = $content->toItemSelectionRequest();
+
+        return view('lti.close-editor', [
+            'url' => $ltiRequest->getUrl(),
+            'method' => $ltiRequest->getMethod(),
+            'parameters' => $ltiRequest->toArray(),
+        ]);
+    }
+
     public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View
     {
         $launch = $launchBuilder
@@ -137,7 +148,7 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        $tool = LtiTool::where('consumer_key', $request->session()->get('lti.oauth_consumer_key'))
+        $tool = LtiTool::where('consumer_key', $request->attributes->get('lti')['oauth_consumer_key'] ?? null)
             ->firstOrFail();
 
         $content = DB::transaction(function () use ($item, $tool) {
@@ -182,6 +193,7 @@ class ContentController extends Controller
         return view('lti.close-editor', [
             'url' => route('content.preview', $content),
             'method' => 'GET',
+            'target' => '_parent',
         ]);
     }
 
@@ -210,7 +222,7 @@ class ContentController extends Controller
         });
 
         // return to platform consuming Edlib
-        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
+        if (($request->attributes->get('lti')['lti_message_type'] ?? null) === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
             return view('lti.close-editor', [
@@ -224,6 +236,7 @@ class ContentController extends Controller
         return view('lti.close-editor', [
             'url' => route('content.preview', $content),
             'method' => 'GET',
+            'target' => '_parent',
         ]);
     }
 

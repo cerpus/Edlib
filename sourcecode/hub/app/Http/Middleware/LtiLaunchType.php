@@ -21,10 +21,10 @@ final readonly class LtiLaunchType
      */
     public function handle(Request $request, Closure $next, string $launchType): Response
     {
-        $requestedLaunchType = $request->session()->get('lti.lti_message_type');
+        $requestedLaunchType = $request->attributes->get('lti')['lti_message_type'] ?? null;
 
         if (!is_string($requestedLaunchType)) {
-            throw new LtiException('LTI launch type is not stored in session');
+            throw new LtiException('LTI launch type is not stored in request');
         }
 
         if ($requestedLaunchType !== $launchType) {

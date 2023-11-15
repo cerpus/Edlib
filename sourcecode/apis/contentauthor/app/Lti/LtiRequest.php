@@ -149,4 +149,14 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     {
         return $this->param('ext_translation_language');
     }
+
+    public function getExtEmbedId(): string|null
+    {
+        return $this->param('ext_embed_id');
+    }
+
+    public function getResourceLinkTitle(): string|null
+    {
+        return $this->param('resource_link_title');
+    }
 }

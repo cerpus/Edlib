@@ -18,22 +18,9 @@
         </include>
     </coverage>
     <php>
+        <!-- These values don't affect Edlib inside Dusk -->
         <env name="APP_ENV" value="testing"/>
-        <env name="APP_KEY" value="base64:VaYy17usaDFlRZRAO9OQukSy6rpcCKlooovrAc55x6s="/>
-        <env name="APP_NAME" value="EdlibTest" />
-        <env name="APP_URL" value="https://hub.edlib.test/"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
-        <!-- FIXME: does not work with Dusk -->
-<!--        <env name="DB_DATABASE" value="hub_test"/>-->
-        <!-- <env name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <env name="DB_DATABASE" value=":memory:"/> -->
-        <env name="FEATURE_RESET_PASSWORD_ENABLED" value="true"/>
-        <env name="FEATURE_SIGNUP_ENABLED" value="true"/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SCOUT_PREFIX" value="hub_test_"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
     </php>
 </phpunit>

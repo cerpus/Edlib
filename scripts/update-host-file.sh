@@ -12,6 +12,7 @@ $ip\tca.$root
 $ip\tdocs.$root
 $ip\tfacade.$root
 $ip\thub.$root
+$ip\thub-test.$root
 $ip\thub-vite-hmr.$root
 $ip\tmailpit.$root
 $ip\tmoodle.$root

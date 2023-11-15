@@ -15,12 +15,9 @@ TODO: write the rest of the README
    ./chromedriver --allowed-ips= --allowed-origins='*'
    ```
 
-4. Make sure APP_URL is set to the correct location. It should be the URL you
-   open in your browser for development.
+4. Make sure <https://hub-test.edlib.test> loads in your browser. It should look
+   the same as the regular hub, but should not share data with it.
 
-   ```dotenv
-   APP_URL=https://hub.edlib.test
-   ```
 5. Run the browser tests.
 
 ## Using ngrok for development
@@ -33,6 +30,11 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
     ngrok/ngrok:latest http hub.edlib.test:443 \
     --hostname=edlib-hub-your-domain-here.ngrok.dev
 ```
+
+## LTI param sources
+
+* Proper LTI requests: `$request->attributes->get('lti')`
+* LTI sessions after initial launch: `$request->session()->get('lti')`
 
 ## LTI Deep-Linking 1.0 extensions
 
