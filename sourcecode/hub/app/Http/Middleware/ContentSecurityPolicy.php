@@ -44,6 +44,7 @@ final class ContentSecurityPolicy
         $response->headers->set(
             'Content-Security-Policy',
             "default-src $default" .
+                "; frame-src *" .
                 "; img-src $default data:" .
                 "; script-src 'nonce-" . $this->vite->cspNonce() . "'" .
                 "; style-src 'nonce-" . $this->vite->cspNonce() . "'",
