@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use function app;
-use function is_array;
 use function str_starts_with;
 
 final class ContentSecurityPolicy
@@ -33,9 +32,6 @@ final class ContentSecurityPolicy
             return $response;
         }
 
-        $frameSources = $request->attributes->get('csp_frame_src', ["'none'"]);
-        assert(is_array($frameSources));
-
         $default = "'self' " . $this->urlGenerator->asset('');
 
         if ($this->vite->isRunningHot()) {
@@ -48,22 +44,13 @@ final class ContentSecurityPolicy
         $response->headers->set(
             'Content-Security-Policy',
             "default-src $default" .
-                "; frame-src " . implode(' ', $frameSources) .
+                "; frame-src *" .
                 "; img-src $default data:" .
                 "; script-src 'nonce-" . $this->vite->cspNonce() . "'" .
                 "; style-src 'nonce-" . $this->vite->cspNonce() . "'",
         );
 
         return $response;
-    }
-
-    public static function allowFrame(Request $request, string $source): void
-    {
-        $sources = $request->attributes->get('csp_frame_src', []);
-        assert(is_array($sources));
-        $sources[] = $source;
-
-        $request->attributes->set('csp_frame_src', $sources);
     }
 
     public static function isCspEnabled(Request $request, Response $response): bool

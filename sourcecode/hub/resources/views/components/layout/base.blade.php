@@ -2,6 +2,7 @@
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     data-bs-theme="{{ auth()->user()?->theme ?? app()->make(\App\Configuration\Themes::class)->getDefault() }}"
+    data-session-scope="{{ app()->make(\App\Support\SessionScope::class)->getToken(request()) }}"
 >
     <head>
         <meta charset="utf-8">
