@@ -4,7 +4,7 @@
     <div class="container mt-1">
         <div class="row">
             <div class="col-6">
-                {{ trans('messages.created')}}: {{ $content->created_at->isoFormat('LL') }} by {{ $authorName }}
+                {{ trans('messages.created')}}: {{ $content->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $authorName }}
             </div>
         </div>
 
@@ -76,7 +76,7 @@
                 </ul>
 
                 @if(count($content->versions) > 3)
-                    <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false">
+                    <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false" aria-label="collapseVersions">
                         <x-icon name="chevron-down" class="text-black" aria-hidden="true"/>
                     </button>
                     <div class="collapse" id="collapseVersions">

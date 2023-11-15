@@ -123,4 +123,5 @@ return [
     'using-resource-on-lms' => 'Using resource on LMS',
     'version' => 'Version',
     'draft' => 'Draft',
+    'by' => 'by',
 ];
