@@ -16,12 +16,21 @@ class LtiPlatform extends Model
     use HasFactory;
     use HasUlids;
 
+    protected $attributes = [
+        'enable_sso' => false,
+    ];
+
     protected $hidden = [
         'secret',
     ];
 
     protected $fillable = [
         'name',
+        'enable_sso',
+    ];
+
+    protected $casts = [
+        'enable_sso' => 'boolean',
     ];
 
     protected static function booted(): void

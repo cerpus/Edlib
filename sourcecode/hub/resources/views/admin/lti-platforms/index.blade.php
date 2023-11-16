@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.manage-lti-platforms') }}</x-slot:title>
 
-    <p class="alert alert-info">{{ trans('messages.lti-platforms-description') }}</p>
+    <p class="alert alert-info">{{ trans('messages.lti-platforms-description', ['site' => config('app.name')]) }}</p>
 
     @if ($createdPlatform)
         <div class="bg-success-subtle border border-success border-1 p-3 pb-0 mb-3" role="alert">
@@ -17,6 +17,18 @@
     <x-form action="{{ route('admin.lti-platforms.store') }}">
         <x-form.field name="name" type="text" :label="trans('messages.name')" />
 
+        <div class="form-check mb-3">
+            <label class="form-check-label">
+                <x-form.checkbox name="enable_sso" aria-labelledby="enable_sso_help" />
+                {{ trans('messages.lti-platform-enable-sso') }}
+            </label>
+
+            <p class="form-text" id="enable_sso_help">
+                {{ trans('messages.lti-platform-enable-sso-help', ['site' => config('app.name')]) }}
+                <b class="text-danger">{{ trans('messages.lti-platform-enable-sso-warning') }}</b>
+            </p>
+        </div>
+
         <x-form.button class="btn-primary">
             {{ trans('messages.create') }}
         </x-form.button>
@@ -24,17 +36,22 @@
 
     @if (count($platforms) > 0)
         <hr>
-        <ul>
+        <ul class="row list-unstyled">
             @foreach ($platforms as $platform)
-                <li>
-                    <dl>
-                        <dt>{{ trans('messages.name') }}</dt>
-                        <dd>{{ $platform->name }}</dd>
-                        <dt>{{ trans('messages.key') }}</dt>
-                        <dd><kbd class="user-select-all">{{ $platform->key }}</kbd></dd>
-                        <dt>{{ trans('messages.created') }}</dt>
-                        <dd>{{ $platform->created_at }}</dd>
-                    </dl>
+                <li class="col-12 col-md-6 col-lg-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $platform->name }}</h5>
+                            <dl>
+                                <dt>{{ trans('messages.key') }}</dt>
+                                <dd><kbd class="user-select-all">{{ $platform->key }}</kbd></dd>
+                                <dt>{{ trans('messages.created') }}</dt>
+                                <dd>{{ $platform->created_at }}</dd>
+                                <dt>{{ trans('messages.single-sign-on') }}</dt>
+                                <dd>{{ $platform->enable_sso ? trans('messages.yes') : trans('messages.no') }}</dd>
+                            </dl>
+                        </div>
+                    </div>
                 </li>
             @endforeach
         </ul>

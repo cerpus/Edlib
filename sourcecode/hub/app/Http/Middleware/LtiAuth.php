@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\LtiPlatform;
 use Closure;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
@@ -24,12 +25,15 @@ final readonly class LtiAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // TODO: apply this conditionally based on LTI platform setting.
-        // For now, we trust that the LTI platform won't lie about the user.
         if ($request->hasPreviousSession()) {
+            $key = $request->session()->get('lti.oauth_consumer_key');
             $email = $request->session()->get('lti.lis_person_contact_email_primary');
 
-            $this->authManager->onceUsingId($email);
+            $platform = LtiPlatform::where('key', $key)->first();
+
+            if ($email !== null && $platform?->enable_sso) {
+                $this->authManager->onceUsingId($email);
+            }
         }
 
         return $next($request);

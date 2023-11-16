@@ -21,6 +21,7 @@ class StoreLtiPlatformRequest extends FormRequest
                 'max:100',
                 Rule::unique(LtiPlatform::class, 'name'),
             ],
+            'enable_sso' => ['boolean'],
         ];
     }
 }
