@@ -164,7 +164,9 @@ abstract class H5PConfigAbstract implements ConfigInterface
     }
 
     /**
-     * Language used for 'Text overrides and translations' and content type translation
+     * In the H5P editor, this sets the language for the selected content type translation (and
+     * any sub content types and libraries), and the language that is pre-selected in the
+     * 'Text overrides and translations' section
      */
     public function setLanguage(?string $languageCode): static
     {
