@@ -23,7 +23,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
         protected H5PAdapterInterface $adapter,
         public H5PCore $h5pCore,
         public ?int $id = null,
-        protected array $config = [], // H5PIntegration object
+        protected array $config = [], // The JavaScript variable 'H5PIntegration'
         protected array $contentConfig = [], // H5PIntegration['contents'], view only
         protected array $editorConfig = [], // H5PIntegration['editor'], create and edit
         protected array $assets = ['styles' => [], 'scripts' => []],
