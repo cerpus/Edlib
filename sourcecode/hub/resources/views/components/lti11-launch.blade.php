@@ -1,5 +1,5 @@
 <iframe
-    src=""
+    src="about:blank"
     name="lti-launch-{{ $uniqueId }}"
     width="{{ $width ?? 640 }}"
     height="{{ $height ?? 480 }}"
@@ -13,12 +13,3 @@
 >
     {!! $launch->getRequest()->toHtmlFormInputs() !!}
 </form>
-
-{{-- TODO: no inline scripts, redirect to the new content --}}
-<script>
-    window.addEventListener('message', (event) => {
-        if (event.data === 'close') {
-            alert('Edlib should close, now');
-        }
-    });
-</script>

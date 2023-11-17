@@ -1,4 +1,4 @@
-<x-sidebar-layout>
+<x-layout>
     <x-slot:title>{{ $content->latestPublishedVersion->resource->title }}</x-slot:title>
 
     <div class="container mt-1">
@@ -114,5 +114,6 @@
             </details>
         @endif
     </x-slot:sidebar>
-</x-sidebar-layout>
-<x-delete-modal />
+
+    <x-delete-modal />
+</x-layout>

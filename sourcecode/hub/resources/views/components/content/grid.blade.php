@@ -29,7 +29,7 @@
     @foreach ($contents as $content)
         <div class="col">
             @if ($view === 'grid')
-                <x-content-card
+                <x-content.card
                     :content="$content"
                     :show-drafts="$showDrafts ?? false"
                 />

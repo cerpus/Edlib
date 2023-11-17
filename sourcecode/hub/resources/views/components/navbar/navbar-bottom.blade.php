@@ -1,5 +1,5 @@
 <nav class="navbar fixed-bottom d-sm-flex d-md-none navbar-bottom">
-    <div class="container-fluid">
+    <div class="container-md">
         <div id="global-nav-fixed" class="d-sm-flex flex-grow-1">
             <ul class="nav nav-underline navbar-nav justify-content-evenly flex-grow-1 flex-row flex-nowrap">
                 <li class="nav-item">

@@ -1,4 +1,4 @@
-<x-sidebar-layout>
+<x-layout>
     <x-slot:title>Editing content {{ $content->latestPublishedVersion->resource->title }}</x-slot:title>
 
     <x-lti-launch :launch="$launch" />
@@ -11,4 +11,4 @@
             </details>
         @endif
     </x-slot:sidebar>
-</x-sidebar-layout>
+</x-layout>

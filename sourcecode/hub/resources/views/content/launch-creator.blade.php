@@ -1,4 +1,4 @@
-<x-sidebar-layout>
+<x-layout>
     <x-slot:title>{{ sprintf('Create a thing with %s', $tool->name) }}</x-slot:title>
 
     <x-lti-launch :launch="$launch" />
@@ -11,4 +11,4 @@
             </details>
         @endif
     </x-slot:sidebar>
-</x-sidebar-layout>
+</x-layout>
