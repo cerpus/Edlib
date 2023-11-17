@@ -250,25 +250,4 @@ class ContentController extends Controller
             'Content-Type' => 'application/xml',
         ]);
     }
-
-    public function showStandalonePage(Content $content, LtiLaunchBuilder $launchBuilder): View
-    {
-        $version = $content->latestPublishedVersion()->firstOrFail();
-
-        $tool = $version->resource?->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $version->resource?->view_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id);
-        // Pass content ID and title to the view
-        return view('content.standalone-view', [
-            'contentId' => $content->id,
-            'launch' => $launch,
-        ]);
-    }
 }
