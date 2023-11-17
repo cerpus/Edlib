@@ -2,8 +2,6 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\ApiModels\Resource;
-use App\Apis\ResourceApiService;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
@@ -124,16 +122,11 @@ class H5PViewConfigTest extends TestCase
             'license_version' => '4.0',
             'default_language' => 'nb',
         ]);
-        $resourceApi = $this->createMock(ResourceApiService::class);
-        $this->instance(ResourceApiService::class, $resourceApi);
-        $resourceApi
-            ->expects($this->atLeastOnce())
-            ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $data = app(H5PViewConfig::class)
             ->setUserId($this->faker->uuid)
             ->setContext($context)
+            ->setEmbedId('my-embed-id')
             ->loadContent($content->id)
             ->getConfig();
 
@@ -146,14 +139,14 @@ class H5PViewConfigTest extends TestCase
             "/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context=$context",
             $data->ajax['contentUserData']
         );
-        $this->assertStringEndsWith("/s/resources/$resourceId", $data->documentUrl);
+        $this->assertSame("https://www.edlib.test/s/resources/my-embed-id", $data->documentUrl);
 
         $contentData = $data->contents->{'cid-' . $content->id};
 
         $this->assertSame('H5P.Foobar 1.2', $contentData->library);
         $this->assertSame(1, $contentData->fullScreen);
         $this->assertStringEndsWith("/h5p/$content->id/download", $contentData->exportUrl);
-        $this->assertStringContainsString("/s/resources/$resourceId", $contentData->embedCode);
+        $this->assertStringContainsString("/s/resources/my-embed-id", $contentData->embedCode);
         $this->assertNotEmpty($data->url);
         $this->assertSame($content->title, $contentData->title);
         $this->assertSame(config('h5p.saveFrequency'), $data->saveFreq);
@@ -188,12 +181,6 @@ class H5PViewConfigTest extends TestCase
             'disable' => 2,
             'filtered' => 'here be filtered data',
         ]);
-        $resourceApi = $this->createMock(ResourceApiService::class);
-        $this->instance(ResourceApiService::class, $resourceApi);
-        $resourceApi
-            ->expects($this->atLeastOnce())
-            ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         $data = app(H5PViewConfig::class)
             ->loadContent($content->id)
@@ -212,12 +199,6 @@ class H5PViewConfigTest extends TestCase
             'disable' => 8,
             'filtered' => '{"title":"something"}',
         ]);
-        $resourceApi = $this->createMock(ResourceApiService::class);
-        $this->instance(ResourceApiService::class, $resourceApi);
-        $resourceApi
-            ->expects($this->atLeastOnce())
-            ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
 
         Session::put(SessionKeys::EXT_BEHAVIOR_SETTINGS, BehaviorSettingsDataObject::create([
             'presetmode' => 'exam',

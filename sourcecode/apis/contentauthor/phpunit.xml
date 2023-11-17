@@ -46,6 +46,7 @@
         <server name="LICENSE_SITE" value="ContentAuthorTest"/>
         <server name="H5P_CONSUMER_KEY" value="h5p"/>
         <server name="H5P_CONSUMER_SECRET" value="secret2"/>
+        <server name="H5P_VIDEO_ACCOUNT_ID" value="1234567890"/>
         <server name="TEST_FS_ROOT" value="/tmp"/>
         <server name="MAIL_PRETEND" value="true"/>
         <server name="MAIL_DRIVER" value="log"/>

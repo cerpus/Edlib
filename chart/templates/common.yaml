@@ -2,7 +2,6 @@
 {{- $commonEnvConfig := dict -}}
 {{- $_ := set $commonEnvConfig "NODE_ENV" "production" -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_API_URL" .Global.Values.urls.api -}}
-{{- $_ := set $commonEnvConfig "EDLIBCOMMON_WWW_URL" .Global.Values.urls.www -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_RESOURCE_EMBED_URL" (print .Global.Values.urls.www "/s/resources/<resourceId>") -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_ADAPTER" .Global.Values.masterAuth.adapter -}}
 {{- $_ := set $commonEnvConfig "EDLIBCOMMON_EXTERNALAUTH_JWKS_ENDPOINT" .Global.Values.masterAuth.wellKnownEndpoint -}}

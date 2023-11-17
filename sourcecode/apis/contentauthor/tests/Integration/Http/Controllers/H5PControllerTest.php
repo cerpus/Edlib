@@ -2,9 +2,7 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\Resource;
 use App\ApiModels\User;
-use App\Apis\ResourceApiService;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
@@ -14,7 +12,13 @@ use App\H5PLibrary;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\H5PController;
 use App\Http\Libraries\License;
+use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
+use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
 use App\Libraries\H5P\H5PConfigAbstract;
+use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Generator;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,6 +28,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use LogicException;
 use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
 
@@ -279,11 +284,14 @@ class H5PControllerTest extends TestCase
     /** @dataProvider provider_adapterMode */
     public function testDoShow(string $adapterMode): void
     {
-        Session::put('adapterMode', $adapterMode);
+        $this->app->singleton(H5PAdapterInterface::class, match ($adapterMode) {
+            'cerpus' => CerpusH5PAdapter::class,
+            'ndla' => NDLAH5PAdapter::class,
+            default => throw new LogicException('Invalid adapter'),
+        });
+
         Storage::fake('test');
         $resourceId = $this->faker->uuid;
-        $resourceApi = $this->createMock(ResourceApiService::class);
-        $this->instance(ResourceApiService::class, $resourceApi);
 
         $depH5PVideo = H5PLibrary::factory()->create(['name' => 'H5P.Video', 'major_version' => 2, 'minor_version' => 9]);
         $depCerpusVideo = H5PLibrary::factory()->create(['name' => 'H5P.CerpusVideo', 'major_version' => 3, 'minor_version' => 8]);
@@ -342,14 +350,19 @@ class H5PControllerTest extends TestCase
             'drop_css' => 0,
         ]);
 
-        $resourceApi
-            ->expects($this->atLeastOnce())
-            ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($resourceId, '', '', '', '', '', $content->title));
+        $request = new Oauth1Request('POST', 'http://localhost/h5p/' . $content->id, [
+            'lti_message_type' => 'basic-lti-launch-request',
+            'ext_embed_id' => $resourceId,
+            'resource_link_title' => 'Some resource title',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
 
-        $controller = app(H5PController::class);
-        $result = $controller->doShow($content->id, $this->faker->sha1)->getData();
+        $result = $this->post('/h5p/' . $content->id, $request->toArray())->original;
 
+        $this->assertInstanceOf(View::class, $result);
         $this->assertEquals($content->id, $result['id']);
         $this->assertFalse($result['preview']);
         $this->assertStringContainsString('data-content-id="'.$content->id.'"', $result['embed']);
@@ -391,6 +404,7 @@ class H5PControllerTest extends TestCase
         $this->assertObjectHasAttribute('displayOptions', $contents);
         $this->assertObjectHasAttribute('contentUserData', $contents);
         $this->assertStringContainsString("/s/resources/$resourceId", $contents->embedCode);
+        $this->assertStringContainsString('Some resource title', $contents->embedCode);
 
         // Adapter specific
         $this->assertContains('//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG', $result['jsScripts']);

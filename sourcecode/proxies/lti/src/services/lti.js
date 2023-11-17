@@ -16,6 +16,7 @@ const allowedParameters = [
     'ext_content_intended_use',
     'launch_presentation_document_target',
     'resource_link_id',
+    'resource_link_title',
     'ext_jwt_token',
     'ext_h5p_only',
     'context_id',
@@ -36,6 +37,7 @@ const allowedParameters = [
     'ext_create_content_default_license',
     'ext_behavior_settings',
     'ext_preview',
+    'ext_embed_id',
 ];
 
 const buildLtiRequest = (
@@ -132,14 +134,23 @@ const viewResourceRequest = async (
         resourceVersionId
     );
 
+    const { version } = await context.services.resource.getResourceWithVersion(
+        resourceId,
+        resourceVersionId
+    );
+
     return {
         resourceVersion,
-        launchRequest: await buildLtiRequest(
+        launchRequest: buildLtiRequest(
             ltiResourceUrl,
             consumerKey,
             consumerSecret,
             authorization,
-            extras
+            {
+                ...extras,
+                ext_embed_id: resourceId,
+                resource_link_title: version.title,
+            },
         ),
     };
 };
