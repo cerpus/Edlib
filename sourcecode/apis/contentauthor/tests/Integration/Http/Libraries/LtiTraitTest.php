@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http\Libraries;
 
-use App\H5pLti;
-use App\Http\Requests\LTIRequest;
+use App\Lti\LtiRequest;
+use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
 use Exception;
 use Illuminate\Http\Request;
 use Tests\Integration\Http\Libraries\Stubs\LtiTraitStubClass;
@@ -15,15 +15,12 @@ class LtiTraitTest extends TestCase
 {
     public function setupLti(): void
     {
-        $ltiRequest = $this->createMock(LTIRequest::class);
-
+        $ltiRequest = $this->createMock(LtiRequest::class);
         $this->instance(LTIRequest::class, $ltiRequest);
 
-        $h5pLti = $this->createMock(H5pLti::class);
-        $h5pLti->expects($this->once())
-            ->method('getValidatedLtiRequest')
-            ->willReturn($ltiRequest);
-        $this->instance(H5pLti::class, $h5pLti);
+        $validator = $this->createMock(ValidatorInterface::class);
+        $validator->expects($this->once())->method('validate');
+        $this->instance(ValidatorInterface::class, $validator);
     }
 
     public function test_ltiShow_exception(): void
@@ -38,6 +35,12 @@ class LtiTraitTest extends TestCase
     public function test_ltiShow(): void
     {
         $this->setupLti();
+
+        $request = Request::create('', 'POST', [
+            'lti_message_type' => 'basic-lti-launch-request',
+        ]);
+        $this->instance('request', $request);
+
         $testClass = app(LtiTraitStubClass::class);
         $this->assertSame('doShow', $testClass->ltiShow(42));
     }
@@ -55,7 +58,9 @@ class LtiTraitTest extends TestCase
     {
         $this->setupLti();
         $testClass = app(LtiTraitStubClass::class);
-        $this->assertSame('create', $testClass->ltiCreate(Request::create('')));
+        $this->assertSame('create', $testClass->ltiCreate(
+            Request::create('', 'POST', ['lti_message_type' => 'basic-lti-launch-request'])
+        ));
     }
 
     public function test_ltiEdit_exception(): void
@@ -71,6 +76,9 @@ class LtiTraitTest extends TestCase
     {
         $this->setupLti();
         $testClass = app(LtiTraitStubClass::class);
-        $this->assertSame('edit', $testClass->ltiEdit(Request::create(''), 42));
+        $this->assertSame('edit', $testClass->ltiEdit(
+            Request::create('', 'POST', ['lti_message_type' => 'basic-lti-launch-request']),
+            42
+        ));
     }
 }

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http\Libraries\Stubs;
 
-use App\H5pLti;
 use App\Http\Libraries\LtiTrait;
+use App\Lti\Lti;
 use Illuminate\Http\Request;
 
 class LtiTraitStubClass
 {
     use LtiTrait;
 
-    public function __construct(private readonly H5pLti $lti)
+    public function __construct(private readonly Lti $lti)
     {
     }
 
