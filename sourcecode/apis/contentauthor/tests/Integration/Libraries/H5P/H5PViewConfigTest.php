@@ -10,6 +10,7 @@ use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\H5PViewConfig;
 use App\SessionKeys;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
@@ -64,7 +65,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
@@ -82,7 +83,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame($setFinished, $data->ajax['setFinished']);
     }
 
-    public function provider_setPreview(): \Generator
+    public function provider_setPreview(): Generator
     {
         yield [
             false,
@@ -101,7 +102,6 @@ class H5PViewConfigTest extends TestCase
     {
         Session::put('adapterMode', $adapterMode);
 
-        $resourceId = $this->faker->uuid;
         $context = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
@@ -174,7 +174,6 @@ class H5PViewConfigTest extends TestCase
 
     public function test_setAlterParameterSettings(): void
     {
-        $resourceId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
@@ -192,7 +191,6 @@ class H5PViewConfigTest extends TestCase
 
     public function test_behaviorSettings(): void
     {
-        $resourceId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
