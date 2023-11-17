@@ -3,6 +3,7 @@
     name="lti-launch-{{ $uniqueId }}"
     width="{{ $width ?? 640 }}"
     height="{{ $height ?? 480 }}"
+    class="w-100"
 ></iframe>
 
 <form

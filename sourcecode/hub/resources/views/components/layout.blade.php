@@ -34,7 +34,7 @@
 
         <div class="container-md">
             <div class="row">
-                <main class="col-12 @isset($sidebar) col-md-9 @endisset">
+                <main class="col-12 @isset($sidebar) col-lg-9 @endisset">
                     <header>
                         <h1 class="fs-2">{{ $title }}</h1>
                     </header>
@@ -42,7 +42,7 @@
                 </main>
 
                 @isset ($sidebar)
-                    <aside class="col-12 col-md-3">
+                    <aside class="col-12 col-lg-3">
                         {{ $sidebar }}
                     </aside>
                 @endisset
