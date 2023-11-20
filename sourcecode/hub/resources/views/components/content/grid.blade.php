@@ -1,7 +1,7 @@
 @php($view = 'grid')
 <div class="row flex-row align-items-center">
     <div class="col fw-bold mb-1">
-        {{ trans('messages.num-content-found', ['num' => $contents->total()]) }}
+        {{ trans_choice('messages.num-content-found', $contents->total()) }}
     </div>
     <div class="col-auto d-none d-sm-block">
         @if ($view === 'grid')

@@ -51,7 +51,7 @@ return [
     'use-content' => 'Bruk innhold',
     'edit-content' => 'Rediger innhold',
     'delete-content' => 'Slett innhold',
-    'num-content-found' => ':num innhold funnet',
+    'num-content-found' => '{0} Ingen innhold funnet|[1,*] :count innhold funnet',
     'today' => 'i dag',
     'views' => 'Antall visninger',
     'result-list' => 'Vis resultatet som liste',

@@ -86,7 +86,7 @@ return [
     'use-content' => 'Use content',
     'edit-content' => 'Edit content',
     'delete-content' => 'Delete content',
-    'num-content-found' => ':num contents found',
+    'num-content-found' => '{0} No content found|{1} :count content found|[2,*] :count contents found',
     'today' => 'today',
     'views' => 'Number of views',
     'result-list' => 'Display results as list',
