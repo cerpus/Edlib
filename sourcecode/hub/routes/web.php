@@ -52,8 +52,8 @@ Route::controller(ContentController::class)->group(function () {
         ->middleware('auth')
         ->name('content.mine');
 
-    Route::get('/content/{content}', 'show')
-        ->name('content.preview')
+    Route::get('/content/{content}', 'details')
+        ->name('content.details')
         ->whereUlid('content')
         ->can('view', 'content');
 

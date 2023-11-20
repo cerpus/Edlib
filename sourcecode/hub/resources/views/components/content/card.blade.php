@@ -10,7 +10,7 @@
 <article class="card content-card">
     <div class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
-            href="{{ route('content.preview', [$content->id]) }}"
+            href="{{ route('content.details', [$content->id]) }}"
             class="text-decoration-none link-body-emphasis"
             aria-label="{{ trans('messages.preview') }}"
         >
@@ -76,7 +76,7 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                     @can('view', $content)
                         <li>
-                            <a href="{{ route('content.preview', [$content->id]) }}" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#previewModal">
+                            <a href="{{ route('content.details', [$content->id]) }}" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#previewModal">
                                 <x-icon name="info-lg" class="me-2" />
                                 {{ trans('messages.preview') }}
                             </a>

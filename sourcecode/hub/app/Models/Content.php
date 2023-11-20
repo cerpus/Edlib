@@ -59,7 +59,7 @@ class Content extends Model
 
         return new LtiContent(
             title: $version->resource->title,
-            url: url()->route('content.preview', [
+            url: url()->route('content.details', [
                 'content' => $this->id,
                 SessionScope::TOKEN_PARAM => null,
             ]),
@@ -191,7 +191,7 @@ class Content extends Model
             assert($content->updated_at !== null);
 
             $item = $document->createElement('url');
-            $item->appendChild($document->createElement('loc', route('content.preview', [$content])));
+            $item->appendChild($document->createElement('loc', route('content.details', [$content])));
             $item->appendChild($document->createElement('lastmod', $content->updated_at->toIso8601String()));
 
             $root->appendChild($item);

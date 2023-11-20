@@ -54,7 +54,7 @@ class ContentController extends Controller
         ]);
     }
 
-    public function show(Content $content, LtiLaunchBuilder $launchBuilder): View
+    public function details(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
         $authorName = $content->authors->pluck('name')->implode(', ');
@@ -70,7 +70,7 @@ class ContentController extends Controller
             ->withHeight(480)
             ->toPresentationLaunch($tool, $launchUrl, $content->id);
 
-        return view('content.show', [
+        return view('content.details', [
             'content' => $content,
             'launch' => $launch,
             'authorName' => $authorName,
@@ -193,7 +193,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.close-editor', [
-            'url' => route('content.preview', $content),
+            'url' => route('content.details', $content),
             'method' => 'GET',
             'target' => '_parent',
         ]);
@@ -236,7 +236,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.close-editor', [
-            'url' => route('content.preview', $content),
+            'url' => route('content.details', $content),
             'method' => 'GET',
             'target' => '_parent',
         ]);
