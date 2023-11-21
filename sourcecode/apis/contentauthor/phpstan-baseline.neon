@@ -51,11 +51,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\DataObjects\\\\ResourceUserDataObject\\:\\:\\$lastName\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 3
 			path: app/Content.php
@@ -282,11 +277,6 @@ parameters:
 
 		-
 			message: "#^Anonymous function has an unused use \\$hubCacheLibraries\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
-
-		-
-			message: "#^Parameter \\#1 \\$library of method H5PFrameworkInterface\\:\\:isPatchedLibrary\\(\\) expects object, array\\<string, mixed\\> given\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
 
@@ -611,11 +601,6 @@ parameters:
 			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
-			message: "#^Ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/ContentType/BaseH5PContent.php
-
-		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
@@ -668,16 +653,6 @@ parameters:
 		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 3
-			path: app/Libraries/H5P/Framework.php
-
-		-
-			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Framework.php
-
-		-
-			message: "#^Cannot call method fetch\\(\\) on bool\\.$#"
-			count: 1
 			path: app/Libraries/H5P/Framework.php
 
 		-
@@ -735,11 +710,6 @@ parameters:
 			message: "#^Property App\\\\Libraries\\\\H5P\\\\Framework\\:\\:\\$adminUrl is never read, only written\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
-
-		-
-			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PCopyright.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
@@ -1127,156 +1097,6 @@ parameters:
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 10
-			path: tests/Integration/Article/ArticleVersioningTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 11
-			path: tests/Integration/Article/ArticleVersioningTest.php
-
-		-
-			message: "#^Called 'count' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 2
-			path: tests/Integration/Article/ArticleVersioningTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 2
-			path: tests/Integration/Content/ContentTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 10
-			path: tests/Integration/Content/LockStatusTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 5
-			path: tests/Integration/Content/UnlockTest.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$type\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/ArticleCopyrightControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 2
-			path: tests/Integration/Http/Controllers/GameControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/H5PControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 2
-			path: tests/Integration/Http/Controllers/LinkControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of class App\\\\ApiModels\\\\User constructor expects string, int given\\.$#"
-			count: 2
-			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
-
-		-
-			message: "#^Variable \\$questionSetController in PHPDoc tag @var does not match assigned variable \\$questionsetController\\.$#"
-			count: 1
-			path: tests/Integration/Http/Controllers/QuestionSetControllerTest.php
-
-		-
-			message: "#^Property Tests\\\\Integration\\\\Jobs\\\\PingVideoApiTest\\:\\:\\$disk \\(Illuminate\\\\Filesystem\\\\FilesystemAdapter\\) does not accept Illuminate\\\\Contracts\\\\Filesystem\\\\Filesystem\\.$#"
-			count: 1
-			path: tests/Integration/Jobs/PingVideoApiTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 7
-			path: tests/Integration/Libraries/H5P/API/H5PImportControllerTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$auth_id\\.$#"
-			count: 18
-			path: tests/Integration/Libraries/H5P/CRUTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 27
-			path: tests/Integration/Libraries/H5P/CRUTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$name\\.$#"
-			count: 14
-			path: tests/Integration/Libraries/H5P/CRUTest.php
-
-		-
-			message: "#^Access to an undefined property Tests\\\\Integration\\\\Libraries\\\\H5P\\\\CRUTest\\:\\:\\$editorFilesDirectory\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/CRUTest.php
-
-		-
-			message: "#^Call to method toArray\\(\\) on an unknown class Cerpus\\\\Helper\\\\Traits\\\\CreateTrait\\.$#"
-			count: 4
-			path: tests/Integration/Libraries/H5P/H5PCopyrightTest.php
-
-		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/Package/ColumnTest.php
-
-		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 3
-			path: tests/Integration/Libraries/H5P/Package/CoursePresentationTest.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
-
-		-
-			message: "#^Access to an undefined property Faker\\\\Generator\\:\\:\\$mimeType\\.$#"
-			count: 1
-			path: tests/Integration/Libraries/H5P/Package/VideoTest.php
-
-		-
-			message: "#^Parameter \\$share of class App\\\\Libraries\\\\DataObjects\\\\ResourceMetadataDataObject constructor expects string\\|null, true given\\.$#"
-			count: 2
-			path: tests/Integration/Libraries/QuestionSetConverterTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$attribution of method App\\\\Content\\:\\:setAttribution\\(\\) expects App\\\\Libraries\\\\DataObjects\\\\Attribution, string given\\.$#"
-			count: 1
-			path: tests/Integration/Models/ContentAttributionTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
-			count: 2
-			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$title\\.$#"
-			count: 6
-			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
-
-		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:getContentLicense\\(\\)\\.$#"
-			count: 7
-			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
-
-		-
-			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:requestShouldBecomeNewVersion\\(\\)\\.$#"
-			count: 12
-			path: tests/Integration/Models/H5PContentRequestShouldBecomeNewVersionTest.php
-
-		-
-			message: "#^Call to an undefined method Tests\\\\TestCase\\:\\:setUpMockMQ\\(\\)\\.$#"
-			count: 1
-			path: tests/TestCase.php
-
-		-
-			message: "#^Method Tests\\\\TestCase\\:\\:setUpTraits\\(\\) should return array but return statement is missing\\.$#"
-			count: 1
-			path: tests/TestCase.php

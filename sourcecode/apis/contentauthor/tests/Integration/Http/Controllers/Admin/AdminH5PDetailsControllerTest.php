@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Controllers;
+namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ApiModels\Resource;
 use App\H5PContent;
@@ -26,27 +26,22 @@ class AdminH5PDetailsControllerTest extends TestCase
 
     public function test_checkLibrary(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PLibrary $libraryDep */
         $libraryDep = H5PLibrary::factory()->create([
             'name' => 'H5P.EditorDep',
             'major_version' => 2,
             'minor_version' => 3,
         ]);
-        /** @var H5PLibrary $libraryPre */
         $libraryPre = H5PLibrary::factory()->create([
             'name' => 'H5P.PreDep',
             'major_version' => 5,
             'minor_version' => 6,
         ]);
-        /** @var H5PLibrary $libraryDepX */
         $libraryDepX = H5PLibrary::factory()->create([
             'name' => 'H5P.EditorDepX',
             'major_version' => 2,
             'minor_version' => 3,
         ]);
-        /** @var H5PLibrary $libraryPreX */
         $libraryPreX = H5PLibrary::factory()->create([
             'name' => 'H5P.PreDepX',
             'major_version' => 5,
@@ -167,15 +162,12 @@ class AdminH5PDetailsControllerTest extends TestCase
 
     public function test_contentForLibrary(): void
     {
-        /** @var H5PLibrary $library*/
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $failedContent */
         $failedContent = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
             'updated_at' => Carbon::now()->sub('1d'),
         ]);
-        /** @var H5PContent $versionContent */
         $versionContent = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
@@ -233,9 +225,7 @@ class AdminH5PDetailsControllerTest extends TestCase
     public function test_contentHistory(): void
     {
         $f4mId = $this->faker->uuid;
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'id' => 42,
             'version_id' => $this->faker->uuid,

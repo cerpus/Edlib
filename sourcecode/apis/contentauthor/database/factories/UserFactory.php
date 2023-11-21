@@ -2,8 +2,12 @@
 
 namespace Database\Factories;
 
+use App\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @template-extends Factory<User>
+ */
 class UserFactory extends Factory
 {
     public function definition(): array

@@ -2,15 +2,21 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
+use App\ApiModels\User;
+use App\Apis\AuthApiService;
+use App\ContentLock;
 use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use Generator;
+use H5PCore;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -20,8 +26,8 @@ class AdminControllerTest extends TestCase
 
     public function test_viewMaxScoreOverview(): void
     {
-        $core = $this->createMock(\H5PCore::class);
-        $this->instance(\H5PCore::class, $core);
+        $core = $this->createMock(H5PCore::class);
+        $this->instance(H5PCore::class, $core);
         $core->expects($this->once())->method('getLocalization')->willReturn([]);
 
         Storage::fake('test');
@@ -29,13 +35,10 @@ class AdminControllerTest extends TestCase
         Storage::put('libraries/H5P.Foobar-1.42/presave.js', 'the content');
         Storage::put('libraries/H5P.Toolbar-1.2/presave.js', 'the content');
 
-        /** @var H5PLibrary $library1 */
         $library1 = H5PLibrary::factory()->create();
-        /** @var H5PLibrary $library2 */
         $library2 = H5PLibrary::factory()->create([
             'minor_version' => 42,
         ]);
-        /** @var H5PLibrary $library3 */
         $library3 = H5PLibrary::factory()->create([
             'name' => 'H5P.Toolbar',
         ]);
@@ -85,9 +88,7 @@ class AdminControllerTest extends TestCase
 
     public function test_updateMaxScore(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PContent $content */
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'max_score' => null,
@@ -114,5 +115,65 @@ class AdminControllerTest extends TestCase
             'max_score' => 3,
             'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
         ]);
+    }
+
+    /** @dataProvider provider_index */
+    public function test_index(int $lockCount): void
+    {
+        ContentLock::factory($lockCount)->create();
+        $result = app(AdminController::class)->index();
+
+        $this->assertInstanceOf(View::class, $result);
+        $data = $result->getData();
+        $this->assertEquals($lockCount, $data['editLockCount']);
+    }
+
+    public function provider_index(): Generator
+    {
+        yield [0];
+        yield [3];
+    }
+
+    public function test_viewFailedCalculations(): void
+    {
+        $authMock = $this->createMock(AuthApiService::class);
+        $this->instance(AuthApiService::class, $authMock);
+
+        $userId = $this->faker->uuid;
+        $user = new User($userId, 'Emily', 'QuackFaster', 'eq@duckburg.quack');
+
+        $authMock->expects($this->once())
+            ->method('getUser')
+            ->willReturn($user);
+
+        $library = H5PLibrary::factory()->create();
+
+        H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+        H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_UNTOUCHED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+        $failedResource = H5PContent::factory()->create([
+            'bulk_calculated' => H5PLibraryAdmin::BULK_FAILED,
+            'user_id' => $userId,
+            'library_id' => $library->id,
+        ]);
+
+        $controller = app(AdminController::class);
+        $result = $controller->viewFailedCalculations();
+        $this->assertInstanceOf(View::class, $result);
+
+        $data = $result->getData();
+        $this->assertCount(1, $data['resources']);
+
+        $resource = $data['resources']->first();
+        $this->assertSame($failedResource->id, $resource->id);
+
+        $this->assertStringContainsString($user->getEmail(), $resource->ownerName);
     }
 }

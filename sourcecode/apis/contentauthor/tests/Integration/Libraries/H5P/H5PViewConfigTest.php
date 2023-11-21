@@ -10,14 +10,16 @@ use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\H5PViewConfig;
 use App\SessionKeys;
-use Faker\Factory;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
 class H5PViewConfigTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
     /** @dataProvider provider_adapterMode */
     public function test_getConfig(string $adapterMode): void
@@ -63,7 +65,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
     }
 
-    public function provider_adapterMode(): \Generator
+    public function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
@@ -81,7 +83,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame($setFinished, $data->ajax['setFinished']);
     }
 
-    public function provider_setPreview(): \Generator
+    public function provider_setPreview(): Generator
     {
         yield [
             false,
@@ -99,11 +101,8 @@ class H5PViewConfigTest extends TestCase
     public function test_loadContent(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $faker = Factory::create();
 
-        $resourceId = $faker->uuid;
-        $context = $faker->uuid;
-        $userId = 42;
+        $context = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $dependency = H5PLibrary::factory()->create(['name' => 'FontOk']);
         H5PLibraryLibrary::create([
@@ -125,7 +124,7 @@ class H5PViewConfigTest extends TestCase
         ]);
 
         $data = app(H5PViewConfig::class)
-            ->setUserId($userId)
+            ->setUserId($this->faker->uuid)
             ->setContext($context)
             ->setEmbedId('my-embed-id')
             ->loadContent($content->id)

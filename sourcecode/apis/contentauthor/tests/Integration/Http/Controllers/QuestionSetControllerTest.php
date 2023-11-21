@@ -49,7 +49,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testCreateQuestionSet(): void
     {
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -59,7 +59,6 @@ class QuestionSetControllerTest extends TestCase
         ]);
         $request->setLaravelSession(app(Session::class));
 
-        /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
         $result = $questionSetController->create($request);
 
@@ -86,9 +85,8 @@ class QuestionSetControllerTest extends TestCase
             ResourceSaved::class,
         ]);
 
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
 
-        /** @var Game $game */
         $game = Game::factory()->create(['license' => License::LICENSE_BY_NC_SA]);
 
         $questionSetConvertMock = $this->createMock(QuestionSetConvert::class);
@@ -117,7 +115,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
             'getUser' => $user,
         ]);
@@ -128,9 +126,8 @@ class QuestionSetControllerTest extends TestCase
         ]);
         Gametype::factory()->create(['name' => Millionaire::$machineName]);
 
-        /** @var QuestionSet $qs */
         $qs = QuestionSet::factory()->create(['owner' => $user->getId()]);
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -140,7 +137,6 @@ class QuestionSetControllerTest extends TestCase
         ]);
         $request->setLaravelSession(app(Session::class));
 
-        /** @var QuestionSetController $questionSetController */
         $questionSetController = app(QuestionSetController::class);
         $result = $questionSetController->edit($request, $qs->id);
 
@@ -173,24 +169,23 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        /** @var Collection $questionsets */
+        /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
-            ->each(function (QuestionSet $questionset, $index) {
-                $questionset->questions()
-                    ->save(QuestionSetQuestion::factory()->make(['order' => $index]))
-                    ->each(function (QuestionSetQuestion $question, $index) {
-                        $question
-                            ->answers()
-                            ->save(QuestionSetQuestionAnswer::factory()->make(['order' => $index]));
-                    });
+            ->each(function (QuestionSet $questionset) {
+                /** @var QuestionSetQuestion $qsq */
+                $qsq = $questionset->questions()->save(QuestionSetQuestion::factory()->make(['order' => 0]));
+                $qsq->answers()->save(QuestionSetQuestionAnswer::factory()->make(['order' => 0, 'correct' => true]));
+                $qsq->answers()->save(QuestionSetQuestionAnswer::factory()->make(['order' => 1, 'correct' => false]));
             });
 
         $this->withSession(["authId" => "user_1"]);
 
         /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
+        /** @var QuestionSetQuestion $question */
         $question = $questionset->questions()->first();
+        /** @var QuestionSetQuestionAnswer $answer */
         $answer = $question->answers()->first();
         $json = [
             'title' => "New title",
@@ -217,7 +212,6 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        /** @var QuestionSetController $questionSetController */
         $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 
@@ -237,14 +231,14 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][] = (object)[
-            'id' => $this->faker->md5,
+            'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
@@ -253,7 +247,7 @@ class QuestionSetControllerTest extends TestCase
                     'order' => $answer->order
                 ],
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
@@ -282,7 +276,7 @@ class QuestionSetControllerTest extends TestCase
 
         $json['cards'][0]->answers = [
             (object)[
-                'id' => $this->faker->md5,
+                'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
                 'isCorrect' => (bool)$answer->correct,
                 'showToggle' => false,
@@ -334,7 +328,7 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        /** @var Collection $questionsets */
+        /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
             ->create()
             ->each(function (QuestionSet $questionset, $index) {
@@ -351,7 +345,9 @@ class QuestionSetControllerTest extends TestCase
 
         /** @var QuestionSet $questionset */
         $questionset = $questionsets->random();
+        /** @var QuestionSetQuestion $question */
         $question = $questionset->questions()->first();
+        /** @var QuestionSetQuestionAnswer $answer */
         $answer = $question->answers()->first();
         $json = [
             'title' => "New title",
@@ -381,7 +377,6 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
-        /** @var QuestionSetController $questionsetController */
         $questionsetController = app(QuestionSetController::class);
         $questionsetController->update($request, $questionset);
 
@@ -401,14 +396,14 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][] = (object)[
-            'id' => $this->faker->md5,
+            'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
@@ -417,7 +412,7 @@ class QuestionSetControllerTest extends TestCase
                     'order' => $answer->order
                 ],
                 (object)[
-                    'id' => $this->faker->md5,
+                    'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
@@ -446,7 +441,7 @@ class QuestionSetControllerTest extends TestCase
 
         $json['cards'][0]->answers = [
             (object)[
-                'id' => $this->faker->md5,
+                'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
                 'isCorrect' => (bool)$answer->correct,
                 'showToggle' => false,

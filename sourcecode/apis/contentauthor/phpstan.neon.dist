@@ -17,6 +17,8 @@ parameters:
     stubFiles:
         - stubs/h5p-core/H5PCore.stub
         - stubs/h5p-core/H5PExport.stub
+        - stubs/h5p-core/H5PFrameworkInterface.stub
+        - stubs/cerpus/CreateTrait.stub
     banned_code:
         nodes:
             -

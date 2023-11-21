@@ -25,7 +25,6 @@ class ArticleTest extends TestCase
 
     public function testRewriteUploadUrls(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
         ]);
@@ -38,7 +37,6 @@ class ArticleTest extends TestCase
 
     public function testLeavesNonUploadUrlsAlone(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
         ]);
@@ -51,7 +49,6 @@ class ArticleTest extends TestCase
 
     public function testRendersArticleWithBrokenHtml(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<div>Foo<b></div>bar</b>',
         ]);
@@ -181,7 +178,6 @@ class ArticleTest extends TestCase
         ]);
         Event::fake();
         $authId = Str::uuid();
-        /** @var Article $article */
         $article = Article::factory()->create([
             'owner_id' => $authId,
             'is_published' => 1,
@@ -206,6 +202,7 @@ class ArticleTest extends TestCase
             'license' => 'BY-NC',
         ]);
 
+        /** @var Article $newArticle */
         $newArticle = Article::where('title', "Title")
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -264,6 +261,7 @@ class ArticleTest extends TestCase
             'license' => 'BY-ND',
         ]);
 
+        /** @var Article $article */
         $article = Article::where('title', 'Title')->first();
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), [
@@ -274,6 +272,8 @@ class ArticleTest extends TestCase
                 'isPublished' => 1,
             ])->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+
+        /** @var Article $article */
         $article = Article::where('title', 'Title')
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -287,7 +287,6 @@ class ArticleTest extends TestCase
     {
         $this->setupVersion(['getVersion' => false]);
 
-        /** @var Article $article */
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
@@ -302,5 +301,83 @@ class ArticleTest extends TestCase
     {
         $this->get(route('article.create'))
             ->assertForbidden();
+    }
+
+    public function testRewriteUrls()
+    {
+        $article = Article::factory()->create([
+            'content' => 'This is the original content',
+        ]);
+
+        $originalUrl = 'original-url';
+        $newUrl = 'new-url';
+
+        $article->content = 'This is the original content with the original URL: ' . $originalUrl;
+        $article->save();
+
+        $article->rewriteUrls($originalUrl, $newUrl);
+
+        $this->assertStringNotContainsString($originalUrl, $article->content);
+        $this->assertStringContainsString($newUrl, $article->content);
+    }
+
+    public function testParent()
+    {
+        $article = Article::factory()->create();
+
+        $parentArticle = Article::factory()->create();
+
+        $article->parent()->associate($parentArticle);
+        $article->save();
+
+        $retrievedParent = $article->parent;
+
+        $this->assertEquals($parentArticle->id, $retrievedParent->id);
+    }
+
+    public function testGetISO6393Language()
+    {
+        $article = Article::factory()->create();
+
+        $language = $article->getISO6393Language();
+
+        $this->assertEquals('eng', $language);
+    }
+
+    public function testSetParentVersionId()
+    {
+        $article = Article::factory()->create([
+            'parent_version_id' => 'original_parent_version_id',
+        ]);
+
+        $parentVersionId = 'new_parent_version_id';
+
+        $isChanged = $article->setParentVersionId($parentVersionId);
+
+        $this->assertTrue($isChanged);
+        $this->assertEquals($parentVersionId, $article->parent_version_id);
+    }
+
+    public function testScopeNoMaxScore()
+    {
+        Article::factory()->create(['max_score' => null]);
+        Article::factory()->create(['max_score' => 10]);
+
+        $articles = Article::noMaxScore()->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertNull($articles[0]->max_score);
+    }
+
+    public function testScopeOfBulkCalculated()
+    {
+        Article::factory()->create(['bulk_calculated' => 0]);
+        Article::factory()->create(['bulk_calculated' => 1]);
+        Article::factory()->create(['bulk_calculated' => 2]);
+
+        $articles = Article::ofBulkCalculated(1)->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertEquals(1, $articles[0]->bulk_calculated);
     }
 }

@@ -16,12 +16,6 @@ class ContextShareProcessorTest extends TestCase
     use RefreshDatabase;
     use MockRabbitMQPubsub;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->setupRabbitMQPubSub();
-    }
-
     public function testContextSharesAreRemoved()
     {
         $authId = $this->faker->uuid;
