@@ -129,6 +129,11 @@ class Content extends Model
             ->withTimestamps();
     }
 
+    public function hasUser(User $user): bool
+    {
+        return $this->users()->where('id', $user->id)->exists();
+    }
+
     /**
      * @return array<string, mixed>
      */

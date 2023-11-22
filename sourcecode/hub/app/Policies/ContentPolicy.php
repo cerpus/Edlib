@@ -5,19 +5,33 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Content;
+use App\Models\ContentVersion;
 use App\Models\User;
 
 use function request;
 
 class ContentPolicy
 {
-    public function view(User|null $user, Content $content): bool
-    {
+    public function view(
+        User|null $user,
+        Content $content,
+        ContentVersion|null $version = null
+    ): bool {
         if ($user?->admin) {
             return true;
         }
 
-        return $content->latestPublishedVersion()->exists();
+        $version ??= $content->latestPublishedVersion;
+
+        if ($version?->published) {
+            return true;
+        }
+
+        if (!$user) {
+            return false;
+        }
+
+        return $content->hasUser($user);
     }
 
     public function create(User $user): bool
@@ -31,7 +45,7 @@ class ContentPolicy
             return true;
         }
 
-        return $content->users()->where('id', $user->id)->exists();
+        return $content->hasUser($user);
     }
 
     public function copy(User $user, Content $content): bool

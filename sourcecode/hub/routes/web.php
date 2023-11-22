@@ -60,7 +60,7 @@ Route::controller(ContentController::class)->group(function () {
     Route::get('/content/{content}/version/{version}')
         ->uses([ContentController::class, 'version'])
         ->name('content.version-details')
-        ->can('view', 'content')
+        ->can('view', ['content', 'version'])
         ->whereUlid(['content', 'version'])
         ->scopeBindings();
 
