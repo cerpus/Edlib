@@ -20,10 +20,14 @@ class ContentCard extends Component
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, string>
      */
-    public static function siteElements(): array
+    public function elements(): array
     {
-        return [];
+        return [
+            '@title' => '.content-card-title',
+            '@use-button' => '.content-card-use-button',
+            '@edit-link' => '.content-card-edit-link',
+        ];
     }
 }

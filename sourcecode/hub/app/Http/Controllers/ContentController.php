@@ -120,7 +120,7 @@ class ContentController extends Controller
     {
         $ltiRequest = $content->toItemSelectionRequest();
 
-        return view('lti.close-editor', [
+        return view('lti.redirect', [
             'url' => $ltiRequest->getUrl(),
             'method' => $ltiRequest->getMethod(),
             'parameters' => $ltiRequest->toArray(),
@@ -184,7 +184,7 @@ class ContentController extends Controller
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
-            return view('lti.close-editor', [
+            return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
@@ -192,7 +192,7 @@ class ContentController extends Controller
         }
 
         // return to Edlib
-        return view('lti.close-editor', [
+        return view('lti.redirect', [
             'url' => route('content.details', $content),
             'method' => 'GET',
             'target' => '_parent',
@@ -227,7 +227,7 @@ class ContentController extends Controller
         if (($request->attributes->get('lti')['lti_message_type'] ?? null) === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
-            return view('lti.close-editor', [
+            return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
@@ -235,7 +235,7 @@ class ContentController extends Controller
         }
 
         // return to Edlib
-        return view('lti.close-editor', [
+        return view('lti.redirect', [
             'url' => route('content.details', $content),
             'method' => 'GET',
             'target' => '_parent',

@@ -2,7 +2,6 @@ import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 
 import 'bootstrap';
 import './bootstrap';
-import './lti';
 
 addEventListener('DOMContentLoaded', function () {
     const token = document.documentElement.getAttribute('data-session-scope');

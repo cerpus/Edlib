@@ -8,7 +8,7 @@
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-card">
-    <div class="card-header content-card-header border-bottom-0 fw-bold position-relative">
+    <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
             href="{{ route('content.details', [$content->id]) }}"
             class="text-decoration-none link-body-emphasis"
@@ -22,7 +22,7 @@
                     ($content->updated_at->isSameAs('W', \Illuminate\Support\Carbon::now()) ? ucfirst($content->updated_at->isoFormat('dddd LT')) : $content->updated_at->isoFormat('LL'))
                 }}
             </div>
-            <div class="text-line-clamp-2">
+            <div class="text-line-clamp-2 content-card-title">
                 {{ $version->resource->title }}
             </div>
         </a>
@@ -30,7 +30,7 @@
             <x-icon name="eye"/>
             <span title="{{ trans('messages.views') }}">{{ $views }}</span>
         </div>
-    </div>
+    </header>
     <div class="card-body">
         <div class="row card-text mb-2">
             <div class="col-auto small">
@@ -49,7 +49,7 @@
     <div class="card-footer content-card-footer d-flex align-items-center bg-transparent border-0">
         @can('use', $content)
             <x-form action="{{ route('content.use', [$content]) }}" method="POST">
-                <button class="btn btn-primary btn-sm me-1">
+                <button class="btn btn-primary btn-sm me-1 content-card-use-button">
                     {{ trans('messages.use-content') }}
                 </button>
             </x-form>
@@ -57,7 +57,7 @@
         @can('edit', $content)
             <a
                 href="{{ route('content.edit', [$content]) }}"
-                class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
+                class="btn btn-secondary btn-sm d-none d-md-inline-block me-1 content-card-edit-link"
             >
                 {{ trans('messages.edit-content') }}
             </a>

@@ -11,6 +11,7 @@ use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Components\ContentCard;
 use Tests\DuskTestCase;
 
 use function assert;
@@ -45,17 +46,21 @@ final class ContentTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($tool, $user, $contentTitle) {
             $browser
                 ->visit('/login')
+                // FIXME: it seems buttons in iframes cannot be clicked, even if
+                // they are scrolled into view. We resize the window to get the
+                // mobile view, where no scrolling is needed.
+                ->resize(640, 800)
                 ->type('email', $user->email)
                 ->type('password', 'password')
                 ->press('Log in')
                 ->assertAuthenticated()
                 ->visit('/content/create/' . $tool->id)
-                ->assertPresent('iframe')
-                ->withinFrame('iframe', function (Browser $iframe) use ($contentTitle) {
-                    $iframe->with('.content-card', function (Browser $card) use ($contentTitle) {
+                ->assertPresent('.lti-launch')
+                ->withinFrame('.lti-launch', function (Browser $iframe) use ($contentTitle) {
+                    $iframe->with(new ContentCard(), function (Browser $card) use ($contentTitle) {
                         $card
-                            ->assertSee($contentTitle)
-                            ->press('Use content');
+                            ->assertSeeIn('@title', $contentTitle)
+                            ->click('@use-button');
                     });
                 })
                 ->assertTitleContains($contentTitle);

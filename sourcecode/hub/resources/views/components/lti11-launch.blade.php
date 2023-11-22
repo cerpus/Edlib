@@ -1,16 +1,7 @@
 <iframe
-    src="about:blank"
+    src="{{ $iframeUrl }}"
     name="lti-launch-{{ $uniqueId }}"
     width="{{ $width ?? 640 }}"
     height="{{ $height ?? 480 }}"
-    class="w-100"
+    class="lti-launch w-100"
 ></iframe>
-
-<form
-    action="{{ $launch->getRequest()->getUrl() }}"
-    method="{{ $launch->getRequest()->getMethod() }}"
-    class="auto-submit"
-    target="{{ 'lti-launch-'.$uniqueId }}"
->
-    {!! $launch->getRequest()->toHtmlFormInputs() !!}
-</form>
