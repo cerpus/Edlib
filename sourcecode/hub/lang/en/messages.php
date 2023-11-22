@@ -64,7 +64,7 @@ return [
     'alert-password-reset-invalid-token' => 'Invalid or expired password reset token',
     'version-history' => 'Version history',
     'current-published-version' => 'Current published version',
-    'latest-unpublished-draft' => 'Latest draft',
+    'latest-draft' => 'Latest draft',
     'viewing-old-version-notice' => 'You are viewing an older version of the content.',
     'viewing-draft-version-notice' => 'You are viewing an unpublished draft version.',
     'view-latest-version' => 'View the latest version',

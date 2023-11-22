@@ -98,6 +98,19 @@ class Content extends Model
     /**
      * @return HasOne<ContentVersion>
      */
+    public function latestDraftVersion(): HasOne
+    {
+        return $this->hasOne(ContentVersion::class)
+            ->has('resource')
+            ->ofMany(['id' => 'max'], function (Builder $query) {
+                /** @var Builder<ContentVersion> $query */
+                $query->draft();
+            });
+    }
+
+    /**
+     * @return HasOne<ContentVersion>
+     */
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)

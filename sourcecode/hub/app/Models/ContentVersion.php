@@ -49,4 +49,12 @@ class ContentVersion extends Model
     {
         $query->where('published', true);
     }
+
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeDraft(Builder $query): void
+    {
+        $query->where('published', false);
+    }
 }

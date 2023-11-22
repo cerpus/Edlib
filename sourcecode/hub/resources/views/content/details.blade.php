@@ -102,8 +102,8 @@
 
                                 @if ($content->latestPublishedVersion?->is($v))
                                     <small class="d-block">{{ trans('messages.current-published-version') }}</small>
-                                @elseif ($isLatest)
-                                    <small class="d-block">{{ trans('messages.latest-unpublished-draft') }}</small>
+                                @elseif ($content->latestDraftVersion?->is($v))
+                                    <small class="d-block">{{ trans('messages.latest-draft') }}</small>
                                 @endif
                             </span>
 
