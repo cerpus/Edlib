@@ -26,7 +26,7 @@
     @endif
 
     {{-- TODO: Show more author names if there are any --}}
-    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()->name }}</p>
+    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
 
     <x-lti-launch :launch="$launch" />
 
