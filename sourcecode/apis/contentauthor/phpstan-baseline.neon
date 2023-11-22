@@ -301,11 +301,6 @@ parameters:
 			path: app/Http/Controllers/ArticleCopyrightController.php
 
 		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/GameController.php
-
-		-
 			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -339,11 +334,6 @@ parameters:
 			message: "#^Negated boolean expression is always false\\.$#"
 			count: 1
 			path: app/Http/Controllers/HealthController.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/LinkController.php
 
 		-
 			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"

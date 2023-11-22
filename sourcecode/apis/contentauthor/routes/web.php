@@ -61,7 +61,6 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
     Route::post('/game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
 
-    Route::post('/link/create', [LinkController::class, 'ltiCreate']);
     Route::post('/link/{id}', [LinkController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
 
     Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
@@ -83,14 +82,13 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
 
     Route::group(['middleware' => ['core.ownership']], function () {
         Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
-        Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
     });
 });
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
 
 Route::resource('/article', ArticleController::class, ['except' => ['destroy']]);
-Route::resource('/link', LinkController::class, ['except' => ['destroy']]);
+Route::resource('/link', LinkController::class, ['only' => ['show']]);
 
 Route::post('/article/create/upload', [ArticleUploadController::class, 'uploadToNewArticle'])->name('article-upload.new');
 Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToExistingArticle'])->name('article-upload.existing');

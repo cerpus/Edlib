@@ -18,7 +18,11 @@ trait LtiTrait
             );
         }
 
-        return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
+        if (method_exists($this, 'doShow')) {
+            return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
+        }
+
+        abort(500, 'Requested action is not available');
     }
 
     public function ltiCreate(Request $request)
@@ -32,7 +36,11 @@ trait LtiTrait
             );
         }
 
-        return $this->create($request);
+        if (method_exists($this, 'create')) {
+            return $this->create($request);
+        }
+
+        abort(500, 'Requested action is not available');
     }
 
     public function ltiEdit(Request $request, $id)
@@ -46,6 +54,10 @@ trait LtiTrait
             );
         }
 
-        return $this->edit($request, $id);
+        if (method_exists($this, 'edit')) {
+            return $this->edit($request, $id);
+        }
+
+        abort(500, 'Requested action is not available');
     }
 }
