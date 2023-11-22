@@ -9,6 +9,10 @@ trait LtiTrait
 {
     public function ltiShow($id)
     {
+        if (!method_exists($this, 'doShow')) {
+            abort(500, 'Requested action is not available');
+        }
+
         $ltiRequest = $this->lti->getRequest(request());
 
         if (!$ltiRequest) {
@@ -18,15 +22,15 @@ trait LtiTrait
             );
         }
 
-        if (method_exists($this, 'doShow')) {
-            return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
-        }
-
-        abort(500, 'Requested action is not available');
+        return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
     }
 
     public function ltiCreate(Request $request)
     {
+        if (!method_exists($this, 'create')) {
+            abort(500, 'Requested action is not available');
+        }
+
         $ltiRequest = $this->lti->getRequest($request);
 
         if (!$ltiRequest) {
@@ -36,15 +40,15 @@ trait LtiTrait
             );
         }
 
-        if (method_exists($this, 'create')) {
-            return $this->create($request);
-        }
-
-        abort(500, 'Requested action is not available');
+        return $this->create($request);
     }
 
     public function ltiEdit(Request $request, $id)
     {
+        if (!method_exists($this, 'edit')) {
+            abort(500, 'Requested action is not available');
+        }
+
         $ltiRequest = $this->lti->getRequest($request);
 
         if (!$ltiRequest) {
@@ -54,10 +58,6 @@ trait LtiTrait
             );
         }
 
-        if (method_exists($this, 'edit')) {
-            return $this->edit($request, $id);
-        }
-
-        abort(500, 'Requested action is not available');
+        return $this->edit($request, $id);
     }
 }
