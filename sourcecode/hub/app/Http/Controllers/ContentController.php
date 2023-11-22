@@ -57,7 +57,6 @@ class ContentController extends Controller
     public function details(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
-        $authorName = $content->authors->pluck('name')->implode(', ');
 
         $tool = $version->resource?->tool;
         assert($tool instanceof LtiTool);
@@ -73,7 +72,22 @@ class ContentController extends Controller
         return view('content.details', [
             'content' => $content,
             'launch' => $launch,
-            'authorName' => $authorName,
+        ]);
+    }
+
+    public function version(
+        Content $content,
+        ContentVersion $version,
+        LtiLaunchBuilder $launchBuilder,
+    ): View {
+        $launchUrl = $version->resource?->view_launch_url;
+
+        $tool = $version->resource?->tool;
+
+        return view('content.details', [
+            'content' => $content,
+            'version' => $version,
+            'launch' => $launchBuilder->toPresentationLaunch($tool, $launchUrl, 'asf'),
         ]);
     }
 

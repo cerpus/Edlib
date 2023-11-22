@@ -57,6 +57,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/version/{version}')
+        ->uses([ContentController::class, 'version'])
+        ->name('content.version-details')
+        ->can('view', 'content')
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
+
     Route::get('/content/create', 'create')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
