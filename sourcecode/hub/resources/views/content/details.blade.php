@@ -26,9 +26,7 @@
     @endif
 
     {{-- TODO: Show more author names if there are any --}}
-    <p>{{ trans('messages.created')}}: {{ $content->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()->name }}</p>
-
-    <p>{{ trans('messages.last-updated')}}: {{ $content->updated_at->isoFormat('LL') }}</p>
+    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()->name }}</p>
 
     <x-lti-launch :launch="$launch" />
 
@@ -88,35 +86,32 @@
                     @foreach ($content->versions as $v)
                         @php($isLatest = $content->latestVersion->is($v))
                         @php($isCurrent = $version->is($v))
-                        <li>
-                            {{-- TODO: hover styles --}}
-                            <a
-                                href="{{ route('content.version-details', [$content, $v]) }}"
-                                class="text-body text-decoration-none p-3 border rounded d-flex
-                                       @if($v->published) border-success @endif
-                                       @if($content->latestPublishedVersion?->is($v)) bg-success-subtle @endif
-                                      "
-                            >
-                                <span class="flex-grow-1">
-                                    <span class="d-block @if ($isCurrent) fw-bold @endif">
-                                        <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>
-                                    </span>
 
-                                    @if ($content->latestPublishedVersion?->is($v))
-                                        <small class="d-block">{{ trans('messages.current-published-version') }}</small>
-                                    @elseif ($isLatest)
-                                        <small class="d-block">{{ trans('messages.latest-unpublished-draft') }}</small>
-                                    @endif
-                                </span>
+                        <li class="position-relative text-body p-3 border rounded d-flex
+                                   @if ($v->published) border-success-subtle @endif
+                                   @if($content->latestPublishedVersion?->is($v)) bg-success-subtle @endif
+                                  ">
+                            <span class="flex-grow-1">
+                                <a
+                                    href="{{ route('content.version-details', [$content, $v]) }}"
+                                    class="d-block text-body {{ $v->published ? 'link-underline-success' : 'link-underline' }} link-underline-opacity-0 link-underline-opacity-100-hover stretched-link
+                                           @if ($isCurrent) fw-bold @endif"
+                                >
+                                    <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>
+                                </a>
 
-                                <span>
-                                    @if ($v->published)
-                                        <x-icon name="check-circle" label="{{ trans('messages.published') }}" class="text-success" />
-                                    @else
-                                        <x-icon name="pencil" label="{{ trans('messages.draft') }}" class="text-body-secondary" />
-                                    @endif
-                                </span>
-                            </a>
+                                @if ($content->latestPublishedVersion?->is($v))
+                                    <small class="d-block">{{ trans('messages.current-published-version') }}</small>
+                                @elseif ($isLatest)
+                                    <small class="d-block">{{ trans('messages.latest-unpublished-draft') }}</small>
+                                @endif
+                            </span>
+
+                            @if ($v->published)
+                                <x-icon name="check-circle" label="{{ trans('messages.published') }}" class="text-success" />
+                            @else
+                                <x-icon name="pencil" label="{{ trans('messages.draft') }}" class="text-body-secondary" />
+                            @endif
                         </li>
                     @endforeach
                 </ul>
