@@ -81,13 +81,21 @@ class ContentController extends Controller
         LtiLaunchBuilder $launchBuilder,
     ): View {
         $launchUrl = $version->resource?->view_launch_url;
+        assert(is_string($launchUrl));
 
         $tool = $version->resource?->tool;
+        assert($tool instanceof LtiTool);
+
+        $launch = $launchBuilder->toPresentationLaunch(
+            $tool,
+            $launchUrl,
+            $version->id,
+        );
 
         return view('content.details', [
             'content' => $content,
             'version' => $version,
-            'launch' => $launchBuilder->toPresentationLaunch($tool, $launchUrl, 'asf'),
+            'launch' => $launch,
         ]);
     }
 
