@@ -16,6 +16,7 @@ class LtiPlatform extends Model
     use HasFactory;
     use HasUlids;
 
+    /** @var array<string, mixed> */
     protected $attributes = [
         'enable_sso' => false,
     ];
