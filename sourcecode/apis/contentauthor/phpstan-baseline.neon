@@ -626,11 +626,6 @@ parameters:
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
-			message: "#^Called 'pluck' on Laravel collection, but could have been retrieved as a query\\.$#"
-			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
 			message: "#^Property App\\\\H5PLibrary\\:\\:\\$restricted \\(int\\) does not accept false\\.$#"
 			count: 1
 			path: app/Libraries/H5P/EditorStorage.php
