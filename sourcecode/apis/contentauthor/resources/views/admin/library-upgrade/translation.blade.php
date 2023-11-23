@@ -19,25 +19,19 @@
                             </ul>
                         </div>
                     </div>
-                    @isset($success)
-                        @if($success)
-                            <div class="alert alert-success">
-                                Database updated
-                            </div>
-                        @endif
-                        @empty(!$errorMessage)
-                            <div class="alert alert-danger">
-                                Update failed
-                                <pre style="margin-top:1em;">{{ $errorMessage }}</pre>
-                            </div>
-                        @endif
-                    @endisset
-                    @if($errors->isNotEmpty())
+                    @if($errors->isNotEmpty() || $messages->isNotEmpty())
                         <div class="alert alert-danger">
                             Update failed
                             @foreach($errors->all() as $error)
                                 <pre style="margin-top:1em;">{{ $error }}</pre>
                             @endforeach
+                            @foreach($messages->all() as $msg)
+                                <pre style="margin-top:1em;">{{ $msg }}</pre>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="alert alert-success">
+                            Database updated
                         </div>
                     @endif
                     <div class="panel-body row">

@@ -21,6 +21,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class AdminH5PDetailsController extends Controller
 {
@@ -202,36 +203,40 @@ class AdminH5PDetailsController extends Controller
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),
+            'messages' => collect(),
         ]);
     }
 
     public function libraryTranslationUpdate(AdminTranslationUpdateRequest $request, H5PLibrary $library, string $locale): View
     {
-        $errorMsg = '';
-        $success = -1;
+        $messages = collect();
         $input = $request->validated();
 
-        try {
-            if (array_key_exists('translationFile', $input) && $request->file('translationFile')->isValid()) {
-                $translation = $request->file('translationFile')->getContent();
-            } else {
-                $translation = $input['translation'];
-            }
-            if (empty($translation)) {
-                throw new Exception('Empty content');
-            }
-            json_decode($translation, flags: JSON_THROW_ON_ERROR);
+        if (array_key_exists('translationFile', $input) && $request->file('translationFile')->isValid()) {
+            $translation = $request->file('translationFile')->getContent();
+        } else {
+            $translation = $input['translation'];
+        }
 
-            $success = $library->languages()
-                ->where('language_code', $locale)
-                ->limit(1)
-                ->update(['translation' => $translation]);
-
-            if ($success === 0) {
-                $errorMsg = "No changes to save";
+        if (empty($translation)) {
+            $messages->add('Content was empty');
+        } else {
+            try {
+                json_decode($translation, flags: JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                $messages->add($e->getMessage());
             }
-        } catch (Exception $e) {
-            $errorMsg = $e->getMessage();
+
+            if ($messages->isEmpty()) {
+                $count = $library->languages()
+                    ->where('language_code', $locale)
+                    ->limit(1)
+                    ->update(['translation' => $translation]);
+
+                if ($count === 0) {
+                    $messages->add('No rows was updated');
+                }
+            }
         }
 
         $libLang = H5PLibraryLanguage::where('library_id', $library->id)
@@ -246,8 +251,7 @@ class AdminH5PDetailsController extends Controller
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),
-            'success' => $success > 0,
-            'errorMessage' => $errorMsg,
+            'messages' => $messages,
         ]);
     }
 
