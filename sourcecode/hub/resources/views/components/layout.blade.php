@@ -1,4 +1,4 @@
-@props(['nav' => true])
+@props(['showHeader' => true, 'nav' => true])
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
@@ -35,9 +35,12 @@
         <div class="container-md">
             <div class="row">
                 <main class="col-12 @isset($sidebar) col-lg-9 @endisset">
-                    <header>
-                        <h1 class="fs-2">{{ $title }}</h1>
-                    </header>
+                    @if ($showHeader)
+                        <header>
+                            <h1 class="fs-2">{{ $title }}</h1>
+                        </header>
+                    @endif
+
                     {{ $slot }}
                 </main>
 

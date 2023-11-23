@@ -13,6 +13,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Http\Middleware\StartScopedLtiSession;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid(['content', 'version'])
         ->scopeBindings();
 
+    Route::get('/content/{content}/embed')
+        ->uses([ContentController::class, 'embed'])
+        ->name('content.embed')
+        ->can('view', 'content')
+        ->whereUlid('content');
+
     Route::get('/content/create', 'create')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
@@ -89,32 +96,44 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('tool');
 });
 
-Route::prefix('/lti/deep-linking-return')
-    ->middleware([
-        LtiValidatedRequest::class . ':tool',
-        'lti.launch-type:ContentItemSelection',
-    ])
-    ->group(function () {
-        Route::post('/store-content')
-            ->uses([ContentController::class, 'ltiStore'])
-            ->can('create', \App\Models\Content::class)
-            ->name('content.lti-store');
+Route::prefix('/lti/dl')->middleware([
+    LtiValidatedRequest::class . ':tool',
+    'lti.launch-type:ContentItemSelection',
+])->group(function () {
+    Route::post('/tool/{tool}/content/create')
+        ->uses([ContentController::class, 'ltiStore'])
+        ->name('content.lti-store')
+        ->can('create', \App\Models\Content::class)
+        ->whereUlid('tool');
 
-        Route::post('/update-content/{content}')
-            ->uses([ContentController::class, 'ltiUpdate'])
-            ->can('edit', 'content')
-            ->name('content.lti-update')
-            ->whereUlid('content');
-    });
+    Route::post('/tool/{tool}/content/{content}/update')
+        ->uses([ContentController::class, 'ltiUpdate'])
+        ->name('content.lti-update')
+        ->can('edit', 'content')
+        ->whereUlid(['tool', 'content']);
+});
 
-Route::prefix('/lti/1.1')->group(function () {
-    Route::post('/select', [LtiController::class, 'select'])
-        ->middleware([
-            EnsureFrameCookies::class,
-            LtiValidatedRequest::class . ':platform',
-            'lti.launch-type:ContentItemSelectionRequest',
-        ])
-        ->name('lti.select');
+Route::prefix('/lti')->middleware([
+    EnsureFrameCookies::class,
+    LtiValidatedRequest::class . ':platform',
+    StartScopedLtiSession::class,
+])->group(function () {
+    Route::post('/content/{content}')
+        ->uses([LtiController::class, 'content'])
+        ->name('lti.content')
+        ->can('view', 'content')
+        ->whereUlid('content')
+        ->middleware('lti.launch-type:basic-lti-launch-request');
+
+    Route::post('/dl')
+        ->uses([LtiController::class, 'select'])
+        ->name('lti.select')
+        ->middleware('lti.launch-type:ContentItemSelectionRequest');
+
+    // Deprecated: use /lti/dl instead.
+    Route::post('/1.1/select')
+        ->uses([LtiController::class, 'select'])
+        ->middleware('lti.launch-type:ContentItemSelectionRequest');
 });
 
 Route::controller(UserController::class)->group(function () {

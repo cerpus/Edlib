@@ -32,7 +32,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -42,17 +42,17 @@ final class LtiToolTest extends TestCase
         // FIXME: would be nice if we could chain these, but Laravel doesn't
         // support following one redirect at a time.
 
-        $this->post('/lti/1.1/select', $request->toArray())
+        $this->post('/lti/dl', $request->toArray())
             ->assertStatus(307)
-            ->assertLocation('/lti/1.1/select?_edlib_cookie_check=1')
+            ->assertLocation('/lti/dl?_edlib_cookie_check=1')
             ->assertCookie('_edlib_cookies');
 
         $this->withCookie('_edlib_cookies', '1')
-            ->post('/lti/1.1/select?_edlib_cookie_check=1', $request->toArray())
+            ->post('/lti/dl?_edlib_cookie_check=1', $request->toArray())
             ->assertStatus(307)
-            ->assertLocation('/lti/1.1/select');
+            ->assertLocation('/lti/dl');
 
-        $this->post('/lti/1.1/select', $request->toArray())
+        $this->post('/lti/dl', $request->toArray())
             ->assertRedirect('https://hub-test.edlib.test/content');
     }
 
@@ -61,19 +61,19 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
             $platform->getOauth1Credentials(),
         );
 
-        $this->post('/lti/1.1/select', $request->toArray())
+        $this->post('/lti/dl', $request->toArray())
             ->assertStatus(307)
-            ->assertLocation('/lti/1.1/select?_edlib_cookie_check=1')
+            ->assertLocation('/lti/dl?_edlib_cookie_check=1')
             ->assertCookie('_edlib_cookies');
 
-        $this->post('/lti/1.1/select?_edlib_cookie_check=1', $request->toArray())
+        $this->post('/lti/dl?_edlib_cookie_check=1', $request->toArray())
             ->assertStatus(200)
             ->assertSee('Requesting storage access');
     }
@@ -83,7 +83,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -91,14 +91,14 @@ final class LtiToolTest extends TestCase
         );
 
         $this->withCookie('_edlib_cookies', '1')
-            ->post('/lti/1.1/select', $request->toArray())
+            ->post('/lti/dl', $request->toArray())
             ->assertRedirect('https://hub-test.edlib.test/content');
     }
 
     public function testUnauthorizedItemSelectionRequestsAreRejected(): void
     {
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
                 'content_item_return_url' => 'http://example.com/',
                 'lti_message_type' => 'ContentItemSelectionRequest',
             ]),
@@ -106,7 +106,7 @@ final class LtiToolTest extends TestCase
         );
 
         $this->withCookie('_edlib_cookies', '1')
-            ->post('/lti/1.1/select', $request->toArray())
+            ->post('/lti/dl', $request->toArray())
             ->assertUnauthorized();
     }
 
@@ -115,7 +115,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/1.1/select', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
                 'launch_presentation_return_url' => 'https://example.com/return',
                 'lti_message_type' => 'basic-lti-launch-request',
             ]),
@@ -123,7 +123,7 @@ final class LtiToolTest extends TestCase
         );
 
         $this->withCookie('_edlib_cookies', '1')
-            ->post('/lti/1.1/select', $request->toArray())
+            ->post('/lti/dl', $request->toArray())
             ->assertRedirect('https://example.com/return?lti_errorlog=Invalid+LTI+launch+type%2C+expected+%22ContentItemSelectionRequest%22+but+got+%22basic-lti-launch-request%22');
     }
 }

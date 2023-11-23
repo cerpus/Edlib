@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Lti\LtiLaunch;
-use App\Support\SessionScope;
+use App\Models\Content;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,14 +37,13 @@ final readonly class LtiController
         ]);
     }
 
-    public function select(Request $request, SessionScope $scope): RedirectResponse
+    public function content(Content $content): RedirectResponse
     {
-        $ltiData = $request->attributes->get('lti');
-        assert($ltiData !== null);
+        return to_route('content.embed', [$content]);
+    }
 
-        $session = $scope->start($request);
-        $session->put('lti', $ltiData);
-
+    public function select(): RedirectResponse
+    {
         return to_route('content.index');
     }
 }
