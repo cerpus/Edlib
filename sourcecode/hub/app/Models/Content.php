@@ -9,6 +9,7 @@ use App\Lti\LtiContent;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use DomainException;
 use DOMDocument;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +37,15 @@ class Content extends Model
     use Searchable;
 
     protected $perPage = 48;
+
+    public function getTitle(): string
+    {
+        $version = $this->latestPublishedVersion
+            ?? $this->latestDraftVersion
+            ?? throw new DomainException('The content has no versions');
+
+        return $version->getTitle();
+    }
 
     public function toItemSelectionRequest(): Oauth1Request
     {

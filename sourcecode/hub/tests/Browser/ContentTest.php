@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ContentCard;
+use Tests\Browser\Components\VersionHistory;
 use Tests\DuskTestCase;
 
 use function assert;
@@ -23,8 +24,6 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()
             ->has(ContentVersion::factory()->published(), 'versions')
             ->create();
-        $contentTitle = $content->latestPublishedVersion?->resource?->title;
-        assert($contentTitle !== null);
 
         $this->assertDatabaseCount(Content::class, 1);
 
@@ -43,7 +42,7 @@ final class ContentTest extends DuskTestCase
             'send_email' => true,
         ]);
 
-        $this->browse(function (Browser $browser) use ($tool, $user, $contentTitle) {
+        $this->browse(function (Browser $browser) use ($content, $tool, $user) {
             $browser
                 ->visit('/login')
                 // FIXME: it seems buttons in iframes cannot be clicked, even if
@@ -56,17 +55,59 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/content/create/' . $tool->id)
                 ->assertPresent('.lti-launch')
-                ->withinFrame('.lti-launch', function (Browser $iframe) use ($contentTitle) {
-                    $iframe->with(new ContentCard(), function (Browser $card) use ($contentTitle) {
+                ->withinFrame('.lti-launch', function (Browser $iframe) use ($content) {
+                    $iframe->with(new ContentCard(), function (Browser $card) use ($content) {
                         $card
-                            ->assertSeeIn('@title', $contentTitle)
+                            ->assertSeeIn('@title', $content->getTitle())
                             ->click('@use-button');
                     });
                 })
-                ->assertTitleContains($contentTitle);
+                ->assertTitleContains($content->getTitle());
         });
 
         $this->assertDatabaseCount(Content::class, 2);
+    }
+
+    public function testHidesVersionHistoryToOutsiders(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(function (Browser $browser) use ($content) {
+            $browser
+                ->visit('/content/' . $content->id)
+                ->assertTitleContains($content->getTitle())
+                ->assertNotPresent((new VersionHistory())->selector());
+        });
+    }
+
+    public function testShowsVersionHistoryWhenOwnerOfContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withUser($user)
+            ->withVersion(ContentVersion::factory()->published())
+            ->withVersion(ContentVersion::factory()->unpublished())
+            ->withVersion(ContentVersion::factory()->unpublished())
+            ->withVersion(ContentVersion::factory()->unpublished())
+            ->withVersion(ContentVersion::factory()->published())
+            ->create();
+
+        $this->browse(function (Browser $browser) use ($content, $user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id)
+                ->with(new VersionHistory(), function (Browser $history) {
+                    $history
+                        ->assertPresent('@version:nth-child(1).published')
+                        ->assertPresent('@version:nth-child(2).draft')
+                        ->assertPresent('@version:nth-child(3).draft')
+                        ->assertPresent('@version:nth-child(4).draft')
+                        ->assertPresent('@version:nth-child(5).published');
+                });
+        });
     }
 
     public function testPreviewsContent(): void

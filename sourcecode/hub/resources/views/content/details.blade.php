@@ -82,19 +82,20 @@
             <section>
                 <h2 class="fs-5">{{ trans('messages.version-history') }}</h2>
 
-                <ul class="list-unstyled d-flex flex-column gap-2">
+                <ul class="list-unstyled d-flex flex-column gap-2 version-history">
                     @foreach ($content->versions as $v)
                         @php($isLatest = $content->latestVersion->is($v))
                         @php($isCurrent = $version->is($v))
 
                         <li class="position-relative text-body p-3 border rounded d-flex
-                                   @if ($v->published) border-success-subtle @endif
+                                   @if ($v->published) border-success-subtle published @else draft @endif
                                    @if($content->latestPublishedVersion?->is($v)) bg-success-subtle @endif
                                   ">
                             <span class="flex-grow-1">
                                 <a
                                     href="{{ route('content.version-details', [$content, $v]) }}"
-                                    class="d-block text-body {{ $v->published ? 'link-underline-success' : 'link-underline' }} link-underline-opacity-0 link-underline-opacity-100-hover stretched-link
+                                    class="d-block text-body link-underline-opacity-0 link-underline-opacity-100-hover stretched-link
+                                           {{ $v->published ? 'link-underline-success' : 'link-underline' }}
                                            @if ($isCurrent) fw-bold @endif"
                                 >
                                     <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>

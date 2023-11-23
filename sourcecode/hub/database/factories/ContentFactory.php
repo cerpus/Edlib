@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Content;
+use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
-use App\Models\LtiResource;
-use App\Models\LtiTool;
-use App\Models\LtiVersion;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,21 +21,22 @@ final class ContentFactory extends Factory
         ];
     }
 
+    public function withUser(
+        User|UserFactory $user,
+        ContentUserRole|null $role = ContentUserRole::Owner,
+    ): self {
+        return $this->hasAttached($user, ['role' => $role], 'users');
+    }
+
+    public function withVersion(ContentVersionFactory $version): self
+    {
+        return $this->has($version, 'versions');
+    }
+
     public function withPublishedVersion(): self
     {
-        return $this->has(
-            ContentVersion::factory()
-                ->state(['published' => true])
-                ->for(
-                    LtiResource::factory()->for(
-                        LtiTool::factory()->state([
-                            'lti_version' => LtiVersion::Lti1_1,
-                        ]),
-                        'tool',
-                    ),
-                    'resource',
-                ),
-            'versions',
+        return $this->withVersion(
+            ContentVersion::factory()->published(),
         );
     }
 }
