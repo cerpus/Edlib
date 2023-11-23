@@ -77,6 +77,26 @@ class ContentController extends Controller
         ]);
     }
 
+    public function embed(Content $content, LtiLaunchBuilder $launchBuilder): View
+    {
+        $tool = $content->latestPublishedVersion?->resource?->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $content->latestPublishedVersion?->resource?->view_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/embed');
+
+        return view('content.embed', [
+            'content' => $content,
+            'version' => $content->latestPublishedVersion,
+            'launch' => $launch,
+        ]);
+    }
+
     public function create(): View
     {
         $tools = LtiTool::all();

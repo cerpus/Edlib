@@ -59,7 +59,7 @@ class Content extends Model
 
         return new LtiContent(
             title: $version->resource->title,
-            url: url()->route('content.details', [
+            url: url()->route('lti.content', [
                 'content' => $this->id,
                 SessionScope::TOKEN_PARAM => null,
             ]),

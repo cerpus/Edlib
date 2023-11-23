@@ -13,6 +13,7 @@ use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Http\Middleware\StartScopedLtiSession;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/embed')
+        ->uses([ContentController::class, 'embed'])
+        ->name('content.embed')
+        ->can('view', 'content')
+        ->whereUlid('content');
+
     Route::get('/content/create', 'create')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
@@ -99,14 +106,27 @@ Route::prefix('/lti/dl')->middleware([
         ->whereUlid(['tool', 'content']);
 });
 
-Route::prefix('/lti/1.1')->group(function () {
-    Route::post('/select', [LtiController::class, 'select'])
-        ->middleware([
-            EnsureFrameCookies::class,
-            LtiValidatedRequest::class . ':platform',
-            'lti.launch-type:ContentItemSelectionRequest',
-        ])
-        ->name('lti.select');
+Route::prefix('/lti')->middleware([
+    EnsureFrameCookies::class,
+    LtiValidatedRequest::class . ':platform',
+    StartScopedLtiSession::class,
+])->group(function () {
+    Route::post('/content/{content}')
+        ->uses([LtiController::class, 'content'])
+        ->name('lti.content')
+        ->can('view', 'content')
+        ->whereUlid('content')
+        ->middleware('lti.launch-type:basic-lti-launch-request');
+
+    Route::post('/dl')
+        ->uses([LtiController::class, 'select'])
+        ->name('lti.select')
+        ->middleware('lti.launch-type:ContentItemSelectionRequest');
+
+    // Deprecated: use /lti/dl instead.
+    Route::post('/1.1/select')
+        ->uses([LtiController::class, 'select'])
+        ->middleware('lti.launch-type:ContentItemSelectionRequest');
 });
 
 Route::controller(UserController::class)->group(function () {
