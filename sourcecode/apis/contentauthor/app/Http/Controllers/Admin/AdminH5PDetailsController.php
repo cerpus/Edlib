@@ -21,7 +21,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\Exception\JsonException;
 
 class AdminH5PDetailsController extends Controller
 {
