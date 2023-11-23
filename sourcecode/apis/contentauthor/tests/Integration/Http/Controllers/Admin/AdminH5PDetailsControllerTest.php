@@ -170,7 +170,7 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $this->assertCount(3, $data['languages']);
         $libLang->pluck('language_code')->each(
-            fn($langCode) => $this->assertContains($langCode, $data['languages'])
+            fn ($langCode) => $this->assertContains($langCode, $data['languages'])
         );
     }
 
