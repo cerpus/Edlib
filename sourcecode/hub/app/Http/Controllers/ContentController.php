@@ -107,7 +107,7 @@ class ContentController extends Controller
         $launch = $builder->toItemSelectionLaunch(
             $tool,
             $launchUrl,
-            route('content.lti-update', [$content]),
+            route('content.lti-update', [$tool, $content]),
         );
 
         return view('content.edit', [
@@ -135,7 +135,7 @@ class ContentController extends Controller
             ->toItemSelectionLaunch(
                 $tool,
                 $tool->creator_launch_url,
-                route('content.lti-store'),
+                route('content.lti-store', [$tool]),
             );
 
         return view('content.launch-creator', [
@@ -145,13 +145,11 @@ class ContentController extends Controller
     }
 
     public function ltiStore(
+        LtiTool $tool,
         DeepLinkingReturnRequest $request,
         ContentItemsMapperInterface $mapper,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
-
-        $tool = LtiTool::where('consumer_key', $request->attributes->get('lti')['oauth_consumer_key'] ?? null)
-            ->firstOrFail();
 
         $content = DB::transaction(function () use ($item, $tool) {
             $title = $item->getTitle() ?? throw new Exception('Missing title');
@@ -200,18 +198,19 @@ class ContentController extends Controller
     }
 
     public function ltiUpdate(
+        LtiTool $tool,
         Content $content,
         DeepLinkingReturnRequest $request,
         ContentItemsMapperInterface $mapper,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        DB::transaction(function () use ($content, $item): void {
+        DB::transaction(function () use ($content, $item, $tool): void {
             $title = $item->getTitle() ?? throw new Exception('Missing title');
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
             $resource = new LtiResource();
-            $resource->lti_tool_id = $content->latestPublishedVersion?->resource?->lti_tool_id;
+            $resource->lti_tool_id = $tool->id;
             $resource->title = $title;
             $resource->view_launch_url = $url;
             $resource->save();

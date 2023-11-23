@@ -82,23 +82,22 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('tool');
 });
 
-Route::prefix('/lti/deep-linking-return')
-    ->middleware([
-        LtiValidatedRequest::class . ':tool',
-        'lti.launch-type:ContentItemSelection',
-    ])
-    ->group(function () {
-        Route::post('/store-content')
-            ->uses([ContentController::class, 'ltiStore'])
-            ->can('create', \App\Models\Content::class)
-            ->name('content.lti-store');
+Route::prefix('/lti/dl')->middleware([
+    LtiValidatedRequest::class . ':tool',
+    'lti.launch-type:ContentItemSelection',
+])->group(function () {
+    Route::post('/tool/{tool}/content/create')
+        ->uses([ContentController::class, 'ltiStore'])
+        ->name('content.lti-store')
+        ->can('create', \App\Models\Content::class)
+        ->whereUlid('tool');
 
-        Route::post('/update-content/{content}')
-            ->uses([ContentController::class, 'ltiUpdate'])
-            ->can('edit', 'content')
-            ->name('content.lti-update')
-            ->whereUlid('content');
-    });
+    Route::post('/tool/{tool}/content/{content}/update')
+        ->uses([ContentController::class, 'ltiUpdate'])
+        ->name('content.lti-update')
+        ->can('edit', 'content')
+        ->whereUlid(['tool', 'content']);
+});
 
 Route::prefix('/lti/1.1')->group(function () {
     Route::post('/select', [LtiController::class, 'select'])
