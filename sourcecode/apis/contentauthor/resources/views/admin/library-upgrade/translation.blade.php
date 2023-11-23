@@ -14,7 +14,7 @@
                     <div class="panel-body row">
                         <div class="alert alert-warning">
                             <ul>
-                                <li>This will be a local change only, for exported content the original file is included
+                                <li>Changes done here will not be included when the library is exported
                                 <li>If a new patch version of this library is installed, changes done may be lost
                             </ul>
                         </div>
@@ -43,21 +43,25 @@
                     <div class="panel-body row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h5>Upload language file</h5>
+                                <h5>Upload new translation</h5>
                             </div>
                             <div class="panel-body row">
-                                <form method="post" accept-charset="utf-8" enctype="multipart/form-data" >
-                                    @csrf
-                                    <input
-                                        type="file"
-                                        name="translationFile"
-                                        accept=".json"
-                                    >
-                                    <br>
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        Upload
-                                    </button>
-                                </form>
+                                @if($haveTranslation)
+                                    <form method="post" accept-charset="utf-8" enctype="multipart/form-data" >
+                                        @csrf
+                                        <input
+                                            type="file"
+                                            name="translationFile"
+                                            accept=".json"
+                                        >
+                                        <br>
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            Upload
+                                        </button>
+                                    </form>
+                                @else
+                                    Upload not available
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -69,9 +73,7 @@
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
-                                    @empty($translationDb)
-                                        No data found
-                                    @else
+                                    @if($haveTranslation)
                                         <form method="post" accept-charset="utf-8">
                                             @csrf
                                             <textarea
@@ -85,7 +87,9 @@
                                                 Save
                                             </button>
                                         </form>
-                                    @endempty
+                                    @else
+                                        No data found
+                                    @endif
                                 </td>
                                 <td style="width: 50%;">
                                     @empty($translationFile)

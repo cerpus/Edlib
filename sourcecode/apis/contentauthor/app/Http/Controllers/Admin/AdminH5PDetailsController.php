@@ -197,6 +197,7 @@ class AdminH5PDetailsController extends Controller
         return view('admin.library-upgrade.translation', [
             'library' => $library,
             'languageCode' => $locale,
+            'haveTranslation' => $libLang !== null,
             'translationDb' => $libLang?->translation,
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
@@ -208,7 +209,6 @@ class AdminH5PDetailsController extends Controller
     {
         $errorMsg = '';
         $success = -1;
-        $translation = '';
         $input = $request->validated();
 
         try {
@@ -241,7 +241,8 @@ class AdminH5PDetailsController extends Controller
         return view('admin.library-upgrade.translation', [
             'library' => $library,
             'languageCode' => $locale,
-            'translationDb' => $success === 0 ? $translation : $libLang?->translation,
+            'haveTranslation' => $libLang !== null,
+            'translationDb' => $libLang?->translation,
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),

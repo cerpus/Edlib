@@ -493,7 +493,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertFalse($data['success']);
         $this->assertSame($library->id, $data['library']->id);
         $this->assertSame('nn', $data['languageCode']);
-        $this->assertSame('{"data":"Updated DB translation"}', $data['translationDb']);
+        $this->assertNull($data['translationDb']);
         $this->assertNull($data['translationFile']);
     }
 }
