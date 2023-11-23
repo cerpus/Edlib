@@ -5,18 +5,23 @@ namespace Tests\Integration\Http\Controllers\Admin;
 use App\ApiModels\Resource;
 use App\H5PContent;
 use App\H5PLibrary;
+use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
 use Cerpus\VersionClient\VersionData;
+use Illuminate\Auth\GenericUser;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Tests\TestCase;
 
 class AdminH5PDetailsControllerTest extends TestCase
@@ -27,6 +32,9 @@ class AdminH5PDetailsControllerTest extends TestCase
     public function test_checkLibrary(): void
     {
         $library = H5PLibrary::factory()->create();
+        $libLang = H5PLibraryLanguage::factory(3)->create([
+            'library_id' => $library->id,
+        ]);
         $libraryDep = H5PLibrary::factory()->create([
             'name' => 'H5P.EditorDep',
             'major_version' => 2,
@@ -140,6 +148,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertArrayHasKey('usedBy', $data);
         $this->assertArrayHasKey('info', $data);
         $this->assertArrayHasKey('error', $data);
+        $this->assertArrayHasKey('languages', $data);
 
         $this->assertCount(2, $data['libData']['editorDependencies']);
         $this->assertCount(2, $data['libData']['preloadedDependencies']);
@@ -158,6 +167,11 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $this->assertEquals('H5P.PreDepX', $data['preloadDeps']->first()->requiredLibrary->name);
         $this->assertEquals('H5P.EditorDepX', $data['editorDeps']->first()->requiredLibrary->name);
+
+        $this->assertCount(3, $data['languages']);
+        $libLang->pluck('language_code')->each(
+            fn($langCode) => $this->assertContains($langCode, $data['languages'])
+        );
     }
 
     public function test_contentForLibrary(): void
@@ -273,5 +287,213 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertEquals('Testing', $history['versionPurpose']);
         $this->assertEquals($content->title, $history['content']['title']);
         $this->assertEquals($library->id, $history['content']['library_id']);
+    }
+
+    public function test_libraryTranslation(): void
+    {
+        Storage::fake();
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        H5PLibraryLanguage::factory()->create(['library_id' => $library->id]);
+        $translation = H5PLibraryLanguage::factory()->create([
+            'library_id' => $library->id,
+            'translation' => '{"data":"DB translation"}',
+        ]);
+
+        Storage::put(
+            sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
+            '{"data":"File translation"}'
+        );
+
+        $response = $this->withSession(['user' => $user])
+            ->get(route('admin.library-translation', [$library, $translation->language_code]))
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $response);
+
+        $data = $response->getData();
+        $this->assertSame($library->id, $data['library']->id);
+        $this->assertSame($translation->language_code, $data['languageCode']);
+        $this->assertSame($translation->translation, $data['translationDb']);
+        $this->assertSame('{"data":"File translation"}', $data['translationFile']);
+    }
+
+    public function test_libraryTranslation_UnknownCode(): void
+    {
+        Storage::fake();
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $translation = H5PLibraryLanguage::factory()->create([
+            'library_id' => $library->id,
+            'language_code' => 'nb',
+            'translation' => '{"data":"DB translation"}',
+        ]);
+
+        Storage::put(
+            sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
+            '{"data":"File translation"}'
+        );
+
+        $response = $this->withSession(['user' => $user])
+            ->get(route('admin.library-translation', [$library, 'nn']))
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $response);
+
+        $data = $response->getData();
+        $this->assertSame($library->id, $data['library']->id);
+        $this->assertSame('nn', $data['languageCode']);
+        $this->assertNull($data['translationDb']);
+        $this->assertNull($data['translationFile']);
+    }
+
+    public function test_libraryTranslationUpdate_Text(): void
+    {
+        Storage::fake();
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $unchangedTranslation = H5PLibraryLanguage::factory()->create(['library_id' => $library->id]);
+        $translation = H5PLibraryLanguage::factory()->create([
+            'library_id' => $library->id,
+            'translation' => '{"data":"DB translation"}',
+        ]);
+        $this->assertDatabaseCount('h5p_libraries_languages', 2);
+
+        Storage::put(
+            sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
+            '{"data":"File translation"}'
+        );
+
+        $response = $this->withSession(['user' => $user])
+            ->post(
+                route('admin.library-translation', [$library, $translation->language_code]),
+                ['translation' => '{"data":"Updated DB translation"}']
+            )
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $response);
+        $this->assertDatabaseHas('h5p_libraries_languages', [
+            'library_id' => $library->id,
+            'language_code' => $translation->language_code,
+            'translation' => '{"data":"Updated DB translation"}',
+        ]);
+        $this->assertDatabaseHas('h5p_libraries_languages', [
+            'library_id' => $library->id,
+            'language_code' => $unchangedTranslation->language_code,
+            'translation' => $unchangedTranslation->translation,
+        ]);
+
+        $data = $response->getData();
+        $this->assertTrue($data['success']);
+        $this->assertSame($library->id, $data['library']->id);
+        $this->assertSame($translation->language_code, $data['languageCode']);
+        $this->assertSame('{"data":"Updated DB translation"}', $data['translationDb']);
+        $this->assertSame('{"data":"File translation"}', $data['translationFile']);
+    }
+
+    public function test_libraryTranslationUpdate_FileUpload(): void
+    {
+        Storage::fake();
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $unchangedTranslation = H5PLibraryLanguage::factory()->create(['library_id' => $library->id]);
+        $translation = H5PLibraryLanguage::factory()->create([
+            'library_id' => $library->id,
+            'translation' => '{"data":"DB translation"}',
+        ]);
+
+        Storage::put(
+            sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
+            '{"data":"File translation"}'
+        );
+
+        $file = UploadedFile::fake()->createWithContent(
+            $translation->language_code . '.json',
+            json_encode(['data' => 'Upload translation'])
+        );
+
+        $response = $this->withSession(['user' => $user])
+            ->post(
+                route('admin.library-translation', [$library, $translation->language_code]),
+                ['translationFile' => $file]
+            )
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $response);
+        $this->assertDatabaseHas('h5p_libraries_languages', [
+            'library_id' => $library->id,
+            'language_code' => $translation->language_code,
+            'translation' => '{"data":"Upload translation"}',
+        ]);
+
+        $this->assertDatabaseHas('h5p_libraries_languages', [
+            'library_id' => $library->id,
+            'language_code' => $unchangedTranslation->language_code,
+            'translation' => $unchangedTranslation->translation,
+        ]);
+
+        $data = $response->getData();
+        $this->assertTrue($data['success']);
+        $this->assertSame($library->id, $data['library']->id);
+        $this->assertSame($translation->language_code, $data['languageCode']);
+        $this->assertSame('{"data":"Upload translation"}', $data['translationDb']);
+        $this->assertSame('{"data":"File translation"}', $data['translationFile']);
+    }
+
+    public function test_libraryTranslationUpdate_UnkownCode(): void
+    {
+        Storage::fake();
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $translation = H5PLibraryLanguage::factory()->create([
+            'library_id' => $library->id,
+            'language_code' => 'nb',
+            'translation' => '{"data":"DB translation"}',
+        ]);
+
+        Storage::put(
+            sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
+            '{"data":"File translation"}'
+        );
+
+        $response = $this->withSession(['user' => $user])
+            ->post(
+                route('admin.library-translation', [$library, 'nn']),
+                ['translation' => json_encode(['data' => 'Updated DB translation'])]
+            )
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $response);
+        $this->assertDatabaseMissing('h5p_libraries_languages', [
+            'library_id' => $library->id,
+            'language_code' => 'nn',
+        ]);
+
+        $data = $response->getData();
+        $this->assertFalse($data['success']);
+        $this->assertSame($library->id, $data['library']->id);
+        $this->assertSame('nn', $data['languageCode']);
+        $this->assertSame('{"data":"Updated DB translation"}', $data['translationDb']);
+        $this->assertNull($data['translationFile']);
     }
 }
