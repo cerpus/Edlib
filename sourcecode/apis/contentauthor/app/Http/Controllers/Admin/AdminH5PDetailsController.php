@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Content;
 use App\H5PContent;
 use App\H5PLibrary;
+use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
 use Cerpus\VersionClient\VersionData;
 use Exception;
@@ -102,6 +104,7 @@ class AdminH5PDetailsController extends Controller
             'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),
+            'languages' => H5PLibraryLanguage::select('language_code')->where('library_id', $library->id)->pluck('language_code'),
         ]);
     }
 
@@ -182,6 +185,72 @@ class AdminH5PDetailsController extends Controller
             'latestVersion' => !isset($history[$content->id]['children']),
             'foliumId' => $foliumId,
             'history' => $history,
+        ]);
+    }
+
+    public function libraryTranslation(H5PLibrary $library, string $locale): View
+    {
+        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
+            ->where('language_code', $locale)
+            ->first();
+
+        return view('admin.library-upgrade.translation', [
+            'library' => $library,
+            'languageCode' => $locale,
+            'haveTranslation' => $libLang !== null,
+            'translationDb' => $libLang?->translation,
+            'translationFile' => Storage::disk()->get(
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
+            ),
+            'messages' => collect(),
+        ]);
+    }
+
+    public function libraryTranslationUpdate(AdminTranslationUpdateRequest $request, H5PLibrary $library, string $locale): View
+    {
+        $messages = collect();
+        $input = $request->validated();
+
+        if (array_key_exists('translationFile', $input) && $request->file('translationFile')->isValid()) {
+            $translation = $request->file('translationFile')->getContent();
+        } else {
+            $translation = $input['translation'];
+        }
+
+        if (empty($translation)) {
+            $messages->add('Content was empty');
+        } else {
+            try {
+                json_decode($translation, flags: JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                $messages->add($e->getMessage());
+            }
+
+            if ($messages->isEmpty()) {
+                $count = $library->languages()
+                    ->where('language_code', $locale)
+                    ->limit(1)
+                    ->update(['translation' => $translation]);
+
+                if ($count === 0) {
+                    $messages->add('No rows was updated');
+                }
+            }
+        }
+
+        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
+            ->where('language_code', $locale)
+            ->first();
+
+        return view('admin.library-upgrade.translation', [
+            'library' => $library,
+            'languageCode' => $locale,
+            'haveTranslation' => $libLang !== null,
+            'translationDb' => $libLang?->translation,
+            'translationFile' => Storage::disk()->get(
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
+            ),
+            'messages' => $messages,
         ]);
     }
 
