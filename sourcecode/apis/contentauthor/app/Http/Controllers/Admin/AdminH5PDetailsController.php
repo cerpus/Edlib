@@ -202,7 +202,6 @@ class AdminH5PDetailsController extends Controller
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),
-            'messages' => collect(),
         ]);
     }
 

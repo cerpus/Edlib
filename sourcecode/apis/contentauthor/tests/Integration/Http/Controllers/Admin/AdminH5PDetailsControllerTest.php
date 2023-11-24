@@ -321,7 +321,6 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertSame($translation->language_code, $data['languageCode']);
         $this->assertSame($translation->translation, $data['translationDb']);
         $this->assertSame('{"data":"File translation"}', $data['translationFile']);
-        $this->assertTrue($data['messages']->isEmpty());
     }
 
     public function test_libraryTranslation_UnknownCode(): void
@@ -355,7 +354,6 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertSame('nn', $data['languageCode']);
         $this->assertNull($data['translationDb']);
         $this->assertNull($data['translationFile']);
-        $this->assertTrue($data['messages']->isEmpty());
     }
 
     public function test_libraryTranslationUpdate_Text(): void
