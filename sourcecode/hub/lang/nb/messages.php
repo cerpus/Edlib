@@ -72,7 +72,7 @@ return [
     'privacy-settings' => 'Personvernsinnstillinger',
     'send-full-name-to-lti-tool' => 'Send fullt navn på :site-bruker til verktøy',
     'send-email-to-lti-tool' => 'Send epostadresse på :site-bruker til verktøy',
-    'content-selection' => 'Content selection',
+    'content-selection' => 'Valg av innhold',
     'proxy-launch-to-lti-tool' => 'Returner :site-URLer til verktøy',
     'proxy-launch-to-lti-tool-help' => 'Om aktivert, vil innholdet bli vist gjennom :site. Ellers er plattformen påkrevd å ha utvekslet nøkler med verktøyet på forhånd.',
     'yes' => 'Ja',
