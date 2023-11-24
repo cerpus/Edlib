@@ -64,17 +64,26 @@ class Content extends Model
     public function toLtiLinkItem(): LtiContent
     {
         $version = $this->latestPublishedVersion
-            ?? throw new BadMethodCallException('Calling the thing on content without published version');
-        assert($version->resource !== null);
+            ?? throw new DomainException('No version for content');
+        $resource = $version->resource
+            ?? throw new DomainException('No resource for version');
+        $tool = $resource->tool
+            ?? throw new DomainException('No tool for LTI resource');
 
-        return new LtiContent(
-            title: $version->resource->title,
-            url: url()->route('lti.content', [
+        if ($tool->proxy_launch) {
+            $url = url()->route('lti.content', [
                 'content' => $this->id,
                 SessionScope::TOKEN_PARAM => null,
-            ]),
-            languageIso639_3: $version->resource->language_iso_639_3,
-            license: $version->resource->license,
+            ]);
+        } else {
+            $url = $resource->view_launch_url;
+        }
+
+        return new LtiContent(
+            title: $version->getTitle(),
+            url: $url,
+            languageIso639_3: $resource->language_iso_639_3,
+            license: $resource->license,
         );
     }
 

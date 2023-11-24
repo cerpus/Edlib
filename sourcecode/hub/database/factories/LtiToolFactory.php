@@ -22,7 +22,13 @@ final class LtiToolFactory extends Factory
             'consumer_secret' => $this->faker->password(32),
             'send_name' => $this->faker->boolean,
             'send_email' => $this->faker->boolean,
+            'proxy_launch' => $this->faker->boolean,
         ];
+    }
+
+    public function proxyLaunch(bool $proxyLaunch): self
+    {
+        return $this->state(['proxy_launch' => $proxyLaunch]);
     }
 
     public function withName(string $name): self

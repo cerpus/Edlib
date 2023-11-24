@@ -24,6 +24,7 @@ class LtiTool extends Model
     protected $attributes = [
         'send_name' => false,
         'send_email' => false,
+        'proxy_launch' => false,
     ];
 
     protected $casts = [
@@ -31,6 +32,7 @@ class LtiTool extends Model
         'edit_mode' => LtiToolEditMode::class,
         'send_name' => 'boolean',
         'send_email' => 'boolean',
+        'proxy_launch' => 'boolean',
     ];
 
     protected $hidden = [
@@ -45,6 +47,7 @@ class LtiTool extends Model
         'consumer_secret',
         'send_name',
         'send_email',
+        'proxy_launch',
     ];
 
     /**

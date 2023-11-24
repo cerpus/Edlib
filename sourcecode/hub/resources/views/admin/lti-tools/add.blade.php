@@ -54,7 +54,27 @@ use App\Models\LtiVersion;
             </label>
         </p>
 
-        <fieldset>
+        <fieldset class="mt-3">
+            <legend>{{ trans('messages.launch-settings') }}</legend>
+
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input
+                        type="checkbox"
+                        name="proxy_launch"
+                        value="1"
+                        class="form-check-input"
+                        aria-describedby="proxy-launch-to-lti-tool-help"
+                        @checked(old('proxy_launch', false))
+                    > {{ trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')]) }}
+                </label>
+                <div class="form-text" id="proxy-launch-to-lti-tool-help">
+                    {{ trans('messages.proxy-launch-to-lti-tool-help', ['site' => config('app.name')]) }}
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mt-3">
             <legend>{{ trans('messages.edit-mode') }}</legend>
 
             <div class="position-relative form-check">
@@ -69,9 +89,9 @@ use App\Models\LtiVersion;
                     >
                     <b>{{ trans('messages.edit-mode-replace') }}</b>
                 </label>
-                <p class="form-text" id="edit-mode-replace-help">
+                <div class="form-text" id="edit-mode-replace-help">
                     {{ trans('messages.edit-mode-replace-help') }}
-                </p>
+                </div>
             </div>
 
             <div class="position-relative form-check">
@@ -86,13 +106,13 @@ use App\Models\LtiVersion;
                     >
                     <b>{{ trans('messages.edit-mode-deep-linking-request-to-content-url') }}</b>
                 </label>
-                <p class="form-text" id="edit-mode-deep-linking-request-to-content-url-help">
+                <div class="form-text" id="edit-mode-deep-linking-request-to-content-url-help">
                     {{ trans('messages.edit-mode-deep-linking-request-to-content-url-help') }}
-                </p>
+                </div>
             </div>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="mt-3">
             <legend>{{ trans('messages.privacy-settings') }}</legend>
 
             <div class="form-check">
