@@ -19,7 +19,7 @@
                             </ul>
                         </div>
                     </div>
-                    @if($errors->isNotEmpty() || $messages->isNotEmpty())
+                    @if($errors->isNotEmpty() || (isset($messages) && $messages->isNotEmpty()))
                         <div class="alert alert-danger">
                             Update failed
                             @foreach($errors->all() as $error)
@@ -29,9 +29,9 @@
                                 <pre style="margin-top:1em;">{{ $msg }}</pre>
                             @endforeach
                         </div>
-                    @else
+                    @elseif (isset($messages))
                         <div class="alert alert-success">
-                            Database updated
+                            {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s e') }}: Database updated
                         </div>
                     @endif
                     <div class="panel-body row">
@@ -41,6 +41,7 @@
                             </div>
                             <div class="panel-body row">
                                 @if($haveTranslation)
+                                    Maximum filesize is 50kB
                                     <form method="post" accept-charset="utf-8" enctype="multipart/form-data" >
                                         @csrf
                                         <input
@@ -62,7 +63,7 @@
                     <div class="panel-body row">
                         <table class="table table-striped">
                             <tr>
-                                <th>Database</th>
+                                <th>Database (Max 51200 characters)</th>
                                 <th>File (read only)</th>
                             </tr>
                             <tr>
@@ -74,6 +75,7 @@
                                                 name="translation"
                                                 autocomplete="off"
                                                 required
+                                                maxlength="51200"
                                                 style="width:100%;height:70vh;white-space:pre;"
                                             >{{$translationDb}}</textarea>
                                             <br>
