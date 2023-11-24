@@ -7,7 +7,6 @@ namespace Database\Factories;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
-use App\Models\LtiTool;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
