@@ -84,8 +84,10 @@
 
                 <ul class="list-unstyled d-flex flex-column gap-2 version-history">
                     @foreach ($content->versions as $v)
-                        @php($isLatest = $content->latestVersion->is($v))
-                        @php($isCurrent = $version->is($v))
+                        @php
+                            $isLatest = $content->latestVersion->is($v);
+                            $isCurrent = $version->is($v);
+                        @endphp
 
                         <li class="position-relative text-body p-3 border rounded d-flex
                                    @if ($v->published) border-success-subtle published @else draft @endif
