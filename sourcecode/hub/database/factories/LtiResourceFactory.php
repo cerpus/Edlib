@@ -27,4 +27,9 @@ final class LtiResourceFactory extends Factory
             'license' => $this->faker->randomElement(['CC0-1.0', 'CC-BY-2.5', null]),
         ];
     }
+
+    public function tool(LtiToolFactory $tool): self
+    {
+        return $this->for($tool, 'tool');
+    }
 }

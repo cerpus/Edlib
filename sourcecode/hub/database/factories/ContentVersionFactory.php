@@ -7,7 +7,6 @@ namespace Database\Factories;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiResource;
-use App\Models\LtiTool;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,23 +23,18 @@ final class ContentVersionFactory extends Factory
         ];
     }
 
+    public function resource(LtiResourceFactory $resource): self
+    {
+        return $this->for($resource, 'resource');
+    }
+
     public function published(): self
     {
-        return $this
-            ->state(['published' => true])
-            ->for(
-                LtiResource::factory()->for(LtiTool::factory(), 'tool'),
-                'resource',
-            );
+        return $this->state(['published' => true]);
     }
 
     public function unpublished(): self
     {
-        return $this
-            ->state(['published' => false])
-            ->for(
-                LtiResource::factory()->for(LtiTool::factory(), 'tool'),
-                'resource',
-            );
+        return $this->state(['published' => false]);
     }
 }
