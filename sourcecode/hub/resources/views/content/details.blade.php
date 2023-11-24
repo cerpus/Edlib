@@ -1,31 +1,57 @@
+@props([
+    'version' => $version ?? $content->latestPublishedVersion,
+    'pinnedVersion' => isset($version),
+])
 <x-layout>
-    <x-slot:title>{{ $content->latestPublishedVersion->resource->title }}</x-slot:title>
+    <x-slot:title>{{ $version->resource->title }}</x-slot:title>
 
     <x-slot:head>
         <x-oembed-links />
     </x-slot:head>
 
-    <p>{{ trans('messages.created')}}: {{ $content->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $authorName }}</p>
+    @if (!$version->published)
+        <p class="alert alert-warning" role="alert">
+            {{ trans('messages.viewing-draft-version-notice') }}
+            @if ($pinnedVersion && $content->latestPublishedVersion)
+                <a href="{{ route('content.details', [$content]) }}">{{ trans('messages.view-latest-version') }}</a>
+            @endif
+        </p>
+    @elseif ($pinnedVersion && !$content->latestPublishedVersion?->is($version))
+        <p class="alert alert-info">
+            {{ trans('messages.viewing-old-version-notice') }}
+            @if ($content->latestPublishedVersion)
+                <a href="{{ route('content.details', $content) }}">{{ trans('messages.view-latest-version') }}</a>
+            @endif
+        </p>
+    @endif
 
-    <p>{{ trans('messages.last-updated')}}: {{ $content->updated_at->isoFormat('LL') }}</p>
+    {{-- TODO: Show more author names if there are any --}}
+    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
 
     <x-lti-launch :launch="$launch" />
 
     <div class="d-flex flex-gap gap-2">
-        @can('edit', $content)
-            <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary">
-                <x-icon name="pencil" class="me-1" />
-                {{ trans('messages.edit')}}
-            </a>
-        @endcan
+        {{-- TODO: be able to edit pinned versions --}}
+        @if (!$pinnedVersion)
+            @can('edit', $content)
+                <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary">
+                    <x-icon name="pencil" class="me-1" />
+                    {{ trans('messages.edit')}}
+                </a>
+            @endcan
+        @endif
 
-    @can('use', $content)
-        <x-form action="{{ route('content.use', [$content]) }}">
-            <button type="button" class="btn btn-secondary">
-                {{ trans('messages.use-content')}}
-            </button>
-        </x-form>
-    @endcan
+        {{-- TODO: be able to use pinned versions --}}
+        @if (!$pinnedVersion)
+            @can('use', $content)
+                <x-form action="{{ route('content.use', [$content]) }}">
+                    <button class="btn btn-secondary">
+                        {{ trans('messages.use-content')}}
+                    </button>
+                </x-form>
+            @endcan
+        @endif
+    </div>
 
     {{-- TODO: --}}
 {{--    @can('delete', $content)--}}
@@ -52,37 +78,54 @@
 {{--    </div>--}}
 
     <x-slot:sidebar>
-        <section>
-            <h2 class="fs-5">{{ trans('messages.version-history') }}
-                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ trans('messages.version-history-tooltip')}}">
-                    <x-icon name="info-circle" class="ms-2" />
-                </span>
-            </h2>
-            <ul class="p-0">
-                @foreach ($content->versions->sortByDesc('created_at')->take(3) as $index => $version)
-                    <x-version-details :version="$version" :index="$index" :loop="$loop" />
-                @endforeach
-            </ul>
+        @can('edit', $content)
+            <section>
+                <h2 class="fs-5">{{ trans('messages.version-history') }}</h2>
 
-            @if(count($content->versions) > 3)
-                <button class="btn btn-link d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVersions" aria-expanded="false" aria-label="{{ trans('messages.toggle-listing-of-all-versions')}}">
-                    <x-icon name="chevron-down" class="text-black" aria-hidden="true"/>
-                </button>
-                <div class="collapse" id="collapseVersions">
-                    <ul class="p-0">
-                        @foreach ($content->versions->sortByDesc('created_at')->slice(3) as $index => $version)
-                            <x-version-details :version="$version" :index="$index" :loop="$loop" />
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        </section>
+                <ul class="list-unstyled d-flex flex-column gap-2 version-history">
+                    @foreach ($content->versions as $v)
+                        @php
+                            $isLatest = $content->latestVersion->is($v);
+                            $isCurrent = $version->is($v);
+                        @endphp
+
+                        <li class="position-relative text-body p-3 border rounded d-flex
+                                   @if ($v->published) border-success-subtle published @else draft @endif
+                                   @if($content->latestPublishedVersion?->is($v)) bg-success-subtle @endif
+                                  ">
+                            <span class="flex-grow-1">
+                                <a
+                                    href="{{ route('content.version-details', [$content, $v]) }}"
+                                    class="d-block text-body link-underline-opacity-0 link-underline-opacity-100-hover stretched-link
+                                           {{ $v->published ? 'link-underline-success' : 'link-underline' }}
+                                           @if ($isCurrent) fw-bold @endif"
+                                >
+                                    <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>
+                                </a>
+
+                                @if ($content->latestPublishedVersion?->is($v))
+                                    <small class="d-block">{{ trans('messages.current-published-version') }}</small>
+                                @elseif ($content->latestDraftVersion?->is($v))
+                                    <small class="d-block">{{ trans('messages.latest-draft') }}</small>
+                                @endif
+                            </span>
+
+                            @if ($v->published)
+                                <x-icon name="check-circle" label="{{ trans('messages.published') }}" class="text-success" />
+                            @else
+                                <x-icon name="pencil" label="{{ trans('messages.draft') }}" class="text-body-secondary" />
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+        @endif
 
         @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
             @php($version = $content->latestVersion)
 
             <details>
-                <summary>Debug</summary>
+                <summary class="fs-5">Debug</summary>
 
                 <dl>
                     <dt>ID</dt>
@@ -103,5 +146,5 @@
         @endif
     </x-slot:sidebar>
 
-    <x-delete-modal />
+{{--    <x-delete-modal />--}}
 </x-layout>

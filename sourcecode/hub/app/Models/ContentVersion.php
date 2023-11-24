@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +26,12 @@ class ContentVersion extends Model
     protected $touches = [
         'content',
     ];
+
+    public function getTitle(): string
+    {
+        return $this->resource?->title
+            ?? throw new DomainException('The content version has no title');
+    }
 
     /**
      * @return BelongsTo<Content, self>
@@ -48,5 +55,13 @@ class ContentVersion extends Model
     public function scopePublished(Builder $query): void
     {
         $query->where('published', true);
+    }
+
+    /**
+     * @param Builder<self> $query
+     */
+    public function scopeDraft(Builder $query): void
+    {
+        $query->where('published', false);
     }
 }

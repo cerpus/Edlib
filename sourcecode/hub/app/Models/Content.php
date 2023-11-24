@@ -9,6 +9,7 @@ use App\Lti\LtiContent;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use DomainException;
 use DOMDocument;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +37,15 @@ class Content extends Model
     use Searchable;
 
     protected $perPage = 48;
+
+    public function getTitle(): string
+    {
+        $version = $this->latestPublishedVersion
+            ?? $this->latestDraftVersion
+            ?? throw new DomainException('The content has no versions');
+
+        return $version->getTitle();
+    }
 
     public function toItemSelectionRequest(): Oauth1Request
     {
@@ -98,6 +108,19 @@ class Content extends Model
     /**
      * @return HasOne<ContentVersion>
      */
+    public function latestDraftVersion(): HasOne
+    {
+        return $this->hasOne(ContentVersion::class)
+            ->has('resource')
+            ->ofMany(['id' => 'max'], function (Builder $query) {
+                /** @var Builder<ContentVersion> $query */
+                $query->draft();
+            });
+    }
+
+    /**
+     * @return HasOne<ContentVersion>
+     */
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
@@ -127,6 +150,11 @@ class Content extends Model
                 'role' => ContentUserRole::class,
             ])
             ->withTimestamps();
+    }
+
+    public function hasUser(User $user): bool
+    {
+        return $this->users()->where('id', $user->id)->exists();
     }
 
     /**
@@ -200,14 +228,5 @@ class Content extends Model
         $document->appendChild($root);
 
         return $document;
-    }
-
-    /**
-     * @return BelongsToMany<User>
-     */
-    public function authors(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'content_user', 'content_id', 'user_id')
-            ->select('users.name');
     }
 }

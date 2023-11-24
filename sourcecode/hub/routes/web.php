@@ -58,6 +58,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/version/{version}')
+        ->uses([ContentController::class, 'version'])
+        ->name('content.version-details')
+        ->can('view', ['content', 'version'])
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
+
     Route::get('/content/{content}/embed')
         ->uses([ContentController::class, 'embed'])
         ->name('content.embed')
