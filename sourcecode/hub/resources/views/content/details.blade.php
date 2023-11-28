@@ -141,7 +141,10 @@
                     <dd><kbd>{{ $version->lti_launch_url }}</kbd></dd>
                 </dl>
 
-                <x-lti-debug :request="$launch->getRequest()" />
+                <x-lti-debug
+                    :url="$launch->getRequest()->getUrl()"
+                    :parameters="$launch->getRequest()->toArray()"
+                />
             </details>
         @endif
     </x-slot:sidebar>

@@ -50,6 +50,17 @@
                     </aside>
                 @endisset
             </div>
+
+            @if (
+                request()->hasPreviousSession() &&
+                request()->session()->has('lti') &&
+                (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
+            )
+                <details>
+                    <summary>LTI launch details</summary>
+                    <x-lti-debug :parameters="request()->session()->get('lti')" />
+                </details>
+            @endif
         </div>
 
         @if ($nav)

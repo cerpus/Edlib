@@ -7,7 +7,10 @@
         @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
             <details>
                 <summary>Debug</summary>
-                <x-lti-debug :request="$launch->getRequest()" />
+                <x-lti-debug
+                    :url="$launch->getRequest()->getUrl()"
+                    :parameters="$launch->getRequest()->toArray()"
+                />
             </details>
         @endif
     </x-slot:sidebar>
