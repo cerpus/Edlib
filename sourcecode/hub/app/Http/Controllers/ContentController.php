@@ -10,7 +10,6 @@ use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
-use App\Models\LtiResource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
@@ -58,10 +57,10 @@ class ContentController extends Controller
     {
         $version = $content->latestPublishedVersion()->firstOrFail();
 
-        $tool = $version->resource?->tool;
+        $tool = $version->tool;
         assert($tool instanceof LtiTool);
 
-        $launchUrl = $version->resource?->view_launch_url;
+        $launchUrl = $version->lti_launch_url;
         assert(is_string($launchUrl));
 
         $launch = $launchBuilder
@@ -80,10 +79,10 @@ class ContentController extends Controller
         ContentVersion $version,
         LtiLaunchBuilder $launchBuilder,
     ): View {
-        $launchUrl = $version->resource?->view_launch_url;
+        $launchUrl = $version->lti_launch_url;
         assert(is_string($launchUrl));
 
-        $tool = $version->resource?->tool;
+        $tool = $version->tool;
         assert($tool instanceof LtiTool);
 
         $launch = $launchBuilder->toPresentationLaunch(
@@ -101,10 +100,10 @@ class ContentController extends Controller
 
     public function embed(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
-        $tool = $content->latestPublishedVersion?->resource?->tool;
+        $tool = $content->latestPublishedVersion?->tool;
         assert($tool instanceof LtiTool);
 
-        $launchUrl = $content->latestPublishedVersion?->resource?->view_launch_url;
+        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
         assert(is_string($launchUrl));
 
         $launch = $launchBuilder
@@ -138,13 +137,14 @@ class ContentController extends Controller
 
     public function edit(Content $content, LtiLaunchBuilder $builder): View
     {
-        $resource = $content->latestPublishedVersion?->resource ?? abort(404);
-        $tool = $resource?->tool ?? abort(404);
+        $version = $content->latestPublishedVersion ?? abort(404);
+        $tool = $version->tool ?? abort(404);
 
         $launchUrl = match ($tool->edit_mode) {
             LtiToolEditMode::Replace => $tool->creator_launch_url,
-            LtiToolEditMode::DeepLinkingRequestToContentUrl => $resource->view_launch_url,
+            LtiToolEditMode::DeepLinkingRequestToContentUrl => $version->lti_launch_url,
         };
+        assert(is_string($launchUrl));
 
         $launch = $builder->toItemSelectionLaunch(
             $tool,
@@ -197,17 +197,13 @@ class ContentController extends Controller
             $title = $item->getTitle() ?? throw new Exception('Missing title');
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
-            $resource = new LtiResource();
-            $resource->title = $title;
-            $resource->lti_tool_id = $tool->id;
-            $resource->view_launch_url = $url;
-            $resource->save();
-
             $content = new Content();
             $content->save();
 
             $contentVersion = new ContentVersion();
-            $contentVersion->lti_resource_id = $resource->id;
+            $contentVersion->title = $title;
+            $contentVersion->lti_tool_id = $tool->id;
+            $contentVersion->lti_launch_url = $url;
             $contentVersion->published = true; // TODO
 
             $content->users()->save($this->getUser(), [
@@ -251,14 +247,10 @@ class ContentController extends Controller
             $title = $item->getTitle() ?? throw new Exception('Missing title');
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
-            $resource = new LtiResource();
-            $resource->lti_tool_id = $tool->id;
-            $resource->title = $title;
-            $resource->view_launch_url = $url;
-            $resource->save();
-
             $version = new ContentVersion();
-            $version->lti_resource_id = $resource->id;
+            $version->lti_tool_id = $tool->id;
+            $version->title = $title;
+            $version->lti_launch_url = $url;
             $version->published = true; // TODO
 
             $content->versions()->save($version);

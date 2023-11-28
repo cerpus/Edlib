@@ -6,7 +6,6 @@ namespace Tests\Feature;
 
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\LtiResource;
 use App\Models\LtiTool;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -58,11 +57,10 @@ final class ContentTest extends TestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->resource(
-                        LtiResource::factory()
-                            ->state(['view_launch_url' => 'https://launch.example.com/'])
-                            ->tool(LtiTool::factory()->proxyLaunch(false))
-                    )
+                    ->tool(LtiTool::factory()->proxyLaunch(false))
+                    ->state([
+                        'lti_launch_url' => 'https://launch.example.com/'
+                    ])
             )
             ->create();
 
@@ -78,11 +76,10 @@ final class ContentTest extends TestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->published()
-                    ->resource(
-                        LtiResource::factory()
-                            ->state(['view_launch_url' => 'https://launch.example.com/'])
-                            ->tool(LtiTool::factory()->proxyLaunch(true))
-                    )
+                    ->state([
+                        'lti_launch_url' => 'https://launch.example.com/'
+                    ])
+                    ->tool(LtiTool::factory()->proxyLaunch(true))
             )
             ->create();
 

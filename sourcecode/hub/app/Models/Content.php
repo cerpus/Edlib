@@ -65,9 +65,7 @@ class Content extends Model
     {
         $version = $this->latestPublishedVersion
             ?? throw new DomainException('No version for content');
-        $resource = $version->resource
-            ?? throw new DomainException('No resource for version');
-        $tool = $resource->tool
+        $tool = $version->tool
             ?? throw new DomainException('No tool for LTI resource');
 
         if ($tool->proxy_launch) {
@@ -76,14 +74,15 @@ class Content extends Model
                 SessionScope::TOKEN_PARAM => null,
             ]);
         } else {
-            $url = $resource->view_launch_url;
+            $url = $version->lti_launch_url;
         }
+        assert(is_string($url));
 
         return new LtiContent(
             title: $version->getTitle(),
             url: $url,
-            languageIso639_3: $resource->language_iso_639_3,
-            license: $resource->license,
+            languageIso639_3: $version->language_iso_639_3,
+            license: $version->license,
         );
     }
 
@@ -109,9 +108,7 @@ class Content extends Model
      */
     public function latestVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)
-            ->has('resource')
-            ->latestOfMany();
+        return $this->hasOne(ContentVersion::class)->latestOfMany();
     }
 
     /**
@@ -120,7 +117,6 @@ class Content extends Model
     public function latestDraftVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
-            ->has('resource')
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->draft();
@@ -133,7 +129,6 @@ class Content extends Model
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
-            ->has('resource')
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->published();
@@ -174,7 +169,7 @@ class Content extends Model
         $version = $this->latestPublishedVersion ?? $this->latestVersion;
         assert($version !== null);
 
-        $title = $version->resource?->title ?? null;
+        $title = $version->title ?? null;
         assert($title !== null);
 
         return [
@@ -185,14 +180,14 @@ class Content extends Model
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'license' => $version->resource?->license,
-            'language_iso_639_3' => $version->resource?->language_iso_639_3,
+            'license' => $version->license,
+            'language_iso_639_3' => $version->language_iso_639_3,
         ];
     }
 
     public function shouldBeSearchable(): bool
     {
-        return $this->versions()->has('resource')->exists();
+        return $this->versions()->exists();
     }
 
     public static function findShared(string $query = ''): ScoutBuilder
@@ -212,7 +207,6 @@ class Content extends Model
             ->orderBy('updated_at', 'desc')
             ->query(fn (Builder $query) => $query->with([
                 'latestVersion',
-                'latestVersion.resource'
             ]));
     }
 

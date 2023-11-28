@@ -18,6 +18,11 @@ class ContentVersion extends Model
 
     public const UPDATED_AT = null;
 
+    /** @var array<string, string> */
+    protected $attributes = [
+        'language_iso_639_3' => 'und',
+    ];
+
     protected $casts = [
         'published' => 'boolean',
     ];
@@ -29,7 +34,7 @@ class ContentVersion extends Model
 
     public function getTitle(): string
     {
-        return $this->resource?->title
+        return $this->title
             ?? throw new DomainException('The content version has no title');
     }
 
@@ -42,11 +47,11 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<LtiResource, self>
+     * @return BelongsTo<LtiTool, self>
      */
-    public function resource(): BelongsTo
+    public function tool(): BelongsTo
     {
-        return $this->belongsTo(LtiResource::class, 'lti_resource_id');
+        return $this->belongsTo(LtiTool::class, 'lti_tool_id');
     }
 
     /**

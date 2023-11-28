@@ -14,7 +14,7 @@ final class LtiToolController extends Controller
 {
     public function index(): View
     {
-        $tools = LtiTool::withCount('resources')->get();
+        $tools = LtiTool::withCount('contentVersions')->get();
 
         return view('admin.lti-tools.index', [
             'tools' => $tools,

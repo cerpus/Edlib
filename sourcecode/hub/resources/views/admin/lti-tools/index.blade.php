@@ -14,7 +14,7 @@
                         (none)
                     @endif
                     <dt>Associated resources
-                    <dd>{{ $tool->resources_count }}
+                    <dd>{{ $tool->content_versions_count }}
                     <dt>{{ trans('messages.send-full-name-to-lti-tool', ['site' => config('app.name')]) }}</dt>
                     <dd>{{ $tool->send_name ? trans('messages.yes') : trans('messages.no') }}</dd>
                     <dt>{{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}</dt>

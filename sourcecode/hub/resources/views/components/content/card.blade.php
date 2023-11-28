@@ -23,7 +23,7 @@
                 }}
             </div>
             <div class="text-line-clamp-2 content-card-title">
-                {{ $version->resource->title }}
+                {{ $version->title }}
             </div>
         </a>
         <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">

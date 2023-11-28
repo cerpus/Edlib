@@ -3,7 +3,7 @@
     'pinnedVersion' => isset($version),
 ])
 <x-layout>
-    <x-slot:title>{{ $version->resource->title }}</x-slot:title>
+    <x-slot:title>{{ $version->title }}</x-slot:title>
 
     <x-slot:head>
         <x-oembed-links />
@@ -134,11 +134,11 @@
                     <dt>Version ID</Dt>
                     <dd><kbd>{{ $version->id }}</kbd></dd>
 
-                    <dt>Resource ID</dt>
-                    <dd><kbd>{{ $version->lti_resource_id }}</kbd></dd>
+                    <dt>Tool ID</dt>
+                    <dd><kbd>{{ $version->lti_tool_id }}</kbd></dd>
 
                     <dt>Presentation launch URL</dt>
-                    <dd><kbd>{{ $version->resource->view_launch_url }}</kbd></dd>
+                    <dd><kbd>{{ $version->lti_launch_url }}</kbd></dd>
                 </dl>
 
                 <x-lti-debug :request="$launch->getRequest()" />

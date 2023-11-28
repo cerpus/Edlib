@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\LtiResource;
 use App\Models\LtiTool;
 use App\Models\LtiVersion;
 use App\Models\User;
@@ -27,14 +26,11 @@ class DatabaseSeeder extends Seeder
             ])
             ->create();
 
-        $ltiResourceFactory = LtiResource::factory()
+        $contentVersionFactory = ContentVersion::factory()
             ->state([
                 'lti_tool_id' => $ltiTool->id,
-                'view_launch_url' => 'https://ca.edlib.test/lti-content/1',
-            ]);
-
-        $contentVersionFactory = ContentVersion::factory()
-            ->state(['lti_resource_id' => $ltiResourceFactory])
+                'lti_launch_url' => 'https://ca.edlib.test/lti-content/1',
+            ])
             ->count(5);
 
         Content::factory()

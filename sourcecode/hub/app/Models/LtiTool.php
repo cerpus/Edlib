@@ -51,11 +51,11 @@ class LtiTool extends Model
     ];
 
     /**
-     * @return HasMany<LtiResource>
+     * @return HasMany<ContentVersion>
      */
-    public function resources(): HasMany
+    public function contentVersions(): HasMany
     {
-        return $this->hasMany(LtiResource::class);
+        return $this->hasMany(ContentVersion::class);
     }
 
     public function getOauth1Credentials(): Credentials

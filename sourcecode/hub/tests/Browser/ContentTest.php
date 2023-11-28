@@ -118,7 +118,7 @@ final class ContentTest extends DuskTestCase
             ->fresh(); // FIXME: why won't this work without?
         assert($content instanceof Content);
 
-        $expectedTitle = $content->latestPublishedVersion?->resource?->title;
+        $expectedTitle = $content->latestPublishedVersion?->title;
         assert($expectedTitle !== null);
 
         $this->browse(function (Browser $browser) use ($content, $expectedTitle) {

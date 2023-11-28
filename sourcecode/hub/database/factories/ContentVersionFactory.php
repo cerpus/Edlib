@@ -6,7 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\LtiResource;
+use App\Models\LtiTool;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,16 +16,24 @@ final class ContentVersionFactory extends Factory
 {
     public function definition(): array
     {
+        $contentAuthorId = $this->faker->numberBetween(1, 5);
+        $title = $this->faker->sentence;
+
         return [
             'content_id' => Content::factory(),
-            'lti_resource_id' => LtiResource::factory(),
             'published' => $this->faker->boolean,
+            'title' => $title,
+            'title_html' => $title,
+            'lti_tool_id' => LtiTool::factory(),
+            'lti_launch_url' => 'https://ca.edlib.test/lti-content/' . $contentAuthorId,
+            'language_iso_639_3' => $this->faker->randomElement(['eng', 'nob']),
+            'license' => $this->faker->randomElement(['CC0-1.0', 'CC-BY-2.5', null]),
         ];
     }
 
-    public function resource(LtiResourceFactory $resource): self
+    public function tool(LtiToolFactory $tool): self
     {
-        return $this->for($resource, 'resource');
+        return $this->for($tool, 'tool');
     }
 
     public function published(): self
