@@ -15,4 +15,7 @@ environments:
             - 'php artisan event:cache'
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
-            - php artisan migrate --force
+            - 'php artisan migrate --force'
+            - "php artisan scout:delete-index 'App\Models\Content'"
+            - 'php artisan scout:sync-index-settings'
+            - "php artisan scout:import 'App\Models\Content'"
