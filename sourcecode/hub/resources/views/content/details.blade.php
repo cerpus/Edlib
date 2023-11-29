@@ -89,16 +89,33 @@
                             $isCurrent = $version->is($v);
                         @endphp
 
-                        <li class="position-relative text-body p-3 border rounded d-flex
-                                   @if ($v->published) border-success-subtle published @else draft @endif
-                                   @if($content->latestPublishedVersion?->is($v)) bg-success-subtle @endif
-                                  ">
+                        <li
+                            @class([
+                                'position-relative',
+                                'text-body',
+                                'p-3',
+                                'border',
+                                'rounded',
+                                'd-flex',
+                                'border-success-subtle' => $v->published,
+                                'published' => $v->published,
+                                'draft' => !$v->published,
+                                'bg-success-subtle' => $content->latestPublishedVersion?->is($v),
+                            ])
+                        >
                             <span class="flex-grow-1">
                                 <a
                                     href="{{ route('content.version-details', [$content, $v]) }}"
-                                    class="d-block text-body link-underline-opacity-0 link-underline-opacity-100-hover stretched-link
-                                           {{ $v->published ? 'link-underline-success' : 'link-underline' }}
-                                           @if ($isCurrent) fw-bold @endif"
+                                    @class([
+                                        'd-block',
+                                        'text-body',
+                                        'link-underline-opacity-0',
+                                        'link-underline-opacity-100-hover',
+                                        'stretched-link',
+                                        'link-underline-success' => $v->published,
+                                        'link-underline' => !$v->published,
+                                        'fw-bold' => $isCurrent,
+                                    ])
                                 >
                                     <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>
                                 </a>

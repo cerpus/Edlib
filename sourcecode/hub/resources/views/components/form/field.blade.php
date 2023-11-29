@@ -8,7 +8,7 @@
     'text' => null,
 ])
 
-<div class="mb-3 {{ $errors->has($name) ? 'has-validation' : '' }}">
+<div @class(['mb-3', 'has-validation' => $errors->has($name)])>
     <label for="{{ $name }}">
         {{ $label ?: $name }}
         @if ($required)

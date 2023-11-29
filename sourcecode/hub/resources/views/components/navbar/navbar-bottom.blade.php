@@ -5,7 +5,7 @@
                 <li class="nav-item">
                     <a
                         href="{{ route('content.index') }}"
-                        class="nav-link @if(request()->routeIs('content.index')) active @endif"
+                        @class(['nav-link', 'active' => request()->routeIs('content.index')])
                         title="{{ trans('messages.explore') }}"
                     >
                         <svg width="30" height="33" viewBox="0 0 24 24" class="bi" >
@@ -20,7 +20,7 @@
                 <li class="nav-item">
                     <a
                         href="{{ route('content.create') }}"
-                        class="nav-link h1 @if(request()->routeIs('content.create')) active @endif"
+                        @class(['nav-link', 'h1', 'active' => request()->routeIs('content.create')])
                         title="{{ trans('messages.create') }}"
                     >
                         <x-icon name="plus-lg" class="me-1 display-6" />
@@ -30,7 +30,7 @@
                 <li class="nav-item">
                     <a
                         href="{{ route('content.mine') }}"
-                        class="nav-link @if(request()->routeIs('content.mine')) active @endif"
+                        @class(['nav-link', 'active' => request()->routeIs('content.mine')])
                         title="{{ trans('messages.my-content') }}"
                     >
                         <x-icon name="person-lines-fill" class="me-1 display-6" />
@@ -94,7 +94,7 @@
                         <li class="nav-item">
                             <a
                                 href="{{ route('login') }}"
-                                class="nav-link @if(request()->routeIs('login')) active @endif"
+                                @class(['nav-link', 'active' => request()->routeIs('login')])
                             >
                                 {{ trans('messages.log-in') }}
                             </a>
@@ -105,7 +105,7 @@
                         <li class="nav-item">
                             <a
                                 href="{{ route('register') }}"
-                                class="nav-link @if(request()->routeIs('register')) active @endif"
+                                @class(['nav-link', 'active' => request()->routeIs('register')])
                             >
                                 {{ trans('messages.sign-up') }}
                             </a>

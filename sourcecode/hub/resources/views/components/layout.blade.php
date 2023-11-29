@@ -14,7 +14,7 @@
         {{ $head ?? '' }}
     </head>
 
-    <body class="@if ($nav) body-nav-margin @endif">
+    <body @class(['body-nav-margin' => $nav])>
         @if ($nav)
             <x-navbar.navbar-top />
         @endif
@@ -34,7 +34,7 @@
 
         <div class="container-md">
             <div class="row">
-                <main class="col-12 @isset($sidebar) col-lg-9 @endisset">
+                <main @class(['col-12', 'col-lg-9' => isset($sidebar)])>
                     @if ($showHeader)
                         <header>
                             <h1 class="fs-2">{{ $title }}</h1>
