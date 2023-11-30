@@ -7,6 +7,9 @@ use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\User;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -367,29 +370,25 @@ class CRUTest extends TestCase
             'getAdapterName' => "UnitTest"
         ]);
 
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->post(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'frame' => "1",
-                'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => '',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 0,
-                'isDraft' => 0,
-            ])
-            ->assertStatus(Response::HTTP_CREATED);
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'frame' => "1",
+            'copyright' => "1",
+            'col_email' => '',
+            'col-emails' => '',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 0,
+            'isDraft' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
 
         $this->withSession([
             'authId' => $owner->auth_id,
@@ -397,22 +396,36 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->post(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource 2',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'frame' => "1",
-                'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => '',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 1,
-                'isDraft' => 0,
-            ])
+            ->post(route('h5p.store'), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource 2',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'frame' => "1",
+            'copyright' => "1",
+            'col_email' => '',
+            'col-emails' => '',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 1,
+            'isDraft' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
+        $this->withSession([
+            'authId' => $owner->auth_id,
+            'name' => $owner->name,
+            'email' => $owner->email,
+            'verifiedEmails' => [$owner->email],
+        ])
+            ->post(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'New resource', 'is_published' => 0]);
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'New resource 2', 'is_published' => 1]);
@@ -430,23 +443,28 @@ class CRUTest extends TestCase
             'isUserPublishEnabled' => true,
         ]);
 
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 'invalidValue',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->postJson(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 'invalidValue',
-            ])
+            ->postJson(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -462,23 +480,28 @@ class CRUTest extends TestCase
             'isUserPublishEnabled' => false,
         ]);
 
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 'invalidValue',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->postJson(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 'invalidValue',
-            ])
+            ->postJson(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(0, H5PContent::all());
     }

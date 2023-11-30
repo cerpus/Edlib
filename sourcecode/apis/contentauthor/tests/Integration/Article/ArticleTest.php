@@ -7,6 +7,9 @@ use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
@@ -225,35 +228,52 @@ class ArticleTest extends TestCase
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
+        $request = new Oauth1Request('POST', route('article.store'), [
+            'title' => "New article",
+            'content' => "New content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         Event::fake();
         $authId = Str::uuid();
         $this->withSession(['authId' => $authId])
-            ->post(route('article.store'), [
-                'title' => "New article",
-                'content' => "New content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY',
-            ])
+            ->post(route('article.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'New article',
             'content' => 'New content',
             'is_published' => 0,
             'license' => 'BY',
         ]);
+
         /** @var Article $article */
         $article = Article::where('title', 'New article')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY-ND',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY-ND',
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => 'Content',
@@ -263,14 +283,22 @@ class ArticleTest extends TestCase
 
         /** @var Article $article */
         $article = Article::where('title', 'Title')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 1,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 1,
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
 
         /** @var Article $article */
