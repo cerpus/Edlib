@@ -18,6 +18,9 @@ use App\Libraries\QuestionSet\QuestionSetConvert;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Faker\Provider\Uuid;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -607,15 +610,21 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
 
+        $request = new Oauth1Request('POST', route('questionset.store'), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $authId = Str::uuid();
         $this->withSession(["authId" => $authId])
-            ->post(route('questionset.store'), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-            ])
+            ->post(route('questionset.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('question_sets', ['title' => "New title", "tags" => "", "is_published" => 0]);
 
@@ -623,26 +632,39 @@ class QuestionSetControllerTest extends TestCase
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
+
+        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 1,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 1,
-            ])
+            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 1]);
 
+        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-            ])
+            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 0]);
