@@ -155,6 +155,20 @@
                                     @endisset
                                 </td>
                             </tr>
+                            <tr>
+                                <th>Translations</th>
+                                <td colspan="2">
+                                    @foreach($languages as $lang)
+                                        <a
+                                            href="{{ route('admin.library-translation', [$library->id, $lang]) }}"
+                                            class="btn btn-default"
+                                        >
+                                            {{ $lang }}
+                                        </a>
+                                    @endforeach
+                                </td>
+                                <td></td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -171,14 +185,22 @@
                                 <th>semantics.json</th>
                             </tr>
                             <tr>
-                                <td>
+                                <td style="width:50%">
                                     @if(!empty($library->semantics))
-                                        <textarea wrap="off" readonly style="width:400px;height:300px;">{!!$library->semantics!!}</textarea>
+                                        <textarea
+                                            readonly
+                                            rows="15"
+                                            style="width:100%;white-space:pre"
+                                        >{!!$library->semantics!!}</textarea>
                                     @endif
                                 </td>
                                 <td>
                                     @if(!empty($libData['semantics']))
-                                        <textarea wrap="off" readonly style="width:400px;height:300px;">{!! $libData['semantics'] !!}</textarea>
+                                        <textarea
+                                            readonly
+                                            rows="15"
+                                            style="width:100%;white-space:pre"
+                                        >{!! $libData['semantics'] !!}</textarea>
                                     @endif
                                 </td>
                             </tr>

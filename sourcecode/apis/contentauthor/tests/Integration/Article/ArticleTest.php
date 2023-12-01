@@ -7,6 +7,9 @@ use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
@@ -25,7 +28,6 @@ class ArticleTest extends TestCase
 
     public function testRewriteUploadUrls(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="/h5pstorage/article-uploads/foo.jpg"></p>',
         ]);
@@ -38,7 +40,6 @@ class ArticleTest extends TestCase
 
     public function testLeavesNonUploadUrlsAlone(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p>This is an image: <img src="http://example.com/foo.jpg"></p>',
         ]);
@@ -51,7 +52,6 @@ class ArticleTest extends TestCase
 
     public function testRendersArticleWithBrokenHtml(): void
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<div>Foo<b></div>bar</b>',
         ]);
@@ -181,7 +181,6 @@ class ArticleTest extends TestCase
         ]);
         Event::fake();
         $authId = Str::uuid();
-        /** @var Article $article */
         $article = Article::factory()->create([
             'owner_id' => $authId,
             'is_published' => 1,
@@ -206,6 +205,7 @@ class ArticleTest extends TestCase
             'license' => 'BY-NC',
         ]);
 
+        /** @var Article $newArticle */
         $newArticle = Article::where('title', "Title")
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -228,35 +228,52 @@ class ArticleTest extends TestCase
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
+        $request = new Oauth1Request('POST', route('article.store'), [
+            'title' => "New article",
+            'content' => "New content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         Event::fake();
         $authId = Str::uuid();
         $this->withSession(['authId' => $authId])
-            ->post(route('article.store'), [
-                'title' => "New article",
-                'content' => "New content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY',
-            ])
+            ->post(route('article.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'New article',
             'content' => 'New content',
             'is_published' => 0,
             'license' => 'BY',
         ]);
+
         /** @var Article $article */
         $article = Article::where('title', 'New article')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY-ND',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY-ND',
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => 'Content',
@@ -264,16 +281,27 @@ class ArticleTest extends TestCase
             'license' => 'BY-ND',
         ]);
 
+        /** @var Article $article */
         $article = Article::where('title', 'Title')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 1,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 1,
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+
+        /** @var Article $article */
         $article = Article::where('title', 'Title')
             ->where('content', "Content")
             ->where('is_published', 1)
@@ -287,7 +315,6 @@ class ArticleTest extends TestCase
     {
         $this->setupVersion(['getVersion' => false]);
 
-        /** @var Article $article */
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
@@ -302,5 +329,83 @@ class ArticleTest extends TestCase
     {
         $this->get(route('article.create'))
             ->assertForbidden();
+    }
+
+    public function testRewriteUrls()
+    {
+        $article = Article::factory()->create([
+            'content' => 'This is the original content',
+        ]);
+
+        $originalUrl = 'original-url';
+        $newUrl = 'new-url';
+
+        $article->content = 'This is the original content with the original URL: ' . $originalUrl;
+        $article->save();
+
+        $article->rewriteUrls($originalUrl, $newUrl);
+
+        $this->assertStringNotContainsString($originalUrl, $article->content);
+        $this->assertStringContainsString($newUrl, $article->content);
+    }
+
+    public function testParent()
+    {
+        $article = Article::factory()->create();
+
+        $parentArticle = Article::factory()->create();
+
+        $article->parent()->associate($parentArticle);
+        $article->save();
+
+        $retrievedParent = $article->parent;
+
+        $this->assertEquals($parentArticle->id, $retrievedParent->id);
+    }
+
+    public function testGetISO6393Language()
+    {
+        $article = Article::factory()->create();
+
+        $language = $article->getISO6393Language();
+
+        $this->assertEquals('eng', $language);
+    }
+
+    public function testSetParentVersionId()
+    {
+        $article = Article::factory()->create([
+            'parent_version_id' => 'original_parent_version_id',
+        ]);
+
+        $parentVersionId = 'new_parent_version_id';
+
+        $isChanged = $article->setParentVersionId($parentVersionId);
+
+        $this->assertTrue($isChanged);
+        $this->assertEquals($parentVersionId, $article->parent_version_id);
+    }
+
+    public function testScopeNoMaxScore()
+    {
+        Article::factory()->create(['max_score' => null]);
+        Article::factory()->create(['max_score' => 10]);
+
+        $articles = Article::noMaxScore()->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertNull($articles[0]->max_score);
+    }
+
+    public function testScopeOfBulkCalculated()
+    {
+        Article::factory()->create(['bulk_calculated' => 0]);
+        Article::factory()->create(['bulk_calculated' => 1]);
+        Article::factory()->create(['bulk_calculated' => 2]);
+
+        $articles = Article::ofBulkCalculated(1)->get();
+
+        $this->assertCount(1, $articles);
+        $this->assertEquals(1, $articles[0]->bulk_calculated);
     }
 }

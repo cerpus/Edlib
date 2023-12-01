@@ -8,16 +8,17 @@ use App\Jobs\PingVideoApi;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
-use Faker\Factory;
-use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
-use Tests\Seeds\TestH5PSeeder;
-use Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Helpers\MockVersioningTrait;
 use Tests\Helpers\VersionedH5PTrait;
+use Tests\Seeds\TestH5PSeeder;
+use Tests\TestCase;
 
 class PingVideoApiTest extends TestCase
 {
@@ -32,8 +33,7 @@ class PingVideoApiTest extends TestCase
         'interactiveVideoWithNoLocalVideoFiles' => '{"interactiveVideo":{"video":{"startScreenOptions":{"title":"Interactive Video","hideStartTitle":false,"copyright":""},"textTracks":[{"label":"Subtitles","kind":"subtitles","srcLang":"en"}],"files":[]},"assets":{"interactions":[],"bookmarks":[]},"summary":{"task":{"library":"H5P.Summary 1.8","params":{"intro":"Choose the correct statement.","summaries":[{"subContentId":"1dd50eaf-d839-43eb-b41a-091a7f39874d","tip":""}],"overallFeedback":[{"from":0,"to":100}],"solvedLabel":"Progress:","scoreLabel":"Wrong answers:","resultLabel":"Your result","labelCorrect":"Correct.","labelIncorrect":"Incorrect! Please try again.","labelCorrectAnswers":"Correct answers."},"subContentId":"37b2670f-e199-4f76-bd33-0d6ea81efcce"},"displayAt":3}},"override":{"autoplay":false,"loop":false,"showBookmarksmenuOnLoad":false,"showRewind10":false,"preventSkipping":false,"deactivateSound":false},"l10n":{"interaction":"Interaction","play":"Play","pause":"Pause","mute":"Mute","unmute":"Unmute","quality":"Video Quality","captions":"Captions","close":"Close","fullscreen":"Fullscreen","exitFullscreen":"Exit Fullscreen","summary":"Summary","bookmarks":"Bookmarks","defaultAdaptivitySeekLabel":"Continue","continueWithVideo":"Continue with video","playbackRate":"Playback Rate","rewind10":"Rewind 10 Seconds","navDisabled":"Navigation is disabled","sndDisabled":"Sound is disabled","requiresCompletionWarning":"You need to answer all the questions correctly before continuing.","back":"Back","hours":"Hours","minutes":"Minutes","seconds":"Seconds","currentTime":"Current time:","totalTime":"Total time:","navigationHotkeyInstructions":"Use key k for starting and stopping video at any time","singleInteractionAnnouncement":"Interaction appeared:","multipleInteractionsAnnouncement":"Multiple interactions appeared.","videoPausedAnnouncement":"Video is paused"}}',
     ];
 
-    /** @var FilesystemAdapter */
-    protected $disk;
+    protected Filesystem $disk;
 
     public function setUp(): void
     {
@@ -43,7 +43,7 @@ class PingVideoApiTest extends TestCase
         config(['h5p.storage.path' => $this->disk->path("")]);
     }
 
-    private function createVideo($contentId, $filename)
+    private function createVideo($contentId, $filename): void
     {
         $newFile = "content/$contentId/$filename";
         $fromFile = base_path('tests/files/sample.mp4');
@@ -60,7 +60,7 @@ class PingVideoApiTest extends TestCase
         $adapter = $this->createMock(H5PVideoInterface::class);
         $adapter->method('isVideoReadyForStreaming')->willReturn(false);
 
-        /** @var H5PContentsVideo $contentVideo */
+        /** @var H5PContentsVideo|MockObject $contentVideo */
         $contentVideo = $this->createMock(H5PContentsVideo::class);
         $versionClient = new VersionClient();
 
@@ -88,13 +88,13 @@ class PingVideoApiTest extends TestCase
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
+        /** @var Collection<H5PContent> $h5pContents */
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-        ])->each(function ($h5pContent) use ($videoSource) {
+        ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
-            /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
                 ->save(H5PContentsVideo::factory()
@@ -108,7 +108,9 @@ class PingVideoApiTest extends TestCase
             $this->disk->assertExists('content/' . $h5p->id . '/' . $videoSource);
         });
 
+        /** @var H5PContent $h5pContent */
         $h5pContent = $h5pContents->random();
+        /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
         $versionClient = app(VersionClient::class);
 
@@ -129,20 +131,19 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }
 
-    private function getVersionData(array $values = null)
+    private function getVersionData(array $values = null): VersionData
     {
-        $faker = Factory::create();
         $versionData = new VersionData();
         $data = [
-            'externalReference' => $faker->unique()->uuid,
-            'externalUrl' => $faker->url,
-            'externalSystem' => str_replace(" ", "", $faker->company),
-            'id' => $faker->unique()->uuid,
+            'externalReference' => $this->faker->unique()->uuid,
+            'externalUrl' => $this->faker->url,
+            'externalSystem' => str_replace(" ", "", $this->faker->company),
+            'id' => $this->faker->unique()->uuid,
             'parent' => null,
             'children' => null,
             'versionPurpose' => 'create',
-            'userId' => $faker->unique()->uuid,
-            'createdAt' => $faker->unixTime,
+            'userId' => $this->faker->unique()->uuid,
+            'createdAt' => $this->faker->unixTime,
         ];
 
         if (is_array($values)) {
@@ -231,6 +232,7 @@ class PingVideoApiTest extends TestCase
         $packageStructureChild->interactiveVideo->video->files[0]->path = $streamUrl;
         $packageStructureChild->interactiveVideo->video->files[0]->mime = $mimeType;
 
+        /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
         $versionClient = app(VersionClient::class);
 
@@ -256,7 +258,7 @@ class PingVideoApiTest extends TestCase
         $this->assertEquals(1, $job->processedChildren);
     }
 
-    private function createVideoData(H5PContent $content, $videoSource)
+    private function createVideoData(H5PContent $content, $videoSource): H5PContent
     {
         $this->setupContentDirectories($content->id);
         $this->createVideo($content->id, $videoSource);
@@ -334,6 +336,7 @@ class PingVideoApiTest extends TestCase
             ]),
         ]);
 
+        /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
         $versionClient = app(VersionClient::class);
 
@@ -455,6 +458,7 @@ class PingVideoApiTest extends TestCase
             ]),
         ]);
 
+        /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
         $versionClient = app(VersionClient::class);
 
@@ -496,13 +500,13 @@ class PingVideoApiTest extends TestCase
 
         $packageStructure = $this->packageStructure['interactiveVideoWithNoLocalVideoFiles'];
         $videoSource = 'videos/files-5a337db5cdf93.mp4';
-        $h5pContents =H5PContent::factory()->count(5)->create([
+        /** @var Collection<H5PContent> $h5pContents */
+        $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
-        ])->each(function ($h5pContent) use ($videoSource) {
+        ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
-            /** @var H5PContent $h5pContent */
             $h5pContent
                 ->contentVideos()
                 ->save(H5PContentsVideo::factory()
@@ -512,7 +516,9 @@ class PingVideoApiTest extends TestCase
                     ]));
         });
 
+        /** @var H5PContent $h5pContent */
         $h5pContent = $h5pContents->random();
+        /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
         $versionClient = app(VersionClient::class);
 
@@ -556,7 +562,6 @@ class PingVideoApiTest extends TestCase
         ]);
         $this->setupContentDirectories($h5pContent->id);
         $this->createVideo($h5pContent->id, $videoSource);
-        /** @var H5PContent $h5pContent */
         $h5pContent
             ->contentVideos()
             ->save(H5PContentsVideo::factory()

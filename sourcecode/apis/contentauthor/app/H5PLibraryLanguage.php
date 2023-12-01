@@ -3,11 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $library_id
+ * @property string $language_code
+ * @property string $translation JSON string
+ */
 class H5PLibraryLanguage extends Model
 {
+    use HasFactory;
+
     protected $table = 'h5p_libraries_languages';
 
     protected $fillable = [

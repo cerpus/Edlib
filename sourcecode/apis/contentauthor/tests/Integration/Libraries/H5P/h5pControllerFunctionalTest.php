@@ -88,7 +88,6 @@ class h5pControllerFunctionalTest extends TestCase
 
         $this->withSession(["authId" => "user_1"]);
 
-        /** @var H5PController $h5pController */
         $h5pController = app(H5PController::class);
 
         $response = $h5pController->store($request);

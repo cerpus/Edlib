@@ -4,11 +4,12 @@ namespace Tests\Integration\Http\Controllers;
 
 use App\Article;
 use App\Events\ArticleWasSaved;
-use App\Http\Controllers\ArticleController;
 use App\Http\Libraries\License;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Tests\TestCase;
 
@@ -18,7 +19,7 @@ class ArticleControllerTest extends TestCase
 
     public function testCreate(): void
     {
-        $request = new Request([], [
+        $request = new Oauth1Request('POST', url('/article/create'), [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -27,13 +28,15 @@ class ArticleControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
 
-        $this->withSession([
-            'authId' => Uuid::uuid(),
-        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
 
-        /** @var ArticleController $articleController */
-        $articleController = app(ArticleController::class);
-        $result = $articleController->create($request);
+        $result = $this->withSession(['authId' => Uuid::uuid()])
+            ->post('/article/create', $request->toArray())
+            ->assertOk()
+            ->original;
 
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(View::class, $result);

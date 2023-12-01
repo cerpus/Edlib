@@ -17,7 +17,6 @@ class ArticleCopyrightControllerTest extends TestCase
 
     public function test_copyright_endpointIsWorking()
     {
-        /** @var Article $article */
         $article = Article::factory()->create([
             'title' => 'This is a test article',
             'license' => 'PRIVATE',
@@ -39,7 +38,6 @@ class ArticleCopyrightControllerTest extends TestCase
 
     public function test_copyright_canFetchOriginators()
     {
-        /** @var Article $article */
         $article = Article::factory()->create();
         $article->setAttributionOrigin('http://en.wikipedia.org/');
         $article->addAttributionOriginator('http://www.example.com', 'Source');
@@ -72,13 +70,11 @@ class ArticleCopyrightControllerTest extends TestCase
 
     public function test_copyright_canFetchSubresourceCopyright()
     {
-        /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::factory()->create([
             'library_id' => H5PLibrary::factory()->create()->id,
             'filtered' => '[]',
         ]);
 
-        /** @var Article $article */
         $article = Article::factory()->create([
             'content' => '<p><iframe class="edlib_resource" height="171" ' .
                 'src="/lti/launch?url=http%3A%2F%2Fcore%2Flti%2Flaunch%2F44444444-4444-4444-4444-444444444444">' .
@@ -103,7 +99,7 @@ class ArticleCopyrightControllerTest extends TestCase
                     'h5pId' => $h5pContent->id,
                     'tags' => '',
                     'shares' => [],
-                    'h5pType' => $h5pContent->library->type,
+                    'h5pType' => $h5pContent->library->name,
                     'api' => 'http://core/v1/ltitools?uri=http%3A%2F%2Fca.cerpus-course.com%2Frandom%2Fid%2Ff559e66e-a51a-4722-8529-eb523ee374e3',
                     'resourceType' => 'H5P_RESOURCE',
                     'linkCount' => 2,

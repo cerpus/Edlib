@@ -1,0 +1,15 @@
+<?php
+
+namespace Cerpus\Helper\Traits;
+
+trait CreateTrait
+{
+    /**
+     * @param mixed $attributes
+     *
+     * @return static
+     * @throws \OutOfRangeException
+     *
+     */
+    public static function create($attributes = null) {}
+}

@@ -16,7 +16,6 @@ class H5PLibraryTest extends TestCase
      */
     public function test_getLibraryString($usePatch, $hasPatch, $expected): void
     {
-        /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->make([
             'patch_version_in_folder_name' => $hasPatch,
         ]);
@@ -39,7 +38,6 @@ class H5PLibraryTest extends TestCase
      */
     public function test_getFolderName($usePatch, $hasPatch, $expected): void
     {
-        /** @var H5PLibrary $lib */
         $lib = H5PLibrary::factory()->make([
             'patch_version_in_folder_name' => $hasPatch,
         ]);

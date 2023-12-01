@@ -14,21 +14,18 @@ class ContentInfoControllerTest extends TestCase
 
     public function testList(): void
     {
-        /** @var H5PContent $resource1 */
         $resource1 = H5PContent::factory()->create([
             'id' => 1,
             'created_at' => Carbon::now()->subDays(7),
             'updated_at' => Carbon::now(),
             'license' => License::LICENSE_BY,
         ]);
-        /** @var H5PContent $resource2 */
         $resource2 = H5PContent::factory()->create([
             'id' => 2,
             'created_at' => Carbon::now()->subDays(5),
             'updated_at' => Carbon::now(),
             'license' => License::LICENSE_CC,
         ]);
-        /** @var H5PContent $resource3 */
         $resource3 = H5PContent::factory()->create([
             'id' => 3,
             'created_at' => Carbon::now()->subDay(),

@@ -24,16 +24,14 @@ class GameControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi(['getUser' => $user]);
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Gametype $gameType */
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
-        /** @var Game $game */
         $game = Game::factory()->create([
             'owner' => $user->getId(),
             'gametype' => $gameType->id,
@@ -41,7 +39,7 @@ class GameControllerTest extends TestCase
             'license' => 'AllMine!',
         ]);
 
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -50,7 +48,6 @@ class GameControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
         $request->setLaravelSession(app(Session::class));
-        /** @var GameController $gameController */
         $gameController = app(GameController::class);
         $result = $gameController->edit($request, $game->id);
 
@@ -62,6 +59,7 @@ class GameControllerTest extends TestCase
         $this->assertArrayHasKey('state', $data);
         $state = json_decode($data['state'], true);
         $this->assertEquals('AllMine!', $state['license']);
+        $this->assertNotEmpty($state['questionset']);
 
         $this->assertArrayHasKey('game', $data);
         $this->assertInstanceOf(Game::class, $data['game']);
@@ -78,16 +76,14 @@ class GameControllerTest extends TestCase
 
     public function testUpdate(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi(['getUser' => $user]);
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Gametype $gameType */
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
-        /** @var Game $game */
         $game = Game::factory()->create([
             'owner' => $user->getId(),
             'gametype' => $gameType->id,

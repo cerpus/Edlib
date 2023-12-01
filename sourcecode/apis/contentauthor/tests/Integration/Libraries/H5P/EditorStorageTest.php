@@ -3,6 +3,7 @@
 namespace Tests\Integration\Libraries\H5P;
 
 use App\H5PLibrary;
+use App\H5PLibraryLanguage;
 use App\Libraries\H5P\EditorStorage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -13,7 +14,6 @@ class EditorStorageTest extends TestCase
 
     public function test_getLibraries_forLibrary(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create(['semantics' => 'something']);
         $libraries = (object) [
             'uberName' => $library->getLibraryString(false),
@@ -25,7 +25,6 @@ class EditorStorageTest extends TestCase
         $core = $this->createMock(\H5PCore::class);
         $this->instance(\H5PCore::class, $core);
 
-        /** @var EditorStorage $editorStorage */
         $editorStorage = app(EditorStorage::class);
         $ret = $editorStorage->getLibraries([$libraries]);
 
@@ -36,15 +35,12 @@ class EditorStorageTest extends TestCase
 
     public function test_getLibrary_allLibraries(): void
     {
-        /** @var H5PLibrary $lib1 */
         $lib1 = H5PLibrary::factory()->create(['semantics' => 'something']);
-        /** @var H5PLibrary $lib2 */
         $lib2 = H5PLibrary::factory()->create(['name' => 'H5P.Headphones', 'semantics' => 'something']);
 
         $core = $this->createMock(\H5PCore::class);
         $this->instance(\H5PCore::class, $core);
 
-        /** @var EditorStorage $editorStorage */
         $editorStorage = app(EditorStorage::class);
         $ret = $editorStorage->getLibraries();
 
@@ -54,5 +50,41 @@ class EditorStorageTest extends TestCase
 
         $this->assertSame('H5P.Foobar 1.2', $ret[0]->uberName);
         $this->assertSame('H5P.Headphones 1.2', $ret[1]->uberName);
+    }
+
+    public function test_getAvailableLanguages()
+    {
+        $lib = H5PLibrary::factory()->create();
+        $langCodes = H5PLibraryLanguage::factory(2)->create(['library_id' => $lib->id]);
+
+        $es = app(EditorStorage::class);
+        $languages = $es->getAvailableLanguages($lib->name, $lib->major_version, $lib->minor_version);
+
+        $this->assertEquals('en', $languages[0]);
+        foreach ($langCodes as $langCode) {
+            $this->assertContains($langCode->language_code, $languages);
+        }
+    }
+
+    public function test_getLanguage(): void
+    {
+        $lib = H5PLibrary::factory()->create();
+        H5PLibraryLanguage::factory()->create([
+            'library_id' => $lib->id,
+        ]);
+        $langCode = H5PLibraryLanguage::factory()->create([
+            'library_id' => $lib->id,
+            'translation' => '{"test":"success"}',
+        ]);
+
+        $es = app(EditorStorage::class);
+        $result = $es->getLanguage(
+            $lib->name,
+            $lib->major_version,
+            $lib->minor_version,
+            $langCode->language_code
+        );
+        $translation = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame('success', $translation['test']);
     }
 }

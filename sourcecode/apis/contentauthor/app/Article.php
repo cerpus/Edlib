@@ -43,8 +43,8 @@ use const LIBXML_HTML_NOIMPLIED;
  *
  * @property Collection<Collaborator> $collaborators
  *
- * @method null|self noMaxScore()
- * @method null|self ofBulkCalculated($type)
+ * @method static Builder|null|self noMaxScore()
+ * @method static Builder|null|self ofBulkCalculated($type)
  * @method static self find($id, $columns = ['*'])
  * @method static self findOrFail($id, $columns = ['*'])
  */

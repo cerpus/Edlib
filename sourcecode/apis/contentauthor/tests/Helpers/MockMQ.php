@@ -7,7 +7,7 @@ use Cerpus\EdlibResourceKit\ResourceKitInterface;
 
 trait MockMQ
 {
-    public function setUpMockMQ()
+    public function setUpMockMQ(): void
     {
         $manager = $this->createPartialMock(ResourceManagerInterface::class, ['save']);
         app()->instance(ResourceManagerInterface::class, $manager);

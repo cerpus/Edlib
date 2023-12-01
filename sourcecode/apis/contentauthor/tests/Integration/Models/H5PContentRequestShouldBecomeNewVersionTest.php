@@ -5,7 +5,6 @@ namespace Tests\Integration\Models;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
@@ -19,14 +18,13 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    private H5PContent|Model $contentDraft;
-    private H5PContent|Model $content;
+    private H5PContent $contentDraft;
+    private H5PContent $content;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        /** @var H5PLibrary|Model $library42 */
         $library42 = H5PLibrary::factory()->create([
             'name' => 'H5P.UnitTest',
             'major_version' => 4,
@@ -63,14 +61,14 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testUpdateDraft(): void
     {
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => 'Title has changed',
         ])));
     }
 
     public function testUpdate(): void
     {
-        $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertTrue($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => 'Title has changed',
             'parameters' => json_encode(['params' => []]),
             'license' => $this->content->getContentLicense(),
@@ -79,19 +77,19 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testSaveDraftAsDraft(): void
     {
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], ['isDraft' => "1"])));
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], ['isDraft' => true])));
+        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: ['isDraft' => "1"])));
+        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: ['isDraft' => true])));
     }
 
     public function testSaveAsDraft(): void
     {
-        $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], ['isDraft' => "1"])));
-        $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], ['isDraft' => true])));
+        $this->assertTrue($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: ['isDraft' => "1"])));
+        $this->assertTrue($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: ['isDraft' => true])));
     }
 
     public function testDraftNewerLibraryVersion(): void
     {
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->contentDraft->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->contentDraft->getContentLicense(),
@@ -101,7 +99,7 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testNewerLibraryVersion(): void
     {
-        $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertTrue($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->content->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->content->getContentLicense(),
@@ -111,7 +109,7 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testDraftNewLanguage(): void
     {
-        $this->assertTrue($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertTrue($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->contentDraft->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->contentDraft->getContentLicense(),
@@ -122,7 +120,7 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testNewLanguage(): void
     {
-        $this->assertTrue($this->content->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertTrue($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->content->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->content->getContentLicense(),
@@ -133,7 +131,7 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testDraftNoChange(): void
     {
-        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertFalse($this->contentDraft->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->contentDraft->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->contentDraft->getContentLicense(),
@@ -143,7 +141,7 @@ class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 
     public function testNoChange(): void
     {
-        $this->assertFalse($this->content->requestShouldBecomeNewVersion(new Request([], [
+        $this->assertFalse($this->content->requestShouldBecomeNewVersion(Request::create('', parameters: [
             'title' => $this->content->title,
             'parameters' => json_encode(['params' => []]),
             'license' => $this->content->getContentLicense(),
