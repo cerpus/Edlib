@@ -11,7 +11,7 @@ We strongly believe that the focus should be on the individual learner. Everythi
 
 Edlib is being developed with :heart: by [Cerpus](https://cerpus.com/), a company based out of Northern Norway focused on developing innovative educational services and applications. Edlib was specifically designed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's applications &mdash; [Gamilab](https://gamilab.com/) and the former Edstep platform &mdash; as well as being easily capable of integration into third-party learning applications. 
 
-<img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
+<img src="https://github.com/cerpus/Edlib/blob/master/docs/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
 
 *Screenshot: Edlib Content Explorer*
 
@@ -21,7 +21,7 @@ Edlib allows you to create highly interactive H5P-based learning resources. The 
 
 The internet is a vast collection of self-contained content repositories like Wikipedia and YouTube with many purpose-built tools to create rich interactive content. So, the question becomes: *How can we combine the vast trove of existing, high-quality content with the necessary creation tools to ensure a superior learning experience for the individual learner?* We think that, at least, a part of the answer to that question is to make the threshold for acquiring external content as low as possible. In Edlib, for example, a YouTube video can be converted into an Edlib resource by just providing its URL. From that point onwards, it will be included in the Edlib content repository just like any other Edlib resource, ready for reuse.
 
-<img src="https://github.com/cerpus/Edlib/blob/master/sourcecode/docs/docs.edlib.com/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
+<img src="https://github.com/cerpus/Edlib/blob/master/docs/static/img/edlib-content-author.png" alt="Edlib Content Author" width="800">
 
 *Screenshot: Edlib Content Author with interactive video content type editor*
 

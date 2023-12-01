@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - "docs/**"
-      - ".github/workflows/docs-edlib-com.yaml"
+      - ".github/workflows/docs.yaml"
   workflow_dispatch:
 
 env:
