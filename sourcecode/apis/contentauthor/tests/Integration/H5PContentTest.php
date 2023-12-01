@@ -15,7 +15,6 @@ class H5PContentTest extends TestCase
     /** @dataProvider provider_getContentTypeInfo */
     public function test_getContentTypeInfo_WithIcon($usePatch, $expectedPath): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create([
             'has_icon' => 1,
             'patch_version_in_folder_name' => $usePatch,
@@ -45,7 +44,6 @@ class H5PContentTest extends TestCase
 
     public function test_getContentTypeInfo_NoIcon(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
 
         $frameWork = $this->createMock(\H5PFrameworkInterface::class);

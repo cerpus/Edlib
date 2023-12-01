@@ -17,13 +17,9 @@ class AjaxRequestTest extends TestCase
 
     public function test_libraryRebuild(): void
     {
-        /** @var H5PLibrary $library */
         $library = H5PLibrary::factory()->create();
-        /** @var H5PLibrary $preLib */
         $preLib = H5PLibrary::factory()->create(['name' => 'player', 'major_version' => 3, 'minor_version' => 14]);
-        /** @var H5PLibrary $dynLib */
         $dynLib = H5PLibrary::factory()->create(['name' => 'H5P.Dynamic', 'major_version' => 2, 'minor_version' => 42, 'patch_version' => 3, 'patch_version_in_folder_name' => true]);
-        /** @var H5PLibrary $edLib */
         $edLib = H5PLibrary::factory()->create(['name' => 'FontOk', 'major_version' => 1, 'minor_version' => 3]);
 
         $this->assertDatabaseEmpty('h5p_libraries_libraries');

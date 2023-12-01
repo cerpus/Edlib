@@ -414,18 +414,13 @@ class Framework implements \H5PFrameworkInterface, Result
     /**
      * Is the library a patched version of an existing library?
      *
-     * @param object $library
-     *   An associateve array containing:
-     *   - machineName: The library machineName
-     *   - majorVersion: The librarys majorVersion
-     *   - minorVersion: The librarys minorVersion
-     *   - patchVersion: The librarys patchVersion
-     * @return boolean
+     * @param array{machineName: string, majorVersion: int, minorVersion: int, patchVersion: int} $library
+     * @return bool
      *   TRUE if the library is a patched version of an existing library
      *   FALSE otherwise
      * TODO: Implement this for real....
      */
-    public function isPatchedLibrary($library)
+    public function isPatchedLibrary($library): bool
     {
         return H5PLibrary::fromLibrary([
             $library['machineName'],
@@ -433,8 +428,7 @@ class Framework implements \H5PFrameworkInterface, Result
             $library['minorVersion']
         ])
             ->where('patch_version', "<", $library['patchVersion'])
-            ->get()
-            ->isNotEmpty();
+            ->exists();
     }
 
     /**
@@ -1156,16 +1150,10 @@ class Framework implements \H5PFrameworkInterface, Result
      * Determines if content slug is used.
      *
      * @param string $slug
-     * @return boolean
      */
-    public function isContentSlugAvailable($slug)
+    public function isContentSlugAvailable($slug): bool
     {
-        $sql = "select slug from h5p_contents where slug=?";
-        $res = $this->db->prepare($sql)->execute([$slug])->fetch(PDO::FETCH_ASSOC);
-        if (sizeof($res) > 0) {
-            return false;
-        }
-        return true;
+        return H5PContent::where('slug', $slug)->doesntExist();
     }
 
     /**

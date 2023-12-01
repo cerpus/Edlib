@@ -26,10 +26,9 @@ class LinkControllerTest extends TestCase
         $this->session([
             'authId' => Uuid::uuid(),
         ]);
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'redirectToken' => 'UniqueToken',
         ]);
-        /** @var LinkController $linkController */
         $linkController = app(LinkController::class);
 
         $response = $linkController->create($request);
@@ -45,17 +44,16 @@ class LinkControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->session([
             'authId' => $user->getId(),
         ]);
-        /** @var Link $link */
         $link = Link::factory()->create([
             'license' => License::LICENSE_BY_NC_ND,
             'owner_id' => $user->getId(),
         ]);
 
-        $request = new Request([], [
+        $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
             'resource_link_id' => 'random_link_9364f20a-a9b5-411a-8f60-8a4050f85d91',
@@ -64,7 +62,6 @@ class LinkControllerTest extends TestCase
             'launch_presentation_locale' => "nb",
         ]);
 
-        /** @var LinkController $linkController */
         $linkController = app(LinkController::class);
         $result = $linkController->edit($request, $link->getId());
 
@@ -111,7 +108,7 @@ class LinkControllerTest extends TestCase
 
     public function testUpdate(): void
     {
-        $user = new User(42, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->session([
             'authId' => $user->getId(),
         ]);
@@ -120,7 +117,6 @@ class LinkControllerTest extends TestCase
             LinkWasSaved::class,
         ]);
 
-        /** @var Link $link */
         $link = Link::factory()->create([
             'link_type' => 'external_link',
             'link_url' => 'https://nowhere.not',

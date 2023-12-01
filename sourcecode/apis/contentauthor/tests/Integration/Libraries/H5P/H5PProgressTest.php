@@ -56,7 +56,7 @@ class H5PProgressTest extends TestCase
         $h5pprogress = $this->getH5PProgress();
         $this->assertEquals(
             $expectedResult,
-            $h5pprogress->storeProgress(new Request(['action' => "h5p_contents_user_data"]))
+            $h5pprogress->storeProgress(Request::create('', parameters: ['action' => "h5p_contents_user_data"]))
         );
     }
 
@@ -437,6 +437,7 @@ class H5PProgressTest extends TestCase
         $this->expectException(TypeError::class);
 
         $progress = $this->getH5PProgress(1);
+        /** @noinspection PhpParamsInspection */
         $progress->getProgress();
     }
 
@@ -444,21 +445,21 @@ class H5PProgressTest extends TestCase
     {
         $progress = $this->getH5PProgress(1);
         $this->assertNull($progress->getProgress(new Request()));
-        $this->assertNull($progress->getProgress(new Request([
+        $this->assertNull($progress->getProgress(Request::create('', parameters: [
             'content_id' => 2000000000,
             'sub_content_id' => 0,
             'data_type' => 'state',
             'context' => null
         ])));
 
-        $this->assertEquals("['hello', 'everyone']", $progress->getProgress(new Request([
+        $this->assertEquals("['hello', 'everyone']", $progress->getProgress(Request::create('', parameters: [
             'content_id' => 2,
             'sub_content_id' => 0,
             'data_type' => 'state',
             'context' => null
         ])));
 
-        $this->assertEquals("['hello', 'there']", $progress->getProgress(new Request([
+        $this->assertEquals("['hello', 'there']", $progress->getProgress(Request::create('', parameters: [
             'content_id' => 2,
             'sub_content_id' => 0,
             'data_type' => 'state',
