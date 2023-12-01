@@ -27,8 +27,8 @@ final class ContentTest extends DuskTestCase
                 ->clickLink('Explore')
                 ->with('.big-notice', function (Browser $message) {
                     $message
-                        ->assertSee('No content has been created yet')
-                        ->assertSee('Try finding or creating new content.')
+                        ->assertSee('No content has been created yet…')
+                        ->assertSee('Try creating new content.')
                         ->assertNotPresent('a');
                 });
         });
@@ -63,9 +63,9 @@ final class ContentTest extends DuskTestCase
                 ->clickLink('My content')
                 ->with('.big-notice', function (Browser $message) {
                     $message
-                        ->assertSee('No content has been created yet')
-                        ->assertSee('Try finding or creating new content.')
-                        ->assertSeeIn('a:first-child', 'Find content')
+                        ->assertSee('You have no content yet…')
+                        ->assertSee('Try exploring or creating new content.')
+                        ->assertSeeIn('a:first-child', 'Explore content')
                         ->assertSeeIn('a:last-child', 'Create content');
                 });
         });
@@ -87,7 +87,7 @@ final class ContentTest extends DuskTestCase
                     $message
                         ->assertSee('Sorry! No results found :(')
                         ->assertSee('We could not find any content based on your search. Try different keywords or filters.')
-                        ->assertSeeIn('a:first-child', 'Find content')
+                        ->assertSeeIn('a:first-child', 'Explore content')
                         ->assertSeeIn('a:last-child', 'Create content');
                 });
         });

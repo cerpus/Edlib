@@ -9,6 +9,8 @@
             <x-slot:title>
                 @if ($hasQuery)
                     {{ trans('messages.no-results-found') }}
+                @elseif ($mine)
+                    {{ trans('messages.you-have-no-content-yet') }}
                 @else
                     {{ trans('messages.no-content-created-yet') }}
                 @endif
@@ -17,6 +19,8 @@
             <x-slot:description>
                 @if ($hasQuery)
                     {{ trans('messages.no-results-found-description') }}
+                @elseif ($mine)
+                    {{ trans('messages.you-have-no-content-yet-description') }}
                 @else
                     {{ trans('messages.no-content-created-yet-description') }}
                 @endif
