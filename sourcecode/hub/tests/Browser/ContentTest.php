@@ -19,6 +19,80 @@ use function assert;
 
 final class ContentTest extends DuskTestCase
 {
+    public function testSeesNoContentCreatedYetMessageOnEmptySharedContentPage(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser
+                ->visit('/')
+                ->clickLink('Explore')
+                ->with('.big-notice', function (Browser $message) {
+                    $message
+                        ->assertSee('No content has been created yet')
+                        ->assertSee('Try finding or creating new content.')
+                        ->assertNotPresent('a');
+                });
+        });
+    }
+
+    public function testSeesNoResultsMessageOnSharedContentPageWithQueryTyped(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser
+                ->visit('/')
+                ->clickLink('Explore')
+                ->type('q', 'some keywords')
+                ->pause(1200) // FIXME
+                ->with('.big-notice', function (Browser $message) {
+                    $message
+                        ->assertSee('Sorry! No results found :(')
+                        ->assertSee('We could not find any content based on your search. Try different keywords or filters.')
+                        ->assertNotPresent('a');
+                });
+        });
+    }
+
+    public function testSeesNoContentCreatedYetMessageOnMyContentsPage(): void
+    {
+        $user = User::factory()->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('My content')
+                ->with('.big-notice', function (Browser $message) {
+                    $message
+                        ->assertSee('No content has been created yet')
+                        ->assertSee('Try finding or creating new content.')
+                        ->assertSeeIn('a:first-child', 'Find content')
+                        ->assertSeeIn('a:last-child', 'Create content');
+                });
+        });
+    }
+
+    public function testSeesNoResultsMessageOnMyContentPageWithQueryTyped(): void
+    {
+        $user = User::factory()->create();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('My content')
+                ->type('q', 'some keywords')
+                ->pause(1200) // FIXME
+                ->with('.big-notice', function (Browser $message) {
+                    $message
+                        ->assertSee('Sorry! No results found :(')
+                        ->assertSee('We could not find any content based on your search. Try different keywords or filters.')
+                        ->assertSeeIn('a:first-child', 'Find content')
+                        ->assertSeeIn('a:last-child', 'Create content');
+                });
+        });
+    }
+
     public function testLaunchesEdlibFromWithinEdlibAndSelectsContent(): void
     {
         $content = Content::factory()

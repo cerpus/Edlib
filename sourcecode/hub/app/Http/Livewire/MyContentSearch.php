@@ -27,6 +27,7 @@ class MyContentSearch extends Component
         $results = Content::findForUser($this->user, $this->query);
 
         return view('livewire.content.search', [
+            'mine' => true,
             'results' => $results->paginate(),
         ]);
     }

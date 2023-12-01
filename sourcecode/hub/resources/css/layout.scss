@@ -69,9 +69,10 @@
     text-overflow: ellipsis;
 }
 
-.no-content-found {
-    height: 50vh;
+.big-notice {
+    min-height: 50vh;
 }
+
 .offcanvas.offcanvas-bottom {
     position: fixed;
     top: auto;

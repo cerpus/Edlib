@@ -1,17 +1,38 @@
+@props(['mine' => false, 'hasQuery' => $query !== ''])
 <div>
     <x-content.search :query="$query"/>
 
     @unless ($results->isEmpty())
         <x-content.grid :contents="$results"/>
     @else
-        <div class="no-content-found d-flex flex-column justify-content-center align-items-center">
-            <h1 class="text-secondary d-flex">{{ trans('messages.alert-no-search-content-found-header') }}</h1>
-            <p class="d-flex">{{ trans('messages.alert-no-search-content-found-description') }}</p>
+        <x-big-notice>
+            <x-slot:title>
+                @if ($hasQuery)
+                    {{ trans('messages.no-results-found') }}
+                @else
+                    {{ trans('messages.no-content-created-yet') }}
+                @endif
+            </x-slot:title>
 
-            <div class="d-flex gap-3 flex-column flex-md-row">
-                <a href="{{ route('content.index') }}" class="btn btn-primary" > {{ trans('messages.find-content') }} </a>
-                <a href="{{ route('content.create') }}" class="btn btn-secondary"> {{ trans('messages.create-content') }} </a>
-            </div>
-        </div>
+            <x-slot:description>
+                @if ($hasQuery)
+                    {{ trans('messages.no-results-found-description') }}
+                @else
+                    {{ trans('messages.no-content-created-yet-description') }}
+                @endif
+            </x-slot:description>
+
+            @if ($mine)
+                <x-slot:actions>
+                    <a href="{{ route('content.index') }}" class="btn btn-secondary">
+                        {{ trans('messages.explore-content') }}
+                    </a>
+
+                    <a href="{{ route('content.create') }}" class="btn btn-primary">
+                        {{ trans('messages.create-content') }}
+                    </a>
+                </x-slot:actions>
+            @endif
+        </x-big-notice>
     @endunless
-</div>
+</div> {{-- Livewire root element --}}
