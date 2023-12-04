@@ -1,9 +1,9 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
-        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
+        <a href="{{ route('admin.update-libraries') }}">Library list</a>
         <br>
-        <a href="{{ route('admin.content-library', $content->library->id) }}">Back to content list</a>
+        <a href="{{ route('admin.content-library', $content->library->id) }}">Library content list</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -20,7 +20,7 @@
                             </tr>
                             <tr>
                                 <th>Folium id</th>
-                                <td>{{ $foliumId }}</td>
+                                <td>{{ $resource?->id ?? '' }}</td>
                             </tr>
                             <tr>
                                 <th>Title</th>
@@ -33,6 +33,14 @@
                             <tr>
                                 <th>Updated</th>
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Deleted</th>
+                                <td>{{
+                                    $resource ?
+                                        $resource->deletedAt ? \Carbon\Carbon::make($resource->deletedAt)->utc()->format('Y-m-d H:i:s e') : 'No'
+                                    : ''
+                                }}</td>
                             </tr>
                             <tr>
                                 <th>Latest version</th>
@@ -56,11 +64,20 @@
                             </tr>
                             <tr>
                                 <th>Has lock</th>
-                                <td>{{ $content->hasLock() ? 'Yes' : 'No' }}</td>
+                                <td>
+                                    {{ $hasLock ?
+                                        sprintf('Yes. Last updated %s, expires %s', $hasLock->format('H:i:s e'), $hasLock->addSeconds(\App\ContentLock::EXPIRES)->format('H:i:s e'))
+                                        : 'No'
+                                    }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>Library</th>
-                                <td>{{ sprintf('%s %d.%d.%d', $content->library->name, $content->library->major_version, $content->library->minor_version, $content->library->patch_version) }}</td>
+                                <td>
+                                    <a href="{{ route('admin.check-library', [$content->library->id]) }}">
+                                        {{ sprintf('%s %d.%d.%d', $content->library->name, $content->library->major_version, $content->library->minor_version, $content->library->patch_version) }}
+                                    </a>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -100,7 +117,7 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                @if ($itemId !== $content->id)
+                                                @if ($itemId !== $content->id && isset($history[$itemId]['content']))
                                                     <a href="{{ route('admin.content-details', [$history[$itemId]['externalReference']]) }}">
                                                         {{ $history[$itemId]['externalReference'] }}
                                                     </a>
@@ -112,7 +129,15 @@
                                             <td>{{ $history[$itemId]['content']['title'] ?? '' }}</td>
                                             <td>{{ $history[$itemId]['content']['license'] ?? '' }}</td>
                                             <td>{{ $history[$itemId]['versionPurpose'] }}</td>
-                                            <td>{{ $history[$itemId]['content']['library'] ?? '' }}</td>
+                                            <td>
+                                                @if(isset($history[$itemId]['content']) && isset($history[$itemId]['content']['library_id']))
+                                                    <a href="{{ route('admin.check-library', [$history[$itemId]['content']['library_id']]) }}">
+                                                        {{ $history[$itemId]['content']['library'] }}
+                                                    </a>
+                                                @else
+                                                    {{ $history[$itemId]['content']['library'] ?? '' }}
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endwhile
                                 </tbody>
@@ -146,13 +171,25 @@
                                         @foreach($history[$content->id]['children'] as $itemId)
                                             <tr>
                                                 <td>
-                                                    <a href="{{ route('admin.content-details', [$history[$itemId]['externalReference']]) }}">{{ $history[$itemId]['externalReference'] }}</a>
+                                                    @isset($history[$itemId]['content'])
+                                                        <a href="{{ route('admin.content-details', [$history[$itemId]['externalReference']]) }}">{{ $history[$itemId]['externalReference'] }}</a>
+                                                    @else
+                                                        {{ $history[$itemId]['externalReference'] }}
+                                                    @endisset
                                                 </td>
                                                 <td>{{ $history[$itemId]['versionDate'] }}</td>
                                                 <td>{{ $history[$itemId]['content']['title'] ?? '' }}</td>
                                                 <td>{{ $history[$itemId]['content']['license'] ?? '' }}</td>
                                                 <td>{{ $history[$itemId]['versionPurpose'] }}</td>
-                                                <td>{{ $history[$itemId]['content']['library'] ?? '' }}</td>
+                                                <td>
+                                                    @if(isset($history[$itemId]['content']) && isset($history[$itemId]['content']['library_id']))
+                                                        <a href="{{ route('admin.check-library', [$history[$itemId]['content']['library_id']]) }}">
+                                                            {{ $history[$itemId]['content']['library'] }}
+                                                        </a>
+                                                    @else
+                                                        {{ $history[$itemId]['content']['library'] ?? '' }}
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endempty
