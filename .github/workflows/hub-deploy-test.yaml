@@ -7,6 +7,7 @@ on:
       - ".github/workflows/hub-deploy-test.yaml"
     branches:
       - hubbub
+  workflow_dispatch:
 
 defaults:
   run:
