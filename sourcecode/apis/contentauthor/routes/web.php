@@ -4,7 +4,6 @@ use App\Http\Controllers\API\ArticleInfoController;
 use App\Http\Controllers\API\ContentInfoController;
 use App\Http\Controllers\API\ContentTypeController;
 use App\Http\Controllers\API\GameInfoController;
-use App\Http\Controllers\API\GdprSubjectDataController;
 use App\Http\Controllers\API\H5PImportController;
 use App\Http\Controllers\API\H5PInfoController;
 use App\Http\Controllers\API\H5PTypeApi;
