@@ -115,11 +115,6 @@ Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index']
 Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.status');
 Route::match(['GET', 'POST'], 'v1/content/{id}/unlock', [UnlockController::class, 'index'])->name('lock.unlock');
 
-Route::group(['middleware' => ['lti.verify-auth']], function () {
-    Route::get('v1/gdpr/user/byemail', [GdprSubjectDataController::class, 'getUserDataByEmail'])->name('gdpr.user.data.byemail');
-    Route::get('v1/gdpr/user/{userId}', [GdprSubjectDataController::class, 'getUserData'])->name('gdpr.user.data');
-});
-
 // AJAX and REST(ish) routes
 Route::post('api/progress', [Progress::class, 'storeProgress'])->name("setProgress");
 Route::get('api/progress', [Progress::class, 'getProgress'])->name("getProgress");

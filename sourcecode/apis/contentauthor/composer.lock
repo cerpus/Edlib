@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "25e225a8d36f93ae5d863214cea63ffc",
+    "content-hash": "754ca23cec83ecfe6a3e845620a5db39",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -410,7 +410,7 @@
             },
             "require": {
                 "cerpus/pubsub": "^1.0",
-                "php": "8.2.*",
+                "php": "8.2.*|8.3.*",
                 "php-http/discovery": "^1.14.1",
                 "psr/clock": "^1.0",
                 "psr/clock-implementation": "^1.0",
@@ -480,7 +480,7 @@
                 "cerpus/edlib-resource-kit": "^0.7",
                 "cerpus/pubsub": "^1.0",
                 "illuminate/support": "^9.0|^10.0",
-                "php": "8.2.*",
+                "php": "8.2.*|8.3.*",
                 "php-http/discovery": "^1.14",
                 "psr/http-client-implementation": "^1.0",
                 "psr/http-factory-implementation": "^1.0"
@@ -582,63 +582,6 @@
                 "source": "https://github.com/cerpus/php-imageservice-client/tree/v2.2.0"
             },
             "time": "2022-12-08T14:31:06+00:00"
-        },
-        {
-            "name": "cerpus/laravel-rabbitmq-pubsub",
-            "version": "v2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub.git",
-                "reference": "cb3a4df48fb5222fe902010af59dd5cff85fb6fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-laravel-rabbitmq-pubsub/zipball/cb3a4df48fb5222fe902010af59dd5cff85fb6fb",
-                "reference": "cb3a4df48fb5222fe902010af59dd5cff85fb6fb",
-                "shasum": ""
-            },
-            "require": {
-                "cerpus/pubsub": "^1.0.0",
-                "illuminate/console": "^8.73|^9.0",
-                "illuminate/support": "^8.73|^9.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^6.23|^7.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Cerpus\\LaravelRabbitMQPubSub\\RabbitMQPubSubServiceProvider"
-                    ],
-                    "facades": [
-                        "Cerpus\\LaravelRabbitMQPubSub\\Facades\\RabbitMQPubSub"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Cerpus\\LaravelRabbitMQPubSub\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Max Moeschinger",
-                    "email": "max.moeschinger@cerpus.com"
-                }
-            ],
-            "description": "Client for RabbitMQ pubsub in a laravel project",
-            "support": {
-                "issues": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/issues",
-                "source": "https://github.com/cerpus/php-laravel-rabbitmq-pubsub/tree/v2.1.0"
-            },
-            "time": "2022-06-17T08:48:19+00:00"
         },
         {
             "name": "cerpus/pubsub",
@@ -9724,12 +9667,12 @@
             "version": "2.4.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nunomaduro/larastan.git",
+                "url": "https://github.com/larastan/larastan.git",
                 "reference": "238fdbfba3aae133cdec73e99826c9b0232141f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/larastan/zipball/238fdbfba3aae133cdec73e99826c9b0232141f7",
+                "url": "https://api.github.com/repos/larastan/larastan/zipball/238fdbfba3aae133cdec73e99826c9b0232141f7",
                 "reference": "238fdbfba3aae133cdec73e99826c9b0232141f7",
                 "shasum": ""
             },
@@ -9792,8 +9735,8 @@
                 "static analysis"
             ],
             "support": {
-                "issues": "https://github.com/nunomaduro/larastan/issues",
-                "source": "https://github.com/nunomaduro/larastan/tree/2.4.1"
+                "issues": "https://github.com/larastan/larastan/issues",
+                "source": "https://github.com/larastan/larastan/tree/2.4.1"
             },
             "funding": [
                 {
@@ -9813,6 +9756,7 @@
                     "type": "patreon"
                 }
             ],
+            "abandoned": "larastan/larastan",
             "time": "2023-02-05T12:19:17+00:00"
         },
         {
@@ -11635,5 +11579,5 @@
         "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

@@ -74,8 +74,6 @@ $ CACHE_DRIVER=file php artisan cerpus:init-versioning
 
 # Starting the internal queue worker
 
-#### `This refers to the internal queues, not the RabbitMQ queue workers`
-
 [Laravel Horizon](https://laravel.com/docs/6.x/horizon) will handle all the internal queues.
 
 See `config/horizon.php` for config options if you want to modify/tweak the set up.
@@ -96,72 +94,6 @@ For development purposes you can use the `sync` queue driver.
 
 In .env
 `FEATURE_CONTEXT_COLLABORATION=true`
-
-## Creating a new message handler
-
-To create a new message processing worker follow these steps. In the example we will consume a queue named `my_messages`
-
-1. `php artisan bowler:make:queue my_messages MyMessages`
-2. The my_messages queue has been added to `app/Messaging/queue.php`. Edit this file to finish setting up the queue. Refer to the Bowler docs / source code for config options.
-3. To implement the handler edit `app/Messaging/Handlers/MyMessageHandler.php@handle`
-
-```
-public function handle($msg)
-{
-    echo "Look, I'm processing the {$msg->body}\n";
-}
-```
-
-I recommend farming out the actual processing of the message to an entity outside the message handler to ease the testability and portability of the processing should we decide to replace RabbitMQ in the future. See `app/Messaging/Handlers/EdStepCollaborationhandler@handle`
-
-## Starting the worker from the command line
-
-1. `php artisan bowler:consume my_messages`
-
-If you publish a message to the exchange configured in `queue.php` you should see the message being received and processed by Content Author.
-
-## Handling the worker in production
-
-Use Supervisor or something similar to start the workers. You will need one supervisor config per queue, but may start multiple workers to handle the queue on capacity problems (see `numprocs_start`). In a setup where content author is scaled horizontally only one server needs to run the worker. The workers may run on a dedicated machine.
-
-### Configuring the RabbitMQ connection
-
-These .env variables (with defaults) are available for configuration.
-
-```
-RABBITMQ_HOST=localhost
-RABBITMQ_PORT=5672
-RABBITMQ_USERNAME=guest
-RABBITMQ_PASSWORD=guest
-```
-
-### Starting the edstepmessages worker
-
-Assumes that Content Author is installed in /var/www/content-author.
-This will start two new workers handling events on the edstep_messages queue on system boot.
-Save this as /etc/supervisor/config/edstepmessages.conf
-
-```
-[program:edstepmessages]
-process_name=%(program_name)s_%(process_num)02d
-command=/usr/bin/php /var/www/content-author/artisan bowler:consume ca-EdStep-CollaborationUpdates
-directory=/var/www/content-author/
-user=www-data
-group=www-data
-numprocs=2
-autostart=true
-```
-
-```
-$ sudo supervisorctl reread
-$ sudo supervisorctl start edstepmessages
-```
-
-See [https://laravel.com/docs/6.x/queues#supervisor-configuration](https://laravel.com/docs/6.x/queues#supervisor-configuration) for another example directly related to Laravel queues
-
-### Restart queue worker on update
-
-As the queue handlers are long lived processes you must restart them when the code has been updated. Add `supervisorctl restart edstepmessages` after migrations are run.
 
 # LTI params
 
