@@ -38,6 +38,13 @@ class Content extends Model
 
     protected $perPage = 48;
 
+    public static function booted(): void
+    {
+        static::addGlobalScope('atLeastOneVersion', function (Builder $query) {
+            $query->whereHas('versions');
+        });
+    }
+
     public function getTitle(): string
     {
         $version = $this->latestPublishedVersion

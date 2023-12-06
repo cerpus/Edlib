@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -19,6 +20,50 @@ use function assert;
 
 final class ContentTest extends DuskTestCase
 {
+    public function testListsMyContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->withUser($user)
+            ->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(function (Browser $browser) use ($content, $user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('My content')
+                ->assertTitleContains('My content')
+                ->with(new ContentCard(), function (Browser $card) use ($content) {
+                    $card->assertSeeIn('@title', $content->getTitle());
+                })
+                ->assertPresent('.content-card');
+        });
+    }
+
+    public function testDoesNotAttemptToListContentWithoutVersions(): void
+    {
+        $user = User::factory()->create();
+        Content::factory()->withUser($user)->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('My content')
+                ->assertTitleContains('My content')
+                ->assertNotPresent('.content-card');
+        });
+    }
+
     public function testSeesNoContentCreatedYetMessageOnEmptySharedContentPage(): void
     {
         $this->browse(function (Browser $browser) {
