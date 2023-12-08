@@ -4,7 +4,6 @@ use App\Http\Controllers\API\ArticleInfoController;
 use App\Http\Controllers\API\ContentInfoController;
 use App\Http\Controllers\API\ContentTypeController;
 use App\Http\Controllers\API\GameInfoController;
-use App\Http\Controllers\API\GdprSubjectDataController;
 use App\Http\Controllers\API\H5PImportController;
 use App\Http\Controllers\API\H5PInfoController;
 use App\Http\Controllers\API\H5PTypeApi;
@@ -114,11 +113,6 @@ Route::get('v1/link/embeddata', [LinkInfoController::class, 'embed']);
 Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index'])->name('lock.status');
 Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.status');
 Route::match(['GET', 'POST'], 'v1/content/{id}/unlock', [UnlockController::class, 'index'])->name('lock.unlock');
-
-Route::group(['middleware' => ['lti.verify-auth']], function () {
-    Route::get('v1/gdpr/user/byemail', [GdprSubjectDataController::class, 'getUserDataByEmail'])->name('gdpr.user.data.byemail');
-    Route::get('v1/gdpr/user/{userId}', [GdprSubjectDataController::class, 'getUserData'])->name('gdpr.user.data');
-});
 
 // AJAX and REST(ish) routes
 Route::post('api/progress', [Progress::class, 'storeProgress'])->name("setProgress");

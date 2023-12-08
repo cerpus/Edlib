@@ -155,38 +155,6 @@ spec:
               memory: 200Mi
       serviceAccount: contentauthor
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: contentauthor-rabbitmq-subscriber
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: contentauthor-rabbitmq-subscriber
-  template:
-    metadata:
-      labels:
-        app: contentauthor-rabbitmq-subscriber
-        fluentd-parser: laravel-json
-    spec:
-      containers:
-        - name: main
-          image: "public.ecr.aws/f0t8l9h1/api-contentauthor-phpfpm:{{ .Chart.AppVersion }}"
-          command:
-            - php
-            - artisan
-            - laravel-rabbitmq-pubsub:consumer
-{{- include "apis.contentauthor.env" . | indent 10 }}
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1500Mi
-            requests:
-              cpu: 20m
-              memory: 200Mi
-      serviceAccount: contentauthor
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:

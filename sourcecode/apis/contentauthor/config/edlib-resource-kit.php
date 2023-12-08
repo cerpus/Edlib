@@ -10,13 +10,7 @@ return [
     // If true, resources will be synchronously published over HTTP. This is
     // slower, but allows you to handle errors while publishing.
     //
-    'synchronous-resource-manager' => false,
-
-    //
-    // RabbitMQ configuration
-    // (only required if 'synchronous-resource-manager' => false):
-    //
-    'pub-sub' => Cerpus\PubSub\Connection\ConnectionFactory::class,
+    'synchronous-resource-manager' => true,
 
     'resource-serializer' => App\EdlibResource\ResourceSerializer::class,
 
