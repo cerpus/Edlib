@@ -1,10 +1,13 @@
 id: 55301
 name: edlib-cerpus-ca
 environments:
-    test:
+    staging:
         memory: 1024
         cli-memory: 512
         runtime: docker
+        domain: ca.edlibdev.net
+        network: edlib-cerpus-test
+        cache: edlib-cerpus-test-cache
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
             - 'php artisan optimize'

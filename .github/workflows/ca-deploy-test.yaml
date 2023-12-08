@@ -40,7 +40,7 @@ jobs:
       - name: Install NPM
         run: npm ci
 
-      - name: Deploy to test environment
+      - name: Deploy to staging environment
         run: vapor deploy test --without-waiting
         env:
             VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
