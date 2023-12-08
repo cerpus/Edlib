@@ -1,13 +1,12 @@
-id: 55300
-name: edlib-cerpus-hub
+id: 55301
+name: edlib-cerpus-ca
 environments:
     test:
         memory: 1024
         cli-memory: 512
         runtime: docker
-        domain: hub.edlibdev.net
+        domain: ca.edlibdev.net
         network: edlib-cerpus-test
-        database: edlib-cerpus-test-db
         cache: edlib-cerpus-test-cache
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
@@ -16,6 +15,3 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
             - 'php artisan migrate --force'
-            - "php artisan scout:delete-index 'App\\Models\\Content'"
-            - 'php artisan scout:sync-index-settings'
-            - "php artisan scout:import 'App\\Models\\Content'"
