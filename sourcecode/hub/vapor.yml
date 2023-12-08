@@ -1,7 +1,7 @@
 id: 55300
 name: edlib-cerpus-hub
 environments:
-    test:
+    staging:
         memory: 1024
         cli-memory: 512
         runtime: docker
