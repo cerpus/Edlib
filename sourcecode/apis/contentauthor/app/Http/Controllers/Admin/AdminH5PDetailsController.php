@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Content;
+use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -166,10 +167,10 @@ class AdminH5PDetailsController extends Controller
         $history = [];
 
         try {
-            $foliumId = $resourceService->getResourceFromExternalReference('contentauthor', $content->id)->id;
+            $resource = $resourceService->getResourceFromExternalReference('contentauthor', $content->id);
         } catch (Exception $e) {
             Log::warning($e);
-            $foliumId = '';
+            $resource = null;
         }
 
         if ($content->version_id) {
@@ -183,8 +184,9 @@ class AdminH5PDetailsController extends Controller
         return view('admin.library-upgrade.content-details', [
             'content' => $content,
             'latestVersion' => !isset($history[$content->id]['children']),
-            'foliumId' => $foliumId,
+            'resource' => $resource,
             'history' => $history,
+            'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
         ]);
     }
 

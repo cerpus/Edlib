@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
+use App\H5POption;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\H5pUpgradeRequest;
 use App\Libraries\H5P\AdminConfig;
@@ -41,7 +42,6 @@ class LibraryUpgradeController extends Controller
         $hubCacheLibraries = H5PLibrariesHubCache::all();
 
         $isPatchUpdate = function ($library) {
-            /** @noinspection PhpParamsInspection */
             if ($this->h5pFramework->isPatchedLibrary([
                 'machineName' => $library->name,
                 'majorVersion' => $library->major_version,
@@ -108,7 +108,7 @@ class LibraryUpgradeController extends Controller
                         'machineName' => $hubCache->name,
                         'majorVersion' => $hubCache->major_version,
                         'minorVersion' => $hubCache->minor_version,
-                        'title' => $hubCache->title,
+                        'title' => sprintf('%s (%d.%d.%d)', $hubCache->title, $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                         'summary' => $hubCache->summary,
                         'external_link' => $hubCache->example,
                         'numContent' => 0,
@@ -123,6 +123,7 @@ class LibraryUpgradeController extends Controller
             'installedLibraries' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
             'installedContentTypes' => $contentTypes->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
             'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'contentTypeCacheUpdateAt' => H5POption::select('option_value')->where('option_name', 'content_type_cache_updated_at')->first(),
         ]);
     }
 
