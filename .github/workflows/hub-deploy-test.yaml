@@ -1,4 +1,4 @@
-name: Deploy-cerpus-test
+name: Deploy Hub
 
 on:
   push:
