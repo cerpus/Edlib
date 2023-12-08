@@ -426,7 +426,7 @@ class H5PController extends Controller
                 return $file->state === H5PFile::FILE_CLONEFILE;
             });
         if ($filesToProcess->isNotEmpty()) {
-            H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
+            H5PFilesUpload::dispatch($content['id']);
             $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
 
@@ -531,7 +531,7 @@ class H5PController extends Controller
         /** @var Collection $filesToProcess */
         $filesToProcess = H5PFile::ofFileUploadFromContent($content->id)->get();
         if ($filesToProcess->isNotEmpty()) {
-            H5PFilesUpload::dispatch($content['id'])->onQueue("ca-multimedia");
+            H5PFilesUpload::dispatch($content['id']);
             $responseValues['statuspath'] = route('api.get.filestatus', ['requestId' => $request->header('X-Request-Id')]);
         }
         return response()->json($responseValues, Response::HTTP_CREATED);

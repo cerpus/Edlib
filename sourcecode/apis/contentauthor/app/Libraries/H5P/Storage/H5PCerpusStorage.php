@@ -64,7 +64,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             'source_file' => $file,
         ]);
 
-        PingVideoApi::dispatch($h5pContentsVideo, app(VersionClient::class))->onQueue('streamps_messages');
+        PingVideoApi::dispatch($h5pContentsVideo, app(VersionClient::class));
     }
 
     private function getFilePrefix($contentId)

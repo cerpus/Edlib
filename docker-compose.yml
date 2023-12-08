@@ -221,7 +221,7 @@ services:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: dev
-    command: [php, artisan, horizon]
+    command: [php, artisan, queue:work, -v]
     depends_on:
       contentauthor-fpm:
         condition: service_healthy

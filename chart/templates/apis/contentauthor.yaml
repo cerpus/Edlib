@@ -144,7 +144,8 @@ spec:
           command:
             - php
             - artisan
-            - horizon
+            - queue:work
+            - '-v'
 {{- include "apis.contentauthor.env" . | indent 10 }}
           resources:
             limits:
