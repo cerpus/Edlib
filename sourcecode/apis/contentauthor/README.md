@@ -72,24 +72,6 @@ Create the initial version of all content run the following command
 $ CACHE_DRIVER=file php artisan cerpus:init-versioning
 ```
 
-# Starting the internal queue worker
-
-[Laravel Horizon](https://laravel.com/docs/6.x/horizon) will handle all the internal queues.
-
-See `config/horizon.php` for config options if you want to modify/tweak the set up.
-
-Start horizon like this:
-
-```bash
-$ php artisan horizon
-```
-
-Be sure to set `QUEUE_DRIVER=redis` in `.env`.
-
-[In production use Supervisor to start and monitor Horizon](https://laravel.com/docs/6.x/horizon#deploying-horizon).
-
-For development purposes you can use the `sync` queue driver.
-
 ## Enabling context collaboration message processing
 
 In .env

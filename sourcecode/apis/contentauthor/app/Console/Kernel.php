@@ -43,12 +43,6 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->onOneServer()
             ->appendOutputTo($outputLocation);
-
-        $schedule->command('horizon:snapshot')
-            ->everyFiveMinutes()
-            ->withoutOverlapping()
-            ->onOneServer()
-            ->appendOutputTo($outputLocation);
     }
 
     protected function commands()
