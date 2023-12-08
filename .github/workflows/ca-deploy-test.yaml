@@ -3,15 +3,15 @@ name: Deploy-cerpus-test
 on:
   push:
     paths:
-      - "sourcecode/hub/**"
-      - ".github/workflows/hub-deploy-test.yaml"
+      - "sourcecode/apis/contentauthor/**"
+      - ".github/workflows/ca-deploy-test.yaml"
     branches:
       - hubbub
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: sourcecode/hub
+    working-directory: sourcecode/apis/contentauthor
 
 jobs:
   deploy:
@@ -28,7 +28,7 @@ jobs:
           coverage: none
       
       - name: Install Vapor CLI
-        working-directory: sourcecode/hub/tools/vapor-cli
+        working-directory: sourcecode/apis/contentauthor/tools/vapor-cli
         run: composer install --prefer-dist
 
       - name: Add Vapor to path
