@@ -32,6 +32,11 @@
                         <form action="{{ route('admin.check-for-updates') }}" method="post">
                             @csrf
                             <h4>Content types from h5p.org</h4>
+                            <div style="margin: 1em 0;">Last updated:
+                                @isset($contentTypeCacheUpdateAt)
+                                    {{ \Carbon\Carbon::createFromTimestamp($contentTypeCacheUpdateAt)->format('Y-m-d H:i:s e') }}
+                                @endempty
+                            </div>
                             <button type="submit" class="btn btn-success">Check for updates</button>
                         </form>
                     </div>

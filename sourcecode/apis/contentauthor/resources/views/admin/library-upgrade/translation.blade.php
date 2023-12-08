@@ -1,13 +1,16 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container" style="width:80vw">
-        <a href="{{ route('admin.check-library', [$library->id]) }}">Back to library</a>
+        <a href="{{ route('admin.update-libraries') }}">Library list</a>
+        <br>
+        <a href="{{ route('admin.check-library', [$library->id]) }}">Library details</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            "<b>{{ $languageCode }}</b>"
+                            {{Iso639p3::englishName($languageCode)}}
+                            <abbr>(<b>{{ $languageCode }}</b>)</abbr>
                             translation for {{ $library->getLibraryString(true) }}
                         </h3>
                     </div>

@@ -9,7 +9,6 @@ use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Libraries\Versioning\VersionableObject;
 use H5PCore;
-use H5PFrameworkInterface;
 use H5PMetadata;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -336,23 +335,7 @@ class H5PContent extends Content implements VersionableObject
             return null;
         }
 
-        $icon = null;
-
-        if ($library->has_icon) {
-            $h5pFramework = app(H5PFrameworkInterface::class);
-            $library_folder = $library->getFolderName();
-            $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
-
-            if (!empty($icon_path)) {
-                $icon = $icon_path;
-            }
-        }
-
-        if ($icon === null) {
-            $icon = url('/graphical/h5p_logo.svg');
-        }
-
-        return new ContentTypeDataObject("H5P", $contentType, $library->title, $icon);
+        return new ContentTypeDataObject("H5P", $contentType, $library->title, $library->getIconUrl());
     }
 
     public function getUrl(): string

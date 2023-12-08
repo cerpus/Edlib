@@ -239,6 +239,10 @@ class AdminH5PDetailsControllerTest extends TestCase
 
     public function test_contentHistory(): void
     {
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
         $f4mId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
@@ -270,17 +274,19 @@ class AdminH5PDetailsControllerTest extends TestCase
             ->with($versionId)
             ->willReturn($version);
 
-        $controller = app(AdminH5PDetailsController::class);
-        $res = $controller->contentHistory($content);
+        $response = $this->withSession(['user' => $user])
+            ->get(route('admin.content-details', $content))
+            ->assertOk()
+            ->original;
 
-        $data = $res->getData();
+        $data = $response->getData();
         $this->assertArrayHasKey('content', $data);
         $this->assertArrayHasKey('latestVersion', $data);
-        $this->assertArrayHasKey('foliumId', $data);
+        $this->assertArrayHasKey('resource', $data);
         $this->assertArrayHasKey('history', $data);
 
-        $this->assertEquals(true, $data['latestVersion']);
-        $this->assertEquals($f4mId, $data['foliumId']);
+        $this->assertTrue($data['latestVersion']);
+        $this->assertEquals($f4mId, $data['resource']->id);
         $this->assertInstanceOf(Collection::class, $data['history']);
         $this->assertNotNull($data['history']->get($content->id));
 

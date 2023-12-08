@@ -1,12 +1,15 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
-        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
+        <a href="{{ route('admin.update-libraries') }}">Library list</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3>Details for {{ $library->runnable ? 'content type' : 'library' }} "<strong>{{ $library->name }}</strong>"</h3>
+                        <h3>
+                            <img style="height:3em;" src="{{ $library->getIconUrl() }}" alt="Content type icon">
+                            Details for {{ $library->runnable ? 'content type' : 'library' }} <strong>{{ $library->getLibraryString(true) }}</strong>
+                        </h3>
                     </div>
 
                     <div class="panel-body row">
@@ -28,20 +31,10 @@
                                 library failed validation
                             </div>
                         @else
-                            @if (array_key_exists('semantics', $libData) && $libData['semantics'] !== $library->semantics)
+                            @if (array_key_exists('semantics', $libData) && trim($libData['semantics']) !== trim($library->semantics))
                                 <div class="alert alert-danger">
                                     Semantics data in database does not match the 'semantics.json' file.
                                     Rebuild the library to update the database
-                                </div>
-                            @endif
-                            @if ($library && $libData && (
-                                    $library->major_version !== $libData['majorVersion'] ||
-                                    $library->minor_version !== $libData['minorVersion'] ||
-                                    $library->patch_version !== $libData['patchVersion']
-                                )
-                            )
-                                <div class="alert alert-danger">
-                                    Library version in database does not match version in 'library.json'
                                 </div>
                             @endif
                         @endif
@@ -81,7 +74,7 @@
                                 <td>{{ $library->minor_version }}</td>
                                 <td>{{ $libData['minorVersion'] ?? '' }}</td>
                             </tr>
-                            <tr>
+                            <tr @if(isset($libData['patchVersion']) && $library->patch_version !== $libData['patchVersion']) class="alert-danger"@endif>
                                 <th>Patch version</th>
                                 <td>{{ $library->patch_version }}</td>
                                 <td>{{ $libData['patchVersion'] ?? '' }}</td>
@@ -156,18 +149,27 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Translations</th>
+                                <th>Translations in database ({{$languages->count()}})</th>
                                 <td colspan="2">
                                     @foreach($languages as $lang)
                                         <a
                                             href="{{ route('admin.library-translation', [$library->id, $lang]) }}"
                                             class="btn btn-default"
+                                            title="{{Iso639p3::englishName($lang)}}"
                                         >
                                             {{ $lang }}
                                         </a>
                                     @endforeach
                                 </td>
                                 <td></td>
+                            </tr>
+                            <tr>
+                                <th>Number of contents</th>
+                                <td colspan="2">
+                                    <a href="{{ route('admin.content-library', [$library->id]) }}">
+                                        {{ $library->contents()->count() }}
+                                    </a>
+                                </td>
                             </tr>
                         </table>
                     </div>

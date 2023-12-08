@@ -5,7 +5,7 @@
             <th>Machine name</th>
             <th>Type</th>
             <th>Required version</th>
-            <th>DB version</th>
+            <th>Installed version</th>
             <th>Set in DB</th>
         </tr>
         @foreach($dependencies as $dep)
