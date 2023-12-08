@@ -7,7 +7,6 @@ environments:
         runtime: docker
         domain: ca.edlibdev.net
         network: edlib-cerpus-test
-        database: edlib-cerpus-test-ca
         cache: edlib-cerpus-test-cache
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
@@ -16,4 +15,3 @@ environments:
             - 'npm ci && npm run build && rm -rf node_modules'
         deploy:
             - 'php artisan migrate --force'
-            
