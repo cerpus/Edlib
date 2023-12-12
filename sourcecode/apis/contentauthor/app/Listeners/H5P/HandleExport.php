@@ -10,7 +10,7 @@ class HandleExport
     public function handle(H5PWasSaved $event)
     {
         if (config('feature.export_h5p_on_save')) {
-            ExportH5P::dispatch($event->h5p->refresh())->onQueue('h5p-export');
+            ExportH5P::dispatch($event->h5p->refresh());
         }
     }
 }
