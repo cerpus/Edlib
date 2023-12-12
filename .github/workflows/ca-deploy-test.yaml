@@ -26,6 +26,11 @@ jobs:
           php-version: 8.2
           tools: composer:v2
           coverage: none
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
       
       - name: Install Vapor CLI
         working-directory: sourcecode/apis/contentauthor/tools/vapor-cli
