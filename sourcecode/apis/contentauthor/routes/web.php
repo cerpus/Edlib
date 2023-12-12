@@ -111,7 +111,7 @@ Route::get('v1/link/embeddata', [LinkInfoController::class, 'embed']);
 
 
 Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index'])->name('lock.status');
-Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.status');
+Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.pulse');
 Route::match(['GET', 'POST'], 'v1/content/{id}/unlock', [UnlockController::class, 'index'])->name('lock.unlock');
 
 // AJAX and REST(ish) routes

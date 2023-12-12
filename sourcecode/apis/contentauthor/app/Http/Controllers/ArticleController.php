@@ -215,7 +215,7 @@ class ArticleController extends Controller
                 'canPublish' => $article->canPublish($request),
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-                'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
+                'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             ]
         );
 
