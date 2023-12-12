@@ -288,7 +288,7 @@ class H5PController extends Controller
             'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
-            'pulseUrl' => config('feature.content-locking') ? route('lock.status', ['id' => $id]) : null,
+            'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ]);
 
