@@ -9,6 +9,7 @@ environments:
         network: edlib-cerpus-test
         database: edlib-cerpus-test-hub
         cache: edlib-cerpus-test-cache
+        queues: edlib-cerpus-test
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
             - 'php artisan optimize'
