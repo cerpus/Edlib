@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Game;
+use App\Gametype;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,7 +15,7 @@ class GameFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid,
-            'gametype' => $this->faker->uuid,
+            'gametype' => Gametype::factory(),
             'title' => $this->faker->sentence,
             'language_code' => $this->faker->languageCode,
             'owner' => $this->faker->uuid,
