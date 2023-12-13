@@ -1,6 +1,9 @@
 <?php
 
 return [
+
+    'name' => env('APP_NAME', 'Content Author'),
+
     'env' => env('APP_ENV', 'production'),
     'enable_licensing' => env('ENABLE_LICENSING', false),
 
@@ -30,6 +33,8 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    'asset_url' => env('ASSET_URL'),
 
     /*
     |--------------------------------------------------------------------------
