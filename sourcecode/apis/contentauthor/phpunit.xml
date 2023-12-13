@@ -38,7 +38,8 @@
         <server name="CACHE_DRIVER" value="array"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="QUEUE_DRIVER" value="sync"/>
-        <server name="DB_CONNECTION" value="sqlite-test"/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
         <server name="ENABLE_LICENSING" value="true"/>
         <server name="FEATURE_CONTENT_LOCKING" value="true"/>
         <server name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
