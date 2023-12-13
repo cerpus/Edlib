@@ -7,6 +7,7 @@ environments:
         runtime: docker
         domain: ca.edlibdev.net
         network: edlib-cerpus-test
+        storage: edlib-cerpus-test-ca
         cache: edlib-cerpus-test-cache
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
