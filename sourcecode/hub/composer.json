@@ -6,31 +6,31 @@
         "ext-intl": "*",
         "cerpus/edlib-resource-kit": "0.7.x-dev",
         "cerpus/edlib-resource-kit-laravel": "0.7.x-dev",
-        "guzzlehttp/guzzle": "^7.8",
+        "guzzlehttp/guzzle": "^7.8.1",
         "http-interop/http-factory-guzzle": "^1.2",
-        "laravel/framework": "^10.23.1",
-        "laravel/scout": "^10.1.1",
-        "laravel/socialite": "^5.9",
-        "laravel/tinker": "^2.8.1",
-        "laravel/vapor-cli": "^1.56",
-        "laravel/vapor-core": "^2.33.1",
-        "livewire/livewire": "^2.12.3",
-        "meilisearch/meilisearch-php": "^1.1.1",
+        "laravel/framework": "^10.37.3",
+        "laravel/scout": "^10.6.1",
+        "laravel/socialite": "^5.11",
+        "laravel/tinker": "^2.8.2",
+        "laravel/vapor-cli": "^1.61",
+        "laravel/vapor-core": "^2.33.2",
+        "livewire/livewire": "^2.12.6",
+        "meilisearch/meilisearch-php": "^1.5.0",
         "psr/clock": "^1.0",
         "socialiteproviders/auth0": "^4.1"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",
         "cache/array-adapter": "^1.2",
-        "fakerphp/faker": "^1.21.0",
-        "laravel/dusk": "^7.7.1",
-        "laravel/telescope": "^4.14.2",
-        "mockery/mockery": "^1.5.1",
-        "nunomaduro/collision": "^7.5.2",
-        "nunomaduro/larastan": "^2.6",
-        "phpstan/phpstan": "^1.10.15",
-        "phpunit/phpunit": "^10.1.2",
-        "spatie/laravel-ignition": "^2.1.2"
+        "fakerphp/faker": "^1.23.0",
+        "larastan/larastan": "^2.7.0",
+        "laravel/dusk": "^7.12.0",
+        "laravel/telescope": "^4.17.3",
+        "mockery/mockery": "^1.6.7",
+        "nunomaduro/collision": "^7.10.0",
+        "phpstan/phpstan": "^1.10.50",
+        "phpunit/phpunit": "^10.5.3",
+        "spatie/laravel-ignition": "^2.3.1"
     },
     "autoload": {
         "psr-4": {
@@ -58,14 +58,6 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "dont-discover": [
-                "barryvdh/laravel-ide-helper",
-                "laravel/telescope"
-            ]
-        }
     },
     "config": {
         "optimize-autoloader": true,

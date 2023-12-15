@@ -9,7 +9,6 @@ use App\Lti\Serializer\ContentItemsSerializer;
 use App\Lti\Serializer\LtiContentSerializer;
 use App\Support\CarbonToPsrClockAdapter;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
-use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\LtiLinkItemSerializerInterface;
 use Illuminate\Pagination\Paginator;
@@ -19,8 +18,11 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
 use Laravel\Scout\Console\ImportCommand;
 use Laravel\Scout\Console\SyncIndexSettingsCommand;
+use Laravel\Telescope\Telescope;
 use Psr\Clock\ClockInterface;
 use Random\Randomizer;
+
+use function class_exists;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,10 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->isLocal()) {
-            $this->app->register(IdeHelperServiceProvider::class);
-
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+        if ($this->app->isLocal() && class_exists(Telescope::class)) {
             $this->app->register(TelescopeServiceProvider::class);
         }
 
