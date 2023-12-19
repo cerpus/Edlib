@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Eloquent\Model;
+
 return [
 
     /*
@@ -210,6 +212,8 @@ return [
     |
     */
 
-    'aliases' => [],
+    'aliases' => [
+        'Eloquent' => Model::class, // for ide-helper, do not use in code
+    ],
 
 ];

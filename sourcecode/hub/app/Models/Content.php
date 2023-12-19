@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Events\ContentDeleting;
 use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiContent;
 use App\Support\SessionScope;
@@ -37,6 +38,13 @@ class Content extends Model
     use Searchable;
 
     protected $perPage = 48;
+
+    /**
+     * @var array<string, class-string>
+     */
+    protected $dispatchesEvents = [
+        'deleting' => ContentDeleting::class,
+    ];
 
     public static function booted(): void
     {

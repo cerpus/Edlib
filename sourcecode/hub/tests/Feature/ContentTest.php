@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
@@ -97,5 +98,27 @@ final class ContentTest extends TestCase
 
         $this->get("/content/{$content->id}")
             ->assertForbidden();
+    }
+
+    public function testPrunesVersionlessContent(): void
+    {
+        $toRemain1 = Content::factory()
+            ->state(['updated_at' => now()])
+            ->create();
+        $toRemain2 = Content::factory()
+            ->withPublishedVersion()
+            ->state(['updated_at' => now()->subMonth()])
+            ->create();
+        $toBeDeleted = Content::factory()
+            ->state(['updated_at' => now()->subMonth()])
+            ->create();
+
+        $this->artisan('schedule:test', [
+            '--name' => PruneVersionlessContent::class,
+        ])->assertOk();
+
+        $this->assertModelExists($toRemain1);
+        $this->assertModelExists($toRemain2);
+        $this->assertModelMissing($toBeDeleted);
     }
 }
