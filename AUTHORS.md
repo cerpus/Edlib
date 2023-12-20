@@ -5,6 +5,7 @@
 - [Brett Kromkamp](https://github.com/brettkromkamp) 
 - [Christian Einvik](https://github.com/chrieinv)
 - [Emma Cecilie Hughes](https://github.com/emmachughes)
+- Erika Lu
 - [Espen Sanne Hardersen](https://github.com/VonKeeks)
 - [Henning Benum](https://github.com/Kamelon7) 
 - [Jan-Espen Oversand](https://github.com/leakingmemory)
