@@ -54,6 +54,7 @@ use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 use function Cerpus\Helper\Helpers\profile as config;
 use function request;
 

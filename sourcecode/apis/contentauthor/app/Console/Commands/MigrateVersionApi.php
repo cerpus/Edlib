@@ -73,10 +73,10 @@ class MigrateVersionApi extends Command
             'h5p_contents' => Content::TYPE_H5P,
         ];
 
-        foreach($tables as $table => $contentType) {
+        foreach ($tables as $table => $contentType) {
             try {
                 $count = DB::table($table)
-                    ->leftJoin('content_versions', $table.'.version_id', '=' , 'content_versions.id')
+                    ->leftJoin('content_versions', $table.'.version_id', '=', 'content_versions.id')
                     ->whereNull('content_versions.id')
                     ->whereNotNull($table . '.version_id')
                     ->count();
@@ -90,7 +90,7 @@ class MigrateVersionApi extends Command
                     if ($this->option('debug')) {
                         $progress = null;
                         $this->info('Migrating data for ' . $table);
-                    } else{
+                    } else {
                         $progress = $this->output->createProgressBar($count);
                         $progress->setFormat('%message%: %current%/%max% [%bar%] %percent:3s%% %estimated:6s%');
                         $progress->setBarCharacter('-');
@@ -101,7 +101,7 @@ class MigrateVersionApi extends Command
 
                     DB::table($table)
                         ->select([$table . '.id as item_id', $table . '.version_id'])
-                        ->leftJoin('content_versions', $table.'.version_id', '=' , 'content_versions.id')
+                        ->leftJoin('content_versions', $table.'.version_id', '=', 'content_versions.id')
                         ->whereNull('content_versions.id')
                         ->whereNotNull($table . '.version_id')
                         ->orderBy($table . '.created_at', 'asc')

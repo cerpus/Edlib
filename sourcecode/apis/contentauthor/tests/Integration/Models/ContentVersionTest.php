@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Integration\Models;
 
 use App\ContentVersions;
-use App\Exceptions\NotFoundException;
 use Carbon\Carbon;
 use Generator;
 use Illuminate\Database\Eloquent\Collection;

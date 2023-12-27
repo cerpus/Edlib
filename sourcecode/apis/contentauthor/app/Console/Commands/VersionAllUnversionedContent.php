@@ -62,7 +62,7 @@ class VersionAllUnversionedContent extends Command
                     }
                     $this->info("Article: $versionId, $article->title, $article->updated_at");
                 });
-        });
+            });
 
         H5PContent::unversioned()
             ->orderBy('id')
@@ -83,7 +83,7 @@ class VersionAllUnversionedContent extends Command
 
                     $this->info("H5P: $versionId, $h5p->title, $h5p->updated_at");
                 });
-        });
+            });
     }
 
     private function createVersion($contentId, $contentType, $ownerId, $timestamp): string

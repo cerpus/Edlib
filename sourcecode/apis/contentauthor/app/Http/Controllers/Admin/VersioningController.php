@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 
 class VersioningController extends Controller
 {
-
     public function index(Request $request)
     {
         $isContentVersioned = true;
