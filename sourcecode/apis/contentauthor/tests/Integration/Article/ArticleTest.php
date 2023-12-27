@@ -14,15 +14,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Tests\TestCase;
 use Tests\Helpers\MockAuthApi;
 use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
+use Tests\TestCase;
 
 class ArticleTest extends TestCase
 {
     use RefreshDatabase;
-    use MockVersioningTrait;
     use MockResourceApi;
     use MockAuthApi;
 
@@ -132,7 +130,6 @@ class ArticleTest extends TestCase
 
     public function testCreateAndEditArticleWithIframeContent()
     {
-        $this->setupVersion(['getVersion' => false]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -175,7 +172,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -218,7 +214,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticleWithDraftEnabled()
     {
-        $this->setupVersion(['getVersion' => false]);
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -313,8 +308,6 @@ class ArticleTest extends TestCase
 
     public function testViewArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
-
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',

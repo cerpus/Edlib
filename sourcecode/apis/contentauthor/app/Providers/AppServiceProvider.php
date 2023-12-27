@@ -4,10 +4,14 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
+use App\ContentVersions;
+use App\H5PContent;
 use App\H5POption;
 use App\Http\Middleware\RequestId;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
+use App\Observers\ContentVersionsObserver;
+use App\Observers\ContentObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
@@ -28,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapThree();
 
         H5POption::observe(H5POptionObserver::class);
-        //
+        ContentVersions::observe(ContentVersionsObserver::class);
     }
 
     /**

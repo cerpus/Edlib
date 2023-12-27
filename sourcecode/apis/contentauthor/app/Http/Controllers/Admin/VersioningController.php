@@ -3,30 +3,23 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Content;
+use App\ContentVersions;
 use App\Http\Controllers\Controller;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class VersioningController extends Controller
 {
-    private $versionData;
 
     public function index(Request $request)
     {
         $isContentVersioned = true;
-        $this->versionData = collect();
+        $versionData = collect();
         $contentId = $request->input('contentId');
         if ($contentId) {
             $content = Content::findContentById($contentId);
             if (!empty($content->version_id)) {
-                /** @var VersionClient $versionClient */
-                $versionClient = resolve(VersionClient::class);
-                /** @var VersionData $versionData */
-                $versionData = $versionClient->getVersion($content->version_id);
-                $this->traverseVersion($versionData, $this->versionData);
+                $this->traverseVersion($content->getVersion(), $versionData);
             } elseif (!empty($content)) {
                 $isContentVersioned = false;
             }
@@ -34,7 +27,7 @@ class VersioningController extends Controller
 
         return view('admin.support.versioning')->with([
             'contentId' => $contentId,
-            'versionData' => $this->versionData->isNotEmpty() ? $this->versionData : null,
+            'versionData' => $versionData->isNotEmpty() ? $versionData->reverse() : null,
             'isContentVersioned' => $isContentVersioned,
         ]);
     }
@@ -42,37 +35,43 @@ class VersioningController extends Controller
     /**
      * @return Collection
      */
-    private function traverseVersion(VersionData $versionData, Collection $stack)
+    private function traverseVersion(ContentVersions $versionData, Collection $stack, $getChildren = true)
     {
-        $versionArray = $versionData->toArray();
-        $versionArray['versionCreatedAtRaw'] = $versionData->getCreatedAt();
-        $versionArray['versionCreatedAtFormatted'] = Carbon::createFromTimestampMs($versionData->getCreatedAt())->toIso8601String();
-        $content = Content::findContentById($versionData->getExternalReference());
+        $versionArray = [
+            'version' => $versionData->toArray(),
+        ];
+        $versionArray['version']['created_at'] = $versionData->created_at->format('Y-m-d H:i:s.u e');
+        $content = $versionData->getContent();
         if (!empty($content)) {
             $versionArray['content'] = [
                 'title' => $content->title,
-                'created' => $content->created_at->toIso8601String(),
-                'update' => $content->updated_at->toIso8601String(),
-                'version_id' => $content->version_id,
-                'isDraftState' => !$content->isPublished(),
-                'isPublished' => !$content->isListed(),
+                'created' => $content->created_at->format('Y-m-d H:i:s e'),
                 'contentType' => $content->getContentType(),
             ];
-        }
-        if ($versionData->getParent()) {
-            $parent = collect();
-            $this->traverseVersion($versionData->getParent(), $parent);
-            $versionArray['parent'] = $parent;
-        }
-        if ($versionData->getChildren()) {
-            $children = collect();
-            foreach ($versionData->getChildren() as $child) {
-                $this->traverseVersion($child, $children);
+            if ($versionArray['version']['content_type'] === Content::TYPE_H5P) {
+                if ($content->library_id) {
+                    $versionArray['content']['library'] = $content->library->getLibraryString(true);
+                } else {
+                    $versionArray['content']['library'] = '';
+                }
             }
-            $versionArray['children'] = $children;
         }
+        $versionArray['parent'] = $versionData->getPreviousVersion()?->content_id;
 
-        $stack->push($versionArray);
+        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersions> $children */
+        $children = $versionData->getNextVersions();
+        $versionArray['children'] = [];
+        if ($children->isNotEmpty()) {
+            foreach ($children as $child) {
+                if ($getChildren) {
+                    $this->traverseVersion($child, $stack);
+                }
+                $versionArray['children'][] = $child->content_id;
+            }
+        }
+        if (!$stack->has($versionData->content_id)) {
+            $stack->put($versionData->content_id, $versionArray);
+        }
 
         return $stack;
     }

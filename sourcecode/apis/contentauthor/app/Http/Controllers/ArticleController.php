@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ACL\ArticleAccess;
 use App\Article;
 use App\Content;
+use App\ContentVersions;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
 use App\Http\Libraries\License;
@@ -20,7 +21,6 @@ use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\Lti\Lti;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-
 use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
@@ -139,7 +138,7 @@ class ArticleController extends Controller
         }
 
         // Handles privacy, collaborators, and registering a new version
-        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), VersionData::CREATE, Session::all()));
+        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersions::PURPOSE_CREATE, Session::all()));
 
         $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
 
@@ -187,7 +186,6 @@ class ArticleController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        /** @var Article $article */
         $article = Article::findOrFail($id);
 
         if (!$this->canUpdateArticle($article)) {
@@ -272,9 +270,9 @@ class ArticleController extends Controller
         }
 
         $oldLicense = $oldArticle->getContentLicense();
-        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
+        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersions::PURPOSE_COPY : ContentVersions::PURPOSE_UPDATE;
 
-        if ($reason === VersionData::COPY && !$request->input("license", false)) {
+        if ($reason === ContentVersions::PURPOSE_COPY && !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
@@ -285,10 +283,10 @@ class ArticleController extends Controller
 
         if ($oldArticle->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case VersionData::UPDATE:
+                case ContentVersions::PURPOSE_UPDATE:
                     $article = $oldArticle->makeCopy();
                     break;
-                case VersionData::COPY:
+                case ContentVersions::PURPOSE_COPY:
                     $article = $oldArticle->makeCopy(Session::get('authId'));
                     break;
                 default:
@@ -364,7 +362,7 @@ class ArticleController extends Controller
     protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
     {
         switch ($reason) {
-            case VersionData::UPDATE:
+            case ContentVersions::PURPOSE_UPDATE:
                 $collaborators = "";
                 if (!$newArticle->isOwner(Session::get('authId'))) { // Collaborators cannot update collaborators
                     $collaborators = $this->getCollaboratorsEmails($oldArticle);
@@ -375,7 +373,7 @@ class ArticleController extends Controller
                 }
                 return collect(explode(",", $collaborators));
 
-            case VersionData::COPY:
+            case ContentVersions::PURPOSE_COPY:
             default:
                 return collect();
         }

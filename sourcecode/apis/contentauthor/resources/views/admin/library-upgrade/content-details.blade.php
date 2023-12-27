@@ -27,15 +27,31 @@
                                 <td>{{ $content->title }}</td>
                             </tr>
                             <tr>
-                                <th>Created</th>
+                                <th>Created (Content author)</th>
                                 <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
-                                <th>Updated</th>
+                                <th>Created (Resource API)</th>
+                                <td>{{
+                                    $resource ?
+                                        $resource->createdAt ? \Carbon\Carbon::make($resource->createdAt)->utc()->format('Y-m-d H:i:s e') : '-'
+                                    : ''
+                                }}</td>
+                            </tr>
+                            <tr>
+                                <th>Updated (Content author)</th>
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
-                                <th>Deleted</th>
+                                <th>Updated (Resource API)</th>
+                                <td>{{
+                                    $resource ?
+                                        $resource->updatedAt ? \Carbon\Carbon::make($resource->updatedAt)->utc()->format('Y-m-d H:i:s e') : '-'
+                                    : ''
+                                }}</td>
+                            </tr>
+                            <tr>
+                                <th>Deleted (Resource API)</th>
                                 <td>{{
                                     $resource ?
                                         $resource->deletedAt ? \Carbon\Carbon::make($resource->deletedAt)->utc()->format('Y-m-d H:i:s e') : 'No'
@@ -48,7 +64,11 @@
                             </tr>
                             <tr>
                                 <th>Language</th>
-                                <td>{{ $content->language_iso_639_3 }}</td>
+                                <td>
+                                    @isset($content->language_iso_639_3)
+                                        {{ $content->language_iso_639_3 }} ({{ Iso639p3::englishName($content->language_iso_639_3) }})
+                                    @endisset
+                                </td>
                             </tr>
                             <tr>
                                 <th>License</th>
@@ -96,9 +116,10 @@
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Date</th>
+                                        <th>Date (Version)</th>
                                         <th>Title</th>
                                         <th>License</th>
+                                        <th>Language</th>
                                         <th>Reason</th>
                                         <th>Library</th>
                                     </tr>
@@ -118,17 +139,18 @@
                                         <tr>
                                             <td>
                                                 @if ($itemId !== $content->id && isset($history[$itemId]['content']))
-                                                    <a href="{{ route('admin.content-details', [$history[$itemId]['externalReference']]) }}">
-                                                        {{ $history[$itemId]['externalReference'] }}
+                                                    <a href="{{ route('admin.content-details', [$history[$itemId]['content_id']]) }}">
+                                                        {{ $history[$itemId]['content_id'] }}
                                                     </a>
                                                 @else
-                                                    {{ $history[$itemId]['externalReference'] }}
+                                                    {{ $history[$itemId]['content_id'] }}
                                                 @endif
                                             </td>
-                                            <td>{{ $history[$itemId]['versionDate'] }}</td>
+                                            <td>{{ $history[$itemId]['versionDate']->format('Y-m-d H:i:s.u e') }}</td>
                                             <td>{{ $history[$itemId]['content']['title'] ?? '' }}</td>
                                             <td>{{ $history[$itemId]['content']['license'] ?? '' }}</td>
-                                            <td>{{ $history[$itemId]['versionPurpose'] }}</td>
+                                            <td>{{ $history[$itemId]['content']['language'] ?? '' }}</td>
+                                            <td>{{ $history[$itemId]['version_purpose'] }}</td>
                                             <td>
                                                 @if(isset($history[$itemId]['content']) && isset($history[$itemId]['content']['library_id']))
                                                     <a href="{{ route('admin.check-library', [$history[$itemId]['content']['library_id']]) }}">
@@ -153,9 +175,10 @@
                                 <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Date</th>
+                                        <th>Date (Version)</th>
                                         <th>Title</th>
                                         <th>License</th>
+                                        <th>Language</th>
                                         <th>Reason</th>
                                         <th>Library</th>
                                     </tr>
@@ -172,15 +195,16 @@
                                             <tr>
                                                 <td>
                                                     @isset($history[$itemId]['content'])
-                                                        <a href="{{ route('admin.content-details', [$history[$itemId]['externalReference']]) }}">{{ $history[$itemId]['externalReference'] }}</a>
+                                                        <a href="{{ route('admin.content-details', [$history[$itemId]['content_id']]) }}">{{ $history[$itemId]['content_id'] }}</a>
                                                     @else
-                                                        {{ $history[$itemId]['externalReference'] }}
+                                                        {{ $history[$itemId]['external_reference'] }}
                                                     @endisset
                                                 </td>
-                                                <td>{{ $history[$itemId]['versionDate'] }}</td>
+                                                <td>{{ $history[$itemId]['versionDate']->format('Y-m-d H:i:s.u e') }}</td>
                                                 <td>{{ $history[$itemId]['content']['title'] ?? '' }}</td>
                                                 <td>{{ $history[$itemId]['content']['license'] ?? '' }}</td>
-                                                <td>{{ $history[$itemId]['versionPurpose'] }}</td>
+                                                <td>{{ $history[$itemId]['content']['language'] ?? '' }}</td>
+                                                <td>{{ $history[$itemId]['version_purpose'] }}</td>
                                                 <td>
                                                     @if(isset($history[$itemId]['content']) && isset($history[$itemId]['content']['library_id']))
                                                         <a href="{{ route('admin.check-library', [$history[$itemId]['content']['library_id']]) }}">

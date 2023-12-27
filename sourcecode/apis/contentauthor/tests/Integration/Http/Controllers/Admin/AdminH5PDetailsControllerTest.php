@@ -3,6 +3,7 @@
 namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ApiModels\Resource;
+use App\ContentVersions;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -10,13 +11,11 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
-use Cerpus\VersionClient\VersionData;
 use Generator;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -177,6 +176,11 @@ class AdminH5PDetailsControllerTest extends TestCase
 
     public function test_contentForLibrary(): void
     {
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+
         $library = H5PLibrary::factory()->create();
         $failedContent = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
@@ -190,30 +194,16 @@ class AdminH5PDetailsControllerTest extends TestCase
         ]);
         $versionId = $versionContent->version_id;
 
-        $versionApi = $this->createMock('Cerpus\VersionClient\VersionClient');
-        $this->instance('Cerpus\VersionClient\VersionClient', $versionApi);
-
-        $version = new VersionData($versionId);
-        $version = $version->populate((object) [
+        ContentVersions::factory()->create([
             'id' => $versionId,
-            'createdAt' => $this->faker->unixTime,
-            'versionPurpose' => 'Testing',
-            'externalReference' => $versionContent->id,
+            'content_id' => $versionContent->id,
         ]);
 
-        $versionApi
-            ->expects($this->exactly(2))
-            ->method('latest')
-            ->withConsecutive([$versionId], [$failedContent->version_id])
-            ->willReturnCallback(function ($data) use ($versionId, $version) {
-                if ($data === $versionId) {
-                    return $version;
-                }
-                throw new \Exception('test');
-            });
+        $res = $this->withSession(['user' => $user])
+            ->get(route('admin.content-library', $library))
+            ->assertOk()
+            ->original;
 
-        $controller = app(AdminH5PDetailsController::class);
-        $res = $controller->contentForLibrary($library, new Request());
         $data = $res->getData();
 
         $this->assertArrayHasKey('library', $data);
@@ -250,7 +240,6 @@ class AdminH5PDetailsControllerTest extends TestCase
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
-        $versionId = $content->version_id;
 
         $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
         $resourceAPI->expects($this->once())
@@ -258,21 +247,10 @@ class AdminH5PDetailsControllerTest extends TestCase
             ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
         $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
 
-        $versionApi = $this->createMock('Cerpus\VersionClient\VersionClient');
-        $this->instance('Cerpus\VersionClient\VersionClient', $versionApi);
-
-        $version = new VersionData($versionId);
-        $version = $version->populate((object) [
-            'createdAt' => $this->faker->unixTime,
-            'versionPurpose' => 'Testing',
-            'externalReference' => $content->id,
+        ContentVersions::factory()->create([
+            'id' => $content->version_id,
+            'content_id' => $content->id,
         ]);
-
-        $versionApi
-            ->expects($this->once())
-            ->method('getVersion')
-            ->with($versionId)
-            ->willReturn($version);
 
         $response = $this->withSession(['user' => $user])
             ->get(route('admin.content-details', $content))
@@ -291,7 +269,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertNotNull($data['history']->get($content->id));
 
         $history = $data['history']->get($content->id);
-        $this->assertEquals('Testing', $history['versionPurpose']);
+        $this->assertEquals('Create', $history['version_purpose']);
         $this->assertEquals($content->title, $history['content']['title']);
         $this->assertEquals($library->id, $history['content']['library_id']);
     }

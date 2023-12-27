@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Content;
 use App\ContentLock;
+use App\ContentVersions;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -11,14 +11,13 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -111,8 +110,6 @@ class AdminH5PDetailsController extends Controller
 
     public function contentForLibrary(H5PLibrary $library, Request $request): View
     {
-        /** @var \Cerpus\VersionClient\VersionClient $versionClient */
-        $versionClient = app('Cerpus\VersionClient\VersionClient');
         $pageSize = 100;
         $page = (int) $request->get('page', 1);
         $listAll = (bool) $request->get('listAll', false);
@@ -126,20 +123,20 @@ class AdminH5PDetailsController extends Controller
             ->limit($pageSize)
             ->offset($pageSize * ($page-1))
             ->get()
-            ->map(function (H5PContent $row) use ($versionClient, &$latestCount) {
+            ->map(function (H5PContent $row) use (&$latestCount) {
                 try {
                     $latest = null;
                     if ($row->version_id) {
-                        $latest = $versionClient->latest($row->version_id);
+                        $latest = ContentVersions::latest($row->version_id);
                     }
-                    $isLatest = (!empty($latest) && $row->version_id === $latest->getId());
+                    $isLatest = (empty($latest) || $row->version_id === $latest->id);
                     $latestCount += $isLatest ? 1 : 0;
 
                     return [
                         'item' => $row,
                         'isLatest' => $isLatest,
                     ];
-                } catch (Exception) {
+                } catch (ModelNotFoundException) {
                     return [
                         'item' => $row,
                         'isLatest' => null,
@@ -161,8 +158,6 @@ class AdminH5PDetailsController extends Controller
     {
         /** @var \App\Apis\ResourceApiService $resourceService */
         $resourceService = app('\App\Apis\ResourceApiService');
-        /** @var \Cerpus\VersionClient\VersionClient $versionClient */
-        $versionClient = app('Cerpus\VersionClient\VersionClient');
         $versions = collect();
         $history = [];
 
@@ -174,10 +169,7 @@ class AdminH5PDetailsController extends Controller
         }
 
         if ($content->version_id) {
-            $data = $versionClient->getVersion($content->version_id);
-            if ($data === false) {
-                Log::error(__METHOD__, [$versionClient->getErrorCode(), $versionClient->getError()]);
-            }
+            $data = $content->getVersion();
             $history = $data ? $this->getVersions($data, $versions) : [];
         }
 
@@ -255,11 +247,11 @@ class AdminH5PDetailsController extends Controller
         ]);
     }
 
-    private function getVersions(VersionData $versionData, Collection $stack, $getChildren = true): Collection
+    private function getVersions(ContentVersions $versionData, Collection $stack, $getChildren = true): Collection
     {
         $versionArray = $versionData->toArray();
-        $versionArray['versionDate'] = Carbon::createFromTimestampMs($versionData->getCreatedAt())->format('Y-m-d H:i:s e');
-        $content = Content::findContentById($versionData->getExternalReference());
+        $versionArray['versionDate'] = $versionData->created_at;
+        $content = $versionData->getContent();
         if (!empty($content)) {
             $library = $content->library;
             $versionArray['content'] = [
@@ -268,27 +260,30 @@ class AdminH5PDetailsController extends Controller
                 'update' => $content->updated_at->format('Y-m-d H:i:s e'),
                 'version_id' => $content->version_id,
                 'license' => $content->license,
+                'language' => $content->language_iso_639_3,
                 'library_id' => $library->id,
                 'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
             ];
         }
-        $parent = $versionData->getParent();
-        if ($parent) {
-            $this->getVersions($parent, $stack);
-            $versionArray['parent'] = $parent->getExternalReference();
+        /** @var ContentVersions|null $parent */
+        $parent = $versionData->getPreviousVersion();
+        if (!empty($parent)) {
+            $this->getVersions($parent, $stack, false);
+            $versionArray['parent'] = $parent->content_id;
         }
-        $children = $versionData->getChildren();
-        if ($children) {
+        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersions> $children */
+        $children = $versionData->getNextVersions();
+        if ($children->isNotEmpty()) {
             $versionArray['children'] = [];
             foreach ($children as $child) {
                 if ($getChildren) {
                     $this->getVersions($child, $stack, false);
                 }
-                $versionArray['children'][] = $child->getExternalReference();
+                $versionArray['children'][] = $child->content_id;
             }
         }
-        if (!$stack->has($versionData->getExternalReference())) {
-            $stack->put($versionData->getExternalReference(), $versionArray);
+        if (!$stack->has($versionData->content_id)) {
+            $stack->put($versionData->content_id, $versionArray);
         }
 
         return $stack;

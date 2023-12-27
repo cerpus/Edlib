@@ -2,69 +2,28 @@
 
 namespace App\Traits;
 
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
-use Illuminate\Support\Facades\Cache;
-use RuntimeException;
+use App\ContentVersions;
 
 trait Versionable
 {
-    /** @var VersionData|null */
-    private $versionData = null;
-
-    public function fetchVersionData(): ?VersionData
+    public function fetchVersionData(): ?ContentVersions
     {
-        $cacheKey = "versionable-data|".$this->id;
-        $cacheTime = 5;
-
-        if (!$this->versionData) {
-            if (!$versionData = Cache::get($cacheKey)) {
-                if ($this->version_id) {
-                    $vc = app(VersionClient::class);
-                    $versionData = $vc->getVersion($this->version_id);
-                    if ($versionData instanceof VersionData) {
-                        Cache::put($cacheKey, $versionData, now()->addSeconds($cacheTime));
-                    } else {
-                        throw new RuntimeException(sprintf(
-                            'Versioning failed (%s)',
-                            json_encode($vc->getError()),
-                        ), $vc->getErrorCode());
-                    }
-                }
-            }
-
-            $this->versionData = $versionData;
-        }
-
-        if (!$this->versionData) {
-            $this->versionData = new VersionData();
-        }
-
-        return $this->versionData;
+        return $this->getVersion();
     }
 
-    public function getParent(): ?VersionData
+    public function getParent(): ?ContentVersions
     {
-        $cacheName = "versionable-data-parent|".$this->id;
-        // Parents will never change. Cache for a long time.
-        $cacheTime = 3600;
-
-        if (!$parent = Cache::get($cacheName)) {
-            $parent = $this->fetchVersionData()->getParent();
-            Cache::put($cacheName, $parent, now()->addSeconds($cacheTime));
-        }
-
-        return $parent;
+        return $this->getVersion()?->getPreviousVersion();
     }
 
-    public function getParentIds()
+    public function getParentIds(): array
     {
         $parent = $this->getParent();
         $parentIds = [];
         if (is_object($parent)) {
             while ($parent) {
-                $parentIds[] = $parent->getExternalReference();
-                $parent = $parent->getParent();
+                $parentIds[] = $parent->content_id;
+                $parent = $parent->getPreviousVersion();
             }
         }
 
@@ -73,6 +32,15 @@ trait Versionable
 
     public function getChildren(): array
     {
-        return $this->fetchVersionData()->getChildren();
+        return $this->getVersion()?->getNextVersions()->toArray();
+    }
+
+    public function getVersion(): ContentVersions|null
+    {
+        if ($this[$this->getVersionColumn()]) {
+            return ContentVersions::find($this[$this->getVersionColumn()]);
+        }
+
+        return null;
     }
 }

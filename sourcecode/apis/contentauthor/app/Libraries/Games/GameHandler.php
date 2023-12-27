@@ -2,13 +2,13 @@
 
 namespace App\Libraries\Games;
 
+use App\ContentVersions;
 use App\Events\GameWasSaved;
 use App\Game;
 use App\Gametype;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\Millionaire\Millionaire;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -32,7 +32,7 @@ class GameHandler
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $values['license'],
             share: $values['share'],
-            reason: VersionData::CREATE,
+            reason: ContentVersions::PURPOSE_CREATE,
             owner: $values['authId'],
             tags: $values['tags'],
         )));
@@ -90,9 +90,9 @@ class GameHandler
 
     private function handleCopy(Game $game, Request $request)
     {
-        $reason = $game->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
+        $reason = $game->shouldCreateFork(Session::get('authId', false)) ? ContentVersions::PURPOSE_COPY : ContentVersions::PURPOSE_UPDATE;
 
-        if ($reason === VersionData::COPY && !$request->get("license", false)) {
+        if ($reason === ContentVersions::PURPOSE_COPY && !$request->get("license", false)) {
             $request->merge(["license" => $game->getContentLicense()]);
         }
 
@@ -103,10 +103,10 @@ class GameHandler
 
         if ($game->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case VersionData::UPDATE:
+                case ContentVersions::PURPOSE_UPDATE:
                     $game = $game->makeCopy();
                     break;
-                case VersionData::COPY:
+                case ContentVersions::PURPOSE_COPY:
                     $game = $game->makeCopy(Session::get('authId'));
                     break;
             }

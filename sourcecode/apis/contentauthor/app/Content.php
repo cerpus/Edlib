@@ -15,8 +15,6 @@ use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Versionable;
 use Carbon\Carbon;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,9 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-
 use function htmlspecialchars_decode;
-
 use const ENT_HTML5;
 use const ENT_QUOTES;
 
@@ -359,8 +355,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $versionClient = app(VersionClient::class);
-        $versionData = $versionClient->getVersion($this[$this->getVersionColumn()]);
+        $versionData = ContentVersions::find($this[$this->getVersionColumn()]);
 
         if (empty($versionData)) {
             return false;
@@ -371,11 +366,12 @@ abstract class Content extends Model
         return $ndlaMapperCollection->isNotEmpty();
     }
 
-    private function getVersionedIds(VersionData $version): array
+    private function getVersionedIds(ContentVersions $version): array
     {
-        $id = [$version->getExternalReference()];
-        if (!is_null($version->getParent())) {
-            return array_merge($id, $this->getVersionedIds($version->getParent()));
+        $id = [$version->content_id];
+        $parent = $version->getPreviousVersion();
+        if ($parent) {
+            return array_merge($id, $this->getVersionedIds($parent));
         }
         return $id;
     }
@@ -460,11 +456,9 @@ abstract class Content extends Model
 
         $editUrl = route($this->editRouteName, $this->id);
         if ($latest) {
-            /** @var VersionClient $versionClient */
-            $versionClient = app()->make(VersionClient::class);
-            $latest = $versionClient->latest($this->version_id);
-            if ($this->version_id !== $latest->getId()) {
-                $editUrl = route($this->editRouteName, $latest->getExternalReference());
+            $latestVersion = ContentVersions::latest($this->version_id);
+            if ($this->version_id !== $latestVersion->id) {
+                $editUrl = route($this->editRouteName, $latestVersion->content_id);
             }
         }
 

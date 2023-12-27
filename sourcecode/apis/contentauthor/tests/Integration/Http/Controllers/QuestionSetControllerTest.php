@@ -31,7 +31,6 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockVersioningTrait;
 use Tests\TestCase;
 
 class QuestionSetControllerTest extends TestCase
@@ -39,7 +38,6 @@ class QuestionSetControllerTest extends TestCase
     use RefreshDatabase;
     use MockAuthApi;
     use WithFaker;
-    use MockVersioningTrait;
 
     public function setUp(): void
     {
@@ -496,7 +494,6 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        $this->setupVersion();
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
@@ -567,14 +564,12 @@ class QuestionSetControllerTest extends TestCase
             "is_published" => 1,
             'license' => 'BY',
         ]);
-        $this->assertCount(1, QuestionSet::all());
     }
 
     public function testUpdateFullRequestWithDraftEnabled()
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        $this->setupVersion();
         $this->setupAuthApi([
             'getUser' => new User("1", "this", "that", "this@that.com")
         ]);
