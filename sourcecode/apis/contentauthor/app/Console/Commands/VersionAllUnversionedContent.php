@@ -55,7 +55,7 @@ class VersionAllUnversionedContent extends Command
                         $article->updated_at->timestamp
                     );
                     if (!$this->option('dry-run')) {
-                        DB::update('UPDATE articles SET version_id = ? WHERE id = ? LIMIT 1', [
+                        DB::update('UPDATE articles SET version_id = ? WHERE id = ?', [
                             $versionId,
                             $article->id,
                         ]);
@@ -75,7 +75,7 @@ class VersionAllUnversionedContent extends Command
                         $h5p->updated_at->timestamp,
                     );
                     if (!$this->option('dry-run')) {
-                        DB::update('UPDATE h5p_contents SET version_id = ? WHERE id = ? LIMIT 1', [
+                        DB::update('UPDATE h5p_contents SET version_id = ? WHERE id = ?', [
                             $versionId,
                             $h5p->id,
                         ]);

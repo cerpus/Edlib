@@ -72,7 +72,7 @@ class EnsureVersionExists extends Command
                             $this->info(sprintf('Article %s has missing version %s', $row->article_id, $row->version_id));
                             if (!$this->option('dry-run')) {
                                 $this->warn(' - Setting version id to null');
-                                DB::update('UPDATE articles SET version_id = NULL WHERE id = ? LIMIT 1', [
+                                DB::update('UPDATE articles SET version_id = NULL WHERE id = ?', [
                                     $row->article_id,
                                 ]);
                             }
@@ -81,7 +81,7 @@ class EnsureVersionExists extends Command
                             $this->info(sprintf('Article %s has unconnected version %s', $row->article_id, $row->content_version_id));
                             if (!$this->option('dry-run')) {
                                 $this->info(' - Updating version id to ' . $row->content_version_id);
-                                DB::update('UPDATE articles SET version_id = ? WHERE id = ? LIMIT 1', [
+                                DB::update('UPDATE articles SET version_id = ? WHERE id = ?', [
                                     $row->content_version_id,
                                     $row->article_id,
                                 ]);
@@ -111,7 +111,7 @@ class EnsureVersionExists extends Command
                             $this->info(sprintf('H5P %s has missing version %s', $row->h5p_id, $row->version_id));
                             if (!$this->option('dry-run')) {
                                 $this->warn(' - Setting version id to null');
-                                DB::update('UPDATE h5p_contents SET version_id = NULL WHERE id = ? LIMIT 1', [
+                                DB::update('UPDATE h5p_contents SET version_id = NULL WHERE id = ?', [
                                     $row->h5p_id,
                                 ]);
                             }
@@ -120,7 +120,7 @@ class EnsureVersionExists extends Command
                             $this->info(sprintf('H5P %s has unconnected version %s', $row->h5p_id, $row->content_version_id));
                             if (!$this->option('dry-run')) {
                                 $this->info(' - Updating version id to ' . $row->content_version_id);
-                                DB::update('UPDATE h5p_contents SET version_id = ? WHERE id = ? LIMIT 1', [
+                                DB::update('UPDATE h5p_contents SET version_id = ? WHERE id = ?', [
                                     $row->content_version_id,
                                     $row->h5p_id,
                                 ]);
