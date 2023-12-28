@@ -37,8 +37,8 @@ trait Versionable
 
     public function getVersion(): ContentVersions|null
     {
-        if ($this[$this->getVersionColumn()]) {
-            return ContentVersions::find($this[$this->getVersionColumn()]);
+        if ($this->{$this->getVersionColumn()}) {
+            return ContentVersions::find($this->{$this->getVersionColumn()});
         }
 
         return null;

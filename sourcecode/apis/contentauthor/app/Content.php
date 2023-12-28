@@ -357,7 +357,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $versionData = ContentVersions::find($this[$this->getVersionColumn()]);
+        $versionData = $this->getVersion();
 
         if (empty($versionData)) {
             return false;

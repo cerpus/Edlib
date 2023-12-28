@@ -81,4 +81,29 @@ class VersionableTest extends TestCase
         $this->assertSame($child1->id, $result[0]['id']);
         $this->assertSame($child2->id, $result[1]['id']);
     }
+
+    public function test_getVersion_success(): void
+    {
+        $versionable = new VersionableStubClass();
+        $version = ContentVersions::factory()->create([
+            'id' => $versionable->version_id,
+        ]);
+
+        $this->assertSame($version->id, $versionable->getVersion()->id);
+    }
+
+    public function test_getVersion_missingVersion(): void
+    {
+        $versionable = new VersionableStubClass();
+
+        $this->assertNull($versionable->getVersion());
+    }
+
+    public function test_getVersion_notVersionable(): void
+    {
+        $versionable = new VersionableStubClass();
+        $versionable->version_id = '';
+
+        $this->assertNull($versionable->getVersion());
+    }
 }

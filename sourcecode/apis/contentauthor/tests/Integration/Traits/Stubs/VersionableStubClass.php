@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Traits\Stubs;
 
-use App\ContentVersions;
 use App\Traits\Versionable;
 use Illuminate\Foundation\Testing\WithFaker;
 
@@ -23,8 +22,8 @@ class VersionableStubClass
         $this->version_id = $this->faker->uuid;
     }
 
-    public function getVersion(): ?ContentVersions
+    public function getVersionColumn(): string
     {
-        return ContentVersions::find($this->version_id);
+        return 'version_id';
     }
 }
