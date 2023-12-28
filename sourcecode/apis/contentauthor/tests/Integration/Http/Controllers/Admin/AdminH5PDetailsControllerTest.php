@@ -235,8 +235,16 @@ class AdminH5PDetailsControllerTest extends TestCase
         ]);
         $f4mId = $this->faker->uuid;
         $library = H5PLibrary::factory()->create();
+        $parent = H5PContent::factory()->create([
+            'version_id' => $this->faker->uuid,
+            'library_id' => $library->id,
+        ]);
         $content = H5PContent::factory()->create([
             'id' => 42,
+            'version_id' => $this->faker->uuid,
+            'library_id' => $library->id,
+        ]);
+        $child = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
             'library_id' => $library->id,
         ]);
@@ -247,9 +255,19 @@ class AdminH5PDetailsControllerTest extends TestCase
             ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
         $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
 
-        ContentVersions::factory()->create([
+        $parentVersion = ContentVersions::factory()->create([
+            'id' => $parent->version_id,
+            'content_id' => $parent->id,
+        ]);
+        $version = ContentVersions::factory()->create([
             'id' => $content->version_id,
             'content_id' => $content->id,
+            'parent_id' => $parentVersion->id,
+        ]);
+        $childVersion = ContentVersions::factory()->create([
+            'id' => $child->version_id,
+            'content_id' => $child->id,
+            'parent_id' => $version->id,
         ]);
 
         $response = $this->withSession(['user' => $user])
@@ -258,20 +276,60 @@ class AdminH5PDetailsControllerTest extends TestCase
             ->original;
 
         $data = $response->getData();
+
         $this->assertArrayHasKey('content', $data);
         $this->assertArrayHasKey('latestVersion', $data);
         $this->assertArrayHasKey('resource', $data);
         $this->assertArrayHasKey('history', $data);
 
-        $this->assertTrue($data['latestVersion']);
-        $this->assertEquals($f4mId, $data['resource']->id);
+        $this->assertFalse($data['latestVersion']);
+        $this->assertSame($content->id, $data['content']->id);
+        $this->assertSame($f4mId, $data['resource']->id);
+
         $this->assertInstanceOf(Collection::class, $data['history']);
-        $this->assertNotNull($data['history']->get($content->id));
+        $this->assertCount(3, $data['history']);
+        $this->assertArrayHasKey($parent->id, $data['history']);
+        $this->assertArrayHasKey($content->id, $data['history']);
+        $this->assertArrayHasKey($child->id, $data['history']);
 
         $history = $data['history']->get($content->id);
-        $this->assertEquals('Create', $history['version_purpose']);
-        $this->assertEquals($content->title, $history['content']['title']);
-        $this->assertEquals($library->id, $history['content']['library_id']);
+        $this->assertNotNull($history);
+        $this->assertSame($content->version_id, $history['content']['version_id']);
+        $this->assertEquals($parent->id, $history['parent']);
+        $this->assertCount(1, $history['children']);
+        $this->assertEquals($child->id, $history['children'][0]);
+    }
+
+    public function test_contentHistory_noResource(): void
+    {
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Super Tester',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $content = H5PContent::factory()->create([
+            'id' => 42,
+            'version_id' => $this->faker->uuid,
+            'library_id' => $library->id,
+        ]);
+
+        $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
+        $resourceAPI->expects($this->once())
+            ->method('getResourceFromExternalReference')
+            ->willThrowException(new \ErrorException('Just testing'));
+        $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
+
+        $response = $this->withSession(['user' => $user])
+            ->get(route('admin.content-details', $content))
+            ->assertOk()
+            ->original;
+
+        $data = $response->getData();
+
+        $this->assertNull($data['resource']);
+        $this->assertSame($content->id, $data['content']['id']);
+        $this->assertTrue($data['latestVersion']);
+        $this->assertCount(0, $data['history']);
     }
 
     public function test_libraryTranslation(): void
