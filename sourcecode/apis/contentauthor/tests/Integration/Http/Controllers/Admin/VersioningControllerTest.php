@@ -20,7 +20,7 @@ class VersioningControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    public function testIndex(): void
+    public function testIndex_versionedContent(): void
     {
         $user = new GenericUser([
             'roles' => ['superadmin'],
@@ -29,7 +29,7 @@ class VersioningControllerTest extends TestCase
         $library = H5PLibrary::factory()->create();
         $parent = H5PContent::factory()->create([
             'version_id' => $this->faker->unique()->uuid,
-            'library_id' => $library->id,
+            'library_id' => '',
         ]);
         $child = H5PContent::factory()->create([
             'version_id' => $this->faker->unique()->uuid,
@@ -46,7 +46,7 @@ class VersioningControllerTest extends TestCase
             'content_id' => $child->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $parentVersion->id,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
         ]);
 
         $result = $this->withSession(['user' => $user])
@@ -66,12 +66,36 @@ class VersioningControllerTest extends TestCase
         $this->assertSame($parentVersion->id, $parentData['version']['id']);
         $this->assertEquals($parent->id, $parentData['version']['content_id']);
         $this->assertSame($parent->title, $parentData['content']['title']);
-        $this->assertSame($library->getLibraryString(true), $parentData['content']['library']);
+        $this->assertSame('', $parentData['content']['library']);
 
         $childData = $data['versionData'][$child->id];
         $this->assertSame($childVersion->id, $childData['version']['id']);
         $this->assertEquals($child->id, $childData['version']['content_id']);
         $this->assertSame($child->title, $childData['content']['title']);
         $this->assertSame($library->getLibraryString(true), $childData['content']['library']);
+    }
+
+    public function testIndex_unversionedContent(): void
+    {
+        $user = new GenericUser([
+            'roles' => ['superadmin'],
+            'name' => 'Just Testing',
+        ]);
+        $library = H5PLibrary::factory()->create();
+        $content = H5PContent::factory()->create([
+            'library_id' => $library->id,
+        ]);
+
+        $result = $this->withSession(['user' => $user])
+            ->get(route('admin.support.versioning', ['contentId' => $content->id]))
+            ->assertOk()
+            ->original;
+
+        $this->assertInstanceOf(View::class, $result);
+
+        $data = $result->getData();
+        $this->assertEquals($data['contentId'], $content->id);
+        $this->assertNull($data['versionData']);
+        $this->assertFalse($data['isContentVersioned']);
     }
 }
