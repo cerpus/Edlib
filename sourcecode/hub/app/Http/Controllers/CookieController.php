@@ -15,7 +15,8 @@ final readonly class CookieController
         $cookie = (new Cookie(EnsureFrameCookies::COOKIE_NAME))
             ->withValue('1')
             ->withSameSite(Cookie::SAMESITE_NONE)
-            ->withSecure(true);
+            ->withSecure()
+            ->withPartitioned();
 
         return response()
             ->view('cookie.popup')
