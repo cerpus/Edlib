@@ -72,8 +72,11 @@ final class ContentUpgradeController
                 'error' => 'An error occurred while processing parameters:',
                 'errorData' => 'Could not load data for library %lib.',
                 'errorContent' => 'Could not upgrade content %id:',
+                'errorLibrary' => 'Missing required library %lib.',
                 'errorScript' => 'Could not load upgrades script for %lib.',
                 'errorParamsBroken' => 'Parameters are broken.',
+                'errorTooHighVersion' => 'Parameters contain %used while only %supported or earlier are supported.',
+                'errorNotSupported' => 'Parameters contain %used which is not supported.',
                 'done' => 'You have successfully upgraded ' . $library->title,
                 'library' => [
                     'name' => $library->name,
