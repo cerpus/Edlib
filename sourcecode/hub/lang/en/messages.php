@@ -136,4 +136,11 @@ return [
     'by' => 'by',
     'toggle-listing-of-all-versions' => 'Toggle listing of all versions',
     'single-sign-on' => 'Single sign-on',
+    'recent-content' => 'Recent content',
+    'about-edlib' => ':site is powered by :edlib, an open source system for managing learning resources, developed by Cerpus.',
+    'contact-us' => 'Contact us',
+    'documentation' => 'Documentation',
+    'facebook' => 'Facebook',
+    'github' => 'GitHub',
+    'twitter' => 'Twitter',
 ];

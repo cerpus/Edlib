@@ -6,12 +6,9 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+final class HomeTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
+    public function testRecentContentIsShownToLoggedOutUsers(): void
     {
         $response = $this->get('/');
 

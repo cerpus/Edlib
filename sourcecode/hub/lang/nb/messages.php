@@ -86,4 +86,11 @@ return [
     'yes' => 'Ja',
     'no' => 'Nei',
     'continue' => 'Fortsett',
+    'recent-content' => 'Siste innhold',
+    'about-edlib' => ':site er drevet av :edlib, et åpent kildekode system for organisering av læreressurser, utviklet av Cerpus.',
+    'contact-us' => 'Kontakt oss',
+    'documentation' => 'Dokumentasjon',
+    'facebook' => 'Facebook',
+    'github' => 'GitHub',
+    'twitter' => 'Twitter',
 ];

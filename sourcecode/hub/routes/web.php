@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CookieController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\SocialController;
@@ -28,9 +29,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/')
+    ->uses(HomeController::class)
+    ->name('home');
 
 Route::middleware('can:login')->group(function () {
     Route::get('/login')

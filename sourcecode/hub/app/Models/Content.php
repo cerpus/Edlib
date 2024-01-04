@@ -205,19 +205,25 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
-    public static function findShared(string $query = ''): ScoutBuilder
+    public static function findShared(string $keywords = '', int $limit = null): ScoutBuilder
     {
-        return Content::search($query)
+        $query = Content::search($keywords)
             ->where('published', true)
             ->orderBy('updated_at', 'desc')
             ->query(fn (Builder $query) => $query->with([
                 'latestPublishedVersion',
             ]));
+
+        if ($limit !== null) {
+            $query->take($limit);
+        }
+
+        return $query;
     }
 
-    public static function findForUser(User $user, string $query = ''): ScoutBuilder
+    public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
     {
-        return Content::search($query)
+        return Content::search($keywords)
             ->where('user_ids', $user->id)
             ->orderBy('updated_at', 'desc')
             ->query(fn (Builder $query) => $query->with([
