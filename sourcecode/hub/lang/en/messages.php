@@ -123,6 +123,7 @@ return [
     'send-full-name-to-lti-tool' => 'Send full name of :site user to tool',
     'send-email-to-lti-tool' => 'Send email address of :site user to tool',
     'content-selection' => 'Content selection',
+    'launch-settings' => 'Launch settings',
     'proxy-launch-to-lti-tool' => 'Return proxied content URLs',
     'proxy-launch-to-lti-tool-help' => 'If enabled, the selected content will be shown through :site. Otherwise, the platform is required to have exchanged keys with the tool beforehand.',
     'yes' => 'Yes',
