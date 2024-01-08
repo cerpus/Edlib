@@ -67,48 +67,50 @@
             <x-navbar.navbar-bottom />
         @endif
 
-        <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-auto">
-            <div class="container py-3">
-                <div class="row">
-                    <div class="col-12 col-md-4 col-lg-6">
-                        <p>
-                            <img
-                                src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/logo.png') }}"
-                                height="47"
-                                alt="Edlib"
-                                class="d-block"
-                            >
-                        </p>
+        @if ($nav)
+            <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-auto">
+                <div class="container py-3">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-lg-6">
+                            <p>
+                                <img
+                                    src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/logo.png') }}"
+                                    height="47"
+                                    alt="Edlib"
+                                    class="d-block"
+                                >
+                            </p>
 
-                        <p>{!! trans('messages.about-edlib', [
-                            'site' => config('app.name'),
-                            'edlib' => '<a href="https://docs.edlib.com/" class="link-body-emphasis">Edlib</a>',
-                        ]) !!}</p>
-                    </div>
+                            <p>{!! trans('messages.about-edlib', [
+                                'site' => config('app.name'),
+                                'edlib' => '<a href="https://docs.edlib.com/" class="link-body-emphasis">Edlib</a>',
+                            ]) !!}</p>
+                        </div>
 
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <h2 class="fs-5">Edlib</h2>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <h2 class="fs-5">Edlib</h2>
 
-                        <ul class="list-unstyled">
-                            <li><x-layout.footer-link href="https://docs.edlib.com/">{{ trans('messages.documentation') }}</x-layout.footer-link></li>
-                            <li><x-layout.footer-link href="https://github.com/cerpus/Edlib">{{ trans('messages.github') }}</x-layout.footer-link></li>
-                            <li><x-layout.footer-link href="https://www.facebook.com/cerpus/">{{ trans('messages.facebook') }}</x-layout.footer-link></li>
-                            <li><x-layout.footer-link href="https://twitter.com/edlibopensource">{{ trans('messages.twitter') }}</x-layout.footer-link></li>
-                        </ul>
-                    </div>
+                            <ul class="list-unstyled">
+                                <li><x-layout.footer-link href="https://docs.edlib.com/">{{ trans('messages.documentation') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://github.com/cerpus/Edlib">{{ trans('messages.github') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://www.facebook.com/cerpus/">{{ trans('messages.facebook') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://twitter.com/edlibopensource">{{ trans('messages.twitter') }}</x-layout.footer-link></li>
+                            </ul>
+                        </div>
 
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <h2 class="fs-5">{{ config('app.name') }}</h2>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <h2 class="fs-5">{{ config('app.name') }}</h2>
 
-                        <ul class="list-unstyled">
-                            @if (config('app.contact-url'))
-                                <li><x-layout.footer-link href="{{ config('app.contact-url') }}">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
-                            @endif
-                        </ul>
+                            <ul class="list-unstyled">
+                                @if (config('app.contact-url'))
+                                    <li><x-layout.footer-link href="{{ config('app.contact-url') }}">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
+                                @endif
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
+            </footer>
+        @endif
 
         @env('local')
             <div class="position-fixed btn-debug">

@@ -46,4 +46,9 @@ final readonly class LtiController
     {
         return to_route('content.index');
     }
+
+    public function resizeTest(): Response
+    {
+        return response()->view('lti.resize-test');
+    }
 }

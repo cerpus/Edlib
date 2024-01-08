@@ -246,4 +246,28 @@ final class ContentTest extends DuskTestCase
                 ->assertPresent('iframe');
         });
     }
+
+    public function testResizesIframeWhenRequestedByTool(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $tool = LtiTool::factory()->state([
+            'creator_launch_url' => 'https://hub-test.edlib.test/lti/resize-test',
+            'consumer_key' => $platform->key,
+            'consumer_secret' => $platform->secret,
+        ])->create();
+        $user = User::factory()->create();
+
+        $this->browse(function (Browser $browser) use ($tool, $user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/create/' . $tool->id)
+                ->assertPresent('.lti-launch')
+                ->withinFrame('.lti-launch', fn (Browser $frame) => $frame->press('Resize to 640'))
+                ->assertScript('document.querySelector(".lti-launch").scrollHeight', 640)
+                ->withinFrame('.lti-launch', fn (Browser $frame) => $frame->press('Resize to 800'))
+                ->assertScript('document.querySelector(".lti-launch").scrollHeight', 800)
+            ;
+        });
+    }
 }
