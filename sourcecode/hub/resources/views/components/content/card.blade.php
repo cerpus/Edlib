@@ -66,7 +66,7 @@
             <div class="dropup">
                 <button
                     type="button"
-                    class="btn dropdown-toggle"
+                    class="btn btn-sm btn-secondary border-0 dropdown-toggle"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                     aria-label="{{ trans('messages.toggle-menu') }}"
