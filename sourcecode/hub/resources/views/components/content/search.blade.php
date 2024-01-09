@@ -5,7 +5,7 @@
             <div class="col-8 col-md-5 col-lg-6">
                 <label class="input-group">
                     <x-form.input
-                        wire:model="query"
+                        wire:model.live="query"
                         name="q"
                         type="search"
                         :value="$query"
