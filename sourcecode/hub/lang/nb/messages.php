@@ -94,4 +94,5 @@ return [
     'facebook' => 'Facebook',
     'github' => 'GitHub',
     'twitter' => 'Twitter',
+    'no-account-yet' => 'Ingen konto enda?',
 ];

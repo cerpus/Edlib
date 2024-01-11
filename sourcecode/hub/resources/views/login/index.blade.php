@@ -52,4 +52,12 @@
             </a>
         @endif
     </div>
+
+    @can('register')
+        <div class="mt-5">
+            <h3>{{ trans('messages.no-account-yet') }}</h3>
+
+            <p><a href="{{ route('register') }}">{{ trans('messages.sign-up') }}</a></p>
+        </div>
+    @endcan
 </x-layout>

@@ -1,63 +1,22 @@
-//Logo image
-.navbar-brand {
-    @include media-breakpoint-down(md) {
-        display: none;
-    }
-    img {
-        width: 175px;
-        height: auto;
+.edlib-logo {
+    width: 80px;
+    height: auto;
+
+    @include media-breakpoint-up(md) {
+        width: auto;
+        height: 80px;
     }
 }
 
-// Laravel Telescope debug icon
-.btn-debug {
+.edlib-debug {
+    position: relative;
+    display: block;
+    font-size: 1.2rem;
     left: 10px;
     top: 10px;
-    font-size: 1.2rem;
-}
 
-// Add margin when bottom navigation is displayed
-.body-nav-margin {
-    @include media-breakpoint-down(md) {
-        margin-bottom: 82px;
-    }
-}
-
-.navbar-bottom {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-
-    .navbar-nav .nav-link {
-        padding-right: var(--bs-navbar-nav-link-padding-x);
-        padding-left: var(--bs-navbar-nav-link-padding-x);
-    }
-
-    .navbar-nav-scroll {
-        overflow: visible;
-    }
-
-    .offcanvas {
-        position: static;
-        z-index: auto;
-        flex-grow: 1;
-        width: auto !important;
-        height: auto !important;
-        visibility: visible !important;
-        background-color: transparent !important;
-        border: 0 !important;
-        transform: none !important;
-        transition: none;
-
-        .offcanvas-header {
-            display: none;
-        }
-
-        .offcanvas-body {
-            display: flex;
-            flex-grow: 0;
-            padding: 0;
-            overflow-y: visible;
-        }
+    @include media-breakpoint-up(md) {
+        position: absolute;
     }
 }
 

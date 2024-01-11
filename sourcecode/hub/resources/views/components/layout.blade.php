@@ -14,9 +14,15 @@
         {{ $head ?? '' }}
     </head>
 
-    <body @class(['body-nav-margin' => $nav, 'd-flex', 'flex-column', 'vh-100'])>
+    <body class="d-flex flex-column vh-100">
+        @env('local')
+            <a href="{{ route('telescope') }}" class="edlib-debug">
+                <x-icon name="bug" label="Laravel Telescope" />
+            </a>
+        @endenv
+
         @if ($nav)
-            <x-navbar.navbar-top />
+            <x-layout.navbar />
         @endif
 
         @if (session()->has('alert'))
@@ -64,10 +70,6 @@
         </div>
 
         @if ($nav)
-            <x-navbar.navbar-bottom />
-        @endif
-
-        @if ($nav)
             <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-auto">
                 <div class="container py-3">
                     <div class="row">
@@ -112,13 +114,6 @@
             </footer>
         @endif
 
-        @env('local')
-            <div class="position-fixed btn-debug">
-                <a href="{{ route('telescope') }}" title="Laravel Telescope">
-                    <x-icon name="bug" />
-                </a>
-            </div>
-        @endenv
         @livewireScripts(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
     </body>
 </html>

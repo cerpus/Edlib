@@ -144,4 +144,5 @@ return [
     'facebook' => 'Facebook',
     'github' => 'GitHub',
     'twitter' => 'Twitter',
+    'no-account-yet' => 'No account yet?',
 ];
