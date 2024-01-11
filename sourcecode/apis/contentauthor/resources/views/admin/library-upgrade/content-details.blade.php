@@ -47,8 +47,12 @@
                                 <td>{{ $latestVersion ? 'Yes' : 'No' }}</td>
                             </tr>
                             <tr>
-                                <th>Language</th>
-                                <td>{{ $content->language_iso_639_3 }}</td>
+                                <th>Edlib language</th>
+                                <td>{{ $content->language_iso_639_3 }} ({{{Iso639p3::englishName($content->language_iso_639_3)}}})</td>
+                            </tr>
+                            <tr>
+                                <th>H5P language</th>
+                                <td>{{ $content->metadata->default_language }} ({{{Iso639p3::englishName($content->metadata->default_language)}}})</td>
                             </tr>
                             <tr>
                                 <th>License</th>
@@ -75,7 +79,7 @@
                                 <th>Library</th>
                                 <td>
                                     <a href="{{ route('admin.check-library', [$content->library->id]) }}">
-                                        {{ sprintf('%s %d.%d.%d', $content->library->name, $content->library->major_version, $content->library->minor_version, $content->library->patch_version) }}
+                                        {{ $content->library->getLibraryString(true) }}
                                     </a>
                                 </td>
                             </tr>
@@ -198,6 +202,43 @@
                         </div>
                     </div>
                 @endempty
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Libraries</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Library</th>
+                                <th>Library type</th>
+                                <th>Dependency type</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($content->contentLibraries()->orderBy('dependency_type')->orderBy('weight')->get() as $contentLib)
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('admin.check-library', [$contentLib->library_id]) }}">
+                                            {{ $contentLib->library->getLibraryString(true) }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @if($contentLib->library->runnable)
+                                            Content type
+                                        @else
+                                            Library
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $contentLib->dependency_type }}
+                                    </td>
+                                </td>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
