@@ -2,12 +2,12 @@
 
 namespace App\Observers;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use Illuminate\Support\Facades\Log;
 
 class ContentVersionsObserver
 {
-    public function saving(ContentVersions $contentVersion): bool
+    public function saving(ContentVersion $contentVersion): bool
     {
         $parent = $contentVersion->getPreviousVersion();
         if ($parent && ($parent->linear_versioning || $contentVersion->linear_versioning)) {

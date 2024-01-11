@@ -368,7 +368,7 @@ abstract class Content extends Model
         return $ndlaMapperCollection->isNotEmpty();
     }
 
-    private function getVersionedIds(ContentVersions $version): array
+    private function getVersionedIds(ContentVersion $version): array
     {
         $id = [$version->content_id];
         $parent = $version->getPreviousVersion();
@@ -458,7 +458,7 @@ abstract class Content extends Model
 
         $editUrl = route($this->editRouteName, $this->id);
         if ($latest) {
-            $latestVersion = ContentVersions::latest($this->version_id);
+            $latestVersion = ContentVersion::latest($this->version_id);
             if ($this->version_id !== $latestVersion->id) {
                 $editUrl = route($this->editRouteName, $latestVersion->content_id);
             }

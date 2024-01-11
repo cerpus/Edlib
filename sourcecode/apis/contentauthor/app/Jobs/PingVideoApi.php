@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\VideoSourceChanged;
 use App\Exceptions\NoFilesException;
 use App\Exceptions\UnknownH5PPackageException;
@@ -46,7 +46,7 @@ class PingVideoApi implements ShouldQueue
     private function handleChildren($children)
     {
         if (!empty($children)) {
-            /** @var Collection<ContentVersions> $children */
+            /** @var Collection<ContentVersion> $children */
             foreach ($children as $child) {
                 $content = H5PContent::find($child->content_id);
                 if (!is_null($content)) {
@@ -102,7 +102,7 @@ class PingVideoApi implements ShouldQueue
             try {
                 $this->updateContent($h5pcontent);
                 if (!empty($h5pcontent->version_id)) {
-                    $version = ContentVersions::find($h5pcontent->version_id);
+                    $version = ContentVersion::find($h5pcontent->version_id);
                     $this->handleChildren($version->getNextVersions());
                 }
                 return true;

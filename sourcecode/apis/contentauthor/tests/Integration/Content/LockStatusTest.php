@@ -4,7 +4,7 @@ namespace Tests\Integration\Content;
 
 use App\Article;
 use App\ContentLock;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\User;
 use Carbon\Carbon;
@@ -45,7 +45,7 @@ class LockStatusTest extends TestCase
             'owner_id' => $user->auth_id,
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $originalArticle->version_id,
             'content_id' => $originalArticle->id,
         ]);
@@ -56,7 +56,7 @@ class LockStatusTest extends TestCase
             'owner_id' => $user->auth_id,
             'parent_id' => $originalArticle->id
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $latestArticle->version_id,
             'content_id' => $latestArticle->id,
             'parent_id' => $originalArticle->version_id,

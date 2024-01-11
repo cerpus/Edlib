@@ -2,16 +2,16 @@
 
 namespace App\Traits;
 
-use App\ContentVersions;
+use App\ContentVersion;
 
 trait Versionable
 {
-    public function fetchVersionData(): ?ContentVersions
+    public function fetchVersionData(): ?ContentVersion
     {
         return $this->getVersion();
     }
 
-    public function getParent(): ?ContentVersions
+    public function getParent(): ?ContentVersion
     {
         return $this->getVersion()?->getPreviousVersion();
     }
@@ -35,10 +35,10 @@ trait Versionable
         return $this->getVersion()?->getNextVersions()->toArray();
     }
 
-    public function getVersion(): ContentVersions|null
+    public function getVersion(): ContentVersion|null
     {
         if ($this->{$this->getVersionColumn()}) {
-            return ContentVersions::find($this->{$this->getVersionColumn()});
+            return ContentVersion::find($this->{$this->getVersionColumn()});
         }
 
         return null;

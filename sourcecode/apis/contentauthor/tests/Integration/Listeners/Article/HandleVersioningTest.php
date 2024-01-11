@@ -6,7 +6,7 @@ namespace Tests\Integration\Listeners\Article;
 
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Listeners\Article\HandleVersioning;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,7 +29,7 @@ class HandleVersioningTest extends TestCase
             new Request(),
             new Collection(),
             null,
-            ContentVersions::PURPOSE_CREATE,
+            ContentVersion::PURPOSE_CREATE,
             []
         );
 
@@ -56,7 +56,7 @@ class HandleVersioningTest extends TestCase
         $parent = Article::factory()->create([
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $parent->version_id,
             'content_id' => $parent->id,
             'content_type' => Content::TYPE_ARTICLE,
@@ -71,7 +71,7 @@ class HandleVersioningTest extends TestCase
             new Request(),
             new Collection(),
             null,
-            ContentVersions::PURPOSE_CREATE,
+            ContentVersion::PURPOSE_CREATE,
             []
         );
 
@@ -106,7 +106,7 @@ class HandleVersioningTest extends TestCase
         $parent = Article::factory()->create([
             'version_id' => $this->faker->uuid,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $parent->version_id,
             'content_id' => $parent->id,
             'content_type' => Content::TYPE_ARTICLE,
@@ -121,7 +121,7 @@ class HandleVersioningTest extends TestCase
             new Request(),
             new Collection(),
             null,
-            ContentVersions::PURPOSE_CREATE,
+            ContentVersion::PURPOSE_CREATE,
             []
         );
 
@@ -163,7 +163,7 @@ class HandleVersioningTest extends TestCase
             new Request(),
             new Collection(),
             null,
-            ContentVersions::PURPOSE_CREATE,
+            ContentVersion::PURPOSE_CREATE,
             []
         );
 

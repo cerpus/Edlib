@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Libraries\Versioning\VersionableObject;
 use Illuminate\Support\Facades\Log;
 
@@ -20,8 +20,8 @@ abstract class AbstractHandleVersioning
             }
         }
 
-        /** @var ?ContentVersions $versionData */
-        $versionData = ContentVersions::create([
+        /** @var ?ContentVersion $versionData */
+        $versionData = ContentVersion::create([
             'user_id' => $object->getOwnerId(),
             'content_id' => $object->getId(),
             'content_type' => $object->getContentType(),

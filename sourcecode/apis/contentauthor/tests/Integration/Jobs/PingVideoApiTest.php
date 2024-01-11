@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\Jobs;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PContentsVideo;
 use App\Jobs\PingVideoApi;
@@ -105,7 +105,7 @@ class PingVideoApiTest extends TestCase
         $h5pContent = $h5pContents->random();
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' =>$h5pContent->version_id,
             'content_id' => $h5pContent->id,
         ]);
@@ -190,11 +190,11 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
 
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentParent->version_id,
             'content_id' => $h5pContentParent->id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentChild->version_id,
             'content_id' => $h5pContentChild->id,
             'parent_id' => $h5pContentParent->version_id,
@@ -290,16 +290,16 @@ class PingVideoApiTest extends TestCase
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $videoSource);
 
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentParent->version_id,
             'content_id' => $h5pContentParent->id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentChild->version_id,
             'content_id' => $h5pContentChild->id,
             'parent_id' => $h5pContentParent->version_id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentGrandchild->version_id,
             'content_id' => $h5pContentGrandchild->id,
             'parent_id' => $h5pContentChild->version_id,
@@ -408,16 +408,16 @@ class PingVideoApiTest extends TestCase
                 ])
             );
 
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentParent->version_id,
             'content_id' => $h5pContentParent->id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentChild->version_id,
             'content_id' => $h5pContentChild->id,
             'parent_id' => $h5pContentParent->version_id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $h5pContentGrandchild->version_id,
             'content_id' => $h5pContentGrandchild->id,
             'parent_id' => $h5pContentChild->version_id,

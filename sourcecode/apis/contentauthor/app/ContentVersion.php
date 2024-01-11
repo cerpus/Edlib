@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  * @method static Builder where($column, $operator = null, $value = null, $boolean = 'and')
  */
-class ContentVersions extends Model
+class ContentVersion extends Model
 {
     use HasFactory;
     use HasUuids;
@@ -59,7 +59,7 @@ class ContentVersions extends Model
      */
     public function previousVersion(): HasOne
     {
-        return $this->hasOne(ContentVersions::class, 'id', 'parent_id');
+        return $this->hasOne(ContentVersion::class, 'id', 'parent_id');
     }
 
     /**
@@ -75,7 +75,7 @@ class ContentVersions extends Model
      */
     public function nextVersions(): HasMany
     {
-        return $this->hasMany(ContentVersions::class, 'parent_id', 'id')->orderBy('created_at');
+        return $this->hasMany(ContentVersion::class, 'parent_id', 'id')->orderBy('created_at');
     }
 
     /**
@@ -108,7 +108,7 @@ class ContentVersions extends Model
     /**
      * Find the latest created leaf node of $version
      */
-    private static function findLatestLeaf(ContentVersions $version): ?self
+    private static function findLatestLeaf(ContentVersion $version): ?self
     {
         while ($version) {
             $children = $version->getNextVersions();

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -95,7 +95,7 @@ class VersionAllUnversionedContent extends Command
                 $contentId,
                 $contentType,
                 Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s.u'),
-                ContentVersions::PURPOSE_INITIAL,
+                ContentVersion::PURPOSE_INITIAL,
                 $ownerId,
                 (bool)config('feature.linear-versioning'),
             ]);

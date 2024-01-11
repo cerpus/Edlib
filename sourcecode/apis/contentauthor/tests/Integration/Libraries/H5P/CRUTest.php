@@ -3,7 +3,7 @@
 namespace Tests\Integration\Libraries\H5P;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
 use App\H5PCollaborator;
@@ -97,7 +97,7 @@ class CRUTest extends TestCase
             'id' => $firstVersion,
             'content_id' => 1,
             'content_type' => Content::TYPE_H5P,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
 
         $this->withSession([
@@ -133,7 +133,7 @@ class CRUTest extends TestCase
             'parent_id' => $firstVersion,
             'content_id' => 1,
             'content_type' => Content::TYPE_H5P,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
         $this->withSession([
@@ -167,7 +167,7 @@ class CRUTest extends TestCase
             'id' => H5PContent::find(2)->version_id,
             'content_id' => 2,
             'parent_id' => $secondVersion,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
         $this->withSession([
@@ -200,7 +200,7 @@ class CRUTest extends TestCase
             'id' => H5PContent::find(3)->version_id,
             'content_id' => 3,
             'parent_id' => $secondVersion,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
         $h5p->license = 'BY';
@@ -236,7 +236,7 @@ class CRUTest extends TestCase
             'id' => H5PContent::find(4)->version_id,
             'content_id' => 4,
             'parent_id' => $secondVersion,
-            'version_purpose' => ContentVersions::PURPOSE_COPY,
+            'version_purpose' => ContentVersion::PURPOSE_COPY,
         ]);
     }
 
@@ -553,9 +553,9 @@ class CRUTest extends TestCase
             'is_published' => 0,
             'license' => 'PRIVATE',
         ]);
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'content_id' => $contents->id,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
 
         $contents->version_id = $version->id;
@@ -614,7 +614,7 @@ class CRUTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', ['id' => ++$contents->id, 'title' => $contents->title, 'is_published' => 1]);
         $this->assertDatabaseHas('content_versions', [
             'content_id' => $contents->id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
             'parent_id' => $version->id,
         ]);
     }

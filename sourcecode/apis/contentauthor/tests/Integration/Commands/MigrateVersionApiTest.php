@@ -4,7 +4,7 @@ namespace Tests\Integration\Commands;
 
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Game;
 use App\H5PContent;
 use App\Link;
@@ -34,7 +34,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $this->faker->uuid,
             'externalReference' => $this->faker->uuid,
             'userId' => $versioned->owner_id,
-            'versionPurpose' => ContentVersions::PURPOSE_CREATE,
+            'versionPurpose' => ContentVersion::PURPOSE_CREATE,
             'createdAt' => $parentcreated->getPreciseTimestamp(3),
         ];
 
@@ -42,7 +42,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->owner_id,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => $parentVersionData,
         ];
@@ -113,7 +113,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $this->faker->uuid,
             'externalReference' => $this->faker->uuid,
             'userId' => $versioned->owner,
-            'versionPurpose' => ContentVersions::PURPOSE_CREATE,
+            'versionPurpose' => ContentVersion::PURPOSE_CREATE,
             'createdAt' => $parentcreated->getPreciseTimestamp(3),
         ];
 
@@ -121,7 +121,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->owner,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => $parentVersionData,
         ];
@@ -192,7 +192,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $this->faker->uuid,
             'externalReference' => $this->faker->uuid,
             'userId' => $versioned->owner_id,
-            'versionPurpose' => ContentVersions::PURPOSE_CREATE,
+            'versionPurpose' => ContentVersion::PURPOSE_CREATE,
             'createdAt' => $parentcreated->getPreciseTimestamp(3),
         ];
 
@@ -200,7 +200,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->owner_id,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => $parentVersionData,
         ];
@@ -271,7 +271,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $this->faker->uuid,
             'externalReference' => $this->faker->uuid,
             'userId' => $versioned->user_id,
-            'versionPurpose' => ContentVersions::PURPOSE_CREATE,
+            'versionPurpose' => ContentVersion::PURPOSE_CREATE,
             'createdAt' => $parentcreated->getPreciseTimestamp(3),
         ];
 
@@ -279,7 +279,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->user_id,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => $parentVersionData,
         ];
@@ -344,7 +344,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->user_id,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => null,
         ];
@@ -392,7 +392,7 @@ class MigrateVersionApiTest extends TestCase
             'id' => $versioned->version_id,
             'externalReference' => $versioned->id,
             'userId' => $versioned->user_id,
-            'versionPurpose' => ContentVersions::PURPOSE_UPDATE,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
             'createdAt' => $created->getPreciseTimestamp(3),
             'parent' => null,
         ];

@@ -3,7 +3,7 @@
 namespace App\Listeners\H5P;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\Listeners\AbstractHandleVersioning;
@@ -28,11 +28,11 @@ class HandleVersioning extends AbstractHandleVersioning
 
             if (is_object($h5p)) {
                 if (empty($h5p->version_id)) {
-                    $version = ContentVersions::create([
+                    $version = ContentVersion::create([
                         'user_id' => $h5p->user_id,
                         'content_id' => $h5p->id,
                         'content_type' => Content::TYPE_H5P,
-                        'version_purpose' => ContentVersions::PURPOSE_CREATE,
+                        'version_purpose' => ContentVersion::PURPOSE_CREATE,
                     ]);
                     $h5p->version_id = $version->id;
                     $h5p->save();

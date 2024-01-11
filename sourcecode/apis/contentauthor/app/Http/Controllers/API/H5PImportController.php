@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\Exceptions\H5pImportException;
 use App\H5PContent;
@@ -37,7 +37,7 @@ class H5PImportController extends Controller
             ]);
         }
 
-        event(new H5PWasSaved($h5pContent, $request, ContentVersions::PURPOSE_IMPORT));
+        event(new H5PWasSaved($h5pContent, $request, ContentVersion::PURPOSE_IMPORT));
 
         return response()->json($response->toArray())->setStatusCode(Response::HTTP_CREATED);
     }

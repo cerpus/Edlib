@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Listeners\H5P\Copy;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\H5PWasCopied;
 use App\H5PContent;
 use App\Listeners\H5P\Copy\HandleVersioning;
@@ -23,15 +23,15 @@ class HandleVersioningTest extends TestCase
         $originalH5p = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
         ]);
-        $originalVersion = ContentVersions::factory()->create([
+        $originalVersion = ContentVersion::factory()->create([
             'id' => $originalH5p->version_id,
             'content_id' => $originalH5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => null,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
         $newH5p = H5PContent::factory()->create();
-        $event = new H5PWasCopied($originalH5p, $newH5p, ContentVersions::PURPOSE_COPY);
+        $event = new H5PWasCopied($originalH5p, $newH5p, ContentVersion::PURPOSE_COPY);
         (new HandleVersioning())->handle($event);
 
         $newH5p->refresh();
@@ -43,7 +43,7 @@ class HandleVersioningTest extends TestCase
             'content_id' => $newH5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $originalVersion->id,
-            'version_purpose' => ContentVersions::PURPOSE_COPY,
+            'version_purpose' => ContentVersion::PURPOSE_COPY,
         ]);
     }
 }

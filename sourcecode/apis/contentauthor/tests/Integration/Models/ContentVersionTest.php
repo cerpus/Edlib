@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Models;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use Carbon\Carbon;
 use Generator;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,42 +20,42 @@ class ContentVersionTest extends TestCase
 
     public function test_previousVersion(): void
     {
-        $v1 = ContentVersions::factory()->create();
-        $v2 = ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create();
+        $v2 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
         ]);
-        ContentVersions::factory()->create();
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create();
+        ContentVersion::factory()->create([
             'parent_id' => $v1->id,
         ]);
 
-        /** @var Collection<ContentVersions> $previous */
+        /** @var Collection<ContentVersion> $previous */
         $previous = $v2->getPreviousVersion();
-        $this->assertInstanceOf(ContentVersions::class, $previous);
+        $this->assertInstanceOf(ContentVersion::class, $previous);
         $this->assertSame($v1->id, $previous->id);
     }
 
     public function test_previousVersion_noPrevious(): void
     {
-        $v1 = ContentVersions::factory()->create();
+        $v1 = ContentVersion::factory()->create();
 
-        /** @var Collection<ContentVersions> $previous */
+        /** @var Collection<ContentVersion> $previous */
         $previous = $v1->getPreviousVersion();
         $this->assertNull($previous);
     }
 
     public function test_nextVersions(): void
     {
-        $v1 = ContentVersions::factory()->create();
-        $v2_1 = ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create();
+        $v2_1 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
         ]);
-        $v2_2 = ContentVersions::factory()->create([
+        $v2_2 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
         ]);
-        ContentVersions::factory()->create();
+        ContentVersion::factory()->create();
 
-        /** @var Collection<ContentVersions> $next */
+        /** @var Collection<ContentVersion> $next */
         $next = $v1->getNextVersions();
         $this->assertCount(2, $next);
         $this->assertSame($v2_1->id, $next[0]->id);
@@ -64,14 +64,14 @@ class ContentVersionTest extends TestCase
 
     public function test_latestVersion_linear(): void
     {
-        $v1 = ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create([
             'linear_versioning' => true,
         ]);
-        $v2 = ContentVersions::factory()->create([
+        $v2 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
             'linear_versioning' => true,
         ]);
-        $v3 = ContentVersions::factory()->create([
+        $v3 = ContentVersion::factory()->create([
             'parent_id' => $v2->id,
             'linear_versioning' => true,
         ]);
@@ -84,43 +84,43 @@ class ContentVersionTest extends TestCase
 
     public function test_latestVersion_branched(): void
     {
-        $v1 = ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create([
             'version_purpose' => 'v1',
             'created_at' => Carbon::now()->sub('1d'),
         ]);
-        $v1_1 = ContentVersions::factory()->create([
+        $v1_1 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
             'version_purpose' => 'v1_1',
             'created_at' => Carbon::now()->sub('15h'),
         ]);
-        $v1_2 = ContentVersions::factory()->create([
+        $v1_2 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
             'version_purpose' => 'v1_2',
             'created_at' => Carbon::now()->sub('10m'),
         ]);
 
-        $v1_1_1 = ContentVersions::factory()->create([
+        $v1_1_1 = ContentVersion::factory()->create([
             'parent_id' => $v1_1->id,
             'version_purpose' => 'v1_1_1',
             'created_at' => Carbon::now()->sub('1m'),
         ]);
-        $v1_1_2 = ContentVersions::factory()->create([
+        $v1_1_2 = ContentVersion::factory()->create([
             'parent_id' => $v1_1->id,
             'version_purpose' => 'v1_1_2',
             'created_at' => Carbon::now()->sub('5s'),
         ]);
 
-        $v1_2_1 = ContentVersions::factory()->create([
+        $v1_2_1 = ContentVersion::factory()->create([
             'parent_id' => $v1_2->id,
             'version_purpose' => 'v1_2_1',
             'created_at' => Carbon::now()->sub('5m'),
         ]);
-        $v1_2_2 = ContentVersions::factory()->create([
+        $v1_2_2 = ContentVersion::factory()->create([
             'parent_id' => $v1_2->id,
             'version_purpose' => 'v1_2_1',
             'created_at' => Carbon::now()->sub('1m'),
         ]);
-        $v1_2_1_1 = ContentVersions::factory()->create([
+        $v1_2_1_1 = ContentVersion::factory()->create([
             'parent_id' => $v1_2_1->id,
             'version_purpose' => 'v1_2_1_1',
             'created_at' => Carbon::now()->sub('3m'),
@@ -133,32 +133,32 @@ class ContentVersionTest extends TestCase
 
     public function test_latestVersion_nonExisting(): void
     {
-        $v1 = ContentVersions::factory()->create();
-        ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create();
+        ContentVersion::factory()->create([
             'parent_id' => $v1->id,
         ]);
 
         $this->expectException(ModelNotFoundException::class);
 
-        ContentVersions::latest('123');
+        ContentVersion::latest('123');
     }
 
     /** @dataProvider providerLinearVersioning */
     public function testLinearVersioning(bool $parentLinear, bool $newLinear): void
     {
-        $v1 = ContentVersions::factory()->create([
+        $v1 = ContentVersion::factory()->create([
             'linear_versioning' => $parentLinear,
         ]);
-        $v2 = ContentVersions::factory()->create([
+        $v2 = ContentVersion::factory()->create([
             'parent_id' => $v1->id,
             'linear_versioning' => $parentLinear,
         ]);
 
-        $v3 = ContentVersions::create([
+        $v3 = ContentVersion::create([
             'content_id' => $this->faker->uuid,
             'content_type' => 'linearTest',
             'parent_id' => $v1->id,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
             'user_id' => 1,
             'linear_versioning' => $newLinear,
         ]);

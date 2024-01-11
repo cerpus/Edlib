@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\ACL\ArticleAccess;
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
 use App\Http\Libraries\License;
@@ -139,7 +139,7 @@ class ArticleController extends Controller
         }
 
         // Handles privacy, collaborators, and registering a new version
-        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersions::PURPOSE_CREATE, Session::all()));
+        event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
         $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
 
@@ -271,9 +271,9 @@ class ArticleController extends Controller
         }
 
         $oldLicense = $oldArticle->getContentLicense();
-        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersions::PURPOSE_COPY : ContentVersions::PURPOSE_UPDATE;
+        $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === ContentVersions::PURPOSE_COPY && !$request->input("license", false)) {
+        if ($reason === ContentVersion::PURPOSE_COPY && !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
@@ -284,10 +284,10 @@ class ArticleController extends Controller
 
         if ($oldArticle->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case ContentVersions::PURPOSE_UPDATE:
+                case ContentVersion::PURPOSE_UPDATE:
                     $article = $oldArticle->makeCopy();
                     break;
-                case ContentVersions::PURPOSE_COPY:
+                case ContentVersion::PURPOSE_COPY:
                     $article = $oldArticle->makeCopy(Session::get('authId'));
                     break;
                 default:
@@ -363,7 +363,7 @@ class ArticleController extends Controller
     protected function handleCollaborators(Request $request, Article $oldArticle, Article $newArticle, $reason): Collection
     {
         switch ($reason) {
-            case ContentVersions::PURPOSE_UPDATE:
+            case ContentVersion::PURPOSE_UPDATE:
                 $collaborators = "";
                 if (!$newArticle->isOwner(Session::get('authId'))) { // Collaborators cannot update collaborators
                     $collaborators = $this->getCollaboratorsEmails($oldArticle);
@@ -374,7 +374,7 @@ class ArticleController extends Controller
                 }
                 return collect(explode(",", $collaborators));
 
-            case ContentVersions::PURPOSE_COPY:
+            case ContentVersion::PURPOSE_COPY:
             default:
                 return collect();
         }

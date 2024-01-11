@@ -5,7 +5,7 @@ namespace Tests\Integration\Article;
 use App\Article;
 use App\ArticleCollaborator;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Listeners\Article\HandleCollaborationInviteEmails;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -150,7 +150,7 @@ class ArticleVersioningTest extends TestCase
             'owner_id' => $owner->auth_id,
             'license' => 'BY',
         ]);
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'content_id' => $article->id,
             'content_type' => Content::TYPE_ARTICLE,
             'user_id' => $owner->auth_id,

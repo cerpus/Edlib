@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Listeners\H5P;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\Listeners\H5P\HandleVersioning;
@@ -22,7 +22,7 @@ class HandleVersioningTest extends TestCase
     public function testHandle(): void
     {
         $h5p = H5PContent::factory()->create();
-        $event = new H5PWasSaved($h5p, new Request(), ContentVersions::PURPOSE_CREATE, null);
+        $event = new H5PWasSaved($h5p, new Request(), ContentVersion::PURPOSE_CREATE, null);
         (new HandleVersioning())->handle($event);
 
         $h5p->refresh();
@@ -34,7 +34,7 @@ class HandleVersioningTest extends TestCase
             'content_id' => $h5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => null,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
     }
 
@@ -43,14 +43,14 @@ class HandleVersioningTest extends TestCase
         $h5p = H5PContent::factory()->create([
             'version_id' => $this->faker->uuid,
         ]);
-        $originalVersion = ContentVersions::factory()->create([
+        $originalVersion = ContentVersion::factory()->create([
             'id' => $h5p->version_id,
             'content_id' => $h5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => null,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
-        $event = new H5PWasSaved($h5p, new Request(), ContentVersions::PURPOSE_UPDATE, $h5p);
+        $event = new H5PWasSaved($h5p, new Request(), ContentVersion::PURPOSE_UPDATE, $h5p);
         (new HandleVersioning())->handle($event);
 
         $h5p->refresh();
@@ -63,7 +63,7 @@ class HandleVersioningTest extends TestCase
             'content_id' => $h5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $originalVersion->id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
     }
 
@@ -71,7 +71,7 @@ class HandleVersioningTest extends TestCase
     {
         $parent = H5PContent::factory()->create();
         $h5p = H5PContent::factory()->create();
-        $event = new H5PWasSaved($h5p, new Request(), ContentVersions::PURPOSE_UPDATE, $parent);
+        $event = new H5PWasSaved($h5p, new Request(), ContentVersion::PURPOSE_UPDATE, $parent);
         (new HandleVersioning())->handle($event);
 
         $parent->refresh();
@@ -85,14 +85,14 @@ class HandleVersioningTest extends TestCase
             'content_id' => $parent->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => null,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
         $this->assertDatabaseHas('content_versions', [
             'id' => $h5p->version_id,
             'content_id' => $h5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $parent->version_id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
     }
 
@@ -100,7 +100,7 @@ class HandleVersioningTest extends TestCase
     {
         $parent = H5PContent::factory()->make();
         $h5p = H5PContent::factory()->create();
-        $event = new H5PWasSaved($h5p, new Request(), ContentVersions::PURPOSE_UPDATE, $parent);
+        $event = new H5PWasSaved($h5p, new Request(), ContentVersion::PURPOSE_UPDATE, $parent);
         (new HandleVersioning())->handle($event);
 
         $h5p->refresh();
@@ -112,7 +112,7 @@ class HandleVersioningTest extends TestCase
             'content_id' => $h5p->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $parent->version_id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
     }
 }

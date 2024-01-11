@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ContentVersions>
+ * @extends Factory<ContentVersion>
  */
-class ContentVersionsFactory extends Factory
+class ContentVersionFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -26,7 +26,7 @@ class ContentVersionsFactory extends Factory
             'content_id' => $this->faker->numberBetween(),
             'content_type' => 'testing',
             'parent_id' => null,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
             'user_id' => $this->faker->numberBetween(),
             'linear_versioning' => false,
         ];

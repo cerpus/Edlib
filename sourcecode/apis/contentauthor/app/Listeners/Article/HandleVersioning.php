@@ -4,7 +4,7 @@ namespace App\Listeners\Article;
 
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\ArticleWasCopied;
 use App\Events\ArticleWasSaved;
 use App\Listeners\AbstractHandleVersioning;
@@ -36,12 +36,12 @@ class HandleVersioning extends AbstractHandleVersioning
         $parentArticle = Article::find($this->article->parent_id);
 
         if (is_null($parentArticle->version_id)) { // Create origin version
-            /** @var ?ContentVersions $versionData */
-            $versionData = ContentVersions::create([
+            /** @var ?ContentVersion $versionData */
+            $versionData = ContentVersion::create([
                 'user_id' => $parentArticle->owner_id,
                 'content_id' => $parentArticle->id,
                 'content_type' => Content::TYPE_ARTICLE,
-                'version_purpose' => ContentVersions::PURPOSE_CREATE,
+                'version_purpose' => ContentVersion::PURPOSE_CREATE,
             ]);
 
             if ($versionData) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Traits;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Integration\Traits\Stubs\VersionableStubClass;
@@ -19,7 +19,7 @@ class VersionableTest extends TestCase
     {
         $versionable = new VersionableStubClass();
 
-        $versionData = ContentVersions::factory()->create([
+        $versionData = ContentVersion::factory()->create([
             'id' => $versionable->version_id,
         ]);
         $result = $versionable->fetchVersionData();
@@ -31,8 +31,8 @@ class VersionableTest extends TestCase
     {
         $versionable = new VersionableStubClass();
 
-        $parent = ContentVersions::factory()->create();
-        ContentVersions::factory()->create([
+        $parent = ContentVersion::factory()->create();
+        ContentVersion::factory()->create([
             'id' => $versionable->version_id,
             'parent_id' => $parent->id,
         ]);
@@ -45,11 +45,11 @@ class VersionableTest extends TestCase
     {
         $versionable = new VersionableStubClass();
 
-        $grandParent = ContentVersions::factory()->create();
-        $parent = ContentVersions::factory()->create([
+        $grandParent = ContentVersion::factory()->create();
+        $parent = ContentVersion::factory()->create([
             'parent_id' => $grandParent->id,
         ]);
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $versionable->version_id,
             'parent_id' => $parent->id,
         ]);
@@ -65,13 +65,13 @@ class VersionableTest extends TestCase
     {
         $versionable = new VersionableStubClass();
 
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'id' => $versionable->version_id,
         ]);
-        $child1 = ContentVersions::factory()->create([
+        $child1 = ContentVersion::factory()->create([
             'parent_id' => $version->id,
         ]);
-        $child2 = ContentVersions::factory()->create([
+        $child2 = ContentVersion::factory()->create([
             'parent_id' => $version->id,
         ]);
 
@@ -85,7 +85,7 @@ class VersionableTest extends TestCase
     public function test_getVersion_success(): void
     {
         $versionable = new VersionableStubClass();
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'id' => $versionable->version_id,
         ]);
 

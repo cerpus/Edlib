@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\Http\Controllers\H5PController;
 use App\Http\Requests\H5PStorageRequest;
@@ -86,7 +86,7 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertDatabaseHas('content_versions', [
             'id' => $h5pContent->version_id,
             'content_id' => $h5pContent->id,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
     }
 
@@ -121,7 +121,7 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertDatabaseHas('content_versions', [
             'id' => $h5pContent->version_id,
             'content_id' => $h5pContent->id,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
 
         $request = new H5PStorageRequest();
@@ -145,7 +145,7 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertDatabaseHas('content_versions', [
             'id' => $updatedH5pContent->version_id,
             'content_id' => $updatedH5pContent->id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
         $this->assertEquals("Updated H5P Title", $updatedH5pContent->title);
     }

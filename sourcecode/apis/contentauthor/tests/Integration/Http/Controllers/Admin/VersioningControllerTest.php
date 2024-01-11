@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
 use Illuminate\Auth\GenericUser;
@@ -35,18 +35,18 @@ class VersioningControllerTest extends TestCase
             'version_id' => $this->faker->unique()->uuid,
             'library_id' => $library->id,
         ]);
-        $parentVersion = ContentVersions::factory()->create([
+        $parentVersion = ContentVersion::factory()->create([
             'id' => $parent->version_id,
             'content_id' => $parent->id,
             'content_type' => Content::TYPE_H5P,
-            'version_purpose' => ContentVersions::PURPOSE_CREATE,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
-        $childVersion = ContentVersions::factory()->create([
+        $childVersion = ContentVersion::factory()->create([
             'id' => $child->version_id,
             'content_id' => $child->id,
             'content_type' => Content::TYPE_H5P,
             'parent_id' => $parentVersion->id,
-            'version_purpose' => ContentVersions::PURPOSE_UPDATE,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
         $result = $this->withSession(['user' => $user])

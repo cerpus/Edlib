@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use Carbon\Carbon;
 use Cerpus\VersionClient\VersionClient;
 use Cerpus\VersionClient\VersionData;
@@ -158,7 +158,7 @@ class MigrateVersionApi extends Command
      */
     private function addMissingParentRecord(?VersionData $data, $contentType): void
     {
-        if ($data !== null && ContentVersions::where('id', $data->getId())->doesntExist()) {
+        if ($data !== null && ContentVersion::where('id', $data->getId())->doesntExist()) {
             $this->debug(sprintf('Creating missing parent version "%s" for content id "%s"', $data->getId(), $data->getExternalReference()));
             $parent = $data->getParent();
             $this->addMissingParentRecord($parent, $contentType);

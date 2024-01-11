@@ -3,7 +3,7 @@
 namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ApiModels\Resource;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -194,7 +194,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         ]);
         $versionId = $versionContent->version_id;
 
-        ContentVersions::factory()->create([
+        ContentVersion::factory()->create([
             'id' => $versionId,
             'content_id' => $versionContent->id,
         ]);
@@ -255,16 +255,16 @@ class AdminH5PDetailsControllerTest extends TestCase
             ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
         $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
 
-        $parentVersion = ContentVersions::factory()->create([
+        $parentVersion = ContentVersion::factory()->create([
             'id' => $parent->version_id,
             'content_id' => $parent->id,
         ]);
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'id' => $content->version_id,
             'content_id' => $content->id,
             'parent_id' => $parentVersion->id,
         ]);
-        $childVersion = ContentVersions::factory()->create([
+        $childVersion = ContentVersion::factory()->create([
             'id' => $child->version_id,
             'content_id' => $child->id,
             'parent_id' => $version->id,

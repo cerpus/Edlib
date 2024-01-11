@@ -7,7 +7,7 @@ namespace Tests\Integration\Models;
 use App\ApiModels\User;
 use App\Apis\AuthApiService;
 use App\Article;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\NdlaIdMapper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -50,11 +50,11 @@ class ContentTest extends TestCase
             'parent_id' => $this->faker->uuid,
         ]);
 
-        $parentVersion = ContentVersions::factory()->create([
+        $parentVersion = ContentVersion::factory()->create([
             'id' => $parentArticle->version_id,
             'content_id' => $parentArticle->id,
         ]);
-        $version = ContentVersions::factory()->create([
+        $version = ContentVersion::factory()->create([
             'id' => $article->version_id,
             'content_id' => $article->id,
             'parent_id' => $parentVersion->id,

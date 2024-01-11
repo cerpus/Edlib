@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -34,7 +34,7 @@ class VersioningController extends Controller
     /**
      * @return Collection
      */
-    private function traverseVersion(ContentVersions $versionData, Collection $stack, $getChildren = true)
+    private function traverseVersion(ContentVersion $versionData, Collection $stack, $getChildren = true)
     {
         $versionArray = [
             'version' => $versionData->toArray(),
@@ -57,7 +57,7 @@ class VersioningController extends Controller
         }
         $versionArray['parent'] = $versionData->getPreviousVersion()?->content_id;
 
-        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersions> $children */
+        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersion> $children */
         $children = $versionData->getNextVersions();
         $versionArray['children'] = [];
         if ($children->isNotEmpty()) {

@@ -3,7 +3,7 @@
 namespace App\Libraries\QuestionSet;
 
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
@@ -39,7 +39,7 @@ class QuestionSetHandler
 
         $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
 
-        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersions::PURPOSE_CREATE, Session::all()));
+        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
             $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
@@ -180,7 +180,7 @@ class QuestionSetHandler
             $questionSet->setCollaborators($collaborators)->notifyNewCollaborators();
         }
 
-        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersions::PURPOSE_UPDATE, Session::all()));
+        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_UPDATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
             $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);

@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Apis\AuthApiService;
 use App\Apis\ResourceApiService;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5POption;
 use App\Http\Middleware\RequestId;
 use App\Libraries\ContentAuthorStorage;
@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrapThree();
 
         H5POption::observe(H5POptionObserver::class);
-        ContentVersions::observe(ContentVersionsObserver::class);
+        ContentVersion::observe(ContentVersionsObserver::class);
     }
 
     /**

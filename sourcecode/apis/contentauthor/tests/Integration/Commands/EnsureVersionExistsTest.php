@@ -4,7 +4,7 @@ namespace Tests\Integration\Commands;
 
 use App\Article;
 use App\Content;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -23,7 +23,7 @@ class EnsureVersionExistsTest extends TestCase
         ]);
         // With version
         $versioned = Article::factory(2)->create()->each(function (Article $article) {
-            ContentVersions::factory()->create([
+            ContentVersion::factory()->create([
                 'id' => $article->version_id,
                 'content_id' => $article->id,
                 'content_type' => Content::TYPE_ARTICLE,
@@ -36,7 +36,7 @@ class EnsureVersionExistsTest extends TestCase
         $notConnected = Article::factory(2)->create([
             'version_id' => null,
         ])->each(function (Article $article) use ($unconnectedVersions) {
-            $unconnectedVersions->add(ContentVersions::factory()->create([
+            $unconnectedVersions->add(ContentVersion::factory()->create([
                 'content_id' => $article->id,
                 'content_type' => Content::TYPE_ARTICLE,
             ]));
@@ -90,7 +90,7 @@ class EnsureVersionExistsTest extends TestCase
         $noVersion = H5PContent::factory(2)->create();
         // With version
         $versioned = H5PContent::factory(2)->create()->each(function (H5PContent $h5PContent) {
-            $version = ContentVersions::factory()->create([
+            $version = ContentVersion::factory()->create([
                 'content_id' => $h5PContent->id,
                 'content_type' => Content::TYPE_H5P,
             ]);
@@ -108,7 +108,7 @@ class EnsureVersionExistsTest extends TestCase
         $notConnected = H5PContent::factory(2)->create([
             'version_id' => null,
         ])->each(function (H5PContent $article) use ($unconnectedVersions) {
-            $unconnectedVersions->add(ContentVersions::factory()->create([
+            $unconnectedVersions->add(ContentVersion::factory()->create([
                 'content_id' => $article->id,
                 'content_type' => Content::TYPE_H5P,
             ]));

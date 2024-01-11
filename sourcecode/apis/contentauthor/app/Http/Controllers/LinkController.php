@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\Events\LinkWasSaved;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
@@ -79,7 +79,7 @@ class LinkController extends Controller
         $link->license = $inputs['license'] ?? '';
         $link->save();
 
-        event(new LinkWasSaved($link, ContentVersions::PURPOSE_CREATE));
+        event(new LinkWasSaved($link, ContentVersion::PURPOSE_CREATE));
 
         $url = $this->getRedirectToCoreUrl($link->toLtiContent(), $request->get('redirectToken'));
 
@@ -141,9 +141,9 @@ class LinkController extends Controller
         $inputs = $request->all();
 
         $oldLicense = $oldLink->getContentLicense();
-        $reason = $oldLink->shouldCreateFork(Session::get('authId', false)) ? ContentVersions::PURPOSE_COPY : ContentVersions::PURPOSE_UPDATE;
+        $reason = $oldLink->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === ContentVersions::PURPOSE_COPY && !$request->input("license", false)) {
+        if ($reason === ContentVersion::PURPOSE_COPY && !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
@@ -155,10 +155,10 @@ class LinkController extends Controller
         $link = $oldLink;
         if ($oldLink->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case ContentVersions::PURPOSE_UPDATE:
+                case ContentVersion::PURPOSE_UPDATE:
                     $link = $oldLink->makeCopy();
                     break;
-                case ContentVersions::PURPOSE_COPY:
+                case ContentVersion::PURPOSE_COPY:
                     $link = $oldLink->makeCopy(Session::get('authId'));
                     break;
             }

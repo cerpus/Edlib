@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\ContentLock;
-use App\ContentVersions;
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -127,7 +127,7 @@ class AdminH5PDetailsController extends Controller
                 try {
                     $latest = null;
                     if ($row->version_id) {
-                        $latest = ContentVersions::latest($row->version_id);
+                        $latest = ContentVersion::latest($row->version_id);
                     }
                     $isLatest = (empty($latest) || $row->version_id === $latest->id);
                     $latestCount += $isLatest ? 1 : 0;
@@ -247,7 +247,7 @@ class AdminH5PDetailsController extends Controller
         ]);
     }
 
-    private function getVersions(ContentVersions $versionData, Collection $stack, $getChildren = true): Collection
+    private function getVersions(ContentVersion $versionData, Collection $stack, $getChildren = true): Collection
     {
         $versionArray = $versionData->toArray();
         $versionArray['versionDate'] = $versionData->created_at;
@@ -265,13 +265,13 @@ class AdminH5PDetailsController extends Controller
                 'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
             ];
         }
-        /** @var ContentVersions|null $parent */
+        /** @var ContentVersion|null $parent */
         $parent = $versionData->getPreviousVersion();
         if (!empty($parent)) {
             $this->getVersions($parent, $stack, false);
             $versionArray['parent'] = $parent->content_id;
         }
-        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersions> $children */
+        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersion> $children */
         $children = $versionData->getNextVersions();
         if ($children->isNotEmpty()) {
             $versionArray['children'] = [];
