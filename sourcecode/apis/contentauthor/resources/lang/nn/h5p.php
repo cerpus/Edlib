@@ -25,6 +25,7 @@ return [
 
     "by" => "av",
 
+    "Cancel" => "Avbryt",
     "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication" => "CC0 1.0 Universell (CC0 1.0) Offentleg domene dedikert",
     "Changelog" => "Endringslogg",
     "Close" => "Lukk",
@@ -34,7 +35,9 @@ return [
     "Connection reestablished." => "Tilkoblinga vert gjenoppretta.",
     "Content is copied to the clipboard" => "Innhaldet er kopiert til utklippstavla.",
     "Content Type" => "Innhaldstype",
+    "Copyright" => "Kopibeskytta",
 
+    "Date" => "Dato",
     "Disable fullscreen" => "Skru av fullskjerm",
     "Download this content as a H5P file." => "Last ned innhaldet som ei H5P-fil.",
     "Download" => "Last ned",
