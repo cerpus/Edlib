@@ -53,6 +53,8 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslationUpdate']);
         Route::get('libraries/{library}/translation/{locale}/content', [AdminH5PDetailsController::class, 'contentTranslationUpdate'])
             ->name('admin.library-transation-content');
+        Route::post('libraries/{library}/translation/{locale}/content/update', [AdminH5PDetailsController::class, 'updateContentTranslation'])
+            ->name('admin.library-transation-content-update');
 
         Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
 

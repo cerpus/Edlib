@@ -1,12 +1,12 @@
 /**
  * Update the translations stored in the content
  */
-
-var H5PEditor = window.H5PEditor = window.H5PEditor || {};
-var ns = H5PEditor;
+const H5PEditor = window.H5PEditor = window.H5PEditor || {};
+const ns = H5PEditor;
+contentLanguageConfig = window.contentLanguageConfig || {};
 
 ns.getAjaxUrl = function (action, parameters) {
-    let url = H5PIntegration.ajaxPath + action;
+    let url = contentLanguageConfig.ajaxPath + action;
 
     if (parameters !== undefined) {
         let separator = url.indexOf('?') === -1 ? '?' : '&';
@@ -31,44 +31,42 @@ H5P.jsLoaded = function (path) {
     return true;
 }
 
-// Additional libraries that should be loaded
+// Libraries that we must load
 ns.librariesToLoad = [];
+ns.updateableFields = {};
 
-ns.ContentLanguageUpdateProcess = async function (params, metadata, library, lang) {
+ns.ContentTranslationRefresh = async function (params, library, lang) {
     if (typeof ns.libraryCache[library] === "undefined") {
         ns.librariesToLoad.push(library);
     }
-    console.log(JSON.stringify(params));
+    // console.log(JSON.stringify(params));
     getSubContentLibraries(params, lang);
+
     // Load language when loading library
     ns.contentLanguage = lang;
     ns.defaultLanguage = lang;
-    Promise.all(
+
+    const libs = await Promise.all(
         ns.librariesToLoad.map(library => {
             return loadLibrary(library, lang);
         })
-    )
-    .then(async (values) => {
-        if (await loadTranslations(lang)) {
-            values.forEach(({library: machineName, semantics}) => {
-                console.log(machineName, semantics);
-                if (!ns.renderableCommonFields[machineName] || !ns.renderableCommonFields[machineName].fields) {
-                    processSemanticsChunk(semantics, machineName);
-                }
-            });
-            // console.log(ns.renderableCommonFields);
-            updateCommonFields(params, lang, library);
-            console.log(JSON.stringify(params));
-        }
-    })
+    );
+    if (await loadTranslations(lang)) {
+        libs.forEach(({library: machineName, semantics}) => {
+            if (!ns.renderableCommonFields[machineName] || !ns.renderableCommonFields[machineName].fields) {
+                processSemanticsChunk(semantics, machineName);
+            }
+        });
+        updateCommonFields(params, library);
+        console.log(JSON.stringify(params));
+        return params;
+    }
 
-    // Todo: Write new ns.loadLibrary using Promise
     async function loadLibrary (library) {
         return new Promise((resolve, reject) => {
-            // The loadLibrary() doesn't callback on error, so we give it 60s to reply
-            const timeout = setTimeout(() => reject(library), 60 * 1000);
+            // The loadLibrary() doesn't callback on error, so we give it 30s to reply
+            const timeout = setTimeout(() => reject(library), 30 * 1000);
             ns.loadLibrary(library, semantics => {
-                console.log(semantics);
                 clearTimeout(timeout);
                 resolve({
                     library,
@@ -163,7 +161,7 @@ ns.ContentLanguageUpdateProcess = async function (params, metadata, library, lan
             const field = semanticsChunk[i];
 
             // Find common fields
-            if ((field.common !== undefined && field.common) || (field?.type === "text" && field?.default)) {
+            if (field.common !== undefined && field.common) {
                 ns.renderableCommonFields[machineName] = ns.renderableCommonFields[machineName] || {};
                 ns.renderableCommonFields[machineName].fields = ns.renderableCommonFields[machineName].fields || [];
 
@@ -178,66 +176,91 @@ ns.ContentLanguageUpdateProcess = async function (params, metadata, library, lan
         }
     }
 
-    /**
-     * Got through the collected fields and update the translation
-     * Based on updateCommonFields in vendor/h5p/h5p-editor/js/h5peditor-form.js
-     *
-     * @param {object} params
-     * @param {string} lang
-     * @param {string} baseLibrary
-     */
-    function updateCommonFields (params, lang, baseLibrary) {
-        for (let lib in ns.libraryCache) {
-            if (ns.renderableCommonFields[lib] && ns.renderableCommonFields[lib].fields) {
-                for (let j = 0; j < ns.renderableCommonFields[lib].fields.length; j++) {
-                    const fields = ns.renderableCommonFields[lib].fields[j];
-                    setSubLibraryCommonFields(params, fields, lib);
-                }
+
+    function updateCommonFields (params, library) {
+        for (const propName of Object.keys(params)) {
+            if (typeof params[propName] === "object" && params[propName].library) {
+                updateCommonFields(params[propName], params[propName].library);
+            } else if (ns.renderableCommonFields[library]) {
+                ns.renderableCommonFields[library].fields.forEach(fields => {
+                    if (fields.field.name && propName === fields.field.name) {
+                        if (fields.field.fields) {
+                            // it contains multiple fields
+                            fields.field.fields.forEach(field => {
+                                params[fields.field.name][field.name] = field.default;
+                            });
+                        } else {
+                            // it's a single field
+                            params[fields.field.name] = fields.field.default;
+                        }
+                    }
+                });
+            }
+            if (typeof params[propName] === 'object') {
+                updateCommonFields(params[propName], library);
             }
         }
     }
 
-    /**
-     * Go through the params and replace the translations for the given field(s)
-     *
-     * @param {object} params
-     * @param {object} fields
-     * @param {string} currentLibrary
-     */
-    function setSubLibraryCommonFields (params, fields, currentLibrary) {
-        for(const propName of Object.keys(params)) {
-            // console.log(propName, currentLibrary);
-            if (propName === 'library') {
-                // found subcontent using a different library
-                currentLibrary = params[propName];
-            }
-            if (params[propName] !== null && typeof params[propName] === "object") {
-                // Dig deeper
-                setSubLibraryCommonFields(params[propName], fields, currentLibrary);
-            } else if (currentLibrary === fields.parent) {
-                // Found the library the field(s) belong to in the params
-                // console.log(params[propName]);
-                if (params[fields.field.name]) {
-                    // and the correct property found, update the translation(s)
-                    if (fields.field.fields) {
-                        // it contains multiple fields
-                        fields.field.fields.forEach(field => {
-                            params[fields.field.name][field.name] = field.default;
-                        });
-                    } else if (params[fields.field.name]) {
-                        // it's a single field
-                        params[fields.field.name] = fields.field.default;
-                    }
-                }
-            }
-        }
-    }
+    // /**
+    //  * Got through the collected fields and update the translation
+    //  * Based on updateCommonFields in vendor/h5p/h5p-editor/js/h5peditor-form.js
+    //  *
+    //  * @param {object} params
+    //  */
+    // function updateCommonFields (params) {
+    //     for (let lib in ns.libraryCache) {
+    //         if (ns.renderableCommonFields[lib] && ns.renderableCommonFields[lib].fields) {
+    //             for (let j = 0; j < ns.renderableCommonFields[lib].fields.length; j++) {
+    //                 const fields = ns.renderableCommonFields[lib].fields[j];
+    //                 setSubLibraryCommonFields(params, fields, lib);
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // /**
+    //  * Go through the params and replace the translations for the given field(s)
+    //  *
+    //  * @param {object} params
+    //  * @param {object} fields
+    //  * @param {string} currentLibrary
+    //  */
+    // function setSubLibraryCommonFields (params, fields, currentLibrary) {
+    //     for(const propName of Object.keys(params)) {
+    //         if (propName === 'library' && params[propName] !== currentLibrary) {
+    //             // found subcontent using a different library
+    //             currentLibrary = params[propName];
+    //         }
+    //         // Check if this is the right place before digging deeper, some fields are groups
+    //         if (currentLibrary === fields.parent && params[fields.field.name]) {
+    //             // the correct property found, update the translation(s)
+    //             if (fields.field.fields) {
+    //                 // it contains multiple fields
+    //                 fields.field.fields.forEach(field => {
+    //                     params[fields.field.name][field.name] = field.default;
+    //                 });
+    //             } else if (params[fields.field.name]) {
+    //                 // it's a single field
+    //                 params[fields.field.name] = fields.field.default;
+    //             }
+    //         } else if (params[propName] !== null && typeof params[propName] === "object") {
+    //             // Dig deeper
+    //             setSubLibraryCommonFields(params[propName], fields, currentLibrary);
+    //         }
+    //     }
+    // }
 }
 
 //595
-let params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.082592121982211,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Nynorsk<\\/p>\\n\"},\"subContentId\":\"527602d8-ea22-472a-a843-86a6b87ae439\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Nynorsk\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Bokm\u00e5l<\\/p>\\n\"},\"subContentId\":\"5fcff721-b2d5-47ee-8d53-ca6b6accd8e4\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Bokm\u00e5l\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":55.90851334180432,\"y\":25.12562814070352,\"width\":6.353240152477763,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>English<\\/p>\\n\"},\"subContentId\":\"b008b0a6-5d31-4b4b-9b3c-b8052efe2910\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"English\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":5.082592121982211,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/bnyHQFFe.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"f897c96b-4863-4581-96b2-ea19c1f08fc1\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel nn\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"defaultLanguage\":\"nb\",\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel nn\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/lk5cn8qd.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"6bccbfc1-6f68-4dd6-ac5b-43627886d656\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Sivu\",\"score\":\"Pisteet\",\"yourScore\":\"Pisteesi\",\"maxScore\":\"Maksimipisteet\",\"total\":\"Yhteens\u00e4\",\"totalScore\":\"Kokonaispisteet\",\"showSolutions\":\"N\u00e4yt\u00e4 oikeat vastaukset\",\"retry\":\"Yrit\u00e4 uudelleen\",\"exportAnswers\":\"Vie teksti\u00e4\",\"hideKeywords\":\"Piilota sis\u00e4llysluettelo\",\"showKeywords\":\"N\u00e4yt\u00e4 sis\u00e4llysluettelo\",\"fullscreen\":\"Koko ruutu\",\"exitFullscreen\":\"Poistu kokoruudun tilasta\",\"prevSlide\":\"Edellinen sivu\",\"nextSlide\":\"Seuraava sivu\",\"currentSlide\":\"Nykyinen sivu\",\"lastSlide\":\"Viimeinen sivu\",\"solutionModeTitle\":\"Palaa yhteenvetosivulle\",\"solutionModeText\":\"Palaa yhteenvetosivulle\",\"summaryMultipleTaskText\":\"Useita teht\u00e4vi\u00e4\",\"scoreMessage\":\"Tulos:\",\"shareFacebook\":\"Jaa Facebookissa\",\"shareTwitter\":\"Jaa Twitteriss\u00e4\",\"shareGoogle\":\"Jaa Google+ palvelussa\",\"summary\":\"Yhteenveto\",\"solutionsButtonTitle\":\"N\u00e4yt\u00e4 kommentit\",\"printTitle\":\"Tulosta\",\"printIngress\":\"Miten haluat tulostaa t\u00e4m\u00e4n esityksen?\",\"printAllSlides\":\"Tulosta kaikki sivut\",\"printCurrentSlide\":\"Tulosta nykyinen sivu\",\"noTitle\":\"Ei otsikkoa\",\"accessibilitySlideNavigationExplanation\":\"K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"accessibilityCanvasLabel\":\"Piirtoalue. K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"containsNotCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suorittamattoman interaktion\",\"containsCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suoritetun interaktion\",\"slideCount\":\"Dia @index kautta @total\",\"containsOnlyCorrect\":\"@slideName sis\u00e4lt\u00e4\u00e4 vain oikeita vastauksia\",\"containsIncorrectAnswers\":\"@slideName sis\u00e4lt\u00e4\u00e4 v\u00e4\u00e4ri\u00e4 vastauksia\",\"shareResult\":\"Jaa tuloksesi sosiaaliseen mediaan\",\"accessibilityTotalScore\":\"Sait @score pistett\u00e4 @maxScore pisteest\u00e4\",\"accessibilityEnteredFullscreen\":\"Koko n\u00e4yt\u00f6n tila k\u00e4yt\u00f6ss\u00e4\",\"accessibilityExitedFullscreen\":\"Koko n\u00e4yt\u00f6n tilasta poistuttu\",\"confirmDialogHeader\":\"Submit your answers\",\"confirmDialogText\":\"This will submit your results, do you want to continue?\",\"confirmDialogConfirmText\":\"Submit and see results\",\"accessibilityProgressBarLabel\":\"Choose slide to display\",\"slideshowNavigationLabel\":\"Slideshow navigation\"}}";
-let library = 'H5P.CoursePresentation 1.24';
-let lang = 'de';
+// let params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.082592121982211,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Nynorsk<\\/p>\\n\"},\"subContentId\":\"527602d8-ea22-472a-a843-86a6b87ae439\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Nynorsk\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Bokm\u00e5l<\\/p>\\n\"},\"subContentId\":\"5fcff721-b2d5-47ee-8d53-ca6b6accd8e4\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Bokm\u00e5l\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":55.90851334180432,\"y\":25.12562814070352,\"width\":6.353240152477763,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>English<\\/p>\\n\"},\"subContentId\":\"b008b0a6-5d31-4b4b-9b3c-b8052efe2910\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"English\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":5.082592121982211,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/bnyHQFFe.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"f897c96b-4863-4581-96b2-ea19c1f08fc1\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel nn\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"defaultLanguage\":\"nb\",\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel nn\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/lk5cn8qd.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"6bccbfc1-6f68-4dd6-ac5b-43627886d656\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Sivu\",\"score\":\"Pisteet\",\"yourScore\":\"Pisteesi\",\"maxScore\":\"Maksimipisteet\",\"total\":\"Yhteens\u00e4\",\"totalScore\":\"Kokonaispisteet\",\"showSolutions\":\"N\u00e4yt\u00e4 oikeat vastaukset\",\"retry\":\"Yrit\u00e4 uudelleen\",\"exportAnswers\":\"Vie teksti\u00e4\",\"hideKeywords\":\"Piilota sis\u00e4llysluettelo\",\"showKeywords\":\"N\u00e4yt\u00e4 sis\u00e4llysluettelo\",\"fullscreen\":\"Koko ruutu\",\"exitFullscreen\":\"Poistu kokoruudun tilasta\",\"prevSlide\":\"Edellinen sivu\",\"nextSlide\":\"Seuraava sivu\",\"currentSlide\":\"Nykyinen sivu\",\"lastSlide\":\"Viimeinen sivu\",\"solutionModeTitle\":\"Palaa yhteenvetosivulle\",\"solutionModeText\":\"Palaa yhteenvetosivulle\",\"summaryMultipleTaskText\":\"Useita teht\u00e4vi\u00e4\",\"scoreMessage\":\"Tulos:\",\"shareFacebook\":\"Jaa Facebookissa\",\"shareTwitter\":\"Jaa Twitteriss\u00e4\",\"shareGoogle\":\"Jaa Google+ palvelussa\",\"summary\":\"Yhteenveto\",\"solutionsButtonTitle\":\"N\u00e4yt\u00e4 kommentit\",\"printTitle\":\"Tulosta\",\"printIngress\":\"Miten haluat tulostaa t\u00e4m\u00e4n esityksen?\",\"printAllSlides\":\"Tulosta kaikki sivut\",\"printCurrentSlide\":\"Tulosta nykyinen sivu\",\"noTitle\":\"Ei otsikkoa\",\"accessibilitySlideNavigationExplanation\":\"K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"accessibilityCanvasLabel\":\"Piirtoalue. K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"containsNotCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suorittamattoman interaktion\",\"containsCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suoritetun interaktion\",\"slideCount\":\"Dia @index kautta @total\",\"containsOnlyCorrect\":\"@slideName sis\u00e4lt\u00e4\u00e4 vain oikeita vastauksia\",\"containsIncorrectAnswers\":\"@slideName sis\u00e4lt\u00e4\u00e4 v\u00e4\u00e4ri\u00e4 vastauksia\",\"shareResult\":\"Jaa tuloksesi sosiaaliseen mediaan\",\"accessibilityTotalScore\":\"Sait @score pistett\u00e4 @maxScore pisteest\u00e4\",\"accessibilityEnteredFullscreen\":\"Koko n\u00e4yt\u00f6n tila k\u00e4yt\u00f6ss\u00e4\",\"accessibilityExitedFullscreen\":\"Koko n\u00e4yt\u00f6n tilasta poistuttu\",\"confirmDialogHeader\":\"Submit your answers\",\"confirmDialogText\":\"This will submit your results, do you want to continue?\",\"confirmDialogConfirmText\":\"Submit and see results\",\"accessibilityProgressBarLabel\":\"Choose slide to display\",\"slideshowNavigationLabel\":\"Slideshow navigation\"}}";
+// params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.082592121982211,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Nynorsk<\\/p>\\n\"},\"subContentId\":\"527602d8-ea22-472a-a843-86a6b87ae439\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Nynorsk\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Bokm\u00e5l<\\/p>\\n\"},\"subContentId\":\"5fcff721-b2d5-47ee-8d53-ca6b6accd8e4\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Bokm\u00e5l\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":55.90851334180432,\"y\":25.12562814070352,\"width\":6.353240152477763,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>English<\\/p>\\n\"},\"subContentId\":\"b008b0a6-5d31-4b4b-9b3c-b8052efe2910\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"English\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":5.082592121982211,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Play audio\",\"pauseAudio\":\"Pause audio\",\"contentName\":\"Audio\",\"audioNotSupported\":\"Your browser does not support this audio\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/bnyHQFFe.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"f897c96b-4863-4581-96b2-ea19c1f08fc1\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel nn\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"defaultLanguage\":\"nb\",\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel nn\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Play audio\",\"pauseAudio\":\"Pause audio\",\"contentName\":\"Audio\",\"audioNotSupported\":\"Your browser does not support this audio\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/lk5cn8qd.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"6bccbfc1-6f68-4dd6-ac5b-43627886d656\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Slide\",\"score\":\"Score\",\"yourScore\":\"Your Score\",\"maxScore\":\"Max Score\",\"total\":\"Total\",\"totalScore\":\"Total Score\",\"showSolutions\":\"Show solutions\",\"retry\":\"Retry\",\"exportAnswers\":\"Export text\",\"hideKeywords\":\"Hide sidebar navigation menu\",\"showKeywords\":\"Show sidebar navigation menu\",\"fullscreen\":\"Fullscreen\",\"exitFullscreen\":\"Exit fullscreen\",\"prevSlide\":\"Previous slide\",\"nextSlide\":\"Next slide\",\"currentSlide\":\"Current slide\",\"lastSlide\":\"Last slide\",\"solutionModeTitle\":\"Exit solution mode\",\"solutionModeText\":\"Solution Mode\",\"summaryMultipleTaskText\":\"Multiple tasks\",\"scoreMessage\":\"You achieved:\",\"shareFacebook\":\"Share on Facebook\",\"shareTwitter\":\"Share on Twitter\",\"shareGoogle\":\"Share on Google+\",\"summary\":\"Summary\",\"solutionsButtonTitle\":\"Show comments\",\"printTitle\":\"Print\",\"printIngress\":\"How would you like to print this presentation?\",\"printAllSlides\":\"Print all slides\",\"printCurrentSlide\":\"Print current slide\",\"noTitle\":\"No title\",\"accessibilitySlideNavigationExplanation\":\"Use left and right arrow to change slide in that direction whenever canvas is selected.\",\"accessibilityCanvasLabel\":\"Presentation canvas. Use left and right arrow to move between slides.\",\"containsNotCompleted\":\"@slideName contains not completed interaction\",\"containsCompleted\":\"@slideName contains completed interaction\",\"slideCount\":\"Slide @index of @total\",\"containsOnlyCorrect\":\"@slideName only has correct answers\",\"containsIncorrectAnswers\":\"@slideName has incorrect answers\",\"shareResult\":\"Share Result\",\"accessibilityTotalScore\":\"You got @score of @maxScore points in total\",\"accessibilityEnteredFullscreen\":\"Entered fullscreen\",\"accessibilityExitedFullscreen\":\"Exited fullscreen\",\"confirmDialogHeader\":\"Submit your answers\",\"confirmDialogText\":\"This will submit your results, do you want to continue?\",\"confirmDialogConfirmText\":\"Submit and see results\",\"accessibilityProgressBarLabel\":\"Choose slide to display\",\"slideshowNavigationLabel\":\"Slideshow navigation\"}}";
+// let library = 'H5P.CoursePresentation 1.24';
+// let lang = 'nb';
+
+let params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.194805194805195,\"y\":20.565552699228794,\"width\":31.058418089168098,\"height\":40,\"action\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"decorative\":false,\"contentName\":\"Image\",\"file\":{\"path\":\"https://api.ndla.no/image-api/raw/sy70a01c.jpg?\",\"mime\":\"image/jpeg\",\"width\":1000,\"height\":652,\"copyright\":{\"license\":\"U\"}},\"alt\":\"d\"},\"subContentId\":\"a0f572d0-2a1e-41ad-9dbb-3dc74442ba7f\",\"metadata\":{\"contentType\":\"Image\",\"license\":\"CC BY-NC-SA\",\"title\":\"Liten, gul bil\",\"authors\":[{\"name\":\"Torbjørn Tandberg\",\"role\":\"Licensee\"},{\"name\":\"Samfoto\",\"role\":\"Licensee\"},{\"name\":\"NTB scanpix\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"licenseVersion\":\"4.0\",\"source\":\"http://www.scanpix.no\",\"changes\":[],\"extraTitle\":\"Liten, gul bil\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":24.675324675324675,\"y\":28.243444730077124,\"width\":48.05194805194805,\"height\":55.526992287917739,\"action\":{\"library\":\"H5P.Video 1.6\",\"params\":{\"visuals\":{\"fit\":true,\"controls\":true},\"playback\":{\"autoplay\":false,\"loop\":false},\"l10n\":{\"name\":\"Video\",\"loading\":\"Videospilleren laster...\",\"noPlayers\":\"Fant ingen videoavspillere som støtter gjeldene format.\",\"noSources\":\"Videoavspilleren mangler kilde.\",\"aborted\":\"Avspillingen ble avbrutt.\",\"networkFailure\":\"Nettverksfeil\",\"cannotDecode\":\"Kan ikke dekode videokilde.\",\"formatNotSupported\":\"Videoformatet støttes ikke.\",\"mediaEncrypted\":\"Kilden er kryptert.\",\"unknownError\":\"Ukjent feil.\",\"invalidYtId\":\"Ugyldig YouTube ID.\",\"unknownYtId\":\"Finner ikke videoen med gitt YouTube ID.\",\"restrictedYt\":\"Eieren av denne videoen tillater ikke at den bygges inn på andre nettsider.\"},\"sources\":[{\"path\":\"https://bc/0/5796109504001\",\"mime\":\"video/Brightcove\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"cdf2c063-7b06-4330-abb1-3fe6c1e90f7d\",\"metadata\":{\"contentType\":\"Video\",\"license\":\"CC BY-SA\",\"title\":\"Pris for refleksdesign\",\"authors\":[{\"name\":\"Leverandør: NRK\",\"role\":\"Licensee\"},{\"name\":\"Redaksjonelt: The Sub-frequency Cooperation Society, Rudi Moustafa\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"licenseVersion\":\"4.0\",\"changes\":[],\"extraTitle\":\"Pris for refleksdesign\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":42.857142857142857,\"y\":7.712082262210797,\"width\":48.05194805194805,\"height\":10.282776349614397,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"full\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Spill lyd\",\"pauseAudio\":\"Pause lyd\",\"contentName\":\"Lyd\",\"audioNotSupported\":\"Nettleseren din støtter ikke denne lydkilden\",\"files\":[{\"path\":\"https://api.ndla.no/audio/files/lYX7YIfc.mp3\",\"mime\":\"audio/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"eeec9c14-e381-473a-99ed-5b7d3331a2d0\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"CC BY-SA\",\"title\":\"Lydopptak bil\",\"authors\":[{\"name\":\"Stina Åshildsdatter Grolid\",\"role\":\"Originator\"}],\"licenseVersion\":\"4.0\",\"changes\":[],\"extraTitle\":\"Lydopptak bil\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Side\",\"score\":\"Poengsum\",\"yourScore\":\"Din poengsum\",\"maxScore\":\"Maksimal poengsum\",\"total\":\"Total\",\"totalScore\":\"Total poengsum\",\"showSolutions\":\"Vis svar\",\"retry\":\"Prøv igjen\",\"exportAnswers\":\"Eksporter tekst\",\"hideKeywords\":\"Skjul nøkkelordliste\",\"showKeywords\":\"Vis nøkkelordliste\",\"fullscreen\":\"Fullskjerm\",\"exitFullscreen\":\"Avslutt fullskjerm\",\"prevSlide\":\"Forrige slide\",\"nextSlide\":\"Neste slide\",\"currentSlide\":\"Denne side\",\"lastSlide\":\"Siste side\",\"solutionModeTitle\":\"Avslutt fasitmodus\",\"solutionModeText\":\"Fasitmodus\",\"summaryMultipleTaskText\":\"Flere oppgaver\",\"scoreMessage\":\"Du klarte:\",\"shareFacebook\":\"Del på Facebook\",\"shareTwitter\":\"Del på Twitter\",\"shareGoogle\":\"Del på Google+\",\"summary\":\"Oppsummering\",\"solutionsButtonTitle\":\"Vis kommentarer\",\"printTitle\":\"Skriv ut\",\"printIngress\":\"Hvordan vil du skrive ut denne presentasjonen?\",\"printAllSlides\":\"Skriv ut alle sider\",\"printCurrentSlide\":\"Skriv ut nåværende side\",\"noTitle\":\"Ingen tittel\",\"accessibilitySlideNavigationExplanation\":\"Bruk pil mot venstre eller høyre for å navigere.\",\"accessibilityCanvasLabel\":\"Bruk piltast mot høyre eller venstre for å navigere mellom sider.\",\"accessibilityProgressBarLabel\":\"Vis sida\",\"containsNotCompleted\":\"@slideName er ikke fullført.\",\"containsCompleted\":\"@slideName er fullført.\",\"slideCount\":\"Side @index av @total\",\"containsOnlyCorrect\":\"Alle svara på @slideName er riktige.\",\"containsIncorrectAnswers\":\"Ett eller flere svar på @slideName er feil.\",\"shareResult\":\"Del resultater\",\"accessibilityTotalScore\":\"Du fikk til sammen @score av @maxScore poeng.\",\"accessibilityEnteredFullscreen\":\"Åpnet i fullskjerm\",\"accessibilityExitedFullscreen\":\"Avsluttet fullskjerm\",\"confirmDialogHeader\":\"Send inn svar.\",\"confirmDialogText\":\"Du er i ferd med å sende inn svara dine. Vil du fortsette?\",\"confirmDialogConfirmText\":\"Send inn og se resultat\",\"slideshowNavigationLabel\":\"Sidenavigering\"}}";
+let library = 'H5P.CoursePresentation 1.25';
+let lang = 'nb';
 
 //596
 // params = "{\"media\":{\"disableImageZooming\":false,\"type\":{\"params\":{\"decorative\":false,\"contentName\":\"Image\",\"file\":{\"path\":\"https:\\/\\/api.test.ndla.no\\/image-api\\/raw\\/sye64b87.jpg\",\"mime\":\"image\\/jpeg\",\"externalId\":\"17845\",\"metadataUrl\":\"https:\\/\\/api.test.ndla.no\\/image-api\\/v3\\/images\\/17845\",\"alt\":\" \",\"title\":\"\",\"width\":1000,\"height\":672},\"alt\":\"wd\",\"title\":\"dds\"},\"library\":\"H5P.Image 1.1\",\"metadata\":{\"contentType\":\"Image\",\"license\":\"CC BY-NC\",\"title\":\"Untitled Image\",\"authors\":[{\"name\":\"Susana Vera\",\"role\":\"Licensee\",\"readonly\":true},{\"name\":\"Reuters\",\"role\":\"Licensee\",\"readonly\":true},{\"name\":\"NTB scanpix\",\"role\":\"Licensee\",\"readonly\":true}],\"changes\":[],\"licenseVersion\":\"4.0\",\"licenseExtras\":\"\",\"authorComments\":\"\",\"source\":\"http:\\/\\/www.scanpix.no\"},\"subContentId\":\"0b962c9f-2bfa-40a8-9b94-8dec057a1ad8\"}},\"text\":\"<ul>\\n\\t<li>Fill in the missing words<\\/li>\\n<\\/ul>\\n\",\"overallFeedback\":[{\"from\":0,\"to\":100}],\"showSolutions\":\"Vis svar\",\"tryAgain\":\"Pr\u00f8v igjen\",\"checkAnswer\":\"Sjekk\",\"submitAnswer\":\"Submit\",\"notFilledOut\":\"Please fill in all blanks to view solution\",\"answerIsCorrect\":\"&#039;:ans&#039; er korrekt\",\"answerIsWrong\":\"&#039;:ans&#039; er feil\",\"answeredCorrectly\":\"Svar rett\",\"answeredIncorrectly\":\"Svar feil\",\"solutionLabel\":\"Svar:\",\"inputLabel\":\"Felt @num av @total\",\"inputHasTipLabel\":\"Tips tilgjengelig\",\"tipLabel\":\"Tips\",\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"enableCheckButton\":true,\"autoCheck\":false,\"caseSensitive\":true,\"showSolutionsRequiresInput\":true,\"separateLines\":false,\"confirmCheckDialog\":false,\"confirmRetryDialog\":false,\"acceptSpellingErrors\":false},\"scoreBarLabel\":\"You got :num out of :total points\",\"a11yCheck\":\"Check the answers. The responses will be marked as correct, incorrect, or unanswered.\",\"a11yShowSolution\":\"Show the solution. The task will be marked with its correct solution.\",\"a11yRetry\":\"Retry the task. Reset all responses and start the task over again.\",\"a11yCheckingModeHeader\":\"Checking mode\",\"confirmCheck\":{\"header\":\"Ferdig ?\",\"body\":\"Er du sikker p\u00e5 at du er ferdig?\",\"cancelLabel\":\"Avbryt\",\"confirmLabel\":\"Bekreft\"},\"confirmRetry\":{\"header\":\"Pr\u00f8v igjen ?\",\"body\":\"Er du sikker p\u00e5 at du vil pr\u00f8ve igjen?\",\"cancelLabel\":\"Avbryt\",\"confirmLabel\":\"Bekreft\"},\"questions\":[\"<p>Mandag er den *f\u00f8rste* dagen i uken<\\/p>\\n\"]}";
@@ -258,9 +281,8 @@ let lang = 'de';
 // params = '{"media":{"disableImageZooming":false,"type":{"params":{}}},"answers":[{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>=</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mfenced><mrow><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mi>s</mi><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mi>t</mi><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mfenced><mrow><mi>s</mi><mo>·</mo><mi>t</mi></mrow></mfenced><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mn>2</mn></msup><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>+</mo><mn>2</mn><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>-</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mn>2</mn></msup><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>-</mo><mn>2</mn><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>-</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>-</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"<p>Husk at det som står på venstre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math>, mens det som står på høyre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math>.</p>\n","notChosenFeedback":"<p>Denne regelen gjelder ikke fordi det som står på venstre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math>, mens det som står på høyre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math>.</p>\n"},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mfenced><mrow><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced></math></p>\n"}],"overallFeedback":[{"from":0,"to":100}],"behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"type":"auto","singlePoint":false,"randomAnswers":true,"showSolutionsRequiresInput":true,"confirmCheckDialog":false,"confirmRetryDialog":false,"autoCheck":false,"passPercentage":100,"showScorePoints":true},"UI":{"checkAnswerButton":"Sjekk","submitAnswerButton":"Submit","showSolutionButton":"Vis svar","tryAgainButton":"Prøv igjen","tipsLabel":"Vis tips","scoreBarLabel":"Du fikk :num av :total points","tipAvailable":"Tips tilgjengelig","feedbackAvailable":"Tilbakemelding tilgjengelig","readFeedback":"Read feedback","wrongAnswer":"Feil svar","correctAnswer":"Correct answer","shouldCheck":"Skulle ha vært krysset av","shouldNotCheck":"Skulle ikke ha vært krysset av","noInput":"Du må svare på denne før du kan se løsningen","a11yCheck":"Check the answers. The responses will be marked as correct, incorrect, or unanswered.","a11yShowSolution":"Show the solution. The task will be marked with its correct solution.","a11yRetry":"Retry the task. Reset all responses and start the task over again."},"confirmCheck":{"header":"Finish ?","body":"Er du sikker på at du er ferdig?","cancelLabel":"Avbryt","confirmLabel":"Bekreft"},"confirmRetry":{"header":"Prøv igjen?","body":"Er du sikker på at du vil prøve igjen?","cancelLabel":"Avbryt","confirmLabel":"Bekreft"},"question":"<p>Hvilke av regnereglene for vektorer er riktige? Forklar <em>hvorfor</em> sammenhengene som er feil, er feil.</p>\n"}';
 // library = "H5P.MultiChoice 1.16";
 
-new ns.ContentLanguageUpdateProcess(
+new ns.ContentTranslationRefresh(
     JSON.parse(params),
-    '',
     library,
     lang
 );

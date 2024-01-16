@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @push('js')
-    <script>H5PIntegration ={!! json_encode($h5pIntegration) !!}</script>
+    <script>contentLanguageConfig = @json($config)</script>
     @foreach($scripts as $script)
         <script src="{{$script}}"></script>
     @endforeach
@@ -22,23 +22,21 @@
                             Refresh translations saved with content for {{ $library->getLibraryString(true) }} and "{{$languageCode}}" language
                         </h3>
                     </div>
-                    <div class="panel-body row">
-                        {{$contentCount}} content will be updated
-                        <button type="button" onclick="goGoGo()">Go</button>
+                    <div id="bulk-container">
+                        <div class="panel-body row">
+                            {{$contentCount}} content will be updated
+                            <a class="btn btn-primary disabled" id="startRefresh">Start</a>
+                        </div>
+                        <div class="progress hidden" data-total="{{$contentCount}}" data-inprogress="0" data-success="0" data-failed="0">
+                            <div class="progress-bar progress-bar-success"></div>
+                            <div class="progress-bar progress-bar-warning progress-bar-striped"></div>
+                            <div class="progress-bar progress-bar-danger"></div>
+                        </div>
+                        <div class="errorlog hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        function goGoGo() {
-            new H5PEditor.ContentLanguageUpdateProcess(
-                JSON.parse(@json($contents->parameters)),
-                '',
-                '{{ $library->getLibraryString(false) }}',
-                '{{ $languageCode }}'
-            );
-        }
-    </script>
-    @dump($contents);
+    @dump($config)
 @endsection

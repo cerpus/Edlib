@@ -12,8 +12,10 @@ use H5PCore;
 use H5PFrameworkInterface;
 use H5PStorage;
 use H5PValidator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -254,5 +256,43 @@ class H5PLibraryAdmin
         }
 
         return $library;
+    }
+
+    public function updateContentTranslation(Request $request): object
+    {
+        $libraryId = $request->post('libraryId');
+        $locale = $request->post('locale');
+        $params = collect(json_decode($request->post('params', '[]'), flags: JSON_THROW_ON_ERROR));
+
+        $out = (object) [
+            'token' => csrf_token(),
+            'skipped' => json_decode($request->post('skipped', '[]'), flags: JSON_THROW_ON_ERROR),
+            'params' => [],
+            'left' => 0,
+        ];
+        if ($params->count() > 0) {
+            Log::info(json_encode($params->first()));
+        }
+        $contentQuery = H5PContent::select(['id', 'parameters'])
+            ->where('library_id', $libraryId)
+            ->where('id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
+            ->whereHas('metadata', function (Builder $query) use ($locale) {
+                $query->where('default_language', $locale);
+            })
+            ->whereNotIn('id', $out->skipped)
+            ->orderBy('id');
+
+        $out->left = $contentQuery->count() - count($out->skipped);
+        if ($out->left > 0) {
+            $contents = $contentQuery->limit(2)->get();
+            $out->params = $contents->map(function (H5PContent $content) {
+                return [
+                    'id' => $content->id,
+                    'params' => $content->parameters,
+                ];
+            });
+        }
+
+        return $out;
     }
 }

@@ -12,12 +12,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\AdminConfig;
+use App\Libraries\H5P\H5PLibraryAdmin;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -267,25 +269,36 @@ class AdminH5PDetailsController extends Controller
 
     public function contentTranslationUpdate(H5PLibrary $library, string $locale): View
     {
-        $config = app(AdminConfig::class);
-        $config->getConfig();
-        $config->addContentLanguageScripts();
+        $adminConfig = app(AdminConfig::class);
+        $adminConfig->getConfig();
+        $adminConfig->addContentLanguageScripts();
 
-        $content = H5PContent::where('library_id', $library->id)
-            ->whereHas('metadata', function (Builder $query) use ($locale) {
-                $query->where('default_language', $locale);
-            })->get();
+        $config = [
+            'ajaxPath' => $adminConfig->config->ajaxPath,
+            'endpoint' => route('admin.library-transation-content-update', [$library, $locale]),
+            'token' => csrf_token(),
+            'libraryId' => $library->id,
+            'library' => $library->getLibraryString(false),
+            'locale' => $locale,
+        ];
 
         return view('admin.content-language-update', [
             'library' => $library,
             'languageCode' => $locale,
-            'contentCount' => $content->count(),
-            //'h5pAdminIntegration' => $configuration,
-            'h5pIntegration' => $config->config,
-            'scripts' => $config->getScriptAssets(),
-            'styles' => $config->getStyleAssets(),
-            'contents' => $content->random(),
+            'contentCount' => H5PContent::where('library_id', $library->id)
+                ->whereHas('metadata', function (Builder $query) use ($locale) {
+                    $query->where('default_language', $locale);
+                })
+                ->count(),
+            'config' => $config,
+            'scripts' => $adminConfig->getScriptAssets(),
+            'styles' => $adminConfig->getStyleAssets(),
         ]);
+    }
+
+    public function updateContentTranslation(Request $request): JsonResponse
+    {
+        return response()->json(app(H5PLibraryAdmin::class)->updateContentTranslation($request));
     }
 
     private function getVersions(VersionData $versionData, Collection $stack, $getChildren = true): Collection

@@ -71,32 +71,16 @@ class AdminConfig implements ConfigInterface
         $this->addAsset('scripts', asset('/js/h5p/h5peditor-pre-save.js'));
     }
 
+    /**
+     * Scripts used by the bulk update that updates the content type language strings stored
+     * with the content
+     */
     public function addContentLanguageScripts(): void
     {
-        $this->addCoreAssets();
+        //$this->addCoreAssets();
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-form.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'language/en.js'));
-
-        // Widgets
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-file-uploader.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-av.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-semantic-structure.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-boolean.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-coordinates.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-dimensions.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-file.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-group.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-html.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-image.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-library.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-list.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-none.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-number.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-select.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-text.js'));
-        //$this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-textarea.js'));
     }
 
     public function getSettings(H5PLibrary $library)
