@@ -1,7 +1,28 @@
 import { findIframeByWindow } from "./helpers";
 
+/**
+ * H5P compatibility. A handshake has to be performed before resize requests are
+ * sent.
+ */
 addEventListener('message', (event) => {
-    if (event.data?.action !== 'resize' || !event.data?.scrollHeight) {
+    if (event.data?.action !== 'hello') {
+        return;
+    }
+
+    const iframe = findIframeByWindow(event.source);
+
+    if (iframe) {
+        event.source.postMessage({
+            action: 'hello',
+            context: 'h5p',
+        }, { targetOrigin: '*' });
+    }
+});
+
+addEventListener('message', (event) => {
+    const action = event.data?.action;
+
+    if (!['resize', 'prepareResize'].includes(action) || !event.data?.scrollHeight) {
         return;
     }
 
