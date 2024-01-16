@@ -23,8 +23,9 @@ class LtiLaunch extends Component
     public readonly string $iframeUrl;
 
     public function __construct(
-        public \App\Lti\LtiLaunch $launch,
         private Encrypter $encrypter,
+        public \App\Lti\LtiLaunch $launch,
+        public string $logTo = '',
     ) {
         $this->uniqueId = (string) Uuid::v4();
 

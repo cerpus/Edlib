@@ -28,7 +28,7 @@
     {{-- TODO: Show more author names if there are any --}}
     <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
 
-    <x-lti-launch :launch="$launch" />
+    <x-lti-launch :launch="$launch" log-to="#messages" />
 
     <div class="d-flex flex-gap gap-2">
         {{-- TODO: be able to edit pinned versions --}}
@@ -142,7 +142,7 @@
             @php($version = $content->latestVersion)
 
             <details>
-                <summary class="fs-5">Debug</summary>
+                <summary class="fs-5">LTI params</summary>
 
                 <dl>
                     <dt>ID</dt>
@@ -162,6 +162,17 @@
                     :url="$launch->getRequest()->getUrl()"
                     :parameters="$launch->getRequest()->toArray()"
                 />
+            </details>
+
+            <details>
+                <summary class="fs-5">Messages</summary>
+
+                <pre
+                    id="messages"
+                    class="debug-messages border font-monospace overflow-scroll"
+                    aria-label="messages"
+                    readonly
+                ></pre>
             </details>
         @endif
     </x-slot:sidebar>

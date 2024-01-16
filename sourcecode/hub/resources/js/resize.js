@@ -1,11 +1,4 @@
-/**
- * @param {MessageEventSource} source
- * @returns {?HTMLIFrameElement}
- */
-function findIframeByWindow(source) {
-    return [...document.querySelectorAll('iframe')]
-        .find(iframe => iframe.contentWindow === source);
-}
+import { findIframeByWindow } from "./helpers";
 
 addEventListener('message', (event) => {
     if (event.data?.action !== 'resize' || !event.data?.scrollHeight) {

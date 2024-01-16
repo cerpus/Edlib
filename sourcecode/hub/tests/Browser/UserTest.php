@@ -80,7 +80,7 @@ final class UserTest extends DuskTestCase
                 ->check('debug_mode')
                 ->press('Save')
                 ->visit("/content/{$content->id}")
-                ->assertSeeIn('aside summary', 'Debug');
+                ->assertSeeIn('aside summary', 'LTI params');
         });
     }
 
