@@ -8,10 +8,12 @@ use App\Content;
 use App\ContentVersion;
 use App\Listeners\Article\HandleCollaborationInviteEmails;
 use App\User;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Tests\Helpers\MockAuthApi;
 use Tests\Helpers\MockMQ;
@@ -131,8 +133,13 @@ class ArticleVersioningTest extends TestCase
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
     }
 
-    public function testVersioning()
+    /**
+     * @dataProvider provider_testVersioning
+     */
+    public function testVersioning(bool $useLinearVersioning)
     {
+        Config::set('feature.linear-versioning', $useLinearVersioning);
+
         $inviteEmail = $this->createMock(HandleCollaborationInviteEmails::class);
         $inviteEmail->expects($this->exactly(3))->method('handle');
         $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
@@ -180,13 +187,15 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'New title',
             'owner_id' => $owner->auth_id,
+            'parent_id' => $article->id,
             'parent_version_id' => $article->version_id,
         ]);
         $this->assertDatabaseCount('content_versions', 2);
         $this->assertDatabaseHas('content_versions', [
-            'id' => $article->version_id,
+            'parent_id' => $article->version_id,
             'content_type' => Content::TYPE_ARTICLE,
         ]);
+        $secondArticle = Article::where('parent_id', $article->id)->first();
 
         $this->withSession([
             'authId' => $copyist->auth_id,
@@ -202,11 +211,21 @@ class ArticleVersioningTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('articles', 3);
+        $this->assertDatabaseHas('content_versions', [
+            'user_id' => $copyist->auth_id,
+            'content_type' => Content::TYPE_ARTICLE,
+        ]);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'Another new title',
             'owner_id' => $copyist->auth_id,
-            'parent_version_id' => $article->version_id,
+            'parent_version_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
         ]);
+        $thirdArticle = Article::where('owner_id', $copyist->auth_id)
+            ->where('title', 'Another new title')
+            ->where('parent_version_id', $useLinearVersioning ? $secondArticle->version_id : $article->version_id)
+            ->first();
+
         /** @var Article $copiedArticle */
         $copiedArticle = Article::where('owner_id', $copyist->auth_id)->first();
         $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
@@ -263,14 +282,19 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Another new title',
             'owner_id' => $owner->auth_id,
-            'parent_version_id' => $article->version_id,
+            'parent_version_id' => $useLinearVersioning ? $thirdArticle->version_id : $article->version_id,
         ]);
-        $this->assertDatabaseHas('articles', [
-            'title' => 'Another new title',
-            'owner_id' => $owner->auth_id,
-            'parent_version_id' => $article->version_id,
+        $this->assertDatabaseHas('content_versions', [
+            'parent_id' => $useLinearVersioning ? $thirdArticle->version_id : $article->version_id,
+            'content_type' => Content::TYPE_ARTICLE,
         ]);
         $this->assertDatabaseCount('article_collaborators', 3);
         $this->assertDatabaseCount('content_versions', 4);
+    }
+
+    public function provider_testVersioning(): Generator
+    {
+        yield 'linear_versioning' => [true];
+        yield 'non-linear_versioning' => [false];
     }
 }

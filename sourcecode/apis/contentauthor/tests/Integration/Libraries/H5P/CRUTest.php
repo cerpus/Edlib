@@ -14,9 +14,11 @@ use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Exception;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Helpers\MockMQ;
 use Tests\Helpers\MockResourceApi;
@@ -51,9 +53,14 @@ class CRUTest extends TestCase
         $this->assertFileDoesNotExist($dest, "File $dest still exist");
     }
 
-    /** @test */
-    public function create_and_update_h5p_using_web_request()
+    /**
+     * @test
+     * @dataProvider provider_create_and_update_h5p_using_web_request
+     */
+    public function create_and_update_h5p_using_web_request(bool $useLinearVersioning)
     {
+        Config::set('feature.linear-versioning', $useLinearVersioning);
+
         $owner = User::factory()->make();
         $collaborator = User::factory()->make(['email' => 'a@b.com']);
         $copyist = User::factory()->make();
@@ -163,8 +170,9 @@ class CRUTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2', 'is_published' => 1]);
 
         $this->assertDatabaseCount('content_versions', 3);
+        $thirdVersion = H5PContent::find(2)->version_id;
         $this->assertDatabaseHas('content_versions', [
-            'id' => H5PContent::find(2)->version_id,
+            'id' => $thirdVersion,
             'content_id' => 2,
             'parent_id' => $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_UPDATE,
@@ -196,10 +204,11 @@ class CRUTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $owner->auth_id, 'title' => 'Tittel 3']); // Owner has not changed, title updated
 
         $this->assertDatabaseCount('content_versions', 4);
+        $fourthVersion = H5PContent::find(3)->version_id;
         $this->assertDatabaseHas('content_versions', [
-            'id' => H5PContent::find(3)->version_id,
+            'id' => $fourthVersion,
             'content_id' => 3,
-            'parent_id' => $secondVersion,
+            'parent_id' => $useLinearVersioning ? $thirdVersion : $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
@@ -235,9 +244,15 @@ class CRUTest extends TestCase
         $this->assertDatabaseHas('content_versions', [
             'id' => H5PContent::find(4)->version_id,
             'content_id' => 4,
-            'parent_id' => $secondVersion,
+            'parent_id' => $useLinearVersioning ? $fourthVersion : $secondVersion,
             'version_purpose' => ContentVersion::PURPOSE_COPY,
         ]);
+    }
+
+    public function provider_create_and_update_h5p_using_web_request(): Generator
+    {
+        yield 'linear_versioning' => [true];
+        yield 'non-linear_versioning' => [false];
     }
 
     private function setUpH5PLibrary(): void
