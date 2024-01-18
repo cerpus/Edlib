@@ -1,7 +1,6 @@
 {{-- ToDo: Remove these when actual values are available --}}
 @php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
 @php($lang = ['ENG', 'NOB', 'NNO', 'SWE'][mt_rand(0, 3)])
-@php($views = [0, 7, 11, 58, 452, 9032, 69111, 912731, 5581751][mt_rand(0, 8)])
 {{-- End --}}
 
 @php($showDrafts ??= false)
@@ -28,7 +27,9 @@
         </a>
         <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
             <x-icon name="eye"/>
-            <span title="{{ trans('messages.views') }}">{{ $views }}</span>
+            <span class="content-card-views" title="{{ trans('messages.views') }}">
+                {{ $content->views_count }}
+            </span>
         </div>
     </header>
     <div class="card-body">
@@ -103,7 +104,9 @@
         @endcan
         <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
             <x-icon name="eye"/>
-            <div title="{{ trans('messages.views') }}">{{ $views }}</div>
+            <div class="content-card-views" title="{{ trans('messages.views') }}">
+                {{ $content->views_count }}
+            </div>
         </div>
     </div>
 </article>

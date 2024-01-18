@@ -45,6 +45,32 @@ final class ContentTest extends DuskTestCase
         });
     }
 
+    public function testCountsViewsThroughDetailView(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->assertSame(0, $content->views()->count());
+
+        $this->browse(fn(Browser $browser) => $browser
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->assertSeeIn('@views', '0')
+                ->click('@title')
+            )
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->assertSeeIn('@views', '1')
+            ));
+
+        $this->assertSame(1, $content->views()->count());
+
+        $view = $content->views()->firstOrFail();
+        $this->assertTrue($view->source->isDetail());
+        $this->assertNotNull($view->ip);
+    }
+
     public function testDoesNotAttemptToListContentWithoutVersions(): void
     {
         $user = User::factory()->create();

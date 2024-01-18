@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Browser;
+namespace Tests\Browser;
 
 use App\Models\Content;
 use App\Models\User;

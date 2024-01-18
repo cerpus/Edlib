@@ -20,8 +20,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
@@ -159,6 +161,44 @@ class Content extends Model
     }
 
     /**
+     * @return HasMany<ContentView>
+     */
+    public function views(): HasMany
+    {
+        return $this->hasMany(ContentView::class);
+    }
+
+    public function trackView(
+        Request $request,
+        ContentViewSource $source,
+        LtiPlatform|null $sourcePlatform = null,
+    ): void {
+        if (!$source->isLtiPlatform() && $sourcePlatform !== null) {
+            throw new InvalidArgumentException(
+                '$sourcePlatform must only be set for LTI platform views',
+            );
+        }
+
+        $user = $request->user();
+        if ($user instanceof User && $this->hasUser($user)) {
+            return;
+        }
+
+        $sessionKey = "content_views.{$this->id}";
+        if ($request->session()->has($sessionKey)) {
+            return;
+        }
+
+        $view = new ContentView();
+        $view->source = $source;
+        $view->ip = $request->ip();
+        $view->lti_platform_id = $sourcePlatform?->id;
+        $this->views()->save($view);
+
+        $request->session()->put($sessionKey, true);
+    }
+
+    /**
      * @return BelongsToMany<User>
      */
     public function users(): BelongsToMany
@@ -205,20 +245,15 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
-    public static function findShared(string $keywords = '', int $limit = null): ScoutBuilder
+    public static function findShared(string $keywords = ''): ScoutBuilder
     {
-        $query = Content::search($keywords)
+        return Content::search($keywords)
             ->where('published', true)
             ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query->with([
-                'latestPublishedVersion',
-            ]));
-
-        if ($limit !== null) {
-            $query->take($limit);
-        }
-
-        return $query;
+            ->query(fn (Builder $query) => $query
+                ->with(['latestPublishedVersion', 'users'])
+                ->withCount(['views']),
+            );
     }
 
     public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
@@ -226,9 +261,10 @@ class Content extends Model
         return Content::search($keywords)
             ->where('user_ids', $user->id)
             ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query->with([
-                'latestVersion',
-            ]));
+            ->query(fn (Builder $query) => $query
+                ->with(['latestVersion', 'users'])
+                ->withCount(['views']),
+            );
     }
 
     public static function generateSiteMap(): DOMDocument

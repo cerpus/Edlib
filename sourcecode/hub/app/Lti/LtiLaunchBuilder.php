@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Lti;
 
 use App\Events\LaunchLti;
+use App\Models\Content;
+use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;

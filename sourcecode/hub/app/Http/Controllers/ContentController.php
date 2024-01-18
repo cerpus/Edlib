@@ -10,12 +10,14 @@ use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
+use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -53,8 +55,13 @@ class ContentController extends Controller
         ]);
     }
 
-    public function details(Content $content, LtiLaunchBuilder $launchBuilder): View
-    {
+    public function details(
+        Content $content,
+        Request $request,
+        LtiLaunchBuilder $launchBuilder,
+    ): View {
+        $content->trackView($request, ContentViewSource::Detail);
+
         $version = $content->latestPublishedVersion()->firstOrFail();
 
         $tool = $version->tool;

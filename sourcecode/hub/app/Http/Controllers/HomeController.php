@@ -16,7 +16,7 @@ final readonly class HomeController
         }
 
         return response()->view('home', [
-            'contents' => Content::findShared(limit: 6)->get(),
+            'contents' => Content::findShared()->take(6)->get(),
         ]);
     }
 }
