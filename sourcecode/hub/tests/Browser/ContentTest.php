@@ -53,14 +53,18 @@ final class ContentTest extends DuskTestCase
 
         $this->assertSame(0, $content->views()->count());
 
-        $this->browse(fn(Browser $browser) => $browser
+        $this->browse(fn (Browser $browser) => $browser
             ->visit('/content')
-            ->with(new ContentCard(), fn (Browser $card) => $card
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
                 ->assertSeeIn('@views', '0')
                 ->click('@title')
             )
             ->visit('/content')
-            ->with(new ContentCard(), fn (Browser $card) => $card
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
                 ->assertSeeIn('@views', '1')
             ));
 

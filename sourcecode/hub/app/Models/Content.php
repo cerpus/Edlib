@@ -250,7 +250,8 @@ class Content extends Model
         return Content::search($keywords)
             ->where('published', true)
             ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query
+            ->query(
+                fn (Builder $query) => $query
                 ->with(['latestPublishedVersion', 'users'])
                 ->withCount(['views']),
             );
@@ -261,7 +262,8 @@ class Content extends Model
         return Content::search($keywords)
             ->where('user_ids', $user->id)
             ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query
+            ->query(
+                fn (Builder $query) => $query
                 ->with(['latestVersion', 'users'])
                 ->withCount(['views']),
             );
