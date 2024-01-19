@@ -1,6 +1,6 @@
-# Contributors To The Edlib Project
+# Contributors to the Edlib project
 
-## Creators and Maintainers
+## Creators and maintainers
 
 - [Brett Kromkamp](https://github.com/brettkromkamp) 
 - [Christian Einvik](https://github.com/chrieinv)
@@ -26,3 +26,4 @@
 - Jeonghun Oh <jeonghunoh@korea.kr>
 - Knut Inge Skifjeld <knutinge@ndla.no>
 - Marc Von Opstdal <marc.van.opstal@ndla.no>
+- [Jan Frode Lindsø](https://github.com/janlindso)
