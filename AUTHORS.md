@@ -23,7 +23,7 @@
 
 ## Contributors
 
-- Jeonghun Oh <jeonghunoh@korea.kr>
-- Knut Inge Skifjeld <knutinge@ndla.no>
-- Marc Von Opstdal <marc.van.opstal@ndla.no>
-- [Jan Frode Lindsø](https://github.com/janlindso)
+- [Jeonghun Oh](https://github.com/totoromaum)
+- Knut Inge Skifjeld [(NDLA)](https://ndla.no)
+- Marc Von Opstdal [(NDLA)](https://ndla.no)
+- [Jan Frode Lindsø](https://github.com/janlindso)[(NDLA)](https://ndla.no)
