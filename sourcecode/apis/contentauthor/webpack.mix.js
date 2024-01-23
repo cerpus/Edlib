@@ -41,6 +41,7 @@ mix
     .js('resources/assets/entrypoints/react-contentbrowser.js', 'js/react-contentbrowser.js')
     .js('resources/assets/entrypoints/react-h5p.js', 'js/react-h5p.js')
     .js('resources/assets/entrypoints/react-questionset.js', 'js/react-questionset.js')
+    .js('resources/assets/entrypoints/ndla-content-language.js', 'js/ndla-content-language.js')
     .webpackConfig({
         resolve: {
             fallback: {
@@ -49,4 +50,5 @@ mix
             }
         }
     })
+    .sourceMaps(false, 'inline-source-map')
 ;

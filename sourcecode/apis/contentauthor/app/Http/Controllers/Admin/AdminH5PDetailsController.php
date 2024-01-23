@@ -11,11 +11,13 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\AdminConfig;
 use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -204,6 +206,10 @@ class AdminH5PDetailsController extends Controller
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),
+            'contentCount' => H5PContent::where('library_id', $library->id)
+                ->whereHas('metadata', function (Builder $query) use ($locale) {
+                    $query->where('default_language', $locale);
+                })->count(),
         ]);
     }
 
@@ -252,6 +258,33 @@ class AdminH5PDetailsController extends Controller
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
             ),
             'messages' => $messages,
+            'contentCount' => H5PContent::where('library_id', $library->id)
+                ->whereHas('metadata', function (Builder $query) use ($locale) {
+                    $query->where('default_language', $locale);
+                })->count(),
+        ]);
+    }
+
+    public function contentTranslationUpdate(H5PLibrary $library, string $locale): View
+    {
+        $config = app(AdminConfig::class);
+        $config->getConfig();
+        $config->addContentLanguageScripts();
+
+        $content = H5PContent::where('library_id', $library->id)
+            ->whereHas('metadata', function (Builder $query) use ($locale) {
+                $query->where('default_language', $locale);
+            })->get();
+
+        return view('admin.content-language-update', [
+            'library' => $library,
+            'languageCode' => $locale,
+            'contentCount' => $content->count(),
+            //'h5pAdminIntegration' => $configuration,
+            'h5pIntegration' => $config->config,
+            'scripts' => $config->getScriptAssets(),
+            'styles' => $config->getStyleAssets(),
+            'contents' => $content->random(),
         ]);
     }
 

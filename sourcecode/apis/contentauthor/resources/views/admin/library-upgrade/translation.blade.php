@@ -40,7 +40,17 @@
                     <div class="panel-body row">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h5>Upload new translation</h5>
+                                <h4>Content</h4>
+                            </div>
+                            <div class="panel-body row">
+                                This language has <a href="{{ route('admin.library-transation-content', [$library->id, $languageCode]) }}">{{ $contentCount }} content</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Upload new translation</h4>
                             </div>
                             <div class="panel-body row">
                                 @if($haveTranslation)

@@ -163,14 +163,16 @@
                                 </td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <th>Number of contents</th>
-                                <td colspan="2">
-                                    <a href="{{ route('admin.content-library', [$library->id]) }}">
-                                        {{ $library->contents()->count() }}
-                                    </a>
-                                </td>
-                            </tr>
+                            @if($library->runnable)
+                                <tr>
+                                    <th>Number of contents</th>
+                                    <td colspan="2">
+                                        <a href="{{ route('admin.content-library', [$library->id]) }}">
+                                            {{ $library->contents()->count() }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
                     </div>
                 </div>
