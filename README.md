@@ -31,7 +31,7 @@ Documentation for setting up your own development environment can be found in ou
 
 ## Documentation
 
-Visit [Edlib Docs](https://docs.edlib.com) to view the documentation. If you see any errors or can’t find what you were looking for, check our [issues](https://github.com/cerpus/Edlib/issues) and [discussions](https://github.com/cerpus/Edlib/discussions) here on GitHub before creating a new.
+Visit [Edlib Docs](https://docs.edlib.com) to view the documentation. If you see any errors or can’t find what you're looking for, check our [issues](https://github.com/cerpus/Edlib/issues) and [discussions](https://github.com/cerpus/Edlib/discussions) pages here on GitHub before creating new issues.
 
 ## How to contribute
 
