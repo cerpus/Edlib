@@ -5,7 +5,7 @@
 </p>
     <p>Features:
 <ul>
-    <li>Create, Read, Updated, and Delete content</li>
+    <li>Create, read, update, and delete content</li>
     <li>search</li>
     <li>filtering</li>
     <li>sharing</li>
