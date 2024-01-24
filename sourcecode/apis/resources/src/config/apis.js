@@ -8,9 +8,6 @@ const contentAuthorUrl = env(
 const edlibUrl = env('EDLIBCOMMON_URL', `https://api.${env('EDLIB_ROOT_DOMAIN', 'edlib.test')}`);
 
 export default {
-    version: {
-        url: env('VERSIONAPI_URL', 'http://versionapi'),
-    },
     elasticsearch: {
         resourceIndexPrefix: 'edlib-resources',
         url: env('EDLIBCOMMON_ELASTICSEARCH_URL', 'http://elasticsearch:9200'),
@@ -22,6 +19,7 @@ export default {
                 contentType: `${contentAuthorUrl}/internal/v1/content-types`,
                 lti: `${contentAuthorUrl}/lti-content`,
                 view: `${contentAuthorUrl}/view`,
+                contentVersion: `${contentAuthorUrl}/internal/v1/content-version/`,
             },
             httpAuthKey: env(
                 'EDLIBCOMMON_CONTENTAUTHOR_INTERNAL_KEY',

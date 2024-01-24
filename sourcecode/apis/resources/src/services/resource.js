@@ -662,14 +662,14 @@ const saveResourceVersion = async (context, resourceVersionValidatedData) => {
             resourceVersionValidatedData.contentType
         )
     ) {
-        const version = await context.services.version.getForResource(
+        const version = await context.services.externalResourceFetcher.getContentVersionInfo(
             resourceVersionValidatedData.externalSystemName,
             resourceVersionValidatedData.externalSystemId
         );
 
         if (!version) {
             logger.error(
-                'Version was not found for resource. Make sure versions are saved into the versionapi. It is required to build the resource data model'
+                'Version was not found for resource. Make sure versions are saved in the external system. It is required to build the resource data model'
             );
             return;
         }
@@ -773,7 +773,8 @@ const findResourceFromParentVersions = async (context, version) => {
         return;
     }
 
-    const versionParents = await context.services.version.getVersionParents(
+    const versionParents = await context.services.externalResourceFetcher.getContentVersionHistory(
+        version.externalSystemName,
         version.id
     );
 
