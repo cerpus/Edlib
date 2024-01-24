@@ -25,7 +25,7 @@ Documentation for setting up your own development environment can be found in ou
 * The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
 * [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Resource versioning. 
-* The ability to create copies and language variants of the same underlying resource easily and quickly.
+* The ability to create copies and language variants of existing resources quickly and easily.
 
 
 
