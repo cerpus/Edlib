@@ -12,7 +12,7 @@ Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) a
 
 ## Installation
 
-Documentation for setting up your own developing environment can be found in our [getting started section on "Edlib docs"](https://docs.edlib.com/docs/developers/getting-started) 
+Documentation for setting up your own development environment can be found in our [getting started section](https://docs.edlib.com/docs/developers/getting-started) on **Edlib docs**.
 
 
 ## Features
