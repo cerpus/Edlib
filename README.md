@@ -17,7 +17,7 @@ Documentation for setting up your own development environment can be found in ou
 
 ## Features
 
-* Edlib Hub for easily finding and re-use of existing Edlib content through search and filtering on content type, language and license.
+* Use Edlib Hub to easily find and re-use existing Edlib content through search and filtering by content type, language and license.
 * Support for all [H5P open-source content types](https://h5p.org/content-types-and-applications)
 * Licensing module with an intelligent [Creative-Commons](https://creativecommons.org/) license selector.
 * Authoring workflows, including maintaining resources private or making them publicly available.
