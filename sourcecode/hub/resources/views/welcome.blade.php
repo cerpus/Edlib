@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>This is Edlib</x-slot:title>
 
-    <p>- the lightweight application that provides the heavy duty content management
+    <p>- the lightweight application that provides heavy duty content management
 </p>
     <p>Features:
 <ul>
