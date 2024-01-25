@@ -117,17 +117,6 @@
                         </a>
                     </li>
                 @endcan
-
-                @can('register')
-                    <li class="nav-item d-none d-lg-block">
-                        <a
-                            href="{{ route('register') }}"
-                            @class(['nav-link', 'active' => request()->routeIs('register')])
-                        >
-                            {{ trans('messages.sign-up') }}
-                        </a>
-                    </li>
-                @endcan
             @endauth
         </ul>
     </div>
