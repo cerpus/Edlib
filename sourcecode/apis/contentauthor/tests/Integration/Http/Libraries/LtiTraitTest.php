@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http\Libraries;
 
+use App\Http\Libraries\LtiTrait;
 use App\Lti\LtiRequest;
 use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
-use Exception;
+use Generator;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Tests\Integration\Http\Libraries\Stubs\LtiTraitStubClass;
 use Tests\TestCase;
 
@@ -25,7 +27,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiShow_exception(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(UnauthorizedHttpException::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitStubClass::class);
@@ -47,7 +49,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiCreate_exception(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(UnauthorizedHttpException::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitStubClass::class);
@@ -65,7 +67,7 @@ class LtiTraitTest extends TestCase
 
     public function test_ltiEdit_exception(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(UnauthorizedHttpException::class);
         $this->expectExceptionMessage('No valid LTI request');
 
         $class = app(LtiTraitStubClass::class);
@@ -80,5 +82,21 @@ class LtiTraitTest extends TestCase
             Request::create('', 'POST', ['lti_message_type' => 'basic-lti-launch-request']),
             42
         ));
+    }
+
+    /** @dataProvider provider_unavailable_exception */
+    public function test_unavailable_exception(string $function): void
+    {
+        $this->expectExceptionMessage('Requested action is not available');
+
+        $class = $this->getMockForTrait(LtiTrait::class);
+        $class->$function(new Request(), 1);
+    }
+
+    public function provider_unavailable_exception(): Generator
+    {
+        yield 'missing create' => ['ltiCreate'];
+        yield 'missing edit' => ['ltiEdit'];
+        yield 'missing show' => ['ltiShow'];
     }
 }
