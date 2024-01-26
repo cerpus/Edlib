@@ -41,14 +41,14 @@
             </div>
         @endif
 
-        <div class="col-lg-2 d-flex d-column justify-content-center align-items-center" aria-hidden="true">
-            {{ trans('messages.or') }}
-        </div>
+        @if ($has_google || $has_facebook || $has_auth0)
+            <div class="col-lg-2 d-flex d-column justify-content-center align-items-center" aria-hidden="true">
+                {{ trans('messages.or') }}
+            </div>
+        @endif
 
         <x-form action="{{ route('login_check') }}" class="col-lg-5">
-            @if ($has_google || $has_facebook || $has_auth0)
-                <h2 class="fs-5 mb-3">{{ trans('messages.log-in-with-email-and-password') }}</h2>
-            @endif
+            <h2 class="fs-5 mb-3">{{ trans('messages.log-in-with-email-and-password') }}</h2>
 
             <x-form.field
                 name="email"
