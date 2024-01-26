@@ -1,4 +1,10 @@
-@props(['showHeader' => true, 'nav' => true])
+@props([
+    'noHeader' => false,
+    'noNav' => false,
+    'expand' => false,
+    'sidebar' => null,
+    'title' => null,
+])
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
@@ -21,9 +27,9 @@
             </a>
         @endenv
 
-        @if ($nav)
+        @unless ($noNav)
             <x-layout.navbar />
-        @endif
+        @endunless
 
         @if (session()->has('alert'))
             {{-- TODO: make floating so the page content doesn't bounce around --}}
@@ -38,14 +44,14 @@
             </div>
         @endif
 
-        <div class="container-md mb-4">
+        <div @class(['container-md' => !$expand, 'mb-4'])>
             <div class="row">
                 <main @class(['col-12', 'col-lg-9' => isset($sidebar)])>
-                    @if ($showHeader)
-                        <header>
+                    @unless ($noHeader)
+                        <header @class(['container-md' => $expand])>
                             <h1 class="fs-2">{{ $title }}</h1>
                         </header>
-                    @endif
+                    @endunless
 
                     {{ $slot }}
                 </main>
@@ -69,7 +75,7 @@
             @endif
         </div>
 
-        @if ($nav)
+        @unless ($noNav)
             <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-auto">
                 <div class="container py-3">
                     <div class="row">

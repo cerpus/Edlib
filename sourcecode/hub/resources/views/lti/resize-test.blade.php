@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Facades\Vite; @endphp
-<x-layout :nav="false">
+<x-layout no-nav>
     <x-slot:title>Resize test</x-slot:title>
 
     <button class="resize-button" data-size="640">Resize to 640</button>

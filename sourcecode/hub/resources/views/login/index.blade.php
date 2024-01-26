@@ -1,4 +1,4 @@
-<x-layout :show-header="false">
+<x-layout no-header>
     <x-slot:title>{{ trans('messages.log-in') }}</x-slot:title>
 
     <div class="row gx-0 gy-5">
