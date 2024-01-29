@@ -42,7 +42,7 @@ final readonly class LtiController
     public function content(Content $content, Request $request): RedirectResponse
     {
         $key = $request->attributes->get('lti')['oauth_consumer_key'];
-        $platform = LtiPlatform::where('id', $key)->firstOrFail();
+        $platform = LtiPlatform::where('key', $key)->first();
 
         $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
 
