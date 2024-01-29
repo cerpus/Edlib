@@ -265,14 +265,12 @@ class AdminH5PDetailsController extends Controller
                 'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
             ];
         }
-        /** @var ContentVersion|null $parent */
-        $parent = $versionData->getPreviousVersion();
+        $parent = $versionData->previousVersion;
         if (!empty($parent)) {
             $this->getVersions($parent, $stack, false);
             $versionArray['parent'] = $parent->content_id;
         }
-        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersion> $children */
-        $children = $versionData->getNextVersions();
+        $children = $versionData->nextVersions;
         if ($children->isNotEmpty()) {
             $versionArray['children'] = [];
             foreach ($children as $child) {

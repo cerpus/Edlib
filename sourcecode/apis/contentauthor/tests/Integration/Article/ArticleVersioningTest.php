@@ -214,12 +214,13 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseHas('content_versions', [
             'user_id' => $copyist->auth_id,
             'content_type' => Content::TYPE_ARTICLE,
+            'version_purpose' => ContentVersion::PURPOSE_COPY,
+            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id
         ]);
-
         $this->assertDatabaseHas('articles', [
             'title' => 'Another new title',
             'owner_id' => $copyist->auth_id,
-            'parent_version_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
+            'parent_id' => $article->id,
         ]);
         $thirdArticle = Article::where('owner_id', $copyist->auth_id)
             ->where('title', 'Another new title')
@@ -282,10 +283,10 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Another new title',
             'owner_id' => $owner->auth_id,
-            'parent_version_id' => $useLinearVersioning ? $thirdArticle->version_id : $article->version_id,
+            'parent_id' => $article->id,
         ]);
         $this->assertDatabaseHas('content_versions', [
-            'parent_id' => $useLinearVersioning ? $thirdArticle->version_id : $article->version_id,
+            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
             'content_type' => Content::TYPE_ARTICLE,
         ]);
         $this->assertDatabaseCount('article_collaborators', 3);

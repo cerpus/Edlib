@@ -135,7 +135,7 @@ class ContentInfoController extends Controller
     public function getPreviousVersions(ContentVersion $version): JsonResponse
     {
         return response()->json(
-            $this->collectPreviousVersions(collect(), $version->getPreviousVersion())
+            $this->collectPreviousVersions(collect(), $version->previousVersion)
         );
     }
 
@@ -154,7 +154,7 @@ class ContentInfoController extends Controller
             return $collection;
         }
 
-        $previousVersion = $version->getPreviousVersion();
+        $previousVersion = $version->previousVersion;
         if ($previousVersion === null) {
             return $collection;
         }

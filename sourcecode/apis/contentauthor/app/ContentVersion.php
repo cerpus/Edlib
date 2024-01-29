@@ -25,6 +25,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $user_id
  * @property bool $linear_versioning
  *
+ * @property Collection<self> $nextVersions
+ * @property self|null $previousVersion
+ *
  * @method static self|null create(array $attributes = [])
  * @method static self|Builder make(array $attributes = [])
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
@@ -63,14 +66,6 @@ class ContentVersion extends Model
     }
 
     /**
-     * Get previous, or parent, version
-     */
-    public function getPreviousVersion(): ?self
-    {
-        return $this->previousVersion()->first();
-    }
-
-    /**
      * All versions that are based on this version, i.e. this is the parent version
      */
     public function nextVersions(): HasMany
@@ -78,13 +73,12 @@ class ContentVersion extends Model
         return $this->hasMany(ContentVersion::class, 'parent_id', 'id')->orderBy('created_at');
     }
 
-    /**
-     * Get all versions that are based on this version, i.e. this is the parent version
-     * @return Collection<self>
-     */
-    public function getNextVersions(): Collection
+    // Is this a leaf node, i.e. it has no nextVersion of types PURPOSE_UPDATE or PURPOSE_UPGRADE
+    public function isLeaf(): bool
     {
-        return $this->nextVersions()->get();
+        return $this->nextVersions()
+            ->whereIn('version_purpose', [self::PURPOSE_UPDATE, self::PURPOSE_UPGRADE])
+            ->doesntExist();
     }
 
     /**
@@ -110,23 +104,27 @@ class ContentVersion extends Model
      */
     private static function findLatestLeaf(ContentVersion $version): ?self
     {
-        while ($version) {
-            $children = $version->getNextVersions();
-            if ($children->count() === 0) {
-                return $version;
-            } elseif ($children->count() === 1) {
-                $version = $children->first();
-            } else {
-                // With multiple child nodes we must compare the created time of their leaf nodes
-                return $children->map(function ($item) {
-                    return self::findLatestLeaf($item);
-                })
-                ->reduce(function ($latest, $leaf) {
-                    if ($latest === null) {
-                        return $leaf;
-                    }
-                    return $leaf->created_at->isAfter($latest->created_at) ? $leaf : $latest;
-                });
+        if ($version->isLeaf()) {
+            return $version;
+        } else {
+            while ($version) {
+                $children = $version->nextVersions()->whereIn('version_purpose', [self::PURPOSE_UPDATE, self::PURPOSE_UPGRADE])->get();
+                if ($children->count() === 0) {
+                    return $version;
+                } elseif ($children->count() === 1) {
+                    $version = $children->first();
+                } else {
+                    // With multiple child nodes we must compare the created time of their leaf nodes
+                    return $children->map(function ($item) {
+                        return self::findLatestLeaf($item);
+                    })
+                    ->reduce(function ($latest, $leaf) {
+                        if ($latest === null) {
+                            return $leaf;
+                        }
+                        return $leaf->created_at->isAfter($latest->created_at) ? $leaf : $latest;
+                    });
+                }
             }
         }
 

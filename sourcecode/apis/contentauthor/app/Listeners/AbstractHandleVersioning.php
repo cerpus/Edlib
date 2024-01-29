@@ -32,7 +32,7 @@ abstract class AbstractHandleVersioning
 
         if ($versionData) {
             $object->setVersionId($versionData->id);
-            $parent = $versionData->getPreviousVersion();
+            $parent = $versionData->previousVersion;
             if ($parent) {
                 $object->setParentVersionId($parent->id);
             }

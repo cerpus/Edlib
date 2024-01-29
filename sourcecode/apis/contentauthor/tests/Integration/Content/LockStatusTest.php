@@ -60,6 +60,7 @@ class LockStatusTest extends TestCase
             'id' => $latestArticle->version_id,
             'content_id' => $latestArticle->id,
             'parent_id' => $originalArticle->version_id,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
         ]);
 
         $lockStatus = ContentLock::factory()->create([

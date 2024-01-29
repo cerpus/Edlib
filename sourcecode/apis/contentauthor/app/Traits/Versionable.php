@@ -13,7 +13,7 @@ trait Versionable
 
     public function getParent(): ?ContentVersion
     {
-        return $this->getVersion()?->getPreviousVersion();
+        return $this->getVersion()?->previousVersion;
     }
 
     public function getParentIds(): array
@@ -23,7 +23,7 @@ trait Versionable
         if (is_object($parent)) {
             while ($parent) {
                 $parentIds[] = $parent->content_id;
-                $parent = $parent->getPreviousVersion();
+                $parent = $parent->previousVersion;
             }
         }
 
@@ -32,7 +32,7 @@ trait Versionable
 
     public function getChildren(): array
     {
-        return $this->getVersion()?->getNextVersions()->toArray();
+        return $this->getVersion()?->nextVersions->toArray();
     }
 
     public function getVersion(): ContentVersion|null

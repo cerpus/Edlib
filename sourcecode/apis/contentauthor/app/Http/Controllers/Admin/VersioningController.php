@@ -55,10 +55,9 @@ class VersioningController extends Controller
                 }
             }
         }
-        $versionArray['parent'] = $versionData->getPreviousVersion()?->content_id;
+        $versionArray['parent'] = $versionData->previousVersion?->content_id;
 
-        /** @var \Illuminate\Database\Eloquent\Collection<ContentVersion> $children */
-        $children = $versionData->getNextVersions();
+        $children = $versionData->nextVersions;
         $versionArray['children'] = [];
         if ($children->isNotEmpty()) {
             foreach ($children as $child) {

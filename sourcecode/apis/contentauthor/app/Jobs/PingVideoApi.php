@@ -53,7 +53,7 @@ class PingVideoApi implements ShouldQueue
                     if ($content->contentVideos()->first() === null) {
                         $this->updateContent($content);
                         $this->processedChildren++;
-                        $this->handleChildren($child->getNextVersions());
+                        $this->handleChildren($child->nextVersions);
                     }
                 }
             }
@@ -103,7 +103,7 @@ class PingVideoApi implements ShouldQueue
                 $this->updateContent($h5pcontent);
                 if (!empty($h5pcontent->version_id)) {
                     $version = ContentVersion::find($h5pcontent->version_id);
-                    $this->handleChildren($version->getNextVersions());
+                    $this->handleChildren($version->nextVersions);
                 }
                 return true;
             } catch (NoFilesException $exception) {

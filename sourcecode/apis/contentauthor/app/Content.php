@@ -371,7 +371,7 @@ abstract class Content extends Model
     private function getVersionedIds(ContentVersion $version): array
     {
         $id = [$version->content_id];
-        $parent = $version->getPreviousVersion();
+        $parent = $version->previousVersion;
         if ($parent) {
             return array_merge($id, $this->getVersionedIds($parent));
         }
