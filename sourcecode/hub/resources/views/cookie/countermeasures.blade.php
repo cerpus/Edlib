@@ -1,6 +1,6 @@
 {{-- TODO: translate, improve the user experience --}}
 @php use Illuminate\Support\Facades\Vite; @endphp
-<x-layout no-nav>
+<x-layout no-nav no-footer>
     <x-slot:title>Requesting storage access</x-slot:title>
 
     <noscript>

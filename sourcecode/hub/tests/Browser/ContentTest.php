@@ -280,18 +280,17 @@ final class ContentTest extends DuskTestCase
     public function testResizesIframeWhenRequestedByTool(): void
     {
         $platform = LtiPlatform::factory()->create();
-        $tool = LtiTool::factory()->state([
-            'creator_launch_url' => 'https://hub-test.edlib.test/lti/resize-test',
-            'consumer_key' => $platform->key,
-            'consumer_secret' => $platform->secret,
-        ])->create();
-        $user = User::factory()->create();
+        $content = Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->withLaunchUrl('https://hub-test.edlib.test/lti/resize-test')
+                ->tool(LtiTool::factory()->withCredentials($platform->getOauth1Credentials()))
+                ->published()
+        )->create();
 
-        $this->browse(function (Browser $browser) use ($tool, $user) {
+        $this->browse(function (Browser $browser) use ($content) {
             $browser
-                ->loginAs($user->email)
-                ->assertAuthenticated()
-                ->visit('/content/create/' . $tool->id)
+                ->resize(1000, 1000)
+                ->visit('/content/' . $content->id)
                 ->assertPresent('.lti-launch')
                 ->withinFrame('.lti-launch', fn (Browser $frame) => $frame->press('Resize to 640'))
                 ->assertScript('document.querySelector(".lti-launch").scrollHeight', 640)

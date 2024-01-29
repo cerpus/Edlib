@@ -36,6 +36,6 @@ class LtiLaunch extends Component
 
     public function render(): View
     {
-        return view('components.lti11-launch');
+        return view('components.lti-launch');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'creating-content-with-tool' => 'Oppretter innhold med :tool',
     'email-address' => 'Epostadresse',
     'password' => 'Passord',
     'password-confirmation' => 'Bekreft passord',

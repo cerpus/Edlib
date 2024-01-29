@@ -1,8 +1,8 @@
 @props([
     'noHeader' => false,
     'noNav' => false,
+    'noFooter' => false,
     'expand' => false,
-    'sidebar' => null,
     'title' => null,
 ])
 <!DOCTYPE html>
@@ -44,24 +44,16 @@
             </div>
         @endif
 
-        <div @class(['container-md' => !$expand, 'mb-4'])>
-            <div class="row">
-                <main @class(['col-12', 'col-lg-9' => isset($sidebar)])>
-                    @unless ($noHeader)
-                        <header @class(['container-md' => $expand])>
-                            <h1 class="fs-2">{{ $title }}</h1>
-                        </header>
-                    @endunless
+        <div @class(['container-md' => !$expand, 'flex-grow-1'])>
+            <main class="h-100">
+                @unless ($noHeader)
+                    <header @class(['container-md' => $expand])>
+                        <h1 class="fs-2">{{ $title }}</h1>
+                    </header>
+                @endunless
 
-                    {{ $slot }}
-                </main>
-
-                @isset ($sidebar)
-                    <aside class="col-12 col-lg-3">
-                        {{ $sidebar }}
-                    </aside>
-                @endisset
-            </div>
+                {{ $slot }}
+            </main>
 
             @if (
                 request()->hasPreviousSession() &&
@@ -75,8 +67,8 @@
             @endif
         </div>
 
-        @unless ($noNav)
-            <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-auto">
+        @unless ($noFooter)
+            <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle">
                 <div class="container py-3">
                     <div class="row">
                         <div class="col-12 col-md-4 col-lg-6">

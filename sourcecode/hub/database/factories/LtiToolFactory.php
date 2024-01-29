@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\LtiTool;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -34,5 +35,13 @@ final class LtiToolFactory extends Factory
     public function withName(string $name): self
     {
         return $this->state(['name' => $name]);
+    }
+
+    public function withCredentials(Credentials $credentials): self
+    {
+        return $this->state([
+            'consumer_key' => $credentials->key,
+            'consumer_secret' => $credentials->secret,
+        ]);
     }
 }

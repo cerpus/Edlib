@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Facades\Vite; @endphp
 
-<nav class="navbar navbar-expand mb-3">
+<nav class="navbar navbar-expand">
     <div class="container-md d-flex justify-content-between">
         <a href="{{ route('home') }}" class="navbar-brand">
             <img

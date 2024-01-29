@@ -1,7 +1,7 @@
-<x-layout expand>
+<x-layout expand no-header no-footer>
     <x-slot:title>Editing content {{ $content->latestPublishedVersion->title }}</x-slot:title>
 
-    <x-lti-launch :launch="$launch" />
+    <x-lti-launch :launch="$launch" class="w-100 h-100" />
 
     @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
         <details class="container-md">

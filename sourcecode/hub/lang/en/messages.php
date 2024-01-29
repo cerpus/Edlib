@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'creating-content-with-tool' => 'Creating content with :tool',
     'email-address' => 'Email address',
     'password' => 'Password',
     'password-confirmation' => 'Confirm password',
