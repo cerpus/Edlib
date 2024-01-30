@@ -21,6 +21,7 @@ return [
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',
     'manage-lti-tools' => 'Manage LTI tools',
+    'more-details' => 'More details',
     'preview' => 'Preview',
     'edit' => 'Edit',
     'search' => 'Search',

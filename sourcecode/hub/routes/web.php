@@ -59,6 +59,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/c/{content}', 'share')
+        ->uses([ContentController::class, 'share'])
+        ->name('content.share')
+        ->whereUlid('content')
+        ->can('view', 'content');
+
     Route::get('/content/{content}/version/{version}')
         ->uses([ContentController::class, 'version'])
         ->name('content.version-details')

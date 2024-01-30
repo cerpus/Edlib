@@ -9,7 +9,7 @@ enum ContentViewSource: string
     case Detail = 'detail';
     case Embed = 'embed';
     case LtiPlatform = 'lti_platform';
-    case Share = 'share';
+    case Share = 'standalone';
 
     public function isDetail(): bool
     {

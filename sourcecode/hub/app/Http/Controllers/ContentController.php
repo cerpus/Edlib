@@ -105,6 +105,30 @@ class ContentController extends Controller
         ]);
     }
 
+    public function share(
+        Content $content,
+        LtiLaunchBuilder $launchBuilder,
+        Request $request,
+    ): View {
+        $content->trackView($request, ContentViewSource::Share);
+
+        $tool = $content->latestPublishedVersion?->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/share');
+
+        return view('content.share', [
+            'content' => $content,
+            'launch' => $launch,
+        ]);
+    }
+
     public function embed(Content $content, LtiLaunchBuilder $launchBuilder): View
     {
         $tool = $content->latestPublishedVersion?->tool;

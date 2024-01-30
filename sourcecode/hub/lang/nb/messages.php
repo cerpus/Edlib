@@ -19,6 +19,7 @@ return [
     'forgot-password' => 'Glemt passord?',
     'manage-lti-platforms' => 'Administrer LTI-plattformer',
     'manage-lti-tools' => 'Administrer LTI-verktøy',
+    'more-details' => 'Flere detaljer',
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
     'search' => 'Søk',
