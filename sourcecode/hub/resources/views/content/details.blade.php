@@ -30,6 +30,8 @@
             {{-- TODO: Show more author names if there are any --}}
             <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
 
+            <p><a href="{{ route('content.share', [$content]) }}" class="text-body-emphasis">{{ route('content.share', [$content]) }}</a></p>
+
             <x-lti-launch :launch="$launch" log-to="#messages" class="w-100 border mb-2" />
 
             <div class="d-flex flex-gap gap-2">
