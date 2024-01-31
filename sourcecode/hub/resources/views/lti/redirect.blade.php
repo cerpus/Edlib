@@ -11,18 +11,11 @@
     </head>
 
     <body>
-        <form action="{{ $url }}" method="{{ $method }}" target="{{ $target ?? '_self' }}" name="launch">
-            @foreach ($parameters ?? [] as $name => $value)
-                <input type="hidden" name="{{ $name }}" value="{{ $value }}">
-            @endforeach
-
-            <noscript>
-                <button class="btn btn-primary">{{ trans('messages.continue') }}</button>
-            </noscript>
-        </form>
-
-        <script nonce="{{ Vite::cspNonce() }}">
-            document.forms.launch.submit();
-        </script>
+        <x-self-submitting-form
+            :url="$url"
+            :method="$method ?? 'GET'"
+            :parameters="$parameters ?? []"
+            :target="$target ?? '_self'"
+        />
     </body>
 </html>

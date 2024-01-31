@@ -8,34 +8,30 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\URL;
 use Illuminate\View\Component;
-use Symfony\Component\Uid\Uuid;
 
 use function view;
 
 class LtiLaunch extends Component
 {
+    public readonly string $url;
+
     /**
-     * Uniquely identify the iframe/form pair when multiple are rendered on the
-     * same page.
+     * @param string $logTo
+     *     A selector for an element in which to log messages sent by the
+     *     iframe.
      */
-    public readonly string $uniqueId;
-
-    public readonly string $iframeUrl;
-
     public function __construct(
         private Encrypter $encrypter,
         public \App\Lti\LtiLaunch $launch,
         public string $logTo = '',
     ) {
-        $this->uniqueId = (string) Uuid::v4();
-
-        $this->iframeUrl = URL::signedRoute('lti.launch', [
-            'launch' => $this->encrypter->encrypt($this->launch),
+        $this->url = URL::signedRoute('lti.launch', [
+            'launch' => $this->encrypter->encrypt($launch),
         ]);
     }
 
     public function render(): View
     {
-        return view('components.lti-launch');
+        return view('components.launch');
     }
 }
