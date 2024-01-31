@@ -255,6 +255,7 @@ class ContentController extends Controller
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
+                'target' => '_parent',
             ]);
         }
 
@@ -288,13 +289,14 @@ class ContentController extends Controller
         });
 
         // return to platform consuming Edlib
-        if (($request->attributes->get('lti')['lti_message_type'] ?? null) === 'ContentItemSelectionRequest') {
+        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
             return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
+                'target' => '_parent',
             ]);
         }
 
