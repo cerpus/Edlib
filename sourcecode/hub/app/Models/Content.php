@@ -249,24 +249,24 @@ class Content extends Model
     {
         return Content::search($keywords)
             ->where('published', true)
-            ->orderBy('updated_at', 'desc')
             ->query(
                 fn (Builder $query) => $query
                 ->with(['latestPublishedVersion', 'users'])
                 ->withCount(['views']),
-            );
+            )
+        ;
     }
 
     public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
     {
         return Content::search($keywords)
             ->where('user_ids', $user->id)
-            ->orderBy('updated_at', 'desc')
             ->query(
                 fn (Builder $query) => $query
                 ->with(['latestVersion', 'users'])
                 ->withCount(['views']),
-            );
+            )
+        ;
     }
 
     public static function generateSiteMap(): DOMDocument

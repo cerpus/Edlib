@@ -1,6 +1,5 @@
 {{-- ToDo: Remove these when actual values are available --}}
 @php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-@php($lang = ['ENG', 'NOB', 'NNO', 'SWE'][mt_rand(0, 3)])
 {{-- End --}}
 
 @php($showDrafts ??= false)
@@ -25,6 +24,11 @@
                 {{ $version->title }}
             </div>
         </a>
+        @if(!$version->published)
+            <div class="badge text-bg-primary position-absolute end-0 top-0 d-none d-md-inline-block">
+                {{ trans('messages.draft') }}
+            </div>
+        @endif
         <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
             <x-icon name="eye"/>
             <span class="content-card-views" title="{{ trans('messages.views') }}">
@@ -38,7 +42,7 @@
                 {{ $type }}
             </div>
             <div class="col-auto badge text-bg-primary">
-                {{ $lang }}
+                {{ strtoupper($version->language_iso_639_3) }}
             </div>
         </div>
         <div class="card-text small">
