@@ -8,6 +8,7 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Laravel\Scout\Builder;
 use Livewire\Component;
 
 class MyContentSearch extends Component
@@ -30,8 +31,8 @@ class MyContentSearch extends Component
     public function render(): View
     {
         $results = Content::findForUser($this->user, $this->query)
-            ->when(!empty($this->filterLang), fn ($query) => $query->where('language_iso_639_3', $this->filterLang))
-            ->when($this->sortBy, fn ($query) => match ($this->sortBy) {
+            ->when(!empty($this->filterLang), fn (Builder $query) => $query->where('language_iso_639_3', $this->filterLang))
+            ->when($this->sortBy, fn (Builder $query) => match ($this->sortBy) {
                 'created' => $query->orderBy('created_at', 'desc'),
                 default => $query->orderBy('updated_at', 'desc'),
             })

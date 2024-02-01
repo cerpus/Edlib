@@ -118,7 +118,7 @@ class ContentVersion extends Model
         $fallBack = app()->getFallbackLocale();
 
         return $locales
-            ->mapWithKeys(fn ($locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
+            ->mapWithKeys(fn (string $locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
             ->sort();
     }
 }
