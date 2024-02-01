@@ -4,17 +4,30 @@ declare(strict_types=1);
 
 namespace App\Configuration;
 
+use Illuminate\Contracts\Foundation\Application;
 use function array_combine;
 use function array_map;
 use function locale_get_display_name;
+use function locale_lookup;
 
 final class Locales
 {
     /**
      * @param string[] $locales
      */
-    public function __construct(private readonly array $locales)
+    public function __construct(
+        private readonly Application $application,
+        private readonly array $locales,
+    ) {
+    }
+
+    public function getBestAvailable(string $locale): string
     {
+        return locale_lookup(
+            $this->locales,
+            $locale,
+            defaultLocale: $this->application->getLocale(),
+        ) ?? $this->application->getLocale();
     }
 
     /**
