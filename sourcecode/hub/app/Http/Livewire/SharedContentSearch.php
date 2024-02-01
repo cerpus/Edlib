@@ -15,8 +15,6 @@ class SharedContentSearch extends Component
     public string $filterLang = '';
     public string $sortBy = '';
 
-    private array $filter = [];
-
     /**
      * @var array<mixed>
      */
@@ -26,21 +24,14 @@ class SharedContentSearch extends Component
         'sortBy' => ['as' => 'sort'],
     ];
 
-    public function mount()
-    {
-        if ($this->filterLang !== '') {
-            $this->filter['lang'] = $this->filterLang;
-        }
-    }
-
-    public function updatedFilterLang($newValue)
-    {
-        $this->filter['lang'] = $newValue;
-    }
-
     public function render(): View
     {
-        $results = Content::findShared($this->query, $this->filter, $this->sortBy);
+        $filter = [];
+        if ($this->filterLang !== '') {
+            $filter['lang'] = $this->filterLang;
+        }
+
+        $results = Content::findShared($this->query, $filter, $this->sortBy);
 
         return view('livewire.content.search', [
             'results' => $results->paginate(),

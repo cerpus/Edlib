@@ -75,7 +75,7 @@ class ContentVersion extends Model
     /**
      * The locales (ISO 639-3) used by contents
      *
-     * @return Collection
+     * @return Collection<int, string>
      */
     public static function getUsedLocales(): Collection
     {
@@ -87,6 +87,8 @@ class ContentVersion extends Model
 
     /**
      * The locales (ISO 639-3) used by contents
+     *
+     * @return Collection<int, string>
      */
     public static function getUsedLocalesForUser(User $user): Collection
     {
@@ -100,6 +102,8 @@ class ContentVersion extends Model
 
     /**
      * The locales (ISO 639-3) used by content as key, display name in the current locale as value
+     *
+     * @return Collection<string, string>
      */
     public static function getTranslatedUsedLocales(User $user = null): Collection
     {

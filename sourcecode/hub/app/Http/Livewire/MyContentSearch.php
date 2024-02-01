@@ -18,8 +18,6 @@ class MyContentSearch extends Component
     public string $filterLang = '';
     public string $sortBy = '';
 
-    private array $filter = [];
-
     /**
      * @var array<mixed>
      */
@@ -29,21 +27,14 @@ class MyContentSearch extends Component
         'sortBy' => ['as' => 'sort'],
     ];
 
-    public function mount()
-    {
-        if ($this->filterLang !== '') {
-            $this->filter['lang'] = $this->filterLang;
-        }
-    }
-
-    public function updatedFilterLang($newValue)
-    {
-        $this->filter['lang'] = $newValue;
-    }
-
     public function render(): View
     {
-        $results = Content::findForUser($this->user, $this->query, $this->filter, $this->sortBy);
+        $filter = [];
+        if ($this->filterLang !== '') {
+            $filter['lang'] = $this->filterLang;
+        }
+
+        $results = Content::findForUser($this->user, $this->query, $filter, $this->sortBy);
 
         return view('livewire.content.search', [
             'mine' => true,

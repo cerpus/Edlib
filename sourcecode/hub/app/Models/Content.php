@@ -245,6 +245,12 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
+    /**
+     * @param string $keywords
+     * @param array<string, string> $filter
+     * @param string $sort
+     * @return ScoutBuilder
+     */
     public static function findShared(string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
     {
         return Content::search($keywords)
@@ -262,6 +268,13 @@ class Content extends Model
         ;
     }
 
+    /**
+     * @param User $user
+     * @param string $keywords
+     * @param array<string, string> $filter
+     * @param string $sort
+     * @return ScoutBuilder
+     */
     public static function findForUser(User $user, string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
     {
         return Content::search($keywords)
