@@ -341,7 +341,9 @@ final class ContentTest extends DuskTestCase
                 ->pause(1200)
                 ->assertSee('found content')
                 ->assertDontSee('excluded content')
-                ->with(new ContentCard(), fn (Browser $card) => $card
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
                     ->assertPresent('@use-button'),
                 )));
     }
