@@ -299,4 +299,50 @@ final class ContentTest extends DuskTestCase
             ;
         });
     }
+
+    /**
+     * Requests to Livewire in LTI context must be aware of the session scope,
+     * otherwise it'll replace elements on the page with HTML generated for the
+     * outer session. This problem most obviously manifests itself as the 'use'
+     * button missing on content cards after a search, so we check that they are
+     * still present after performing one.
+     */
+    public function testContentCardsHaveUseButtonAfterSearchingInLtiContext(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $tool = LtiTool::factory()
+            ->state(['creator_launch_url' => route('lti.select')])
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+
+        Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->state(['title' => 'found content'])
+                ->published(),
+        )->create();
+
+        Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->state(['title' => 'excluded content'])
+                ->published(),
+        )->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs(User::factory()->create()->email)
+            ->assertAuthenticated()
+            ->visit('/content/create/' . $tool->id)
+            ->withinFrame('.lti-launch', fn (Browser $frame) => $frame
+                ->assertSee('found content')
+                ->assertSee('excluded content')
+                ->type('q', 'found')
+                ->pause(1200)
+                ->assertSee('found content')
+                ->assertDontSee('excluded content')
+                ->with(new ContentCard(), fn (Browser $card) => $card
+                    ->assertPresent('@use-button'),
+                )));
+    }
 }
