@@ -245,18 +245,10 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
-    /**
-     * @param array<string, string> $filter
-     */
-    public static function findShared(string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
+    public static function findShared(string $keywords = ''): ScoutBuilder
     {
         return Content::search($keywords)
             ->where('published', true)
-            ->when(array_key_exists('lang', $filter), fn ($query) => $query->where('language_iso_639_3', $filter['lang']))
-            ->when($sort, fn ($query) => match ($sort) {
-                'created' => $query->orderBy('created_at', 'desc'),
-                default => $query->orderBy('updated_at', 'desc'),
-            })
             ->query(
                 fn (Builder $query) => $query
                 ->with(['latestPublishedVersion', 'users'])
@@ -265,18 +257,10 @@ class Content extends Model
         ;
     }
 
-    /**
-     * @param array<string, string> $filter
-     */
-    public static function findForUser(User $user, string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
+    public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
     {
         return Content::search($keywords)
             ->where('user_ids', $user->id)
-            ->when(array_key_exists('lang', $filter), fn ($query) => $query->where('language_iso_639_3', $filter['lang']))
-            ->when($sort, fn ($query) => match ($sort) {
-                'created' => $query->orderBy('created_at', 'desc'),
-                default => $query->orderBy('updated_at', 'desc'),
-            })
             ->query(
                 fn (Builder $query) => $query
                 ->with(['latestVersion', 'users'])

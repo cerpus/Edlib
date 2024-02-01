@@ -9,7 +9,7 @@
     />
 
     @unless ($results->isEmpty())
-        <x-content.grid :contents="$results"/>
+        <x-content.grid :contents="$results" :showDrafts="($showDrafts ?? false) || ($mine ?? false)"/>
     @else
         <x-big-notice>
             <x-slot:title>

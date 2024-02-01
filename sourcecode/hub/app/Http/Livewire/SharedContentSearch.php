@@ -26,12 +26,13 @@ class SharedContentSearch extends Component
 
     public function render(): View
     {
-        $filter = [];
-        if ($this->filterLang !== '') {
-            $filter['lang'] = $this->filterLang;
-        }
-
-        $results = Content::findShared($this->query, $filter, $this->sortBy);
+        $results = Content::findShared($this->query)
+            ->when(!empty($this->filterLang), fn ($query) => $query->where('language_iso_639_3', $this->filterLang))
+            ->when($this->sortBy, fn ($query) => match ($this->sortBy) {
+                'created' => $query->orderBy('created_at', 'desc'),
+                default => $query->orderBy('updated_at', 'desc'),
+            })
+        ;
 
         return view('livewire.content.search', [
             'results' => $results->paginate(),

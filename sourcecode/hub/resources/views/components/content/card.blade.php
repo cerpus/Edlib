@@ -24,6 +24,11 @@
                 {{ $version->title }}
             </div>
         </a>
+        @if(!$version->published)
+            <div class="badge text-bg-primary position-absolute end-0 top-0 d-none d-md-inline-block">
+                {{ trans('messages.draft') }}
+            </div>
+        @endif
         <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
             <x-icon name="eye"/>
             <span class="content-card-views" title="{{ trans('messages.views') }}">

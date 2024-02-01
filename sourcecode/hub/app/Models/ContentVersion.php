@@ -82,6 +82,7 @@ class ContentVersion extends Model
         return DB::table('content_versions')
             ->select('language_iso_639_3')
             ->distinct()
+            ->where('published', true)
             ->pluck('language_iso_639_3');
     }
 
@@ -108,19 +109,16 @@ class ContentVersion extends Model
     public static function getTranslatedUsedLocales(User $user = null): Collection
     {
         if ($user instanceof User) {
-            $locales = self::getUsedLocalesForUser($user)->toArray();
+            $locales = self::getUsedLocalesForUser($user);
         } else {
-            $locales = self::getUsedLocales()->toArray();
+            $locales = self::getUsedLocales();
         }
 
         $displayLocale = app()->getLocale();
         $fallBack = app()->getFallbackLocale();
 
-        $displayNames = array_map(
-            fn ($locale) => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale),
-            $locales,
-        );
-
-        return collect(array_combine($locales, $displayNames))->sort();
+        return $locales
+            ->mapWithKeys(fn ($locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
+            ->sort();
     }
 }
