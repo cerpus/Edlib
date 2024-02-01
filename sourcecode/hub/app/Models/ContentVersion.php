@@ -74,8 +74,6 @@ class ContentVersion extends Model
 
     /**
      * The locales (ISO 639-3) used by contents
-     *
-     * @return Collection
      */
     public static function getUsedLocales(): Collection
     {
