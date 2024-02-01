@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Configuration;
 
 use Illuminate\Contracts\Foundation\Application;
+
 use function array_combine;
 use function array_map;
 use function locale_get_display_name;
