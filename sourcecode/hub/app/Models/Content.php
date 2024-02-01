@@ -246,10 +246,7 @@ class Content extends Model
     }
 
     /**
-     * @param string $keywords
      * @param array<string, string> $filter
-     * @param string $sort
-     * @return ScoutBuilder
      */
     public static function findShared(string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
     {
@@ -269,11 +266,7 @@ class Content extends Model
     }
 
     /**
-     * @param User $user
-     * @param string $keywords
      * @param array<string, string> $filter
-     * @param string $sort
-     * @return ScoutBuilder
      */
     public static function findForUser(User $user, string $keywords = '', array $filter = [], string $sort = 'updated'): ScoutBuilder
     {
