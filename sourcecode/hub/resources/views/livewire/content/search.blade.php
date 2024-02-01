@@ -1,6 +1,12 @@
 @props(['mine' => false, 'hasQuery' => $query !== ''])
 <div>
-    <x-content.search :query="$query"/>
+    <x-content.search
+        :$query
+        :$filterLang
+        :$languageOptions
+        :$sortBy
+        :$sortOptions
+    />
 
     @unless ($results->isEmpty())
         <x-content.grid :contents="$results"/>

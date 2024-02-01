@@ -1,6 +1,5 @@
 {{-- ToDo: Remove these when actual values are available --}}
 @php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-@php($lang = ['ENG', 'NOB', 'NNO', 'SWE'][mt_rand(0, 3)])
 {{-- End --}}
 
 @php($showDrafts ??= false)
@@ -38,7 +37,7 @@
                 {{ $type }}
             </div>
             <div class="col-auto badge text-bg-primary">
-                {{ $lang }}
+                {{ strtoupper($version->language_iso_639_3) }}
             </div>
         </div>
         <div class="card-text small">
