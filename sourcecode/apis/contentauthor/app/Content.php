@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Session;
 
 use function htmlspecialchars_decode;
 
+use function property_exists;
 use const ENT_HTML5;
 use const ENT_QUOTES;
 
@@ -517,7 +518,9 @@ abstract class Content extends Model
             hasScore: ($this->getMaxScore() ?? 0) > 0,
             editUrl: $this->getEditUrl(),
             titleHtml: $this->title,
-            languageIso639_3: $this->language_iso_639_3 ?? $this->getISO6393Language(),
+            languageIso639_3: property_exists($this, 'language_iso_639_3')
+                ? $this->language_iso_639_3
+                : $this->getISO6393Language(),
             license: $this->license,
         );
     }
