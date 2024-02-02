@@ -9,7 +9,7 @@
     @endif
 
     @if ($actions)
-        <div class="d-flex gap-3 flex-column flex-md-row">
+        <div class="d-flex gap-3 flex-md-row flex-wrap justify-content-center">
             {{ $actions }}
         </div>
     @endif
