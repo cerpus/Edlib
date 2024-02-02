@@ -13,6 +13,7 @@ use App\Models\ContentVersion;
 use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 
 use function assert;
 use function is_string;
+use function strtolower;
 use function to_route;
 use function view;
 
@@ -231,17 +233,22 @@ class ContentController extends Controller
             $content = new Content();
             $content->save();
 
-            $contentVersion = new ContentVersion();
-            $contentVersion->title = $title;
-            $contentVersion->lti_tool_id = $tool->id;
-            $contentVersion->lti_launch_url = $url;
-            $contentVersion->published = true; // TODO
+            $version = new ContentVersion();
+            $version->title = $title;
+            $version->lti_tool_id = $tool->id;
+            $version->lti_launch_url = $url;
+            $version->published = true; // TODO
+
+            if ($item instanceof EdlibLtiLinkItem) {
+                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+                $version->license = $item->getLicense();
+            }
 
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            $content->versions()->save($contentVersion);
+            $content->versions()->save($version);
 
             return $content;
         });
@@ -284,6 +291,11 @@ class ContentController extends Controller
             $version->title = $title;
             $version->lti_launch_url = $url;
             $version->published = true; // TODO
+
+            if ($item instanceof EdlibLtiLinkItem) {
+                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+                $version->license = $item->getLicense();
+            }
 
             $content->versions()->save($version);
         });
