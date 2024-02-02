@@ -8,6 +8,29 @@
 
     min-width: 250px;
 
+    .content-card-preview-badge {
+        border-radius: 0 0 0 10px;
+        background-color: var(--bs-card-cap-bg);
+        color: var(--bs-card-cap-color) !important;
+
+        @include media-breakpoint-down(md) {
+            background-color: transparent;
+        }
+    }
+
+    .content-card-header {
+        @include media-breakpoint-up(md) {
+            min-height: ($line-height-lg * 2.5) + rem;
+            padding-bottom: 0;
+        }
+    }
+
+    .content-card-header-updated {
+        font-size: #{$sub-sup-font-size};
+    }
+}
+
+.card {
     .dropup .dropdown-toggle:after {
         content: none;
     }
@@ -15,25 +38,4 @@
     .dropdown-toggle:after {
         content: none;
     }
-}
-
-.content-card-preview-badge {
-    border-radius: 0 0 0 10px;
-    background-color: var(--bs-card-cap-bg);
-    color: var(--bs-card-cap-color) !important;
-
-    @include media-breakpoint-down(md) {
-        background-color: transparent;
-    }
-}
-
-.content-card-header {
-    @include media-breakpoint-up(md) {
-        min-height: ($line-height-lg * 2.5) + rem;
-        padding-bottom: 0;
-    }
-}
-
-.content-card-header-updated {
-    font-size: #{$sub-sup-font-size};
 }

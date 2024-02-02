@@ -103,7 +103,7 @@ return [
     'delete-content' => 'Delete content',
     'num-content-found' => '{0} No content found|{1} :count content found|[2,*] :count contents found',
     'today' => 'today',
-    'views' => 'Number of views',
+    'number-of-views' => 'Number of views',
     'result-list' => 'Display results as list',
     'result-grid' => 'Display results as grid',
     'result-list-desc' => 'Toggle results between list and grid view',
@@ -158,4 +158,8 @@ return [
     'sort-last-updated' => 'Last updated',
     'sort-last-created' => 'Last created',
     'loading' => 'Loading content',
+    'author' => 'Author',
+    'views' => 'Views',
+    'title' => 'Title',
+    'content-type' => 'Content type',
 ];
