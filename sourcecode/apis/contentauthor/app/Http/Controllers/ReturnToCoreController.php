@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Libraries\DataObjects\LtiContent;
 use App\Lti\LtiRequest;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Cerpus\EdlibResourceKit\Oauth1\Claim;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
@@ -34,10 +34,12 @@ final readonly class ReturnToCoreController
         $ltiRequest = $this->getLtiRequest($request);
         $content = $this->getLtiContent($request);
 
-        // Edlib 3: perform an LTI request
+        // Edlib 3: perform an LTI deep-linking return
         if ($ltiRequest?->isContentItemSelectionRequest()) {
-            // TODO: score, icons, license, etc.
-            $item = new LtiLinkItem(title: $content->title, url: $content->url);
+            // TODO: score, icons, etc.
+            $item = (new EdlibLtiLinkItem(title: $content->title, url: $content->url))
+                ->withLanguageIso639_3($content->languageIso639_3)
+                ->withLicense($content->license);
 
             $returnRequest = new Oauth1Request('POST', $ltiRequest->getReturnUrl(), [
                 'content_items' => json_encode($this->serializer->serialize([$item])),
