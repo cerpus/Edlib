@@ -19,6 +19,8 @@ final readonly class LtiContent
         public bool $hasScore,
         public string|null $titleHtml = null,
         public string|null $editUrl = null,
+        public string|null $languageIso639_3 = null,
+        public string|null $license = null,
     ) {
     }
 }

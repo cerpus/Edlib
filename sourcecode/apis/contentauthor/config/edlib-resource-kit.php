@@ -2,6 +2,8 @@
 
 return [
 
+    'use-edlib-extensions' => true,
+
     //
     // If false, resources will be published asynchronously over the message
     // bus. This is fast, but you get no feedback in the event that publishing
