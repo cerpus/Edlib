@@ -83,7 +83,7 @@
 
                             <p>{!! trans('messages.about-edlib', [
                                 'site' => config('app.name'),
-                                'edlib' => '<a href="https://docs.edlib.com/" class="link-body-emphasis">Edlib</a>',
+                                'edlib' => '<a href="https://docs.edlib.com/" target="_blank" class="link-body-emphasis">Edlib</a>',
                             ]) !!}</p>
                         </div>
 
@@ -91,10 +91,10 @@
                             <h2 class="fs-5">Edlib</h2>
 
                             <ul class="list-unstyled">
-                                <li><x-layout.footer-link href="https://docs.edlib.com/">{{ trans('messages.documentation') }}</x-layout.footer-link></li>
-                                <li><x-layout.footer-link href="https://github.com/cerpus/Edlib">{{ trans('messages.github') }}</x-layout.footer-link></li>
-                                <li><x-layout.footer-link href="https://www.facebook.com/cerpus/">{{ trans('messages.facebook') }}</x-layout.footer-link></li>
-                                <li><x-layout.footer-link href="https://twitter.com/edlibopensource">{{ trans('messages.twitter') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://docs.edlib.com/" target="_blank">{{ trans('messages.documentation') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://github.com/cerpus/Edlib" target="_blank">{{ trans('messages.github') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://www.facebook.com/cerpus/" target="_blank">{{ trans('messages.facebook') }}</x-layout.footer-link></li>
+                                <li><x-layout.footer-link href="https://twitter.com/edlibopensource" target="_blank">{{ trans('messages.twitter') }}</x-layout.footer-link></li>
                             </ul>
                         </div>
 
@@ -103,7 +103,7 @@
 
                             <ul class="list-unstyled">
                                 @if (config('app.contact-url'))
-                                    <li><x-layout.footer-link href="{{ config('app.contact-url') }}">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
+                                    <li><x-layout.footer-link href="{{ config('app.contact-url') }}" target="_blank">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
                                 @endif
                             </ul>
                         </div>
