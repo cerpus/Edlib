@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Configuration\Locales;
 use App\Configuration\Themes;
+use App\Http\Requests\RequestPasswordReset;
+use App\Http\Requests\ResetPassword;
 use App\Http\Requests\SavePreferencesRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -14,12 +16,12 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 use function app;
+use function assert;
 use function to_route;
 use function view;
 
@@ -67,29 +69,28 @@ class UserController extends Controller
 
     public function myAccount(): View
     {
-        $user = Auth::user();
-        return view('user.my-account', ['user' => $user]);
+        return view('user.my-account', [
+            'user' => $this->getUser(),
+        ]);
     }
 
     public function updateAccount(UpdateUserRequest $request): RedirectResponse
     {
-        $validatedData = $request->validated();
+        $user = $this->getUser();
+        $user->name = $request->validated('name');
+        $user->email = $request->validated('email');
 
-        /** @var User $user */
-        $user = Auth::user();
-        $user->name = $validatedData['name'];
-
-        if (!empty($validatedData['password'])) {
-            $user->password = Hash::make($validatedData['password']);
+        if (!empty($request->validated('password'))) {
+            $user->password = Hash::make($request->validated('password'));
         }
 
-        $user->email = $validatedData['email'];
         $user->save();
+
         Auth::login($user);
 
-        $user->save();
-
-        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-account-update'));
+        return redirect()
+            ->route('user.my-account')
+            ->with('alert', trans('messages.alert-account-update'));
     }
 
     public function showForgotPasswordForm(): View
@@ -97,9 +98,9 @@ class UserController extends Controller
         return view('user.forgot-password');
     }
 
-    public function sendResetLink(Request $request): View|RedirectResponse
+    public function sendResetLink(RequestPasswordReset $request): RedirectResponse
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->validated('email'))->first();
 
         if ($user) {
             $token = hash('xxh128', random_bytes(48));
@@ -107,49 +108,41 @@ class UserController extends Controller
             $user->password_reset_token = $token;
             $user->save();
 
-            $resetLink = route('reset-password', ['token' => $token]);
+            $resetLink = route('reset-password', [$token]);
 
             Mail::to($user->email)->send(new ResetPasswordEmail($resetLink));
         }
 
-        return redirect()->route('login')->with('alert', trans('messages.alert-password-reset'));
+        return redirect()
+            ->route('login')
+            ->with('alert', trans('messages.alert-password-reset'));
     }
 
-    public function showResetPasswordForm(string $token): View|RedirectResponse
+    public function showResetPasswordForm(User $user): View
     {
-        $user = User::where('password_reset_token', $token)->first();
-
-        if (!$user) {
-            abort(Response::HTTP_NOT_FOUND);
-        }
+        assert($user->password_reset_token !== null);
 
         return view('user.reset-password', [
-            'token' => $token,
+            'user' => $user,
         ]);
     }
 
-    public function resetPassword(Request $request, string $token): RedirectResponse
+    public function resetPassword(ResetPassword $request, User $user): RedirectResponse
     {
-        $user = User::where('password_reset_token', $token)->first();
+        assert($user->password_reset_token !== null);
 
-        if ($user) {
-            $request->validate([
-                'password' => 'required|confirmed|min:8',
-            ]);
+        $user->password = Hash::make($request->validated('password'));
+        $user->password_reset_token = null;
+        $user->save();
 
-            $user->password = Hash::make($request->password);
-            $user->password_reset_token = null;
-            $user->save();
-            return redirect('/')->with('alert', trans('messages.alert-password-reset-success'));
-        }
-
-        return redirect()->back()->with('alert', trans('messages.alert-password-reset-invalid-token'));
+        return redirect()
+            ->route('login')
+            ->with('alert', trans('messages.alert-password-reset-success'));
     }
 
     public function disconnectSocialAccounts(Request $request): RedirectResponse
     {
-        /** @var User $user */
-        $user = Auth::user();
+        $user = $this->getUser();
 
         if ($request->has('disconnect-google')) {
             $user->google_id = null;
@@ -161,6 +154,8 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('user.my-account')->with('alert', trans('messages.alert-account-update'));
+        return redirect()
+            ->route('user.my-account')
+            ->with('alert', trans('messages.alert-account-update'));
     }
 }

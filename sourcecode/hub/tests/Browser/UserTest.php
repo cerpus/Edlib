@@ -230,4 +230,38 @@ final class UserTest extends DuskTestCase
                 ->assertSourceHas('data-bs-theme="dark"');
         });
     }
+
+    public function testResetsPassword(): void
+    {
+        $user = User::factory()
+            ->withEmail('goldfish@fishbowl.example')
+            ->create();
+
+        $this->assertNull($user->refresh()->password_reset_token);
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->visit('/')
+            ->clickLink('Log in')
+            ->clickLink('I forgot my password')
+            ->type('email', 'goldfish@fishbowl.example')
+            ->press('Submit')
+            ->assertSee('You should soon receive a password reset link.')
+        );
+
+        $this->assertNotNull($user->refresh()->password_reset_token);
+        // FIXME: we cannot test that a mail was sent via Dusk
+    }
+
+    public function testPasswordResetDoesNotDistinguishBetweenExistingAndNonexistentEmails(): void
+    {
+        $this->browse(fn (Browser $browser) => $browser
+            ->visit('/')
+            ->clickLink('Log in')
+            ->clickLink('I forgot my password')
+            ->type('email', 'nope@nah.example')
+            ->press('Submit')
+            ->assertSee('You should soon receive a password reset link.')
+        );
+        // FIXME: we cannot test that a mail wasn't sent via Dusk
+    }
 }
