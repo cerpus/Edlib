@@ -4,7 +4,7 @@
 
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
-<article class="card content-list shadow-sm">
+<article class="card list-item shadow-sm">
     <div class="card-body">
         <div class="row">
             <a
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div class="card-footer d-flex align-items-center justify-content-end border-0">
+    <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
         <x-content.action-buttons :$content />
     </div>
 </article>

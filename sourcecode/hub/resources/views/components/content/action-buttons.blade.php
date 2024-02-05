@@ -1,6 +1,6 @@
 @can('use', $content)
     <x-form action="{{ route('content.use', [$content]) }}" method="POST">
-        <button class="btn btn-primary btn-sm me-1 content-card-use-button">
+        <button class="btn btn-primary btn-sm me-1">
             {{ trans('messages.use-content') }}
         </button>
     </x-form>
@@ -8,7 +8,7 @@
 @can('edit', $content)
     <a
         href="{{ route('content.edit', [$content]) }}"
-        class="btn btn-secondary btn-sm d-none d-md-inline-block me-1 content-card-edit-link"
+        class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
     >
         {{ trans('messages.edit-content') }}
     </a>

@@ -1,0 +1,11 @@
+.action-buttons {
+    display: inherit;
+
+    .dropup .dropdown-toggle:after {
+        content: none;
+    }
+
+    .dropdown-toggle:after {
+        content: none;
+    }
+}

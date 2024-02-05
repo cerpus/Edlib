@@ -54,7 +54,7 @@ Route::controller(ContentController::class)->group(function () {
         ->middleware('auth')
         ->name('content.mine');
 
-    Route::get('/content/toggle', 'layoutSwitch')
+    Route::post('/content/toggle', 'layoutSwitch')
         ->name('content.layout');
 
     Route::get('/content/{content}', 'details')

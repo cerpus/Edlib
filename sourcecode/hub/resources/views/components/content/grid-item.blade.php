@@ -4,22 +4,22 @@
 
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
-<article class="card content-card">
-    <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
+<article class="card grid-item">
+    <header class="card-header grid-item-header border-bottom-0 fw-bold position-relative">
         <a
             href="{{ route('content.details', [$content->id]) }}"
             class="text-decoration-none link-body-emphasis"
             aria-label="{{ trans('messages.preview') }}"
         >
             {{-- TODO: Date and time should be displayed in users timezone --}}
-            <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
+            <div class="grid-item-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
                 {{ trans('messages.edited') }}:
                 {{
                     $content->updated_at->isToday() ? ucfirst(trans('messages.today')) . $content->updated_at->isoFormat(' LT') :
                     ($content->updated_at->isSameAs('W', \Illuminate\Support\Carbon::now()) ? ucfirst($content->updated_at->isoFormat('dddd LT')) : $content->updated_at->isoFormat('LL'))
                 }}
             </div>
-            <div class="text-line-clamp clamp-2-lines content-card-title">
+            <div class="text-line-clamp clamp-2-lines grid-item-title">
                 {{ $version->title }}
             </div>
         </a>
@@ -28,9 +28,9 @@
                 {{ trans('messages.draft') }}
             </div>
         @endif
-        <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
+        <div class="badge position-absolute end-0 top-100 grid-item-preview-badge d-none d-md-inline-block">
             <x-icon name="eye"/>
-            <span class="content-card-views" title="{{ trans('messages.number-of-views') }}">
+            <span class="grid-item-views" title="{{ trans('messages.number-of-views') }}">
                 {{ $content->views_count }}
             </span>
         </div>
@@ -50,11 +50,11 @@
             @endforeach
         </div>
     </div>
-    <div class="card-footer content-card-footer d-flex align-items-center bg-transparent border-0">
+    <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
         <x-content.action-buttons :$content />
-        <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
+        <div class="badge position-absolute end-0 d-md-none grid-item-preview-badge">
             <x-icon name="eye"/>
-            <div class="content-card-views" title="{{ trans('messages.number-of-views') }}">
+            <div class="grid-item-views" title="{{ trans('messages.number-of-views') }}">
                 {{ $content->views_count }}
             </div>
         </div>

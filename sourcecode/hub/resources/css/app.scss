@@ -50,7 +50,9 @@ $font-family-sans-serif: Lato, sanf-serif;
 @import "bootstrap/scss/utilities/api";
 
 // 8. Add additional custom code here
-@import 'content-card';
-@import 'content-list';
+@import 'content/action-buttons';
+@import 'content/layout-toggle';
+@import 'content/grid-item';
+@import 'content/list-item';
 @import 'layout';
 @import 'theme';
