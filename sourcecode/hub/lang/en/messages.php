@@ -22,6 +22,7 @@ return [
     'manage-lti-platforms' => 'Manage LTI platforms',
     'manage-lti-tools' => 'Manage LTI tools',
     'more-details' => 'More details',
+    'details' => 'Details',
     'preview' => 'Preview',
     'edit' => 'Edit',
     'search' => 'Search',
