@@ -400,12 +400,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit.git",
-                "reference": "f4f3896d252ee2ca2f0864a61e1756b151454049"
+                "reference": "5994e02a32a0c4d848aa545c147efe99a0176adf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/f4f3896d252ee2ca2f0864a61e1756b151454049",
-                "reference": "f4f3896d252ee2ca2f0864a61e1756b151454049",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/5994e02a32a0c4d848aa545c147efe99a0176adf",
+                "reference": "5994e02a32a0c4d848aa545c147efe99a0176adf",
                 "shasum": ""
             },
             "require": {
@@ -460,7 +460,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/master"
             },
-            "time": "2023-09-29T11:11:08+00:00"
+            "time": "2024-02-02T11:39:29+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
@@ -468,12 +468,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit-laravel.git",
-                "reference": "2376a697951989e556ec61347859dcd1f6c494df"
+                "reference": "161edb2e759364b8439e73e7546790ab2e252554"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/2376a697951989e556ec61347859dcd1f6c494df",
-                "reference": "2376a697951989e556ec61347859dcd1f6c494df",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/161edb2e759364b8439e73e7546790ab2e252554",
+                "reference": "161edb2e759364b8439e73e7546790ab2e252554",
                 "shasum": ""
             },
             "require": {
@@ -527,7 +527,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/master"
             },
-            "time": "2023-09-29T11:34:27+00:00"
+            "time": "2024-02-02T12:31:31+00:00"
         },
         {
             "name": "cerpus/imageservice-client",

@@ -9,7 +9,7 @@ As a functional resource hub created for integration towards your frontend CMS o
 
 We strongly believe that the focus should be on the individual learner. Everything we do is based on this belief, from technical solutions and content creation to user interface design and the resulting learning experience.  
 
-Edlib is being developed with :heart: by [Cerpus](https://cerpus.com/), a company based out of Northern Norway focused on developing innovative educational services and applications. Edlib was specifically designed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's applications &mdash; [Gamilab](https://gamilab.com/) and the former Edstep platform &mdash; as well as being easily capable of integration into third-party learning applications. 
+Edlib is being developed with :heart: by [Cerpus](https://github.com/cerpus), a company based out of Northern Norway focused on developing innovative educational services and applications. Edlib was specifically designed to allow for the creation and subsequent management of [H5P](https://h5p.org/)-based interactive learning resources for Cerpus's applications &mdash; [Gamilab](https://gamilab.com/) and the former Edstep platform &mdash; as well as being easily capable of integration into third-party learning applications. 
 
 <img src="https://github.com/cerpus/Edlib/blob/master/docs/static/img/edlib-content-explorer.png" alt="Edlib Content Explorer" width="800">
 
