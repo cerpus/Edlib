@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\IndexContentRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
@@ -30,31 +29,14 @@ use function view;
 
 class ContentController extends Controller
 {
-    public function index(IndexContentRequest $request): View
+    public function index(): View
     {
-        $query = $request->validated('q', '');
-        assert(is_string($query));
-
-        $contents = Content::findShared($query);
-
-        return view('content.index', [
-            'contents' => $contents->paginate(),
-            'query' => $query,
-        ]);
+        return view('content.index');
     }
 
-    public function mine(IndexContentRequest $request): View
+    public function mine(): View
     {
-        $query = $request->validated('q', '');
-        assert(is_string($query));
-
-        $user = $this->getUser();
-        $contents = Content::findForUser($user, $query);
-
-        return view('content.mine', [
-            'contents' => $contents->paginate(),
-            'query' => $query,
-        ]);
+        return view('content.mine');
     }
 
     public function details(
