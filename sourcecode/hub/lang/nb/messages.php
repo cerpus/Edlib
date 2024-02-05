@@ -22,6 +22,7 @@ return [
     'manage-lti-platforms' => 'Administrer LTI-plattformer',
     'manage-lti-tools' => 'Administrer LTI-verktøy',
     'more-details' => 'Flere detaljer',
+    'details' => 'Detaljer',
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
     'search' => 'Søk',

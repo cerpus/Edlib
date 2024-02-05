@@ -6,9 +6,9 @@ namespace App\Models;
 
 use App\Events\ContentDeleting;
 use App\Lti\ContentItemSelectionFactory;
-use App\Lti\LtiContent;
 use App\Support\SessionScope;
 use BadMethodCallException;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
@@ -78,7 +78,7 @@ class Content extends Model
             ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
     }
 
-    public function toLtiLinkItem(): LtiContent
+    public function toLtiLinkItem(): EdlibLtiLinkItem
     {
         $version = $this->latestPublishedVersion
             ?? throw new DomainException('No version for content');
@@ -95,12 +95,10 @@ class Content extends Model
         }
         assert(is_string($url));
 
-        return new LtiContent(
-            title: $version->getTitle(),
-            url: $url,
-            languageIso639_3: $version->language_iso_639_3,
-            license: $version->license,
-        );
+        return (new EdlibLtiLinkItem(title: $version->getTitle(), url: $url))
+            ->withLanguageIso639_3($version->language_iso_639_3)
+            ->withLicense($version->license)
+        ;
     }
 
     public function createCopyBelongingTo(User $user): self

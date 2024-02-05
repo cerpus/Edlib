@@ -27,9 +27,9 @@
         <ul class="dropdown-menu dropdown-menu-end">
             @can('view', $content)
                 <li>
-                    <a href="{{ route('content.details', [$content->id]) }}" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#previewModal">
+                    <a href="{{ route('content.details', [$content->id]) }}" class="dropdown-item">
                         <x-icon name="info-lg" class="me-2" />
-                        {{ trans('messages.preview') }}
+                        {{ trans('messages.details') }}
                     </a>
                 </li>
             @endcan

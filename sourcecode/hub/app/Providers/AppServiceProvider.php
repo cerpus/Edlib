@@ -5,12 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
-use App\Lti\Serializer\ContentItemsSerializer;
-use App\Lti\Serializer\LtiContentSerializer;
 use App\Support\CarbonToPsrClockAdapter;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
-use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
-use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\LtiLinkItemSerializerInterface;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Vite;
@@ -41,15 +37,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(Locales::class)
             ->needs('$locales')
             ->giveConfig('app.allowed_locales');
-
-        $this->app->extend(
-            ContentItemsSerializerInterface::class,
-            fn (ContentItemsSerializerInterface $serializer) => new ContentItemsSerializer($serializer),
-        );
-        $this->app->extend(
-            LtiLinkItemSerializerInterface::class,
-            fn (LtiLinkItemSerializerInterface $serializer) => new LtiContentSerializer($serializer),
-        );
 
         // FIXME: get rid of this horror show when Laravel allows decorating the
         // UrlGenerator service.

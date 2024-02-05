@@ -33,9 +33,11 @@ final class DeepLinkingReturnRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "content_items.@graph.0.@type" => ['required', 'in:LtiLinkItem'],
-            "content_items.@graph.0.title" => ['required', 'string'],
-            "content_items.@graph.0.url" => ['required', 'url'],
+            'content_items.@graph.0.@type' => ['required', 'in:LtiLinkItem'],
+            'content_items.@graph.0.title' => ['required', 'string'],
+            'content_items.@graph.0.url' => ['required', 'url'],
+            'content_items.@graph.0.license' => ['sometimes', 'required', 'string'],
+            'content_items.@graph.0.language_iso_639_3' => ['sometimes', 'required', 'string', 'size:3'],
         ];
     }
 }
