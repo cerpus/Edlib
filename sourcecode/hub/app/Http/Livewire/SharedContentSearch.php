@@ -14,7 +14,7 @@ class SharedContentSearch extends Component
 {
     public string $query = '';
     public string $filterLang = '';
-    public string $sortBy = '';
+    public string $sortBy = 'updated';
 
     /**
      * @var array<mixed>
