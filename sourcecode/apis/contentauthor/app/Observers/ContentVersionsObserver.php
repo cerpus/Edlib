@@ -12,7 +12,7 @@ class ContentVersionsObserver
         $parent = $contentVersion->previousVersion;
         if ($parent && ($parent->linear_versioning || $contentVersion->linear_versioning) && !$parent->isLeaf()) {
             // Parent is not a leaf node, so find latest leaf to use as parent
-            $latest = $parent->latestVersion();
+            $latest = $parent->latestLeafVersion();
             if ($latest !== null && $latest->id !== $parent->id) {
                 $contentVersion->parent_id = $latest->id;
                 Log::warning(sprintf(

@@ -127,7 +127,7 @@ class AdminH5PDetailsController extends Controller
                 try {
                     $latest = null;
                     if ($row->version_id) {
-                        $latest = ContentVersion::latest($row->version_id);
+                        $latest = ContentVersion::latestLeaf($row->version_id);
                     }
                     $isLatest = (empty($latest) || $row->version_id === $latest->id);
                     $latestCount += $isLatest ? 1 : 0;

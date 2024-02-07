@@ -460,7 +460,7 @@ abstract class Content extends Model
 
         $editUrl = route($this->editRouteName, $this->id);
         if ($latest) {
-            $latestVersion = ContentVersion::latest($this->version_id);
+            $latestVersion = ContentVersion::latestLeaf($this->version_id);
             if ($this->version_id !== $latestVersion->id) {
                 $editUrl = route($this->editRouteName, $latestVersion->content_id);
             }
