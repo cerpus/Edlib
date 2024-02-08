@@ -314,7 +314,7 @@ class ContentController extends Controller
 
     public function layoutSwitch(): RedirectResponse
     {
-        match(Session::get('contentLayout')) {
+        match(Session::get('contentLayout', 'grid')) {
             'grid' => Session::put('contentLayout', 'list'),
             default => Session::put('contentLayout', 'grid')
         };
