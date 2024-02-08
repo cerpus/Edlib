@@ -239,7 +239,8 @@ final class UserTest extends DuskTestCase
 
         $this->assertNull($user->refresh()->password_reset_token);
 
-        $this->browse(fn (Browser $browser) => $browser
+        $this->browse(
+            fn (Browser $browser) => $browser
             ->visit('/')
             ->clickLink('Log in')
             ->clickLink('I forgot my password')
@@ -254,7 +255,8 @@ final class UserTest extends DuskTestCase
 
     public function testPasswordResetDoesNotDistinguishBetweenExistingAndNonexistentEmails(): void
     {
-        $this->browse(fn (Browser $browser) => $browser
+        $this->browse(
+            fn (Browser $browser) => $browser
             ->visit('/')
             ->clickLink('Log in')
             ->clickLink('I forgot my password')
