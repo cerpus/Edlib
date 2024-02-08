@@ -14,6 +14,14 @@
         </div>
     @endif
 
+    <div class="alert alert-info pb-0">
+        <p>{{ trans('messages.lti-platforms-common-values') }}</p>
+        <p>
+            {{ trans('messages.lti-platform-selection-url') }}: <kbd class="user-select-all">{{ route('lti.select', [\App\Support\SessionScope::TOKEN_PARAM => null]) }}</kbd><br>
+            {{ trans('messages.lti-version') }}: <kbd>1.0</kbd> / <kbd>1.1</kbd> / <kbd>1.2</kbd><br>
+        </p>
+    </div>
+
     <x-form action="{{ route('admin.lti-platforms.store') }}">
         <x-form.field name="name" type="text" :label="trans('messages.name')" />
 

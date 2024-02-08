@@ -1,7 +1,7 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.reset-password') }}</x-slot:title>
 
-    <x-form action="{{ route('reset-password-update', ['token' => $token]) }}">
+    <x-form action="{{ route('reset-password-update', [$user->password_reset_token]) }}">
         <x-form.field
             name="password"
             type="password"

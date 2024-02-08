@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d8cd6240612a3a8e217901f702cd385e",
+    "content-hash": "38bffbc4e137d42362fe3a8154afaf4a",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2768,16 +2768,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "dev-main",
+            "version": "v3.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "3d487309444e4350aaa283c9e6df3769d13e444f"
+                "reference": "c0489d4a76382f6dcf6e2702112f86aa089d0c8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/3d487309444e4350aaa283c9e6df3769d13e444f",
-                "reference": "3d487309444e4350aaa283c9e6df3769d13e444f",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/c0489d4a76382f6dcf6e2702112f86aa089d0c8d",
+                "reference": "c0489d4a76382f6dcf6e2702112f86aa089d0c8d",
                 "shasum": ""
             },
             "require": {
@@ -2794,12 +2794,11 @@
                 "laravel/framework": "^10.0|^11.0",
                 "laravel/prompts": "^0.1.6",
                 "mockery/mockery": "^1.3.1",
-                "orchestra/testbench": "^8.0|^9.0",
-                "orchestra/testbench-dusk": "^8.0|^9.0",
+                "orchestra/testbench": "8.20.0|^9.0",
+                "orchestra/testbench-dusk": "8.20.0|^9.0",
                 "phpunit/phpunit": "^10.4",
                 "psy/psysh": "^0.11.22|^0.12"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -2832,7 +2831,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/main"
+                "source": "https://github.com/livewire/livewire/tree/v3.4.4"
             },
             "funding": [
                 {
@@ -2840,7 +2839,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-09T11:00:06+00:00"
+            "time": "2024-01-28T19:07:11+00:00"
         },
         {
             "name": "meilisearch/meilisearch-php",
@@ -11702,19 +11701,11 @@
             "time": "2023-11-20T00:12:19+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "livewire/livewire",
-            "version": "dev-main",
-            "alias": "3.3.6",
-            "alias_normalized": "3.3.6.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "cerpus/edlib-resource-kit": 20,
-        "cerpus/edlib-resource-kit-laravel": 20,
-        "livewire/livewire": 20
+        "cerpus/edlib-resource-kit-laravel": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

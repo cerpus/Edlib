@@ -14,7 +14,7 @@
         "laravel/tinker": "^2.8.2",
         "laravel/vapor-cli": "^1.61",
         "laravel/vapor-core": "^2.33.2",
-        "livewire/livewire": "dev-main#3d487309444e4350aaa283c9e6df3769d13e444f as 3.3.6",
+        "livewire/livewire": "^3.4",
         "meilisearch/meilisearch-php": "^1.5.0",
         "psr/clock": "^1.0",
         "socialiteproviders/auth0": "^4.1"

@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class IndexContentRequest extends FormRequest
+class ResetPassword extends FormRequest
 {
     /**
-     * @return mixed[]
+     * @return array<string, array<mixed>>
      */
     public function rules(): array
     {
         return [
-            'q' => ['sometimes', 'string'],
+            'password' => ['required', 'confirmed', Password::min(8)]
         ];
     }
 }

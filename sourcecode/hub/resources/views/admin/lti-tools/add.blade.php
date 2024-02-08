@@ -24,7 +24,7 @@ use App\Models\LtiVersion;
 
         <p>
             <label>
-                LTI version
+                {{ trans('messages.lti-version') }}
                 <select name="lti_version">
                     <option value="" selected>Pick one…</option>
                     <option value="{{ LtiVersion::Lti1_1->value }}">1.1</option>

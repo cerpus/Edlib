@@ -25,7 +25,7 @@ return [
 
     "by" => "av",
 
-    "Cancel" => "Abryt",
+    "Cancel" => "Avbryt",
     "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication" => "CC0 1.0 Universell (CC0 1.0) Offentlig domene dedikert",
     "Changelog" => "Endringslogg",
     "Close" => "Lukk",
