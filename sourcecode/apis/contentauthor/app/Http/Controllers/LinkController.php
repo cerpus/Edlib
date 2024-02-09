@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ACL\ArticleAccess;
+use App\ContentVersion;
 use App\Events\LinkWasSaved;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
@@ -12,7 +13,6 @@ use App\Link;
 use App\Lti\Lti;
 use App\Traits\ReturnToCore;
 use Carbon\Carbon;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -79,7 +79,7 @@ class LinkController extends Controller
         $link->license = $inputs['license'] ?? '';
         $link->save();
 
-        event(new LinkWasSaved($link, VersionData::CREATE));
+        event(new LinkWasSaved($link, ContentVersion::PURPOSE_CREATE));
 
         $url = $this->getRedirectToCoreUrl($link->toLtiContent(), $request->get('redirectToken'));
 
@@ -141,9 +141,9 @@ class LinkController extends Controller
         $inputs = $request->all();
 
         $oldLicense = $oldLink->getContentLicense();
-        $reason = $oldLink->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
+        $reason = $oldLink->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === VersionData::COPY && !$request->input("license", false)) {
+        if ($reason === ContentVersion::PURPOSE_COPY && !$request->input("license", false)) {
             $request->merge(["license" => $oldLicense]);
         }
 
@@ -155,10 +155,10 @@ class LinkController extends Controller
         $link = $oldLink;
         if ($oldLink->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case VersionData::UPDATE:
+                case ContentVersion::PURPOSE_UPDATE:
                     $link = $oldLink->makeCopy();
                     break;
-                case VersionData::COPY:
+                case ContentVersion::PURPOSE_COPY:
                     $link = $oldLink->makeCopy(Session::get('authId'));
                     break;
             }

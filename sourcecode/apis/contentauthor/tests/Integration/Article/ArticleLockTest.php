@@ -6,36 +6,23 @@ use App\ApiModels\User;
 use App\Article;
 use App\ArticleCollaborator;
 use App\ContentLock;
-use Cerpus\VersionClient\VersionData;
+use App\Events\ArticleWasSaved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
-use Tests\TestCase;
 use Tests\Helpers\MockAuthApi;
 use Tests\Helpers\MockMQ;
 use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
+use Tests\TestCase;
 
 class ArticleLockTest extends TestCase
 {
     use RefreshDatabase;
     use MockMQ;
-    use MockVersioningTrait;
     use MockResourceApi;
     use MockAuthApi;
     use WithFaker;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-            'getVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-        ]);
-    }
 
     public function testArticleHasLockWhenUserEdits()
     {
@@ -59,6 +46,7 @@ class ArticleLockTest extends TestCase
      */
     public function LockIsRemovedOnSave()
     {
+        $this->expectsEvents(ArticleWasSaved::class);
         $this->setupAuthApi([
             'getUser' => new User("1", "aren", "aren", "none@none.com")
         ]);

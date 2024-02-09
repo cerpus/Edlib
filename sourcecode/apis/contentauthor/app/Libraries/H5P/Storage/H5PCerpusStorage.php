@@ -2,24 +2,23 @@
 
 namespace App\Libraries\H5P\Storage;
 
-use App\H5PLibrary;
-use App\Libraries\ContentAuthorStorage;
-use App\Libraries\DataObjects\ContentStorageSettings;
 use App\H5PContentsVideo;
 use App\H5PFile;
+use App\H5PLibrary;
 use App\Jobs\PingVideoApi;
+use App\Libraries\ContentAuthorStorage;
+use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
-use Cerpus\VersionClient\VersionClient;
 use Exception;
 use H5PFileStorage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use League\Flysystem\FilesystemException;
 use League\Flysystem\StorageAttributes;
 use Psr\Log\LoggerInterface;
@@ -64,7 +63,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             'source_file' => $file,
         ]);
 
-        PingVideoApi::dispatch($h5pContentsVideo, app(VersionClient::class));
+        PingVideoApi::dispatch($h5pContentsVideo);
     }
 
     private function getFilePrefix($contentId)

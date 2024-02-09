@@ -3,6 +3,7 @@
 namespace App\Libraries\QuestionSet;
 
 use App\Content;
+use App\ContentVersion;
 use App\Events\QuestionsetWasSaved;
 use App\Events\ResourceSaved;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
@@ -10,7 +11,6 @@ use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -39,7 +39,7 @@ class QuestionSetHandler
 
         $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
 
-        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::CREATE, Session::all()));
+        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
             $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
@@ -180,7 +180,7 @@ class QuestionSetHandler
             $questionSet->setCollaborators($collaborators)->notifyNewCollaborators();
         }
 
-        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), VersionData::UPDATE, Session::all()));
+        event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_UPDATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
             $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
