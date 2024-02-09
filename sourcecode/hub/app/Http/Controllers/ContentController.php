@@ -20,6 +20,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 use function assert;
 use function is_string;
@@ -309,5 +310,15 @@ class ContentController extends Controller
         return new Response($document->saveXML(), headers: [
             'Content-Type' => 'application/xml',
         ]);
+    }
+
+    public function layoutSwitch(): RedirectResponse
+    {
+        match(Session::get('contentLayout', 'grid')) {
+            'grid' => Session::put('contentLayout', 'list'),
+            default => Session::put('contentLayout', 'grid')
+        };
+
+        return Redirect()->back();
     }
 }

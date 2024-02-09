@@ -1,0 +1,62 @@
+{{-- ToDo: Remove these when actual values are available --}}
+@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
+{{-- End --}}
+
+@php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
+
+<article class="card grid-item">
+    <header class="card-header grid-item-header border-bottom-0 fw-bold position-relative">
+        <a
+            href="{{ route('content.details', [$content->id]) }}"
+            class="text-decoration-none link-body-emphasis"
+            aria-label="{{ trans('messages.preview') }}"
+        >
+            {{-- TODO: Date and time should be displayed in users timezone --}}
+            <div class="grid-item-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
+                {{ trans('messages.edited') }}:
+                {{
+                    $content->updated_at->isToday() ? ucfirst(trans('messages.today')) . $content->updated_at->isoFormat(' LT') :
+                    ($content->updated_at->isSameAs('W', \Illuminate\Support\Carbon::now()) ? ucfirst($content->updated_at->isoFormat('dddd LT')) : $content->updated_at->isoFormat('LL'))
+                }}
+            </div>
+            <div class="text-line-clamp clamp-2-lines grid-item-title">
+                {{ $version->title }}
+            </div>
+        </a>
+        @if(!$version->published)
+            <div class="badge text-bg-primary position-absolute end-0 top-0 d-none d-md-inline-block">
+                {{ trans('messages.draft') }}
+            </div>
+        @endif
+        <div class="badge position-absolute end-0 top-100 grid-item-preview-badge d-none d-md-inline-block">
+            <x-icon name="eye"/>
+            <span class="grid-item-views" title="{{ trans('messages.number-of-views') }}">
+                {{ $content->views_count }}
+            </span>
+        </div>
+    </header>
+    <div class="card-body">
+        <div class="row card-text mb-2">
+            <div class="col-auto small">
+                {{ $type }}
+            </div>
+            <div class="col-auto badge text-bg-primary">
+                {{ strtoupper($version->language_iso_639_3) }}
+            </div>
+        </div>
+        <div class="card-text small">
+            @foreach ($content->users as $user)
+                {{ $user->name }}
+            @endforeach
+        </div>
+    </div>
+    <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
+        <x-content.action-buttons :$content />
+        <div class="badge position-absolute end-0 d-md-none grid-item-preview-badge">
+            <x-icon name="eye"/>
+            <div class="grid-item-views" title="{{ trans('messages.number-of-views') }}">
+                {{ $content->views_count }}
+            </div>
+        </div>
+    </div>
+</article>

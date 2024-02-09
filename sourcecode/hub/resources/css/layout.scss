@@ -25,12 +25,19 @@
     max-height: 100vh;
 }
 
-.text-line-clamp-2 {
+.text-line-clamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.clamp-2-lines {
+        -webkit-line-clamp: 2;
+    }
+
+    &.clamp-3-lines {
+        -webkit-line-clamp: 3;
+    }
 }
 
 .big-notice {
