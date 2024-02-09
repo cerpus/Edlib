@@ -1,0 +1,62 @@
+---
+sidebar_position: 1
+sidebar_label: "Locale codes"
+---
+
+# Locale codes in Content Author
+
+## Introduction
+This contains a in-depth description on how locale codes are transferred between the different parts. If you are
+unfamiliar with the different locale code standards and which part of Content Author (CA) that uses which, there is an
+overview on the [Standards and usage](./standards) page.
+
+
+## Locale
+
+The source of the locale code is the `launch_presentation_locale` parameter in the LTI request.
+
+
+### Laravel
+
+Contains the middleware that reads the locale code from the LTI request, and stores the locale code in session.
+The locale of Laravel is also set here, a few checks are performed before setting the Laravel locale: 
+ 1. Is there a translation for the locale?
+ 2. If not ISO 639-1, is there a translation for the ISO 639-1 code?
+ 3. Use the locale as provided in the LTI request, Laravel will use the configured fallback locale
+
+
+### CA Editor
+
+The `lang` attribute on the HTML tag is set to the locale stored in session, defaulting to the Laravel locale. The code
+is made lowercase and `_` characters are replaced by `-`. If the code is longer than two characters and does not
+contain a `-` character it's converted to ISO-639-1.
+The front-end (React) reads the value in the attribure and does its own checks for available translation files.
+The fallback and default is `en`, there is currently no configuration for this.
+
+
+### H5P Core and Editor
+
+Configurations for H5P are set in a JavaScript variable called `H5PIntegration`. The `editor` attribute contains both the
+`language` and `defaultLangauge` attributes, used by H5P to set the language for the content and for translation of
+selected content type. There is no documentation for the `H5PIntegration` object, but the documentation for creating
+content types specifies to use ISO 639-1 codes as filenames for translation files. Edlib sets the `language` value
+by converting the locale in session to ISO 639-1 format. Default value is `h5p.default-resource-language`, this is also
+set as `defaultLanguage` in the H5P configuration.  
+The language list in the "Text overrides and translations" section in the H5P Editor, contains the translations that the
+selected content type has. This list contains some non ISO 639-1 codes, these will not be pre-selected when creating
+content but have to be selected by the user.  
+E.g. For Mexican Spanish (`es-mx`) the pre-selected language will be Spanish (`es`). Mexican Spanish must be selected
+by the user.  
+Another example is Northen Sàmi where the used locale, `sme`, is a ISO 639-2 code, the ISO 639-1 code
+is `sa`. The pre-selected language will be English. The Edlib language selector will display "Northen Sàmi" since
+`sme` is also a valid ISO 639-3 code.
+
+:::info
+The attributes `locale` and `localeConverted` in the `H5PIntegration` Javascript variable, are not part of the
+H5P standard, they are used by custom add-ons to the H5P Editor for insering image, audio and video.
+:::
+
+
+### Viewing H5P content
+
+There is no locale code transferred to H5P when viewing H5P content.
