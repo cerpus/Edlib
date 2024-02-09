@@ -113,16 +113,20 @@ class MigrateVersionApi extends Command
                                     $this->debug(sprintf('Creating version "%s" for content id "%s"', $data->getId(), $data->getExternalReference()));
                                     $parent = $data->getParent();
                                     $this->addMissingParentRecord($parent, $contentType);
-                                    DB::insert('insert into content_versions (id, content_id, content_type, parent_id, created_at, version_purpose, user_id, linear_versioning) values (?,?,?,?,?,?,?,?)', [
-                                        $data->getId(),
-                                        $data->getExternalReference(),
-                                        $contentType,
-                                        $parent?->getId(),
-                                        Carbon::createFromTimestampMs($data->getCreatedAt())->format('Y-m-d H:i:s.u'),
-                                        $data->getVersionPurpose(),
-                                        $data->getUserId(),
-                                        $data->isLinearVersioning(),
-                                    ]);
+                                    if (ContentVersion::where('id', $data->getId())->doesntExist()) {
+                                        DB::insert('insert into content_versions (id, content_id, content_type, parent_id, created_at, version_purpose, user_id, linear_versioning) values (?,?,?,?,?,?,?,?)', [
+                                            $data->getId(),
+                                            $data->getExternalReference(),
+                                            $contentType,
+                                            $parent?->getId(),
+                                            Carbon::createFromTimestampMs($data->getCreatedAt())->format('Y-m-d H:i:s.u'),
+                                            $data->getVersionPurpose(),
+                                            $data->getUserId(),
+                                            $data->isLinearVersioning(),
+                                        ]);
+                                    } else {
+                                        $this->warn(sprintf('Version "%s" already exists', $data->getId()));
+                                    }
                                 } else {
                                     $this->warn(sprintf('No data found in Version API for version id "%s" and content id "%s"', $row->version_id, $row->item_id));
                                     Log::warning('Version API migration: No data found in Version API', [$contentType, $row]);
@@ -156,7 +160,7 @@ class MigrateVersionApi extends Command
     /**
      * A version has a parent version that does not exist, create a version record for the missing version
      */
-    private function addMissingParentRecord(?VersionData $data, $contentType): void
+    private function addMissingParentRecord(?VersionData $data, string $contentType): void
     {
         if ($data !== null && ContentVersion::where('id', $data->getId())->doesntExist()) {
             $this->debug(sprintf('Creating missing parent version "%s" for content id "%s"', $data->getId(), $data->getExternalReference()));
