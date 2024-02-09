@@ -13,6 +13,7 @@ server {
         try_files $uri $uri/ /index.php$is_args$args;
     }
 
+    resolver 127.0.0.11 valid=30s;
     location ~ \.php$ {
         include fastcgi.conf;
         fastcgi_pass php;
