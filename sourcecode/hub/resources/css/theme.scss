@@ -32,8 +32,8 @@
         box-shadow: $edlib-input-box-shadow;
     }
 
-    // Card
-    .card {
+    // Content layout grid
+    .grid-item {
         background-color: $white;
         --bs-card-cap-bg: #{$gray-100};
         --bs-card-cap-color: #{$gray-700};
@@ -43,6 +43,13 @@
             @include media-breakpoint-up(md) {
                 color: $black;
             }
+        }
+    }
+
+    // Content layout list
+    .list-item {
+        .card-footer {
+            background-color: var(--bs-body-bg);
         }
     }
 
@@ -69,6 +76,15 @@
     // Focused input
     .form-control:focus {
         box-shadow: $edlib-input-box-shadow;
+        border-color: $green-100;
+    }
+
+    .pagination {
+        --bs-pagination-active-bg: #{$green-100};
+        --bs-pagination-active-border-color: #{$green-200};
+        --bs-pagination-active-color: #{$gray-700};
+        --bs-pagination-color: #{$green-500};
+        --bs-pagination-focus-box-shadow: #{$edlib-input-box-shadow};
     }
 
     // Underline for menu items in contrast mode
