@@ -417,4 +417,73 @@ class MigrateVersionApiTest extends TestCase
 
         $this->assertDatabaseEmpty('content_versions');
     }
+
+    public function testMigration_timetravel(): void
+    {
+        $childDate = Carbon::now()->sub('2d');
+        $child = Article::factory()->create([
+            'created_at' => $childDate,
+        ]);
+
+        $parentDate = Carbon::now()->sub('1d');
+        $parent = Article::factory()->create([
+            'created_at' => $parentDate,
+        ]);
+
+        $parentVersionData = (object)[
+            'id' => $parent->version_id,
+            'externalReference' => $parent->id,
+            'userId' => $parent->owner_id,
+            'versionPurpose' => ContentVersion::PURPOSE_CREATE,
+            'createdAt' => $parentDate->getPreciseTimestamp(3),
+        ];
+
+        $versionData = (object)[
+            'id' => $child->version_id,
+            'externalReference' => $child->id,
+            'userId' => $child->owner_id,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
+            'createdAt' => $childDate->getPreciseTimestamp(3),
+            'parent' => $parentVersionData,
+        ];
+
+        $vc = $this->createMock(VersionClient::class);
+        $this->instance(VersionClient::class, $vc);
+        $vc->expects($this->exactly(2))
+            ->method('getVersion')
+            ->willReturnOnConsecutiveCalls(
+                (new VersionData())->populate($versionData),
+                (new VersionData())->populate($parentVersionData),
+            );
+
+        $this->artisan('edlib:migrate-version-api --debug')
+            ->expectsOutput('Debug enabled')
+            ->expectsOutput('Migrating data for articles')
+            ->expectsOutput('Chunk with 2 row(s)')
+            ->expectsOutput(sprintf('Creating version "%s" for content id "%s"', $child->version_id, $child->id))
+            ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $parent->version_id, $parent->id))
+            ->expectsOutput(sprintf('Creating version "%s" for content id "%s"', $parent->version_id, $parent->id))
+            ->expectsOutput(sprintf('Version "%s" already exists', $parent->version_id))
+            ->expectsOutput('Committing changes...')
+            ->expectsOutput('Versions for articles committed')
+            ->expectsOutput('No records to process for games')
+            ->expectsOutput('No records to process for links')
+            ->expectsOutput('No records to process for h5p_contents')
+        ;
+
+        $this->assertDatabaseCount('content_versions', 2);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $parentVersionData->id,
+            'content_id' => $parentVersionData->externalReference,
+            'content_type' => Content::TYPE_ARTICLE,
+            'created_at' => Carbon::createFromTimestampMs($parentDate->getPreciseTimestamp(3))->format('Y-m-d H:i:s.u'),
+            'parent_id' => $parent->parent_id,
+        ]);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $versionData->id,
+            'content_id' => $versionData->externalReference,
+            'content_type' => Content::TYPE_ARTICLE,
+            'created_at' => Carbon::createFromTimestampMs($childDate->getPreciseTimestamp(3))->format('Y-m-d H:i:s.u'),
+        ]);
+    }
 }
