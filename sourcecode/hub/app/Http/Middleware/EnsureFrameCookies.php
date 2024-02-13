@@ -45,16 +45,21 @@ final readonly class EnsureFrameCookies
         }
 
         if (!$hasCookie) {
-            $cookie = (new Cookie(EnsureFrameCookies::COOKIE_NAME))
-                ->withValue('1')
-                ->withSameSite(Cookie::SAMESITE_NONE);
-
             return redirect()->to(
                 $request->fullUrlWithQuery([self::AFTER_REDIR_PARAM => '1']),
                 Response::HTTP_TEMPORARY_REDIRECT,
-            )->withCookie($cookie);
+            )->withCookie(self::createCookie());
         }
 
         return $next($request);
+    }
+
+    public static function createCookie(): Cookie
+    {
+        return (new Cookie(EnsureFrameCookies::COOKIE_NAME))
+            ->withValue('1')
+            ->withSameSite(Cookie::SAMESITE_NONE)
+            ->withSecure()
+            ->withPartitioned();
     }
 }

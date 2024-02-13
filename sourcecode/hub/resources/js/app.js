@@ -1,20 +1,27 @@
+import { findIframeByWindow } from "./helpers";
+
 import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 
 import 'bootstrap';
 import './bootstrap';
+import './resize';
 
-addEventListener('DOMContentLoaded', function () {
-    const token = document.documentElement.getAttribute('data-session-scope');
+/**
+ * Log messages from iframes.
+ */
+addEventListener('message', (event) => {
+    const messageBoxQuery = findIframeByWindow(event.source)
+        ?.getAttribute('data-log-to');
 
-    if (!token) {
+    if (!messageBoxQuery) {
         return;
     }
 
-    if (!window.Livewire) {
-        throw new Error('A session scope is present, but Livewire is not.');
+    const messageBox = document.querySelector(messageBoxQuery);
+
+    if (!messageBox) {
+        return
     }
 
-    window.Livewire.addHeaders({
-       'Edlib-Session-Scope': token,
-    });
+    messageBox.appendChild(new Text(JSON.stringify(event.data, null, '  ') + "\n"));
 });

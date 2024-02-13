@@ -12,21 +12,22 @@
             </button>
         </div>
 
-        <x-filter/>
+        <form>
+            <x-filter :$languageOptions/>
 
-        <div class="text-center">
-            <button
-                id="showResultsButton"
-                class="btn btn-primary d-md-none mt-5"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasBottomMobile"
-                aria-controls="offcanvasBottomMobile"
-                aria-label="{{ trans('messages.search-results') }}"
-            >
-                {{ trans('messages.search-results-mobile', ['num' => 378]) }}
-            </button>
-        </div>
-
+            <div class="text-center">
+                <button
+                    id="showResultsButton"
+                    class="btn btn-primary d-md-none mt-5"
+                    type="submit"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasBottomMobile"
+                    aria-controls="offcanvasBottomMobile"
+                    aria-label="{{ trans('messages.search-results') }}"
+                >
+                    {{ trans('messages.search-results-mobile') }}
+                </button>
+            </div>
+        </form>
     </div>
 </div>

@@ -1,9 +1,18 @@
 @props(['mine' => false, 'hasQuery' => $query !== ''])
 <div>
-    <x-content.search :query="$query"/>
+    <x-content.search
+        :$query
+        :$filterLang
+        :$languageOptions
+        :$sortBy
+        :$sortOptions
+    />
 
     @unless ($results->isEmpty())
-        <x-content.grid :contents="$results"/>
+        <x-content.content
+            :contents="$results"
+            :showDrafts="($showDrafts ?? false) || ($mine ?? false)"
+        />
     @else
         <x-big-notice>
             <x-slot:title>

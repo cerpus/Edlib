@@ -1,5 +1,5 @@
 @props(['title' => null, 'description' => null, 'actions' => null])
-<div class="big-notice d-flex flex-column justify-content-center align-items-center">
+<div class="big-notice d-flex flex-column justify-content-center text-center">
     @if ($title)
         <h1 class="text-secondary">{{ $title }}</h1>
     @endif
@@ -9,7 +9,7 @@
     @endif
 
     @if ($actions)
-        <div class="d-flex gap-3 flex-column flex-md-row">
+        <div class="d-flex gap-3 flex-md-row flex-wrap justify-content-center">
             {{ $actions }}
         </div>
     @endif

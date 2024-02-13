@@ -12,6 +12,11 @@ export default defineConfig({
             clientPort: '443',
             protocol: 'wss',
         },
+        watch: {
+            ignored: [
+                '**/vendor/**',
+            ],
+        },
     },
     plugins: [
         laravel({

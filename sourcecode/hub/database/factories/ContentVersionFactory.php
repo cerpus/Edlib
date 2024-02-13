@@ -31,6 +31,11 @@ final class ContentVersionFactory extends Factory
         ];
     }
 
+    public function withLaunchUrl(string $launchUrl): self
+    {
+        return $this->state(['lti_launch_url' => $launchUrl]);
+    }
+
     public function tool(LtiToolFactory $tool): self
     {
         return $this->for($tool, 'tool');

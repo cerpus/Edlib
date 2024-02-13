@@ -45,6 +45,36 @@ final class ContentTest extends DuskTestCase
         });
     }
 
+    public function testCountsViewsThroughDetailView(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->assertSame(0, $content->views()->count());
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->visit('/content')
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
+                ->assertSeeIn('@views', '0')
+                ->click('@title')
+            )
+            ->visit('/content')
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
+                ->assertSeeIn('@views', '1')
+            ));
+
+        $this->assertSame(1, $content->views()->count());
+
+        $view = $content->views()->firstOrFail();
+        $this->assertTrue($view->source->isDetail());
+        $this->assertNotNull($view->ip);
+    }
+
     public function testDoesNotAttemptToListContentWithoutVersions(): void
     {
         $user = User::factory()->create();
@@ -245,5 +275,76 @@ final class ContentTest extends DuskTestCase
                 ->assertTitleContains($expectedTitle)
                 ->assertPresent('iframe');
         });
+    }
+
+    public function testResizesIframeWhenRequestedByTool(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $content = Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->withLaunchUrl('https://hub-test.edlib.test/lti/resize-test')
+                ->tool(LtiTool::factory()->withCredentials($platform->getOauth1Credentials()))
+                ->published()
+        )->create();
+
+        $this->browse(function (Browser $browser) use ($content) {
+            $browser
+                ->resize(1000, 1000)
+                ->visit('/content/' . $content->id)
+                ->assertPresent('.lti-launch')
+                ->withinFrame('.lti-launch', fn (Browser $frame) => $frame->press('Resize to 640'))
+                ->assertScript('document.querySelector(".lti-launch").scrollHeight', 640)
+                ->withinFrame('.lti-launch', fn (Browser $frame) => $frame->press('Resize to 800'))
+                ->assertScript('document.querySelector(".lti-launch").scrollHeight', 800)
+            ;
+        });
+    }
+
+    /**
+     * Requests to Livewire in LTI context must be aware of the session scope,
+     * otherwise it'll replace elements on the page with HTML generated for the
+     * outer session. This problem most obviously manifests itself as the 'use'
+     * button missing on content cards after a search, so we check that they are
+     * still present after performing one.
+     */
+    public function testContentCardsHaveUseButtonAfterSearchingInLtiContext(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $tool = LtiTool::factory()
+            ->state(['creator_launch_url' => route('lti.select')])
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+
+        Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->state(['title' => 'found content'])
+                ->published(),
+        )->create();
+
+        Content::factory()->withVersion(
+            ContentVersion::factory()
+                ->state(['title' => 'excluded content'])
+                ->published(),
+        )->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs(User::factory()->create()->email)
+            ->assertAuthenticated()
+            ->visit('/content/create/' . $tool->id)
+            ->withinFrame('.lti-launch', fn (Browser $frame) => $frame
+                ->assertSee('found content')
+                ->assertSee('excluded content')
+                ->type('q', 'found')
+                ->pause(1200)
+                ->assertSee('found content')
+                ->assertDontSee('excluded content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                    ->assertPresent('@use-button'),
+                )));
     }
 }

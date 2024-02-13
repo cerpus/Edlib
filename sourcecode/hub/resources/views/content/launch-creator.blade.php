@@ -1,17 +1,15 @@
-<x-layout>
-    <x-slot:title>{{ sprintf('Create a thing with %s', $tool->name) }}</x-slot:title>
+<x-layout expand no-header no-footer>
+    <x-slot:title>{{ trans('messages.creating-content-with-tool', ['tool' => $tool->name]) }}</x-slot:title>
 
-    <x-lti-launch :launch="$launch" />
+    <x-lti-launch :launch="$launch" class="w-100 h-100" />
 
-    <x-slot:sidebar>
-        @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
-            <details>
-                <summary>Debug</summary>
-                <x-lti-debug
-                    :url="$launch->getRequest()->getUrl()"
-                    :parameters="$launch->getRequest()->toArray()"
-                />
-            </details>
-        @endif
-    </x-slot:sidebar>
+    @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
+        <details class="container-md">
+            <summary>Debug</summary>
+            <x-lti-debug
+                :url="$launch->getRequest()->getUrl()"
+                :parameters="$launch->getRequest()->toArray()"
+            />
+        </details>
+    @endif
 </x-layout>

@@ -4,57 +4,49 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\IndexContentRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
+use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 use function assert;
 use function is_string;
+use function strtolower;
 use function to_route;
 use function view;
 
 class ContentController extends Controller
 {
-    public function index(IndexContentRequest $request): View
+    public function index(): View
     {
-        $query = $request->validated('q', '');
-        assert(is_string($query));
-
-        $contents = Content::findShared($query);
-
-        return view('content.index', [
-            'contents' => $contents->paginate(),
-            'query' => $query,
-        ]);
+        return view('content.index');
     }
 
-    public function mine(IndexContentRequest $request): View
+    public function mine(): View
     {
-        $query = $request->validated('q', '');
-        assert(is_string($query));
-
-        $user = $this->getUser();
-        $contents = Content::findForUser($user, $query);
-
-        return view('content.mine', [
-            'contents' => $contents->paginate(),
-            'query' => $query,
-        ]);
+        return view('content.mine');
     }
 
-    public function details(Content $content, LtiLaunchBuilder $launchBuilder): View
-    {
+    public function details(
+        Content $content,
+        Request $request,
+        LtiLaunchBuilder $launchBuilder,
+    ): View {
+        $content->trackView($request, ContentViewSource::Detail);
+
         $version = $content->latestPublishedVersion()->firstOrFail();
 
         $tool = $version->tool;
@@ -94,6 +86,30 @@ class ContentController extends Controller
         return view('content.details', [
             'content' => $content,
             'version' => $version,
+            'launch' => $launch,
+        ]);
+    }
+
+    public function share(
+        Content $content,
+        LtiLaunchBuilder $launchBuilder,
+        Request $request,
+    ): View {
+        $content->trackView($request, ContentViewSource::Share);
+
+        $tool = $content->latestPublishedVersion?->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/share');
+
+        return view('content.share', [
+            'content' => $content,
             'launch' => $launch,
         ]);
     }
@@ -200,17 +216,22 @@ class ContentController extends Controller
             $content = new Content();
             $content->save();
 
-            $contentVersion = new ContentVersion();
-            $contentVersion->title = $title;
-            $contentVersion->lti_tool_id = $tool->id;
-            $contentVersion->lti_launch_url = $url;
-            $contentVersion->published = true; // TODO
+            $version = new ContentVersion();
+            $version->title = $title;
+            $version->lti_tool_id = $tool->id;
+            $version->lti_launch_url = $url;
+            $version->published = true; // TODO
+
+            if ($item instanceof EdlibLtiLinkItem) {
+                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+                $version->license = $item->getLicense();
+            }
 
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            $content->versions()->save($contentVersion);
+            $content->versions()->save($version);
 
             return $content;
         });
@@ -224,6 +245,7 @@ class ContentController extends Controller
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
+                'target' => '_parent',
             ]);
         }
 
@@ -253,17 +275,23 @@ class ContentController extends Controller
             $version->lti_launch_url = $url;
             $version->published = true; // TODO
 
+            if ($item instanceof EdlibLtiLinkItem) {
+                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+                $version->license = $item->getLicense();
+            }
+
             $content->versions()->save($version);
         });
 
         // return to platform consuming Edlib
-        if (($request->attributes->get('lti')['lti_message_type'] ?? null) === 'ContentItemSelectionRequest') {
+        if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
             $ltiRequest = $content->toItemSelectionRequest();
 
             return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),
                 'method' => $ltiRequest->getMethod(),
                 'parameters' => $ltiRequest->toArray(),
+                'target' => '_parent',
             ]);
         }
 
@@ -282,5 +310,15 @@ class ContentController extends Controller
         return new Response($document->saveXML(), headers: [
             'Content-Type' => 'application/xml',
         ]);
+    }
+
+    public function layoutSwitch(): RedirectResponse
+    {
+        match(Session::get('contentLayout', 'grid')) {
+            'grid' => Session::put('contentLayout', 'list'),
+            default => Session::put('contentLayout', 'grid')
+        };
+
+        return Redirect()->back();
     }
 }

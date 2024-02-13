@@ -6,9 +6,9 @@ namespace App\Models;
 
 use App\Events\ContentDeleting;
 use App\Lti\ContentItemSelectionFactory;
-use App\Lti\LtiContent;
 use App\Support\SessionScope;
 use BadMethodCallException;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
@@ -20,8 +20,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
@@ -76,7 +78,7 @@ class Content extends Model
             ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
     }
 
-    public function toLtiLinkItem(): LtiContent
+    public function toLtiLinkItem(): EdlibLtiLinkItem
     {
         $version = $this->latestPublishedVersion
             ?? throw new DomainException('No version for content');
@@ -93,12 +95,10 @@ class Content extends Model
         }
         assert(is_string($url));
 
-        return new LtiContent(
-            title: $version->getTitle(),
-            url: $url,
-            languageIso639_3: $version->language_iso_639_3,
-            license: $version->license,
-        );
+        return (new EdlibLtiLinkItem(title: $version->getTitle(), url: $url))
+            ->withLanguageIso639_3($version->language_iso_639_3)
+            ->withLicense($version->license)
+        ;
     }
 
     public function createCopyBelongingTo(User $user): self
@@ -159,6 +159,44 @@ class Content extends Model
     }
 
     /**
+     * @return HasMany<ContentView>
+     */
+    public function views(): HasMany
+    {
+        return $this->hasMany(ContentView::class);
+    }
+
+    public function trackView(
+        Request $request,
+        ContentViewSource $source,
+        LtiPlatform|null $sourcePlatform = null,
+    ): void {
+        if (!$source->isLtiPlatform() && $sourcePlatform !== null) {
+            throw new InvalidArgumentException(
+                '$sourcePlatform must only be set for LTI platform views',
+            );
+        }
+
+        $user = $request->user();
+        if ($user instanceof User && $this->hasUser($user)) {
+            return;
+        }
+
+        $sessionKey = "content_views.{$this->id}";
+        if ($request->session()->has($sessionKey)) {
+            return;
+        }
+
+        $view = new ContentView();
+        $view->source = $source;
+        $view->ip = $request->ip();
+        $view->lti_platform_id = $sourcePlatform?->id;
+        $this->views()->save($view);
+
+        $request->session()->put($sessionKey, true);
+    }
+
+    /**
      * @return BelongsToMany<User>
      */
     public function users(): BelongsToMany
@@ -205,24 +243,28 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
-    public static function findShared(string $query = ''): ScoutBuilder
+    public static function findShared(string $keywords = ''): ScoutBuilder
     {
-        return Content::search($query)
+        return Content::search($keywords)
             ->where('published', true)
-            ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query->with([
-                'latestPublishedVersion',
-            ]));
+            ->query(
+                fn (Builder $query) => $query
+                ->with(['latestPublishedVersion', 'users'])
+                ->withCount(['views']),
+            )
+        ;
     }
 
-    public static function findForUser(User $user, string $query = ''): ScoutBuilder
+    public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
     {
-        return Content::search($query)
+        return Content::search($keywords)
             ->where('user_ids', $user->id)
-            ->orderBy('updated_at', 'desc')
-            ->query(fn (Builder $query) => $query->with([
-                'latestVersion',
-            ]));
+            ->query(
+                fn (Builder $query) => $query
+                ->with(['latestVersion', 'users'])
+                ->withCount(['views']),
+            )
+        ;
     }
 
     public static function generateSiteMap(): DOMDocument

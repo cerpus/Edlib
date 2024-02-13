@@ -1,11 +1,9 @@
-{{-- TODO: hitting enter/the button should not reload --}}
-<form action="" method="GET" class="row g-3 mb-3">
     <div class="mt-3">
         <div class="row g-3 align-items-center">
             <div class="col-8 col-md-5 col-lg-6">
                 <label class="input-group">
                     <x-form.input
-                        wire:model="query"
+                        wire:model.live.debounce="query"
                         name="q"
                         type="search"
                         :value="$query"
@@ -16,7 +14,26 @@
                 </label>
             </div>
 
-            <x-filter-desktop/>
+            <div class="col-md-3 col-lg-3 d-md-block d-none">
+                <x-form.dropdown
+                    wire:model.live="filterLang"
+                    name="fl"
+                    :selected="$filterLang"
+                    :aria-label="trans('messages.filter-language')"
+                    :options="$languageOptions"
+                    :emptyOption="trans('messages.filter-language-all')"
+                />
+            </div>
+
+            <div class="col-md-4 col-lg-3 d-md-block d-none">
+                <x-form.dropdown
+                    wire:model.live="sortBy"
+                    name="sort"
+                    :selected="$sortBy"
+                    :aria-label="trans('messages.last-changed')"
+                    :options="$sortOptions"
+                />
+            </div>
 
             <div class="col-4 col-lg-3">
                 <button
@@ -34,8 +51,7 @@
             </div>
         </div>
     </div>
-</form>
 
-<x-selected-filter-options/>
+{{--<x-selected-filter-options/>--}}
 
-<x-mobile-filter-options />
+<x-mobile-filter-options :$filterLang :$languageOptions />

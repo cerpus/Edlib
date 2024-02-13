@@ -16,7 +16,6 @@ use function is_string;
 
 final readonly class SessionScope
 {
-    public const TOKEN_HEADER = 'Edlib-Session-Scope';
     public const TOKEN_PARAM = 'session_scope';
 
     private const RANDOM_BYTES = 8;
@@ -105,8 +104,7 @@ final readonly class SessionScope
             return $token;
         }
 
-        $id = $request->query(self::TOKEN_PARAM) ??
-            $request->header(self::TOKEN_HEADER);
+        $id = $request->query(self::TOKEN_PARAM);
 
         if (is_string($id) && $this->isTokenValid($id)) {
             return $id;

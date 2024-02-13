@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Lti\LtiLaunch;
 use App\Models\Content;
+use App\Models\ContentViewSource;
+use App\Models\LtiPlatform;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,13 +39,23 @@ final readonly class LtiController
         ]);
     }
 
-    public function content(Content $content): RedirectResponse
+    public function content(Content $content, Request $request): RedirectResponse
     {
+        $key = $request->attributes->get('lti')['oauth_consumer_key'];
+        $platform = LtiPlatform::where('key', $key)->first();
+
+        $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
+
         return to_route('content.embed', [$content]);
     }
 
     public function select(): RedirectResponse
     {
         return to_route('content.index');
+    }
+
+    public function resizeTest(): Response
+    {
+        return response()->view('lti.resize-test');
     }
 }

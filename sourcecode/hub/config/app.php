@@ -19,6 +19,8 @@ return [
 
     'name' => env('APP_NAME', 'Edlib'),
 
+    'contact-url' => env('APP_CONTACT_URL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

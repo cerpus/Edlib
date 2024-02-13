@@ -21,7 +21,7 @@ final class CreateAdminUserTest extends TestCase
             'password' => 'password123',
         ]), "User logged in, but shouldn't have");
 
-        $this->artisan('edlib:create-admin-user', ['email' => 'john@example.com'])
+        $this->command('edlib:create-admin-user', ['email' => 'john@example.com'])
             ->expectsQuestion('Enter a password for the user', 'password123')
             ->assertExitCode(0);
 

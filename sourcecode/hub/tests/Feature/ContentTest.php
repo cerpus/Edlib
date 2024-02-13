@@ -113,7 +113,7 @@ final class ContentTest extends TestCase
             ->state(['updated_at' => now()->subMonth()])
             ->create();
 
-        $this->artisan('schedule:test', [
+        $this->command('schedule:test', [
             '--name' => PruneVersionlessContent::class,
         ])->assertOk();
 

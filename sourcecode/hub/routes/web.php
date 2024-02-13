@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\CookieController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\SocialController;
@@ -28,9 +29,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/')
+    ->uses(HomeController::class)
+    ->name('home');
 
 Route::middleware('can:login')->group(function () {
     Route::get('/login')
@@ -53,8 +54,17 @@ Route::controller(ContentController::class)->group(function () {
         ->middleware('auth')
         ->name('content.mine');
 
+    Route::post('/content/toggle', 'layoutSwitch')
+        ->name('content.layout');
+
     Route::get('/content/{content}', 'details')
         ->name('content.details')
+        ->whereUlid('content')
+        ->can('view', 'content');
+
+    Route::get('/c/{content}', 'share')
+        ->uses([ContentController::class, 'share'])
+        ->name('content.share')
         ->whereUlid('content')
         ->can('view', 'content');
 
@@ -146,8 +156,13 @@ Route::controller(UserController::class)->group(function () {
         Route::get('/forgot-password', 'showForgotPasswordForm')->name('forgot-password');
         Route::post('/forgot-password', 'sendResetLink')->name('forgot-password-send');
 
-        Route::get('/reset-password/{token}', 'showResetPasswordForm')->name('reset-password');
-        Route::post('/reset-password/{token}', 'resetPassword')->name('reset-password-update');
+        Route::get('/reset-password/{user:password_reset_token}')
+            ->uses([UserController::class, 'showResetPasswordForm'])
+            ->name('reset-password');
+
+        Route::post('/reset-password/{user:password_reset_token}')
+            ->uses([UserController::class, 'resetPassword'])
+            ->name('reset-password-update');
     });
 
     Route::middleware('auth:web')->group(function () {

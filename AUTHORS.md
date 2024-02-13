@@ -27,3 +27,4 @@
 - [Jeonghun Oh](https://github.com/totoromaum)
 - Knut Inge Skifjeld ([NDLA](https://ndla.no))
 - Marc Von Opstdal ([NDLA](https://ndla.no))
+
