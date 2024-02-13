@@ -167,8 +167,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Run chromedriver
+        run: chromedriver --allowed-ips= --allowed-origins='*' &
+
       - name: Run tests
         run: docker run --rm --net=host
+          -e DUSK_DRIVER_URL=http://localhost:9515
           -e MEILISEARCH_HOST=http://localhost:7700
           -e DB_HOST=127.0.0.1
           -e DB_DATABASE=postgres
