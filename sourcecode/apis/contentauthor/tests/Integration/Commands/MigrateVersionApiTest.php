@@ -60,7 +60,7 @@ class MigrateVersionApiTest extends TestCase
         $this->instance(VersionClient::class, $vc);
         $vc->expects($this->exactly(2))
             ->method('getVersion')
-            ->willReturnCallback(function ($value)  use ($versioned, $versionData) {
+            ->willReturnCallback(function ($value) use ($versioned, $versionData) {
                 return match ($value) {
                     $versioned->version_id => (new VersionData())->populate($versionData),
                     default => false,
@@ -231,7 +231,7 @@ class MigrateVersionApiTest extends TestCase
         $vc->expects($this->exactly(2))
             ->method('getVersion')
             ->willReturnCallback(function ($value) use ($versioned, $versionData) {
-                return match($value) {
+                return match ($value) {
                     $versioned->version_id => (new VersionData())->populate($versionData),
                     default => false,
                 };
