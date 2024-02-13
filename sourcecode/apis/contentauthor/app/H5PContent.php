@@ -348,4 +348,9 @@ class H5PContent extends Content implements VersionableObject
     {
         return $this->library()->firstOrFail()->name;
     }
+
+    protected function getIconUrl(): string
+    {
+        return $this->library()->firstOrFail()->getIconUrl();
+    }
 }
