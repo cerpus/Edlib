@@ -5,9 +5,9 @@
 </div>
 <div wire:loading.delay.remove>
     @if($layout === 'grid')
-        <x-content.content-grid :$contents :$showDrafts />
+        <x-content.grid :$contents :$showDrafts />
     @else
-        <x-content.content-list :$contents :$showDrafts />
+        <x-content.list :$contents :$showDrafts />
     @endif
 </div>
 

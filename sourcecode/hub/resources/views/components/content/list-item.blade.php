@@ -4,7 +4,7 @@
 
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
-<article class="card list-item shadow-sm">
+<article class="card content-list-item shadow-sm">
     <div class="card-body">
         <div class="row">
             <a
