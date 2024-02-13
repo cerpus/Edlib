@@ -47,6 +47,7 @@ class MigrateVersionApi extends Command
             $this->warn($message);
         }
     }
+
     /**
      * Execute the console command.
      */
@@ -104,7 +105,7 @@ class MigrateVersionApi extends Command
                         ->leftJoin('content_versions', $table.'.version_id', '=', 'content_versions.id')
                         ->whereNull('content_versions.id')
                         ->whereNotNull($table . '.version_id')
-                        ->orderBy($table . '.created_at', 'asc')
+                        ->orderBy($table . '.id')
                         ->chunkById(100, function (Collection $rows) use ($versionClient, $progress, $contentType) {
                             $this->debug(sprintf('Chunk with %d row(s)', $rows->count()));
                             foreach ($rows as $row) {
@@ -125,9 +126,15 @@ class MigrateVersionApi extends Command
                                             $data->isLinearVersioning(),
                                         ]);
                                     } else {
+                                        if ($progress !== null) {
+                                            $this->line('');
+                                        }
                                         $this->warn(sprintf('Version "%s" already exists', $data->getId()));
                                     }
                                 } else {
+                                    if ($progress !== null) {
+                                        $this->line('');
+                                    }
                                     $this->warn(sprintf('No data found in Version API for version id "%s" and content id "%s"', $row->version_id, $row->item_id));
                                     Log::warning('Version API migration: No data found in Version API', [$contentType, $row]);
                                 }
