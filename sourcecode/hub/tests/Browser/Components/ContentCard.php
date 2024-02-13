@@ -26,8 +26,8 @@ class ContentCard extends Component
     {
         return [
             '@title' => '.content-card-title',
-            '@use-button' => '.content-card-use-button',
-            '@edit-link' => '.content-card-edit-link',
+            '@use-button' => '.content-use-button',
+            '@edit-link' => '.content-edit-link',
             '@views' => '.content-card-views',
         ];
     }
