@@ -140,7 +140,8 @@ class MigrateVersionApi extends Command
                                         if (is_array($message)) {
                                             $message = implode(' # ', $message);
                                         }
-                                        $this->warn(sprintf('Error "%s" from Version API for version id "%s" and content id "%s": %s',
+                                        $this->warn(sprintf(
+                                            'Error "%s" from Version API for version id "%s" and content id "%s": %s',
                                             $versionClient->getErrorCode(),
                                             $row->version_id,
                                             $row->item_id,
