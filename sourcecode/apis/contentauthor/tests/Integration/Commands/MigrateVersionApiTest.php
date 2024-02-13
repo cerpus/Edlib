@@ -75,7 +75,7 @@ class MigrateVersionApiTest extends TestCase
             ->expectsOutputToContain(sprintf('Creating version "%s" for content id "%s"', $versioned->version_id, $versioned->id))
             ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $parentVersionData->id, $parentVersionData->externalReference))
             ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $rootVersionData->id, $rootVersionData->externalReference))
-            ->expectsOutputToContain(sprintf('No data found in Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
+            ->expectsOutputToContain(sprintf('Unknown error from Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
             ->expectsOutput('Committing changes...')
             ->expectsOutput('Versions for articles committed')
             ->expectsOutput('No records to process for games')
@@ -163,7 +163,7 @@ class MigrateVersionApiTest extends TestCase
             ->expectsOutput('Chunk with 2 row(s)')
             ->expectsOutputToContain(sprintf('Creating version "%s" for content id "%s"', $versioned->version_id, $versioned->id))
             ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $parentVersionData->id, $parentVersionData->externalReference))
-            ->expectsOutputToContain(sprintf('No data found in Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
+            ->expectsOutputToContain(sprintf('Unknown error from Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
             ->expectsOutput('Committing changes...')
             ->expectsOutput('Versions for games committed')
             ->expectsOutput('No records to process for links')
@@ -246,7 +246,7 @@ class MigrateVersionApiTest extends TestCase
             ->expectsOutput('Chunk with 2 row(s)')
             ->expectsOutputToContain(sprintf('Creating version "%s" for content id "%s"', $versioned->version_id, $versioned->id))
             ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $parentVersionData->id, $parentVersionData->externalReference))
-            ->expectsOutputToContain(sprintf('No data found in Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
+            ->expectsOutputToContain(sprintf('Unknown error from Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
             ->expectsOutput('Committing changes...')
             ->expectsOutput('Versions for links committed')
             ->expectsOutput('No records to process for h5p_contents')
@@ -326,7 +326,7 @@ class MigrateVersionApiTest extends TestCase
             ->expectsOutput('Chunk with 2 row(s)')
             ->expectsOutput(sprintf('Creating version "%s" for content id "%s"', $versioned->version_id, $versioned->id))
             ->expectsOutput(sprintf('Creating missing parent version "%s" for content id "%s"', $parentVersionData->id, $parentVersionData->externalReference))
-            ->expectsOutput(sprintf('No data found in Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
+            ->expectsOutput(sprintf('Unknown error from Version API for version id "%s" and content id "%s"', $missingVersion->version_id, $missingVersion->id))
             ->expectsOutput('Committing changes...')
             ->expectsOutput('Versions for h5p_contents committed')
         ;
@@ -509,6 +509,77 @@ class MigrateVersionApiTest extends TestCase
             'content_id' => $versionData->externalReference,
             'content_type' => Content::TYPE_H5P,
             'created_at' => Carbon::createFromTimestampMs($childDate->getPreciseTimestamp(3))->format('Y-m-d H:i:s.u'),
+        ]);
+    }
+
+    public function testMigration_h5p_error(): void
+    {
+        $unversioned = H5PContent::factory()->create();
+        $created = Carbon::now();
+        $versioned = H5PContent::factory()->create([
+            'created_at' => $created,
+            'version_id' => $this->faker->uuid,
+        ]);
+        $errorVersion = H5PContent::factory()->create([
+            'version_id' => $this->faker->uuid,
+            'created_at' => Carbon::now(),
+        ]);
+
+        $versionData = (object)[
+            'id' => $versioned->version_id,
+            'externalReference' => $versioned->id,
+            'userId' => $versioned->user_id,
+            'versionPurpose' => ContentVersion::PURPOSE_UPDATE,
+            'createdAt' => $created->getPreciseTimestamp(3),
+        ];
+
+        $exception = new \Exception('Just testing', 403);
+
+        $vc = $this->createMock(VersionClient::class);
+        $this->instance(VersionClient::class, $vc);
+        $vc->expects($this->any())->method('getErrorCode')->willReturn($exception->getCode());
+        $vc->expects($this->any())->method('getError')->willReturn($exception->getMessage());
+        $vc->expects($this->exactly(2))
+            ->method('getVersion')
+            ->willReturnCallback(function ($value) use ($versioned, $versionData, $errorVersion, $exception) {
+                if ($value === $errorVersion->version_id) {
+                    $this->throwException($exception);
+                } elseif ($value === $versioned->version_id) {
+                    return (new VersionData())->populate($versionData);
+                }
+                return false;
+            })
+        ;
+
+        $this->artisan('edlib:migrate-version-api --debug')
+            ->expectsOutput('Debug enabled')
+            ->expectsOutput('No records to process for articles')
+            ->expectsOutput('No records to process for games')
+            ->expectsOutput('No records to process for links')
+            ->expectsOutput('Migrating data for h5p_contents')
+            ->expectsOutput('Chunk with 2 row(s)')
+            ->expectsOutput(sprintf('Creating version "%s" for content id "%s"', $versioned->version_id, $versioned->id))
+            ->expectsOutput(sprintf('Error "%s" from Version API for version id "%s" and content id "%s": %s', $exception->getCode(), $errorVersion->version_id, $errorVersion->id, $exception->getMessage()))
+            ->expectsOutput('Committing changes...')
+            ->expectsOutput('Versions for h5p_contents committed')
+        ;
+
+        $this->assertDatabaseCount('content_versions', 1);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $versionData->id,
+            'content_id' => $versionData->externalReference,
+            'content_type' => Content::TYPE_H5P,
+            'created_at' => Carbon::createFromTimestampMs($created->getPreciseTimestamp(3))->format('Y-m-d H:i:s.u'),
+        ]);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $versioned->version_id,
+            'content_id' => $versioned->id,
+            'content_type' => Content::TYPE_H5P,
+            'created_at' => Carbon::createFromTimestampMs($created->getPreciseTimestamp(3))->format('Y-m-d H:i:s.u'),
+        ]);
+
+        $this->assertDatabaseMissing('content_versions', [
+            'content_id' => $unversioned->id,
         ]);
     }
 }
