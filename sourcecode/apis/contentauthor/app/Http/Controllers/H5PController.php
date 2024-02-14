@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
 use App\H5PCollaborator;
@@ -37,7 +38,6 @@ use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Lti\Lti;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use Illuminate\Http\JsonResponse;
@@ -368,7 +368,7 @@ class H5PController extends Controller
     private function getVersionPurpose(Request $request, H5PContent $h5p, $authId): string
     {
         if ($request->get("isNewLanguageVariant", false)) {
-            return VersionData::TRANSLATION;
+            return ContentVersion::PURPOSE_TRANSLATION;
         }
 
         if (!$h5p->canUpdateOriginalResource($authId)) {
@@ -376,10 +376,10 @@ class H5PController extends Controller
                 throw new AccessDeniedHttpException('Cannot copy this resource');
             }
 
-            return VersionData::COPY;
+            return ContentVersion::PURPOSE_COPY;
         }
 
-        return VersionData::UPDATE;
+        return ContentVersion::PURPOSE_UPDATE;
     }
 
     private function getTargetLanguage(?string $language)
@@ -554,7 +554,7 @@ class H5PController extends Controller
 
         $theOldContent = $this->getEmptyOldContent();
 
-        event(new H5PWasSaved($newH5pContent, $request, VersionData::CREATE));
+        event(new H5PWasSaved($newH5pContent, $request, ContentVersion::PURPOSE_CREATE));
 
         $this->sendCollaboratorInviteEmails($newH5pContent, $theOldContent);
 
@@ -705,7 +705,7 @@ class H5PController extends Controller
         $core = resolve(H5PCore::class);
         $oldContent = $core->loadContent($h5pContent->id);
 
-        if ($versionPurpose === VersionData::COPY || $versionPurpose === VersionData::TRANSLATION) {
+        if ($versionPurpose === ContentVersion::PURPOSE_COPY || $versionPurpose === ContentVersion::PURPOSE_TRANSLATION) {
             $oldContent['user_id'] = null;
             if (!$request->input("license", false)) {
                 $request->merge(["license" => $h5pContent->getContentLicense()]);
@@ -731,13 +731,13 @@ class H5PController extends Controller
 
         // If user is the original owner of the resource
         if ($newH5pContent->isOwner($authId)) {
-            if (in_array($versionPurpose, [VersionData::UPDATE, VersionData::UPGRADE])) {
+            if (in_array($versionPurpose, [ContentVersion::PURPOSE_UPDATE, ContentVersion::PURPOSE_UPGRADE])) {
                 $this->store_content_shares($content['id'], $request->filled("col-emails") ? $request->request->get("col-emails") : "");
             }
 
             $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
-        } elseif ($versionPurpose === VersionData::UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
+        } elseif ($versionPurpose === ContentVersion::PURPOSE_UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
             $emails = $h5pContent->collaborators->pluck('email')->toArray();
             $currentUserEmail = Session::get('email', "noemail");
             if ($currentUserEmail !== "noemail" && !in_array($currentUserEmail, $emails)) {

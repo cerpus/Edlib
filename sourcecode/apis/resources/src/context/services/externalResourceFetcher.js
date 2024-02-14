@@ -95,6 +95,18 @@ export default (cache = true) => {
         ).data;
     });
 
+    const getContentVersionInfo = async (externalSystemName, externalSystemId) => {
+        return (
+            await request(externalSystemName, 'contentVersion', externalSystemId)
+        ).data;
+    };
+
+    const getContentVersionHistory = async (externalSystemName, versionId) => {
+        return (
+            await request(externalSystemName, 'contentVersion', `${versionId}/history`)
+        ).data;
+    };
+
     const _getContentTypeInfo = async (externalSystemName, contentType) => {
         let path = '';
 
@@ -130,5 +142,7 @@ export default (cache = true) => {
         getById,
         getAll,
         getContentTypeInfo,
+        getContentVersionInfo,
+        getContentVersionHistory,
     };
 };

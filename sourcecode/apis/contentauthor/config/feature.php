@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'linear-versioning' => env('FEATURE_LINEAR_VERSIONING', false),
+    'linear-versioning' => env('FEATURE_LINEAR_VERSIONING', true),
     'licensing' => env('ENABLE_LICENSING', false),
     'content-locking' => env('FEATURE_CONTENT_LOCKING', true),
     'context-collaboration' => env('FEATURE_CONTEXT_COLLABORATION', false),

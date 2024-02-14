@@ -45,8 +45,9 @@ use function route;
  * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()
  * @method self replicate(array $except = null)
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Builder make(array $attributes = [])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class H5PContent extends Content implements VersionableObject
 {
@@ -346,5 +347,10 @@ class H5PContent extends Content implements VersionableObject
     public function getMachineName(): string
     {
         return $this->library()->firstOrFail()->name;
+    }
+
+    protected function getIconUrl(): string
+    {
+        return $this->library()->firstOrFail()->getIconUrl();
     }
 }

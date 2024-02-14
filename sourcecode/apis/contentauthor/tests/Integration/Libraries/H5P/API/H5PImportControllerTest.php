@@ -16,11 +16,11 @@ namespace App\Libraries\H5P {
 }
 
 namespace Tests\Integration\Libraries\H5P\API {
+    use App\Content;
     use App\H5PContent;
     use App\H5PLibrary;
     use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
     use App\User;
-    use Cerpus\VersionClient\VersionData;
     use Illuminate\Contracts\Filesystem\Filesystem;
     use Illuminate\Foundation\Testing\RefreshDatabase;
     use Illuminate\Foundation\Testing\WithFaker;
@@ -28,7 +28,6 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Storage;
-    use Tests\Helpers\MockVersioningTrait;
     use Tests\TestCase;
 
 use function base_path;
@@ -37,7 +36,6 @@ use function base_path;
     class H5PImportControllerTest extends TestCase
     {
         use RefreshDatabase;
-        use MockVersioningTrait;
         use WithFaker;
 
         private Filesystem $fakeDisk;
@@ -57,11 +55,6 @@ use function base_path;
         {
             H5PContent::factory()->create();
             H5PLibrary::factory()->create();
-
-            $versionData = new VersionData();
-            $this->setupVersion([
-                'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-            ]);
         }
 
         private function setupAdapter($isUserPublishEnabled, $isPublic)
@@ -132,6 +125,12 @@ use function base_path;
                     $this->assertEquals('U', $h5pContent->metadata->license);
                     $this->assertTrue($h5pContent->is_published);
                     $this->assertFalse($h5pContent->isListed());
+                    $this->assertDatabaseHas('content_versions', [
+                        'id' => $h5pContent->version_id,
+                        'content_id' => $h5pContent->id,
+                        'content_type' => Content::TYPE_H5P,
+                        'parent_id' => null,
+                    ]);
 
                     $responseData = $response->json();
                     $this->assertEquals($title, $responseData['title']);
@@ -176,6 +175,7 @@ use function base_path;
             ]);
             $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getFolderName())));
 
+            /** @var H5PContent $h5pContent */
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
                 ->where('library_id', $library->id)
@@ -191,6 +191,13 @@ use function base_path;
 
             $imagePath = 'content/%s/images/file-5edde9091ebe0.jpg';
             $this->assertFileExists($this->fakeDisk->path(sprintf($imagePath, $h5pContent->id)));
+
+            $this->assertDatabaseHas('content_versions', [
+                'id' => $h5pContent->version_id,
+                'content_id' => $h5pContent->id,
+                'content_type' => Content::TYPE_H5P,
+                'parent_id' => null,
+            ]);
 
             $responseData = $response->json();
             $this->assertEquals($title, $responseData['title']);
@@ -232,6 +239,7 @@ use function base_path;
             ]);
             $this->assertFileExists($this->fakeDisk->path(sprintf("libraries/%s/semantics.json", $library->getFolderName())));
 
+            /** @var H5PContent $h5pContent */
             $h5pContent = H5PContent::with('metadata')
                 ->where('title', $title)
                 ->where('library_id', $library->id)
@@ -246,6 +254,13 @@ use function base_path;
 
             $this->assertDatabaseHas('h5p_contents_metadata', [
                 'content_id' => $h5pContent->id,
+            ]);
+
+            $this->assertDatabaseHas('content_versions', [
+                'id' => $h5pContent->version_id,
+                'content_id' => $h5pContent->id,
+                'content_type' => Content::TYPE_H5P,
+                'parent_id' => null,
             ]);
 
             $this->assertEquals('CC BY', $h5pContent->metadata->license);

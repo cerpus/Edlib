@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Article;
 use App\CollaboratorContext;
 use App\Content;
+use App\ContentVersion;
 use App\EdlibResource\CaEdlibResource;
 use App\EdlibResource\ResourceSerializer;
 use App\Game;
@@ -14,6 +15,7 @@ use App\Libraries\ModelRetriever;
 use App\QuestionSet;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ContentInfoController extends Controller
 {
@@ -112,5 +114,51 @@ class ContentInfoController extends Controller
         return response()->json([
             'contentType' => $library
         ]);
+    }
+
+    public function getVersion(string $id): JsonResponse
+    {
+        $content = Content::findContentById($id);
+        if ($content !== null && $content->version_id !== null) {
+            $version = $content->getVersion();
+            return response()->json([
+                'id' => $version->id,
+                'versionPurpose' => $version->version_purpose,
+                'externalSystemId' => $version->content_id,
+                'externalSystemName' => 'contentauthor',
+            ]);
+        }
+
+        return response()->json(['Version data not found'], 404);
+    }
+
+    public function getPreviousVersions(ContentVersion $version): JsonResponse
+    {
+        return response()->json(
+            $this->collectPreviousVersions(collect(), $version->previousVersion)
+        );
+    }
+
+    private function collectPreviousVersions(Collection $collection, ?ContentVersion $version): Collection
+    {
+        if ($version === null) {
+            return $collection;
+        }
+
+        $collection->push([
+            'externalSystem' => 'contentauthor',
+            'externalReference' => $version->content_id,
+        ]);
+
+        if ($version->version_purpose !== ContentVersion::PURPOSE_UPDATE) {
+            return $collection;
+        }
+
+        $previousVersion = $version->previousVersion;
+        if ($previousVersion === null) {
+            return $collection;
+        }
+
+        return $this->collectPreviousVersions($collection, $previousVersion);
     }
 }
