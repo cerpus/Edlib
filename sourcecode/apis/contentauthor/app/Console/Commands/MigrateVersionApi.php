@@ -135,8 +135,25 @@ class MigrateVersionApi extends Command
                                     if ($progress !== null) {
                                         $this->line('');
                                     }
-                                    $this->warn(sprintf('No data found in Version API for version id "%s" and content id "%s"', $row->version_id, $row->item_id));
-                                    Log::warning('Version API migration: No data found in Version API', [$contentType, $row]);
+                                    if ($versionClient->getErrorCode() !== null) {
+                                        $message = $versionClient->getError();
+                                        if (is_array($message)) {
+                                            $message = implode(' # ', $message);
+                                        }
+                                        $this->warn(sprintf(
+                                            'Error "%s" from Version API for version id "%s" and content id "%s": %s',
+                                            $versionClient->getErrorCode(),
+                                            $row->version_id,
+                                            $row->item_id,
+                                            $message
+                                        ));
+                                        Log::warning('Version API migration: Error from Version API', [$contentType, $row, $versionClient->getErrorCode(), $versionClient->getError()]);
+                                    } else {
+                                        $this->warn(sprintf('Unknown error from Version API for version id "%s" and content id "%s"', $row->version_id, $row->item_id));
+                                        Log::warning('Version API migration: Unknown error from Version API', [$contentType, $row]);
+                                    }
+                                    // Recreate client to reset error code and message
+                                    $versionClient = app(VersionClient::class);
                                 }
                                 $progress?->advance();
                             }
