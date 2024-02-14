@@ -85,12 +85,14 @@ RUN set -eux; \
         storage/framework/sessions \
         storage/framework/views \
         storage/logs; \
-    ln -s /app/public/storage/app/public /app/public/storage; \
+    ln -s /app/storage/app/public /app/public/storage; \
     chmod -R o+w \
         bootstrap/cache \
         storage; \
     composer dump-autoload --optimize --classmap-authoritative --apcu; \
     chown -R www-data:www-data .
+
+VOLUME /app/storage
 
 
 FROM prod as test

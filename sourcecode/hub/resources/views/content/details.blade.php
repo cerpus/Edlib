@@ -2,7 +2,7 @@
     'version' => $version ?? $content->latestPublishedVersion,
     'pinnedVersion' => isset($version),
 ])
-<x-layout>
+<x-layout no-header>
     <x-slot:title>{{ $version->title }}</x-slot:title>
 
     <x-slot:head>
@@ -27,10 +27,25 @@
                 </p>
             @endif
 
-            {{-- TODO: Show more author names if there are any --}}
-            <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
+            <div class="d-flex gap-3 align-items-center">
+                @if ($version->icon)
+                    <img
+                        src="{{ $version->icon->getUrl() }}"
+                        alt=""
+                        class="content-icon content-icon-128"
+                        aria-hidden="true"
+                    >
+                @endif
 
-            <p><a href="{{ route('content.share', [$content]) }}" class="text-body-emphasis">{{ route('content.share', [$content]) }}</a></p>
+                <div class="flex-grow-1">
+                    <h1 class="fs-2">{{ $version->title }}</h1>
+
+                    {{-- TODO: Show more author names if there are any --}}
+                    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
+
+                    <p><a href="{{ route('content.share', [$content]) }}" class="text-body-emphasis">{{ route('content.share', [$content]) }}</a></p>
+                </div>
+            </div>
 
             <x-lti-launch :launch="$launch" log-to="#messages" class="w-100 border mb-2" />
 
