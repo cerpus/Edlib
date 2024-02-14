@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Exceptions\InvalidIconException;
 use App\Models\ContentVersion;
 use App\Models\Upload;
 use Exception;
@@ -118,15 +119,15 @@ final class DownloadIconForContent implements ShouldQueue, ShouldBeUnique
             $logger->info('Got a {code} while downloading content icon', [
                 'code' => $e->getCode(),
                 'content_version' => $this->contentVersion->id,
-                'exception' => $e->getMessage(),
+                'exception' => (string) $e,
                 'url' => $this->url,
             ]);
-
-            return;
-        } catch (Exception $e) {
-            $this->fail($e);
-
-            return;
+        } catch (InvalidIconException $e) {
+            $logger->info('The downloaded icon was invalid: {message}', [
+                'content_version' => $this->contentVersion->id,
+                'message' => $e->getMessage(),
+                'url' => $this->url,
+            ]);
         } finally {
             @unlink($tempPath);
         }
@@ -151,12 +152,12 @@ final class DownloadIconForContent implements ShouldQueue, ShouldBeUnique
                 $mimeType = explode(';', $response->getHeaderLine('Content-Type'))[0];
 
                 if (!isset(self::ALLOWED_TYPES[$mimeType])) {
-                    throw new Exception("Invalid file type ($mimeType)");
+                    throw new InvalidIconException("Invalid file type ($mimeType)");
                 }
             },
             'progress' => function (int $downloadTotal, int $downloadedBytes) {
                 if ($downloadTotal > self::MAX_SIZE || $downloadedBytes > self::MAX_SIZE) {
-                    throw new Exception('Icon exceeds max permitted size');
+                    throw new InvalidIconException('Icon exceeds max permitted size');
                 }
             },
             'sink' => $tempName,
