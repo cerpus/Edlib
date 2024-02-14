@@ -8,6 +8,7 @@ use App\Libraries\DataObjects\LtiContent;
 use App\Lti\LtiRequest;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Claim;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
@@ -36,8 +37,12 @@ final readonly class ReturnToCoreController
 
         // Edlib 3: perform an LTI deep-linking return
         if ($ltiRequest?->isContentItemSelectionRequest()) {
-            // TODO: score, icons, etc.
-            $item = (new EdlibLtiLinkItem(title: $content->title, url: $content->url))
+            // TODO: score, etc.
+            $item = (new EdlibLtiLinkItem(
+                title: $content->title,
+                url: $content->url,
+                icon: $content->iconUrl ? new Image($content->iconUrl) : null,
+            ))
                 ->withLanguageIso639_3($content->languageIso639_3)
                 ->withLicense($content->license);
 

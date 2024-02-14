@@ -479,6 +479,11 @@ abstract class Content extends Model
         return null;
     }
 
+    protected function getIconUrl(): string|null
+    {
+        return null;
+    }
+
     public function getEdlibDataObject(): CaEdlibResource
     {
         return new CaEdlibResource(
@@ -519,6 +524,7 @@ abstract class Content extends Model
                 ? $this->language_iso_639_3
                 : $this->getISO6393Language(),
             license: $this->license,
+            iconUrl: $this->getIconUrl(),
         );
     }
 
