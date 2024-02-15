@@ -5,7 +5,6 @@ jest.mock('@cerpus/edlib-node-utils', () => ({
     ...jest.requireActual('@cerpus/edlib-node-utils'),
     apiClients: {
         coreInternal: jest.fn(),
-        version: jest.fn(),
         edlibAuth: jest.fn(),
     },
     pubsub: {

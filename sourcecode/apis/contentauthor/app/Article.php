@@ -32,21 +32,22 @@ use const LIBXML_HTML_NOIMPLIED;
 
 /**
  * @property string $id
- * @property string $parent_id
- * @property string $parent_version_id
- * @property string $original_id
+ * @property ?string $parent_id
+ * @property ?string $parent_version_id
+ * @property ?string $version_id
+ * @property ?string $original_id
  * @property string $owner_id
  * @property string $content
- * @property Carbon $deleted_at
- * @property string $note_id
- * @property string $ndla_url
+ * @property ?Carbon $deleted_at
+ * @property ?string $node_id
+ * @property ?string $ndla_url
  *
  * @property Collection<Collaborator> $collaborators
  *
  * @method static Builder|null|self noMaxScore()
  * @method static Builder|null|self ofBulkCalculated($type)
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class Article extends Content implements VersionableObject
 {

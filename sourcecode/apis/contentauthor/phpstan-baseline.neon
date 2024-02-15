@@ -16,31 +16,6 @@ parameters:
 			path: app/Console/Commands/RemoveOldContentLocks.php
 
 		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int\\|string given\\.$#"
-			count: 1
-			path: app/Console/Commands/VersionAllUnversionedContent.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Console/Commands/VersionAllUnversionedContent.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
-			count: 2
-			path: app/Console/Commands/VersionAllUnversionedContent.php
-
-		-
-			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
-			count: 2
-			path: app/Console/Commands/VersionAllUnversionedContent.php
-
-		-
-			message: "#^Should not use node with type \"Stmt_Echo\", please change the code\\.$#"
-			count: 2
-			path: app/Console/Commands/VersionAllUnversionedContent.php
-
-		-
 			message: "#^Access to an undefined property App\\\\ContentLanguageLink\\:\\:\\$link_content_id\\.$#"
 			count: 1
 			path: app/Content.php
@@ -231,21 +206,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
-
-		-
-			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:has\\(\\) expects array\\<\\(int\\|string\\)\\>\\|int\\|string, null given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
-
-		-
-			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) expects \\(int\\|string\\), null given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminH5PDetailsController.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminUserController.php
@@ -284,11 +244,6 @@ parameters:
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LocksController.php
-
-		-
-			message: "#^If condition is always false\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/VersioningController.php
 
 		-
 			message: "#^Function collect invoked with 2 parameters, 0\\-1 required\\.$#"
@@ -484,16 +439,6 @@ parameters:
 			message: "#^Property App\\\\Jobs\\\\H5PFilesUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
 			count: 2
 			path: app/Jobs/H5PFilesUpload.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with App\\\\H5PContent will always evaluate to false\\.$#"
-			count: 1
-			path: app/Jobs/PingVideoApi.php
-
-		-
-			message: "#^Variable \\$h5pcontent in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: app/Jobs/PingVideoApi.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
@@ -942,64 +887,9 @@ parameters:
 			path: app/Libraries/QuestionSet/QuestionSetHandler.php
 
 		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$leafs VersionData\\[\\]\\)\\: Unexpected token \"\\$leafs\", expected type at offset 9$#"
-			count: 1
-			path: app/Listeners/AbstractHandleVersioning.php
-
-		-
-			message: "#^PHPDoc tag @var has invalid value \\(\\$mostRecentLeaf VersionData\\)\\: Unexpected token \"\\$mostRecentLeaf\", expected type at offset 9$#"
-			count: 1
-			path: app/Listeners/AbstractHandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Listeners/AbstractHandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Listeners/AbstractHandleVersioning.php
-
-		-
 			message: "#^Anonymous function has an unused use \\$mailer\\.$#"
 			count: 1
 			path: app/Listeners/Article/HandleCollaborationInviteEmails.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Listeners/Article/HandleVersioning.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Libraries\\\\Versioning\\\\VersionableObject\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Listeners/H5P/Copy/HandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalReference of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalReference\\(\\) expects null, int\\|string given\\.$#"
-			count: 1
-			path: app/Listeners/H5P/HandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$externalUrl of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setExternalUrl\\(\\) expects Psr\\\\Http\\\\Message\\\\UriInterface, string given\\.$#"
-			count: 1
-			path: app/Listeners/H5P/HandleVersioning.php
-
-		-
-			message: "#^Parameter \\#1 \\$userId of method Cerpus\\\\VersionClient\\\\VersionData\\:\\:setUserId\\(\\) expects null, string given\\.$#"
-			count: 1
-			path: app/Listeners/H5P/HandleVersioning.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"

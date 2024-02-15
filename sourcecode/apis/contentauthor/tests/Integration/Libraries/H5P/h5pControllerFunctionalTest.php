@@ -2,16 +2,14 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
+use App\ContentVersion;
 use App\H5PContent;
 use App\Http\Controllers\H5PController;
 use App\Http\Requests\H5PStorageRequest;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
-use stdClass;
 use Tests\Helpers\MockMQ;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -71,26 +69,11 @@ class h5pControllerFunctionalTest extends TestCase
             "license" => 'BY-NC',
         ]);
 
-        $versionClient = $this->getMockBuilder(VersionClient::class)
-            ->onlyMethods(["createVersion"])
-            ->getMock();
-
-        $versionClient->method("createVersion")
-            ->willReturnCallback(function () {
-                $responseData = new stdClass();
-                $responseData->id = "abcdefghijklmnopqrstuvwxyz";
-
-                $versionData = new VersionData();
-                $versionData->populate($responseData);
-                return $versionData;
-            });
-        app()->instance(VersionClient::class, $versionClient);
-
         $this->withSession(["authId" => "user_1"]);
 
         $h5pController = app(H5PController::class);
-
         $response = $h5pController->store($request);
+
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $responseData = json_decode($response->getContent());
         $this->assertObjectHasAttribute('url', $responseData);
@@ -100,7 +83,11 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertDatabaseMissing("h5p_contents", ["id" => 2]);
 
         $h5pContent = H5PContent::find(1);
-        $this->assertEquals("abcdefghijklmnopqrstuvwxyz", $h5pContent->version_id);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $h5pContent->version_id,
+            'content_id' => $h5pContent->id,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
+        ]);
     }
 
     /**
@@ -120,46 +107,29 @@ class h5pControllerFunctionalTest extends TestCase
             "isDraft" => false
         ]);
 
-        $versionClient = $this->getMockBuilder(VersionClient::class)
-            ->onlyMethods(["createVersion"])
-            ->getMock();
-
-        $responseA = new stdClass();
-        $responseA->id = "AAAAAAAAAA";
-        $versionA = new VersionData();
-        $versionA->populate($responseA);
-
-        $responseB = new stdClass();
-        $responseB->id = "BBBBBBBBBB";
-        $versionB = new VersionData();
-        $versionB->populate($responseB);
-
-        $versionClient
-            ->expects($this->exactly(2))
-            ->method("createVersion")
-            ->willReturnOnConsecutiveCalls($versionA, $versionB);
-
-        app()->instance(VersionClient::class, $versionClient);
-
         $this->withSession(["authId" => "user_1"]);
 
         $h5pController = app(H5PController::class);
-
         $response = $h5pController->store($request);
+
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
 
         $this->assertDatabaseHas("h5p_contents", ["id" => 1, "license" => 'BY-NC-ND']);
         $this->assertDatabaseMissing("h5p_contents", ["id" => 2]);
 
         $h5pContent = H5PContent::find(1);
-        $this->assertEquals("AAAAAAAAAA", $h5pContent->version_id);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $h5pContent->version_id,
+            'content_id' => $h5pContent->id,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
+        ]);
 
         $request = new H5PStorageRequest();
         $request->replace([
             'title' => "Updated H5P Title",
             "library" => "H5P.Flashcards 1.1",
             "parameters" => '{"params":{"cards":[{"image":{"path":"","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"title": "Updated H5P Title"}}',
-            "isDraft" => false
+            "isDraft" => false,
         ]);
 
         $response = $h5pController->update($request, $h5pContent, $core);
@@ -172,7 +142,11 @@ class h5pControllerFunctionalTest extends TestCase
         $this->assertDatabaseMissing("h5p_contents", ["id" => 3]);
 
         $updatedH5pContent = H5PContent::find(2);
-        $this->assertEquals("BBBBBBBBBB", $updatedH5pContent->version_id);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $updatedH5pContent->version_id,
+            'content_id' => $updatedH5pContent->id,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
+        ]);
         $this->assertEquals("Updated H5P Title", $updatedH5pContent->title);
     }
 }

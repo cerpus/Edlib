@@ -2,12 +2,11 @@
 
 namespace Tests\Integration\Jobs;
 
+use App\ContentVersion;
 use App\H5PContent;
 use App\H5PContentsVideo;
 use App\Jobs\PingVideoApi;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
@@ -15,7 +14,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\MockObject\MockObject;
-use Tests\Helpers\MockVersioningTrait;
 use Tests\Helpers\VersionedH5PTrait;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -23,7 +21,6 @@ use Tests\TestCase;
 class PingVideoApiTest extends TestCase
 {
     use RefreshDatabase;
-    use MockVersioningTrait;
     use VersionedH5PTrait;
     use InteractsWithDatabase;
     use WithFaker;
@@ -62,9 +59,8 @@ class PingVideoApiTest extends TestCase
 
         /** @var H5PContentsVideo|MockObject $contentVideo */
         $contentVideo = $this->createMock(H5PContentsVideo::class);
-        $versionClient = new VersionClient();
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $this->assertFalse($job->handle($adapter));
     }
 
@@ -74,10 +70,6 @@ class PingVideoApiTest extends TestCase
     public function adapterReady_noChildren_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);
-
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData(),
-        ]);
 
         $streamUrl = 'http://www.stream.url';
         $mimeType = 'video/unitTest';
@@ -92,6 +84,7 @@ class PingVideoApiTest extends TestCase
         $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
+            'version_id' => $this->faker->unique()->uuid,
         ])->each(function (H5PContent $h5pContent) use ($videoSource) {
             $this->setupContentDirectories($h5pContent->id);
             $this->createVideo($h5pContent->id, $videoSource);
@@ -112,11 +105,14 @@ class PingVideoApiTest extends TestCase
         $h5pContent = $h5pContents->random();
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
+        ContentVersion::factory()->create([
+            'id' =>$h5pContent->version_id,
+            'content_id' => $h5pContent->id,
+        ]);
 
         config(['h5p.video.enable' => true]);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $job->handle($adapter);
 
         $packageStructure = json_decode($packageStructure);
@@ -131,29 +127,6 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }
 
-    private function getVersionData(array $values = null): VersionData
-    {
-        $versionData = new VersionData();
-        $data = [
-            'externalReference' => $this->faker->unique()->uuid,
-            'externalUrl' => $this->faker->url,
-            'externalSystem' => str_replace(" ", "", $this->faker->company),
-            'id' => $this->faker->unique()->uuid,
-            'parent' => null,
-            'children' => null,
-            'versionPurpose' => 'create',
-            'userId' => $this->faker->unique()->uuid,
-            'createdAt' => $this->faker->unixTime,
-        ];
-
-        if (is_array($values)) {
-            $data = array_merge($data, $values);
-        }
-
-        $versionData->populate((object)$data);
-        return $versionData;
-    }
-
     /**
      * @test
      */
@@ -165,9 +138,8 @@ class PingVideoApiTest extends TestCase
         $adapter->method('getStreamingUrl')->willReturn($streamUrl);
 
         $contentVideo = new H5PContentsVideo();
-        $versionClient = new VersionClient();
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $this->assertFalse($job->handle($adapter));
     }
 
@@ -213,20 +185,19 @@ class PingVideoApiTest extends TestCase
         $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
+            'version_id' => $this->faker->unique()->uuid,
         ]);
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
 
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData([
-                'children' => [
-                    $this->getVersionData([
-                        'externalReference' => $h5pContentChild->id
-                    ])
-                ],
-                'versionPurpose' => 'update',
-                'externalReference' => $h5pContentParent->id
-            ]),
+        ContentVersion::factory()->create([
+            'id' => $h5pContentParent->version_id,
+            'content_id' => $h5pContentParent->id,
+        ]);
+        ContentVersion::factory()->create([
+            'id' => $h5pContentChild->version_id,
+            'content_id' => $h5pContentChild->id,
+            'parent_id' => $h5pContentParent->version_id,
         ]);
 
         $packageStructureChild->interactiveVideo->video->files[0]->path = $streamUrl;
@@ -234,11 +205,10 @@ class PingVideoApiTest extends TestCase
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
 
         config(['h5p.video.enable' => true]);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $job->handle($adapter);
 
         $this->assertDatabaseHas('h5p_contents', [
@@ -289,7 +259,7 @@ class PingVideoApiTest extends TestCase
         $adapter->method('getAdapterMimeType')->willReturn($mimeType);
 
         $packageStructure = $this->packageStructure['interactiveVideoWithLocalVideoSource'];
-        $h5pContents =H5PContent::factory()->count(5)->create([
+        $h5pContents = H5PContent::factory()->count(5)->create([
             'library_id' => 202,
             'parameters' => $packageStructure,
             'version_id' => $this->faker->unique()->uuid,
@@ -304,6 +274,7 @@ class PingVideoApiTest extends TestCase
         $h5pContentChild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureChild),
+            'version_id' => $this->faker->unique()->uuid,
         ]);
         $this->setupContentDirectories($h5pContentChild->id);
         $this->createVideo($h5pContentChild->id, $videoSource);
@@ -314,35 +285,32 @@ class PingVideoApiTest extends TestCase
         $h5pContentGrandchild = H5PContent::factory()->create([
             'library_id' => 202,
             'parameters' => json_encode($packageStructureGrandchild),
+            'version_id' => $this->faker->unique()->uuid,
         ]);
         $this->setupContentDirectories($h5pContentGrandchild->id);
         $this->createVideo($h5pContentGrandchild->id, $videoSource);
 
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData([
-                'externalReference' => $h5pContentParent->id,
-                'children' => [
-                    $this->getVersionData([
-                        'externalReference' => $h5pContentChild->id,
-                        'versionPurpose' => 'update',
-                        'children' => [
-                            $this->getVersionData([
-                                'externalReference' => $h5pContentGrandchild->id,
-                                'versionPurpose' => 'update',
-                            ])
-                        ]
-                    ])
-                ],
-            ]),
+        ContentVersion::factory()->create([
+            'id' => $h5pContentParent->version_id,
+            'content_id' => $h5pContentParent->id,
+        ]);
+        ContentVersion::factory()->create([
+            'id' => $h5pContentChild->version_id,
+            'content_id' => $h5pContentChild->id,
+            'parent_id' => $h5pContentParent->version_id,
+        ]);
+        ContentVersion::factory()->create([
+            'id' => $h5pContentGrandchild->version_id,
+            'content_id' => $h5pContentGrandchild->id,
+            'parent_id' => $h5pContentChild->version_id,
         ]);
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
 
         config(['h5p.video.enable' => true]);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $job->handle($adapter);
 
         $packageStructureGrandchild->interactiveVideo->video->files[0]->path = $streamUrl;
@@ -440,31 +408,27 @@ class PingVideoApiTest extends TestCase
                 ])
             );
 
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData([
-                'externalReference' => $h5pContentParent->id,
-                'children' => [
-                    $this->getVersionData([
-                        'externalReference' => $h5pContentChild->id,
-                        'versionPurpose' => 'update',
-                        'children' => [
-                            $this->getVersionData([
-                                'externalReference' => $h5pContentGrandchild->id,
-                                'versionPurpose' => 'update',
-                            ])
-                        ]
-                    ])
-                ],
-            ]),
+        ContentVersion::factory()->create([
+            'id' => $h5pContentParent->version_id,
+            'content_id' => $h5pContentParent->id,
+        ]);
+        ContentVersion::factory()->create([
+            'id' => $h5pContentChild->version_id,
+            'content_id' => $h5pContentChild->id,
+            'parent_id' => $h5pContentParent->version_id,
+        ]);
+        ContentVersion::factory()->create([
+            'id' => $h5pContentGrandchild->version_id,
+            'content_id' => $h5pContentGrandchild->id,
+            'parent_id' => $h5pContentChild->version_id,
         ]);
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContentParent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
 
         config(['h5p.video.enable' => true]);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $job->handle($adapter);
 
         $this->assertDatabaseHas('h5p_contents', [
@@ -486,10 +450,6 @@ class PingVideoApiTest extends TestCase
     public function adapterReady_noVideoFilesInJson_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);
-
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData(),
-        ]);
 
         $streamUrl = 'http://www.stream.url';
         $mimeType = 'video/unitTest';
@@ -520,9 +480,8 @@ class PingVideoApiTest extends TestCase
         $h5pContent = $h5pContents->random();
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $job->handle($adapter);
 
         $packageStructure = json_decode($packageStructure);
@@ -542,10 +501,6 @@ class PingVideoApiTest extends TestCase
     public function adapterReady_noLocalFiles_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);
-
-        $this->setupVersion([
-            'getVersion' => $this->getVersionData(),
-        ]);
 
         $streamUrl = 'http://www.stream.url';
         $mimeType = 'video/unitTest';
@@ -572,9 +527,8 @@ class PingVideoApiTest extends TestCase
 
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
-        $versionClient = app(VersionClient::class);
 
-        $job = new PingVideoApi($contentVideo, $versionClient);
+        $job = new PingVideoApi($contentVideo);
         $this->assertFalse($job->handle($adapter));
 
         $this->assertDatabaseHas('h5p_contents', [

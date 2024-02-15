@@ -15,8 +15,6 @@ use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Versionable;
 use Carbon\Carbon;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -361,8 +359,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $versionClient = app(VersionClient::class);
-        $versionData = $versionClient->getVersion($this[$this->getVersionColumn()]);
+        $versionData = $this->getVersion();
 
         if (empty($versionData)) {
             return false;
@@ -373,11 +370,12 @@ abstract class Content extends Model
         return $ndlaMapperCollection->isNotEmpty();
     }
 
-    private function getVersionedIds(VersionData $version): array
+    private function getVersionedIds(ContentVersion $version): array
     {
-        $id = [$version->getExternalReference()];
-        if (!is_null($version->getParent())) {
-            return array_merge($id, $this->getVersionedIds($version->getParent()));
+        $id = [$version->content_id];
+        $parent = $version->previousVersion;
+        if ($parent) {
+            return array_merge($id, $this->getVersionedIds($parent));
         }
         return $id;
     }
@@ -462,11 +460,9 @@ abstract class Content extends Model
 
         $editUrl = route($this->editRouteName, $this->id);
         if ($latest) {
-            /** @var VersionClient $versionClient */
-            $versionClient = app()->make(VersionClient::class);
-            $latest = $versionClient->latest($this->version_id);
-            if ($this->version_id !== $latest->getId()) {
-                $editUrl = route($this->editRouteName, $latest->getExternalReference());
+            $latestVersion = ContentVersion::latestLeaf($this->version_id);
+            if ($this->version_id !== $latestVersion->id) {
+                $editUrl = route($this->editRouteName, $latestVersion->content_id);
             }
         }
 
@@ -479,6 +475,11 @@ abstract class Content extends Model
     }
 
     public function getAuthorOverwrite(): string|null
+    {
+        return null;
+    }
+
+    protected function getIconUrl(): string|null
     {
         return null;
     }
@@ -523,6 +524,7 @@ abstract class Content extends Model
                 ? $this->language_iso_639_3
                 : $this->getISO6393Language(),
             license: $this->license,
+            iconUrl: $this->getIconUrl(),
         );
     }
 
