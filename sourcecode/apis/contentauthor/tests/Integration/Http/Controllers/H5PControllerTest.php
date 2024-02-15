@@ -41,6 +41,10 @@ class H5PControllerTest extends TestCase
     /** @dataProvider provider_testCreate */
     public function testCreate(string $adapterMode, ?string $contentType): void
     {
+        config([
+            "h5p.default-resource-language" => 'fi',
+        ]);
+
         $this->session([
             'authId' => $this->faker->uuid(),
             'name' => 'Emily Quackfaster',
@@ -81,10 +85,10 @@ class H5PControllerTest extends TestCase
             $this->assertFalse($config['hubIsEnabled']);
         }
         $this->assertEmpty($config['contents']);
-        $this->assertSame('nb-no', $config['locale']);
+        $this->assertSame('nb', $config['locale']);
         $this->assertSame('nb', $config['localeConverted']);
         $this->assertSame('nb', $config['editor']['language']);
-        $this->assertSame('en', $config['editor']['defaultLanguage']);
+        $this->assertSame('fi', $config['editor']['defaultLanguage']);
 
         $this->assertNotEmpty($config['core']['scripts']);
         $this->assertNotEmpty($config['core']['styles']);
@@ -128,6 +132,9 @@ class H5PControllerTest extends TestCase
     /** @dataProvider provider_adapterMode */
     public function testEdit(string $adapterMode): void
     {
+        config([
+            "h5p.default-resource-language" => 'fi',
+        ]);
         Session::put('adapterMode', $adapterMode);
         $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
         $this->setupAuthApi([
@@ -204,10 +211,10 @@ class H5PControllerTest extends TestCase
         $this->assertFalse($config['canGiveScore']);
         $this->assertFalse($config['hubIsEnabled']);
         $this->assertEmpty($config['contents']);
-        $this->assertSame('nn-no', $config['locale']);
+        $this->assertSame('nn', $config['locale']);
         $this->assertSame('nn', $config['localeConverted']);
         $this->assertSame('nn', $config['editor']['language']);
-        $this->assertSame('en', $config['editor']['defaultLanguage']);
+        $this->assertSame('fi', $config['editor']['defaultLanguage']);
 
         $this->assertNotEmpty($config['core']['scripts']);
         $this->assertNotEmpty($config['core']['styles']);
