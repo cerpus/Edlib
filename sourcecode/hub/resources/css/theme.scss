@@ -33,7 +33,7 @@
     }
 
     // Content layout grid
-    .grid-item {
+    .content-card {
         background-color: $white;
         --bs-card-cap-bg: #{$gray-100};
         --bs-card-cap-color: #{$gray-700};
@@ -47,7 +47,7 @@
     }
 
     // Content layout list
-    .list-item {
+    .content-list-item {
         .card-footer {
             background-color: var(--bs-body-bg);
         }
