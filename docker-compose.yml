@@ -372,6 +372,11 @@ services:
     build:
       context: sourcecode/hub
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
     volumes:

@@ -130,6 +130,7 @@ RUN set -eux; \
     ;
 
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
+COPY docker/php/php-dev.ini "$PHP_INI_DIR/conf.d/zz-php-dev.ini"
 
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 
