@@ -166,4 +166,6 @@ return [
     'views' => 'Views',
     'title' => 'Title',
     'content-type' => 'Content type',
+    'link-to-share' => 'Share this link',
+    'error-loading-preview' => 'Preview failed to load',
 ];

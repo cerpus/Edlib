@@ -166,4 +166,6 @@ return [
     'views' => 'Visninger',
     'title' => 'Tittel',
     'content-type' => 'Innholdstype',
+    'link-to-share' => 'Del denne linken',
+    'error-loading-preview' => 'Forhåndsvisningen kunne ikke lastes',
 ];

@@ -13,10 +13,12 @@ use App\Models\ContentVersion;
 use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
+use App\View\Components\LtiLaunch;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Exception;
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -338,5 +340,32 @@ class ContentController extends Controller
         };
 
         return Redirect()->back();
+    }
+
+
+    public function viewContent(Content $content, LtiLaunchBuilder $launchBuilder): View
+    {
+        $version = $content->latestPublishedVersion()->firstOrFail();
+
+        $tool = $version->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $version->lti_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $content->id);
+
+        $launcher = new LtiLaunch(
+            app(Encrypter::class),
+            $launch
+        );
+
+        return view('components.launch', [
+            'url' => $launcher->url,
+            'launch' => $launch,
+        ]);
     }
 }
