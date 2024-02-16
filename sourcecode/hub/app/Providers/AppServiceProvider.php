@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
+use App\Jobs\DownloadIconForContent;
 use App\Support\CarbonToPsrClockAdapter;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
@@ -20,6 +25,7 @@ use Psr\Clock\ClockInterface;
 use Random\Randomizer;
 
 use function class_exists;
+use function config;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -49,6 +55,21 @@ class AppServiceProvider extends ServiceProvider
 
             return $urlGenerator;
         });
+
+        $this->app->when(DownloadIconForContent::class)
+            ->needs(Cloud::class)
+            ->give(fn () => Storage::disk('uploads'));
+
+        $this->app->when(DownloadIconForContent::class)
+            ->needs(ClientInterface::class)
+            ->give(fn () => new Client([
+                'headers' => [
+                    'User-Agent' => sprintf(
+                        'Edlib/3 (+%s)',
+                        config('app.contact-url') ?: config('app.url'),
+                    ),
+                ],
+            ]));
     }
 
     /**

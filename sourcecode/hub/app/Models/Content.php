@@ -9,6 +9,7 @@ use App\Lti\ContentItemSelectionFactory;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
@@ -95,7 +96,13 @@ class Content extends Model
         }
         assert(is_string($url));
 
-        return (new EdlibLtiLinkItem(title: $version->getTitle(), url: $url))
+        $iconUrl = $version->icon?->getUrl();
+
+        return (new EdlibLtiLinkItem(
+            title: $version->getTitle(),
+            url: $url,
+            icon: $iconUrl ? new Image($iconUrl) : null,
+        ))
             ->withLanguageIso639_3($version->language_iso_639_3)
             ->withLicense($version->license)
         ;

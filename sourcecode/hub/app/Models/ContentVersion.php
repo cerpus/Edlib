@@ -49,6 +49,14 @@ class ContentVersion extends Model
     }
 
     /**
+     * @return BelongsTo<Upload, self>
+     */
+    public function icon(): BelongsTo
+    {
+        return $this->belongsTo(Upload::class, 'icon_upload_id');
+    }
+
+    /**
      * @return BelongsTo<LtiTool, self>
      */
     public function tool(): BelongsTo
