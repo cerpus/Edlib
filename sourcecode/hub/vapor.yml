@@ -2,14 +2,15 @@ id: 55300
 name: edlib-cerpus-hub
 environments:
     staging:
-        memory: 1024
-        cli-memory: 512
+        memory: 128
+        cli-memory: 128
         runtime: docker
         domain: hub.edlibdev.net
         network: edlib-cerpus-test
         database: edlib-cerpus-test-hub
         cache: edlib-cerpus-test-cache
         queues: edlib-cerpus-test
+        storage: edlib-cerpus-test-hub
         build:
             - 'COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader'
             - 'php artisan optimize'
