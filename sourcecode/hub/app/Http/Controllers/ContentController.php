@@ -343,8 +343,6 @@ class ContentController extends Controller
 
     public function preview(Content $content, ContentVersion $version, LtiLaunchBuilder $launchBuilder): View
     {
-        assert($content->id === $version->content_id);
-
         $tool = $version->tool;
         assert($tool instanceof LtiTool);
 
