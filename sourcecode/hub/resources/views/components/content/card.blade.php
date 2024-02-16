@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
-        <x-content.action-buttons :$content />
+        <x-content.action-buttons :$content :$version />
         <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
             <x-icon name="eye"/>
             <div class="content-card-views" title="{{ trans('messages.number-of-views') }}">

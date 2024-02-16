@@ -44,6 +44,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content />
+        <x-content.action-buttons :$content :$version />
     </div>
 </article>

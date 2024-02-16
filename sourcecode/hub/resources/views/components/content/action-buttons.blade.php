@@ -27,6 +27,23 @@
         <ul class="dropdown-menu dropdown-menu-end">
             @can('view', $content)
                 <li>
+                    <a
+                        href="#"
+                        class="dropdown-item"
+                        data-bs-toggle="modal"
+                        data-bs-target="#previewModal"
+                        data-bs-content="{{$content->id}}"
+                        data-bs-version="{{$version->id}}"
+                        data-bs-title="{{$version->title}}"
+                        data-bs-editable="{{\Illuminate\Support\Facades\Gate::allows('edit', $content)}}"
+                        data-bs-created="{{$content->created_at->isoFormat('LLLL')}}"
+                        data-bs-updated="{{$content->updated_at->isoFormat('LLLL')}}"
+                    >
+                        <x-icon name="display" class="me-2" />
+                        {{ trans('messages.preview') }}
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('content.details', [$content->id]) }}" class="dropdown-item">
                         <x-icon name="info-lg" class="me-2" />
                         {{ trans('messages.details') }}

@@ -339,4 +339,23 @@ class ContentController extends Controller
 
         return Redirect()->back();
     }
+
+
+    public function preview(Content $content, ContentVersion $version, LtiLaunchBuilder $launchBuilder): View
+    {
+        $tool = $version->tool;
+        assert($tool instanceof LtiTool);
+
+        $launchUrl = $version->lti_launch_url;
+        assert(is_string($launchUrl));
+
+        $launch = $launchBuilder
+            ->withWidth(640)
+            ->withHeight(480)
+            ->toPresentationLaunch($tool, $launchUrl, $version->id);
+
+        return view('content.preview', [
+            'launch' => $launch,
+        ]);
+    }
 }

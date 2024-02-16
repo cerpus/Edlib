@@ -10,4 +10,6 @@
             </div>
         @endforeach
     </div>
+
+    <x-preview-modal />
 </x-layout>

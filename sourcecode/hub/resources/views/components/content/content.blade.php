@@ -13,5 +13,4 @@
 
 {{ $contents->links() }}
 
-<x-preview-modal />
 <x-delete-modal />

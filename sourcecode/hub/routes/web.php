@@ -68,6 +68,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::post('/content/{content}/version/{version}/preview')
+        ->uses([ContentController::class, 'preview'])
+        ->name('content.preview')
+        ->whereUlid(['content', 'version'])
+        ->can('view', ['content', 'version'])
+        ->scopeBindings();
+
     Route::get('/content/{content}/version/{version}')
         ->uses([ContentController::class, 'version'])
         ->name('content.version-details')
