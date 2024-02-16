@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Configuration\Locales;
 use App\Jobs\DownloadIconForContent;
 use App\Support\CarbonToPsrClockAdapter;
+use App\Support\SessionScope;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -70,6 +71,8 @@ class AppServiceProvider extends ServiceProvider
                     ),
                 ],
             ]));
+
+        $this->app->singleton(SessionScope::class);
     }
 
     /**
