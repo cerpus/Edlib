@@ -21,11 +21,11 @@
     </head>
 
     <body class="d-flex flex-column vh-100">
-        @env('local')
+        @if (app()->isLocal() && config('telescope.enabled'))
             <a href="{{ route('telescope') }}" class="edlib-debug">
                 <x-icon name="bug" label="Laravel Telescope" />
             </a>
-        @endenv
+        @endif
 
         @unless ($noNav)
             <x-layout.navbar />

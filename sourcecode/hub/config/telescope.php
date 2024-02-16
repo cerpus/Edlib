@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'enabled' => env('TELESCOPE_ENABLED', true),
+    'enabled' => (bool) env('TELESCOPE_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
