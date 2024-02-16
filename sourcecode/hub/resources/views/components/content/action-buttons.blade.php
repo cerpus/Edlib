@@ -33,6 +33,7 @@
                         data-bs-toggle="modal"
                         data-bs-target="#previewModal"
                         data-bs-content="{{$content->id}}"
+                        data-bs-version="{{$version->id}}"
                         data-bs-title="{{$version->title}}"
                         data-bs-editable="{{\Illuminate\Support\Facades\Gate::allows('edit', $content)}}"
                         data-bs-created="{{$content->created_at->isoFormat('LLLL')}}"

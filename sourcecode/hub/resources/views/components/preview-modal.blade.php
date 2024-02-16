@@ -45,7 +45,8 @@
         previewModal.addEventListener('show.bs.modal', event => {
             const initiator = event.relatedTarget;
             const content = initiator.getAttribute('data-bs-content');
-            const previewUrl = "{{route('content.preview', '%content%')}}".replace('%content%', content);
+            const version = initiator.getAttribute('data-bs-version');
+            const previewUrl = "{{route('content.preview', ['%content%', '%version%'])}}".replace('%content%', content).replace('%version%', version);
             const shareUrl = "{{route('content.share', '%content%')}}".replace('%content%', content);
             const editable = initiator.getAttribute('data-bs-editable') === '1';
             const editUrl = "{{route('content.edit', '%content%')}}";
