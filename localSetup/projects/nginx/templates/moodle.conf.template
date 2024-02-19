@@ -7,11 +7,9 @@ server {
 }
 
 server {
-  listen 443 ssl;
-  server_name  moodle.${EDLIB_ROOT_DOMAIN};
+  include includes/https.conf;
 
-  ssl_certificate  /etc/ssl/private/cerpus.crt;
-  ssl_certificate_key  /etc/ssl/private/cerpus.key;
+  server_name  moodle.${EDLIB_ROOT_DOMAIN};
 
   location / {
     set $upstream http://moodle;
