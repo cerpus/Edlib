@@ -48,6 +48,7 @@ class LtiTool extends Model
         'send_name',
         'send_email',
         'proxy_launch',
+        'edit_mode',
     ];
 
     /**
