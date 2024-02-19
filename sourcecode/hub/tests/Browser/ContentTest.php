@@ -286,11 +286,16 @@ final class ContentTest extends DuskTestCase
             ->fresh();
         assert($content instanceof Content);
 
-        $this->browse(fn (Browser $browser) => $browser
+        $this->browse(
+            fn (Browser $browser) => $browser
             ->visit('/content')
-            ->with(new ContentCard(), fn (Browser $card) => $card
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
                 ->click('@action-menu-toggle')
-                ->with('@action-menu', fn (Browser $menu) => $menu
+                ->with(
+                    '@action-menu',
+                    fn (Browser $menu) => $menu
                     ->clickLink('Preview')
                 )
             )
@@ -310,18 +315,27 @@ final class ContentTest extends DuskTestCase
 
         $content = Content::factory()->withPublishedVersion()->create();
 
-        $this->browse(fn (Browser $browser) => $browser
+        $this->browse(
+            fn (Browser $browser) => $browser
             ->loginAs($user->email)
             ->visit('/content/create/' . $ltiTool->id)
-            ->withinFrame('.lti-launch', fn (Browser $launch) => $launch
-                ->with(new ContentCard(), fn (Browser $card) => $card
+            ->withinFrame(
+                '.lti-launch',
+                fn (Browser $launch) => $launch
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
                     ->click('@action-menu-toggle')
-                    ->with('@action-menu', fn (Browser $menu) => $menu
+                    ->with(
+                        '@action-menu',
+                        fn (Browser $menu) => $menu
                         ->clickLink('Preview')
                     )
                 )
                 ->waitFor('#previewModal')
-                ->with(new PreviewModal(), fn (Browser $modal) => $modal
+                ->with(
+                    new PreviewModal(),
+                    fn (Browser $modal) => $modal
                     ->click('@use-button')
                 )
             )
@@ -334,17 +348,24 @@ final class ContentTest extends DuskTestCase
         Content::factory()->withPublishedVersion()->create();
         $user = User::factory()->create();
 
-        $this->browse(fn (Browser $browser) => $browser
+        $this->browse(
+            fn (Browser $browser) => $browser
             ->loginAs($user->email)
             ->visit('/content')
-            ->with(new ContentCard(), fn (Browser $card) => $card
+            ->with(
+                new ContentCard(),
+                fn (Browser $card) => $card
                 ->click('@action-menu-toggle')
-                ->with('@action-menu', fn (Browser $menu) => $menu
+                ->with(
+                    '@action-menu',
+                    fn (Browser $menu) => $menu
                     ->clickLink('Preview')
                 )
             )
             ->waitFor('#previewModal')
-            ->with(new PreviewModal(), fn (Browser $modal) => $modal
+            ->with(
+                new PreviewModal(),
+                fn (Browser $modal) => $modal
                 ->assertMissing('@use-button')
             )
         );
