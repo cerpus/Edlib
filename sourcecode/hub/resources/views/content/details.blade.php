@@ -1,3 +1,4 @@
+@php use App\Support\SessionScope; @endphp
 @props([
     'version' => $version ?? $content->latestPublishedVersion,
     'pinnedVersion' => isset($version),
@@ -43,7 +44,14 @@
                     {{-- TODO: Show more author names if there are any --}}
                     <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
 
-                    <p><a href="{{ route('content.share', [$content]) }}" class="text-body-emphasis">{{ route('content.share', [$content]) }}</a></p>
+                    <p>
+                        <a
+                            href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                            class="text-body-emphasis"
+                        >
+                            {{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}
+                        </a>
+                    </p>
                 </div>
             </div>
 

@@ -1,3 +1,4 @@
+@php use App\Support\SessionScope; @endphp
 @can('use', $content)
     <x-form action="{{ route('content.use', [$content]) }}" method="POST">
         <button class="btn btn-primary btn-sm me-1 content-use-button">
@@ -17,7 +18,7 @@
     <div class="dropup">
         <button
             type="button"
-            class="btn btn-sm btn-secondary border-0 dropdown-toggle"
+            class="btn btn-sm btn-secondary border-0 dropdown-toggle action-menu-toggle"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             aria-label="{{ trans('messages.toggle-menu') }}"
@@ -32,12 +33,13 @@
                         class="dropdown-item"
                         data-bs-toggle="modal"
                         data-bs-target="#previewModal"
-                        data-bs-content="{{$content->id}}"
-                        data-bs-version="{{$version->id}}"
-                        data-bs-title="{{$version->title}}"
-                        data-bs-editable="{{\Illuminate\Support\Facades\Gate::allows('edit', $content)}}"
-                        data-bs-created="{{$content->created_at->isoFormat('LLLL')}}"
-                        data-bs-updated="{{$content->updated_at->isoFormat('LLLL')}}"
+                        data-content-preview-url="{{ route('content.preview', [$content, $version]) }}"
+                        data-content-share-url="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                        data-content-title="{{$version->title}}"
+                        data-content-created="{{$content->created_at->isoFormat('LLLL')}}"
+                        data-content-updated="{{$content->updated_at->isoFormat('LLLL')}}"
+                        @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
+                        @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content]) }}" @endif
                     >
                         <x-icon name="display" class="me-2" />
                         {{ trans('messages.preview') }}
