@@ -29,72 +29,82 @@
                         <span id="previewUpdatedAt"></span>
                     </div>
                 </div>
-                <a id="previewUseButton" href="" class="btn btn-primary visually-hidden" role="button">
-                    {{ trans('messages.use-content') }}
-                </a>
-                <a id="previewEditButton" href="" class="btn btn-secondary visually-hidden" role="button">
+                <a id="previewEditButton" href="" class="btn btn-secondary" role="button" hidden>
                     {{ trans('messages.edit-content') }}
                 </a>
+                <x-form action="" method="POST" id="previewUseForm" hidden>
+                    <button class="btn btn-primary" role="button">
+                        {{ trans('messages.use-content') }}
+                    </button>
+                </x-form>
             </div>
         </div>
     </div>
 </div>
 <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
-    const previewModal = document.getElementById('previewModal');
-    if (previewModal) {
-        previewModal.addEventListener('show.bs.modal', event => {
-            const initiator = event.relatedTarget;
-            const content = initiator.getAttribute('data-bs-content');
-            const version = initiator.getAttribute('data-bs-version');
-            const previewUrl = "{{route('content.preview', ['%content%', '%version%'])}}".replace('%content%', content).replace('%version%', version);
-            const shareUrl = "{{route('content.share', '%content%')}}".replace('%content%', content);
-            const editable = initiator.getAttribute('data-bs-editable') === '1';
-            const editUrl = "{{route('content.edit', '%content%')}}";
+    const previewModal = document.querySelector('#previewModal');
+    previewModal.addEventListener('show.bs.modal', event => {
+        const initiator = event.relatedTarget;
+        const created = initiator.getAttribute('data-content-created');
+        const updated = initiator.getAttribute('data-content-updated');
+        const title = initiator.getAttribute('data-content-title');
+        const previewUrl = initiator.getAttribute('data-content-preview-url');
+        const shareUrl = initiator.getAttribute('data-content-share-url');
+        const editUrl = initiator.getAttribute('data-content-edit-url');
+        const useUrl = initiator.getAttribute('data-content-use-url');
 
-            fetch(previewUrl, {
-                method: 'POST',
-                headers: {
-                    'x-csrf-token': '{{ csrf_token() }}'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.body.pipeThrough(new TextDecoderStream()).getReader().read();
-                    }
-                    throw new Error(response.statusText || response.status);
-                })
-                .then(content => {
-                    previewModal.querySelector('#previewContent').innerHTML = content.value;
-                })
-                .catch(error => {
-                    const errElm = document.createElement('div');
-                    errElm.classList.add('alert', 'alert-danger');
-                    errElm.textContent = '{{trans('messages.error-loading-preview')}}' + ` (${error.message})`;
-                    previewModal.querySelector('#previewContent').appendChild(errElm);
-                })
-            ;
-
-            previewModal.querySelector('#previewModalTitle').textContent = initiator.getAttribute('data-bs-title');
-            previewModal.querySelector('#previewShareUrl').href = shareUrl;
-            previewModal.querySelector('#previewShareUrl').textContent = shareUrl;
-            previewModal.querySelector('#previewUpdatedAt').textContent = initiator.getAttribute('data-bs-updated');
-            previewModal.querySelector('#previewCreatedAt').textContent = initiator.getAttribute('data-bs-created');
-            if (editable) {
-                previewModal.querySelector('#previewEditButton').classList.remove('visually-hidden');
-                previewModal.querySelector('#previewEditButton').href = editUrl.replace('%content%', content);
-            } else {
-                previewModal.querySelector('#previewEditButton').classList.add('visually-hidden');
+        fetch(previewUrl, {
+            method: 'POST',
+            headers: {
+                'x-csrf-token': '{{ csrf_token() }}'
             }
-        });
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error(response.statusText || response.status);
+            })
+            .then(content => {
+                previewModal.querySelector('#previewContent').innerHTML = content;
+            })
+            .catch(error => {
+                const errElm = document.createElement('div');
+                errElm.classList.add('alert', 'alert-danger');
+                errElm.textContent = '{{trans('messages.error-loading-preview')}}' + ` (${error.message})`;
+                previewModal.querySelector('#previewContent').appendChild(errElm);
+            })
+        ;
 
-        previewModal.addEventListener('hidden.bs.modal', () => {
-            previewModal.querySelector('#previewContent').innerHTML = '';
-            previewModal.querySelector('#previewModalTitle').textContent = '';
-            previewModal.querySelector('#previewShareUrl').href = '';
-            previewModal.querySelector('#previewShareUrl').textContent = '';
-            previewModal.querySelector('#previewEditButton').href = '';
-            previewModal.querySelector('#previewUpdatedAt').textContent = '';
-            previewModal.querySelector('#previewCreatedAt').textContent = '';
-        });
-    }
+        previewModal.querySelector('#previewModalTitle').textContent = title;
+        previewModal.querySelector('#previewShareUrl').href = shareUrl;
+        previewModal.querySelector('#previewShareUrl').textContent = shareUrl;
+        previewModal.querySelector('#previewUpdatedAt').textContent = updated;
+        previewModal.querySelector('#previewCreatedAt').textContent = created;
+
+        if (editUrl) {
+            previewModal.querySelector('#previewEditButton').hidden = false;
+            previewModal.querySelector('#previewEditButton').href = editUrl;
+        } else {
+            previewModal.querySelector('#previewEditButton').hidden = true;
+        }
+
+        if (useUrl) {
+            previewModal.querySelector('#previewUseForm').hidden = false;
+            previewModal.querySelector('#previewUseForm').action = useUrl;
+        } else {
+            previewModal.querySelector('#previewUseForm').hidden = true;
+        }
+    });
+
+    previewModal.addEventListener('hidden.bs.modal', () => {
+        previewModal.querySelector('#previewContent').innerHTML = '';
+        previewModal.querySelector('#previewModalTitle').textContent = '';
+        previewModal.querySelector('#previewShareUrl').href = '';
+        previewModal.querySelector('#previewShareUrl').textContent = '';
+        previewModal.querySelector('#previewEditButton').href = '';
+        previewModal.querySelector('#previewUpdatedAt').textContent = '';
+        previewModal.querySelector('#previewCreatedAt').textContent = '';
+        previewModal.querySelector('#previewUseForm').action = '';
+    });
 </script>

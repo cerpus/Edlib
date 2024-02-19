@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ContentCard;
+use Tests\Browser\Components\PreviewModal;
 use Tests\Browser\Components\VersionHistory;
 use Tests\DuskTestCase;
 
@@ -259,7 +260,7 @@ final class ContentTest extends DuskTestCase
         });
     }
 
-    public function testPreviewsContent(): void
+    public function testPreviewsContentInDetails(): void
     {
         $content = Content::factory()
             ->withPublishedVersion()
@@ -275,6 +276,78 @@ final class ContentTest extends DuskTestCase
                 ->assertTitleContains($expectedTitle)
                 ->assertPresent('iframe');
         });
+    }
+
+    public function testPreviewsContentInModal(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create()
+            ->fresh();
+        assert($content instanceof Content);
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->click('@action-menu-toggle')
+                ->with('@action-menu', fn (Browser $menu) => $menu
+                    ->clickLink('Preview')
+                )
+            )
+            ->waitFor('#previewModal')
+            ->assertVisible('#previewModal .lti-launch')
+        );
+    }
+
+    public function testUsesContentViaButtonInPreviewModal(): void
+    {
+        $ltiPlatform = LtiPlatform::factory()->create();
+        $ltiTool = LtiTool::factory()
+            ->state(['creator_launch_url' => 'https://hub-test.edlib.test/lti/dl'])
+            ->withCredentials($ltiPlatform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()->create();
+
+        $content = Content::factory()->withPublishedVersion()->create();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->visit('/content/create/' . $ltiTool->id)
+            ->withinFrame('.lti-launch', fn (Browser $launch) => $launch
+                ->with(new ContentCard(), fn (Browser $card) => $card
+                    ->click('@action-menu-toggle')
+                    ->with('@action-menu', fn (Browser $menu) => $menu
+                        ->clickLink('Preview')
+                    )
+                )
+                ->waitFor('#previewModal')
+                ->with(new PreviewModal(), fn (Browser $modal) => $modal
+                    ->click('@use-button')
+                )
+            )
+            ->assertTitleContains($content->getTitle())
+        );
+    }
+
+    public function testPreviewModalHasNoUseButtonOutsideOfLtiContext(): void
+    {
+        Content::factory()->withPublishedVersion()->create();
+        $user = User::factory()->create();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->click('@action-menu-toggle')
+                ->with('@action-menu', fn (Browser $menu) => $menu
+                    ->clickLink('Preview')
+                )
+            )
+            ->waitFor('#previewModal')
+            ->with(new PreviewModal(), fn (Browser $modal) => $modal
+                ->assertMissing('@use-button')
+            )
+        );
     }
 
     public function testResizesIframeWhenRequestedByTool(): void

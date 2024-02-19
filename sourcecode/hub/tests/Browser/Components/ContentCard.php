@@ -29,6 +29,8 @@ class ContentCard extends Component
             '@use-button' => '.content-use-button',
             '@edit-link' => '.content-edit-link',
             '@views' => '.content-card-views',
+            '@action-menu-toggle' => '.action-menu-toggle',
+            '@action-menu' => '.action-menu-toggle + .dropdown-menu',
         ];
     }
 }
