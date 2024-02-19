@@ -41,6 +41,14 @@ class ContentVersion extends Model
     }
 
     /**
+     * @return BelongsTo<User, self>
+     */
+    public function editedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'edited_by');
+    }
+
+    /**
      * @return BelongsTo<Content, self>
      */
     public function content(): BelongsTo

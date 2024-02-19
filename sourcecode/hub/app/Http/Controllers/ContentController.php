@@ -221,9 +221,10 @@ class ContentController extends Controller
 
             $version = new ContentVersion();
             $version->title = $title;
-            $version->lti_tool_id = $tool->id;
             $version->lti_launch_url = $url;
             $version->published = true; // TODO
+            $version->tool()->associate($tool);
+            $version->editedBy()->associate($this->getUser());
 
             if ($item instanceof EdlibLtiLinkItem) {
                 $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
@@ -280,10 +281,11 @@ class ContentController extends Controller
             $url = $item->getUrl() ?? throw new Exception('Missing URL');
 
             $version = new ContentVersion();
-            $version->lti_tool_id = $tool->id;
             $version->title = $title;
             $version->lti_launch_url = $url;
             $version->published = true; // TODO
+            $version->tool()->associate($tool);
+            $version->editedBy()->associate($this->getUser());
 
             if ($item instanceof EdlibLtiLinkItem) {
                 $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
