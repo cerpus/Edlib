@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Oauth1\LtiPlatformCredentialStore;
-use App\Oauth1\LtiToolCredentialStore;
+use App\Lti\Oauth1\LtiPlatformCredentialStore;
+use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Exception\ValidationException;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
@@ -20,7 +20,6 @@ final readonly class LtiValidatedRequest
     public function __construct(
         private ValidatorInterface $oauth1Validator,
         private LtiPlatformCredentialStore $ltiPlatformCredentialStore,
-        private LtiToolCredentialStore $ltiToolCredentialStore,
     ) {
     }
 
@@ -30,11 +29,19 @@ final readonly class LtiValidatedRequest
      */
     public function handle(Request $request, Closure $next, string $context): Response
     {
-        $credentialStore = match ($context) {
-            'platform' => $this->ltiPlatformCredentialStore,
-            'tool' => $this->ltiToolCredentialStore,
-            default => throw new LogicException('$context must be either "platform" or "tool"'),
-        };
+        switch ($context) {
+            case 'platform':
+                $credentialStore = $this->ltiPlatformCredentialStore;
+                break;
+            case 'tool':
+                $tool = $request->route('tool');
+                assert($tool instanceof LtiTool);
+
+                $credentialStore = $tool->getOauth1Credentials();
+                break;
+            default:
+                throw new LogicException('$context must be either "platform" or "tool"');
+        }
 
         $oauthRequest = new Oauth1Request($request->method(), $request->url(), [
             ...$request->query->all(),
