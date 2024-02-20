@@ -57,14 +57,9 @@ class LtiLaunchBuilder
         return $self;
     }
 
-    public function toPresentationLaunch(
-        LtiTool $tool,
-        string $url,
-        string $resourceLinkId,
-    ): LtiLaunch {
-        $launch = $this
-            ->withClaim('lti_message_type', 'basic-lti-launch-request')
-            ->withClaim('resource_link_id', $resourceLinkId);
+    public function toPresentationLaunch(LtiTool $tool, string $url): LtiLaunch
+    {
+        $launch = $this->withClaim('lti_message_type', 'basic-lti-launch-request');
 
         $event = new LaunchLti($url, $launch, $tool);
         $this->dispatcher->dispatch($event);

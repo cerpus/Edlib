@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Lti\LtiLaunch;
+use App\Lti\LtiLaunchBuilder;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -12,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use function is_string;
+use function url;
 
 class ContentVersion extends Model
 {
@@ -33,6 +37,35 @@ class ContentVersion extends Model
     protected $touches = [
         'content',
     ];
+
+    /**
+     * @param string[] $claims
+     */
+    public function toLtiLaunch(array $claims = []): LtiLaunch
+    {
+        $launch = app()->make(LtiLaunchBuilder::class)
+            ->withClaim('resource_link_title', $this->getTitle());
+
+        foreach ($claims as $name => $value) {
+            $launch = $launch->withClaim((string) $name, $value);
+        }
+
+        if ($launch->getClaim('resource_link_id') === null) {
+            // LTI spec says: "This is an opaque unique identifier that the
+            // [platform] guarantees will be unique within the [platform] for
+            // every placement of the link". Using the URL should be sufficient
+            // to provide that guarantee.
+            $launch = $launch->withClaim('resource_link_id', url()->current());
+        }
+
+        $tool = $this->tool;
+        assert($tool instanceof LtiTool);
+
+        $url = $this->lti_launch_url;
+        assert(is_string($url));
+
+        return $launch->toPresentationLaunch($tool, $url);
+    }
 
     public function getTitle(): string
     {

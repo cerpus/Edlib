@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Session;
 
 use function assert;
 use function is_string;
+use function redirect;
 use function strtolower;
 use function to_route;
 use function view;
@@ -42,25 +43,14 @@ class ContentController extends Controller
         return view('content.mine');
     }
 
-    public function details(
-        Content $content,
-        Request $request,
-        LtiLaunchBuilder $launchBuilder,
-    ): View {
+    public function details(Content $content, Request $request): View
+    {
         $content->trackView($request, ContentViewSource::Detail);
 
-        $version = $content->latestPublishedVersion()->firstOrFail();
-
-        $tool = $version->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $version->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id);
+        $launch = $content
+            ->latestPublishedVersion()
+            ->firstOrFail()
+            ->toLtiLaunch();
 
         return view('content.details', [
             'content' => $content,
@@ -68,47 +58,23 @@ class ContentController extends Controller
         ]);
     }
 
-    public function version(
-        Content $content,
-        ContentVersion $version,
-        LtiLaunchBuilder $launchBuilder,
-    ): View {
-        $launchUrl = $version->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $tool = $version->tool;
-        assert($tool instanceof LtiTool);
-
-        $launch = $launchBuilder->toPresentationLaunch(
-            $tool,
-            $launchUrl,
-            $version->id,
-        );
-
+    public function version(Content $content, ContentVersion $version): View
+    {
         return view('content.details', [
             'content' => $content,
             'version' => $version,
-            'launch' => $launch,
+            'launch' => $version->toLtiLaunch(),
         ]);
     }
 
-    public function share(
-        Content $content,
-        LtiLaunchBuilder $launchBuilder,
-        Request $request,
-    ): View {
+    public function share(Content $content, Request $request): View
+    {
         $content->trackView($request, ContentViewSource::Share);
 
-        $tool = $content->latestPublishedVersion?->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/share');
+        $launch = $content
+            ->latestPublishedVersion()
+            ->firstOrFail()
+            ->toLtiLaunch();
 
         return view('content.share', [
             'content' => $content,
@@ -116,23 +82,24 @@ class ContentController extends Controller
         ]);
     }
 
-    public function embed(Content $content, LtiLaunchBuilder $launchBuilder): View
+    public function embed(Content $content): View
     {
-        $tool = $content->latestPublishedVersion?->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/embed');
+        $launch = $content
+            ->latestPublishedVersion()
+            ->firstOrFail()
+            ->toLtiLaunch();
 
         return view('content.embed', [
             'content' => $content,
             'version' => $content->latestPublishedVersion,
             'launch' => $launch,
+        ]);
+    }
+
+    public function preview(Content $content, ContentVersion $version): View
+    {
+        return view('content.preview', [
+            'launch' => $version->toLtiLaunch(),
         ]);
     }
 
@@ -339,25 +306,6 @@ class ContentController extends Controller
             default => Session::put('contentLayout', 'grid')
         };
 
-        return Redirect()->back();
-    }
-
-
-    public function preview(Content $content, ContentVersion $version, LtiLaunchBuilder $launchBuilder): View
-    {
-        $tool = $version->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $version->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $version->id);
-
-        return view('content.preview', [
-            'launch' => $launch,
-        ]);
+        return redirect()->back();
     }
 }
