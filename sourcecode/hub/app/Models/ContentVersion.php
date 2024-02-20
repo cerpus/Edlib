@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Events\ContentVersionSaving;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -14,7 +17,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+
 use function is_string;
+use function strtolower;
 use function url;
 
 class ContentVersion extends Model
@@ -24,9 +29,12 @@ class ContentVersion extends Model
 
     public const UPDATED_AT = null;
 
-    /** @var array<string, string> */
+    /**
+     * @var array<string, mixed>
+     */
     protected $attributes = [
         'language_iso_639_3' => 'und',
+        'published' => true,
     ];
 
     protected $casts = [
@@ -37,6 +45,36 @@ class ContentVersion extends Model
     protected $touches = [
         'content',
     ];
+
+    /**
+     * @var array<string, class-string>
+     */
+    protected $dispatchesEvents = [
+        'saving' => ContentVersionSaving::class,
+    ];
+
+    public static function makeFromLtiContentItem(
+        ContentItem $item,
+        LtiTool $tool,
+        User $user,
+    ): self {
+        $title = $item->getTitle() ?? throw new DomainException('Missing title');
+        $url = $item->getUrl() ?? throw new DomainException('Missing URL');
+
+        $version = new self();
+        $version->title = $title;
+        $version->lti_launch_url = $url;
+        $version->original_icon_url = $item->getIcon()?->getUri();
+        $version->tool()->associate($tool);
+        $version->editedBy()->associate($user);
+
+        if ($item instanceof EdlibLtiLinkItem) {
+            $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+            $version->license = $item->getLicense();
+        }
+
+        return $version;
+    }
 
     /**
      * @param string[] $claims

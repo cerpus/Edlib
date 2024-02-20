@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DeepLinkingReturnRequest;
-use App\Jobs\DownloadIconForContent;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentUserRole;
@@ -13,10 +12,8 @@ use App\Models\ContentVersion;
 use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
-use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
-use Exception;
-use Illuminate\Contracts\Bus\Dispatcher;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +24,6 @@ use Illuminate\Support\Facades\Session;
 use function assert;
 use function is_string;
 use function redirect;
-use function strtolower;
 use function to_route;
 use function view;
 
@@ -175,44 +171,22 @@ class ContentController extends Controller
         LtiTool $tool,
         DeepLinkingReturnRequest $request,
         ContentItemsMapperInterface $mapper,
-        Dispatcher $dispatcher,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        [$content, $version] = DB::transaction(function () use ($item, $tool) {
-            $title = $item->getTitle() ?? throw new Exception('Missing title');
-            $url = $item->getUrl() ?? throw new Exception('Missing URL');
-
+        $content = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
             $content->save();
-
-            $version = new ContentVersion();
-            $version->title = $title;
-            $version->lti_launch_url = $url;
-            $version->published = true; // TODO
-            $version->tool()->associate($tool);
-            $version->editedBy()->associate($this->getUser());
-
-            if ($item instanceof EdlibLtiLinkItem) {
-                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
-                $version->license = $item->getLicense();
-            }
-
+            $content->versions()->save(
+                ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser()),
+            );
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            $content->versions()->save($version);
-
-            return [$content, $version];
+            return $content;
         });
         assert($content instanceof Content);
-
-        if ($item->getIcon()?->getUri()) {
-            $dispatcher->dispatch(
-                new DownloadIconForContent($version, $item->getIcon()->getUri()),
-            );
-        }
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
@@ -239,36 +213,13 @@ class ContentController extends Controller
         Content $content,
         DeepLinkingReturnRequest $request,
         ContentItemsMapperInterface $mapper,
-        Dispatcher $dispatcher,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
+        assert($item instanceof LtiLinkItem);
 
-        $version = DB::transaction(function () use ($content, $item, $tool): ContentVersion {
-            $title = $item->getTitle() ?? throw new Exception('Missing title');
-            $url = $item->getUrl() ?? throw new Exception('Missing URL');
-
-            $version = new ContentVersion();
-            $version->title = $title;
-            $version->lti_launch_url = $url;
-            $version->published = true; // TODO
-            $version->tool()->associate($tool);
-            $version->editedBy()->associate($this->getUser());
-
-            if ($item instanceof EdlibLtiLinkItem) {
-                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
-                $version->license = $item->getLicense();
-            }
-
-            $content->versions()->save($version);
-
-            return $version;
-        });
-
-        if ($item->getIcon()?->getUri()) {
-            $dispatcher->dispatch(
-                new DownloadIconForContent($version, $item->getIcon()->getUri())
-            );
-        }
+        $content->versions()->save(
+            ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser()),
+        );
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {

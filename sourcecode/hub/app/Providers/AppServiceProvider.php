@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
-use App\Jobs\DownloadIconForContent;
 use App\Support\CarbonToPsrClockAdapter;
 use App\Support\SessionScope;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
+use App\Utils\IconDownloader;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Illuminate\Contracts\Filesystem\Cloud;
@@ -57,11 +57,11 @@ class AppServiceProvider extends ServiceProvider
             return $urlGenerator;
         });
 
-        $this->app->when(DownloadIconForContent::class)
+        $this->app->when(IconDownloader::class)
             ->needs(Cloud::class)
             ->give(fn () => Storage::disk('uploads'));
 
-        $this->app->when(DownloadIconForContent::class)
+        $this->app->when(IconDownloader::class)
             ->needs(ClientInterface::class)
             ->give(fn () => new Client([
                 'headers' => [
