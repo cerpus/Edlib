@@ -25,6 +25,7 @@ return [
     'details' => 'Details',
     'preview' => 'Preview',
     'edit' => 'Edit',
+    'share' => 'Share',
     'search' => 'Search',
     'explore' => 'Explore',
     'my-content' => 'My content',
@@ -168,4 +169,6 @@ return [
     'content-type' => 'Content type',
     'link-to-share' => 'Share this link',
     'error-loading-preview' => 'Preview failed to load',
+    'share-copied-url-success' => 'The address for sharing has been copied to your clipboard.',
+    'share-copied-url-failed' => 'We were not able to copy the address for sharing.',
 ];

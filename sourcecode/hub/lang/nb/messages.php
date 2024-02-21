@@ -25,6 +25,7 @@ return [
     'details' => 'Detaljer',
     'preview' => 'Forhåndsvis',
     'edit' => 'Rediger',
+    'share' => 'Del',
     'search' => 'Søk',
     'explore' => 'Utforsk',
     'my-content' => 'Mitt innhold',
@@ -168,4 +169,6 @@ return [
     'content-type' => 'Innholdstype',
     'link-to-share' => 'Del denne linken',
     'error-loading-preview' => 'Forhåndsvisningen kunne ikke lastes',
+    'share-copied-url-success' => 'Adressen for deling har blitt kopiert til utklippstavla.',
+    'share-copied-url-failed' => 'Vi kunne ikke kopiere adressen for deling.',
 ];

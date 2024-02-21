@@ -29,6 +29,19 @@
             @can('view', $content)
                 <li>
                     <a
+                        href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                        class="dropdown-item share-button"
+                        data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
+                        data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
+                        role="button"
+                        target="_blank"
+                    >
+                        <x-icon name="share" class="me-2" />
+                        {{ trans('messages.share') }}
+                    </a>
+                </li>
+                <li>
+                    <a
                         href="#"
                         class="dropdown-item"
                         data-bs-toggle="modal"

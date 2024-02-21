@@ -43,48 +43,45 @@
 
                     {{-- TODO: Show more author names if there are any --}}
                     <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
-
-                    <p>
-                        <a
-                            href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
-                            class="text-body-emphasis"
-                        >
-                            {{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}
-                        </a>
-                    </p>
                 </div>
             </div>
 
             <x-lti-launch :launch="$launch" log-to="#messages" class="w-100 border mb-2" />
-
-            <div class="d-flex flex-gap gap-2">
-                {{-- TODO: be able to edit pinned versions --}}
-                @if (!$pinnedVersion)
-                    @can('edit', $content)
-                        <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary">
-                            <x-icon name="pencil" class="me-1" />
-                            {{ trans('messages.edit')}}
-                        </a>
-                    @endcan
-                @endif
-
-                {{-- TODO: be able to use pinned versions --}}
-                @if (!$pinnedVersion)
-                    @can('use', $content)
-                        <x-form action="{{ route('content.use', [$content]) }}">
-                            <button class="btn btn-secondary">
-                                {{ trans('messages.use-content')}}
-                            </button>
-                        </x-form>
-                    @endcan
-                @endif
-            </div>
         </x-slot:main>
 
         <x-slot:sidebar>
+            <div class="d-flex flex-lg-column gap-2 mb-4">
+                @can('use', $content)
+                    <x-form action="{{ route('content.use', [$content]) }}">
+                        <button class="btn btn-primary btn-lg d-flex gap-2 w-100">
+                            <x-icon name="check-lg" />
+                            <span class="flex-grow-1">{{ trans('messages.use-content')}}</span>
+                        </button>
+                    </x-form>
+                @endcan
+
+                @can('edit', $content)
+                    <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
+                        <x-icon name="pencil" class="align-self-start" />
+                        <span class="flex-grow-1 align-self-center">{{ trans('messages.edit')}}</span>
+                    </a>
+                @endif
+
+                <a
+                    href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                    class="btn btn-secondary d-flex gap-2 btn-lg share-button"
+                    target="_blank"
+                    data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
+                    data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
+                >
+                    <x-icon name="share" />
+                    <span class="flex-grow-1 align-self-center">{{ trans('messages.share') }}</span>
+                </a>
+            </div>
+
             @can('edit', $content)
                 <x-content.details.version-history :$version />
-            @endif
+            @endcan
 
             @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
                 <x-content.details.lti-params :$launch :$version />
