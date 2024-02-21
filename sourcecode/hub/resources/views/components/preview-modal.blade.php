@@ -13,8 +13,6 @@
             </div>
 
             <div class="modal-body">
-                <a id="previewShareUrl" href="" target="_blank" class="text-body-emphasis" aria-description="{{trans('messages.link-to-share')}}"></a>
-                <x-icon class="ms-3" name="share"/>
                 <div id="previewContent" class="mt-5"></div>
             </div>
 
@@ -29,6 +27,19 @@
                         <span id="previewUpdatedAt"></span>
                     </div>
                 </div>
+                <a
+                    id="previewShareLink"
+                    href=""
+                    class="btn btn-secondary d-flex gap-2 share-button"
+                    role="button"
+                    data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
+                    data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
+                    target="_blank"
+                    hidden
+                >
+                    <x-icon name="share" />
+                    {{ trans('messages.share') }}
+                </a>
                 <a id="previewEditButton" href="" class="btn btn-secondary" role="button" hidden>
                     {{ trans('messages.edit-content') }}
                 </a>
@@ -77,10 +88,15 @@
         ;
 
         previewModal.querySelector('#previewModalTitle').textContent = title;
-        previewModal.querySelector('#previewShareUrl').href = shareUrl;
-        previewModal.querySelector('#previewShareUrl').textContent = shareUrl;
         previewModal.querySelector('#previewUpdatedAt').textContent = updated;
         previewModal.querySelector('#previewCreatedAt').textContent = created;
+
+        if (shareUrl) {
+            previewModal.querySelector('#previewShareLink').hidden = false;
+            previewModal.querySelector('#previewShareLink').href = shareUrl;
+        } else {
+            previewModal.querySelector('#previewShareLink').hidden = true;
+        }
 
         if (editUrl) {
             previewModal.querySelector('#previewEditButton').hidden = false;
@@ -100,8 +116,7 @@
     previewModal.addEventListener('hidden.bs.modal', () => {
         previewModal.querySelector('#previewContent').innerHTML = '';
         previewModal.querySelector('#previewModalTitle').textContent = '';
-        previewModal.querySelector('#previewShareUrl').href = '';
-        previewModal.querySelector('#previewShareUrl').textContent = '';
+        previewModal.querySelector('#previewShareLink').href = '';
         previewModal.querySelector('#previewEditButton').href = '';
         previewModal.querySelector('#previewUpdatedAt').textContent = '';
         previewModal.querySelector('#previewCreatedAt').textContent = '';
