@@ -30,17 +30,12 @@ class GameController extends Controller
         return $this->doShow($id, null);
     }
 
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context)
     {
         $game = Game::findOrFail($id);
-        if (!$game->canShow($preview)) {
-            $ltiRequest = app()->make(Lti::class)->getRequest(request());
-            $styles = $ltiRequest?->getLaunchPresentationCssUrl() ? [$ltiRequest->getLaunchPresentationCssUrl()] : [];
-            return view('layouts.draft-resource', compact('styles'));
-        }
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
 
-        return $gameType->view($game, $context, $preview);
+        return $gameType->view($game, $context);
     }
 
     public function edit(Request $request, $gameId)

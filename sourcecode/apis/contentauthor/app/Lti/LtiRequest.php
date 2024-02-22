@@ -93,7 +93,7 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $this->param("context_id");
     }
 
-    public function isPreview()
+    public function isPreview(): bool
     {
         return $this->param("ext_preview") === "true";
     }

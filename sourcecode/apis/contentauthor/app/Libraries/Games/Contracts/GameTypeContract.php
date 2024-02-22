@@ -12,7 +12,7 @@ interface GameTypeContract
     public function createGameSettings($parameters, $asObject = false);
 
 
-    public function view(Game $game, $context, $preview);
+    public function view(Game $game, $context);
 
     public function edit(Game $game, Request $request);
 
