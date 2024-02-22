@@ -256,8 +256,8 @@ class Content extends Model
             ->where('published', true)
             ->query(
                 fn (Builder $query) => $query
-                ->with(['latestPublishedVersion', 'users'])
-                ->withCount(['views']),
+                    ->with(['latestPublishedVersion', 'users'])
+                    ->withCount(['views']),
             )
         ;
     }
@@ -268,8 +268,8 @@ class Content extends Model
             ->where('user_ids', $user->id)
             ->query(
                 fn (Builder $query) => $query
-                ->with(['latestVersion', 'users'])
-                ->withCount(['views']),
+                    ->with(['latestVersion', 'users'])
+                    ->withCount(['views']),
             )
         ;
     }
