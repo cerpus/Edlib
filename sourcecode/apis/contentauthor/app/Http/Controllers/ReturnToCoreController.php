@@ -44,7 +44,9 @@ final readonly class ReturnToCoreController
                 icon: $content->iconUrl ? new Image($content->iconUrl) : null,
             ))
                 ->withLanguageIso639_3($content->languageIso639_3)
-                ->withLicense($content->license);
+                ->withLicense($content->license)
+                ->withPublished($content->published)
+            ;
 
             $returnRequest = new Oauth1Request('POST', $ltiRequest->getReturnUrl(), [
                 'content_items' => json_encode($this->serializer->serialize([$item])),

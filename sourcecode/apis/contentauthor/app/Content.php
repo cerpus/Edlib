@@ -510,7 +510,7 @@ abstract class Content extends Model
         );
     }
 
-    public function toLtiContent(): LtiContent
+    public function toLtiContent(bool|null $published = null): LtiContent
     {
         return new LtiContent(
             id: $this->id,
@@ -525,6 +525,7 @@ abstract class Content extends Model
                 : $this->getISO6393Language(),
             license: $this->license,
             iconUrl: $this->getIconUrl(),
+            published: $published,
         );
     }
 
