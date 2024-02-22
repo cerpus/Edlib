@@ -1,18 +1,41 @@
-@props(['mine' => false, 'hasQuery' => $query !== ''])
+@props([
+    'showDrafts' => false,
+    'layout' => 'grid',
+    'query' => '',
+    'language' => '',
+    'languageOptions' => [],
+    'sortBy' => '',
+    'sortOptions' => [],
+    'user' => null,
+    'titlePreviews' => false,
+])
+@php($mine = $user && $user->is(auth()->user()))
+@php($hasQuery = $query !== '')
 <div>
     <x-content.search
         :$query
-        :$filterLang
+        :$language
         :$languageOptions
         :$sortBy
         :$sortOptions
     />
 
-    @unless ($results->isEmpty())
-        <x-content.content
-            :contents="$results"
-            :showDrafts="($showDrafts ?? false) || ($mine ?? false)"
-        />
+    @unless ($contents->isEmpty())
+        <div wire:loading.delay class="spinner-border text-info" role="status">
+            <span class="visually-hidden">{{ trans('messages.loading') }}</span>
+        </div>
+
+        <div wire:loading.delay.remove>
+            @if ($layout === 'grid')
+                <x-content.grid-header :$layout :total="$contents->total()" />
+                <x-content.grid :contents="$contents" :$showDrafts :$titlePreviews />
+            @else
+                <x-content.list-header :$layout :total="$contents->total()" />
+                <x-content.list :contents="$contents" :$showDrafts :$titlePreviews />
+            @endif
+
+            {{ $contents->links() }}
+        </div>
     @else
         <x-big-notice>
             <x-slot:title>

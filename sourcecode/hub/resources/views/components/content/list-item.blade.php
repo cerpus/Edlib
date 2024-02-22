@@ -1,3 +1,4 @@
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
 {{-- ToDo: Remove these when actual values are available --}}
 @php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
 {{-- End --}}
@@ -10,7 +11,17 @@
             <a
                 href="{{ route('content.details', [$content->id]) }}"
                 class="col text-decoration-none link-body-emphasis"
-                aria-label="{{ trans('messages.preview') }}"
+                @if ($titlePreviews)
+                    data-bs-toggle="modal"
+                    data-bs-target="#previewModal"
+                    data-content-preview-url="{{ route('content.preview', [$content, $version]) }}"
+                    data-content-share-url="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                    data-content-title="{{ $version->title }}"
+                    data-content-created="{{ $content->created_at->isoFormat('LLLL') }}"
+                    data-content-updated="{{ $content->updated_at->isoFormat('LLLL') }}"
+                    @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
+                    @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content]) }}" @endif
+                @endif
             >
                 <h5 class="text-line-clamp clamp-3-lines fw-bold" aria-label="{{ trans('messages.title') }}">
                     {{ $version->title }}
@@ -44,6 +55,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content :$version />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
     </div>
 </article>

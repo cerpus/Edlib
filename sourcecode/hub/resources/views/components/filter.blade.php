@@ -12,7 +12,7 @@
                         <li class="list-group-item border-0">
                             <label class="form-check-label">
                                 <input
-                                    wire:model="filterLang"
+                                    wire:model="language"
                                     class="form-check-input me-1"
                                     type="radio"
                                     value=""
@@ -25,7 +25,7 @@
                             <li class="list-group-item border-0">
                                 <label class="form-check-label">
                                     <input
-                                        wire:model="filterLang"
+                                        wire:model="language"
                                         class="form-check-input me-1"
                                         type="radio"
                                         value="{{$key}}"

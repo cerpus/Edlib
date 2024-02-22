@@ -1,3 +1,6 @@
+@php use App\Support\SessionScope; @endphp
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
+
 {{-- ToDo: Remove these when actual values are available --}}
 @php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
 {{-- End --}}
@@ -7,9 +10,19 @@
 <article class="card content-card">
     <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
-            href="{{ route('content.details', [$content->id]) }}"
+            href="{{ route('content.details', [$content]) }}"
             class="text-decoration-none link-body-emphasis"
-            aria-label="{{ trans('messages.preview') }}"
+            @if ($titlePreviews)
+                data-bs-toggle="modal"
+                data-bs-target="#previewModal"
+                data-content-preview-url="{{ route('content.preview', [$content, $version]) }}"
+                data-content-share-url="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                data-content-title="{{ $version->title }}"
+                data-content-created="{{ $content->created_at->isoFormat('LLLL') }}"
+                data-content-updated="{{ $content->updated_at->isoFormat('LLLL') }}"
+                @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
+                @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content]) }}" @endif
+            @endif
         >
             {{-- TODO: Date and time should be displayed in users timezone --}}
             <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
@@ -51,7 +64,7 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
-        <x-content.action-buttons :$content :$version />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
         <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
             <x-icon name="eye"/>
             <div class="content-card-views" title="{{ trans('messages.number-of-views') }}">
