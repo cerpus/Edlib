@@ -19,6 +19,7 @@ return (new PhpCsFixer\Config())
         'array_syntax' => ['syntax' => 'short'],
         'declare_strict_types' => true,
         'native_function_casing' => true,
+        'method_chaining_indentation' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,
         'no_multiple_statements_per_line' => true,

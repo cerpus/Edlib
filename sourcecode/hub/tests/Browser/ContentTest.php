@@ -59,14 +59,14 @@ final class ContentTest extends DuskTestCase
             ->with(
                 new ContentCard(),
                 fn (Browser $card) => $card
-                ->assertSeeIn('@views', '0')
-                ->click('@title')
+                    ->assertSeeIn('@views', '0')
+                    ->click('@title')
             )
             ->visit('/content')
             ->with(
                 new ContentCard(),
                 fn (Browser $card) => $card
-                ->assertSeeIn('@views', '1')
+                    ->assertSeeIn('@views', '1')
             ));
 
         $this->assertSame(1, $content->views()->count());
@@ -288,19 +288,19 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(
             fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->with(
-                new ContentCard(),
-                fn (Browser $card) => $card
-                ->click('@action-menu-toggle')
+                ->visit('/content')
                 ->with(
-                    '@action-menu',
-                    fn (Browser $menu) => $menu
-                    ->clickLink('Preview')
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->clickLink('Preview')
+                        )
                 )
-            )
-            ->waitFor('#previewModal')
-            ->assertVisible('#previewModal .lti-launch')
+                ->waitFor('#previewModal')
+                ->assertVisible('#previewModal .lti-launch')
         );
     }
 
@@ -317,29 +317,29 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(
             fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->visit('/content/create/' . $ltiTool->id)
-            ->withinFrame(
-                '.lti-launch',
-                fn (Browser $launch) => $launch
-                ->with(
-                    new ContentCard(),
-                    fn (Browser $card) => $card
-                    ->click('@action-menu-toggle')
-                    ->with(
-                        '@action-menu',
-                        fn (Browser $menu) => $menu
-                        ->clickLink('Preview')
-                    )
+                ->loginAs($user->email)
+                ->visit('/content/create/' . $ltiTool->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $launch) => $launch
+                        ->with(
+                            new ContentCard(),
+                            fn (Browser $card) => $card
+                                ->click('@action-menu-toggle')
+                                ->with(
+                                    '@action-menu',
+                                    fn (Browser $menu) => $menu
+                                        ->clickLink('Preview')
+                                )
+                        )
+                        ->waitFor('#previewModal')
+                        ->with(
+                            new PreviewModal(),
+                            fn (Browser $modal) => $modal
+                                ->click('@use-button')
+                        )
                 )
-                ->waitFor('#previewModal')
-                ->with(
-                    new PreviewModal(),
-                    fn (Browser $modal) => $modal
-                    ->click('@use-button')
-                )
-            )
-            ->assertTitleContains($content->getTitle())
+                ->assertTitleContains($content->getTitle())
         );
     }
 
@@ -350,24 +350,24 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(
             fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->visit('/content')
-            ->with(
-                new ContentCard(),
-                fn (Browser $card) => $card
-                ->click('@action-menu-toggle')
+                ->loginAs($user->email)
+                ->visit('/content')
                 ->with(
-                    '@action-menu',
-                    fn (Browser $menu) => $menu
-                    ->clickLink('Preview')
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->clickLink('Preview')
+                        )
                 )
-            )
-            ->waitFor('#previewModal')
-            ->with(
-                new PreviewModal(),
-                fn (Browser $modal) => $modal
-                ->assertMissing('@use-button')
-            )
+                ->waitFor('#previewModal')
+                ->with(
+                    new PreviewModal(),
+                    fn (Browser $modal) => $modal
+                        ->assertMissing('@use-button')
+                )
         );
     }
 
@@ -438,7 +438,7 @@ final class ContentTest extends DuskTestCase
                 ->with(
                     new ContentCard(),
                     fn (Browser $card) => $card
-                    ->assertPresent('@use-button'),
+                        ->assertPresent('@use-button'),
                 )));
     }
 }
