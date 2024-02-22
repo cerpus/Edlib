@@ -65,10 +65,12 @@ class ContentVersion extends Model
         $version->title = $title;
         $version->lti_launch_url = $url;
         $version->original_icon_url = $item->getIcon()?->getUri();
+        $version->published = true;
         $version->tool()->associate($tool);
         $version->editedBy()->associate($user);
 
         if ($item instanceof EdlibLtiLinkItem) {
+            $version->published = $item->isPublished() ?? true;
             $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
             $version->license = $item->getLicense();
         }
