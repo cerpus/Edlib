@@ -1,11 +1,20 @@
-import { findIframeByWindow } from "./helpers";
+import 'bootstrap';
+import 'htmx.org';
+import { findIframeByWindow } from './helpers';
+import './clipboard';
+import './resize';
 
 import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 
-import 'bootstrap';
-import './bootstrap';
-import './clipboard';
-import './resize';
+document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-Requested-With'] = 'XMLHttpRequest';
+    event.detail.headers['X-XSRF-Token'] = decodeURIComponent(
+        document.cookie
+            .split('; ')
+            .find(cookie => cookie.startsWith('XSRF-TOKEN='))
+            ?.split('=')[1] ?? ''
+    );
+});
 
 /**
  * Log messages from iframes.

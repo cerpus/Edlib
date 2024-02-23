@@ -92,9 +92,18 @@ class ContentController extends Controller
         ]);
     }
 
-    public function preview(Content $content, ContentVersion $version): View
-    {
-        return view('content.preview', [
+    public function preview(
+        Content $content,
+        ContentVersion $version,
+        Request $request,
+    ): View {
+        if (!$request->ajax()) {
+            abort(400);
+        }
+
+        return view('content.hx-preview', [
+            'content' => $content,
+            'version' => $version,
             'launch' => $version->toLtiLaunch(),
         ]);
     }

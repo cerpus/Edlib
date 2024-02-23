@@ -17,15 +17,10 @@
             @endif
             class="text-decoration-none link-body-emphasis"
             @if ($titlePreviews)
+                hx-get="{{ route('content.preview', [$content, $version]) }}"
+                hx-target="#previewModal"
                 data-bs-toggle="modal"
                 data-bs-target="#previewModal"
-                data-content-preview-url="{{ route('content.preview', [$content, $version]) }}"
-                data-content-share-url="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
-                data-content-title="{{ $version->title }}"
-                data-content-created="{{ $content->created_at->isoFormat('LLLL') }}"
-                data-content-updated="{{ $content->updated_at->isoFormat('LLLL') }}"
-                @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
-                @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content]) }}" @endif
             @endif
         >
             {{-- TODO: Date and time should be displayed in users timezone --}}
