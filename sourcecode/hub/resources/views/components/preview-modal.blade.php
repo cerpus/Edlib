@@ -1,6 +1,6 @@
 <!-- Preview Modal -->
-<div class="modal fade" id="previewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
                 <div class="h4 modal-title" id="previewModalTitle"></div>
