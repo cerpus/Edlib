@@ -1,8 +1,5 @@
 @php use App\Support\SessionScope; @endphp
-@props([
-    'version' => $version ?? $content->latestPublishedVersion,
-    'pinnedVersion' => isset($version),
-])
+@props(['version', 'explicitVersion' => false])
 <x-layout no-header>
     <x-slot:title>{{ $version->title }}</x-slot:title>
 
@@ -15,14 +12,14 @@
             @if (!$version->published)
                 <p class="alert alert-warning" role="alert">
                     {{ trans('messages.viewing-draft-version-notice') }}
-                    @if ($pinnedVersion && $content->latestPublishedVersion)
+                    @if ($explicitVersion && $content->latestPublishedVersion()->exists())
                         <a href="{{ route('content.details', [$content]) }}">{{ trans('messages.view-latest-version') }}</a>
                     @endif
                 </p>
-            @elseif ($pinnedVersion && !$content->latestPublishedVersion?->is($version))
+            @elseif ($explicitVersion && !$content->latestPublishedVersion()->is($version))
                 <p class="alert alert-info">
                     {{ trans('messages.viewing-old-version-notice') }}
-                    @if ($content->latestPublishedVersion)
+                    @if ($content->isPublished())
                         <a href="{{ route('content.details', $content) }}">{{ trans('messages.view-latest-version') }}</a>
                     @endif
                 </p>
@@ -67,16 +64,18 @@
                     </a>
                 @endcan
 
-                <a
-                    href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
-                    class="btn btn-secondary d-flex gap-2 btn-lg share-button"
-                    target="_blank"
-                    data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-                    data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
-                >
-                    <x-icon name="share" />
-                    <span class="flex-grow-1 align-self-center">{{ trans('messages.share') }}</span>
-                </a>
+                @if (!$explicitVersion && $version->published)
+                    <a
+                        href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                        class="btn btn-secondary d-flex gap-2 btn-lg share-button"
+                        target="_blank"
+                        data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
+                        data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
+                    >
+                        <x-icon name="share" />
+                        <span class="flex-grow-1 align-self-center">{{ trans('messages.share') }}</span>
+                    </a>
+                @endif
             </div>
 
             @can('edit', $content)

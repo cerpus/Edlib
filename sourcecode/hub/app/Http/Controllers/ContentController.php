@@ -41,16 +41,15 @@ class ContentController extends Controller
 
     public function details(Content $content, Request $request): View
     {
-        $content->trackView($request, ContentViewSource::Detail);
+        $version = $content->latestPublishedVersion()->firstOrFail();
+        $this->authorize('view', [$content, $version]);
 
-        $launch = $content
-            ->latestPublishedVersion()
-            ->firstOrFail()
-            ->toLtiLaunch();
+        $content->trackView($request, ContentViewSource::Detail);
 
         return view('content.details', [
             'content' => $content,
-            'launch' => $launch,
+            'version' => $version,
+            'launch' => $version->toLtiLaunch(),
         ]);
     }
 
@@ -60,6 +59,7 @@ class ContentController extends Controller
             'content' => $content,
             'version' => $version,
             'launch' => $version->toLtiLaunch(),
+            'explicitVersion' => true,
         ]);
     }
 

@@ -7,7 +7,11 @@
 <article class="card content-card">
     <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
-            href="{{ route('content.details', [$content->id]) }}"
+            @if ($version->published)
+                href="{{ route('content.details', [$content]) }}"
+            @else
+                href="{{ route('content.version-details', [$content, $version]) }}"
+            @endif
             class="text-decoration-none link-body-emphasis"
             aria-label="{{ trans('messages.preview') }}"
         >
