@@ -484,6 +484,14 @@ abstract class Content extends Model
         return null;
     }
 
+    /**
+     * @return string[]
+     */
+    protected function getTags(): array
+    {
+        return [];
+    }
+
     public function getEdlibDataObject(): CaEdlibResource
     {
         return new CaEdlibResource(
@@ -526,6 +534,7 @@ abstract class Content extends Model
             license: $this->license,
             iconUrl: $this->getIconUrl(),
             published: $published,
+            tags: $this->getTags(),
         );
     }
 

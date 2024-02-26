@@ -10,6 +10,7 @@ final readonly class LtiContent
      * @param string $id
      *     This is only for backward compatibility, and should not be used for
      *     LTI interop in new systems.
+     * @param string[] $tags
      */
     public function __construct(
         public string $id,
@@ -23,6 +24,7 @@ final readonly class LtiContent
         public string|null $license = null,
         public string|null $iconUrl = null,
         public bool|null $published = null,
+        public array $tags = [],
     ) {
     }
 }
