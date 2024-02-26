@@ -46,6 +46,7 @@ final readonly class ReturnToCoreController
                 ->withLanguageIso639_3($content->languageIso639_3)
                 ->withLicense($content->license)
                 ->withPublished($content->published)
+                ->withTags($content->tags)
             ;
 
             $returnRequest = new Oauth1Request('POST', $ltiRequest->getReturnUrl(), [
