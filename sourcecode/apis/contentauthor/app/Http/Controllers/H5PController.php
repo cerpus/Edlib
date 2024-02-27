@@ -416,7 +416,11 @@ class H5PController extends Controller
 
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
-                $newH5pContent->toLtiContent(),
+                $newH5pContent->toLtiContent(
+                    published: H5PContent::isUserPublishEnabled()
+                        ? $request->validated('isPublished')
+                        : null,
+                ),
                 $request->input('redirectToken'),
             ),
         ];
@@ -525,7 +529,14 @@ class H5PController extends Controller
         event(new ResourceSaved($content->getEdlibDataObject()));
 
         $responseValues = [
-            'url' => $this->getRedirectToCoreUrl($content->toLtiContent(), $request->input('redirectToken')),
+            'url' => $this->getRedirectToCoreUrl(
+                $content->toLtiContent(
+                    published: H5PContent::isUserPublishEnabled()
+                        ? $request->validated('isPublished')
+                        : null,
+                ),
+                $request->input('redirectToken'),
+            ),
         ];
 
         /** @var Collection $filesToProcess */
