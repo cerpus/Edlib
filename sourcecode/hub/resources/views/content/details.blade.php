@@ -19,7 +19,7 @@
             @elseif ($explicitVersion && !$content->latestPublishedVersion()->is($version))
                 <p class="alert alert-info">
                     {{ trans('messages.viewing-old-version-notice') }}
-                    @if ($content->isPublished())
+                    @if ($content->latestPublishedVersion()->exists())
                         <a href="{{ route('content.details', $content) }}">{{ trans('messages.view-latest-version') }}</a>
                     @endif
                 </p>
