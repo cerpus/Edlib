@@ -417,7 +417,9 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $newH5pContent->toLtiContent(
-                    published: $request->validated('isPublished'),
+                    published: H5PContent::isUserPublishEnabled()
+                        ? $request->validated('isPublished')
+                        : null,
                 ),
                 $request->input('redirectToken'),
             ),
@@ -529,7 +531,9 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $content->toLtiContent(
-                    published: $request->validated('isPublished'),
+                    published: H5PContent::isUserPublishEnabled()
+                        ? $request->validated('isPublished')
+                        : null,
                 ),
                 $request->input('redirectToken'),
             ),
