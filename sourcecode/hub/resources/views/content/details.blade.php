@@ -58,7 +58,7 @@
                 @endcan
 
                 @can('edit', $content)
-                    <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
+                    <a href="{{ route('content.edit', [$content, $version]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
                         <x-icon name="pencil" class="align-self-start" />
                         <span class="flex-grow-1 align-self-center">{{ trans('messages.edit')}}</span>
                     </a>

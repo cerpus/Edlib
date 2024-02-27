@@ -116,9 +116,11 @@ class ContentController extends Controller
         return to_route('content.index', [$copy->id]);
     }
 
-    public function edit(Content $content, LtiLaunchBuilder $builder): View
-    {
-        $version = $content->latestPublishedVersion ?? abort(404);
+    public function edit(
+        Content $content,
+        ContentVersion $version,
+        LtiLaunchBuilder $builder,
+    ): View {
         $tool = $version->tool ?? abort(404);
 
         $launchUrl = match ($tool->edit_mode) {
@@ -174,18 +176,22 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        $content = DB::transaction(function () use ($item, $tool) {
+        $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
             $content->save();
-            $content->versions()->save(
-                ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser()),
-            );
+
+            $version = ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser());
+            $content->versions()->save($version);
+
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            return $content;
+            return $version;
         });
+        assert($version instanceof ContentVersion);
+
+        $content = $version->content;
         assert($content instanceof Content);
 
         // return to platform consuming Edlib
@@ -202,7 +208,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.redirect', [
-            'url' => route('content.details', $content),
+            'url' => route('content.version-details', [$content, $version]),
             'method' => 'GET',
             'target' => '_parent',
         ]);
@@ -217,9 +223,8 @@ class ContentController extends Controller
         $item = $mapper->map($request->input('content_items'))[0];
         assert($item instanceof LtiLinkItem);
 
-        $content->versions()->save(
-            ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser()),
-        );
+        $version = ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser());
+        $content->versions()->save($version);
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
@@ -235,7 +240,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.redirect', [
-            'url' => route('content.details', $content),
+            'url' => route('content.version-details', [$content, $version]),
             'method' => 'GET',
             'target' => '_parent',
         ]);

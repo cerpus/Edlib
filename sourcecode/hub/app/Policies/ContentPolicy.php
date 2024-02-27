@@ -39,8 +39,15 @@ class ContentPolicy
         return true;
     }
 
-    public function edit(User $user, Content $content): bool
-    {
+    public function edit(
+        User $user,
+        Content $content,
+        ContentVersion|null $version = null,
+    ): bool {
+        if ($version && !$version->content()->is($content)) {
+            return false;
+        }
+
         if ($user->admin) {
             return true;
         }

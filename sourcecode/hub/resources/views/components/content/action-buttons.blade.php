@@ -8,7 +8,7 @@
 @endcan
 @can('edit', $content)
     <a
-        href="{{ route('content.edit', [$content]) }}"
+        href="{{ route('content.edit', [$content, $version]) }}"
         class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
     >
         {{ trans('messages.edit-content') }}
@@ -52,7 +52,7 @@
                         data-content-created="{{$content->created_at->isoFormat('LLLL')}}"
                         data-content-updated="{{$content->updated_at->isoFormat('LLLL')}}"
                         @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
-                        @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content]) }}" @endif
+                        @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content, $version]) }}" @endif
                     >
                         <x-icon name="display" class="me-2" />
                         {{ trans('messages.preview') }}
@@ -67,7 +67,7 @@
             @endcan
             @can('edit', $content)
                 <li class="d-md-none">
-                    <a href="{{ route('content.edit', [$content->id]) }}" class="dropdown-item content-edit-link">
+                    <a href="{{ route('content.edit', [$content, $version]) }}" class="dropdown-item content-edit-link">
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
                     </a>
