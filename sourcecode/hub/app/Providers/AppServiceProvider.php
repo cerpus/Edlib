@@ -21,7 +21,6 @@ use Laravel\Scout\Console\DeleteIndexCommand;
 use Laravel\Scout\Console\ImportCommand;
 use Laravel\Scout\Console\SyncIndexSettingsCommand;
 use Laravel\Telescope\Telescope;
-use Livewire\Livewire;
 use Psr\Clock\ClockInterface;
 use Random\Randomizer;
 
@@ -84,14 +83,6 @@ class AppServiceProvider extends ServiceProvider
         Vite::useStyleTagAttributes(['crossorigin' => 'anonymous']);
 
         Paginator::useBootstrapFive();
-        Paginator::currentPathResolver(function (): string {
-            if (Livewire::isLivewireRequest()) {
-                // Fix static paginator in Livewire requests
-                return Livewire::originalUrl();
-            }
-
-            return $this->app->make('request')->url();
-        });
 
         // Scout doesn't register these in non-CLI environments, but we need
         // them to be accessible from queued jobs.

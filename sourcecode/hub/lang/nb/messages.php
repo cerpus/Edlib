@@ -124,7 +124,7 @@ return [
     'back' => 'Tilbake',
     'filter-types' => 'Filter Types',
     'last-changed' => 'Sist endret',
-    'type-to-search' => 'Skriv for å søke…',
+    'type-to-search' => 'Skriv minst tre tegn for å søke…',
     'add' => 'Legg til',
     'remove' => 'Fjern',
     'edit-mode' => 'Redigeringsmodus',

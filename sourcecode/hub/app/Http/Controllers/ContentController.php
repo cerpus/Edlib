@@ -12,6 +12,7 @@ use App\Models\ContentVersion;
 use App\Models\ContentViewSource;
 use App\Models\LtiTool;
 use App\Models\LtiToolEditMode;
+use App\Support\HtmxFilter;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
@@ -29,14 +30,26 @@ use function view;
 
 class ContentController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('content.index');
+        $filter = new HtmxFilter($request);
+
+        if ($request->ajax()) {
+            return $filter->contentView();
+        }
+
+        return view('content.index', $filter->data());
     }
 
-    public function mine(): View
+    public function mine(Request $request): View
     {
-        return view('content.mine');
+        $filter = new HtmxFilter($request, auth()->user());
+
+        if ($request->ajax()) {
+            return $filter->contentView();
+        }
+
+        return view('content.mine', $filter->data());
     }
 
     public function details(Content $content, Request $request): View

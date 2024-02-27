@@ -124,7 +124,7 @@ return [
     'back' => 'Back',
     'filter-types' => 'Filter Types',
     'last-changed' => 'Last changed',
-    'type-to-search' => 'Type to Search…',
+    'type-to-search' => 'Type at least three characters to Search…',
     'add' => 'Add',
     'remove' => 'Remove',
     'edit-mode' => 'Edit mode',

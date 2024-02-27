@@ -17,7 +17,6 @@
         <meta name="htmx-config" content="{{ json_encode(['inlineScriptNonce' => \Illuminate\Support\Facades\Vite::cspNonce()]) }}">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
-        @livewireStyles(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
         {{ $head ?? '' }}
     </head>
 
@@ -123,7 +122,5 @@
             <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg" role="document">
             </div>
         </div>
-
-        @livewireScripts(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
     </body>
 </html>
