@@ -119,8 +119,14 @@
 
         {{-- Skeleton for preview modal --}}
         <div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
             </div>
         </div>
+        <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
+            const previewModal = document.querySelector('#previewModal');
+            previewModal.addEventListener('hidden.bs.modal', () => {
+                previewModal.firstChild.remove();
+            });
+        </script>
     </body>
 </html>
