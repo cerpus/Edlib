@@ -69,13 +69,18 @@ class HtmxFilter
 
     public function contentView(): View
     {
-        return view('content.hx-content', [
-            'contents' => $this->content()->paginate(),
-            'layout' => session()->get('contentLayout', 'grid'),
-            'showDrafts' => $this->user !== null,
-            'titlePreviews' => session()->has('lti'),
-            'hasQuery' => !empty($this->query),
-            'mine' => $this->user !== null,
-        ]);
+        return view('content.hx-content',
+            array_merge(
+                $this->data(),
+                [
+                    'contents' => $this->content()->paginate(),
+                    'layout' => session()->get('contentLayout', 'grid'),
+                    'showDrafts' => $this->user !== null,
+                    'titlePreviews' => session()->has('lti'),
+                    'hasQuery' => !empty($this->query),
+                    'mine' => $this->user !== null,
+                ]
+            )
+        );
     }
 }

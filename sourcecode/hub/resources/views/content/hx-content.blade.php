@@ -10,6 +10,14 @@
     'titlePreviews' => false,
     'hasQuery' => false,
 ])
+<x-content.search
+    :$query
+    :$language
+    :$languageOptions
+    :$sortBy
+    :$sortOptions
+/>
+
 @unless ($contents->isEmpty())
     @if ($layout === 'grid')
         <x-content.grid-header :$layout :total="$contents->total()" />

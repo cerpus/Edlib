@@ -1,17 +1,16 @@
 <div class="mt-3">
-    <div
+    <form
         class="row g-3 align-items-center"
         hx-get="{{\Illuminate\Support\Facades\URL::current()}}"
         hx-target="#content"
-        hx-include="#query,#language,#sortBy"
-        hx-trigger="input from:find #query delay:500ms, change from:find #language delay:500ms, change from:find #sortBy delay:500ms"
+        hx-trigger="input from:find #topFilterQuery delay:500ms, change from:find #topFilterLanguage delay:500ms, change from:find #topFilterSort delay:500ms"
         hx-validate="true"
         hx-replace-url="true"
     >
         <div class="col-8 col-md-5 col-lg-6">
             <label class="input-group">
                 <x-form.input
-                    id="query"
+                    id="topFilterQuery"
                     name="query"
                     type="search"
                     :value="$query"
@@ -25,7 +24,7 @@
 
         <div class="col-md-3 col-lg-3 d-md-block d-none">
             <x-form.dropdown
-                id="language"
+                id="topFilterLanguage"
                 name="language"
                 :selected="$language"
                 :aria-label="trans('messages.filter-language')"
@@ -36,7 +35,7 @@
 
         <div class="col-md-4 col-lg-3 d-md-block d-none">
             <x-form.dropdown
-                id="sortBy"
+                id="topFilterSort"
                 name="sort"
                 :selected="$sortBy"
                 :aria-label="trans('messages.last-changed')"
@@ -58,7 +57,7 @@
                 {{ trans('messages.filter') }}
             </button>
         </div>
-    </div>
+    </form>
 </div>
 
 {{--<x-selected-filter-options/>--}}
