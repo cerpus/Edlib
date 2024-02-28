@@ -69,7 +69,8 @@ class HtmxFilter
 
     public function contentView(): View
     {
-        return view('content.hx-content',
+        return view(
+            'content.hx-content',
             array_merge(
                 $this->data(),
                 [
