@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContentUserRole;
+use App\Enums\ContentViewSource;
+use App\Enums\LtiToolEditMode;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
-use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
-use App\Models\ContentViewSource;
 use App\Models\LtiTool;
-use App\Models\LtiToolEditMode;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;

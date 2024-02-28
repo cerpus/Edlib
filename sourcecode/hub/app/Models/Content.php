@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ContentUserRole;
+use App\Enums\ContentViewSource;
 use App\Events\ContentDeleting;
 use App\Lti\ContentItemSelectionFactory;
 use App\Support\SessionScope;

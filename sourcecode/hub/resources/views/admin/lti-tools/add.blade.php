@@ -1,6 +1,6 @@
 @php
-use App\Models\LtiToolEditMode;
-use App\Models\LtiVersion;
+use App\Enums\LtiToolEditMode;
+use App\Enums\LtiVersion;
 @endphp
 
 <x-layout>

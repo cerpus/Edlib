@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ContentViewSource;
 use App\Models\Content;
 use App\Models\ContentView;
-use App\Models\ContentViewSource;
 use App\Models\LtiPlatform;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Override;

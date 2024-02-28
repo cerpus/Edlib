@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Models\LtiToolEditMode;
-use App\Models\LtiVersion;
+use App\Enums\LtiToolEditMode;
+use App\Enums\LtiVersion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

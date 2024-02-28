@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\LtiVersion;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
-use App\Models\LtiVersion;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
