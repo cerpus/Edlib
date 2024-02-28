@@ -43,7 +43,7 @@
             @endif
 
             @can('edit', [$content])
-                <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary" role="button">
+                <a href="{{ route('content.edit', [$content, $version]) }}" class="btn btn-secondary" role="button">
                     {{ trans('messages.edit-content') }}
                 </a>
             @endcan
