@@ -1,7 +1,3 @@
-{{-- ToDo: Remove these when actual values are available --}}
-@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-{{-- End --}}
-
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-list-item shadow-sm">
@@ -39,7 +35,7 @@
         </div>
         <div class="row">
             <div class="col" aria-label="{{ trans('messages.content-type') }}">
-                {{ $type }}
+                {{ $version->getDisplayedContentType() }}
             </div>
         </div>
     </div>

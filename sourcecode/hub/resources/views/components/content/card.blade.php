@@ -1,7 +1,3 @@
-{{-- ToDo: Remove these when actual values are available --}}
-@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-{{-- End --}}
-
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-card">
@@ -42,7 +38,7 @@
     <div class="card-body">
         <div class="row card-text mb-2">
             <div class="col-auto small">
-                {{ $type }}
+                {{ $version->getDisplayedContentType() }}
             </div>
             <div class="col-auto badge text-bg-primary">
                 {{ strtoupper($version->language_iso_639_3) }}

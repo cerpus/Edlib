@@ -7,19 +7,17 @@ namespace App\Models;
 use App\Events\ContentVersionSaving;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
-use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 use function is_string;
-use function strtolower;
 use function url;
 
 class ContentVersion extends Model
@@ -52,31 +50,6 @@ class ContentVersion extends Model
     protected $dispatchesEvents = [
         'saving' => ContentVersionSaving::class,
     ];
-
-    public static function makeFromLtiContentItem(
-        ContentItem $item,
-        LtiTool $tool,
-        User $user,
-    ): self {
-        $title = $item->getTitle() ?? throw new DomainException('Missing title');
-        $url = $item->getUrl() ?? throw new DomainException('Missing URL');
-
-        $version = new self();
-        $version->title = $title;
-        $version->lti_launch_url = $url;
-        $version->original_icon_url = $item->getIcon()?->getUri();
-        $version->published = true;
-        $version->tool()->associate($tool);
-        $version->editedBy()->associate($user);
-
-        if ($item instanceof EdlibLtiLinkItem) {
-            $version->published = $item->isPublished() ?? true;
-            $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
-            $version->license = $item->getLicense();
-        }
-
-        return $version;
-    }
 
     /**
      * @param string[] $claims
@@ -143,6 +116,38 @@ class ContentVersion extends Model
     public function tool(): BelongsTo
     {
         return $this->belongsTo(LtiTool::class, 'lti_tool_id');
+    }
+
+    /**
+     * @return BelongsToMany<Tag>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class)->withPivot('verbatim_name');
+    }
+
+    /**
+     * Get a list of tags in their "prefix:name" or "name" representation.
+     * @return string[]
+     */
+    public function getSerializedTags(): array
+    {
+        return $this->tags->map(
+            fn (Tag $tag) => $tag->prefix !== ''
+                ? "{$tag->prefix}:{$tag->name}"
+                : $tag->name
+        )->toArray();
+    }
+
+    public function getDisplayedContentType(): string
+    {
+        $tag = $this->tags()->where('prefix', 'h5p')->first();
+
+        if ($tag) {
+            return $tag->pivot->verbatim_name ?? $tag->name;
+        }
+
+        return (string) $this->tool?->name;
     }
 
     /**

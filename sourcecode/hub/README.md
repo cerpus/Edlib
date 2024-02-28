@@ -49,6 +49,15 @@ communicate extra information that isn't part of the LTI Deep-Linking spec:
     * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
     * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
 
+* `published`
+    * `@id`: `https://spec.edlib.com/lti/vocab#published`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
+
+* `tag`
+    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+    * Can be either a list of strings, or just a string.
+
 ## Useful resources
 
 * [Laravel 10 documentation](https://laravel.com/docs/10.x)

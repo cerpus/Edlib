@@ -179,15 +179,11 @@ class ContentController extends Controller
         $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
             $content->save();
-
-            $version = ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser());
-            $content->versions()->save($version);
-
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            return $version;
+            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
         });
         assert($version instanceof ContentVersion);
 
@@ -223,8 +219,9 @@ class ContentController extends Controller
         $item = $mapper->map($request->input('content_items'))[0];
         assert($item instanceof LtiLinkItem);
 
-        $version = ContentVersion::makeFromLtiContentItem($item, $tool, $this->getUser());
-        $content->versions()->save($version);
+        $version = DB::transaction(function () use ($content, $item, $tool) {
+            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+        });
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {

@@ -11,6 +11,7 @@ use App\Lti\ContentItemSelectionFactory;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
@@ -107,6 +108,7 @@ class Content extends Model
         ))
             ->withLanguageIso639_3($version->language_iso_639_3)
             ->withLicense($version->license)
+            ->withTags($version->getSerializedTags())
         ;
     }
 
@@ -165,6 +167,43 @@ class Content extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(ContentVersion::class)->orderBy('id', 'DESC');
+    }
+
+    public function createVersionFromLinkItem(
+        ContentItem $item,
+        LtiTool $tool,
+        User $user,
+    ): ContentVersion {
+        $title = $item->getTitle() ?? throw new DomainException('Missing title');
+        $url = $item->getUrl() ?? throw new DomainException('Missing URL');
+
+        $version = $this->versions()->make();
+        assert($version instanceof ContentVersion);
+
+        $version->title = $title;
+        $version->lti_launch_url = $url;
+        $version->original_icon_url = $item->getIcon()?->getUri();
+        $version->published = true;
+        $version->tool()->associate($tool);
+        $version->editedBy()->associate($user);
+
+        if ($item instanceof EdlibLtiLinkItem) {
+            $version->published = $item->isPublished() ?? true;
+            $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+            $version->license = $item->getLicense();
+        }
+
+        $version->save();
+
+        if ($item instanceof EdlibLtiLinkItem) {
+            foreach ($item->getTags() as $tag) {
+                $version->tags()->attach(Tag::findOrCreateFromString($tag), [
+                    'verbatim_name' => Tag::extractVerbatimName($tag)
+                ]);
+            }
+        }
+
+        return $version;
     }
 
     /**
@@ -244,6 +283,7 @@ class Content extends Model
             'updated_at' => $this->updated_at,
             'license' => $version->license,
             'language_iso_639_3' => $version->language_iso_639_3,
+            'tags' => $version->getSerializedTags(),
         ];
     }
 
