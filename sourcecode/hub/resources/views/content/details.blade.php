@@ -19,7 +19,7 @@
             @elseif ($explicitVersion && !$content->latestPublishedVersion()->is($version))
                 <p class="alert alert-info">
                     {{ trans('messages.viewing-old-version-notice') }}
-                    @if ($content->isPublished())
+                    @if ($content->latestPublishedVersion()->exists())
                         <a href="{{ route('content.details', $content) }}">{{ trans('messages.view-latest-version') }}</a>
                     @endif
                 </p>
@@ -58,7 +58,7 @@
                 @endcan
 
                 @can('edit', $content)
-                    <a href="{{ route('content.edit', [$content]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
+                    <a href="{{ route('content.edit', [$content, $version]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
                         <x-icon name="pencil" class="align-self-start" />
                         <span class="flex-grow-1 align-self-center">{{ trans('messages.edit')}}</span>
                     </a>

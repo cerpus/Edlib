@@ -96,10 +96,12 @@ Route::controller(ContentController::class)->group(function () {
         ->can('copy', 'content')
         ->name('content.copy');
 
-    Route::get('/content/{content}/edit', 'edit')
+    Route::get('/content/{content}/version/{version}/edit')
+        ->uses([ContentController::class, 'edit'])
         ->name('content.edit')
-        ->can('edit', 'content')
-        ->whereUlid('content');
+        ->can('edit', ['content', 'version'])
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
 
     Route::post('/content/{content}/use')
         ->uses([ContentController::class, 'use'])
