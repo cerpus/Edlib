@@ -1,3 +1,4 @@
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-list-item shadow-sm">
@@ -6,7 +7,12 @@
             <a
                 href="{{ route('content.details', [$content->id]) }}"
                 class="col text-decoration-none link-body-emphasis"
-                aria-label="{{ trans('messages.preview') }}"
+                @if ($titlePreviews)
+                    hx-get="{{ route('content.preview', [$content, $version]) }}"
+                    hx-target="#previewModal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#previewModal"
+                @endif
             >
                 <h5 class="text-line-clamp clamp-3-lines fw-bold" aria-label="{{ trans('messages.title') }}">
                     {{ $version->title }}
@@ -40,6 +46,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content :$version />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
     </div>
 </article>

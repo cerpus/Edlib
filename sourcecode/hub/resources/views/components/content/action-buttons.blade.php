@@ -1,4 +1,5 @@
 @php use App\Support\SessionScope; @endphp
+@props(['content', 'version', 'showPreview' => false])
 @can('use', $content)
     <x-form action="{{ route('content.use', [$content]) }}" method="POST">
         <button class="btn btn-primary btn-sm me-1 content-use-button">
@@ -42,26 +43,22 @@
                 </li>
                 <li>
                     <a
-                        href="#"
+                        href="{{ route('content.details', [$content]) }}"
                         class="dropdown-item"
-                        data-bs-toggle="modal"
-                        data-bs-target="#previewModal"
-                        data-content-preview-url="{{ route('content.preview', [$content, $version]) }}"
-                        data-content-share-url="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
-                        data-content-title="{{$version->title}}"
-                        data-content-created="{{$content->created_at->isoFormat('LLLL')}}"
-                        data-content-updated="{{$content->updated_at->isoFormat('LLLL')}}"
-                        @can('use', $content) data-content-use-url="{{ route('content.use', [$content]) }}" @endif
-                        @can('edit', $content) data-content-edit-url="{{ route('content.edit', [$content, $version]) }}" @endif
+                        @if ($showPreview)
+                            hx-get="{{ route('content.preview', [$content, $version]) }}"
+                            hx-target="#previewModal"
+                            data-bs-toggle="modal"
+                            data-bs-target="#previewModal"
+                        @endif
                     >
-                        <x-icon name="display" class="me-2" />
-                        {{ trans('messages.preview') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('content.details', [$content->id]) }}" class="dropdown-item">
-                        <x-icon name="info-lg" class="me-2" />
-                        {{ trans('messages.details') }}
+                        @if ($showPreview)
+                            <x-icon name="display" class="me-2" />
+                            {{ trans('messages.preview') }}
+                        @else
+                            <x-icon name="info-lg" class="me-2" />
+                            {{ trans('messages.details') }}
+                        @endif
                     </a>
                 </li>
             @endcan

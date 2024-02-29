@@ -14,9 +14,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="htmx-config" content="{{ json_encode(['inlineScriptNonce' => \Illuminate\Support\Facades\Vite::cspNonce()]) }}">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
-        @livewireStyles(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
         {{ $head ?? '' }}
     </head>
 
@@ -117,6 +117,16 @@
             </footer>
         @endif
 
-        @livewireScripts(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
+        {{-- Skeleton for preview modal --}}
+        <div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
+            </div>
+        </div>
+        <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
+            const previewModal = document.querySelector('#previewModal');
+            previewModal.addEventListener('hidden.bs.modal', () => {
+                previewModal.firstChild.remove();
+            });
+        </script>
     </body>
 </html>

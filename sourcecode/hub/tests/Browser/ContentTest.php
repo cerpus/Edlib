@@ -322,16 +322,7 @@ final class ContentTest extends DuskTestCase
                 ->withinFrame(
                     '.lti-launch',
                     fn (Browser $launch) => $launch
-                        ->with(
-                            new ContentCard(),
-                            fn (Browser $card) => $card
-                                ->click('@action-menu-toggle')
-                                ->with(
-                                    '@action-menu',
-                                    fn (Browser $menu) => $menu
-                                        ->clickLink('Preview')
-                                )
-                        )
+                        ->with(new ContentCard(), fn (Browser $card) => $card->click('@title'))
                         ->waitFor('#previewModal')
                         ->with(
                             new PreviewModal(),

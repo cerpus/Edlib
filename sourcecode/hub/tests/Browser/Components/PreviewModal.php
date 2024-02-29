@@ -27,7 +27,7 @@ class PreviewModal extends Component
     {
         return [
             '@preview' => '.lti-launch',
-            '@use-button' => '#previewUseForm button',
+            '@use-button' => '.use-button',
         ];
     }
 }

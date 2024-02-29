@@ -12,11 +12,11 @@
                         <li class="list-group-item border-0">
                             <label class="form-check-label">
                                 <input
-                                    wire:model="filterLang"
                                     class="form-check-input me-1"
                                     type="radio"
                                     value=""
-                                    name="fl"
+                                    name="language"
+                                    @checked($language === '')
                                 >
                                 {{ trans('messages.filter-language-all') }}
                             </label>
@@ -25,11 +25,11 @@
                             <li class="list-group-item border-0">
                                 <label class="form-check-label">
                                     <input
-                                        wire:model="filterLang"
                                         class="form-check-input me-1"
                                         type="radio"
                                         value="{{$key}}"
-                                        name="fl"
+                                        name="language"
+                                        @checked($key === $language)
                                     >
                                     {{ $label }}
                                 </label>

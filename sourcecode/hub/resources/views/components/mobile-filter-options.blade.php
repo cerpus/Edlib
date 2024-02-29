@@ -2,7 +2,6 @@
     <div class="offcanvas-body">
         <div class="mb-2">
             <button
-                id="backButton"
                 class="btn btn-secondary border-0"
                 type="button"
                 data-bs-dismiss="offcanvas"
@@ -12,12 +11,17 @@
             </button>
         </div>
 
-        <form>
-            <x-filter :$languageOptions/>
+        <form
+            hx-get="{{\Illuminate\Support\Facades\URL::current()}}"
+            hx-target="#content"
+            hx-include="this,#topFilterQuery,#topFilterSort"
+            hx-validate="true"
+            hx-replace-url="true"
+        >
+            <x-filter :$language :$languageOptions />
 
             <div class="text-center">
                 <button
-                    id="showResultsButton"
                     class="btn btn-primary d-md-none mt-5"
                     type="submit"
                     data-bs-toggle="offcanvas"

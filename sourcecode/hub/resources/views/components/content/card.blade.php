@@ -1,3 +1,9 @@
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
+
+{{-- ToDo: Remove these when actual values are available --}}
+@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
+{{-- End --}}
+
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-card">
@@ -9,7 +15,12 @@
                 href="{{ route('content.version-details', [$content, $version]) }}"
             @endif
             class="text-decoration-none link-body-emphasis"
-            aria-label="{{ trans('messages.preview') }}"
+            @if ($titlePreviews)
+                hx-get="{{ route('content.preview', [$content, $version]) }}"
+                hx-target="#previewModal"
+                data-bs-toggle="modal"
+                data-bs-target="#previewModal"
+            @endif
         >
             {{-- TODO: Date and time should be displayed in users timezone --}}
             <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
@@ -51,7 +62,7 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
-        <x-content.action-buttons :$content :$version />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
         <div class="badge position-absolute end-0 d-md-none content-card-preview-badge">
             <x-icon name="eye"/>
             <div class="content-card-views" title="{{ trans('messages.number-of-views') }}">
