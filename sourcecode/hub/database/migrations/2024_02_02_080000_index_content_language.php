@@ -17,7 +17,7 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('content_versions', function (Blueprint $table) {
-            $table->dropIndex('language_iso_639_3');
+            $table->dropIndex(['language_iso_639_3']);
         });
     }
 };

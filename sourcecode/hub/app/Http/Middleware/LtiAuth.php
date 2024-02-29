@@ -25,15 +25,21 @@ final readonly class LtiAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->hasPreviousSession()) {
-            $key = $request->session()->get('lti.oauth_consumer_key');
-            $email = $request->session()->get('lti.lis_person_contact_email_primary');
+        if (!$request->hasPreviousSession()) {
+            return $next($request);
+        }
 
-            $platform = LtiPlatform::where('key', $key)->first();
+        $key = $request->session()->get('lti.oauth_consumer_key');
+        $email = $request->session()->get('lti.lis_person_contact_email_primary');
 
-            if ($email !== null && $platform?->enable_sso) {
-                $this->authManager->onceUsingId($email);
-            }
+        if ($key === null || $email === null) {
+            return $next($request);
+        }
+
+        $platform = LtiPlatform::where('key', $key)->first();
+
+        if ($platform?->enable_sso) {
+            $this->authManager->onceUsingId($email);
         }
 
         return $next($request);

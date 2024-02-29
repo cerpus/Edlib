@@ -134,7 +134,9 @@ class Content extends Model
      */
     public function latestVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)->latestOfMany();
+        return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
+            ->latestOfMany();
     }
 
     /**
@@ -143,6 +145,7 @@ class Content extends Model
     public function latestDraftVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->draft();
@@ -155,6 +158,7 @@ class Content extends Model
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->published();

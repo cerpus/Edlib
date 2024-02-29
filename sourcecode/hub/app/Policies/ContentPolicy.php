@@ -62,8 +62,8 @@ class ContentPolicy
 
     public function use(User|null $user, Content $content): bool
     {
-        return $content->latestPublishedVersion()->exists() &&
-            request()->hasPreviousSession() &&
-            request()->session()->has('lti.content_item_return_url');
+        return request()->hasPreviousSession() &&
+            request()->session()->has('lti.content_item_return_url') &&
+            $content->latestPublishedVersion()->exists();
     }
 }
