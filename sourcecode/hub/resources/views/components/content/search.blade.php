@@ -21,7 +21,6 @@
                     :value="$filter->getQuery()"
                     :aria-label="trans('messages.search-query')"
                     placeholder="{{ trans('messages.type-to-search') }}"
-                    minlength="3"
                     hx-trigger="keyup changed delay:500ms"
                 />
                 <x-icon name="search" class="input-group-text" />
