@@ -117,7 +117,7 @@ final class ContentTest extends DuskTestCase
                 ->visit('/')
                 ->clickLink('Explore')
                 ->type('q', 'some keywords')
-                ->pause(1200) // FIXME
+                ->waitForEvent('htmx:after-swap')
                 ->with('.big-notice', function (Browser $message) {
                     $message
                         ->assertSee('Sorry! No results found :(')
@@ -158,7 +158,7 @@ final class ContentTest extends DuskTestCase
                 ->visit('/')
                 ->clickLink('My content')
                 ->type('q', 'some keywords')
-                ->pause(1200) // FIXME
+                ->waitForEvent('htmx:after-swap')
                 ->with('.big-notice', function (Browser $message) {
                     $message
                         ->assertSee('Sorry! No results found :(')
@@ -423,7 +423,7 @@ final class ContentTest extends DuskTestCase
                 ->assertSee('found content')
                 ->assertSee('excluded content')
                 ->type('q', 'found')
-                ->pause(1200)
+                ->waitForEvent('htmx:after-swap')
                 ->assertSee('found content')
                 ->assertDontSee('excluded content')
                 ->with(
