@@ -91,8 +91,10 @@ class ContentFilter extends FormRequest
     public function applyCriteria(Builder $query): Builder
     {
         return $query
-            ->when($this->getLanguage(), fn (Builder $query) => $query
-                ->where('language_iso_639_3', $this->getLanguage())
+            ->when(
+                $this->getLanguage(),
+                fn (Builder $query) => $query
+                    ->where('language_iso_639_3', $this->getLanguage())
             )
             ->orderBy(match ($this->getSortBy()) {
                 'created' => 'created_at',
