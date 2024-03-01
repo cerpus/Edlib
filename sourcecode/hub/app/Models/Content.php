@@ -257,8 +257,15 @@ class Content extends Model
             ->withPivot('role')
             ->withCasts([
                 'role' => ContentUserRole::class,
-            ])
-            ->withTimestamps();
+            ]);
+    }
+
+    /**
+     * @return BelongsToMany<User>
+     */
+    public function usersWithTimestamps(): BelongsToMany
+    {
+        return $this->users()->withTimestamps();
     }
 
     public function hasUser(User $user): bool
