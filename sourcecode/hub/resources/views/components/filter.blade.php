@@ -1,3 +1,4 @@
+@props(['language' => '', 'languageOptions' => []])
 <div class="position-sticky">
     <div class="accordion p-3 m-0 border-0 m-0 border-0" id="filterAccordion">
         <div class="accordion-item">

@@ -1,3 +1,4 @@
+@props(['language' => '', 'languageOptions' => []])
 <div class="offcanvas offcanvas-bottom" id="offcanvasBottomMobile" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="offcanvas-body">
         <div class="mb-2">
@@ -12,11 +13,11 @@
         </div>
 
         <form
-            hx-get="{{\Illuminate\Support\Facades\URL::current()}}"
             hx-target="#content"
             hx-include="this,#topFilterQuery,#topFilterSort"
             hx-validate="true"
             hx-replace-url="true"
+            hx-indicator="#content-loading"
         >
             <x-filter :$language :$languageOptions />
 

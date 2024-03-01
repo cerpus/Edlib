@@ -14,6 +14,13 @@ document.body.addEventListener('htmx:configRequest', (event) => {
             .find(cookie => cookie.startsWith('XSRF-TOKEN='))
             ?.split('=')[1] ?? ''
     );
+
+    const token = document.documentElement.getAttribute('data-session-scope');
+    const path = event.detail.path;
+
+    if (token && !/[?&]session_scope=/.test(path)) {
+        event.detail.path = `${path.includes('?') ? '&' : '?'}session_scope=${token}`;
+    }
 });
 
 /**

@@ -386,8 +386,8 @@ final class ContentTest extends DuskTestCase
     }
 
     /**
-     * Requests to Livewire in LTI context must be aware of the session scope,
-     * otherwise it'll replace elements on the page with HTML generated for the
+     * Requests to ajax endpoints in LTI context must be aware of the session
+     * scope, otherwise on the page will be replaced with HTML generated for the
      * outer session. This problem most obviously manifests itself as the 'use'
      * button missing on content cards after a search, so we check that they are
      * still present after performing one.

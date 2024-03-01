@@ -198,9 +198,9 @@ class ContentVersion extends Model
     /**
      * The locales (ISO 639-3) used by content as key, display name in the current locale as value
      *
-     * @return Collection<string, string>
+     * @return array<string, string>
      */
-    public static function getTranslatedUsedLocales(User $user = null): Collection
+    public static function getTranslatedUsedLocales(User $user = null): array
     {
         if ($user instanceof User) {
             $locales = self::getUsedLocalesForUser($user);
@@ -213,6 +213,7 @@ class ContentVersion extends Model
 
         return $locales
             ->mapWithKeys(fn (string $locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
-            ->sort();
+            ->sort()
+            ->toArray();
     }
 }

@@ -8,11 +8,11 @@ use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
 use App\Http\Requests\DeepLinkingReturnRequest;
+use App\Http\Requests\ContentFilter;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
-use App\Support\HtmxFilter;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
@@ -30,26 +30,26 @@ use function view;
 
 class ContentController extends Controller
 {
-    public function index(Request $request): View
+    public function index(ContentFilter $request): View
     {
-        $filter = new HtmxFilter($request);
+        $query = Content::findShared($request->getQuery());
+        $request->applyCriteria($query);
 
-        if ($request->ajax()) {
-            return $filter->contentView();
-        }
-
-        return view('content.index', $filter->data());
+        return view($request->ajax() ? 'content.hx-index' : 'content.index', [
+            'contents' => $query->paginate(),
+            'filter' => $request,
+        ]);
     }
 
-    public function mine(Request $request): View
+    public function mine(ContentFilter $request): View
     {
-        $filter = new HtmxFilter($request, auth()->user());
+        $query = Content::findForUser($this->getUser(), $request->getQuery());
+        $request->applyCriteria($query);
 
-        if ($request->ajax()) {
-            return $filter->contentView();
-        }
-
-        return view('content.mine', $filter->data());
+        return view($request->ajax() ? 'content.hx-mine' : 'content.mine', [
+            'contents' => $query->paginate(),
+            'filter' => $request,
+        ]);
     }
 
     public function details(Content $content, Request $request): View

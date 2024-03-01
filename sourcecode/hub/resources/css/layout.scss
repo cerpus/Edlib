@@ -74,3 +74,9 @@
         border-bottom-left-radius: 0;
     }
 }
+
+.unhide-when-loading {
+    &:not(.htmx-request) {
+        display: none;
+    }
+}

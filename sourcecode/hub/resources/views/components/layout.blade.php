@@ -14,7 +14,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="htmx-config" content="{{ json_encode(['inlineScriptNonce' => \Illuminate\Support\Facades\Vite::cspNonce()]) }}">
+        <meta name="htmx-config" content="{{ json_encode([
+            'inlineScriptNonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
+            'includeIndicatorStyles' => false,
+        ]) }}">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
         {{ $head ?? '' }}
