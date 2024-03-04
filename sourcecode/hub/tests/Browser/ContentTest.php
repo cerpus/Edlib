@@ -443,13 +443,14 @@ final class ContentTest extends DuskTestCase
             ->create();
         $this->assertFalse($content->trashed());
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/content/' . $content->id)
-            ->click('.delete-content-button')
-            ->acceptDialog()
-            ->waitForLocation('/content')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id)
+                ->click('.delete-content-button')
+                ->acceptDialog()
+                ->waitForLocation('/content')
         );
 
         $this->assertTrue($content->refresh()->trashed());
@@ -461,12 +462,13 @@ final class ContentTest extends DuskTestCase
             ->withPublishedVersion()
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs(User::factory()->create()->email)
-            ->assertAuthenticated()
-            ->visit('/content/' . $content->id)
-            ->assertTitleContains($content->getTitle())
-            ->assertNotPresent('.delete-content-button')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id)
+                ->assertTitleContains($content->getTitle())
+                ->assertNotPresent('.delete-content-button')
         );
     }
 }
