@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
@@ -48,6 +49,7 @@ class ContentVersion extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
+        'deleting' => ContentVersionDeleting::class,
         'saving' => ContentVersionSaving::class,
     ];
 

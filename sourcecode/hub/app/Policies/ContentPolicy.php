@@ -60,6 +60,16 @@ class ContentPolicy
         return true;
     }
 
+    public function delete(User $user, Content $content): bool
+    {
+        if ($content->trashed()) {
+            return false;
+        }
+
+        // TODO: check owner role
+        return $content->hasUser($user);
+    }
+
     public function use(User|null $user, Content $content): bool
     {
         return request()->hasPreviousSession() &&

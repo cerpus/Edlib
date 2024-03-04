@@ -109,6 +109,12 @@ Route::controller(ContentController::class)->group(function () {
         ->can('use', 'content')
         ->whereUlid('content');
 
+    Route::delete('/content/{content}')
+        ->uses([ContentController::class, 'delete'])
+        ->name('content.delete')
+        ->can('delete', 'content')
+        ->whereUlid('content');
+
     Route::get('/content/create/{tool}', 'launchCreator')
         ->name('content.launch-creator')
         ->can('create', \App\Models\Content::class)

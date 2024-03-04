@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
-use App\Events\ContentDeleting;
+use App\Events\ContentForceDeleting;
+use App\Models\ContentVersion;
 
 final readonly class ContentListener
 {
-    public function handleDeleting(ContentDeleting $event): void
+    public function handleForceDeleting(ContentForceDeleting $event): void
     {
-        $event->content->versions()->delete();
+        $event->content->views()->delete();
+
+        $event->content->versions()
+            ->lazy()
+            ->each(fn (ContentVersion $version) => $version->delete());
 
         $event->content->users()->detach();
     }

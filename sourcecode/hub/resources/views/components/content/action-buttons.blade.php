@@ -15,7 +15,7 @@
         {{ trans('messages.edit-content') }}
     </a>
 @endcan
-@canany(['view', 'edit', 'delete'], $content)
+@canany(['view', 'edit'], $content)
     <div class="dropup">
         <button
             type="button"
@@ -67,14 +67,6 @@
                     <a href="{{ route('content.edit', [$content, $version]) }}" class="dropdown-item content-edit-link">
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
-                    </a>
-                </li>
-            @endcan
-            @can('delete', $content)
-                <li>
-                    <a href="#" class="btn btn-primary dropdown-item"  data-bs-toggle="modal" data-bs-target="#deletionModal">
-                        <x-icon name="x-lg" class="me-2 text-danger" />
-                        {{ trans('messages.delete-content') }}
                     </a>
                 </li>
             @endcan

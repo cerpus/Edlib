@@ -25,7 +25,9 @@ use Illuminate\Support\Facades\Session;
 use function assert;
 use function is_string;
 use function redirect;
+use function route;
 use function to_route;
+use function trans;
 use function view;
 
 class ContentController extends Controller
@@ -172,6 +174,21 @@ class ContentController extends Controller
             'method' => $ltiRequest->getMethod(),
             'parameters' => $ltiRequest->toArray(),
         ]);
+    }
+
+    public function delete(Content $content, Request $request): Response|RedirectResponse
+    {
+        DB::transaction($content->delete(...));
+
+        $request->session()
+            ->flash('alert', trans('messages.alert-content-deleted'));
+
+        if ($request->ajax()) {
+            return response()->noContent()
+                ->header('HX-Redirect', route('content.index'));
+        }
+
+        return redirect()->route('content.index');
     }
 
     public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View

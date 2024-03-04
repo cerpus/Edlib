@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
-use App\Events\ContentDeleting;
+use App\Events\ContentForceDeleting;
 use App\Lti\ContentItemSelectionFactory;
 use App\Support\SessionScope;
 use BadMethodCallException;
@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,7 @@ class Content extends Model
     use HasFactory;
     use HasUlids;
     use Searchable;
+    use SoftDeletes;
 
     protected $perPage = 48;
 
@@ -49,7 +51,7 @@ class Content extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
-        'deleting' => ContentDeleting::class,
+        'forceDeleting' => ContentForceDeleting::class,
     ];
 
     public static function booted(): void

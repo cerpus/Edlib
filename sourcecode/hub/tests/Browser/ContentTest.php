@@ -432,4 +432,41 @@ final class ContentTest extends DuskTestCase
                         ->assertPresent('@use-button'),
                 )));
     }
+
+    public function testCanDeleteOwnContent(): void
+    {
+        $user = User::factory()->create();
+
+        $content = Content::factory()
+            ->withUser($user)
+            ->withPublishedVersion()
+            ->create();
+        $this->assertFalse($content->trashed());
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->assertAuthenticated()
+            ->visit('/content/' . $content->id)
+            ->click('.delete-content-button')
+            ->acceptDialog()
+            ->waitForLocation('/content')
+        );
+
+        $this->assertTrue($content->refresh()->trashed());
+    }
+
+    public function testCannotDeleteSomeoneElsesContent(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs(User::factory()->create()->email)
+            ->assertAuthenticated()
+            ->visit('/content/' . $content->id)
+            ->assertTitleContains($content->getTitle())
+            ->assertNotPresent('.delete-content-button')
+        );
+    }
 }

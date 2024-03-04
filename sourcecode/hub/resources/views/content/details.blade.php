@@ -76,6 +76,19 @@
                         <span class="flex-grow-1 align-self-center">{{ trans('messages.share') }}</span>
                     </a>
                 @endif
+
+                @can('delete', $content)
+                    <x-form action="{{ route('content.delete', [$content]) }}" method="DELETE">
+                        <button
+                            class="btn btn-outline-danger btn-lg d-flex gap-2 w-100 delete-content-button"
+                            hx-delete="{{ route('content.delete', [$content]) }}"
+                            hx-confirm="{{ trans('messages.confirm-delete-content') }}"
+                        >
+                            <x-icon name="x-lg" class="align-self-start" />
+                            <span class="flex-grow-1 align-self-center">{{ trans('messages.delete-content') }}</span>
+                        </button>
+                    </x-form>
+                @endcan
             </div>
 
             @can('edit', $content)

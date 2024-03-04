@@ -6,7 +6,7 @@ namespace App\Events;
 
 use App\Models\Content;
 
-final readonly class ContentDeleting
+final readonly class ContentForceDeleting
 {
     public function __construct(public Content $content)
     {

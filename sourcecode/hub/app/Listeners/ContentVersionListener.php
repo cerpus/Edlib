@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
+use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
 use App\Exceptions\InvalidIconException;
 use App\Jobs\DownloadIconForContent;
@@ -19,6 +20,11 @@ final readonly class ContentVersionListener
         private Dispatcher $dispatcher,
         private LoggerInterface $logger,
     ) {
+    }
+
+    public function handleDeletion(ContentVersionDeleting $event): void
+    {
+        $event->version->tags()->detach();
     }
 
     public function handleIcon(ContentVersionSaving $event): void
