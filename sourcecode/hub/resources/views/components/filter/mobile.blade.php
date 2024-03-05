@@ -1,4 +1,4 @@
-@props(['language' => '', 'languageOptions' => []])
+@props(['filter'])
 <div class="offcanvas offcanvas-bottom" id="offcanvasBottomMobile" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="offcanvas-body">
         <div class="mb-2">
@@ -13,13 +13,16 @@
         </div>
 
         <form
+            hx-get="{{ url()->current() }}"
             hx-target="#content"
             hx-include="this,#topFilterQuery,#topFilterSort"
             hx-validate="true"
             hx-replace-url="true"
+            hx-sync="closest form:abort"
+            hx-swap="outerHTML"
             hx-indicator="#content-loading"
         >
-            <x-filter :$language :$languageOptions />
+            <x-filter.mobile-options :$filter />
 
             <div class="text-center">
                 <button

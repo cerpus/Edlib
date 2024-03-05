@@ -1,9 +1,5 @@
 @props(['content', 'showDrafts' => false, 'titlePreviews' => false])
 
-{{-- ToDo: Remove these when actual values are available --}}
-@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-{{-- End --}}
-
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-card">

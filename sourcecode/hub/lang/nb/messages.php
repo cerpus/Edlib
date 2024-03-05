@@ -95,7 +95,7 @@ return [
     'search-results-mobile' => 'Vis resultat',
     'back' => 'Tilbake',
     'last-changed' => 'Sist endret',
-    'type-to-search' => 'Skriv minst tre tegn for å søke…',
+    'type-to-search' => 'Skriv for å søke…',
     'add' => 'Legg til',
     'remove' => 'Fjern',
     'edit-mode' => 'Redigeringsmodus',
@@ -137,5 +137,9 @@ return [
     'error-loading-preview' => 'Forhåndsvisningen kunne ikke lastes',
     'share-copied-url-success' => 'Adressen for deling har blitt kopiert til utklippstavla.',
     'share-copied-url-failed' => 'Vi kunne ikke kopiere adressen for deling.',
-    'editing-content-title' => 'Redigerer innholdet «:title»'
+    'editing-content-title' => 'Redigerer innholdet «:title»',
+    'filter-content-types-desc' => 'Filterer på innholdstype',
+    'filter-remove' => 'Fjern filter',
+    'filter-toggle-more' => 'Vis flere',
+    'filter-toggle-less' => 'Vis færre',
 ];

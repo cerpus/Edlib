@@ -123,7 +123,7 @@ return [
     'back' => 'Back',
     'filter-types' => 'Filter Types',
     'last-changed' => 'Last changed',
-    'type-to-search' => 'Type at least three characters to Search…',
+    'type-to-search' => 'Type to Search…',
     'add' => 'Add',
     'remove' => 'Remove',
     'edit-mode' => 'Edit mode',
@@ -167,5 +167,9 @@ return [
     'error-loading-preview' => 'Preview failed to load',
     'share-copied-url-success' => 'The address for sharing has been copied to your clipboard.',
     'share-copied-url-failed' => 'We were not able to copy the address for sharing.',
-    'editing-content-title' => 'Editing content “:title”'
+    'editing-content-title' => 'Editing content “:title”',
+    'filter-content-types-desc' => 'Filter by content type',
+    'filter-remove' => 'Remove filter',
+    'filter-toggle-more' => 'See more',
+    'filter-toggle-less' => 'See less',
 ];
