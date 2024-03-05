@@ -22,6 +22,8 @@ class LtiTool extends Model
 
     public $timestamps = false;
 
+    protected $perPage = 12;
+
     /** @var mixed[] */
     protected $attributes = [
         'send_name' => false,

@@ -14,7 +14,7 @@ final class LtiToolController extends Controller
 {
     public function index(): View
     {
-        $tools = LtiTool::withCount('contentVersions')->get();
+        $tools = LtiTool::withCount('contentVersions')->paginate();
 
         return view('admin.lti-tools.index', [
             'tools' => $tools,
