@@ -199,7 +199,7 @@ class Content extends Model
             $version->license = $item->getLicense();
         }
 
-        $version->save();
+        $version->saveQuietly();
 
         if ($item instanceof EdlibLtiLinkItem) {
             foreach ($item->getTags() as $tag) {
@@ -208,6 +208,8 @@ class Content extends Model
                 ]);
             }
         }
+
+        $version->save();
 
         return $version;
     }
