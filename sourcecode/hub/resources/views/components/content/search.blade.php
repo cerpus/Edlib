@@ -84,7 +84,9 @@
             <x-content.list :contents="$contents" :$showDrafts :titlePreviews="$filter->isTitlePreview()" />
         @endif
 
-        {{ $contents->withQueryString()->links() }}
+        <div hx-boost="true" hx-target="#content">
+            {{ $contents->withQueryString()->links() }}
+        </div>
     @else
         <x-big-notice>
             <x-slot:title>
