@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+use Override;
 
 class VerifyCsrfToken extends Middleware
 {
@@ -14,6 +15,17 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        '/lti/*',
+        '/lti/content/*',
+        '/lti/dl',
+        '/lti/dl/tool/*/content/create',
+        '/lti/dl/tool/*/content/*/update',
+        '/lti/samples/deep-link',
     ];
+
+    #[Override] protected function runningUnitTests(): false
+    {
+        // We don't want to exempt tests. This creates scenarios where tests may
+        // pass, but the code is actually broken.
+        return false;
+    }
 }

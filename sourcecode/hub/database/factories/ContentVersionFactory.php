@@ -16,7 +16,6 @@ final class ContentVersionFactory extends Factory
 {
     public function definition(): array
     {
-        $contentAuthorId = $this->faker->numberBetween(1, 5);
         $title = $this->faker->sentence;
 
         return [
@@ -25,7 +24,7 @@ final class ContentVersionFactory extends Factory
             'title' => $title,
             'title_html' => $title,
             'lti_tool_id' => LtiTool::factory(),
-            'lti_launch_url' => 'https://ca.edlib.test/lti-content/' . $contentAuthorId,
+            'lti_launch_url' => 'https://hub-test.edlib.test/lti/samples/presentation',
             'language_iso_639_3' => $this->faker->randomElement(['eng', 'nob']),
             'license' => $this->faker->randomElement(['CC0-1.0', 'CC-BY-2.5', null]),
         ];
