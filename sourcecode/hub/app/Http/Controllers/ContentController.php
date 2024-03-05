@@ -161,6 +161,7 @@ class ContentController extends Controller
 
         return view('content.edit', [
             'content' => $content,
+            'version' => $version,
             'launch' => $launch,
         ]);
     }
