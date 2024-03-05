@@ -137,4 +137,5 @@ return [
     'error-loading-preview' => 'Forhåndsvisningen kunne ikke lastes',
     'share-copied-url-success' => 'Adressen for deling har blitt kopiert til utklippstavla.',
     'share-copied-url-failed' => 'Vi kunne ikke kopiere adressen for deling.',
+    'editing-content-title' => 'Redigerer innholdet «:title»'
 ];

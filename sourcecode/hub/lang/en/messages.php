@@ -167,4 +167,5 @@ return [
     'error-loading-preview' => 'Preview failed to load',
     'share-copied-url-success' => 'The address for sharing has been copied to your clipboard.',
     'share-copied-url-failed' => 'We were not able to copy the address for sharing.',
+    'editing-content-title' => 'Editing content “:title”'
 ];

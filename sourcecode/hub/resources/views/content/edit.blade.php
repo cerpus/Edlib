@@ -1,5 +1,5 @@
 <x-layout expand no-header no-footer>
-    <x-slot:title>Editing content {{ $content->latestPublishedVersion->title }}</x-slot:title>
+    <x-slot:title>{{ trans('messages.editing-content-title', ['title' => $version->getTitle()]) }}</x-slot:title>
 
     <x-lti-launch :launch="$launch" class="w-100 h-100" />
 
