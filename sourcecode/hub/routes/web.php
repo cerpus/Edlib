@@ -91,6 +91,7 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content');
 
     Route::get('/content/create', 'create')
+        ->middleware('auth')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
 
