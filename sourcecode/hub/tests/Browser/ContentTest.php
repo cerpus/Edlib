@@ -479,12 +479,15 @@ final class ContentTest extends DuskTestCase
             ->withCredentials($platform->getOauth1Credentials())
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs(User::factory()->create()->email)
-            ->assertAuthenticated()
-            ->visit('/content/create/' . $tool->id)
-            ->withinFrame('.lti-launch', fn (Browser $browser) => $browser
-                ->type('payload', <<<EOJSON
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/create/' . $tool->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $browser) => $browser
+                        ->type('payload', <<<EOJSON
                 {
                     "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
                         "edlib": "https://spec.edlib.com/lti/vocab#",
@@ -505,10 +508,10 @@ final class ContentTest extends DuskTestCase
                     ]
                 }
                 EOJSON)
-                ->press('Send')
-            )
-            ->assertTitleContains('It should be a draft')
-            ->assertSee('You are viewing an unpublished draft version.')
+                        ->press('Send')
+                )
+                ->assertTitleContains('It should be a draft')
+                ->assertSee('You are viewing an unpublished draft version.')
         );
     }
 }
