@@ -488,30 +488,77 @@ final class ContentTest extends DuskTestCase
                     '.lti-launch',
                     fn (Browser $browser) => $browser
                         ->type('payload', <<<EOJSON
-                {
-                    "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
-                        "edlib": "https://spec.edlib.com/lti/vocab#",
-                        "xs": "http://www.w3.org/2001/XMLSchema#",
-                        "published": {
-                            "@id": "edlib:published",
-                            "@type": "xs:boolean"
-                        }
-                    }],
-                    "@graph": [
                         {
-                            "@type": "LtiLinkItem",
-                            "mediaType": "application/vnd.ims.lti.v1.ltilink",
-                            "url": "https://hub-test.edlib.test/lti/samples/presentation",
-                            "title": "It should be a draft",
-                            "published": false
+                            "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
+                                "edlib": "https://spec.edlib.com/lti/vocab#",
+                                "xs": "http://www.w3.org/2001/XMLSchema#",
+                                "published": {
+                                    "@id": "edlib:published",
+                                    "@type": "xs:boolean"
+                                }
+                            }],
+                            "@graph": [
+                                {
+                                    "@type": "LtiLinkItem",
+                                    "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                    "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                                    "title": "It should be a draft",
+                                    "published": false
+                                }
+                            ]
                         }
-                    ]
-                }
-                EOJSON)
+                        EOJSON)
                         ->press('Send')
                 )
                 ->assertTitleContains('It should be a draft')
                 ->assertSee('You are viewing an unpublished draft version.')
+        );
+    }
+
+    public function testCreatesContentWithContentTypeTag(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $tool = LtiTool::factory()
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/create/' . $tool->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $browser) => $browser
+                        ->type('payload', <<<EOJSON
+                        {
+                            "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
+                                "edlib": "https://spec.edlib.com/lti/vocab#",
+                                "xs": "http://www.w3.org/2001/XMLSchema#",
+                                "tag": {
+                                    "@id": "edlib:tag",
+                                    "@type": "xs:normalizedString"
+                                }
+                            }],
+                            "@graph": [
+                                {
+                                    "@type": "LtiLinkItem",
+                                    "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                    "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                                    "title": "TMK Course Presentation",
+                                    "tag": "h5p:H5P.CoursePresentation"
+                                }
+                            ]
+                        }
+                        EOJSON)
+                        ->press('Send')
+                )
+                ->assertTitleContains('TMK Course Presentation')
+                ->visit('/content')
+                ->with(new ContentCard(), fn (Browser $card) => $card
+                    ->assertSeeIn('@title', 'TMK Course Presentation')
+                    ->assertSeeIn('@content-type', 'H5P.CoursePresentation')
+                )
         );
     }
 }

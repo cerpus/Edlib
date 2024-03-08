@@ -47,7 +47,7 @@
     </header>
     <div class="card-body">
         <div class="row card-text mb-2">
-            <div class="col-auto small">
+            <div class="col-auto small content-type">
                 {{ $version->getDisplayedContentType() }}
             </div>
             <div class="col-auto badge text-bg-primary">
