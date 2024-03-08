@@ -17,7 +17,7 @@
                     type="checkbox"
                     aria-description="{{trans('messages.filter-remove')}}"
                     :value="$value"
-                    name="ct[]"
+                    name="type[]"
                     checked
                     removable
                 >
@@ -39,8 +39,7 @@
         @endif
     </form>
     <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
-        document.querySelector("#filterSelectedForm")
-            .querySelectorAll("button[type='submit']")
+        document.querySelectorAll("#filterSelectedForm button[type='submit']")
             .forEach(button => button.addEventListener('click', event => {
                 event.target.parentElement.querySelector("input").checked = false;
             }));

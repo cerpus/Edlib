@@ -171,5 +171,5 @@ return [
     'filter-content-types-desc' => 'Filter by content type',
     'filter-remove' => 'Remove filter',
     'filter-toggle-more' => 'See more',
-    'filter-toggle-less' => 'See less',
+    'filter-toggle-less' => 'See fewer',
 ];

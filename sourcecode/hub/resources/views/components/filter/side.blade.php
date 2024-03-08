@@ -27,7 +27,7 @@
                             :value="$value"
                             :checked="in_array($value, $filter->getContentTypes())"
                             inputType="checkbox"
-                            name="ct[]"
+                            name="type[]"
                         >
                             {{$label}}
                         </x-filter.badge>

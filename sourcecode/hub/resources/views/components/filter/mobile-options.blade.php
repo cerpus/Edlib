@@ -57,7 +57,7 @@
                                         class="form-check-input me-1"
                                         type="checkbox"
                                         value="{{$value}}"
-                                        name="ct[]"
+                                        name="type[]"
                                         @checked(in_array($value, $filter->getContentTypes()))
                                     >
                                     {{ $label }}

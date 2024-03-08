@@ -32,7 +32,7 @@ class ContentFilter extends FormRequest
             'q' => ['sometimes', 'string', 'max:300'],
             'language' => ['sometimes', 'string', 'max:100'],
             'sort' => ['sometimes', Rule::in('created', 'updated')],
-            'ct' => ['sometimes', 'array'],
+            'type' => ['sometimes', 'array'],
         ];
     }
 
@@ -83,7 +83,7 @@ class ContentFilter extends FormRequest
      */
     public function getContentTypes(): array
     {
-        return $this->validated('ct', []);
+        return $this->validated('type', []);
     }
 
     /**
@@ -93,12 +93,13 @@ class ContentFilter extends FormRequest
     {
         return DB::table('tags AS t')
             ->select(['t.prefix', 't.name', 'cvt.verbatim_name'])
-            ->leftJoin('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
+            ->join('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
+            ->where('prefix', '=', 'h5p')
             ->orderBy('verbatim_name')
             ->get()
             ->mapWithKeys(function ($item) {
                 $key = $item->prefix !== '' ? "{$item->prefix}:{$item->name}" : $item->name ;
-                return [$key => $item->verbatim_name];
+                return [$key => $item->verbatim_name ?? $item->name];
             });
     }
 
