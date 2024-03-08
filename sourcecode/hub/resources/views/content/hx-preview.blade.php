@@ -20,11 +20,17 @@
             <div class="flex-fill">
                 <div>
                     <strong>{{ trans('messages.created') }}:</strong>
-                    <span>{{ $content->created_at->isoFormat('LLLL') }}</span>
+                    <time
+                        datetime="{{ $content->created_at->toIso8601String() }}"
+                        data-dh-relative="true"
+                    ></time>
                 </div>
                 <div>
                     <strong>{{ trans('messages.edited') }}:</strong>
-                    <span>{{ $content->updated_at->isoFormat('LLLL') }}</span>
+                    <time
+                        datetime="{{ $content->updated_at->toIso8601String() }}"
+                        data-dh-relative="true"
+                    ></time>
                 </div>
             </div>
 
