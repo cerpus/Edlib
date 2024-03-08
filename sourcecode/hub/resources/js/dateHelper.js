@@ -36,207 +36,203 @@ import { intlFormatDistance, isToday, isThisWeek } from "date-fns";
  *
  * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#date-time_component_options
  */
-(function () {
-    'use strict';
+let locale = null;
+const observeConfig = {
+    subtree: true,
+    childList: true,
+    attributes: false,
+};
+const defaultDateStyle = 'short';
+const defaultTimeStyle =  'medium';
+const defaultRelativeTimeStyle = 'short';
+const defaultRelativeDateStyle = 'long';
+const timeParams = [
+    'dayPeriod',
+    'hour',
+    'minute',
+    'second',
+];
+const dateParams = [
+    'weekday',
+    'era',
+    'year',
+    'month',
+    'day',
+];
 
-    let locale = null;
-    const observeConfig = {
-        subtree: true,
-        childList: true,
-        attributes: false,
-    };
-    const defaultDateStyle = 'short';
-    const defaultTimeStyle =  'medium';
-    const defaultRelativeTimeStyle = 'short';
-    const defaultRelativeDateStyle = 'long';
-    const timeParams = [
-        'dayPeriod',
-        'hour',
-        'minute',
-        'second',
-    ];
-    const dateParams = [
-        'weekday',
-        'era',
-        'year',
-        'month',
-        'day',
-    ];
-
-    /**
-     * Add observer so we get informed when page content changes
-     *
-     * @param {Element} target
-     */
-    function observe(target) {
-        if (!target) {
-            throw new Error('Element is required')
-        }
-        const observer = new MutationObserver(callback);
-        return observer.observe(target, observeConfig);
+/**
+ * Add observer so we get informed when page content changes
+ *
+ * @param {Element} target
+ */
+function observe(target) {
+    if (!target) {
+        throw new Error('Element is required')
     }
+    const observer = new MutationObserver(callback);
+    return observer.observe(target, observeConfig);
+}
 
-    /**
-     * Callback for observer
-     *
-     * @param {array<MutationRecord>} mutationList
-     * @param {MutationObserver} observer
-     */
-    function callback (mutationList, observer) {
-        mutationList.forEach(record => {
-            record.addedNodes.forEach(processContent);
+/**
+ * Callback for observer
+ *
+ * @param {array<MutationRecord>} mutationList
+ * @param {MutationObserver} observer
+ */
+function callback (mutationList, observer) {
+    mutationList.forEach(record => {
+        record.addedNodes.forEach(processContent);
+    });
+}
+
+/**
+ * @param {Element} el
+ */
+function processContent(el) {
+    if (el.querySelectorAll) {
+        el.querySelectorAll('time[datetime]').forEach(el => {
+            const value = el.getAttribute('datetime');
+            if (value) {
+                const dhOptions = getOptions(el);
+                const date = new Date(Date.parse(value));
+                if (dhOptions.relative) {
+                    el.innerText = relativeFormat(
+                        date,
+                        getIntlTimeOptions(el, defaultRelativeTimeStyle),
+                        getIntlDateOptions(el, defaultRelativeDateStyle)
+                    );
+                } else {
+                    el.innerText = format(date, getIntlOptions(el));
+                }
+                if (el.getAttribute('title') === null) {
+                    el.setAttribute('title', format(date, {
+                        dateStyle: 'full',
+                        timeStyle: 'medium',
+                    }));
+                }
+            }
         });
     }
+}
 
-    /**
-     * @param {Element} el
-     */
-    function processContent(el) {
-        if (el.querySelectorAll) {
-            el.querySelectorAll('time[datetime]').forEach(el => {
-                const value = el.getAttribute('datetime');
-                if (value) {
-                    const dhOptions = getOptions(el);
-                    const date = new Date(Date.parse(value));
-                    if (dhOptions.relative) {
-                        el.innerText = relativeFormat(
-                            date,
-                            getIntlTimeOptions(el, defaultRelativeTimeStyle),
-                            getIntlDateOptions(el, defaultRelativeDateStyle)
-                        );
-                    } else {
-                        el.innerText = format(date, getIntlOptions(el));
-                    }
-                    if (el.getAttribute('title') === null) {
-                        el.setAttribute('title', format(date, {
-                            dateStyle: 'full',
-                            timeStyle: 'medium',
-                        }));
-                    }
-                }
-            });
-        }
+/**
+ * Format as date and time string
+ *
+ * @param {Date} value
+ * @param {{}} options
+ * @return {string}
+ */
+function format(value, options) {
+    return new Intl.DateTimeFormat(locale, options).format(value);
+}
+
+/**
+ * Difference in human-readable format
+ *
+ * @param {Date} value
+ * @param {{}} timeOptions
+ * @param {{}} dateOptions
+ * @return {string}
+ */
+function relativeFormat(value, timeOptions, dateOptions) {
+    const now = new Date(Date.now());
+    let prefix = '';
+
+    if (isToday(value)) {
+        prefix = intlFormatDistance(value, now, {
+            locale: locale,
+            numeric: 'auto',
+            style: 'long',
+            unit: 'day',
+        });
+    } else if (isThisWeek(value)) {
+        prefix = format(value, {weekday: 'long'});
     }
 
-    /**
-     * Format as date and time string
-     *
-     * @param {Date} value
-     * @param {{}} options
-     * @return {string}
-     */
-    function format(value, options) {
-        return new Intl.DateTimeFormat(locale, options).format(value);
+    return prefix ? `${prefix} ${format(value, timeOptions)}` : format(value, dateOptions);
+}
+
+/**
+ * Get the Intl options set on the element
+ *
+ * @param {Element} el
+ * @return {{}}
+ */
+function getIntlOptions(el) {
+    let options = Object.assign({}, getIntlTimeOptions(el, defaultTimeStyle), getIntlDateOptions(el, defaultDateStyle));
+    if ((options.timeStyle || options.dateStyle) &&
+        (timeParams.some(item => options[item] !== undefined) || dateParams.some(item => options[item] !== undefined))
+    ) {
+        options.timeStyle = undefined;
+        options.daStyle = undefined;
     }
 
-    /**
-     * Difference in human-readable format
-     *
-     * @param {Date} value
-     * @param {{}} timeOptions
-     * @param {{}} dateOptions
-     * @return {string}
-     */
-    function relativeFormat(value, timeOptions, dateOptions) {
-        const now = new Date(Date.now());
-        let prefix = '';
+    return options;
+}
 
-        if (isToday(value)) {
-            prefix = intlFormatDistance(value, now, {
-                locale: locale,
-                numeric: 'auto',
-                style: 'long',
-                unit: 'day',
-            });
-        } else if (isThisWeek(value)) {
-            prefix = format(value, {weekday: 'long'});
-        }
+/**
+ * Get the Intl time options set on the element
+ *
+ * @param {Element} el
+ * @param {string} defaultStyle
+ * @return {{}}
+ */
+function getIntlTimeOptions(el, defaultStyle) {
+    let options = {};
 
-        return prefix ? `${prefix} ${format(value, timeOptions)}` : format(value, dateOptions);
+    timeParams.forEach(param => options[param] = getStyleOption(el, `data-dh-${param.toLowerCase()}`));
+    if (!timeParams.some(item => options[item] !== undefined)) {
+        options.timeStyle = getStyleOption(el, 'data-dh-timestyle', defaultStyle);
     }
 
-    /**
-     * Get the Intl options set on the element
-     *
-     * @param {Element} el
-     * @return {{}}
-     */
-    function getIntlOptions(el) {
-        let options = Object.assign({}, getIntlTimeOptions(el, defaultTimeStyle), getIntlDateOptions(el, defaultDateStyle));
-        if ((options.timeStyle || options.dateStyle) &&
-            (timeParams.some(item => options[item] !== undefined) || dateParams.some(item => options[item] !== undefined))
-        ) {
-            options.timeStyle = undefined;
-            options.daStyle = undefined;
-        }
+    return options;
+}
 
-        return options;
+/**
+ * Get the Intl date options set on the element
+ *
+ * @param {Element} el
+ * @param {string} defaultStyle
+ * @return {{}}
+ */
+function getIntlDateOptions(el, defaultStyle) {
+    let options = {};
+
+    dateParams.forEach(param => options[param] = getStyleOption(el, `data-dh-${param.toLowerCase()}`));
+    if (!dateParams.some(item => options[item] !== undefined)) {
+        options.dateStyle = getStyleOption(el, 'data-dh-datestyle', defaultStyle);
     }
 
-    /**
-     * Get the Intl time options set on the element
-     *
-     * @param {Element} el
-     * @param {string} defaultStyle
-     * @return {{}}
-     */
-    function getIntlTimeOptions(el, defaultStyle) {
-        let options = {};
+    return options;
+}
 
-        timeParams.forEach(param => options[param] = getStyleOption(el, `data-dh-${param.toLowerCase()}`));
-        if (!timeParams.some(item => options[item] !== undefined)) {
-            options.timeStyle = getStyleOption(el, 'data-dh-timestyle', defaultStyle);
-        }
+/**
+ * Get the DateHelper options set on the element
+ *
+ * @param {Element} el
+ * @return {{relative: boolean}}
+ */
+function getOptions(el) {
+    return {
+        relative: el.getAttribute('data-dh-relative') === 'true',
+    };
+}
 
-        return options;
-    }
+/**
+ * Read date, time or short format options
+ *
+ * @param {Element} el
+ * @param {string} name
+ * @param {any} defaultValue
+ * @return {string|undefined}
+ */
+function getStyleOption(el, name, defaultValue = undefined) {
+    const value = el.getAttribute(name);
+    return value !== 'none' ? (value ? value : defaultValue) : undefined;
+}
 
-    /**
-     * Get the Intl date options set on the element
-     *
-     * @param {Element} el
-     * @param {string} defaultStyle
-     * @return {{}}
-     */
-    function getIntlDateOptions(el, defaultStyle) {
-        let options = {};
-
-        dateParams.forEach(param => options[param] = getStyleOption(el, `data-dh-${param.toLowerCase()}`));
-        if (!dateParams.some(item => options[item] !== undefined)) {
-            options.dateStyle = getStyleOption(el, 'data-dh-datestyle', defaultStyle);
-        }
-
-        return options;
-    }
-
-    /**
-     * Get the DateHelper options set on the element
-     *
-     * @param {Element} el
-     * @return {{relative: boolean}}
-     */
-    function getOptions(el) {
-        return {
-            relative: el.getAttribute('data-dh-relative') === 'true',
-        };
-    }
-
-    /**
-     * Read date, time or short format options
-     *
-     * @param {Element} el
-     * @param {string} name
-     * @param {any} defaultValue
-     * @return {string|undefined}
-     */
-    function getStyleOption(el, name, defaultValue = undefined) {
-        const value = el.getAttribute(name);
-        return value !== 'none' ? (value ? value : defaultValue) : undefined;
-    }
-
-    document.addEventListener('DOMContentLoaded', (e) => {
-        locale = document.documentElement.getAttribute('lang') ?? navigator.languages;
-        processContent(document.body);
-        observe(document.body);
-    });
-})();
+document.addEventListener('DOMContentLoaded', (e) => {
+    locale = document.documentElement.getAttribute('lang') ?? navigator.languages;
+    processContent(document.body);
+    observe(document.body);
+});
