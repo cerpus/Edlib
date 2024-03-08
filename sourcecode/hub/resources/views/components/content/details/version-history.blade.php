@@ -37,7 +37,7 @@
                             'fw-bold' => $isCurrent,
                         ])
                     >
-                        <time datetime="{{ $v->created_at->format('c') }}">{{ $v->created_at }}</time>
+                        <time datetime="{{ $v->created_at->toIso8601String() }}"></time>
                     </a>
 
                     @if ($content->latestPublishedVersion?->is($v))

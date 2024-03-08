@@ -22,13 +22,12 @@
                 data-bs-target="#previewModal"
             @endif
         >
-            {{-- TODO: Date and time should be displayed in users timezone --}}
-            <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal" title="{{$content->updated_at->isoFormat('LLLL')}}">
+            <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal">
                 {{ trans('messages.edited') }}:
-                {{
-                    $content->updated_at->isToday() ? ucfirst(trans('messages.today')) . $content->updated_at->isoFormat(' LT') :
-                    ($content->updated_at->isSameAs('W', \Illuminate\Support\Carbon::now()) ? ucfirst($content->updated_at->isoFormat('dddd LT')) : $content->updated_at->isoFormat('LL'))
-                }}
+                <time
+                    datetime="{{$content->updated_at->toIso8601String()}}"
+                    data-dh-relative="true"
+                ></time>
             </div>
             <div class="text-line-clamp clamp-2-lines content-card-title">
                 {{ $version->title }}
