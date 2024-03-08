@@ -12,6 +12,10 @@
         @include button-variant($green-100, $gray-400, $gray-900, $green-200, $green-100, $gray-900);
     }
 
+    .btn-outline-primary {
+        @include button-outline-variant($green-500, $gray-900, $green-200, $green-100, $gray-900);
+    }
+
     // Secondary button
     .btn-secondary {
         @include button-variant($white, $gray-400, $gray-900, $gray-200, $gray-400, $gray-900);
@@ -82,9 +86,15 @@
     .pagination {
         --bs-pagination-active-bg: #{$green-100};
         --bs-pagination-active-border-color: #{$green-200};
-        --bs-pagination-active-color: #{$gray-700};
-        --bs-pagination-color: #{$green-500};
+        --bs-pagination-active-color: var(--bs-body-color);
+        --bs-pagination-color: var(--bs-body-color);
         --bs-pagination-focus-box-shadow: #{$edlib-input-box-shadow};
+        --bs-pagination-hover-color: var(--bs-body-color);
+        --bs-pagination-focus-color: var(--bs-body-color)
+    }
+
+    .dropdown-item {
+        --bs-dropdown-link-active-bg: #{$green-500};
     }
 
     // Underline for menu items in contrast mode
