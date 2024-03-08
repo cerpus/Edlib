@@ -555,9 +555,11 @@ final class ContentTest extends DuskTestCase
                 )
                 ->assertTitleContains('TMK Course Presentation')
                 ->visit('/content')
-                ->with(new ContentCard(), fn (Browser $card) => $card
-                    ->assertSeeIn('@title', 'TMK Course Presentation')
-                    ->assertSeeIn('@content-type', 'H5P.CoursePresentation')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', 'TMK Course Presentation')
+                        ->assertSeeIn('@content-type', 'H5P.CoursePresentation')
                 )
         );
     }
