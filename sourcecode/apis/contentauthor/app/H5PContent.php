@@ -353,4 +353,11 @@ class H5PContent extends Content implements VersionableObject
     {
         return $this->library()->firstOrFail()->getIconUrl();
     }
+
+    protected function getTags(): array
+    {
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
+    }
 }

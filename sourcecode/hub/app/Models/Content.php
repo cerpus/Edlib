@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Events\ContentDeleting;
+use App\Enums\ContentUserRole;
+use App\Enums\ContentViewSource;
+use App\Events\ContentForceDeleting;
 use App\Lti\ContentItemSelectionFactory;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
@@ -20,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +43,7 @@ class Content extends Model
     use HasFactory;
     use HasUlids;
     use Searchable;
+    use SoftDeletes;
 
     protected $perPage = 48;
 
@@ -45,7 +51,7 @@ class Content extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
-        'deleting' => ContentDeleting::class,
+        'forceDeleting' => ContentForceDeleting::class,
     ];
 
     public static function booted(): void
@@ -95,9 +101,16 @@ class Content extends Model
         }
         assert(is_string($url));
 
-        return (new EdlibLtiLinkItem(title: $version->getTitle(), url: $url))
+        $iconUrl = $version->icon?->getUrl();
+
+        return (new EdlibLtiLinkItem(
+            title: $version->getTitle(),
+            url: $url,
+            icon: $iconUrl ? new Image($iconUrl) : null,
+        ))
             ->withLanguageIso639_3($version->language_iso_639_3)
             ->withLicense($version->license)
+            ->withTags($version->getSerializedTags())
         ;
     }
 
@@ -123,7 +136,9 @@ class Content extends Model
      */
     public function latestVersion(): HasOne
     {
-        return $this->hasOne(ContentVersion::class)->latestOfMany();
+        return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
+            ->latestOfMany();
     }
 
     /**
@@ -132,6 +147,7 @@ class Content extends Model
     public function latestDraftVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->draft();
@@ -144,6 +160,7 @@ class Content extends Model
     public function latestPublishedVersion(): HasOne
     {
         return $this->hasOne(ContentVersion::class)
+            ->with(['tool'])
             ->ofMany(['id' => 'max'], function (Builder $query) {
                 /** @var Builder<ContentVersion> $query */
                 $query->published();
@@ -156,6 +173,45 @@ class Content extends Model
     public function versions(): HasMany
     {
         return $this->hasMany(ContentVersion::class)->orderBy('id', 'DESC');
+    }
+
+    public function createVersionFromLinkItem(
+        ContentItem $item,
+        LtiTool $tool,
+        User $user,
+    ): ContentVersion {
+        $title = $item->getTitle() ?? throw new DomainException('Missing title');
+        $url = $item->getUrl() ?? throw new DomainException('Missing URL');
+
+        $version = $this->versions()->make();
+        assert($version instanceof ContentVersion);
+
+        $version->title = $title;
+        $version->lti_launch_url = $url;
+        $version->original_icon_url = $item->getIcon()?->getUri();
+        $version->published = true;
+        $version->tool()->associate($tool);
+        $version->editedBy()->associate($user);
+
+        if ($item instanceof EdlibLtiLinkItem) {
+            $version->published = $item->isPublished() ?? true;
+            $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
+            $version->license = $item->getLicense();
+        }
+
+        $version->saveQuietly();
+
+        if ($item instanceof EdlibLtiLinkItem) {
+            foreach ($item->getTags() as $tag) {
+                $version->tags()->attach(Tag::findOrCreateFromString($tag), [
+                    'verbatim_name' => Tag::extractVerbatimName($tag)
+                ]);
+            }
+        }
+
+        $version->save();
+
+        return $version;
     }
 
     /**
@@ -205,8 +261,15 @@ class Content extends Model
             ->withPivot('role')
             ->withCasts([
                 'role' => ContentUserRole::class,
-            ])
-            ->withTimestamps();
+            ]);
+    }
+
+    /**
+     * @return BelongsToMany<User>
+     */
+    public function usersWithTimestamps(): BelongsToMany
+    {
+        return $this->users()->withTimestamps();
     }
 
     public function hasUser(User $user): bool
@@ -235,6 +298,7 @@ class Content extends Model
             'updated_at' => $this->updated_at,
             'license' => $version->license,
             'language_iso_639_3' => $version->language_iso_639_3,
+            'tags' => $version->getSerializedTags(),
         ];
     }
 
@@ -249,8 +313,8 @@ class Content extends Model
             ->where('published', true)
             ->query(
                 fn (Builder $query) => $query
-                ->with(['latestPublishedVersion', 'users'])
-                ->withCount(['views']),
+                    ->with(['latestPublishedVersion', 'users'])
+                    ->withCount(['views']),
             )
         ;
     }
@@ -261,8 +325,8 @@ class Content extends Model
             ->where('user_ids', $user->id)
             ->query(
                 fn (Builder $query) => $query
-                ->with(['latestVersion', 'users'])
-                ->withCount(['views']),
+                    ->with(['latestVersion', 'users'])
+                    ->withCount(['views']),
             )
         ;
     }

@@ -6,20 +6,26 @@ namespace App\Providers;
 
 use App\Configuration\Locales;
 use App\Support\CarbonToPsrClockAdapter;
+use App\Support\SessionScope;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
+use App\Utils\IconDownloader;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Scout\Console\DeleteIndexCommand;
 use Laravel\Scout\Console\ImportCommand;
 use Laravel\Scout\Console\SyncIndexSettingsCommand;
 use Laravel\Telescope\Telescope;
-use Livewire\Livewire;
 use Psr\Clock\ClockInterface;
 use Random\Randomizer;
 
 use function class_exists;
+use function config;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -49,6 +55,23 @@ class AppServiceProvider extends ServiceProvider
 
             return $urlGenerator;
         });
+
+        $this->app->when(IconDownloader::class)
+            ->needs(Cloud::class)
+            ->give(fn () => Storage::disk('uploads'));
+
+        $this->app->when(IconDownloader::class)
+            ->needs(ClientInterface::class)
+            ->give(fn () => new Client([
+                'headers' => [
+                    'User-Agent' => sprintf(
+                        'Edlib/3 (+%s)',
+                        config('app.contact-url') ?: config('app.url'),
+                    ),
+                ],
+            ]));
+
+        $this->app->singleton(SessionScope::class);
     }
 
     /**
@@ -60,14 +83,6 @@ class AppServiceProvider extends ServiceProvider
         Vite::useStyleTagAttributes(['crossorigin' => 'anonymous']);
 
         Paginator::useBootstrapFive();
-        Paginator::currentPathResolver(function (): string {
-            if (Livewire::isLivewireRequest()) {
-                // Fix static paginator in Livewire requests
-                return Livewire::originalUrl();
-            }
-
-            return $this->app->make('request')->url();
-        });
 
         // Scout doesn't register these in non-CLI environments, but we need
         // them to be accessible from queued jobs.

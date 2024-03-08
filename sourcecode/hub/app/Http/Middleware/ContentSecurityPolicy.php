@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Foundation\Vite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 use function app;
@@ -41,11 +42,17 @@ final class ContentSecurityPolicy
             $default .= " $viteBaseUrl $viteWssBaseUrl";
         }
 
+        $imgSrc = "$default data:";
+        $uploadUrl = Storage::disk('uploads')->url('/');
+        if ($uploadUrl) {
+            $imgSrc .= " $uploadUrl";
+        }
+
         $response->headers->set(
             'Content-Security-Policy',
             "default-src $default" .
                 "; frame-src *" .
-                "; img-src $default data:" .
+                "; img-src $imgSrc" .
                 "; script-src 'nonce-" . $this->vite->cspNonce() . "'" .
                 "; style-src 'nonce-" . $this->vite->cspNonce() . "'",
         );

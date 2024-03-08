@@ -39,8 +39,15 @@ class ContentPolicy
         return true;
     }
 
-    public function edit(User $user, Content $content): bool
-    {
+    public function edit(
+        User $user,
+        Content $content,
+        ContentVersion|null $version = null,
+    ): bool {
+        if ($version && !$version->content()->is($content)) {
+            return false;
+        }
+
         if ($user->admin) {
             return true;
         }
@@ -53,10 +60,20 @@ class ContentPolicy
         return true;
     }
 
+    public function delete(User $user, Content $content): bool
+    {
+        if ($content->trashed()) {
+            return false;
+        }
+
+        // TODO: check owner role
+        return $content->hasUser($user);
+    }
+
     public function use(User|null $user, Content $content): bool
     {
-        return $content->latestPublishedVersion()->exists() &&
-            request()->hasPreviousSession() &&
-            request()->session()->has('lti.content_item_return_url');
+        return request()->hasPreviousSession() &&
+            request()->session()->has('lti.content_item_return_url') &&
+            $content->latestPublishedVersion()->exists();
     }
 }

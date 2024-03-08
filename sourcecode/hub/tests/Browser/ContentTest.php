@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ContentCard;
+use Tests\Browser\Components\PreviewModal;
 use Tests\Browser\Components\VersionHistory;
 use Tests\DuskTestCase;
 
@@ -58,14 +59,14 @@ final class ContentTest extends DuskTestCase
             ->with(
                 new ContentCard(),
                 fn (Browser $card) => $card
-                ->assertSeeIn('@views', '0')
-                ->click('@title')
+                    ->assertSeeIn('@views', '0')
+                    ->click('@title')
             )
             ->visit('/content')
             ->with(
                 new ContentCard(),
                 fn (Browser $card) => $card
-                ->assertSeeIn('@views', '1')
+                    ->assertSeeIn('@views', '1')
             ));
 
         $this->assertSame(1, $content->views()->count());
@@ -116,7 +117,7 @@ final class ContentTest extends DuskTestCase
                 ->visit('/')
                 ->clickLink('Explore')
                 ->type('q', 'some keywords')
-                ->pause(1200) // FIXME
+                ->waitForEvent('htmx:after-swap')
                 ->with('.big-notice', function (Browser $message) {
                     $message
                         ->assertSee('Sorry! No results found :(')
@@ -157,7 +158,7 @@ final class ContentTest extends DuskTestCase
                 ->visit('/')
                 ->clickLink('My content')
                 ->type('q', 'some keywords')
-                ->pause(1200) // FIXME
+                ->waitForEvent('htmx:after-swap')
                 ->with('.big-notice', function (Browser $message) {
                     $message
                         ->assertSee('Sorry! No results found :(')
@@ -259,7 +260,7 @@ final class ContentTest extends DuskTestCase
         });
     }
 
-    public function testPreviewsContent(): void
+    public function testPreviewsContentInDetails(): void
     {
         $content = Content::factory()
             ->withPublishedVersion()
@@ -277,12 +278,96 @@ final class ContentTest extends DuskTestCase
         });
     }
 
+    public function testPreviewsContentInModal(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create()
+            ->fresh();
+        assert($content instanceof Content);
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->clickLink('Preview')
+                        )
+                )
+                ->waitFor('#previewModal .modal-dialog')
+                ->assertVisible('#previewModal .lti-launch')
+        );
+    }
+
+    public function testUsesContentViaButtonInPreviewModal(): void
+    {
+        $ltiPlatform = LtiPlatform::factory()->create();
+        $ltiTool = LtiTool::factory()
+            ->state(['creator_launch_url' => 'https://hub-test.edlib.test/lti/dl'])
+            ->withCredentials($ltiPlatform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()->create();
+
+        $content = Content::factory()->withPublishedVersion()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->visit('/content/create/' . $ltiTool->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $launch) => $launch
+                        ->with(new ContentCard(), fn (Browser $card) => $card->click('@title'))
+                        ->waitFor('#previewModal')
+                        ->with(
+                            new PreviewModal(),
+                            fn (Browser $modal) => $modal
+                                ->click('@use-button')
+                        )
+                )
+                ->assertTitleContains($content->getTitle())
+        );
+    }
+
+    public function testPreviewModalHasNoUseButtonOutsideOfLtiContext(): void
+    {
+        Content::factory()->withPublishedVersion()->create();
+        $user = User::factory()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->visit('/content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->clickLink('Preview')
+                        )
+                )
+                ->waitFor('#previewModal')
+                ->with(
+                    new PreviewModal(),
+                    fn (Browser $modal) => $modal
+                        ->assertMissing('@use-button')
+                )
+        );
+    }
+
     public function testResizesIframeWhenRequestedByTool(): void
     {
         $platform = LtiPlatform::factory()->create();
         $content = Content::factory()->withVersion(
             ContentVersion::factory()
-                ->withLaunchUrl('https://hub-test.edlib.test/lti/resize-test')
+                ->withLaunchUrl('https://hub-test.edlib.test/lti/samples/resize')
                 ->tool(LtiTool::factory()->withCredentials($platform->getOauth1Credentials()))
                 ->published()
         )->create();
@@ -301,8 +386,8 @@ final class ContentTest extends DuskTestCase
     }
 
     /**
-     * Requests to Livewire in LTI context must be aware of the session scope,
-     * otherwise it'll replace elements on the page with HTML generated for the
+     * Requests to ajax endpoints in LTI context must be aware of the session
+     * scope, otherwise on the page will be replaced with HTML generated for the
      * outer session. This problem most obviously manifests itself as the 'use'
      * button missing on content cards after a search, so we check that they are
      * still present after performing one.
@@ -338,13 +423,95 @@ final class ContentTest extends DuskTestCase
                 ->assertSee('found content')
                 ->assertSee('excluded content')
                 ->type('q', 'found')
-                ->pause(1200)
+                ->waitForEvent('htmx:after-swap')
                 ->assertSee('found content')
                 ->assertDontSee('excluded content')
                 ->with(
                     new ContentCard(),
                     fn (Browser $card) => $card
-                    ->assertPresent('@use-button'),
+                        ->assertPresent('@use-button'),
                 )));
+    }
+
+    public function testCanDeleteOwnContent(): void
+    {
+        $user = User::factory()->create();
+
+        $content = Content::factory()
+            ->withUser($user)
+            ->withPublishedVersion()
+            ->create();
+        $this->assertFalse($content->trashed());
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id)
+                ->click('.delete-content-button')
+                ->acceptDialog()
+                ->waitForLocation('/content')
+        );
+
+        $this->assertTrue($content->refresh()->trashed());
+    }
+
+    public function testCannotDeleteSomeoneElsesContent(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id)
+                ->assertTitleContains($content->getTitle())
+                ->assertNotPresent('.delete-content-button')
+        );
+    }
+
+    public function testCreatesDraftVersions(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $tool = LtiTool::factory()
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/create/' . $tool->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $browser) => $browser
+                        ->type('payload', <<<EOJSON
+                {
+                    "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
+                        "edlib": "https://spec.edlib.com/lti/vocab#",
+                        "xs": "http://www.w3.org/2001/XMLSchema#",
+                        "published": {
+                            "@id": "edlib:published",
+                            "@type": "xs:boolean"
+                        }
+                    }],
+                    "@graph": [
+                        {
+                            "@type": "LtiLinkItem",
+                            "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                            "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                            "title": "It should be a draft",
+                            "published": false
+                        }
+                    ]
+                }
+                EOJSON)
+                        ->press('Send')
+                )
+                ->assertTitleContains('It should be a draft')
+                ->assertSee('You are viewing an unpublished draft version.')
+        );
     }
 }

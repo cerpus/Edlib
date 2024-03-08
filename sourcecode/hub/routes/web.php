@@ -10,9 +10,11 @@ use App\Http\Controllers\CookieController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
+use App\Http\Controllers\LtiSample\DeepLinkController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
+use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
 use App\Http\Middleware\StartScopedLtiSession;
 use App\Models\User;
@@ -68,6 +70,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/version/{version}/preview')
+        ->uses([ContentController::class, 'preview'])
+        ->name('content.preview')
+        ->whereUlid(['content', 'version'])
+        ->can('view', ['content', 'version'])
+        ->scopeBindings();
+
     Route::get('/content/{content}/version/{version}')
         ->uses([ContentController::class, 'version'])
         ->name('content.version-details')
@@ -82,6 +91,7 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content');
 
     Route::get('/content/create', 'create')
+        ->middleware('auth')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
 
@@ -89,15 +99,23 @@ Route::controller(ContentController::class)->group(function () {
         ->can('copy', 'content')
         ->name('content.copy');
 
-    Route::get('/content/{content}/edit', 'edit')
+    Route::get('/content/{content}/version/{version}/edit')
+        ->uses([ContentController::class, 'edit'])
         ->name('content.edit')
-        ->can('edit', 'content')
-        ->whereUlid('content');
+        ->can('edit', ['content', 'version'])
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
 
     Route::post('/content/{content}/use')
         ->uses([ContentController::class, 'use'])
         ->name('content.use')
         ->can('use', 'content')
+        ->whereUlid('content');
+
+    Route::delete('/content/{content}')
+        ->uses([ContentController::class, 'delete'])
+        ->name('content.delete')
+        ->can('delete', 'content')
         ->whereUlid('content');
 
     Route::get('/content/create/{tool}', 'launchCreator')
@@ -209,5 +227,26 @@ Route::prefix('/{provider}')
             ->uses([SocialController::class, 'callback'])
             ->name('callback');
     });
+
+Route::post('/lti/samples/deep-link')
+    ->uses([DeepLinkController::class, 'launch'])
+    ->middleware([
+        LtiValidatedRequest::class . ':platform',
+        'lti.launch-type:ContentItemSelectionRequest',
+        StartScopedLtiSession::class,
+    ])
+    ->name('lti.samples.presentation');
+
+Route::get('/lti/samples/deep-link')
+    ->uses([DeepLinkController::class, 'form'])
+    ->middleware([LtiSessionRequired::class])
+    ->name('lti.samples.deep-link.form');
+
+Route::post('/lti/samples/deep-link/return')
+    ->uses([DeepLinkController::class, 'return'])
+    ->middleware([
+        LtiSessionRequired::class,
+    ])
+    ->name('lti.samples.deep-link.return');
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');

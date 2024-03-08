@@ -1,3 +1,4 @@
+@props(['language' => '', 'languageOptions' => []])
 <div class="position-sticky">
     <div class="accordion p-3 m-0 border-0 m-0 border-0" id="filterAccordion">
         <div class="accordion-item">
@@ -12,11 +13,11 @@
                         <li class="list-group-item border-0">
                             <label class="form-check-label">
                                 <input
-                                    wire:model="filterLang"
                                     class="form-check-input me-1"
                                     type="radio"
                                     value=""
-                                    name="fl"
+                                    name="language"
+                                    @checked($language === '')
                                 >
                                 {{ trans('messages.filter-language-all') }}
                             </label>
@@ -25,11 +26,11 @@
                             <li class="list-group-item border-0">
                                 <label class="form-check-label">
                                     <input
-                                        wire:model="filterLang"
                                         class="form-check-input me-1"
                                         type="radio"
                                         value="{{$key}}"
-                                        name="fl"
+                                        name="language"
+                                        @checked($key === $language)
                                     >
                                     {{ $label }}
                                 </label>

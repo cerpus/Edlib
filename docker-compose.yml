@@ -128,6 +128,7 @@ services:
       - ./localSetup/projects/nginx/templates:/etc/nginx/templates:ro
       - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
       - ./sourcecode/hub/public:/srv/www/hub/public:ro
+      - ./sourcecode/hub/storage/app/public:/srv/www/hub/storage/app/public:ro
     ports:
       - "80:80"
       - "443:443"
@@ -371,10 +372,16 @@ services:
     build:
       context: sourcecode/hub
       target: dev
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
     volumes:
       - ./sourcecode/hub:/srv/www/hub
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
     working_dir: /srv/www/hub
 
   hub-vite:

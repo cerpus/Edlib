@@ -14,33 +14,41 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="htmx-config" content="{{ json_encode([
+            'inlineScriptNonce' => \Illuminate\Support\Facades\Vite::cspNonce(),
+            'includeIndicatorStyles' => false,
+        ]) }}">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
-        @livewireStyles(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
         {{ $head ?? '' }}
     </head>
 
     <body class="d-flex flex-column vh-100">
-        @env('local')
+        @if (app()->isLocal() && config('telescope.enabled'))
             <a href="{{ route('telescope') }}" class="edlib-debug">
                 <x-icon name="bug" label="Laravel Telescope" />
             </a>
-        @endenv
+        @endif
 
         @unless ($noNav)
             <x-layout.navbar />
         @endunless
 
         @if (session()->has('alert'))
-            {{-- TODO: make floating so the page content doesn't bounce around --}}
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                {{ session('alert') }}
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="{{ trans('messages.close') }}"
-                ></button>
+            <div class="toast-container position-fixed top-0 start-50 translate-middle-x mt-3 bg-info rounded">
+                <div role="status" aria-live="polite" class="toast show" aria-atomic="true" data-bs-autohide="false">
+                    <div class="d-flex">
+                        <div class="toast-body w-100">
+                            {{ session('alert') }}
+                        </div>
+                        <button
+                            type="button"
+                            class="btn-close m-2 align-self-start"
+                            data-bs-dismiss="toast"
+                            aria-label="{{ trans('messages.close') }}"
+                        ></button>
+                    </div>
+                </div>
             </div>
         @endif
 
@@ -112,6 +120,16 @@
             </footer>
         @endif
 
-        @livewireScripts(['nonce' => \Illuminate\Support\Facades\Vite::cspNonce()])
+        {{-- Skeleton for preview modal --}}
+        <div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
+            </div>
+        </div>
+        <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
+            const previewModal = document.querySelector('#previewModal');
+            previewModal.addEventListener('hidden.bs.modal', () => {
+                previewModal.firstChild.remove();
+            });
+        </script>
     </body>
 </html>

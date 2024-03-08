@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ContentUserRole;
 use App\Models\Content;
-use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;

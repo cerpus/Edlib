@@ -127,6 +127,7 @@ return [
                     'user_ids',
                     'license',
                     'language_iso_639_3',
+                    'tags',
                 ],
                 'sortableAttributes' => ['created_at', 'updated_at'],
             ],

@@ -49,6 +49,32 @@ communicate extra information that isn't part of the LTI Deep-Linking spec:
     * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
     * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
 
+* `published`
+    * `@id`: `https://spec.edlib.com/lti/vocab#published`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
+
+* `tag`
+    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+    * Can be either a list of strings, or just a string.
+
+## LTI sample endpoints
+
+Edlib includes some LTI endpoints to make testing and developing easier. These
+require an authenticated LTI launch.
+
+* Test Deep Linking with arbitrary contents
+  
+  <https://hub.edlib.test/lti/samples/deep-link>
+
+* Test basic launches
+
+  <https://hub.edlib.test/lti/samples/presentation>
+
+* Test self-resizing iframes
+
+  <https://hub.edlib.test/lti/samples/resize>
+
 ## Useful resources
 
 * [Laravel 10 documentation](https://laravel.com/docs/10.x)

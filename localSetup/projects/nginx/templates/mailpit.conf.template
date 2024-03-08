@@ -7,11 +7,9 @@ server {
 }
 
 server {
-  listen 443 ssl;
-  server_name  mailpit.edlib.test;
+  include includes/https.conf;
 
-  ssl_certificate  /etc/ssl/private/cerpus.crt;
-  ssl_certificate_key  /etc/ssl/private/cerpus.key;
+  server_name  mailpit.edlib.test;
 
   set $upstream  http://mailpit:8025;
 

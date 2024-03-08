@@ -1,7 +1,4 @@
-{{-- ToDo: Remove these when actual values are available --}}
-@php($type = ['NDLA Virtual Tour (360)', 'Image Pair', 'Course Presentation', 'Audio', 'Interactive video'][mt_rand(0, 4)])
-{{-- End --}}
-
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-list-item shadow-sm">
@@ -10,16 +7,18 @@
             <a
                 href="{{ route('content.details', [$content->id]) }}"
                 class="col text-decoration-none link-body-emphasis"
-                aria-label="{{ trans('messages.preview') }}"
+                @if ($titlePreviews)
+                    hx-get="{{ route('content.preview', [$content, $version]) }}"
+                    hx-target="#previewModal"
+                    data-bs-toggle="modal"
+                    data-bs-target="#previewModal"
+                @endif
             >
                 <h5 class="text-line-clamp clamp-3-lines fw-bold" aria-label="{{ trans('messages.title') }}">
                     {{ $version->title }}
                 </h5>
             </a>
-            {{-- TODO: Date and time should be displayed in users timezone --}}
-            <div class="col-2" title="{{$content->updated_at->isoFormat('LLLL')}}" aria-label="{{ trans('messages.last-changed') }}">
-                {{ $content->updated_at->isoFormat('L') }}
-            </div>
+            <time class="col-2" aria-label="{{ trans('messages.last-changed') }}" datetime="{{$content->updated_at->toIso8601String()}}"></time>
             <div class="col-2" aria-label="{{ trans('messages.author') }}">
                 @foreach ($content->users as $user)
                     {{ $user->name }}
@@ -39,11 +38,11 @@
         </div>
         <div class="row">
             <div class="col" aria-label="{{ trans('messages.content-type') }}">
-                {{ $type }}
+                {{ $version->getDisplayedContentType() }}
             </div>
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
     </div>
 </article>

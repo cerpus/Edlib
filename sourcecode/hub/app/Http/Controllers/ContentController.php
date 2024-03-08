@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContentUserRole;
+use App\Enums\ContentViewSource;
+use App\Enums\LtiToolEditMode;
 use App\Http\Requests\DeepLinkingReturnRequest;
+use App\Http\Requests\ContentFilter;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
-use App\Models\ContentUserRole;
 use App\Models\ContentVersion;
-use App\Models\ContentViewSource;
 use App\Models\LtiTool;
-use App\Models\LtiToolEditMode;
-use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
-use Exception;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,89 +24,68 @@ use Illuminate\Support\Facades\Session;
 
 use function assert;
 use function is_string;
-use function strtolower;
+use function redirect;
+use function route;
 use function to_route;
+use function trans;
 use function view;
 
 class ContentController extends Controller
 {
-    public function index(): View
+    public function index(ContentFilter $request): View
     {
-        return view('content.index');
-    }
+        $query = Content::findShared($request->getQuery());
+        $request->applyCriteria($query);
 
-    public function mine(): View
-    {
-        return view('content.mine');
-    }
-
-    public function details(
-        Content $content,
-        Request $request,
-        LtiLaunchBuilder $launchBuilder,
-    ): View {
-        $content->trackView($request, ContentViewSource::Detail);
-
-        $version = $content->latestPublishedVersion()->firstOrFail();
-
-        $tool = $version->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $version->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id);
-
-        return view('content.details', [
-            'content' => $content,
-            'launch' => $launch,
+        return view($request->ajax() ? 'content.hx-index' : 'content.index', [
+            'contents' => $query->paginate(),
+            'filter' => $request,
         ]);
     }
 
-    public function version(
-        Content $content,
-        ContentVersion $version,
-        LtiLaunchBuilder $launchBuilder,
-    ): View {
-        $launchUrl = $version->lti_launch_url;
-        assert(is_string($launchUrl));
+    public function mine(ContentFilter $request): View
+    {
+        $query = Content::findForUser($this->getUser(), $request->getQuery());
+        $request->applyCriteria($query);
 
-        $tool = $version->tool;
-        assert($tool instanceof LtiTool);
+        return view($request->ajax() ? 'content.hx-mine' : 'content.mine', [
+            'contents' => $query->paginate(),
+            'filter' => $request,
+        ]);
+    }
 
-        $launch = $launchBuilder->toPresentationLaunch(
-            $tool,
-            $launchUrl,
-            $version->id,
-        );
+    public function details(Content $content, Request $request): View
+    {
+        $version = $content->latestPublishedVersion()->firstOrFail();
+        $this->authorize('view', [$content, $version]);
+
+        $content->trackView($request, ContentViewSource::Detail);
 
         return view('content.details', [
             'content' => $content,
             'version' => $version,
-            'launch' => $launch,
+            'launch' => $version->toLtiLaunch(),
         ]);
     }
 
-    public function share(
-        Content $content,
-        LtiLaunchBuilder $launchBuilder,
-        Request $request,
-    ): View {
+    public function version(Content $content, ContentVersion $version): View
+    {
+        return view('content.details', [
+            'content' => $content,
+            'version' => $version,
+            'launch' => $version->toLtiLaunch(),
+            'explicitVersion' => true,
+        ]);
+    }
+
+    public function share(Content $content, Request $request): View
+    {
         $content->trackView($request, ContentViewSource::Share);
 
-        $tool = $content->latestPublishedVersion?->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/share');
+        $launch = $content
+            ->latestPublishedVersion()
+            ->firstOrFail()
+            ->toLtiLaunch();
 
         return view('content.share', [
             'content' => $content,
@@ -114,23 +93,33 @@ class ContentController extends Controller
         ]);
     }
 
-    public function embed(Content $content, LtiLaunchBuilder $launchBuilder): View
+    public function embed(Content $content): View
     {
-        $tool = $content->latestPublishedVersion?->tool;
-        assert($tool instanceof LtiTool);
-
-        $launchUrl = $content->latestPublishedVersion?->lti_launch_url;
-        assert(is_string($launchUrl));
-
-        $launch = $launchBuilder
-            ->withWidth(640)
-            ->withHeight(480)
-            ->toPresentationLaunch($tool, $launchUrl, $content->id . '/embed');
+        $launch = $content
+            ->latestPublishedVersion()
+            ->firstOrFail()
+            ->toLtiLaunch();
 
         return view('content.embed', [
             'content' => $content,
             'version' => $content->latestPublishedVersion,
             'launch' => $launch,
+        ]);
+    }
+
+    public function preview(
+        Content $content,
+        ContentVersion $version,
+        Request $request,
+    ): View {
+        if (!$request->ajax()) {
+            abort(400);
+        }
+
+        return view('content.hx-preview', [
+            'content' => $content,
+            'version' => $version,
+            'launch' => $version->toLtiLaunch(),
         ]);
     }
 
@@ -151,9 +140,11 @@ class ContentController extends Controller
         return to_route('content.index', [$copy->id]);
     }
 
-    public function edit(Content $content, LtiLaunchBuilder $builder): View
-    {
-        $version = $content->latestPublishedVersion ?? abort(404);
+    public function edit(
+        Content $content,
+        ContentVersion $version,
+        LtiLaunchBuilder $builder,
+    ): View {
         $tool = $version->tool ?? abort(404);
 
         $launchUrl = match ($tool->edit_mode) {
@@ -170,6 +161,7 @@ class ContentController extends Controller
 
         return view('content.edit', [
             'content' => $content,
+            'version' => $version,
             'launch' => $launch,
         ]);
     }
@@ -183,6 +175,21 @@ class ContentController extends Controller
             'method' => $ltiRequest->getMethod(),
             'parameters' => $ltiRequest->toArray(),
         ]);
+    }
+
+    public function delete(Content $content, Request $request): Response|RedirectResponse
+    {
+        DB::transaction($content->delete(...));
+
+        $request->session()
+            ->flash('alert', trans('messages.alert-content-deleted'));
+
+        if ($request->ajax()) {
+            return response()->noContent()
+                ->header('HX-Redirect', route('content.index'));
+        }
+
+        return redirect()->route('content.index');
     }
 
     public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View
@@ -209,32 +216,18 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
-        $content = DB::transaction(function () use ($item, $tool) {
-            $title = $item->getTitle() ?? throw new Exception('Missing title');
-            $url = $item->getUrl() ?? throw new Exception('Missing URL');
-
+        $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
             $content->save();
-
-            $version = new ContentVersion();
-            $version->title = $title;
-            $version->lti_tool_id = $tool->id;
-            $version->lti_launch_url = $url;
-            $version->published = true; // TODO
-
-            if ($item instanceof EdlibLtiLinkItem) {
-                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
-                $version->license = $item->getLicense();
-            }
-
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
 
-            $content->versions()->save($version);
-
-            return $content;
+            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
         });
+        assert($version instanceof ContentVersion);
+
+        $content = $version->content;
         assert($content instanceof Content);
 
         // return to platform consuming Edlib
@@ -251,7 +244,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.redirect', [
-            'url' => route('content.details', $content),
+            'url' => route('content.version-details', [$content, $version]),
             'method' => 'GET',
             'target' => '_parent',
         ]);
@@ -264,23 +257,10 @@ class ContentController extends Controller
         ContentItemsMapperInterface $mapper,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
+        assert($item instanceof LtiLinkItem);
 
-        DB::transaction(function () use ($content, $item, $tool): void {
-            $title = $item->getTitle() ?? throw new Exception('Missing title');
-            $url = $item->getUrl() ?? throw new Exception('Missing URL');
-
-            $version = new ContentVersion();
-            $version->lti_tool_id = $tool->id;
-            $version->title = $title;
-            $version->lti_launch_url = $url;
-            $version->published = true; // TODO
-
-            if ($item instanceof EdlibLtiLinkItem) {
-                $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
-                $version->license = $item->getLicense();
-            }
-
-            $content->versions()->save($version);
+        $version = DB::transaction(function () use ($content, $item, $tool) {
+            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
         });
 
         // return to platform consuming Edlib
@@ -297,7 +277,7 @@ class ContentController extends Controller
 
         // return to Edlib
         return view('lti.redirect', [
-            'url' => route('content.details', $content),
+            'url' => route('content.version-details', [$content, $version]),
             'method' => 'GET',
             'target' => '_parent',
         ]);
@@ -319,6 +299,6 @@ class ContentController extends Controller
             default => Session::put('contentLayout', 'grid')
         };
 
-        return Redirect()->back();
+        return redirect()->back();
     }
 }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Enums\ContentViewSource;
 use App\Lti\LtiLaunch;
 use App\Models\Content;
-use App\Models\ContentViewSource;
 use App\Models\LtiPlatform;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
@@ -52,10 +52,5 @@ final readonly class LtiController
     public function select(): RedirectResponse
     {
         return to_route('content.index');
-    }
-
-    public function resizeTest(): Response
-    {
-        return response()->view('lti.resize-test');
     }
 }

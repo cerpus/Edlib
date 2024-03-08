@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\LtiToolEditMode;
+use App\Enums\LtiVersion;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -19,6 +21,8 @@ class LtiTool extends Model
     use HasUlids;
 
     public $timestamps = false;
+
+    protected $perPage = 12;
 
     /** @var mixed[] */
     protected $attributes = [
@@ -48,6 +52,7 @@ class LtiTool extends Model
         'send_name',
         'send_email',
         'proxy_launch',
+        'edit_mode',
     ];
 
     /**
