@@ -11,20 +11,24 @@
         </div>
 
         <div class="modal-body">
-            <div class="mt-5">
-                <x-lti-launch :launch="$launch" class="w-100 border" />
-            </div>
+            <x-lti-launch :launch="$launch" class="w-100 border" />
         </div>
 
         <div class="modal-footer border-0">
             <div class="flex-fill">
                 <div>
                     <strong>{{ trans('messages.created') }}:</strong>
-                    <span>{{ $content->created_at->isoFormat('LLLL') }}</span>
+                    <time
+                        datetime="{{ $content->created_at->toIso8601String() }}"
+                        data-dh-relative="true"
+                    ></time>
                 </div>
                 <div>
                     <strong>{{ trans('messages.edited') }}:</strong>
-                    <span>{{ $content->updated_at->isoFormat('LLLL') }}</span>
+                    <time
+                        datetime="{{ $content->updated_at->toIso8601String() }}"
+                        data-dh-relative="true"
+                    ></time>
                 </div>
             </div>
 

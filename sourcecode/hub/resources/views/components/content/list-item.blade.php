@@ -18,10 +18,7 @@
                     {{ $version->title }}
                 </h5>
             </a>
-            {{-- TODO: Date and time should be displayed in users timezone --}}
-            <div class="col-2" title="{{$content->updated_at->isoFormat('LLLL')}}" aria-label="{{ trans('messages.last-changed') }}">
-                {{ $content->updated_at->isoFormat('L') }}
-            </div>
+            <time class="col-2" aria-label="{{ trans('messages.last-changed') }}" datetime="{{$content->updated_at->toIso8601String()}}"></time>
             <div class="col-2" aria-label="{{ trans('messages.author') }}">
                 @foreach ($content->users as $user)
                     {{ $user->name }}

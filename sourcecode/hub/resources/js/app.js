@@ -3,6 +3,7 @@ import 'htmx.org';
 import { findIframeByWindow } from './helpers';
 import './clipboard';
 import './resize';
+import './dateHelper';
 
 import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 

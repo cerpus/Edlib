@@ -218,12 +218,14 @@ class ContentController extends Controller
 
         $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
-            $content->save();
+            $content->saveQuietly();
             $content->users()->save($this->getUser(), [
                 'role' => ContentUserRole::Owner,
             ]);
+            $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            $content->save();
 
-            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            return $version;
         });
         assert($version instanceof ContentVersion);
 
@@ -260,7 +262,10 @@ class ContentController extends Controller
         assert($item instanceof LtiLinkItem);
 
         $version = DB::transaction(function () use ($content, $item, $tool) {
-            return $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            $version->save();
+
+            return $version;
         });
 
         // return to platform consuming Edlib

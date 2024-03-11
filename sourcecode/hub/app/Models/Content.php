@@ -197,15 +197,15 @@ class Content extends Model
             $version->published = $item->isPublished() ?? true;
             $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
             $version->license = $item->getLicense();
-        }
 
-        $version->saveQuietly();
+            if (count($item->getTags()) > 0) {
+                $version->saveQuietly();
 
-        if ($item instanceof EdlibLtiLinkItem) {
-            foreach ($item->getTags() as $tag) {
-                $version->tags()->attach(Tag::findOrCreateFromString($tag), [
-                    'verbatim_name' => Tag::extractVerbatimName($tag)
-                ]);
+                foreach ($item->getTags() as $tag) {
+                    $version->tags()->attach(Tag::findOrCreateFromString($tag), [
+                        'verbatim_name' => Tag::extractVerbatimName($tag)
+                    ]);
+                }
             }
         }
 

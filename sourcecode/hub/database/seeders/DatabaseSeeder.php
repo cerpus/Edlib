@@ -20,16 +20,16 @@ class DatabaseSeeder extends Seeder
     {
         $ltiTool = LtiTool::factory()
             ->state([
-                'name' => 'Content Author',
+                'name' => 'Edlib 3',
                 'lti_version' => LtiVersion::Lti1_1,
-                'creator_launch_url' => 'https://ca.edlib.test/lti-content/create',
+                'creator_launch_url' => 'https://hub-test.edlib.test/lti/samples/deep-link',
             ])
             ->create();
 
         $contentVersionFactory = ContentVersion::factory()
             ->state([
                 'lti_tool_id' => $ltiTool->id,
-                'lti_launch_url' => 'https://ca.edlib.test/lti-content/1',
+                'lti_launch_url' => 'https://hub-test.edlib.test/lti/samples/presentation',
             ])
             ->count(5);
 

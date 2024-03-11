@@ -10,9 +10,11 @@ use App\Http\Controllers\CookieController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LtiController;
+use App\Http\Controllers\LtiSample\DeepLinkController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
+use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
 use App\Http\Middleware\StartScopedLtiSession;
 use App\Models\User;
@@ -89,6 +91,7 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content');
 
     Route::get('/content/create', 'create')
+        ->middleware('auth')
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
 
@@ -224,5 +227,26 @@ Route::prefix('/{provider}')
             ->uses([SocialController::class, 'callback'])
             ->name('callback');
     });
+
+Route::post('/lti/samples/deep-link')
+    ->uses([DeepLinkController::class, 'launch'])
+    ->middleware([
+        LtiValidatedRequest::class . ':platform',
+        'lti.launch-type:ContentItemSelectionRequest',
+        StartScopedLtiSession::class,
+    ])
+    ->name('lti.samples.presentation');
+
+Route::get('/lti/samples/deep-link')
+    ->uses([DeepLinkController::class, 'form'])
+    ->middleware([LtiSessionRequired::class])
+    ->name('lti.samples.deep-link.form');
+
+Route::post('/lti/samples/deep-link/return')
+    ->uses([DeepLinkController::class, 'return'])
+    ->middleware([
+        LtiSessionRequired::class,
+    ])
+    ->name('lti.samples.deep-link.return');
 
 Route::get('/cookie-popup', [CookieController::class, 'popup'])->name('cookie.popup');

@@ -39,7 +39,10 @@
                     <h1 class="fs-2">{{ $version->title }}</h1>
 
                     {{-- TODO: Show more author names if there are any --}}
-                    <p>{{ trans('messages.created')}}: {{ $version->created_at->isoFormat('LL') }} {{ trans('messages.by')}} {{ $content->users()->first()?->name }}</p>
+                    <p>{{ trans('messages.created')}}:
+                        <time datetime={{$version->created_at->toIso8601String()}} data-dh-relative="true"></time>
+                        {{ trans('messages.by')}} {{ $content->users()->first()?->name }}
+                    </p>
                 </div>
             </div>
 
