@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\Locales;
+use App\Policies\ContentPolicy;
 use App\Support\CarbonToPsrClockAdapter;
 use App\Support\SessionScope;
 use App\Support\SessionScopeAwareRouteUrlGenerator;
@@ -71,7 +72,10 @@ class AppServiceProvider extends ServiceProvider
                 ],
             ]));
 
+        $this->app->singleton(ContentPolicy::class);
         $this->app->singleton(SessionScope::class);
+        $this->app->singleton(ClockInterface::class, CarbonToPsrClockAdapter::class);
+        $this->app->singleton(Randomizer::class);
     }
 
     /**
