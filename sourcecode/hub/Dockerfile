@@ -40,7 +40,7 @@ RUN composer install \
     --no-scripts
 
 
-FROM node:16-alpine AS frontend
+FROM node:18-alpine AS frontend
 
 WORKDIR /app
 
