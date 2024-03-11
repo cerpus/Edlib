@@ -11,9 +11,7 @@
         </div>
 
         <div class="modal-body">
-            <div class="mt-5">
-                <x-lti-launch :launch="$launch" class="w-100 border" />
-            </div>
+            <x-lti-launch :launch="$launch" class="w-100 border" />
         </div>
 
         <div class="modal-footer border-0">
