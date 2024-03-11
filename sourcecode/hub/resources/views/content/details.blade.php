@@ -8,7 +8,7 @@
     </x-slot:head>
 
     <x-layout.sidebar-layout>
-        <x-slot:main>
+        <x-slot:top>
             @if (!$version->published)
                 <p class="alert alert-warning" role="alert">
                     {{ trans('messages.viewing-draft-version-notice') }}
@@ -45,12 +45,14 @@
                     </p>
                 </div>
             </div>
+        </x-slot:top>
 
+        <x-slot:main>
             <x-lti-launch :launch="$launch" log-to="#messages" class="w-100 border mb-2" />
         </x-slot:main>
 
         <x-slot:sidebar>
-            <div class="d-flex flex-lg-column gap-2 mb-4">
+            <div class="d-flex flex-lg-column gap-2 mb-5 details-action-buttons">
                 @can('use', $content)
                     <x-form action="{{ route('content.use', [$content]) }}">
                         <button class="btn btn-primary btn-lg d-flex gap-2 w-100">
