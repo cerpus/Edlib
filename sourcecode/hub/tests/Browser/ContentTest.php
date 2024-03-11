@@ -323,7 +323,7 @@ final class ContentTest extends DuskTestCase
                     '.lti-launch',
                     fn (Browser $launch) => $launch
                         ->with(new ContentCard(), fn (Browser $card) => $card->click('@title'))
-                        ->waitFor('#previewModal')
+                        ->waitFor('#previewModal .modal-dialog')
                         ->with(
                             new PreviewModal(),
                             fn (Browser $modal) => $modal
@@ -353,7 +353,7 @@ final class ContentTest extends DuskTestCase
                                 ->clickLink('Preview')
                         )
                 )
-                ->waitFor('#previewModal')
+                ->waitFor('#previewModal .modal-dialog')
                 ->with(
                     new PreviewModal(),
                     fn (Browser $modal) => $modal
