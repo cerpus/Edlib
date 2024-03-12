@@ -4,6 +4,7 @@
     <div class="row flex-row align-items-center mb-2 ps-3 pe-3" aria-hidden="true">
         <div class="col fw-bold mb-1">
             {{ trans_choice('messages.num-content-found', $total) }}
+            <x-spinner id="content-loading" class="ms-3" />
         </div>
     </div>
 

@@ -7,6 +7,8 @@ namespace App\Http\Requests;
 use App\Models\ContentVersion;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
@@ -30,6 +32,7 @@ class ContentFilter extends FormRequest
             'q' => ['sometimes', 'string', 'max:300'],
             'language' => ['sometimes', 'string', 'max:100'],
             'sort' => ['sometimes', Rule::in('created', 'updated')],
+            'type' => ['sometimes', 'array'],
         ];
     }
 
@@ -76,6 +79,31 @@ class ContentFilter extends FormRequest
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function getContentTypes(): array
+    {
+        return $this->validated('type', []);
+    }
+
+    /**
+     * @return Collection<int|string, mixed>
+     */
+    public function getContentTypeOptions(): Collection
+    {
+        return DB::table('tags AS t')
+            ->select(['t.prefix', 't.name', 'cvt.verbatim_name'])
+            ->join('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
+            ->where('prefix', '=', 'h5p')
+            ->orderBy('verbatim_name')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                $key = $item->prefix !== '' ? "{$item->prefix}:{$item->name}" : $item->name ;
+                return [$key => $item->verbatim_name ?? $item->name];
+            });
+    }
+
+    /**
      * @return "grid"|"list"
      */
     public function getLayout(): string
@@ -95,6 +123,11 @@ class ContentFilter extends FormRequest
                 $this->getLanguage(),
                 fn (Builder $query) => $query
                     ->where('language_iso_639_3', $this->getLanguage())
+            )
+            ->when(
+                count($this->getContentTypes()) > 0,
+                fn (Builder $query) => $query
+                    ->whereIn('tags', $this->getContentTypes())
             )
             ->orderBy(match ($this->getSortBy()) {
                 'created' => 'created_at',

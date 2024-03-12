@@ -29,20 +29,25 @@
     .accordion-button:not(.collapsed) {
         background-color: #{$green-100};
         color:  var(--bs-body-color);
-        box-shadow: $edlib-input-box-shadow;
     }
 
     .accordion-button:focus {
         box-shadow: $edlib-input-box-shadow;
     }
 
-    // Content layout grid
+    .accordion-button:hover {
+        background-color: #{$green-200};
+        border-color: #{$green-100};
+        color: #{$gray-900};
+    }
+
+    // Card
     .content-card {
         background-color: $white;
         --bs-card-cap-bg: #{$gray-100};
         --bs-card-cap-color: #{$gray-700};
 
-        .card-header {
+        .content-card-header {
             color: var(--bs-body-color);
             @include media-breakpoint-up(md) {
                 color: $black;
@@ -95,6 +100,26 @@
 
     .dropdown-item {
         --bs-dropdown-link-active-bg: #{$green-500};
+    }
+
+    .filter-badge {
+        color: var(--bs-body-color);
+        background: $white;
+        border-color: var(--bs-border-color);
+
+        &.filter-focus:hover, &.filter-focus:focus-visible {
+            outline: none;
+            box-shadow: $edlib-input-box-shadow;
+        }
+
+        &.filter-selected {
+            color: var(--bs-body-color);
+            background: $green-100;
+        }
+    }
+
+    .spinner-border {
+        color: $green-400;
     }
 
     // Underline for menu items in contrast mode
