@@ -81,16 +81,43 @@
                 @endif
 
                 @can('delete', $content)
-                    <x-form action="{{ route('content.delete', [$content]) }}" method="DELETE">
-                        <button
-                            class="btn btn-outline-danger btn-lg d-flex gap-2 w-100 delete-content-button"
-                            hx-delete="{{ route('content.delete', [$content]) }}"
-                            hx-confirm="{{ trans('messages.confirm-delete-content') }}"
-                        >
-                            <x-icon name="x-lg" class="align-self-start" />
-                            <span class="flex-grow-1 align-self-center">{{ trans('messages.delete-content') }}</span>
-                        </button>
-                    </x-form>
+                    <button
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                        class="btn btn-outline-danger btn-lg d-flex gap-2 w-100 delete-content-button"
+                    >
+                        <x-icon name="x-lg" class="align-self-start" />
+                        <span class="flex-grow-1 align-self-center">{{ trans('messages.delete-content') }}</span>
+                    </button>
+
+                    <div id="deleteModal" class="modal modal-blur fade" style="display: none" aria-hidden="true" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title">{{ trans('messages.delete-content') }}</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        {{ trans('messages.delete-content-confirm-text') }}
+                                    </p>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        hx-delete="{{ route('content.delete', [$content]) }}"
+                                        hx-disabled-elt="button"
+                                    >
+                                        <span class="flex-grow-1 align-self-center">{{ trans('messages.delete-content') }}</span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        {{ trans('messages.cancel') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endcan
             </div>
 
