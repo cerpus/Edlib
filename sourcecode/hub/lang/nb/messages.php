@@ -142,4 +142,5 @@ return [
     'filter-remove' => 'Fjern filter',
     'filter-toggle-more' => 'Vis flere',
     'filter-toggle-less' => 'Vis færre',
+    'sort-by' => 'Sorter etter',
 ];

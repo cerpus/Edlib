@@ -172,4 +172,5 @@ return [
     'filter-remove' => 'Remove filter',
     'filter-toggle-more' => 'See more',
     'filter-toggle-less' => 'See fewer',
+    'sort-by' => 'Sort by',
 ];
