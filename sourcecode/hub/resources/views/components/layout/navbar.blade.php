@@ -24,7 +24,7 @@
 
             <li class="nav-item">
                 <a
-                    href="{{ route('content.create') }}"
+                    href="{{ route('content.launch-creator', ['01hm9787j80k1sxm5k9dzqenqk']) }}"
                     @class(['nav-link', 'active' => request()->routeIs('content.create'), 'd-flex', 'gap-2'])
                 >
                     <x-icon name="pencil" class="me-1" />
