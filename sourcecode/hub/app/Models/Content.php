@@ -8,6 +8,7 @@ use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
 use App\Lti\ContentItemSelectionFactory;
+use App\Support\HasUlidsFromCreationDate;
 use App\Support\SessionScope;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
@@ -18,7 +19,6 @@ use DomainException;
 use DOMDocument;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -41,7 +41,7 @@ use function url;
 class Content extends Model
 {
     use HasFactory;
-    use HasUlids;
+    use HasUlidsFromCreationDate;
     use Searchable;
     use SoftDeletes;
 

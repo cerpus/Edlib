@@ -8,9 +8,9 @@ use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
+use App\Support\HasUlidsFromCreationDate;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +24,7 @@ use function url;
 class ContentVersion extends Model
 {
     use HasFactory;
-    use HasUlids;
+    use HasUlidsFromCreationDate;
 
     public const UPDATED_AT = null;
 
