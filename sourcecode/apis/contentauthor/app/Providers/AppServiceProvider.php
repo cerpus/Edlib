@@ -9,6 +9,7 @@ use App\H5POption;
 use App\Http\Middleware\RequestId;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
+use App\Listeners\ResourceEventHandler;
 use App\Observers\ContentVersionsObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
@@ -70,5 +71,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(RequestId::class)
             ->needs(Logger::class)
             ->give(fn () => Log::channel());
+
+        $this->app->when(ResourceEventHandler::class)
+            ->needs('$enableEdlib2')
+            ->giveConfig('app.enable-edlib2');
     }
 }
