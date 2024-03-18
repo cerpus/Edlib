@@ -7,12 +7,16 @@ use Cerpus\EdlibResourceKit\Resource\ResourceManagerInterface;
 
 class ResourceEventHandler
 {
-    public function __construct(private ResourceManagerInterface $resourceManager)
-    {
+    public function __construct(
+        private ResourceManagerInterface $resourceManager,
+        private readonly bool $enableEdlib2,
+    ) {
     }
 
     public function handle(ResourceSaved $event): void
     {
-        $this->resourceManager->save($event->getResource());
+        if ($this->enableEdlib2) {
+            $this->resourceManager->save($event->getResource());
+        }
     }
 }

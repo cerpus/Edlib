@@ -4,6 +4,9 @@ namespace App\Lti;
 
 use Illuminate\Support\Facades\Session;
 
+use function explode;
+use function in_array;
+
 class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 {
     public function getReturnUrl(): string|null
@@ -158,5 +161,12 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     public function getResourceLinkTitle(): string|null
     {
         return $this->param('resource_link_title');
+    }
+
+    public function isAdministrator(): bool
+    {
+        $roles = explode(',', $this->param('roles') ?? '');
+
+        return in_array('Administrator', $roles);
     }
 }
