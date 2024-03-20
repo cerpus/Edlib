@@ -12,6 +12,7 @@
                 <th scope="col">{{ trans('messages.status') }}
                 <th scope="col">{{ trans('messages.language') }}
                 <th scope="col">{{ trans('messages.license') }}
+                <th scope="col">
             </tr>
         </thead>
 
