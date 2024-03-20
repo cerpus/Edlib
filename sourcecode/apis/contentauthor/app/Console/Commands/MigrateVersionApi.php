@@ -23,7 +23,7 @@ class MigrateVersionApi extends Command
      *
      * @var string
      */
-    protected $signature = 'edlib:migrate-version-api {--dry-run} {--debug}';
+    protected $signature = 'edlib:migrate-version-api {--debug}';
 
     /**
      * The console command description.
@@ -57,10 +57,6 @@ class MigrateVersionApi extends Command
         set_time_limit(0);
 
         $this->comment("Migrate version data from Version API for Articles, Games, H5Ps and Links to local table");
-
-        if ($this->option('dry-run')) {
-            $this->warn("Dry-run mode enabled");
-        }
 
         if ($this->option('debug')) {
             $this->warn("Debug enabled");
@@ -167,11 +163,6 @@ class MigrateVersionApi extends Command
                     $this->line('');
                 }
 
-                if ($this->option('dry-run')) {
-                    throw new RuntimeException("Dry-run enabled, rolling back changes");
-                } else {
-                    $this->debug('Committing changes...');
-                }
                 $this->info(sprintf('Versions for %s committed', $table));
             } catch (\Throwable $e) {
                 $this->error($e->getMessage());
