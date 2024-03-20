@@ -179,4 +179,5 @@ return [
     'status' => 'Status',
     'license' => 'License',
     'history' => 'History',
+    'content' => 'Content',
 ];

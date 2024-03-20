@@ -149,4 +149,5 @@ return [
     'status' => 'Status',
     'license' => 'Lisens',
     'history' => 'Historikk',
+    'content' => 'Innhold',
 ];
