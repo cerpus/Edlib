@@ -13,7 +13,7 @@
                 <p class="alert alert-warning" role="alert">
                     {{ trans('messages.viewing-draft-version-notice') }}
                     @if ($explicitVersion && $content->latestPublishedVersion()->exists())
-                        <a href="{{ route('content.details', [$content]) }}">{{ trans('messages.view-latest-version') }}</a>
+                        <a href="{{ route('content.details', [$content]) }}">{{ trans('messages.view-latest-published-version') }}</a>
                     @endif
                 </p>
             @elseif ($explicitVersion && !$content->latestPublishedVersion()->is($version))

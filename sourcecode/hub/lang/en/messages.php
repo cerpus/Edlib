@@ -81,6 +81,7 @@ return [
     'viewing-old-version-notice' => 'You are viewing an older version of the content.',
     'viewing-draft-version-notice' => 'You are viewing an unpublished draft version.',
     'view-latest-version' => 'View the latest version',
+    'view-latest-published-version' => 'View the latest published version',
     'published' => 'Published',
     'change-email' => 'Change email',
     'disconnect-social-accounts' => 'Disconnect social accounts',

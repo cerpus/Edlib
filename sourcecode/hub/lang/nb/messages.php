@@ -64,6 +64,7 @@ return [
     'viewing-old-version-notice' => 'Du ser på en gammel versjon av innholdet.',
     'viewing-draft-version-notice' => 'Du ser på et upublisert utkast.',
     'view-latest-version' => 'Vis siste versjon',
+    'view-latest-published-version' => 'Vis siste publiserte versjon',
     'published' => 'Publisert',
     'no-results-found' => 'Beklager! Ingen resultater funnet :(',
     'no-results-found-description' => 'Vi kunne ikke finne noen resultater basert på søket ditt. Prøv andre nøkkelord eller filtre.',
