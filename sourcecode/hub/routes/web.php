@@ -70,6 +70,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/history')
+        ->name('content.history')
+        ->uses([ContentController::class, 'history'])
+        ->whereUlid(['content'])
+        ->can('edit', ['content']);
+
     Route::get('/content/{content}/version/{version}/preview')
         ->uses([ContentController::class, 'preview'])
         ->name('content.preview')

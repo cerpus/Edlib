@@ -174,4 +174,9 @@ return [
     'filter-toggle-more' => 'See more',
     'filter-toggle-less' => 'See fewer',
     'sort-by' => 'Sort by',
+    'last-updated' => 'Last updated',
+    'edited-by' => 'Edited by',
+    'status' => 'Status',
+    'license' => 'License',
+    'history' => 'History',
 ];

@@ -123,6 +123,14 @@ class ContentController extends Controller
         ]);
     }
 
+    public function history(Content $content): View
+    {
+        return view('content.history', [
+            'content' => $content,
+            'versions' => $content->versions()->paginate(),
+        ]);
+    }
+
     public function create(): View
     {
         $tools = LtiTool::all();

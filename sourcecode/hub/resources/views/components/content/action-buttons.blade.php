@@ -42,24 +42,17 @@
                     </a>
                 </li>
                 <li>
-                    <a
-                        href="{{ route('content.details', [$content]) }}"
-                        class="dropdown-item"
-                        @if ($showPreview)
-                            hx-get="{{ route('content.preview', [$content, $version]) }}"
-                            hx-target="#previewModal"
-                            data-bs-toggle="modal"
-                            data-bs-target="#previewModal"
-                        @endif
-                    >
-                        @if ($showPreview)
+                    @if ($showPreview)
+                        <x-content.preview-link :$version class="dropdown-item">
                             <x-icon name="display" class="me-2" />
                             {{ trans('messages.preview') }}
-                        @else
+                        </x-content.preview-link>
+                    @else
+                        <a href="{{ route('content.details', [$content]) }}" class="dropdown-item">
                             <x-icon name="info-lg" class="me-2" />
                             {{ trans('messages.details') }}
-                        @endif
-                    </a>
+                        </a>
+                    @endif
                 </li>
             @endcan
             @can('edit', $content)

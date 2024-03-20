@@ -144,4 +144,9 @@ return [
     'filter-toggle-more' => 'Vis flere',
     'filter-toggle-less' => 'Vis færre',
     'sort-by' => 'Sorter etter',
+    'last-updated' => 'Sist oppdatert',
+    'edited-by' => 'Redigert av',
+    'status' => 'Status',
+    'license' => 'Lisens',
+    'history' => 'Historikk',
 ];
