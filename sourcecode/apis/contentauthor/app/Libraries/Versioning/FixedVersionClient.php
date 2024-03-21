@@ -39,7 +39,7 @@ final readonly class FixedVersionClient implements VersionClientInterface
             ->getBody()
             ->getContents();
 
-        $data = json_decode($responseBody, flags: JSON_THROW_ON_ERROR);
+        $data = json_decode($responseBody, flags: JSON_THROW_ON_ERROR, depth: 4096);
         $this->verifyResponse($data);
 
         return (new VersionData())->populate($data->data);

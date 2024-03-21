@@ -140,7 +140,7 @@ services:
       [
         sh,
         -c,
-        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
+        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xss32m -agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
       ]
     depends_on:
       postgres:
