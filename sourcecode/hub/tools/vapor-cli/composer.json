@@ -1,5 +1,6 @@
 {
+    "type": "project",
     "require": {
-        "laravel/vapor-cli": "*"
+        "laravel/vapor-cli": "^1.64"
     }
 }
