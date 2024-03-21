@@ -12,6 +12,7 @@
         "laravel/scout": "^10.8.3",
         "laravel/socialite": "^5.12.1",
         "laravel/tinker": "^2.9",
+        "laravel/vapor-cli": "^1.64",
         "laravel/vapor-core": "^2.37",
         "league/flysystem-path-prefixing": "^3.23.1",
         "meilisearch/meilisearch-php": "^1.7.0",
