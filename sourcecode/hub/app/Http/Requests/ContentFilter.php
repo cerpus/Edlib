@@ -135,4 +135,9 @@ class ContentFilter extends FormRequest
             }, 'desc')
         ;
     }
+
+    public function activeCount(): int
+    {
+        return (empty($this->getLanguage()) ? 0 : 1) + (empty($this->getContentTypes()) ? 0 : 1);
+    }
 }

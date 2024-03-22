@@ -119,6 +119,8 @@ return [
     'cancel' => 'Cancel',
     'go-back' => 'Go back',
     'filter' => 'Filter',
+    'show-filter' => 'Show filters',
+    'hide-filter' => 'Hide filters',
     'search-results' => 'Search results',
     'search-results-mobile' => 'Show results',
     'back' => 'Back',
@@ -180,4 +182,9 @@ return [
     'license' => 'License',
     'history' => 'History',
     'content' => 'Content',
+    'filter-dropdown-no-results' => 'No results found',
+    'filter-dropdown-no-choices' => 'No choices to choose from',
+    'filter-dropdown-max-items' => 'Only ${maxItemCount} values can be selected',
+    'filter-clear' => 'Clear filter',
+    'filter-active' => 'active filters',
 ];

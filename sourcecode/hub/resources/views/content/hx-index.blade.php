@@ -1,1 +1,2 @@
-<x-content.search :$contents :$filter />
+<x-content.result :$contents :$filter />
+<x-filter.hx-filter :$filter />

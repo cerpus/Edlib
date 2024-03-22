@@ -139,3 +139,103 @@
         --bs-btn-font-size: 1rem;
     }
 }
+
+.flex-max {
+    flex: 1 1 100%;
+}
+
+.filter-button {
+    &:not(.collapsed) {
+        .filter-text-collapsed {
+            display: none;
+        }
+        .filter-text-show {
+            display: inline;
+        }
+    }
+
+    &.collapsed {
+        .filter-text-collapsed {
+            display: inline;
+        }
+        .filter-text-show {
+            display: none;
+        }
+    }
+}
+
+.choices {
+    border-radius: var(--bs-border-radius);
+
+    &[data-type*=select-one] {
+        &::after {
+            border-top-color: var(--bs-body-color);
+        }
+    }
+
+    .choices__inner {
+        background-color: var(--bs-body-bg);
+        border-color: var(--bs-border-color);
+        border-radius: var(--bs-border-radius);
+
+    }
+
+    &.is-focused,
+    &.is-open {
+        overflow: visible;
+
+        .choices__inner {
+            color: $input-focus-color;
+            background-color: $input-focus-bg;
+            border-color: $input-focus-border-color;
+            box-shadow: $form-select-focus-box-shadow;
+        }
+    }
+
+    .choices__list--multiple {
+        .choices__item {
+            background-color: $component-active-bg;
+            color: $component-active-color;
+            border-color: $component-active-bg;
+
+            .choices__button {
+                border-color: $component-active-color;
+            }
+        }
+    }
+
+    .choices__input {
+        background-color: var(--bs-body-bg);
+    }
+
+    .choices__list--dropdown {
+        background-color: var(--bs-body-bg);
+        border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
+
+        &.is-active {
+            box-shadow: $form-select-focus-box-shadow;
+        }
+
+        .choices__input {
+            background-color: var(--bs-body-bg);
+        }
+
+        .choices__item--selectable {
+            &.is-highlighted {
+                background-color: var(--bs-highlight-bg);
+                color: var(--bs-highlight-color);
+            }
+        }
+    }
+}
+
+
+[data-bs-theme="dark"] {
+    .choices {
+        &[data-type*=select-one] {
+            .choices__button {
+                background-image: $choices-icon-cross;
+            }
+        }
+    }
+}

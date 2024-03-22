@@ -92,6 +92,8 @@ return [
     'cancel' => 'Avbryt',
     'go-back' => 'Tilbake',
     'filter' => 'Filter',
+    'show-filter' => 'Vis filter',
+    'hide-filter' => 'Skjul filter',
     'search-results' => 'Søkeresultat',
     'search-results-mobile' => 'Vis resultat',
     'back' => 'Tilbake',
@@ -150,4 +152,9 @@ return [
     'license' => 'Lisens',
     'history' => 'Historikk',
     'content' => 'Innhold',
+    'filter-dropdown-no-results' => 'Ingen treff',
+    'filter-dropdown-no-choices' => 'Ingen valg tilgjengelig',
+    'filter-dropdown-max-items' => 'Kun ${maxItemCount} kan velges',
+    'filter-clear' => 'Nullstill filter',
+    'filter-active' => 'aktive filtre',
 ];

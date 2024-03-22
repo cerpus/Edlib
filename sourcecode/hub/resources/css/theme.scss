@@ -2,6 +2,7 @@
 [data-bs-theme="edlib"] {
     --bs-body-color: #{$gray-700}; //Default text color
     --bs-border-color: #{$gray-400}; //Default border color for input, buttons, etc
+    --bs-highlight-bg: #e7f2ed;
 
     $component-active-color: var(--bs-body-color);
     $component-active-bg: $green-100;
@@ -113,13 +114,57 @@
         }
 
         &.filter-selected {
-            color: var(--bs-body-color);
-            background: $green-100;
+            color: $component-active-color;
+            background: $component-active-bg;
         }
     }
 
     .spinner-border {
         color: $green-400;
+    }
+
+    .filter-button {
+        .filter-button-count {
+            background-color: $component-active-bg;
+            color: $component-active-color;
+        }
+    }
+
+    .choices {
+        .choices__list--multiple {
+            .choices__item {
+                background-color: $component-active-bg;
+                color: $component-active-color;
+                border-color: $green-500;
+
+                .choices__button {
+                    background-image: $choices-icon-cross-inverse;
+                    border-color: $green-500;
+                }
+            }
+        }
+
+        .choices__list--dropdown {
+            height: 0;
+
+            &.is-active {
+                height: auto;
+                box-shadow: $edlib-input-box-shadow;
+            }
+        }
+
+        &.is-focused,
+        &.is-open {
+            .choices__inner {
+                border-color: $green-100;
+                box-shadow: $edlib-input-box-shadow;
+            }
+        }
+
+        .is-selected {
+            color: $component-active-color;
+            background-color: $component-active-bg;
+        }
     }
 
     // Underline for menu items in contrast mode
