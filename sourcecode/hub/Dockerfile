@@ -8,6 +8,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         apcu \
+        bcmath \
         gd \
         intl \
         opcache \

@@ -128,6 +128,7 @@ return [
                     'license',
                     'language_iso_639_3',
                     'tags',
+                    'gives_score',
                 ],
                 'sortableAttributes' => ['created_at', 'updated_at'],
             ],
