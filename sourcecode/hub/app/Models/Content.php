@@ -296,6 +296,7 @@ class Content extends Model
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'published_at' => $this->latestPublishedVersion?->created_at,
             'license' => $version->license,
             'language_iso_639_3' => $version->language_iso_639_3,
             'tags' => $version->getSerializedTags(),

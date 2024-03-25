@@ -15,7 +15,7 @@
         <h1 class="fs-2">{{ $version->title }}</h1>
 
         {{-- TODO: Show more author names if there are any --}}
-        <p>{{ trans('messages.created')}}:
+        <p>{{ trans('messages.edited')}}:
             <time datetime={{$version->created_at->toIso8601String()}} data-dh-relative="true"></time>
             {{ trans('messages.by')}} {{ $content->users()->first()?->name }}
         </p>

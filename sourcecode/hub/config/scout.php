@@ -129,7 +129,11 @@ return [
                     'language_iso_639_3',
                     'tags',
                 ],
-                'sortableAttributes' => ['created_at', 'updated_at'],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
+                    'published_at',
+                ],
             ],
         ],
     ],

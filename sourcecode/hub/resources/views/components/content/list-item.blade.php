@@ -18,7 +18,7 @@
                     {{ $version->title }}
                 </h5>
             </a>
-            <time class="col-2" aria-label="{{ trans('messages.last-changed') }}" datetime="{{$content->updated_at->toIso8601String()}}"></time>
+            <time class="col-2" aria-label="{{ trans('messages.last-changed') }}" datetime="{{$version->created_at->toIso8601String()}}"></time>
             <div class="col-2" aria-label="{{ trans('messages.author') }}">
                 @foreach ($content->users as $user)
                     {{ $user->name }}

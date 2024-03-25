@@ -21,7 +21,7 @@
             <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal">
                 {{ trans('messages.edited') }}:
                 <time
-                    datetime="{{$content->updated_at->toIso8601String()}}"
+                    datetime="{{$version->created_at->toIso8601String()}}"
                     data-dh-relative="true"
                 ></time>
             </div>
