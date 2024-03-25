@@ -7,7 +7,7 @@
         <thead>
             <tr>
                 <th scope="col">{{ trans('messages.title') }}
-                <th scope="col">{{ trans('messages.last-updated') }}
+                <th scope="col">{{ trans('messages.edited') }}
                 <th scope="col">{{ trans('messages.edited-by') }}
                 <th scope="col">{{ trans('messages.status') }}
                 <th scope="col">{{ trans('messages.language') }}
