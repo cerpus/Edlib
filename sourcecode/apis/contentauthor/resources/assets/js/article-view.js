@@ -24,11 +24,6 @@ import $ from 'jquery';
             // Make iframe responsive
             body.style.height = 'auto';
 
-            if (typeof isPreview !== 'undefined' && !!isPreview !== true) {
-                // Hide scrollbars for correct size
-                body.style.overflow = 'hidden';
-            }
-
             clearTimeout(delayEvent);
             delayEvent = setTimeout(function () {
                 const data = {

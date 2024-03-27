@@ -184,16 +184,11 @@ class LinkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function doShow($id, $context, $preview = false): View
+    public function doShow($id, $context): View
     {
         $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
         /** @var Link $link */
         $link = Link::findOrFail($id);
-        if (!$link->canShow($preview)) {
-            return view('layouts.draft-resource', [
-                'styles' => !is_null($customCSS) ? [$customCSS] : [],
-            ]);
-        }
 
         $metadata = !is_null($link->metadata) ? json_decode($link->metadata) : null;
 

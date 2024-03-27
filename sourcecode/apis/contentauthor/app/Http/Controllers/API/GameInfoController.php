@@ -29,7 +29,6 @@ class GameInfoController extends Controller
                     'scoreable' => true,
                     'game_type' => $game->gameType->name,
                     'maxScore' => $gameType->getMaxScore(),
-                    'inDraftState' => !$game->isPublished(),
                     'title' => $game->title,
                 ];
             })->toArray();

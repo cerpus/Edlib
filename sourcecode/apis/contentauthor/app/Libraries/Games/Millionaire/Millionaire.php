@@ -82,7 +82,7 @@ class Millionaire extends GameBase
             });
     }
 
-    public function view(Game $game, $context, $preview)
+    public function view(Game $game, $context)
     {
         $game->load('gameType');
 
@@ -95,7 +95,6 @@ class Millionaire extends GameBase
             'basePath' => $game->gameType->getPublicFolder(),
             'context' => $context,
             'language' => $game->language_code,
-            'inDraftState' => !$game->isPublished(),
             'preview' => $preview,
             'resourceType' => sprintf($game::RESOURCE_TYPE_CSS, $game->getContentType()),
         ]);

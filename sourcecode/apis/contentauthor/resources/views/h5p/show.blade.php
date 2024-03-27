@@ -28,17 +28,6 @@
     </script>
 </head>
 <body>
-    @if($preview && $inDraftState ?? false)
-        <div class="draft-resource {{$resourceType}}" onclick="(function(element) {
-            element.classList.add('hide');
-        })(this)">
-            {{trans('common.resource-in-draft-state')}}
-            <div class="draft-resource-close" aria-label="close">
-                &times;
-            </div>
-        </div>
-    @endif
-
     {!! $embed !!}
     {!! $config !!}
 

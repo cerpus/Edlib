@@ -211,7 +211,7 @@ class QuestionSetController extends Controller
         return $this->doShow($id, null);
     }
 
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context)
     {
         return trans("questions.preview");
     }

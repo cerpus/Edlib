@@ -21,7 +21,7 @@ class LtiTraitStubClass
         return 'create';
     }
 
-    public function doShow(string|int $id, string|null $context, bool|null $preview = false): string
+    public function doShow(string|int $id, string|null $context): string
     {
         return 'doShow';
     }

@@ -11,9 +11,3 @@
 @section('content')
     {!! $article->render() !!}
 @endsection
-
-@push('js')
-    <script>
-        const isPreview = @if(!empty($preview)) {{ $preview }} @else 0 @endif;
-    </script>
-@endpush

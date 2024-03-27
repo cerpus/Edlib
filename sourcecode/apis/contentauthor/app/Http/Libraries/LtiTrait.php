@@ -18,7 +18,7 @@ trait LtiTrait
             );
         }
 
-        return $this->doShow($id, $ltiRequest->generateContextKey(), $ltiRequest->isPreview());
+        return $this->doShow($id, $ltiRequest->generateContextKey());
     }
 
     public function ltiCreate(Request $request)

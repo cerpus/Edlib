@@ -85,7 +85,7 @@ class H5PController extends Controller
         return view('h5p.index', ['title' => $title, 'message' => trans('h5p-editor.need-id')]);
     }
 
-    public function doShow($id, $context, $preview = false): View
+    public function doShow($id, $context): View
     {
         $ltiRequest = $this->lti->getRequest(request());
         $styles = [];
@@ -95,16 +95,13 @@ class H5PController extends Controller
             Session::flash(SessionKeys::EXT_CSS_URL, $style);
         }
         $h5pContent = H5PContent::findOrFail($id);
-        if (!$h5pContent->canShow($preview)) {
-            return view('layouts.draft-resource', compact('styles'));
-        }
 
         $viewConfig = (app(H5PViewConfig::class))
             ->setUserId(Session::get('authId', false))
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setPreview($preview)
+            ->setPreview($ltiRequest?->isPreview())
             ->setContext($context)
             ->setEmbedId($ltiRequest?->getExtEmbedId())
             ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
@@ -125,8 +122,7 @@ class H5PController extends Controller
             'jsScripts' => $h5pView->getScripts(),
             'styles' => $styles,
             'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
-            'inDraftState' => !$h5pContent->isActuallyPublished(),
-            'preview' => $preview,
+            'preview' => $ltiRequest?->isPreview(),
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ]);
     }
