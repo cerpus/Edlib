@@ -10,7 +10,6 @@ use App\Enums\LtiToolEditMode;
 use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\ContentFilter;
-use App\Http\Requests\UpdateContentRequest;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
