@@ -31,6 +31,19 @@
         </x-slot:main>
 
         <x-slot:sidebar>
+            @can('edit', [$content])
+                <x-form class="form-check form-switch mb-3">
+                    <x-form.checkbox
+                        name="shared"
+                        :checked="$content->shared"
+                        role="switch"
+                        id="shared-toggle"
+                        hx-patch="{{ route('content.update-status', [$content]) }}"
+                    />
+                    <label class="form-check-label" for="shared-toggle">{{ trans('messages.share-the-content') }}</label>
+                </x-form>
+            @endcan
+
             <div class="d-flex flex-lg-column gap-2 mb-5 details-action-buttons">
                 @can('use', $content)
                     <x-form action="{{ route('content.use', [$content]) }}">

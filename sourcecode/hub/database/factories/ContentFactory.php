@@ -18,6 +18,7 @@ final class ContentFactory extends Factory
     public function definition(): array
     {
         return [
+            'shared' => true,
         ];
     }
 

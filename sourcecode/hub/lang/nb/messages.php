@@ -147,4 +147,5 @@ return [
     'license' => 'Lisens',
     'history' => 'Historikk',
     'content' => 'Innhold',
+    'share-the-content' => 'Del innholdet med andre',
 ];

@@ -177,4 +177,5 @@ return [
     'license' => 'License',
     'history' => 'History',
     'content' => 'Content',
+    'share-the-content' => 'Share the content with others',
 ];

@@ -563,4 +563,30 @@ final class ContentTest extends DuskTestCase
                 )
         );
     }
+
+    public function testUserCanDisableSharingContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->withUser($user)
+            ->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->assertAuthenticated()
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->assertSeeIn('@title', $content->getTitle())
+                ->click('@title')
+            )
+            ->click('#shared-toggle')
+            ->pause(1000) // FIXME: use an event to detect when the request finishes
+            ->visit('/content')
+            ->assertNotPresent('.content-card')
+        );
+    }
 }
