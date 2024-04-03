@@ -177,4 +177,6 @@ return [
     'license' => 'License',
     'history' => 'History',
     'content' => 'Content',
+    'this-version' => 'This version',
+    'created-with' => 'Created with',
 ];

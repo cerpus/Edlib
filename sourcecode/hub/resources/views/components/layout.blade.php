@@ -53,7 +53,7 @@
         @endif
 
         <div @class(['container-md' => !$expand, 'flex-grow-1'])>
-            <main class="h-100">
+            <main class="h-100 mt-3">
                 @unless ($noHeader)
                     <header @class(['container-md' => $expand])>
                         <h1 class="fs-2">{{ $title }}</h1>
