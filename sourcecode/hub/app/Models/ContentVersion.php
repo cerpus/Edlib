@@ -8,9 +8,9 @@ use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
+use App\Support\HasUlidsFromCreationDate;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +24,7 @@ use function url;
 class ContentVersion extends Model
 {
     use HasFactory;
-    use HasUlids;
+    use HasUlidsFromCreationDate;
 
     public const UPDATED_AT = null;
 
@@ -34,10 +34,14 @@ class ContentVersion extends Model
     protected $attributes = [
         'language_iso_639_3' => 'und',
         'published' => true,
+        'max_score' => '0.00',
+        'min_score' => '0.00',
     ];
 
     protected $casts = [
         'published' => 'boolean',
+        'max_score' => 'decimal:2',
+        'min_score' => 'decimal:2',
     ];
 
     /** @var string[] */
@@ -150,6 +154,12 @@ class ContentVersion extends Model
         }
 
         return (string) $this->tool?->name;
+    }
+
+    public function givesScore(): bool
+    {
+        return bccomp((string) $this->max_score, '0', 2) !== 0 ||
+            bccomp((string) $this->min_score, '0', 2) !== 0;
     }
 
     /**

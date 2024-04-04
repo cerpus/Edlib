@@ -31,7 +31,7 @@
             id="topFilterSort"
             name="sort"
             :selected="$filter->getSortBy()"
-            :aria-label="trans('messages.last-changed')"
+            :aria-label="trans('messages.sort-by')"
             :options="$filter->getSortOptions()"
         />
     </div>

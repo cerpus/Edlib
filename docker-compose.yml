@@ -17,6 +17,7 @@ volumes:
   mysql:
   npm_cache:
   npm-components-storybook_nodemodules:
+  postgres_data:
   proxy-admin_nodemodules:
   proxy-auth_nodemodules:
   proxy-lti_nodemodules:
@@ -33,22 +34,15 @@ services:
       - "6379:6379"
 
   postgres:
-    image: postgres:11-alpine
+    image: postgres:16-alpine
     healthcheck:
-      test:
-        [
-          CMD,
-          psql,
-          -d,
-          "postgres://postgres:thepgpassword@localhost:5432",
-          -c,
-          "select 1",
-        ]
+      test: [CMD, pg_isready]
     volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: thepgpassword
+      PGUSER: postgres
     ports:
       - 5432:5432
 
@@ -145,7 +139,7 @@ services:
       [
         sh,
         -c,
-        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
+        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xss32m -agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
       ]
     depends_on:
       postgres:

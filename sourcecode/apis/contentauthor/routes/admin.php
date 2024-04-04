@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\GamesAdminController;
 use App\Http\Controllers\Admin\ImportExportSettingsController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
+use App\Http\Controllers\Admin\LtiAdminAccess;
 use App\Http\Controllers\Admin\NDLAReplaceRefController;
 use App\Http\Controllers\Admin\VersioningController;
 use App\Http\Controllers\Auth\LoginController;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('auth/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('auth/login', [LoginController::class, 'login']);
 Route::post('auth/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::post('/lti/admin', LtiAdminAccess::class)
+    ->middleware(['lti.add-to-session', 'lti.signed-launch']);
 
 Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
     function () {

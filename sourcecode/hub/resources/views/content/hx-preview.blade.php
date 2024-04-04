@@ -17,16 +17,9 @@
         <div class="modal-footer border-0">
             <div class="flex-fill">
                 <div>
-                    <strong>{{ trans('messages.created') }}:</strong>
-                    <time
-                        datetime="{{ $content->created_at->toIso8601String() }}"
-                        data-dh-relative="true"
-                    ></time>
-                </div>
-                <div>
                     <strong>{{ trans('messages.edited') }}:</strong>
                     <time
-                        datetime="{{ $content->updated_at->toIso8601String() }}"
+                        datetime="{{ $version->created_at->toIso8601String() }}"
                         data-dh-relative="true"
                     ></time>
                 </div>

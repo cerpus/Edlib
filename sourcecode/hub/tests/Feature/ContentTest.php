@@ -8,6 +8,7 @@ use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -120,5 +121,24 @@ final class ContentTest extends TestCase
         $this->assertModelExists($toRemain1);
         $this->assertModelExists($toRemain2);
         $this->assertModelMissing($toBeDeleted);
+    }
+
+    public function testGetsIdFromCreationDate(): void
+    {
+        $content = new Content();
+        $content->created_at = new Carbon('@10');
+        $content->save();
+
+        $this->assertStringStartsWith('00000009rg', $content->id);
+    }
+
+    public function testGetsIdFromClockIfCreationDateUnset(): void
+    {
+        Carbon::setTestNow('@20');
+
+        $content = new Content();
+        $content->save();
+
+        $this->assertStringStartsWith('0000000kh0', $content->id);
     }
 }
