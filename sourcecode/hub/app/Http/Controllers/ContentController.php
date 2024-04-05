@@ -45,6 +45,7 @@ class ContentController extends Controller
 
     public function mine(ContentFilter $request): View
     {
+        $request->setForUser();
         $query = Content::findForUser($this->getUser(), $request->getQuery());
         $request->applyCriteria($query);
 

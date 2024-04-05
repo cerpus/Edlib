@@ -18,6 +18,8 @@ use function trans;
 
 class ContentFilter extends FormRequest
 {
+    private bool $forUser = false;
+
     #[Override] protected function failedValidation(Validator $validator): never
     {
         abort(404);
@@ -34,6 +36,16 @@ class ContentFilter extends FormRequest
             'sort' => ['sometimes', Rule::in('created', 'updated')],
             'type' => ['sometimes', 'array'],
         ];
+    }
+
+    public function setForUser(): void
+    {
+        $this->forUser = true;
+    }
+
+    public function isForUser(): bool
+    {
+        return $this->forUser;
     }
 
     public function hasQuery(): bool
@@ -56,7 +68,7 @@ class ContentFilter extends FormRequest
      */
     public function getLanguageOptions(): array
     {
-        return ContentVersion::getTranslatedUsedLocales($this->user());
+        return ContentVersion::getTranslatedUsedLocales($this->isForUser() ? $this->user() : null);
     }
 
     /**
@@ -73,8 +85,8 @@ class ContentFilter extends FormRequest
     public function getSortOptions(): array
     {
         return [
-            'updated' => trans('messages.sort-last-updated'),
-            'created' => trans('messages.sort-last-created'),
+            'updated' => trans('messages.edited'),
+            'created' => trans('messages.created'),
         ];
     }
 
@@ -131,7 +143,7 @@ class ContentFilter extends FormRequest
             )
             ->orderBy(match ($this->getSortBy()) {
                 'created' => 'created_at',
-                'updated' => 'updated_at',
+                'updated' => $this->isForUser() ? 'updated_at' : 'published_at',
             }, 'desc')
         ;
     }

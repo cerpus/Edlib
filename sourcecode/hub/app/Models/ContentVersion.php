@@ -34,10 +34,14 @@ class ContentVersion extends Model
     protected $attributes = [
         'language_iso_639_3' => 'und',
         'published' => true,
+        'max_score' => '0.00',
+        'min_score' => '0.00',
     ];
 
     protected $casts = [
         'published' => 'boolean',
+        'max_score' => 'decimal:2',
+        'min_score' => 'decimal:2',
     ];
 
     /** @var string[] */
@@ -150,6 +154,12 @@ class ContentVersion extends Model
         }
 
         return (string) $this->tool?->name;
+    }
+
+    public function givesScore(): bool
+    {
+        return bccomp((string) $this->max_score, '0', 2) !== 0 ||
+            bccomp((string) $this->min_score, '0', 2) !== 0;
     }
 
     /**
