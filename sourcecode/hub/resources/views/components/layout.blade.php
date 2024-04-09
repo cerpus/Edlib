@@ -52,7 +52,7 @@
             </div>
         @endif
 
-        <div @class(['container-md' => !$expand, 'flex-grow-1', 'mb-3'])>
+        <div @class(['container-md' => !$expand, 'flex-grow-1'])>
             <main class="h-100 d-flex flex-column">
                 @unless ($noHeader)
                     <header @class(['container-md' => $expand])>
@@ -76,7 +76,7 @@
         </div>
 
         @unless ($noFooter)
-            <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle">
+            <footer class="bg-body-tertiary text-body-secondary p-3 border-top border-secondary-subtle mt-3">
                 <div class="container py-3">
                     <div class="row">
                         <div class="col-12 col-md-4 col-lg-6">

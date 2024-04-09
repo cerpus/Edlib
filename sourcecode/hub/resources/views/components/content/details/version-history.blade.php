@@ -2,7 +2,7 @@
 <section>
     <h2 class="fs-5">{{ trans('messages.version-history') }}</h2>
 
-    <ul class="list-unstyled d-flex flex-column gap-2 version-history">
+    <ul class="list-unstyled d-flex flex-column gap-2 mb-0 version-history">
         @foreach ($content->versions as $v)
             @php
                 $isLatest = $content->latestVersion->is($v);

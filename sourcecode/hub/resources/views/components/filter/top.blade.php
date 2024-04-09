@@ -35,25 +35,19 @@
                 data-bs-target="#collapseFilter"
                 aria-controls="collapseFilter"
                 aria-expanded="false"
-                aria-label="Toggle filters visibility"
             >
                 <x-icon name="filter"/>
                 <span class="d-none d-sm-inline-block">
-                    <span class="filter-text-collapsed" aria-hidden="true">
-                        {{ trans('messages.show-filter') }}
-                    </span>
-                    <span class="filter-text-show" aria-hidden="true">
-                        {{ trans('messages.hide-filter') }}
-                    </span>
+                    {{ trans('messages.filter') }}
                     <div
-                        id="filterActiveCount"
+                        id="filterActiveCountLabel"
                         @class([
                             "position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-primary filter-button-count",
-                            "d-none" => $filter->activeCount() === 0,
+                            "visually-hidden" => $filter->activeCount() === 0,
                         ])
                     >
-                        {{ $filter->activeCount() }}
                         <span class="visually-hidden">{{ trans('messages.filter-active') }}</span>
+                        <span id="filterActiveCount">{{ $filter->activeCount() }}</span>
                     </div>
                 </span>
             </button>
@@ -84,6 +78,7 @@
                 maxItemCount: 10,
                 shouldSort: true,
                 maxItemText: maxItemCount => `{{ trans('messages.filter-dropdown-max-items') }}`,
+                labelId: elm.getAttribute('aria-labelledby'),
             });
         });
     });

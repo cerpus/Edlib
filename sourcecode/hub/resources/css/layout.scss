@@ -40,10 +40,6 @@
     }
 }
 
-.big-notice {
-    min-height: 50vh;
-}
-
 .offcanvas.offcanvas-bottom {
     position: fixed;
     top: auto;
@@ -128,9 +124,23 @@
     }
 }
 
-.unhide-when-loading {
+.status-container {
     &:not(.htmx-request) {
-        display: none;
+        .spinner-container, .message-loading {
+            display:none;
+        }
+        .message-done {
+            display: initial;
+        }
+    }
+
+    &.htmx-request {
+        .spinner-container, .message-loading {
+            display: initial;
+        }
+        .message-done {
+            display: none;
+        }
     }
 }
 
@@ -142,26 +152,6 @@
 
 .flex-max {
     flex: 1 1 100%;
-}
-
-.filter-button {
-    &:not(.collapsed) {
-        .filter-text-collapsed {
-            display: none;
-        }
-        .filter-text-show {
-            display: inline;
-        }
-    }
-
-    &.collapsed {
-        .filter-text-collapsed {
-            display: inline;
-        }
-        .filter-text-show {
-            display: none;
-        }
-    }
 }
 
 .choices {
