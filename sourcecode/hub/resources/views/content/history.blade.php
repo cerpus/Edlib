@@ -6,7 +6,7 @@
     <table class="table table-responsive-lg">
         <thead>
             <tr>
-                <th scope="col">{{ trans('messages.title') }}
+                <th scope="col" class="w-25">{{ trans('messages.title') }}
                 <th scope="col">{{ trans('messages.edited') }}
                 <th scope="col">{{ trans('messages.edited-by') }}
                 <th scope="col">{{ trans('messages.status') }}
@@ -33,7 +33,7 @@
                             {{ trans('messages.draft') }}
                         @endif
                     </td>
-                    <td>{{ $version->language_iso_639_3 }}
+                    <td>{{ $version->getTranslatedLanguage() }}
                     <td>{{ $version->license }}
                     <td><x-content.preview-link :$version>{{ trans('messages.preview') }}</x-content.preview-link>
                 </tr>

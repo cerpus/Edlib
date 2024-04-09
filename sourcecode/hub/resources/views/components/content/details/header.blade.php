@@ -1,24 +1,21 @@
 @props(['version', 'explicitVersion' => false, 'current' => null])
 @php($content = $version->content)
 
-<div class="d-flex gap-3 align-items-center">
+<div class="row gap-3 align-items-center">
     @if ($version->icon)
         <img
             src="{{ $version->icon->getUrl() }}"
             alt=""
-            class="content-icon content-icon-128"
+            class="col-auto content-icon content-icon-128"
             aria-hidden="true"
         >
     @endif
 
-    <div class="flex-grow-1">
+    <div class="col d-flex flex-column">
         <h1 class="fs-2">{{ $version->title }}</h1>
-
-        {{-- TODO: Show more author names if there are any --}}
-        <p>{{ trans('messages.edited')}}:
-            <time datetime={{$version->created_at->toIso8601String()}} data-dh-relative="true"></time>
-            {{ trans('messages.by')}} {{ $content->users()->first()?->name }}
-        </p>
+    </div>
+    <div class="col-3 d-none d-lg-flex align-self-start justify-content-end flex-wrap gap-2">
+        <x-content.details.action-buttons :$content :$version :$explicitVersion />
     </div>
 </div>
 
