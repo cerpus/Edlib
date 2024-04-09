@@ -1,4 +1,3 @@
-@php use App\Support\SessionScope; @endphp
 @props(['version', 'explicitVersion' => false])
 <x-layout no-header>
     <x-slot:title>{{ $version->title }}</x-slot:title>
@@ -31,53 +30,68 @@
         </x-slot:main>
 
         <x-slot:sidebar>
-            <div class="d-flex flex-lg-column gap-2 mb-5 details-action-buttons">
-                @can('use', $content)
-                    <x-form action="{{ route('content.use', [$content]) }}">
-                        <button class="btn btn-primary btn-lg d-flex gap-2 w-100">
-                            <x-icon name="check-lg" />
-                            <span class="flex-grow-1">{{ trans('messages.use-content')}}</span>
-                        </button>
-                    </x-form>
-                @endcan
-
-                @can('edit', $content)
-                    <a href="{{ route('content.edit', [$content, $version]) }}" class="btn btn-secondary btn-lg d-flex gap-2">
-                        <x-icon name="pencil" class="align-self-start" />
-                        <span class="flex-grow-1 align-self-center">{{ trans('messages.edit')}}</span>
-                    </a>
-                @endcan
-
-                @if (!$explicitVersion && $version->published)
-                    <a
-                        href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
-                        class="btn btn-secondary d-flex gap-2 btn-lg share-button"
-                        target="_blank"
-                        data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-                        data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
-                    >
-                        <x-icon name="share" />
-                        <span class="flex-grow-1 align-self-center">{{ trans('messages.share') }}</span>
-                    </a>
-                @endif
-
-                @can('delete', $content)
-                    <x-form action="{{ route('content.delete', [$content]) }}" method="DELETE">
-                        <button
-                            class="btn btn-outline-danger btn-lg d-flex gap-2 w-100 delete-content-button"
-                            hx-delete="{{ route('content.delete', [$content]) }}"
-                            hx-confirm="{{ trans('messages.confirm-delete-content') }}"
-                        >
-                            <x-icon name="x-lg" class="align-self-start" />
-                            <span class="flex-grow-1 align-self-center">{{ trans('messages.delete-content') }}</span>
-                        </button>
-                    </x-form>
-                @endcan
+            <div class="d-flex d-lg-none flex-wrap justify-content-end gap-2">
+                <x-content.details.action-buttons :$content :$version :$explicitVersion />
             </div>
-
-            @can('edit', $content)
-                <x-content.details.version-history :$version />
-            @endcan
+            <table class="table table-sm table-striped caption-top">
+                <caption class="pt-0">{{ trans('messages.details') }}</caption>
+                <tbody>
+                    <tr>
+                        <td>{{ trans('messages.views') }}</td>
+                        <td>{{$content->views->count()}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ trans('messages.created-with') }}</td>
+                        <td>
+                            {{ $version->tool->name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{ trans('messages.content-type') }}</td>
+                        <td>
+                            {{ $version->getDisplayedContentType() }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm table-striped caption-top">
+                <caption>{{ trans('messages.this-version') }}</caption>
+                <tbody>
+                    <tr>
+                        <td>{{ trans('messages.edited') }}</td>
+                        <td>
+                            <time
+                                datetime="{{$version->created_at->toIso8601String()}}"
+                                data-dh-relative="true"
+                            ></time>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{ trans('messages.edited-by') }}</td>
+                        <td>
+                            {{$version->editedBy?->name}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{{trans('messages.license')}}</td>
+                        <td>{{$version->license}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{trans('messages.language')}}</td>
+                        <td>{{$version->getTranslatedLanguage()}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ trans('messages.status') }}</td>
+                        <td>
+                            @if ($version->published)
+                                {{ trans('messages.published') }}
+                            @else
+                                {{ trans('messages.draft') }}
+                            @endif
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             @if (auth()->user()?->debug_mode ?? app()->hasDebugModeEnabled())
                 <x-content.details.lti-params :$launch :$version />

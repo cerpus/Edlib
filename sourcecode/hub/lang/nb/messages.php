@@ -153,4 +153,6 @@ return [
     'filter-clear' => 'Nullstill filtre',
     'filter-active' => 'Aktive filtre',
     'filter-toggle-button' => 'Vis/Skjul filtre',
+    'this-version' => 'Denne versjonen',
+    'created-with' => 'Laget med',
 ];

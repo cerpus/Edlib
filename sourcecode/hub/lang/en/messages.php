@@ -183,4 +183,6 @@ return [
     'filter-clear' => 'Clear filter',
     'filter-active' => 'Active filters',
     'filter-toggle-button' => 'Toggle filters',
+    'this-version' => 'This version',
+    'created-with' => 'Created with',
 ];
