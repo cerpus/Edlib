@@ -148,4 +148,6 @@ return [
     'history' => 'Historikk',
     'content' => 'Innhold',
     'share-the-content' => 'Del innholdet med andre',
+    'this-version' => 'Denne versjonen',
+    'created-with' => 'Laget med',
 ];

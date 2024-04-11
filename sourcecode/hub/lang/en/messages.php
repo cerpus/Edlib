@@ -178,4 +178,6 @@ return [
     'history' => 'History',
     'content' => 'Content',
     'share-the-content' => 'Share the content with others',
+    'this-version' => 'This version',
+    'created-with' => 'Created with',
 ];
