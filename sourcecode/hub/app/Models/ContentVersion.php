@@ -228,4 +228,9 @@ class ContentVersion extends Model
             ->sort()
             ->toArray();
     }
+
+    public function getTranslatedLanguage(): string
+    {
+        return locale_get_display_name($this->language_iso_639_3, app()->getLocale()) ?: (locale_get_display_name($this->language_iso_639_3, app()->getFallbackLocale()) ?: $this->language_iso_639_3);
+    }
 }

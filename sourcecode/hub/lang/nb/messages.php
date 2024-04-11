@@ -148,4 +148,6 @@ return [
     'license' => 'Lisens',
     'history' => 'Historikk',
     'content' => 'Innhold',
+    'this-version' => 'Denne versjonen',
+    'created-with' => 'Laget med',
 ];
