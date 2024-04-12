@@ -328,6 +328,7 @@ class H5PLibrary extends Model
                 'l1.patch_version as patchVersion',
                 'l1.preloaded_js as preloadedJs',
                 'l1.preloaded_css as preloadedCss',
+                'l1.patch_version_in_folder_name as patchVersionInFolderName',
             ])
             ->whereNull('l2.name')
             ->whereNotNull('l1.add_to')
