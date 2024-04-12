@@ -6,4 +6,10 @@
 body {
   box-sizing: border-box;
   margin: 0;
+
+    // The action buttons in the footer of the H5P are larger than the container,
+    // this creates empty space below the footer
+    .h5p-actions {
+        overflow: hidden;
+    }
 }
