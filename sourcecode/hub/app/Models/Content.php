@@ -54,6 +54,17 @@ class Content extends Model
         'forceDeleting' => ContentForceDeleting::class,
     ];
 
+    /**
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'shared' => true,
+    ];
+
+    protected $casts = [
+        'shared' => 'boolean',
+    ];
+
     public static function booted(): void
     {
         static::addGlobalScope('atLeastOneVersion', function (Builder $query) {
@@ -292,10 +303,11 @@ class Content extends Model
             'id' => $this->id,
             'has_draft' => $this->latestVersion !== $this->latestPublishedVersion,
             'published' => $this->latestPublishedVersion !== null,
+            'shared' => $this->shared,
             'title' => $title,
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'updated_at' => $this->latestVersion?->created_at,
             'published_at' => $this->latestPublishedVersion?->created_at,
             'license' => $version->license,
             'language_iso_639_3' => $version->language_iso_639_3,
@@ -313,6 +325,7 @@ class Content extends Model
     {
         return Content::search($keywords)
             ->where('published', true)
+            ->where('shared', true)
             ->query(
                 fn (Builder $query) => $query
                     ->with(['latestPublishedVersion', 'users'])
@@ -342,11 +355,12 @@ class Content extends Model
         $contents = self::findShared()->get();
 
         $contents->each(function (Content $content) use ($document, $root) {
-            assert($content->updated_at !== null);
+            $version = $content->latestPublishedVersion;
+            assert($version?->created_at !== null);
 
             $item = $document->createElement('url');
             $item->appendChild($document->createElement('loc', route('content.details', [$content])));
-            $item->appendChild($document->createElement('lastmod', $content->updated_at->toIso8601String()));
+            $item->appendChild($document->createElement('lastmod', $version->created_at->toIso8601String()));
 
             $root->appendChild($item);
         });

@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
+use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\ContentFilter;
 use App\Lti\LtiLaunchBuilder;
@@ -18,13 +19,14 @@ use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
 use function assert;
 use function is_string;
 use function redirect;
+use function response;
 use function route;
 use function to_route;
 use function trans;
@@ -173,6 +175,18 @@ class ContentController extends Controller
             'version' => $version,
             'launch' => $launch,
         ]);
+    }
+
+    public function updateStatus(Content $content, ContentStatusRequest $request): Response
+    {
+        $content->shared = $request->contentIsShared();
+        $content->save();
+
+        if ($request->ajax()) {
+            return response()->noContent();
+        }
+
+        return redirect()->back();
     }
 
     public function use(Content $content): View

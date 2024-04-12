@@ -124,6 +124,7 @@ return [
             Content::class => [
                 'filterableAttributes' => [
                     'published',
+                    'shared',
                     'user_ids',
                     'license',
                     'language_iso_639_3',
