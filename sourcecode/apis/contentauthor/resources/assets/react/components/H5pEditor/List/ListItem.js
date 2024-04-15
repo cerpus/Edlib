@@ -28,7 +28,13 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
         if (!value || value === '') {
             return '';
         }
-        return value.toString().replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#039;').replace(/"/g, '&quot;');
+        return value.toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/'/g, '&#039;')
+            .replace(/"/g, '&quot;')
+            ;
     }
 
     function decode (value) {
