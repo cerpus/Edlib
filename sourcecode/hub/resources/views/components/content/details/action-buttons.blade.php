@@ -45,7 +45,7 @@
 
 @can('delete', $content)
     <button
-        class="btn btn-outline-danger gap-2 d-flex text-nowrap"
+        class="btn btn-outline-danger gap-2 d-flex text-nowrap delete-content-button"
         hx-delete="{{ route('content.delete', [$content]) }}"
         hx-confirm="{{ trans('messages.confirm-delete-content') }}"
         aria-label="{{ trans('messages.delete') }}"

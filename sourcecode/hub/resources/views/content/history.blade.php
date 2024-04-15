@@ -3,7 +3,7 @@
 
     <x-content.details.header :version="$content->latestVersion" current="history" />
 
-    <table class="table table-responsive-lg">
+    <table class="table table-responsive-lg version-history">
         <thead>
             <tr>
                 <th scope="col" class="w-25">{{ trans('messages.title') }}
@@ -18,7 +18,7 @@
 
         <tbody>
             @foreach ($versions as $version)
-                <tr>
+                <tr class="{{ $version->published ? 'published' : 'draft' }}">
                     <td>{{ $version->title }}
                     <td>
                         <a href="{{ route('content.version-details', [$content, $version]) }}">

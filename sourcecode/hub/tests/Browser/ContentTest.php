@@ -226,8 +226,7 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($content) {
             $browser
-                ->visit('/content/' . $content->id)
-                ->assertTitleContains($content->getTitle())
+                ->visit('/content/' . $content->id . '/history')
                 ->assertNotPresent((new VersionHistory())->selector());
         });
     }
@@ -248,7 +247,7 @@ final class ContentTest extends DuskTestCase
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
-                ->visit('/content/' . $content->id)
+                ->visit('/content/' . $content->id . '/history')
                 ->with(new VersionHistory(), function (Browser $history) {
                     $history
                         ->assertPresent('@version:nth-child(1).published')
