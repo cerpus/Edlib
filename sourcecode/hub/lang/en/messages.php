@@ -107,6 +107,7 @@ return [
     'use-content' => 'Use content',
     'edit-content' => 'Edit content',
     'delete-content' => 'Delete content',
+    'delete-content-confirm-text' => 'The content will be removed from Edlib. An error message will be displayed where the content is used.',
     'num-content-found' => '{0} No content found|{1} :count content found|[2,*] :count contents found',
     'today' => 'today',
     'number-of-views' => 'Number of views',
