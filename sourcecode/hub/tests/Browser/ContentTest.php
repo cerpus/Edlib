@@ -448,7 +448,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/content/' . $content->id)
                 ->click('.delete-content-button')
-                ->acceptDialog()
+                ->waitFor('#htmxConfirmModal-Ok')
+                ->click('#htmxConfirmModal-Ok')
                 ->waitForLocation('/content')
         );
 
