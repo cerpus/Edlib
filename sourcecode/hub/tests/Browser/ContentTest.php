@@ -446,11 +446,11 @@ final class ContentTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
-                ->visitRoute('content.details', [$content])
+                ->visit('/content/' . $content->id)
                 ->click('.delete-content-button')
                 ->waitFor('#htmxConfirmModal-Ok')
                 ->click('#htmxConfirmModal-Ok')
-                ->waitForRoute('content.mine')
+                ->waitForLocation('/content/mine')
                 ->assertPresent('.toast-container')
         );
 
