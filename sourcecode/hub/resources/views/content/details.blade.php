@@ -33,6 +33,20 @@
             <div class="d-flex d-lg-none flex-wrap justify-content-end gap-2">
                 <x-content.details.action-buttons :$content :$version :$explicitVersion />
             </div>
+
+            @can('edit', [$content])
+                <x-form class="form-check form-switch mb-3">
+                    <x-form.checkbox
+                        name="shared"
+                        :checked="$content->shared"
+                        role="switch"
+                        id="shared-toggle"
+                        hx-patch="{{ route('content.update-status', [$content]) }}"
+                    />
+                    <label class="form-check-label" for="shared-toggle">{{ trans('messages.share-the-content') }}</label>
+                </x-form>
+            @endcan
+
             <table class="table table-sm table-striped caption-top">
                 <caption class="pt-0">{{ trans('messages.details') }}</caption>
                 <tbody>

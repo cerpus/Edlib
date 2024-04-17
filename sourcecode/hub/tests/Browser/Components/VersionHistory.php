@@ -25,7 +25,7 @@ class VersionHistory extends Component
     public function elements(): array
     {
         return [
-            '@version' => '> li',
+            '@version' => '> tbody > tr',
         ];
     }
 }

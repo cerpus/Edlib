@@ -64,7 +64,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
-    Route::get('/c/{content}', 'share')
+    Route::patch('/content/{content}/status')
+        ->uses([ContentController::class, 'updateStatus'])
+        ->name('content.update-status')
+        ->whereUlid('content')
+        ->can('edit', 'content');
+
+    Route::get('/c/{content}')
         ->uses([ContentController::class, 'share'])
         ->name('content.share')
         ->whereUlid('content')

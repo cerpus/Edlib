@@ -226,8 +226,7 @@ final class ContentTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($content) {
             $browser
-                ->visit('/content/' . $content->id)
-                ->assertTitleContains($content->getTitle())
+                ->visit('/content/' . $content->id . '/history')
                 ->assertNotPresent((new VersionHistory())->selector());
         });
     }
@@ -248,7 +247,7 @@ final class ContentTest extends DuskTestCase
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
-                ->visit('/content/' . $content->id)
+                ->visit('/content/' . $content->id . '/history')
                 ->with(new VersionHistory(), function (Browser $history) {
                     $history
                         ->assertPresent('@version:nth-child(1).published')
@@ -449,7 +448,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/content/' . $content->id)
                 ->click('.delete-content-button')
-                ->acceptDialog()
+                ->waitFor('#htmxConfirmModal-Ok')
+                ->click('#htmxConfirmModal-Ok')
                 ->waitForLocation('/content')
         );
 
@@ -561,6 +561,35 @@ final class ContentTest extends DuskTestCase
                         ->assertSeeIn('@title', 'TMK Course Presentation')
                         ->assertSeeIn('@content-type', 'H5P.CoursePresentation')
                 )
+        );
+    }
+
+    public function testUserCanDisableSharingContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->withUser($user)
+            ->create();
+
+        // FIXME: why doesn't indexing happen automatically?
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                        ->click('@title')
+                )
+                ->click('#shared-toggle')
+                ->pause(1000) // FIXME: use an event to detect when the request finishes
+                ->visit('/content')
+                ->assertNotPresent('.content-card')
         );
     }
 }

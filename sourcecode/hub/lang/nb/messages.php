@@ -80,6 +80,7 @@ return [
     'use-content' => 'Bruk innhold',
     'edit-content' => 'Rediger innhold',
     'delete-content' => 'Slett innhold',
+    'delete-content-confirm-text' => 'Innholdet vil bli fjernet fra Edlib. En feilmelding vil vises der innholdet er brukt',
     'num-content-found' => '{0} Ingen innhold funnet|[1,*] :count innhold funnet',
     'today' => 'i dag',
     'number-of-views' => 'Antall visninger',
@@ -153,6 +154,7 @@ return [
     'filter-clear' => 'Nullstill filtre',
     'filter-active' => 'Aktive filtre',
     'filter-toggle-button' => 'Vis/Skjul filtre',
+    'share-the-content' => 'Del innholdet med andre',
     'this-version' => 'Denne versjonen',
     'created-with' => 'Laget med',
 ];
