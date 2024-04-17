@@ -151,4 +151,5 @@ return [
     'share-the-content' => 'Del innholdet med andre',
     'this-version' => 'Denne versjonen',
     'created-with' => 'Laget med',
+    'content-copy-suffix' => '(kopi)',
 ];

@@ -15,7 +15,7 @@
         {{ trans('messages.edit-content') }}
     </a>
 @endcan
-@canany(['view', 'edit'], $content)
+@canany(['view', 'edit', 'copy'], $content)
     <div class="dropup">
         <button
             type="button"
@@ -61,6 +61,16 @@
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
                     </a>
+                </li>
+            @endcan
+            @can('copy', $content)
+                <li>
+                    <x-form action="{{ route('content.copy', [$content, $version]) }}">
+                        <button class="dropdown-item">
+                            <x-icon name="copy" class="me-2" />
+                            {{ trans('messages.copy') }}
+                        </button>
+                    </x-form>
                 </li>
             @endcan
         </ul>

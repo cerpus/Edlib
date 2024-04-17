@@ -148,7 +148,7 @@ class ContentController extends Controller
         $user = $this->getUser();
         $copy = $content->createCopyBelongingTo($user);
 
-        return to_route('content.index', [$copy->id]);
+        return to_route('content.version-details', [$copy, $copy->latestVersion]);
     }
 
     public function edit(

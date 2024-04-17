@@ -181,4 +181,5 @@ return [
     'share-the-content' => 'Share the content with others',
     'this-version' => 'This version',
     'created-with' => 'Created with',
+    'content-copy-suffix' => '(copy)',
 ];

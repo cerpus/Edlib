@@ -107,7 +107,8 @@ Route::controller(ContentController::class)->group(function () {
         ->can('create', \App\Models\Content::class)
         ->name('content.create');
 
-    Route::post('/content/{content}/copy', 'copy')
+    Route::post('/content/{content}/copy')
+        ->uses([ContentController::class, 'copy'])
         ->can('copy', 'content')
         ->name('content.copy');
 

@@ -19,6 +19,10 @@ use Tests\DuskTestCase;
 
 use function assert;
 
+/**
+ * @todo Fix need for manual reindexing. It's unclear why indexing doesn't
+ *     happen by itself.
+ */
 final class ContentTest extends DuskTestCase
 {
     public function testListsMyContent(): void
@@ -29,7 +33,6 @@ final class ContentTest extends DuskTestCase
             ->withUser($user)
             ->create();
 
-        // FIXME: why doesn't indexing happen automatically?
         RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($content, $user) {
@@ -50,6 +53,7 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->assertSame(0, $content->views()->count());
@@ -81,7 +85,6 @@ final class ContentTest extends DuskTestCase
         $user = User::factory()->create();
         Content::factory()->withUser($user)->create();
 
-        // FIXME: why doesn't indexing happen automatically?
         RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($user) {
@@ -172,7 +175,8 @@ final class ContentTest extends DuskTestCase
     public function testLaunchesEdlibFromWithinEdlibAndSelectsContent(): void
     {
         $content = Content::factory()
-            ->has(ContentVersion::factory()->published(), 'versions')
+            ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->assertDatabaseCount(Content::class, 1);
@@ -281,6 +285,7 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create()
             ->fresh();
         assert($content instanceof Content);
@@ -312,7 +317,10 @@ final class ContentTest extends DuskTestCase
             ->create();
         $user = User::factory()->create();
 
-        $content = Content::factory()->withPublishedVersion()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
 
         $this->browse(
             fn (Browser $browser) => $browser
@@ -335,7 +343,7 @@ final class ContentTest extends DuskTestCase
 
     public function testPreviewModalHasNoUseButtonOutsideOfLtiContext(): void
     {
-        Content::factory()->withPublishedVersion()->create();
+        Content::factory()->withPublishedVersion()->shared()->create();
         $user = User::factory()->create();
 
         $this->browse(
@@ -403,15 +411,14 @@ final class ContentTest extends DuskTestCase
             ContentVersion::factory()
                 ->state(['title' => 'found content'])
                 ->published(),
-        )->create();
+        )->shared()->create();
 
         Content::factory()->withVersion(
             ContentVersion::factory()
                 ->state(['title' => 'excluded content'])
                 ->published(),
-        )->create();
+        )->shared()->create();
 
-        // FIXME: why doesn't indexing happen automatically?
         RebuildContentIndex::dispatchSync();
 
         $this->browse(fn (Browser $browser) => $browser
@@ -570,9 +577,9 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()
             ->withPublishedVersion()
             ->withUser($user)
+            ->shared()
             ->create();
 
-        // FIXME: why doesn't indexing happen automatically?
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
@@ -590,6 +597,58 @@ final class ContentTest extends DuskTestCase
                 ->pause(1000) // FIXME: use an event to detect when the request finishes
                 ->visit('/content')
                 ->assertNotPresent('.content-card')
+        );
+    }
+
+    public function testCanCopySharedContent(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs(User::factory()->create()->email)
+            ->assertAuthenticated()
+            ->visit('/content')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->assertSeeIn('@title', $content->getTitle())
+                ->click('@action-menu-toggle')
+                ->with('@action-menu', fn (Browser $menu) => $menu
+                    ->press('Copy')
+                )
+            )
+            ->assertTitleContains($content->getTitle() . ' (copy)')
+            ->assertSee('You are viewing an unpublished draft version')
+        );
+    }
+
+    public function testCanCopyOwnContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withUser($user)
+            ->withPublishedVersion()
+            ->shared(false)
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->assertAuthenticated()
+            ->visit('/content/mine')
+            ->with(new ContentCard(), fn (Browser $card) => $card
+                ->assertSeeIn('@title', $content->getTitle())
+                ->click('@action-menu-toggle')
+                ->with('@action-menu', fn (Browser $menu) => $menu
+                    ->press('Copy')
+                )
+            )
+            ->assertTitleContains($content->getTitle() . ' (copy)')
+            ->assertSee('You are viewing an unpublished draft version')
         );
     }
 }

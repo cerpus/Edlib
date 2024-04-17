@@ -125,17 +125,21 @@ class Content extends Model
         ;
     }
 
-    public function createCopyBelongingTo(User $user): self
+    public function createCopyBelongingTo(User $user, ContentVersion|null $version = null): self
     {
-        return DB::transaction(function () use ($user) {
-            $version = $this->latestPublishedVersion
-                ?? throw new Exception('No published version');
+        $version ??= $this->latestVersion()->firstOrFail();
 
-            // TODO: title for resource copies
-            // TODO: somehow denote content is copied
+        return DB::transaction(function () use ($user, $version) {
             $copy = new Content();
             $copy->save();
-            $copy->versions()->save($version->replicate());
+
+            $version = $version->replicate();
+            assert($version instanceof ContentVersion);
+            $version->previousVersion()->associate($version);
+            $version->published = false;
+            $version->title .= ' ' . trans('messages.content-copy-suffix');
+            $copy->versions()->save($version);
+
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
 
             return $copy;

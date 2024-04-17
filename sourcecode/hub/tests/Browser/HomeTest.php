@@ -18,6 +18,7 @@ final class HomeTest extends DuskTestCase
         $latestTitle = Content::factory()
             ->withPublishedVersion()
             ->count(10)
+            ->shared()
             ->create()
             ->first()?->getTitle() ?? $this->fail();
 
