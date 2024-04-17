@@ -17,7 +17,6 @@ use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

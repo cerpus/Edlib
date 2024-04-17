@@ -609,19 +609,24 @@ final class ContentTest extends DuskTestCase
 
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs(User::factory()->create()->email)
-            ->assertAuthenticated()
-            ->visit('/content')
-            ->with(new ContentCard(), fn (Browser $card) => $card
-                ->assertSeeIn('@title', $content->getTitle())
-                ->click('@action-menu-toggle')
-                ->with('@action-menu', fn (Browser $menu) => $menu
-                    ->press('Copy')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->press('Copy')
+                        )
                 )
-            )
-            ->assertTitleContains($content->getTitle() . ' (copy)')
-            ->assertSee('You are viewing an unpublished draft version')
+                ->assertTitleContains($content->getTitle() . ' (copy)')
+                ->assertSee('You are viewing an unpublished draft version')
         );
     }
 
@@ -636,19 +641,24 @@ final class ContentTest extends DuskTestCase
 
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/content/mine')
-            ->with(new ContentCard(), fn (Browser $card) => $card
-                ->assertSeeIn('@title', $content->getTitle())
-                ->click('@action-menu-toggle')
-                ->with('@action-menu', fn (Browser $menu) => $menu
-                    ->press('Copy')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/mine')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->press('Copy')
+                        )
                 )
-            )
-            ->assertTitleContains($content->getTitle() . ' (copy)')
-            ->assertSee('You are viewing an unpublished draft version')
+                ->assertTitleContains($content->getTitle() . ' (copy)')
+                ->assertSee('You are viewing an unpublished draft version')
         );
     }
 }
