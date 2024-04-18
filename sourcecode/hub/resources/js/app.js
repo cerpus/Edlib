@@ -5,6 +5,7 @@ import './clipboard';
 import './resize';
 import './dateHelper';
 import './htmxEvents';
+import './filterSelect';
 
 import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 
