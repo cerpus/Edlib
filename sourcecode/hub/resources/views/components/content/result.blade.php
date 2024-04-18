@@ -3,13 +3,13 @@
 @unless ($contents->isEmpty())
     @if ($filter->getLayout() === 'grid')
         <x-content.grid-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.grid :contents="$contents" :$showDrafts :titlePreviews="$filter->isTitlePreview()" />
+        <x-content.grid :$contents :$showDrafts :titlePreviews="$filter->isTitlePreview()" :$mine />
     @else
         <x-content.list-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.list :contents="$contents" :$showDrafts :titlePreviews="$filter->isTitlePreview()" />
+        <x-content.list :$contents :$showDrafts :titlePreviews="$filter->isTitlePreview()" :$mine />
     @endif
 
-    <div hx-boost="true" hx-target="#content">
+    <div hx-boost="true" hx-target="#content" class="mt-3">
         {{ $contents->withQueryString()->links() }}
     </div>
 @else
