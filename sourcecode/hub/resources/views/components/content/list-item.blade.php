@@ -1,4 +1,4 @@
-@props(['content', 'showDrafts' => false, 'titlePreviews' => false])
+@props(['content', 'showDrafts' => false, 'titlePreviews' => false, 'mine' => false])
 @php($version = $showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
 
 <article class="card content-list-item shadow-sm">
@@ -43,6 +43,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" />
+        <x-content.action-buttons :$content :$version :show-preview="!$titlePreviews" :$mine />
     </div>
 </article>
