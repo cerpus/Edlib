@@ -209,10 +209,10 @@ class ContentController extends Controller
 
         if ($request->ajax()) {
             return response()->noContent()
-                ->header('HX-Redirect', route('content.index'));
+                ->header('HX-Redirect', route('content.mine'));
         }
 
-        return redirect()->route('content.index');
+        return redirect()->route('content.mine');
     }
 
     public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View

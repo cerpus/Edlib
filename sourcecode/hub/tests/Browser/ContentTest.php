@@ -457,7 +457,8 @@ final class ContentTest extends DuskTestCase
                 ->click('.delete-content-button')
                 ->waitFor('#htmxConfirmModal-Ok')
                 ->click('#htmxConfirmModal-Ok')
-                ->waitForLocation('/content')
+                ->waitForLocation('/content/mine')
+                ->assertPresent('.toast-container')
         );
 
         $this->assertTrue($content->refresh()->trashed());

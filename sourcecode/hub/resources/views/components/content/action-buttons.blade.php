@@ -1,21 +1,30 @@
-@php use App\Support\SessionScope; @endphp
-@props(['content', 'version', 'showPreview' => false])
-@can('use', $content)
+@props(['content', 'version', 'showPreview' => false, 'mine' => false])
+@php
+    use App\Support\SessionScope;
+    use Illuminate\Support\Facades\Gate;
+
+    $canUse = Gate::allows('use', $content);
+    $canEdit = Gate::allows('edit', $content);
+    $canView = Gate::allows('view', $content);
+    $canDelete = $mine && Gate::allows('delete', $content);
+    $canCopy = Gate::allows('copy', $content);
+@endphp
+@if($canUse)
     <x-form action="{{ route('content.use', [$content]) }}" method="POST">
         <button class="btn btn-primary btn-sm me-1 content-use-button">
             {{ trans('messages.use-content') }}
         </button>
     </x-form>
-@endcan
-@can('edit', $content)
+@endif
+@if($canEdit)
     <a
         href="{{ route('content.edit', [$content, $version]) }}"
         class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
     >
         {{ trans('messages.edit-content') }}
     </a>
-@endcan
-@canany(['view', 'edit', 'copy'], $content)
+@endif
+@if($canView || $canEdit || $canCopy || $canDelete)
     <div class="dropup">
         <button
             type="button"
@@ -27,7 +36,7 @@
             <x-icon name="three-dots-vertical" />
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-            @can('view', $content)
+            @if($canView)
                 <li>
                     <a
                         href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
@@ -54,16 +63,16 @@
                         </a>
                     @endif
                 </li>
-            @endcan
-            @can('edit', $content)
+            @endif
+            @if($canEdit)
                 <li class="d-md-none">
                     <a href="{{ route('content.edit', [$content, $version]) }}" class="dropdown-item content-edit-link">
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
                     </a>
                 </li>
-            @endcan
-            @can('copy', $content)
+            @endif
+            @if($canCopy)
                 <li>
                     <x-form action="{{ route('content.copy', [$content, $version]) }}">
                         <button class="dropdown-item">
@@ -72,7 +81,21 @@
                         </button>
                     </x-form>
                 </li>
-            @endcan
+            @endif
+            @if($canDelete)
+                <li>
+                    <button
+                        class="dropdown-item"
+                        hx-delete="{{ route('content.delete', [$content]) }}"
+                        hx-confirm="{{ trans('messages.delete-content-confirm-text') }}"
+                        data-confirm-title="{{ trans('messages.delete-content') }}"
+                        data-confirm-ok="{{ trans('messages.delete-content') }}"
+                    >
+                        <x-icon name="trash" class="me-2" />
+                        {{ trans('messages.delete') }}
+                    </button>
+                </li>
+            @endif
         </ul>
     </div>
-@endcan
+@endif
