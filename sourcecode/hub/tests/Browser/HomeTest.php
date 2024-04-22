@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\User;
 use Laravel\Dusk\Browser;
@@ -20,8 +19,6 @@ final class HomeTest extends DuskTestCase
             ->count(10)
             ->create()
             ->first()?->getTitle() ?? $this->fail();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($latestTitle) {
             $browser

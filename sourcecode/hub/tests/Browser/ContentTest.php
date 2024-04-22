@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -25,12 +24,9 @@ final class ContentTest extends DuskTestCase
     {
         $user = User::factory()->create();
         $content = Content::factory()
-            ->withPublishedVersion()
             ->withUser($user)
+            ->withPublishedVersion()
             ->create();
-
-        // FIXME: why doesn't indexing happen automatically?
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($content, $user) {
             $browser
@@ -80,9 +76,6 @@ final class ContentTest extends DuskTestCase
     {
         $user = User::factory()->create();
         Content::factory()->withUser($user)->create();
-
-        // FIXME: why doesn't indexing happen automatically?
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($user) {
             $browser
@@ -411,9 +404,6 @@ final class ContentTest extends DuskTestCase
                 ->published(),
         )->create();
 
-        // FIXME: why doesn't indexing happen automatically?
-        RebuildContentIndex::dispatchSync();
-
         $this->browse(fn (Browser $browser) => $browser
             ->loginAs(User::factory()->create()->email)
             ->assertAuthenticated()
@@ -569,12 +559,9 @@ final class ContentTest extends DuskTestCase
     {
         $user = User::factory()->create();
         $content = Content::factory()
-            ->withPublishedVersion()
             ->withUser($user)
+            ->withPublishedVersion()
             ->create();
-
-        // FIXME: why doesn't indexing happen automatically?
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(
             fn (Browser $browser) => $browser

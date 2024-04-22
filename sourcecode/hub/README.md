@@ -6,19 +6,40 @@ TODO: write the rest of the README
 
 1. Ensure you have Google Chrome/Chromium installed.
 
-2. Download [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/)
-   and unpack it.
+2. Install ChromeDriver. Make sure this matches the version of Google Chrome/Chromium installed.
+   1. Either use Laravel Dusk to install. See
+      [Laravel Dusk documenteation](https://laravel.com/docs/11.x/dusk#managing-chromedriver-installations) for more options.
+      ```bash
+      docker compose exec hub php artisan dusk:chrome-driver
+      ```
+   2. or install manually by downloading [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) and unpacking it.
 
-3. Start ChromeDriver.
-
-   ```bash
-   ./chromedriver --allowed-ips= --allowed-origins='*'
-   ```
+3. Start ChromeDriver. If installed with Laravel Dusk it's located in the `vendor/laravel/dusk/bin/` folder.
+   When running use parameters `--allowed-ips= --allowed-origins='*'`
 
 4. Make sure <https://hub-test.edlib.test> loads in your browser. It should look
    the same as the regular hub, but should not share data with it.
 
-5. Run the browser tests.
+5. Run the browser tests
+    ```bash
+    docker compose exec -e APP_ENV=testing hub php artisan dusk
+   ```
+
+
+### Headless browser testing
+
+1. Create a `docker-compose.override.yml` in Edlib root (where the `docker-compose.yml` file is) with the following content
+    ```yaml
+    services:
+      hub:
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
+    ```
+
+2. In the environment file `.env.testing` add or uncomment `DUSK_HEADLESS_DISABLED=false`
+
+3. Follow the steps for [Browser testing via Docker](#browser-testing-via-docker)
+
 
 ## Using ngrok for development
 
