@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Foundation\Testing\DatabaseTruncation;
@@ -26,6 +27,16 @@ abstract class DuskTestCase extends BaseTestCase
         $url = env('DUSK_DRIVER_URL') ?? 'http://host.docker.internal:9515';
         assert(is_string($url));
 
-        return RemoteWebDriver::create($url, DesiredCapabilities::chrome());
+        $options = new ChromeOptions();
+        $options->addArguments([
+            '--headless',
+            '--disable-gpu',
+            '--window-size=1920,1080',
+        ]);
+
+        $capabilities = DesiredCapabilities::chrome()
+            ->setCapability(ChromeOptions::CAPABILITY, $options);
+
+        return RemoteWebDriver::create($url, $capabilities);
     }
 }

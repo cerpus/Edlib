@@ -298,7 +298,7 @@ final class ContentTest extends DuskTestCase
                                 ->clickLink('Preview')
                         )
                 )
-                ->waitFor('#previewModal .modal-dialog')
+                ->waitForEvent('htmx:after-swap')
                 ->assertVisible('#previewModal .lti-launch')
         );
     }
