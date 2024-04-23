@@ -2,24 +2,6 @@
 
 TODO: write the rest of the README
 
-## Browser testing via Docker
-
-1. Ensure you have Google Chrome/Chromium installed.
-
-2. Download [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/)
-   and unpack it.
-
-3. Start ChromeDriver.
-
-   ```bash
-   ./chromedriver --allowed-ips= --allowed-origins='*'
-   ```
-
-4. Make sure <https://hub-test.edlib.test> loads in your browser. It should look
-   the same as the regular hub, but should not share data with it.
-
-5. Run the browser tests.
-
 ## Using ngrok for development
 
 Social login requires the dev environment to be available over the web for some
