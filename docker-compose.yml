@@ -98,6 +98,8 @@ services:
 
   chromedriver:
     build: ./localSetup/projects/chromedriver
+    cap_add:
+      - SYS_ADMIN
     depends_on:
       certs:
         condition: service_completed_successfully
@@ -141,6 +143,7 @@ services:
           - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
   versionapi:
     image: maven:3-openjdk-11
