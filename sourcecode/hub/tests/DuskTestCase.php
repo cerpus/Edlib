@@ -28,24 +28,17 @@ abstract class DuskTestCase extends BaseTestCase
         $url = env('DUSK_DRIVER_URL') ?? 'http://host.docker.internal:9515';
         assert(is_string($url));
 
-        $headlessDisabled = env('DUSK_HEADLESS_DISABLED', true);
         $options = new ChromeOptions();
+        $options->addArguments([
+            '--headless',
+            '--disable-gpu',
+            '--window-size=1920,1080',
+        ]);
 
-        if (!$headlessDisabled) {
-            $options->addArguments([
-                '--disable-gpu',
-                '--headless',
-                '--no-sandbox',
-                '--window-size=1920,1080',
-            ]);
-        }
+        $capabilities = DesiredCapabilities::chrome()
+            ->setCapability(ChromeOptions::CAPABILITY, $options);
 
-        return RemoteWebDriver::create(
-            $url,
-            DesiredCapabilities::chrome()
-                ->setCapability(ChromeOptions::CAPABILITY, $options)
-                ->setCapability('acceptInsecureCerts', true)
-        );
+        return RemoteWebDriver::create($url, $capabilities);
     }
 
     public function setUp(): void
