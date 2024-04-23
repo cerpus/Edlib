@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use App\Jobs\RebuildContentIndex;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -38,5 +39,11 @@ abstract class DuskTestCase extends BaseTestCase
             ->setCapability(ChromeOptions::CAPABILITY, $options);
 
         return RemoteWebDriver::create($url, $capabilities);
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        RebuildContentIndex::dispatchSync();
     }
 }
