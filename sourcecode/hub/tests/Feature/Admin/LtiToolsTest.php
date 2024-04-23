@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Admin;
 
+use App\Jobs\RebuildContentIndex;
 use Tests\TestCase;
 
 final class LtiToolsTest extends TestCase
@@ -22,6 +23,7 @@ final class LtiToolsTest extends TestCase
 
     public function testCannotAddToolsWhenLoggedOut(): void
     {
+        RebuildContentIndex::dispatchSync();
         $cookie = $this->get('/')->getCookie('XSRF-TOKEN')?->getValue()
             ?? $this->fail('Unable to get CSRF token');
 
