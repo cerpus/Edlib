@@ -189,7 +189,8 @@ class ContentVersion extends Model
             ->select('language_iso_639_3')
             ->distinct()
             ->join('contents', 'contents.id', '=', 'content_versions.content_id')
-            ->when($user instanceof User,
+            ->when(
+                $user instanceof User,
                 function ($query) use ($user) {
                     $query->join('content_user', 'content_user.content_id', '=', 'contents.id')
                         ->where('content_user.user_id', '=', $user->id);
