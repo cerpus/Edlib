@@ -106,6 +106,13 @@ class ContentFilter extends FormRequest
         return DB::table('tags AS t')
             ->select(['t.prefix', 't.name', 'cvt.verbatim_name'])
             ->join('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
+            ->join('content_versions AS cv', 'cv.id', '=', 'cvt.content_version_id')
+            ->join('contents AS c', 'c.id', '=', 'cv.content_id')
+            ->when($this->isForUser() && $this->user(), function ($query) {
+                $query->join('content_user AS cu', 'cu.content_id', '=', 'c.id')
+                    ->where('cu.user_id', $this->user()->id);
+            })
+            ->whereNull('c.deleted_at')
             ->where('prefix', '=', 'h5p')
             ->orderBy('verbatim_name')
             ->get()

@@ -28,6 +28,7 @@
             :options="$filter->getLanguageOptions()"
             :emptyOption="trans('messages.filter-language-all')"
             aria-labelledby="filterLanguageLabel"
+            data-choicesjs-should-sort="false"
         />
     </label>
 

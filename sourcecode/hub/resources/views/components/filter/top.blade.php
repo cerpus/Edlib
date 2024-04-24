@@ -76,7 +76,7 @@
                 searchEnabled: elm.getAttribute('data-choicesjs-search-enabled') !== 'false',
                 searchResultLimit: 100,
                 maxItemCount: 10,
-                shouldSort: true,
+                shouldSort: elm.getAttribute('data-choicesjs-should-sort') !== 'false',
                 maxItemText: maxItemCount => `{{ trans('messages.filter-dropdown-max-items') }}`,
                 labelId: elm.getAttribute('aria-labelledby'),
             });
