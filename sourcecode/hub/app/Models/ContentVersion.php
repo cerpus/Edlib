@@ -192,6 +192,7 @@ class ContentVersion extends Model
             ->when(
                 $user instanceof User,
                 function ($query) use ($user) {
+                    /** @var User $user */
                     $query->join('content_user', 'content_user.content_id', '=', 'contents.id')
                         ->where('content_user.user_id', '=', $user->id);
                 },

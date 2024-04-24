@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\ContentVersion;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
@@ -108,9 +109,9 @@ class ContentFilter extends FormRequest
             ->join('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
             ->join('content_versions AS cv', 'cv.id', '=', 'cvt.content_version_id')
             ->join('contents AS c', 'c.id', '=', 'cv.content_id')
-            ->when($this->isForUser() && $this->user(), function ($query) {
+            ->when($this->isForUser() && $this->user() instanceof User, function ($query) {
                 $query->join('content_user AS cu', 'cu.content_id', '=', 'c.id')
-                    ->where('cu.user_id', $this->user()->id);
+                    ->where('cu.user_id', $this->user()?->id);
             })
             ->whereNull('c.deleted_at')
             ->where('prefix', '=', 'h5p')
