@@ -124,7 +124,7 @@
         <x-htmx-confirm-modal />
 
         {{-- Skeleton for preview modal --}}
-        <div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+        <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
             </div>
         </div>
