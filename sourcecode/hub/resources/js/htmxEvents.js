@@ -1,4 +1,4 @@
-import Modal from 'bootstrap/js/dist/modal.js';
+import { Modal } from 'bootstrap';
 
 document.body.addEventListener('htmx:configRequest', (event) => {
     event.detail.headers['X-Requested-With'] = 'XMLHttpRequest';
