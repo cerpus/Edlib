@@ -1,6 +1,7 @@
 @props(['filter'])
 
 <form
+    id="filterForm"
     hx-get="{{ url()->current() }}"
     hx-target="#content"
     hx-trigger="input from:find #filterQuery delay:500ms, change from:find #filterSort delay:500ms,change from:find #filterLanguage delay:500ms, change"

@@ -1,8 +1,8 @@
 @props(['filter'])
 <div class="row py-3 g-3">
-    <label class="col-12">
+    <label class="col-12" id="filterContentTypeLabel">
         {{ trans('messages.content-type') }}
-        <span class="visually-hidden" id="filterContentTypeLabel">
+        <span class="visually-hidden" id="filterContentTypeLabelText">
             {{ trans('messages.filter-content-types-desc') }}
         </span>
         <x-form.dropdown
@@ -12,13 +12,13 @@
             :options="$filter->getContentTypeOptions()"
             :selected="$filter->getContentTypes()"
             class="filter-content-type"
-            aria-labelledby="filterContentTypeLabel"
+            aria-labelledby="filterContentTypeLabelText"
         />
     </label>
 
-    <label class="col-12 col-sm-6">
+    <label class="col-12 col-sm-6" id="filterLanguageLabel">
         {{ trans('messages.language') }}
-        <span class="visually-hidden" id="filterLanguageLabel">
+        <span class="visually-hidden" id="filterLanguageLabelText">
             {{ trans('messages.filter-language') }}
         </span>
         <x-form.dropdown
@@ -27,7 +27,7 @@
             :selected="$filter->getLanguage()"
             :options="$filter->getLanguageOptions()"
             :emptyOption="trans('messages.filter-language-all')"
-            aria-labelledby="filterLanguageLabel"
+            aria-labelledby="filterLanguageLabelText"
         />
     </label>
 
