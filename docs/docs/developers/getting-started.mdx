@@ -58,25 +58,36 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    docker compose ps
    ```
 
-4. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux,
-   you can update your hosts file with `scripts/update-host-file.sh`. On
-   Windows, you will have to update the file manually with the values found in
-   the script.
+4. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux and
+   macOS, you can update your hosts file with `scripts/update-host-file.sh`:
 
    ```bash
    sudo scripts/update-host-file.sh
    ```
+
+   On Windows, you will have to update the file manually with the values found
+   in the script.
 
 5. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
    system. The exact procedure will vary depending on your operating system.
 
 ## What's next?
 
-* **To access the user-facing side of Edlib:**
+To access the Edlib 3 hub, navigate to: https://hub.edlib.test/
 
-  https://npm.components.edlib.test/
+You can create an admin user account by running:
 
-* **To access the admin interface:**
+```bash
+docker compose exec hub php artisan edlib:create-admin-user <email>
+```
 
-  https://api.edlib.test/admin
+To enable Content Author, you must add it as an LTI tool from the admin portal:
 
+* LTI version: `1.1`
+* Launch URL: `https://ca.edlib.test/lti-content/create`
+* Consumer key: `h5p`
+* Consumer secret: `secret2`
+
+To use Edlib with Moodle, you must create an *LTI platform* from the Edlib 3
+admin portal, then create an *external tool* in Moodle using the provided key
+and secret. The item selection URL is: `https://hub.edlib.test/lti/dl`.
