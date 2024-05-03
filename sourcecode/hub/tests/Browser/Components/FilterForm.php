@@ -141,7 +141,9 @@ class FilterForm extends Component
      */
     public function withChoicesJsDropdown(Browser $browser, string $selector, Closure $callback): Browser
     {
-        return $browser->with($selector, fn (Browser $dropdown) =>
+        return $browser->with(
+            $selector,
+            fn (Browser $dropdown) =>
             $dropdown->with(new ChoicesJs(), $callback)
         );
     }

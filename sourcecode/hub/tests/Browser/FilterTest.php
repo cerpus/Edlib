@@ -18,15 +18,18 @@ final class FilterTest extends DuskTestCase
 {
     public function testCanToggleFilter(): void
     {
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertCollapsed()
-                ->expand()
-                ->assertExpanded()
-                ->collapse()
-                ->assertCollapsed()
-            )
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertCollapsed()
+                        ->expand()
+                        ->assertExpanded()
+                        ->collapse()
+                        ->assertCollapsed()
+                )
         );
     }
 
@@ -51,17 +54,22 @@ final class FilterTest extends DuskTestCase
             )
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->typeSearchText('find')
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new ContentCard(), fn ($card) => $card
-                ->assertSeeIn('@title', $content->getTitle())
-            )
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->typeSearchText('find')
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new ContentCard(),
+                    fn ($card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                )
         );
     }
 
@@ -89,37 +97,49 @@ final class FilterTest extends DuskTestCase
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->selectOption('h5p:h5p.techtype')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->selectOption('h5p:h5p.techtype')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new ContentCard(), fn ($card) => $card
-                ->assertSeeIn('@title', $content->getTitle())
-            )
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertExpanded()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertOptionSelected('h5p:h5p.techtype')
-                    ->selectOption('h5p:h5p.magiccontent')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new ContentCard(),
+                    fn ($card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertExpanded()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertOptionSelected('h5p:h5p.techtype')
-                    ->assertOptionSelected('h5p:h5p.magiccontent')
-                    ->assertNoOptionsAvailable()
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertExpanded()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionSelected('h5p:h5p.techtype')
+                                ->selectOption('h5p:h5p.magiccontent')
+                        )
                 )
-            )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertExpanded()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionSelected('h5p:h5p.techtype')
+                                ->assertOptionSelected('h5p:h5p.magiccontent')
+                                ->assertNoOptionsAvailable()
+                        )
+                )
         );
     }
 
@@ -147,30 +167,40 @@ final class FilterTest extends DuskTestCase
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->selectOption('h5p:h5p.techtype')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->selectOption('h5p:h5p.techtype')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertOptionSelected('h5p:h5p.techtype')
-                    ->removeSelectedOption('h5p:h5p.techtype')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionSelected('h5p:h5p.techtype')
+                                ->removeSelectedOption('h5p:h5p.techtype')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertNoOptionsSelected()
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertNoOptionsSelected()
+                        )
                 )
-            )
         );
     }
 
@@ -198,18 +228,22 @@ final class FilterTest extends DuskTestCase
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertHasOption('h5p:h5p.techtype')
-                    ->assertHasOption('h5p:h5p.magiccontent')
-                    ->typeOptionsFilter('tech')
-                    ->assertHasOption('h5p:h5p.techtype')
-                    ->assertNotHasOption('h5p:h5p.magiccontent')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertHasOption('h5p:h5p.techtype')
+                                ->assertHasOption('h5p:h5p.magiccontent')
+                                ->typeOptionsFilter('tech')
+                                ->assertHasOption('h5p:h5p.techtype')
+                                ->assertNotHasOption('h5p:h5p.magiccontent')
+                        )
                 )
-            )
         );
     }
 
@@ -218,11 +252,11 @@ final class FilterTest extends DuskTestCase
         $content = Content::factory()
             ->withVersion(
                 ContentVersion::factory()
-                ->published()
-                ->state([
-                    'language_iso_639_3' => 'nob',
-                    'title' => 'Find me',
-                ])
+                    ->published()
+                    ->state([
+                        'language_iso_639_3' => 'nob',
+                        'title' => 'Find me',
+                    ])
             )
             ->create();
 
@@ -236,28 +270,37 @@ final class FilterTest extends DuskTestCase
             )
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withLanguageFilter(fn ($langFilter) => $langFilter
-                    ->assertOptionSelected('')
-                    ->assertHasOption('nob')
-                    ->selectOption('nob')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionSelected('')
+                                ->assertHasOption('nob')
+                                ->selectOption('nob')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new ContentCard(), fn ($card) => $card
-                ->assertSeeIn('@title', $content->getTitle())
-            )
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertExpanded()
-                ->withLanguageFilter(fn ($langFilter) => $langFilter
-                    ->assertOptionSelected('nob')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new ContentCard(),
+                    fn ($card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
                 )
-            )
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertExpanded()
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionSelected('nob')
+                        )
+                )
         );
     }
 
@@ -284,18 +327,22 @@ final class FilterTest extends DuskTestCase
             )
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withLanguageFilter(fn ($choice) => $choice
-                    ->assertHasOption('nob')
-                    ->assertHasOption('eng')
-                    ->typeOptionsFilter('nob')
-                    ->assertHasOption('nob')
-                    ->assertNotHasOption('eng')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withLanguageFilter(
+                            fn ($choice) => $choice
+                                ->assertHasOption('nob')
+                                ->assertHasOption('eng')
+                                ->typeOptionsFilter('nob')
+                                ->assertHasOption('nob')
+                                ->assertNotHasOption('eng')
+                        )
                 )
-            )
         );
     }
 
@@ -327,31 +374,42 @@ final class FilterTest extends DuskTestCase
                 'created_at' => Carbon::now()->subDays(2), // Date for created sorting
             ]);
 
-        $this->browse(fn (Browser $browser) => $browser->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new ContentCard(), fn ($card) => $card
-                // The first card in the listing
-                ->assertSeeIn('@title', $edited->getTitle())
-            )
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->expand()
-                ->withSortOrder(fn ($sort) => $sort
-                    ->assertOptionSelected('updated')
-                    ->selectOption('created')
+        $this->browse(
+            fn (Browser $browser) => $browser->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new ContentCard(),
+                    fn ($card) => $card
+                    // The first card in the listing
+                        ->assertSeeIn('@title', $edited->getTitle())
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('2 contents found')
-            ->with(new ContentCard(), fn ($card) => $card
-                // The first card in the listing
-                ->assertSeeIn('@title', $created->getTitle())
-            )
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertExpanded()
-                ->withSortOrder(fn ($sort) => $sort
-                    ->assertOptionSelected('created')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withSortOrder(
+                            fn ($sort) => $sort
+                                ->assertOptionSelected('updated')
+                                ->selectOption('created')
+                        )
                 )
-            )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('2 contents found')
+                ->with(
+                    new ContentCard(),
+                    fn ($card) => $card
+                    // The first card in the listing
+                        ->assertSeeIn('@title', $created->getTitle())
+                )
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertExpanded()
+                        ->withSortOrder(
+                            fn ($sort) => $sort
+                                ->assertOptionSelected('created')
+                        )
+                )
         );
     }
 
@@ -384,48 +442,62 @@ final class FilterTest extends DuskTestCase
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(0)
-                ->expand()
-                ->withLanguageFilter(fn ($langFilter) => $langFilter
-                    ->selectOption('nob')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(0)
+                        ->expand()
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->selectOption('nob')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(1)
-                ->assertExpanded()
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->selectOption('h5p:h5p.magiccontent')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(1)
+                        ->assertExpanded()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->selectOption('h5p:h5p.magiccontent')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(2)
-                ->assertExpanded()
-                ->withSortOrder(fn ($sort) => $sort
-                    ->selectOption('created')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(2)
+                        ->assertExpanded()
+                        ->withSortOrder(
+                            fn ($sort) => $sort
+                                ->selectOption('created')
+                        )
                 )
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(2)
-                ->assertExpanded()
-                ->typeSearchText('innhold')
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(2)
-                ->collapse()
-                ->assertActiveFilterCount(2)
-            )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(2)
+                        ->assertExpanded()
+                        ->typeSearchText('innhold')
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(2)
+                        ->collapse()
+                        ->assertActiveFilterCount(2)
+                )
         );
     }
 
@@ -458,43 +530,54 @@ final class FilterTest extends DuskTestCase
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(0)
-                ->expand()
-                ->assertClearFilterDisabled()
-                ->withLanguageFilter(fn ($langFilter) => $langFilter
-                    ->selectOption('nob')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(0)
+                        ->expand()
+                        ->assertClearFilterDisabled()
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->selectOption('nob')
+                        )
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->selectOption('h5p:h5p.magiccontent')
+                        )
+                        ->typeSearchText('innhold')
                 )
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->selectOption('h5p:h5p.magiccontent')
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(2)
+                        ->assertClearFilterEnabled()
+                        ->clearFilter()
                 )
-                ->typeSearchText('innhold')
-            )
-            ->waitForEvent('htmx:afterSwap')
-            ->assertSee('1 content found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(2)
-                ->assertClearFilterEnabled()
-                ->clearFilter()
-            )
-            ->waitForLocation('/content')
-            ->assertSee('2 contents found')
-            ->with(new FilterForm(), fn ($filter) => $filter
-                ->assertActiveFilterCount(0)
-                ->assertCollapsed()
-                ->expand()
-                ->assertClearFilterDisabled()
-                ->assertSearchTextIs('')
-                ->withLanguageFilter(fn ($langFilter) => $langFilter
-                    ->assertOptionSelected('')
+                ->waitForLocation('/content')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->assertActiveFilterCount(0)
+                        ->assertCollapsed()
+                        ->expand()
+                        ->assertClearFilterDisabled()
+                        ->assertSearchTextIs('')
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionSelected('')
+                        )
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertNoOptionsSelected()
+                        )
                 )
-                ->withContentTypeFilter(fn ($typeFilter) => $typeFilter
-                    ->assertNoOptionsSelected()
-                )
-            )
         );
     }
 }
