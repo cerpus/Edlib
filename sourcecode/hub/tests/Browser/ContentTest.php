@@ -256,8 +256,8 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
-            ->create()
-            ->fresh(); // FIXME: why won't this work without?
+            ->create();
+
         assert($content instanceof Content);
 
         $expectedTitle = $content->latestPublishedVersion?->title;
@@ -274,8 +274,8 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
-            ->create()
-            ->fresh();
+            ->create();
+
         assert($content instanceof Content);
 
         $this->browse(
@@ -575,9 +575,28 @@ final class ContentTest extends DuskTestCase
                         ->click('@title')
                 )
                 ->click('#shared-toggle')
-                ->pause(1000) // FIXME: use an event to detect when the request finishes
+                ->waitForEvent('htmx:afterRequest')
                 ->visit('/content')
                 ->assertNotPresent('.content-card')
+        );
+    }
+
+    public function testCanToggleResultView(): void
+    {
+        Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertPresent('article.card.content-card')
+                ->press('button.btn-outline-secondary[title="Display results as list"]')
+                ->waitForLocation('/content')
+                ->assertPresent('article.card.content-list-item')
+                ->press('button.btn-outline-secondary[title="Display results as grid"]')
+                ->waitForLocation('/content')
+                ->assertPresent('article.card.content-card')
         );
     }
 }

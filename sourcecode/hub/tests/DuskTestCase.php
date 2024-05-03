@@ -9,6 +9,8 @@ use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Foundation\Testing\DatabaseTruncation;
+use Laravel\Dusk\Browser;
+use Laravel\Dusk\ElementResolver;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 use function assert;
@@ -45,5 +47,11 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
         RebuildContentIndex::dispatchSync();
+    }
+
+    public function newBrowser($driver): Browser
+    {
+        // Use 'html' as root element for selectors instead of default 'body'
+        return new Browser($driver, new ElementResolver($driver, 'html'));
     }
 }

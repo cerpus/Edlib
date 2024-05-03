@@ -49,4 +49,16 @@ final class ContentVersionFactory extends Factory
     {
         return $this->state(['published' => false]);
     }
+
+    public function withTag(TagFactory $tag): self
+    {
+        $values = $tag->getRawAttributes(null);
+        return $this->hasAttached(
+            $tag,
+            [
+                'verbatim_name' => $values['name'],
+            ],
+            'tags'
+        );
+    }
 }
