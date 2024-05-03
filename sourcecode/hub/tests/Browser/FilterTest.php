@@ -607,24 +607,25 @@ final class FilterTest extends DuskTestCase
                 'deleted_at' => Carbon::now(),
             ]);
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('/content')
-            ->assertSee('1 content found')
-            ->with(
-                new FilterForm(),
-                fn ($filter) => $filter
-                    ->expand()
-                    ->withContentTypeFilter(
-                        fn ($typeFilter) => $typeFilter
-                            ->assertNotHasOption('h5p:h5p.deletedcontent')
-                            ->assertHasOption('h5p:h5p.magiccontent')
-                    )
-                    ->withLanguageFilter(
-                        fn ($langFilter) => $langFilter
-                            ->assertNotHasOption('swe')
-                            ->assertHasOption('nob')
-                    )
-            )
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertNotHasOption('h5p:h5p.deletedcontent')
+                                ->assertHasOption('h5p:h5p.magiccontent')
+                        )
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertNotHasOption('swe')
+                                ->assertHasOption('nob')
+                        )
+                )
         );
     }
 }
