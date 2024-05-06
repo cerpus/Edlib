@@ -96,6 +96,16 @@ services:
       - ./scripts/generate-password.sh:/usr/local/bin/generate-password
     working_dir: /run/secrets
 
+  chromedriver:
+    build: ./localSetup/projects/chromedriver
+    cap_add:
+      - SYS_ADMIN
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates
+
   certs:
     build: ./localSetup/projects/certs
     command: [generate-certs.sh]
@@ -132,6 +142,8 @@ services:
           - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
   versionapi:
     image: maven:3-openjdk-11

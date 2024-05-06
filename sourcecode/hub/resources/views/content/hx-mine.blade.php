@@ -1,1 +1,2 @@
-<x-content.search :$contents :$filter mine show-drafts />
+<x-content.result :$contents :$filter mine show-drafts />
+<x-filter.hx-filter :$filter />

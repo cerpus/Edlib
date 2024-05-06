@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -19,21 +18,15 @@ use Tests\DuskTestCase;
 
 use function assert;
 
-/**
- * @todo Fix need for manual reindexing. It's unclear why indexing doesn't
- *     happen by itself.
- */
 final class ContentTest extends DuskTestCase
 {
     public function testListsMyContent(): void
     {
         $user = User::factory()->create();
         $content = Content::factory()
-            ->withPublishedVersion()
             ->withUser($user)
+            ->withPublishedVersion()
             ->create();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($content, $user) {
             $browser
@@ -84,8 +77,6 @@ final class ContentTest extends DuskTestCase
     {
         $user = User::factory()->create();
         Content::factory()->withUser($user)->create();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(function (Browser $browser) use ($user) {
             $browser
@@ -267,8 +258,8 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
-            ->create()
-            ->fresh(); // FIXME: why won't this work without?
+            ->create();
+
         assert($content instanceof Content);
 
         $expectedTitle = $content->latestPublishedVersion?->title;
@@ -286,8 +277,8 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()
             ->withPublishedVersion()
             ->shared()
-            ->create()
-            ->fresh();
+            ->create();
+
         assert($content instanceof Content);
 
         $this->browse(
@@ -303,7 +294,7 @@ final class ContentTest extends DuskTestCase
                                 ->clickLink('Preview')
                         )
                 )
-                ->waitFor('#previewModal .modal-dialog')
+                ->waitForEvent('htmx:after-swap')
                 ->assertVisible('#previewModal .lti-launch')
         );
     }
@@ -418,8 +409,6 @@ final class ContentTest extends DuskTestCase
                 ->state(['title' => 'excluded content'])
                 ->published(),
         )->shared()->create();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(fn (Browser $browser) => $browser
             ->loginAs(User::factory()->create()->email)
@@ -576,12 +565,10 @@ final class ContentTest extends DuskTestCase
     {
         $user = User::factory()->create();
         $content = Content::factory()
-            ->withPublishedVersion()
             ->withUser($user)
+            ->withPublishedVersion()
             ->shared()
             ->create();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(
             fn (Browser $browser) => $browser
@@ -595,9 +582,28 @@ final class ContentTest extends DuskTestCase
                         ->click('@title')
                 )
                 ->click('#shared-toggle')
-                ->pause(1000) // FIXME: use an event to detect when the request finishes
+                ->waitForEvent('htmx:afterRequest')
                 ->visit('/content')
                 ->assertNotPresent('.content-card')
+        );
+    }
+
+    public function testCanToggleResultView(): void
+    {
+        Content::factory()
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertPresent('article.card.content-card')
+                ->press('button.btn-outline-secondary[title="Display results as list"]')
+                ->waitForLocation('/content')
+                ->assertPresent('article.card.content-list-item')
+                ->press('button.btn-outline-secondary[title="Display results as grid"]')
+                ->waitForLocation('/content')
+                ->assertPresent('article.card.content-card')
         );
     }
 

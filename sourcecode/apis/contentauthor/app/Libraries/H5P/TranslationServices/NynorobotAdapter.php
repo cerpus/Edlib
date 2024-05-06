@@ -17,6 +17,7 @@ final class NynorobotAdapter implements TranslationServiceInterface
     public const STYLE_MODERATE = 'Moderat nynorsk';
     public const STYLE_RADICAL = 'Radikal nynorsk';
     public const STYLE_CONSERVATIVE = 'Konservativ nynorsk';
+    public const STYLE_INTERNAL_4 = 'Intern nynorsk 4';
 
     /**
      * @param self::STYLE_* $style
