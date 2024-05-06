@@ -30,9 +30,15 @@ addEventListener('message', (event) => {
 
     console.debug('Received a resize request', event.data, iframe);
 
-    if (iframe) {
-        const border = iframe.getBoundingClientRect().height - iframe.scrollHeight;
+    if (!iframe) {
+        return;
+    }
 
-        iframe.height = String(event.data.scrollHeight + border);
+    const border = iframe.getBoundingClientRect().height - iframe.scrollHeight;
+    iframe.height = String(event.data.scrollHeight + border);
+
+    if (window.parent) {
+        // forward to parent iframe
+        parent.postMessage({ scrollHeight: event.data.scrollHeight }, '*');
     }
 });

@@ -83,7 +83,7 @@ class ContentVersion extends Model
         $url = $this->lti_launch_url;
         assert(is_string($url));
 
-        return $launch->toPresentationLaunch($tool, $url);
+        return $launch->toPresentationLaunch($this, $url);
     }
 
     public function getTitle(): string

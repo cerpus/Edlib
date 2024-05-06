@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Lti;
 
+use App\Events\LaunchContent;
 use App\Events\LaunchLti;
+use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Contracts\Events\Dispatcher;
+
+use function assert;
 
 class LtiLaunchBuilder
 {
@@ -57,11 +61,19 @@ class LtiLaunchBuilder
         return $self;
     }
 
-    public function toPresentationLaunch(LtiTool $tool, string $url): LtiLaunch
-    {
+    public function toPresentationLaunch(
+        ContentVersion $contentVersion,
+        string $url,
+    ): LtiLaunch {
+        $tool = $contentVersion->tool;
+        assert($tool !== null);
+
         $launch = $this->withClaim('lti_message_type', 'basic-lti-launch-request');
 
         $event = new LaunchLti($url, $launch, $tool);
+        $this->dispatcher->dispatch($event);
+
+        $event = new LaunchContent($url, $contentVersion, $event->getLaunch());
         $this->dispatcher->dispatch($event);
 
         $request = new Oauth1Request('POST', $url, $event->getLaunch()->claims);
