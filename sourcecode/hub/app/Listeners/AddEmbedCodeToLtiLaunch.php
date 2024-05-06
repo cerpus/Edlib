@@ -44,7 +44,8 @@ final readonly class AddEmbedCodeToLtiLaunch
     {
         $version = $event->getContentVersion();
 
-        return sprintf(<<<EOHTML
+        return sprintf(
+            <<<EOHTML
         <iframe src="%s" title="%s" width=":w" height=":h" frameborder="0" id="edlib-%s"></iframe>
         EOHTML,
             htmlspecialchars(
