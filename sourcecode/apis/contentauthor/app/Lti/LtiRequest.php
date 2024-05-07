@@ -169,4 +169,14 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 
         return in_array('Administrator', $roles);
     }
+
+    public function getEmbedCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_code');
+    }
+
+    public function getEmbedResizeCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_resize_code');
+    }
 }
