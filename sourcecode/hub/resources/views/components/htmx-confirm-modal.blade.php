@@ -4,7 +4,7 @@
     'ok' => 'OK',
     'cancel' => trans('messages.cancel'),
 ])
-<div id="{{$id}}" class="modal modal-blur fade" style="display: none" aria-hidden="true" tabindex="-1">
+<div id="{{$id}}" class="modal modal-blur fade" aria-hidden="true" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
