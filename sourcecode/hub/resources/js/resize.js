@@ -39,6 +39,9 @@ addEventListener('message', (event) => {
 
     if (window.parent) {
         // forward to parent iframe
-        parent.postMessage({ scrollHeight: event.data.scrollHeight }, '*');
+        parent.postMessage({
+            action: 'resize',
+            scrollHeight: event.data.scrollHeight,
+        }, '*');
     }
 });
