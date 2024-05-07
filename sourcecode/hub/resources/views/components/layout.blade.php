@@ -81,12 +81,11 @@
                     <div class="row">
                         <div class="col-12 col-md-4 col-lg-6">
                             <p>
-                                <img
-                                    src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/logo.png') }}"
-                                    height="47"
-                                    alt="Edlib"
-                                    class="d-block"
-                                >
+                                <span
+                                    aria-description="{{ config('app.name') }}"
+                                    class="edlib-logo edlib-logo-footer"
+                                    role="img"
+                                ></span>
                             </p>
 
                             <p>{!! trans('messages.about-edlib', [
