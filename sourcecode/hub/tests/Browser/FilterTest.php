@@ -43,6 +43,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
         Content::factory()
             ->withVersion(
@@ -52,6 +53,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Not in result',
                     ])
             )
+            ->shared()
             ->create();
 
         $this->browse(
@@ -81,6 +83,7 @@ final class FilterTest extends DuskTestCase
                     ->published()
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
+            ->shared()
             ->create();
 
         $content = Content::factory()
@@ -92,6 +95,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
 
         // We must re-sync to include the tags in Meilisearch data
@@ -151,6 +155,7 @@ final class FilterTest extends DuskTestCase
                     ->published()
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -162,6 +167,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
 
         // We must re-sync to include the tags in Meilisearch data
@@ -212,6 +218,7 @@ final class FilterTest extends DuskTestCase
                     ->published()
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -223,6 +230,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
 
         // We must re-sync to include the tags in Meilisearch data
@@ -258,6 +266,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -268,6 +277,7 @@ final class FilterTest extends DuskTestCase
                         'language_iso_639_3' => 'eng',
                     ])
             )
+            ->shared()
             ->create();
 
         $this->browse(
@@ -315,6 +325,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Find me',
                     ])
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -325,6 +336,7 @@ final class FilterTest extends DuskTestCase
                         'language_iso_639_3' => 'eng',
                     ])
             )
+            ->shared()
             ->create();
 
         $this->browse(
@@ -357,6 +369,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'First in created sorting',
                     ])
             )
+            ->shared()
             ->create([
                 'created_at' => Carbon::now()->subDay(), // Date for created sorting
             ]);
@@ -370,6 +383,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'First in edited/updated sorting',
                     ])
             )
+            ->shared()
             ->create([
                 'created_at' => Carbon::now()->subDays(2), // Date for created sorting
             ]);
@@ -425,6 +439,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Norsk bokmål innhold',
                     ])
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -437,6 +452,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'English content',
                     ])
             )
+            ->shared()
             ->create();
 
         // We must re-sync to include the tags in Meilisearch data
@@ -513,6 +529,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'Norsk bokmål innhold',
                     ])
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -525,6 +542,7 @@ final class FilterTest extends DuskTestCase
                         'title' => 'English content',
                     ])
             )
+            ->shared()
             ->create();
 
         // We must re-sync to include the tags in Meilisearch data
@@ -592,6 +610,7 @@ final class FilterTest extends DuskTestCase
                         'language_iso_639_3' => 'nob',
                     ])
             )
+            ->shared()
             ->create();
 
         Content::factory()
@@ -603,6 +622,7 @@ final class FilterTest extends DuskTestCase
                         'language_iso_639_3' => 'swe',
                     ])
             )
+            ->shared()
             ->create([
                 'deleted_at' => Carbon::now(),
             ]);
