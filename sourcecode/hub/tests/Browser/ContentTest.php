@@ -593,6 +593,7 @@ final class ContentTest extends DuskTestCase
     {
         Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->browse(
