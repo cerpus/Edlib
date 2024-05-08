@@ -107,6 +107,8 @@ class H5PController extends Controller
             ->setPreview($preview)
             ->setContext($context)
             ->setEmbedId($ltiRequest?->getExtEmbedId())
+            ->setEmbedCode($ltiRequest?->getEmbedCode() ?? '')
+            ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
             ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
             ->loadContent($id)
             ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));

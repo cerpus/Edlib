@@ -580,4 +580,52 @@ final class FilterTest extends DuskTestCase
                 )
         );
     }
+
+    public function testDoNotUseDeletedContentInFilterOptions(): void
+    {
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
+                    ->state([
+                        'language_iso_639_3' => 'nob',
+                    ])
+            )
+            ->create();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag(Tag::factory()->asH5PContentType('deletedcontent'))
+                    ->state([
+                        'language_iso_639_3' => 'swe',
+                    ])
+            )
+            ->create([
+                'deleted_at' => Carbon::now(),
+            ]);
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertNotHasOption('h5p:h5p.deletedcontent')
+                                ->assertHasOption('h5p:h5p.magiccontent')
+                        )
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertNotHasOption('swe')
+                                ->assertHasOption('nob')
+                        )
+                )
+        );
+    }
 }

@@ -83,7 +83,7 @@ class ContentVersion extends Model
         $url = $this->lti_launch_url;
         assert(is_string($url));
 
-        return $launch->toPresentationLaunch($tool, $url);
+        return $launch->toPresentationLaunch($this, $url);
     }
 
     public function getTitle(): string
@@ -191,27 +191,24 @@ class ContentVersion extends Model
      *
      * @return Collection<int, string>
      */
-    public static function getUsedLocales(): Collection
+    public static function getUsedLocales(User $user = null): Collection
     {
         return DB::table('content_versions')
             ->select('language_iso_639_3')
             ->distinct()
-            ->where('published', true)
-            ->pluck('language_iso_639_3');
-    }
-
-    /**
-     * The locales (ISO 639-3) used by contents
-     *
-     * @return Collection<int, string>
-     */
-    public static function getUsedLocalesForUser(User $user): Collection
-    {
-        return DB::table('content_versions')
-            ->select('language_iso_639_3')
-            ->distinct()
-            ->leftJoin('content_user', 'content_versions.content_id', '=', 'content_user.content_id')
-            ->where('content_user.user_id', '=', $user->id)
+            ->join('contents', 'contents.id', '=', 'content_versions.content_id')
+            ->when(
+                $user instanceof User,
+                function ($query) use ($user) {
+                    /** @var User $user */
+                    $query->join('content_user', 'content_user.content_id', '=', 'contents.id')
+                        ->where('content_user.user_id', '=', $user->id);
+                },
+                function ($query) {
+                    $query->where('published', true);
+                }
+            )
+            ->whereNull('contents.deleted_at')
             ->pluck('language_iso_639_3');
     }
 
@@ -222,12 +219,7 @@ class ContentVersion extends Model
      */
     public static function getTranslatedUsedLocales(User $user = null): array
     {
-        if ($user instanceof User) {
-            $locales = self::getUsedLocalesForUser($user);
-        } else {
-            $locales = self::getUsedLocales();
-        }
-
+        $locales = self::getUsedLocales($user);
         $displayLocale = app()->getLocale();
         $fallBack = app()->getFallbackLocale();
 
