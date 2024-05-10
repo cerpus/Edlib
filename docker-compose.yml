@@ -3,8 +3,6 @@
 # See https://docs.edlib.com/docs/developers/getting-started/
 #
 
-version: "3.7"
-
 volumes:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
