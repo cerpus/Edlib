@@ -147,11 +147,11 @@ Route::prefix('/lti/dl')->middleware([
         ->can('create', \App\Models\Content::class)
         ->whereUlid('tool');
 
-    Route::post('/tool/{tool}/content/{content}/update')
+    Route::post('/tool/{tool}/content/{content}/version/{version}/update')
         ->uses([ContentController::class, 'ltiUpdate'])
         ->name('content.lti-update')
-        ->can('edit', 'content')
-        ->whereUlid(['tool', 'content']);
+        ->can('edit', ['content', 'version'])
+        ->whereUlid(['tool', 'content', 'version']);
 });
 
 Route::prefix('/lti')->middleware([

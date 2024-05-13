@@ -167,7 +167,7 @@ class ContentController extends Controller
         $launch = $builder->toItemSelectionLaunch(
             $tool,
             $launchUrl,
-            route('content.lti-update', [$tool, $content]),
+            route('content.lti-update', [$tool, $content, $version]),
         );
 
         return view('content.edit', [
@@ -278,14 +278,18 @@ class ContentController extends Controller
     public function ltiUpdate(
         LtiTool $tool,
         Content $content,
+        ContentVersion $version,
         DeepLinkingReturnRequest $request,
         ContentItemsMapperInterface $mapper,
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
         assert($item instanceof LtiLinkItem);
 
-        $version = DB::transaction(function () use ($content, $item, $tool) {
+        $version = DB::transaction(function () use ($content, $version, $item, $tool) {
+            $previousVersion = $version;
+
             $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            $version->previousVersion()->associate($previousVersion);
             $version->save();
 
             return $version;

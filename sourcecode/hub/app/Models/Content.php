@@ -126,15 +126,15 @@ class Content extends Model
 
     public function createCopyBelongingTo(User $user, ContentVersion|null $version = null): self
     {
-        $version ??= $this->latestVersion()->firstOrFail();
+        $previousVersion = $version ?? $this->latestVersion()->firstOrFail();
 
-        return DB::transaction(function () use ($user, $version) {
+        return DB::transaction(function () use ($user, $previousVersion) {
             $copy = new Content();
             $copy->save();
 
-            $version = $version->replicate();
+            $version = $previousVersion->replicate();
             assert($version instanceof ContentVersion);
-            $version->previousVersion()->associate($version);
+            $version->previousVersion()->associate($previousVersion);
             $version->published = false;
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
