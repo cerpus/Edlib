@@ -117,6 +117,14 @@ class ContentVersion extends Model
     }
 
     /**
+     * @return BelongsTo<self, self>
+     */
+    public function previousVersion(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'previous_version_id');
+    }
+
+    /**
      * @return BelongsTo<LtiTool, self>
      */
     public function tool(): BelongsTo

@@ -51,17 +51,17 @@
                 <caption class="pt-0">{{ trans('messages.details') }}</caption>
                 <tbody>
                     <tr>
-                        <td>{{ trans('messages.views') }}</td>
+                        <th scope="row">{{ trans('messages.views') }}</th>
                         <td>{{$content->views->count()}}</td>
                     </tr>
                     <tr>
-                        <td>{{ trans('messages.created-with') }}</td>
+                        <th scope="row">{{ trans('messages.created-with') }}</th>
                         <td>
                             {{ $version->tool->name }}
                         </td>
                     </tr>
                     <tr>
-                        <td>{{ trans('messages.content-type') }}</td>
+                        <th scope="row">{{ trans('messages.content-type') }}</th>
                         <td>
                             {{ $version->getDisplayedContentType() }}
                         </td>
@@ -72,7 +72,7 @@
                 <caption>{{ trans('messages.this-version') }}</caption>
                 <tbody>
                     <tr>
-                        <td>{{ trans('messages.edited') }}</td>
+                        <th scope="row">{{ trans('messages.edited') }}</th>
                         <td>
                             <time
                                 datetime="{{$version->created_at->toIso8601String()}}"
@@ -81,21 +81,21 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>{{ trans('messages.edited-by') }}</td>
+                        <th scope="row">{{ trans('messages.edited-by') }}</th>
                         <td>
                             {{$version->editedBy?->name}}
                         </td>
                     </tr>
                     <tr>
-                        <td>{{trans('messages.license')}}</td>
+                        <th scope="row">{{trans('messages.license')}}</th>
                         <td>{{$version->license}}</td>
                     </tr>
                     <tr>
-                        <td>{{trans('messages.language')}}</td>
+                        <th scope="row">{{trans('messages.language')}}</th>
                         <td>{{$version->getTranslatedLanguage()}}</td>
                     </tr>
                     <tr>
-                        <td>{{ trans('messages.status') }}</td>
+                        <th scope="row">{{ trans('messages.status') }}</th>
                         <td>
                             @if ($version->published)
                                 {{ trans('messages.published') }}

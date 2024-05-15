@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -46,6 +47,7 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->assertSame(0, $content->views()->count());
@@ -165,7 +167,8 @@ final class ContentTest extends DuskTestCase
     public function testLaunchesEdlibFromWithinEdlibAndSelectsContent(): void
     {
         $content = Content::factory()
-            ->has(ContentVersion::factory()->published(), 'versions')
+            ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->assertDatabaseCount(Content::class, 1);
@@ -274,6 +277,7 @@ final class ContentTest extends DuskTestCase
     {
         $content = Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         assert($content instanceof Content);
@@ -305,7 +309,10 @@ final class ContentTest extends DuskTestCase
             ->create();
         $user = User::factory()->create();
 
-        $content = Content::factory()->withPublishedVersion()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
 
         $this->browse(
             fn (Browser $browser) => $browser
@@ -328,7 +335,7 @@ final class ContentTest extends DuskTestCase
 
     public function testPreviewModalHasNoUseButtonOutsideOfLtiContext(): void
     {
-        Content::factory()->withPublishedVersion()->create();
+        Content::factory()->withPublishedVersion()->shared()->create();
         $user = User::factory()->create();
 
         $this->browse(
@@ -396,13 +403,13 @@ final class ContentTest extends DuskTestCase
             ContentVersion::factory()
                 ->state(['title' => 'found content'])
                 ->published(),
-        )->create();
+        )->shared()->create();
 
         Content::factory()->withVersion(
             ContentVersion::factory()
                 ->state(['title' => 'excluded content'])
                 ->published(),
-        )->create();
+        )->shared()->create();
 
         $this->browse(fn (Browser $browser) => $browser
             ->loginAs(User::factory()->create()->email)
@@ -561,6 +568,7 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()
             ->withUser($user)
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->browse(
@@ -585,6 +593,7 @@ final class ContentTest extends DuskTestCase
     {
         Content::factory()
             ->withPublishedVersion()
+            ->shared()
             ->create();
 
         $this->browse(
@@ -597,6 +606,68 @@ final class ContentTest extends DuskTestCase
                 ->press('button.btn-outline-secondary[title="Display results as grid"]')
                 ->waitForLocation('/content')
                 ->assertPresent('article.card.content-card')
+        );
+    }
+
+    public function testCanCopySharedContent(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->press('Copy')
+                        )
+                )
+                ->assertTitleContains($content->getTitle() . ' (copy)')
+                ->assertSee('You are viewing an unpublished draft version')
+        );
+    }
+
+    public function testCanCopyOwnContent(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withUser($user)
+            ->withPublishedVersion()
+            ->shared(false)
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/mine')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle())
+                        ->click('@action-menu-toggle')
+                        ->with(
+                            '@action-menu',
+                            fn (Browser $menu) => $menu
+                                ->press('Copy')
+                        )
+                )
+                ->assertTitleContains($content->getTitle() . ' (copy)')
+                ->assertSee('You are viewing an unpublished draft version')
         );
     }
 }

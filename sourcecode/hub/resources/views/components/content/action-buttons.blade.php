@@ -7,6 +7,7 @@
     $canEdit = Gate::allows('edit', $content);
     $canView = Gate::allows('view', $content);
     $canDelete = $mine && Gate::allows('delete', $content);
+    $canCopy = Gate::allows('copy', $content);
 @endphp
 @if($canUse)
     <x-form action="{{ route('content.use', [$content]) }}" method="POST">
@@ -23,7 +24,7 @@
         {{ trans('messages.edit-content') }}
     </a>
 @endif
-@if($canView || $canEdit || $canDelete)
+@if($canView || $canEdit || $canCopy || $canDelete)
     <div class="dropup">
         <button
             type="button"
@@ -69,6 +70,16 @@
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
                     </a>
+                </li>
+            @endif
+            @if($canCopy)
+                <li>
+                    <x-form action="{{ route('content.copy', [$content, $version]) }}">
+                        <button class="dropdown-item">
+                            <x-icon name="copy" class="me-2" />
+                            {{ trans('messages.copy') }}
+                        </button>
+                    </x-form>
                 </li>
             @endif
             @if($canDelete)

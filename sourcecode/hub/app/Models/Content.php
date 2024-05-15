@@ -17,7 +17,6 @@ use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -125,17 +124,21 @@ class Content extends Model
         ;
     }
 
-    public function createCopyBelongingTo(User $user): self
+    public function createCopyBelongingTo(User $user, ContentVersion|null $version = null): self
     {
-        return DB::transaction(function () use ($user) {
-            $version = $this->latestPublishedVersion
-                ?? throw new Exception('No published version');
+        $previousVersion = $version ?? $this->latestVersion()->firstOrFail();
 
-            // TODO: title for resource copies
-            // TODO: somehow denote content is copied
+        return DB::transaction(function () use ($user, $previousVersion) {
             $copy = new Content();
             $copy->save();
-            $copy->versions()->save($version->replicate());
+
+            $version = $previousVersion->replicate();
+            assert($version instanceof ContentVersion);
+            $version->previousVersion()->associate($previousVersion);
+            $version->published = false;
+            $version->title .= ' ' . trans('messages.content-copy-suffix');
+            $copy->versions()->save($version);
+
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
 
             return $copy;
