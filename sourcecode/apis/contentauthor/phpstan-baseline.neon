@@ -922,11 +922,6 @@ parameters:
 			path: app/User.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of function md5 expects string, int\\<1, max\\> given\\.$#"
-			count: 1
-			path: database/migrations/2014_10_12_104748_create_administrators_table.php
-
-		-
 			message: "#^Method Illuminate\\\\Database\\\\Schema\\\\Blueprint\\:\\:text\\(\\) invoked with 2 parameters, 1 required\\.$#"
 			count: 2
 			path: database/migrations/2015_09_25_092958_create_h5p_contents_table.php
