@@ -172,7 +172,7 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-contentauthor
           tags: |
-            type=raw,value=php,enable=${{ github.ref == 'refs/heads/hubbub' }},prefix=php-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/hubbub' }},prefix=php-
             type=semver,pattern={{version}},prefix=php-
             type=semver,pattern={{major}}.{{minor}},prefix=php-
             type=semver,pattern={{major}},prefix=php-
