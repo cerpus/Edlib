@@ -379,6 +379,10 @@ services:
     depends_on:
       certs:
         condition: service_completed_successfully
+      chromedriver:
+        condition: service_started
+      meilisearch:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     healthcheck:
