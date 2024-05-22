@@ -19,8 +19,6 @@ mix
     .sass('resources/assets/entrypoints/content_explorer_bootstrap.scss', 'css/content_explorer_bootstrap.css')
     .sass('resources/assets/entrypoints/error-page.scss', 'css/error-page.css')
     .sass('resources/assets/entrypoints/font-awesome.scss', 'css/font-awesome.css')
-    .sass('resources/assets/entrypoints/front.scss', 'css/front.css')
-    .sass('resources/assets/entrypoints/game.scss', 'css/game.css')
     .sass('resources/assets/entrypoints/h5p-admin.scss', 'css/h5p-admin.css')
     .sass('resources/assets/entrypoints/h5p-core.scss', 'css/h5p-core.css')
     .js('resources/assets/entrypoints/h5p-core-bundle.js', 'js/h5p-core-bundle.js')
