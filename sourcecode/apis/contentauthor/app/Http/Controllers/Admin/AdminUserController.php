@@ -18,7 +18,7 @@ class AdminUserController extends Controller
      */
     public function index()
     {
-        $adminUsers = Administrator::select('id', 'username', 'name')->where('id', '<>', 1)->get();
+        $adminUsers = Administrator::select('id', 'username', 'name')->get();
 
         return view('admin.admin-users.index')->with(compact('adminUsers'));
     }
