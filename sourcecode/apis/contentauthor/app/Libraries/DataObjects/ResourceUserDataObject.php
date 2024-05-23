@@ -12,7 +12,7 @@ class ResourceUserDataObject
     use CreateTrait;
 
     public const NAME_FORMAT = '%s %s';
-    public const NAME_AND_EMAIL_FORMAT = self::NAME_FORMAT . '(%s)';
+    public const NAME_AND_EMAIL_FORMAT = self::NAME_FORMAT . ' (%s)';
 
     public $firstname;
     public $lastname;

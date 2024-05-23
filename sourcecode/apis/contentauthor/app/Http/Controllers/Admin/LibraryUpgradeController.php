@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidH5pPackageException;
+use App\H5PContentLibrary;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\H5POption;
@@ -61,6 +62,7 @@ class LibraryUpgradeController extends Controller
             reset($versions);
             foreach ($versions as $library) {
                 $usage = $this->h5pFramework->getLibraryUsage($library->id);
+                $hasContentUsage = H5PContentLibrary::where('library_id', $library->id)->exists();
                 $item = [
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
@@ -71,6 +73,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
+                    'canDelete' => $usage['content'] === 0 && $usage['libraries'] === 0 && !$hasContentUsage,
                 ];
 
                 if ($library->runnable) {
@@ -163,8 +166,13 @@ class LibraryUpgradeController extends Controller
 
     public function deleteLibrary(H5PLibrary $library): Response
     {
-        if ($library->contents()->exists()) {
-            throw new BadRequestHttpException('Cannot delete libraries with existing content');
+        $usage = $this->h5pFramework->getLibraryUsage($library->id);
+        $hasContentUsage = H5PContentLibrary::where('library_id', $library->id)->exists();
+
+        if ($usage['libraries'] > 0 || $usage['content'] > 0 || $hasContentUsage === true ) {
+            throw new BadRequestHttpException(
+                'Cannot delete libraries used by content or other libraries'
+            );
         }
 
         $this->core->deleteLibrary((object) [

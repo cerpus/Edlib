@@ -41,6 +41,7 @@ mix
     .js('resources/assets/entrypoints/react-contentbrowser.js', 'js/react-contentbrowser.js')
     .js('resources/assets/entrypoints/react-h5p.js', 'js/react-h5p.js')
     .js('resources/assets/entrypoints/react-questionset.js', 'js/react-questionset.js')
+    .sass('resources/assets/entrypoints/admin-preview.scss', 'css/admin-preview.css')
     .webpackConfig({
         resolve: {
             fallback: {

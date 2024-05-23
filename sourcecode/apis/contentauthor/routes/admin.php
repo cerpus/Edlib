@@ -52,9 +52,15 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.content-library');
         Route::get('content/{content}/details', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
+        Route::post('content/{h5pContent}/preview', [AdminH5PDetailsController::class, 'contentPreview'])
+            ->name('admin.content-preview');
+        Route::post('content/{h5pContent}/export', [AdminH5PDetailsController::class, 'contentExport'])
+            ->name('admin.content-export');
         Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
             ->name('admin.library-translation');
         Route::post('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslationUpdate']);
+        Route::get('/h5p-content-info', [AdminH5PDetailsController::class, 'h5pContentInfo'])
+            ->name('admin.h5p-content-info');
 
         Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');
 

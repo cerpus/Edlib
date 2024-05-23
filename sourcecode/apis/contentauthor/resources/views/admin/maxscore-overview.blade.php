@@ -24,7 +24,7 @@
                             <li class="list-group-item" id="library_{{$library->id}}">
                                 <label>
                                     <input value="{{$library->id}}" type="checkbox" name="calculateLibrary" class="maxScoreCheckbox" aria-checked="true" checked>
-                                    <span>{{sprintf('%s %d.%d (%s)', $library->name, $library->major_version, $library->minor_version, $library->title)}}</span>
+                                    <span>{{sprintf('%s (%s)', $library->getLibraryString(true), $library->title)}}</span>
                                 </label>
                                 <span class="badge">{{$library->contents_count}}</span>
                                 <div class="progress hidden" data-inprogress="0" data-success="0" data-failed="0">

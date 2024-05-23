@@ -2,25 +2,39 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Apis\LtiApiService;
+use App\Apis\ResourceApiService;
 use App\ContentLock;
 use App\ContentVersion;
 use App\H5PContent;
+use App\H5PContentLibrary;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
+use App\Libraries\H5P\h5p;
+use App\Libraries\H5P\H5PExport;
+use App\Libraries\H5P\H5PViewConfig;
+use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use Exception;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use JsonException;
+use MatthiasMullie\Minify\CSS;
+use Ramsey\Uuid\Uuid;
 
 class AdminH5PDetailsController extends Controller
 {
@@ -105,6 +119,7 @@ class AdminH5PDetailsController extends Controller
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),
             'languages' => H5PLibraryLanguage::select('language_code')->where('library_id', $library->id)->pluck('language_code'),
+            'subContentCount' => H5PContentLibrary::where('library_id', $library->id)->count(),
         ]);
     }
 
@@ -156,8 +171,7 @@ class AdminH5PDetailsController extends Controller
 
     public function contentHistory(H5PContent $content): View
     {
-        /** @var \App\Apis\ResourceApiService $resourceService */
-        $resourceService = app('\App\Apis\ResourceApiService');
+        $resourceService = app(ResourceApiService::class);
         $versions = collect();
         $history = [];
 
@@ -215,7 +229,7 @@ class AdminH5PDetailsController extends Controller
         } else {
             try {
                 json_decode($translation, flags: JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
+            } catch (JsonException $e) {
                 $messages->add($e->getMessage());
             }
 
@@ -253,7 +267,6 @@ class AdminH5PDetailsController extends Controller
         $versionArray['versionDate'] = $versionData->created_at;
         $content = $versionData->getContent();
         if (!empty($content)) {
-            $library = $content->library;
             $versionArray['content'] = [
                 'title' => $content->title,
                 'created' => $content->created_at->format('Y-m-d H:i:s e'),
@@ -261,9 +274,14 @@ class AdminH5PDetailsController extends Controller
                 'version_id' => $content->version_id,
                 'license' => $content->license,
                 'language' => $content->language_iso_639_3,
-                'library_id' => $library->id,
-                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
+                'library_id' => '',
+                'library' => '',
             ];
+            $library = $content->library;
+            if ($library !== null) {
+                $versionArray['content']['library_id'] = $library->id;
+                $versionArray['content']['library'] = $library->getLibraryString(true);
+            }
         }
         $parent = $versionData->previousVersion;
         if (!empty($parent)) {
@@ -285,5 +303,133 @@ class AdminH5PDetailsController extends Controller
         }
 
         return $stack;
+    }
+
+    public function h5pContentInfo(Request $request): View|RedirectResponse
+    {
+        $valueType = $request->get('valueType');
+        $value = $request->get('value');
+        $content = null;
+        $error = null;
+
+        try {
+            switch ($valueType) {
+                case 'content':
+                    if (ctype_digit($value)) {
+                        $content = H5PContent::findOrFail($value);
+                    } else {
+                        $error = "Value is not an integer";
+                    }
+                    break;
+                case 'resource':
+                    if (Uuid::isValid($value)) {
+                        $resourceService = app(ResourceApiService::class);
+                        $data = $resourceService->getResourceById($value);
+                        if (str_starts_with($data['contentType'], 'h5p.')) {
+                            $content = H5PContent::find($data['externalSystemId']);
+                        } else {
+                            $error = "Found resource of type '" . $data['contentType'] . "', only H5P types are valid";
+                        }
+                    } else {
+                        $error = "Value is not a valid uuid";
+                    }
+                    break;
+                case 'version':
+                    if (Uuid::isValid($value)) {
+                        $version = ContentVersion::findorFail($value);
+                        $content = $version->getContent();
+                    } else {
+                        $error = "Value is not a valid uuid";
+                    }
+                    break;
+                case 'usage':
+                    if (Uuid::isValid($value)) {
+                        $service = app(LtiApiService::class);
+                        $data = $service->getResourceFromUsageId($value);
+                        $resourceService = app(ResourceApiService::class);
+                        $data = $resourceService->getResourceByIdAndVersion($data['resourceId'], $data['resourceVersionId']);
+                        if (str_starts_with($data['contentType'], 'h5p.')) {
+                            $content = H5PContent::find($data['externalSystemId']);
+                        } else {
+                            $error = "Found resource of type '" . $data['contentType'] . "', only H5P types are valid";
+                        }
+                    } else {
+                        $error = "Value is not a valid uuid";
+                    }
+                    break;
+                case null:
+                    $error = 'Select type of id and paste/enter the value';
+                    break;
+                default:
+                    $error = "Unknown content type";
+            }
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        if ($content !== null) {
+            return redirect()->route('admin.content-details', [$content]);
+        }
+
+        return view('admin/content-details', [
+            'error' => $error,
+            'valueType' => $valueType,
+            'value' => $value,
+        ]);
+    }
+
+    public function contentPreview(H5PContent $h5pContent): View
+    {
+        try {
+            $resourceService = app(ResourceApiService::class);
+            $resource = $resourceService->getResourceFromExternalReference('contentauthor', $h5pContent->id);
+        } catch (Exception) {
+            $resource = null;
+        }
+
+        $viewConfig = (app(H5PViewConfig::class))
+            ->setUserId(Session::get('authId', false))
+            ->setUserUsername(Session::get('userName', false))
+            ->setUserEmail(Session::get('email', false))
+            ->setUserName(Session::get('name', false))
+            ->setPreview(true)
+            ->setEmbedId($resource?->id)
+            ->loadContent($h5pContent->id)
+            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
+
+        $h5p = app(h5p::class);
+        $h5pView = $h5p->createView($viewConfig);
+        $content = $viewConfig->getContent();
+        $settings = $h5pView->getSettings();
+        $styles = array_merge($h5pView->getStyles(), [
+            mix('css/admin-preview.css')
+        ]);
+
+        return view('admin.h5p-preview', [
+            'id' => $h5pContent->id,
+            'title' => $content['title'],
+            'language' => $content['language'],
+            'embed' => '<div class="h5p-content" data-content-id="' . $content['id'] . '"></div>',
+            'config' => $settings,
+            'jsScripts' => $h5pView->getScripts(),
+            'styles' => $styles,
+            'inlineStyle' => (new CSS())->add($viewConfig->getCss(true))->minify(),
+            'inDraftState' => !$h5pContent->isActuallyPublished(),
+            'preview' => true,
+            'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
+        ]);
+    }
+
+    public function contentExport(H5PContent $h5pContent): RedirectResponse|Response
+    {
+        $export = app(H5PExport::class);
+        $storage = app(H5PCerpusStorage::class);
+        $fileName = sprintf("%s-%d.h5p", $h5pContent->slug, $h5pContent->id);
+
+        if ($storage->hasExport($fileName) || $export->generateExport($h5pContent)) {
+            return $storage->downloadContent($fileName, $h5pContent->title);
+        }
+
+        return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 }

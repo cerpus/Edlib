@@ -3,6 +3,7 @@
 namespace Tests\Integration\Http\Controllers\Admin;
 
 use App\ApiModels\Resource;
+use App\Apis\ResourceApiService;
 use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
@@ -249,11 +250,11 @@ class AdminH5PDetailsControllerTest extends TestCase
             'library_id' => $library->id,
         ]);
 
-        $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
+        $resourceAPI = $this->createMock(ResourceApiService::class);
         $resourceAPI->expects($this->once())
             ->method('getResourceFromExternalReference')
             ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
-        $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
+        $this->instance(ResourceApiService::class, $resourceAPI);
 
         $parentVersion = ContentVersion::factory()->create([
             'id' => $parent->version_id,
@@ -313,11 +314,11 @@ class AdminH5PDetailsControllerTest extends TestCase
             'library_id' => $library->id,
         ]);
 
-        $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
+        $resourceAPI = $this->createMock(ResourceApiService::class);
         $resourceAPI->expects($this->once())
             ->method('getResourceFromExternalReference')
             ->willThrowException(new \ErrorException('Just testing'));
-        $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
+        $this->instance(ResourceApiService::class, $resourceAPI);
 
         $response = $this->withSession(['user' => $user])
             ->get(route('admin.content-details', $content))

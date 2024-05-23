@@ -74,7 +74,7 @@
                         <span class="fa fa-history"></span>
                     </button>
                 @endif
-                @if(empty($library['numLibraryDependencies']) && !empty($library['libraryId']))
+                @if(array_key_exists('canDelete', $library) && $library['canDelete'] === true)
                     <button
                             type="button"
                             class="btn btn-danger btn-xs h5p-action-button delete-btn"
