@@ -169,7 +169,7 @@ class LibraryUpgradeController extends Controller
         $usage = $this->h5pFramework->getLibraryUsage($library->id);
         $hasContentUsage = H5PContentLibrary::where('library_id', $library->id)->exists();
 
-        if ($usage['libraries'] > 0 || $usage['content'] > 0 || $hasContentUsage === true ) {
+        if ($usage['libraries'] > 0 || $usage['content'] > 0 || $hasContentUsage === true) {
             throw new BadRequestHttpException(
                 'Cannot delete libraries used by content or other libraries'
             );
