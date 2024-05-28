@@ -11,7 +11,7 @@ const pathTypes = {
 const getItemFilterType = (semantic) => {
     const isHeader = semantic.name.toLowerCase().includes('header');
     const isTitle = semantic.name.toLowerCase().includes('title');
-    const isAlt = ['imageAltText', 'alt'].indexOf(semantic.name) !== -1;
+    const isAlt = ['imageAltText', 'alt', 'imageAlt', 'matchAlt'].indexOf(semantic.name) !== -1;
     const isHover = semantic.label && semantic.label.toLowerCase().includes('hover');
 
     return {
@@ -28,9 +28,13 @@ const getPathsFromSementics = (
     fieldTypes,
     results = [],
     path = [],
-    isParentList = false
+    isParentList = false,
+    addToPath = true
 ) => {
-    const currentPath = [...path, isParentList ? arrayKey : sementic.name];
+    const currentPath = [...path];
+    if (addToPath) {
+        currentPath.push(isParentList ? arrayKey : sementic.name);
+    }
 
     if (fieldNamesToIgnore.indexOf(sementic.name) !== -1) {
         return results;
@@ -65,8 +69,10 @@ const getPathsFromSementics = (
 
     if (sementic.type === 'group') {
         if (Object.keys(sementic.fields).length === 1) {
-            currentPath.pop();
-            return getPathsFromSementics(sementic.fields[0], fieldTypes, results, currentPath);
+            if (isParentList) {
+                currentPath.pop();
+            }
+            return getPathsFromSementics(sementic.fields[0], fieldTypes, results, currentPath, isParentList, isParentList);
         }
 
         return sementic.fields.reduce(
@@ -192,7 +198,7 @@ const getTranslationJobs = async (parameters, libraryName, loadedLibraries) => {
         .map(sementic => getPathsFromSementics(sementic, [
             {
                 type: 'text',
-                widgets: ['textarea', 'html', undefined, 'showWhen', 'NDLAShowWhen'],
+                widgets: ['textarea', 'html', undefined, 'showWhen', 'NDLAShowWhen', 'csv-to-text'],
             },
             {
                 type: h5pFieldTypes.LIBRARY,
