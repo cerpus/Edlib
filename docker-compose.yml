@@ -256,7 +256,6 @@ services:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   resourceapi-subscribers:
     build:
@@ -273,7 +272,6 @@ services:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   ltiapi:
     build:
@@ -298,7 +296,6 @@ services:
       - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   ltiapi-subscribers:
     build:
@@ -334,7 +331,6 @@ services:
       - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       certs:
         condition: service_completed_successfully
@@ -457,7 +453,6 @@ services:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-lti:
     build:
@@ -479,7 +474,6 @@ services:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-resource:
     build:
@@ -503,7 +497,6 @@ services:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   npm-components-storybook:
     build:
