@@ -10,7 +10,6 @@ volumes:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
   elasticsearch:
-  maven_cache:
   moodle_data:
   mysql:
   npm_cache:
@@ -127,32 +126,6 @@ services:
         aliases:
           - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
-
-  versionapi:
-    image: maven:3-openjdk-11
-    command:
-      [
-        sh,
-        -c,
-        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xss32m -agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
-      ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - maven_cache:/root/.m2
-      - ./sourcecode/apis/version/:/app
-    environment:
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres/versionapi"
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: thepgpassword
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost/health]
-    #ports:
-    #  - "5504:5504"  # debug port
-    working_dir: /app
 
   contentauthor:
     image: nginx:1-alpine

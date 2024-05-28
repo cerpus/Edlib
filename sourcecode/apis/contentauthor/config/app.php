@@ -142,8 +142,6 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
 
-        Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
-
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
