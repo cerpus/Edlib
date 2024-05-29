@@ -57,6 +57,18 @@ require an authenticated LTI launch.
 
   <https://hub.edlib.test/lti/samples/resize>
 
+## Resize requests
+
+When iframed, Edlib can emit messages (via [postMessage][1]) requesting the
+iframe be resized to fit the content. The format of these messages is:
+
+```json
+{
+    "action": "resize",
+    "scrollHeight": 480
+}
+```
+
 ## Useful resources
 
 * [Laravel 10 documentation](https://laravel.com/docs/10.x)
@@ -66,3 +78,6 @@ require an authenticated LTI launch.
 * [LTI 1.3 implementation guide](https://www.imsglobal.org/spec/lti/v1p3/impl/)
 * [LTI Content-Item specification](https://www.imsglobal.org/specs/lticiv1p0/specification)
 * [LTI Deep Linking specification](http://www.imsglobal.org/spec/lti-dl/v2p0)
+
+
+[1]: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage

@@ -33,7 +33,6 @@ class LinkInfoController extends Controller
                         ];
                     }),
                     'scoreable' => false,
-                    'inDraftState' => !$link->isPublished(),
                     'title' => $link->title,
                 ];
             })->toArray();

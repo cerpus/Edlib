@@ -55,8 +55,25 @@ class ContentPolicy
         return $content->hasUser($user);
     }
 
-    public function copy(User $user, Content $content): bool
-    {
+    public function copy(
+        User $user,
+        Content $content,
+        ContentVersion|null $version = null,
+    ): bool {
+        if ($content->hasUser($user)) {
+            return true;
+        }
+
+        if (!$content->shared) {
+            return false;
+        }
+
+        $version ??= $content->latestPublishedVersion;
+
+        if ($version === null) {
+            return false;
+        }
+
         return true;
     }
 

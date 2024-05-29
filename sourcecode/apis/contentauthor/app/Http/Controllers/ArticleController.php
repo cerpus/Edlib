@@ -152,26 +152,20 @@ class ArticleController extends Controller
      * @param int $id
      * @return View
      */
-    public function doShow($id, $context, $preview = false)
+    public function doShow($id, $context)
     {
         /** @var Article $article */
         $article = Article::findOrFail($id);
         $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
-        if (!$article->canShow($preview)) {
-            return view('layouts.draft-resource', [
-                'styles' => !is_null($customCSS) ? [$customCSS] : [],
-            ]);
-        }
 
         if (!is_null($customCSS)) {
             Session::flash(SessionKeys::EXT_CSS_URL, $customCSS);
         }
 
         $ndlaArticle = $article->isImported();
-        $inDraftState = !$article->isActuallyPublished();
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
-        return view('article.show')->with(compact('article', 'customCSS', 'preview', 'ndlaArticle', 'inDraftState', 'resourceType'));
+        return view('article.show')->with(compact('article', 'customCSS', 'ndlaArticle', 'resourceType'));
     }
 
     public function show($id)

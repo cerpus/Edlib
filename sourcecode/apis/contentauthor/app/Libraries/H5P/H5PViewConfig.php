@@ -29,6 +29,8 @@ class H5PViewConfig extends H5PConfigAbstract
     private ?H5PAlterParametersSettingsDataObject $alterParametersSettings = null;
     private ?string $filterParams = null;
     private ?string $embedId = null;
+    private string $embedCode = '';
+    private string $embedResizeCode = '';
     private ?string $resourceLinkTitle = null;
 
     public function __construct(H5PAdapterInterface $adapter, H5PCore $h5pCore)
@@ -84,7 +86,12 @@ class H5PViewConfig extends H5PConfigAbstract
         $this->contentConfig['metadata'] = $this->content['metadata'];
 
         $embedPathTemplate = config('edlib.embedPath');
-        if ($embedPathTemplate && $this->embedId !== null) {
+        if ($this->embedCode) {
+            $this->contentConfig['embedCode'] = $this->embedCode;
+            if ($this->embedResizeCode) {
+                $this->contentConfig['resizeCode'] = $this->embedResizeCode;
+            }
+        } elseif ($embedPathTemplate && $this->embedId !== null) {
             $this->config['documentUrl'] = str_replace('<resourceId>', $this->embedId, $embedPathTemplate);
             $this->contentConfig['embedCode'] = sprintf(
                 self::EMBED_TEMPLATE,
@@ -112,6 +119,18 @@ class H5PViewConfig extends H5PConfigAbstract
     public function setEmbedId(string|null $embedId): static
     {
         $this->embedId = $embedId;
+        return $this;
+    }
+
+    public function setEmbedCode(string $embedCode): static
+    {
+        $this->embedCode = $embedCode;
+        return $this;
+    }
+
+    public function setEmbedResizeCode(string $embedResizeCode): static
+    {
+        $this->embedResizeCode = $embedResizeCode;
         return $this;
     }
 

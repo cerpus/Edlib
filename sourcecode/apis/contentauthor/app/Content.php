@@ -430,11 +430,6 @@ abstract class Content extends Model
         return $this->canList($request) || $this->isCopyable();
     }
 
-    public function canShow(bool $preview = false): bool
-    {
-        return $preview || $this->isActuallyPublished();
-    }
-
     /**
      * Poor mans morphism...
      */

@@ -3,15 +3,12 @@
 # See https://docs.edlib.com/docs/developers/getting-started/
 #
 
-version: "3.7"
-
 volumes:
   edlib-auth_nodemodules:
   edlib-lti_nodemodules:
   edlib-resources_nodemodules:
   elasticsearch:
   mailpit_data:
-  maven_cache:
   meilisearch_data:
   moodle_data:
   mysql:
@@ -145,32 +142,6 @@ services:
           - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
-  versionapi:
-    image: maven:3-openjdk-11
-    command:
-      [
-        sh,
-        -c,
-        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xss32m -agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
-      ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - maven_cache:/root/.m2
-      - ./sourcecode/apis/version/:/app
-    environment:
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres/versionapi"
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: thepgpassword
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost/health]
-    #ports:
-    #  - "5504:5504"  # debug port
-    working_dir: /app
-
   contentauthor:
     image: nginx:1-alpine
     healthcheck:
@@ -285,7 +256,6 @@ services:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   resourceapi-subscribers:
     build:
@@ -302,7 +272,6 @@ services:
       - edlib-resources_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/resources:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   ltiapi:
     build:
@@ -327,7 +296,6 @@ services:
       - ./sourcecode/apis/lti:/var/www/app
       - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   ltiapi-subscribers:
     build:
@@ -363,7 +331,6 @@ services:
       - edlib-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/apis/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
     depends_on:
       certs:
         condition: service_completed_successfully
@@ -381,6 +348,10 @@ services:
     depends_on:
       certs:
         condition: service_completed_successfully
+      chromedriver:
+        condition: service_started
+      meilisearch:
+        condition: service_healthy
       postgres:
         condition: service_healthy
     healthcheck:
@@ -407,7 +378,7 @@ services:
       - mailpit_data:/data
 
   meilisearch:
-    image: getmeili/meilisearch:v1.0
+    image: getmeili/meilisearch:v1.8
     environment:
       MEILI_NO_ANALYTICS: 'true'
       MEILI_MASTER_KEY: masterkey1234567
@@ -482,7 +453,6 @@ services:
       - proxy-auth_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/auth:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-lti:
     build:
@@ -504,7 +474,6 @@ services:
       - proxy-lti_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/lti:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   proxy-resource:
     build:
@@ -528,7 +497,6 @@ services:
       - proxy-resource_nodemodules:/var/www/app/node_modules
       - ./sourcecode/proxies/resource:/var/www/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
 
   npm-components-storybook:
     build:

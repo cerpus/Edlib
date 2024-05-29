@@ -1,10 +1,14 @@
 #!/bin/sh
-set -e
+set -ex
+
+update-ca-certificates
 
 if [ "$1" = "php-fpm" ]; then
-    update-ca-certificates
-    composer install
     chmod -R o+w bootstrap/cache storage
+    composer install
+    php artisan migrate --force
+    php artisan scout:index 'App\Models\Content'
+    php artisan scout:sync-index-settings
 fi
 
 exec "$@"

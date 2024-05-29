@@ -18,8 +18,13 @@ final class ContentFactory extends Factory
     public function definition(): array
     {
         return [
-            'shared' => true,
+            'shared' => $this->faker->boolean,
         ];
+    }
+
+    public function shared(bool $shared = true): self
+    {
+        return $this->state(['shared' => $shared]);
     }
 
     public function withUser(

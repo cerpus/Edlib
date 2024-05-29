@@ -83,7 +83,7 @@ class ContentVersion extends Model
         $url = $this->lti_launch_url;
         assert(is_string($url));
 
-        return $launch->toPresentationLaunch($tool, $url);
+        return $launch->toPresentationLaunch($this, $url);
     }
 
     public function getTitle(): string
@@ -114,6 +114,14 @@ class ContentVersion extends Model
     public function icon(): BelongsTo
     {
         return $this->belongsTo(Upload::class, 'icon_upload_id');
+    }
+
+    /**
+     * @return BelongsTo<self, self>
+     */
+    public function previousVersion(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'previous_version_id');
     }
 
     /**

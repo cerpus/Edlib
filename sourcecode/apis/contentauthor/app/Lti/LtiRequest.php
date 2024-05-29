@@ -96,7 +96,7 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $this->param("context_id");
     }
 
-    public function isPreview()
+    public function isPreview(): bool
     {
         return $this->param("ext_preview") === "true";
     }
@@ -168,5 +168,15 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         $roles = explode(',', $this->param('roles') ?? '');
 
         return in_array('Administrator', $roles);
+    }
+
+    public function getEmbedCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_code');
+    }
+
+    public function getEmbedResizeCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_resize_code');
     }
 }

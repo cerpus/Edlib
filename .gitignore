@@ -2,6 +2,8 @@
 *.iml
 .DS_Store
 /sourcecode/not_migrated
+/sourcecode/apis/version
+/sourcecode/npm/nodeUtils
 /data
 /localSetup/.env
 node_modules
