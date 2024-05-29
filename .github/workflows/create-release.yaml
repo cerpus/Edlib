@@ -126,7 +126,6 @@ jobs:
       - release_api_contentauthor
       - release_api_lti
       - release_api_resources
-      - release_api_version
       - release_proxy_admin
       - release_proxy_auth
       - release_proxy_lti
