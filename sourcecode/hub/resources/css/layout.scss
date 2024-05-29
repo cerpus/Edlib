@@ -1,10 +1,23 @@
 .edlib-logo {
-    width: 80px;
-    height: auto;
+    mask-image: url('/resources/images/logo.svg');
+    background-color: var(--bs-body-color);
+    mask-size: cover;
+    display: inline-block;
 
-    @include media-breakpoint-up(md) {
-        width: auto;
-        height: 80px;
+    // Original is 851px x 357.5px
+    &.edlib-logo-navbar {
+        width: 80px;
+        height: calc(357.5px*(80/851));
+
+        @include media-breakpoint-up(md) {
+            width: calc(851px*(60/357.5));
+            height: 60px;
+        }
+    }
+
+    &.edlib-logo-footer {
+        width: 80px;
+        height: calc(357.5px*(80/851));
     }
 }
 

@@ -1,14 +1,11 @@
-@php use Illuminate\Support\Facades\Vite; @endphp
-
 <nav class="navbar navbar-expand">
     <div class="container-md d-flex justify-content-between">
         <a href="{{ route('home') }}" class="navbar-brand">
-            <img
-                src="{{ Vite::asset('resources/images/logo.png') }}"
-                alt="{{ config('app.name') }}"
-                class="edlib-logo"
-                height="80"
-            >
+            <span
+                aria-label="{{ config('app.name') }}"
+                class="edlib-logo edlib-logo-navbar"
+                role="img"
+            ></span>
         </a>
 
         <ul class="nav nav-underline navbar-nav flex-grow-1 justify-content-center">
