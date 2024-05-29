@@ -1,9 +1,9 @@
 <nav class="navbar navbar-expand">
     <div class="container-md d-flex justify-content-between">
-        <a href="{{ route('home') }}" class="navbar-brand" aria-description="{{ config('app.name') }}">
+        <a href="{{ route('home') }}" class="navbar-brand">
             <span
+                aria-label="{{ config('app.name') }}"
                 class="edlib-logo edlib-logo-navbar"
-                aria-hidden="true"
                 role="img"
             ></span>
         </a>

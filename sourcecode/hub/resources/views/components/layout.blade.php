@@ -82,7 +82,7 @@
                         <div class="col-12 col-md-4 col-lg-6">
                             <p>
                                 <span
-                                    aria-description="{{ config('app.name') }}"
+                                    aria-label="{{ config('app.name') }}"
                                     class="edlib-logo edlib-logo-footer"
                                     role="img"
                                 ></span>
