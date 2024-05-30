@@ -203,7 +203,7 @@ services:
 
   contentauthor-watch:
     image: node:16-alpine
-    command: [sh, -c, 'npm install --legacy-peer-deps && npm run watch']
+    command: [sh, -c, 'npm ci && npm run watch']
     volumes:
       - npm_cache:/root/.npm
       - ./sourcecode/apis/contentauthor:/app
