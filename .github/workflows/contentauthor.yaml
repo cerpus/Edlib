@@ -22,27 +22,28 @@ defaults:
     working-directory: sourcecode/apis/contentauthor
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}
+  group: ca-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   composer-validate:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate
         run: composer validate
 
   php-cs-fixer:
     if: github.ref != 'refs/heads/hubbub'
+    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.CERPUSBOT_SECRET }}
@@ -53,21 +54,23 @@ jobs:
           php-version: 8.2
 
       - name: Manage php-cs-fixer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: .php-cs-fixer.cache
-          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
-          restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
+          path: sourcecode/apis/contentauthor/.php-cs-fixer.cache
+          key: ca-phpcsfixer-cache-${{ github.sha }}
+          restore-keys: ca-phpcsfixer-cache-
 
       - name: Get Composer cache dir
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.json') }}
+          key: ca-phpcsfixer-composer-${{ hashFiles('sourcecode/apis/contentauthor/tools/php-cs-fixer/composer.lock') }}
+          restore-keys: |
+            ca-phpcsfixer-composer-
 
       - name: Install dependencies
         run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
@@ -76,25 +79,24 @@ jobs:
         run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
 
       - name: Commit fixed code
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Run php-cs-fixer
 
   phpstan:
     if: always()
     needs: [php-cs-fixer]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-          extensions: oauth, sockets, zip
+          extensions: sockets, zip
           coverage: pcov
 
       - name: Get Composer cache dir
@@ -102,16 +104,22 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.json') }}
+          key: ca-composer-${{ hashFiles('sourcecode/apis/contentauthor/composer.lock') }}
+          restore-keys: |
+            ca-composer-
 
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit=512M
+        run: |
+          sourcecode/apis/contentauthor/vendor/bin/phpstan analyse \
+            --configuration=sourcecode/apis/contentauthor/phpstan.neon.dist \
+            --memory-limit=512M
+        working-directory: ${{ github.workspace }}
 
   build_test_publish:
     if: always()
@@ -133,9 +141,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-ca-${{ github.sha }}
+          key: ${{ runner.arch }}-buildx-ca-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-ca-
+
+            ${{ runner.arch }}-buildx-ca-
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -167,7 +176,7 @@ jobs:
 
       - name: Gather Docker metadata for PHP image
         id: php_meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             name=ghcr.io/cerpus/edlib-contentauthor
@@ -181,7 +190,7 @@ jobs:
             type=sha,prefix=php-
 
       - name: Build PHP image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -192,7 +201,7 @@ jobs:
 
       - name: Gather Docker metadata for web image
         id: web_meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             name=ghcr.io/cerpus/edlib-contentauthor
@@ -206,7 +215,7 @@ jobs:
             type=sha,prefix=web-
 
       - name: Build web image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max

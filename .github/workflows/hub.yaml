@@ -1,28 +1,25 @@
-name: "Hub"
+name: Hub
 
 on:
   push:
+    branches:
+      - hubbub
     paths:
-      - "sourcecode/hub/**"
       - ".github/workflows/hub.yaml"
-  workflow_call:
-    inputs:
-      versionToRelease:
-        description: 'A version to release'
-        required: true
-        type: string
-    secrets:
-      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID:
-        required: true
-      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY:
-        required: true
+      - "sourcecode/hub/**"
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - hubbub
+    paths:
+      - '.github/workflows/hub.yaml'
+      - 'sourcecode/hub/**'
+  workflow_dispatch:
 
 defaults:
   run:
     working-directory: sourcecode/hub
-
-env:
-  shouldPublishImage: ${{ inputs.versionToRelease && '1' || '0' }}
 
 concurrency:
   group: hub-${{ github.head_ref || github.run_id }}
@@ -30,23 +27,23 @@ concurrency:
 
 jobs:
   composer-validate:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate
         run: composer validate --no-check-publish
 
   php-cs-fixer:
-    if: github.ref != 'refs/heads/master'
-
-    runs-on: ubuntu-20.04
+    if: github.ref != 'refs/heads/hubbub'
+    needs: [composer-validate]
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.CERPUSBOT_SECRET }}
@@ -57,21 +54,23 @@ jobs:
           php-version: 8.3
 
       - name: Manage php-cs-fixer cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: .php-cs-fixer.cache
-          key: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-${{ github.sha }}
-          restore-keys: ${{ runner.OS }}-${{ github.repository }}-phpcsfixer-
+          path: sourcecode/hub/.php-cs-fixer.cache
+          key: hub-phpcsfixer-${{ github.sha }}
+          restore-keys: hub-phpcsfixer-
 
       - name: Get Composer cache dir
         id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.json') }}
+          key: hub-phpcsfixer-composer-${{ hashFiles('sourcecode/hub/tools/php-cs-fixer/composer.lock') }}
+          restore-keys: |
+            hub-phpcsfixer-composer-
 
       - name: Install dependencies
         run: composer install --working-dir=tools/php-cs-fixer --no-progress --prefer-dist
@@ -80,26 +79,24 @@ jobs:
         run: tools/php-cs-fixer/vendor/bin/php-cs-fixer fix --show-progress=none
 
       - name: Commit fixed code
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Run php-cs-fixer
 
   phpstan:
-    if: ${{ always() }}
+    if: always()
     needs: [php-cs-fixer]
-
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
-          extensions: oauth, sockets, zip
+          extensions: sockets, zip
           coverage: pcov
 
       - name: Get Composer cache dir
@@ -107,21 +104,27 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.json') }}
+          key: hub-composer-${{ hashFiles('sourcecode/hub/composer.lock') }}
+          restore-keys: |
+            hub-composer-
 
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --memory-limit=512M
+        run: |
+          sourcecode/hub/vendor/bin/phpstan analyse \
+            --configuration=sourcecode/hub/phpstan.dist.neon \
+            --memory-limit=512M
+        working-directory: ${{ github.workspace }}
 
-  test_and_release:
+  build_test_publish:
     if: always()
     needs: [php-cs-fixer]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
@@ -150,74 +153,133 @@ jobs:
           - 7700:7700
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          fetch-depth: 0
+          registry: ghcr.io
+          username: cerpusbot
+          password: ${{ secrets.CERPUSBOT_SECRET }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.arch }}-buildx-hub-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.arch }}-buildx-hub-
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build test image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
-          tags: "hub-test:latest"
-          outputs: "type=docker"
           context: sourcecode/hub
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          load: true
+          tags: hub-test
           target: test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Run tests
-        run: docker run --rm --net=host
-          -e MEILISEARCH_HOST=http://localhost:7700
-          -e DB_HOST=127.0.0.1
-          -e DB_DATABASE=postgres
-          hub-test vendor/bin/phpunit --exclude-testsuite Browser
+        run: |
+          docker run --rm --net=host \
+            -e MEILISEARCH_HOST=http://localhost:7700 \
+            -e DB_HOST=127.0.0.1 \
+            -e DB_DATABASE=postgres \
+            hub-test vendor/bin/phpunit --exclude-testsuite Browser
 
-      - name: Configure AWS Credentials
-        if: env.shouldPublishImage == '1'
-        uses: aws-actions/configure-aws-credentials@v1
+      # TODO: insert codecov stuff here when repo is opened
+
+      - name: Gather Docker metadata for PHP image
+        id: php_meta
+        uses: docker/metadata-action@v5
         with:
-          aws-access-key-id: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-          role-duration-seconds: 3600
-          role-session-name: GithubCerpusPushImage
+          images: |
+            name=ghcr.io/cerpus/edlib-hub
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/hubbub' }},prefix=php-
+            type=semver,pattern={{version}},prefix=php-
+            type=semver,pattern={{major}}.{{minor}},prefix=php-
+            type=semver,pattern={{major}},prefix=php-
+            type=ref,event=branch,prefix=php-
+            type=ref,event=pr,prefix=php-
+            type=sha,prefix=php-
 
-      - name: Login to AWS docker registry
-        if: env.shouldPublishImage == '1'
-        shell: bash
-        run: aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
-
-      - name: Build and push web container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
+      - name: Build PHP image
+        uses: docker/build-push-action@v5
         with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/hub-web:${{ inputs.versionToRelease }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
           context: sourcecode/hub
-          target: web
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push production container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/hub-fpm:${{ inputs.versionToRelease }}
-          context: sourcecode/hub
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/hubbub' }}
           target: prod
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ steps.php_meta.outputs.tags }}
 
-      - name: Build and push startup container
-        if: env.shouldPublishImage == '1'
-        uses: docker/build-push-action@v2
+      - name: Gather Docker metadata for web image
+        id: web_meta
+        uses: docker/metadata-action@v5
         with:
-          push: true
-          tags: public.ecr.aws/f0t8l9h1/hub-startup:${{ inputs.versionToRelease }}
+          images: |
+            name=ghcr.io/cerpus/edlib-hub
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/hubbub' }},prefix=web-
+            type=semver,pattern={{version}},prefix=web-
+            type=semver,pattern={{major}}.{{minor}},prefix=web-
+            type=semver,pattern={{major}},prefix=web-
+            type=ref,event=branch,prefix=web-
+            type=ref,event=pr,prefix=web-
+            type=sha,prefix=web-
+
+      - name: Build web image
+        uses: docker/build-push-action@v5
+        with:
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           context: sourcecode/hub
-          target: startup
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/hubbub' }}
+          target: web
+          tags: ${{ steps.web_meta.outputs.tags }}
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  deploy:
+    name: Deploy Hub
+    if: github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
+    needs: [build_test_publish]
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Vapor CLI
+        working-directory: sourcecode/hub/tools/vapor-cli
+        run: composer install --prefer-dist
+
+      - name: Add Vapor to path
+        run: echo "$PWD/tools/vapor-cli/vendor/bin" >> "$GITHUB_PATH"
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Deploy
+        run: vapor deploy staging --without-waiting
+        env:
+          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
