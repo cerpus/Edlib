@@ -251,7 +251,7 @@ jobs:
 
   deploy:
     name: Deploy Hub
-    if: github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
+    if: always() && jobs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
     needs: [build_test_publish]
     runs-on: ubuntu-22.04
 
