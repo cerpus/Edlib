@@ -30,6 +30,8 @@ COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf;
 
+COPY docker/php/startup.sh /usr/local/bin/
+
 WORKDIR /app
 
 
@@ -119,11 +121,6 @@ RUN set -eux; \
     ;
 
 CMD ["vendor/bin/phpunit"]
-
-
-FROM prod AS startup
-
-CMD ["php", "artisan", "migrate", "--force"]
 
 
 FROM base AS dev
