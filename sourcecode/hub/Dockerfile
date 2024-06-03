@@ -13,6 +13,7 @@ RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         intl \
         opcache \
         pdo_pgsql \
+        redis \
         zip
 
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/
