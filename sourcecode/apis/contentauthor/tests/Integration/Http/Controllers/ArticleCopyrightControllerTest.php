@@ -7,6 +7,7 @@ use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\ArticleCopyrightController;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Utils;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Psr\Http\Message\ResponseInterface;
 use Tests\TestCase;
@@ -86,7 +87,7 @@ class ArticleCopyrightControllerTest extends TestCase
         $response
             ->expects($this->once())
             ->method('getBody')
-            ->willReturn(json_encode([
+            ->willReturn(Utils::streamFor(json_encode([
                 'resource' => [
                     'owner' => 'd579f889-dd4a-412d-bb47-9d4ad9523cbd',
                     'tagObjects' => [],
@@ -109,7 +110,7 @@ class ArticleCopyrightControllerTest extends TestCase
                 'id' => '44444444-4444-4444-4444-444444444444',
                 'viewCount' => 0,
                 'consumer' => 'http://core/ltics?link=' . $h5pContent->id,
-            ]));
+            ])));
 
         $client = $this->createMock(ClientInterface::class);
         $client
