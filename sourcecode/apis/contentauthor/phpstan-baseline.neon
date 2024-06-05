@@ -6,6 +6,11 @@ parameters:
 			path: app/Article.php
 
 		-
+			message: "#^Instanceof between App\\\\Administrator\\|App\\\\User\\|null and Illuminate\\\\Auth\\\\GenericUser will always evaluate to false\\.$#"
+			count: 1
+			path: app/Auth/Guards/EdlibGuard.php
+
+		-
 			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
 			count: 1
 			path: app/Auth/Guards/EdlibGuard.php
@@ -61,7 +66,7 @@ parameters:
 			path: app/Exceptions/Handler.php
 
 		-
-			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:report\\(\\) with return type void returns void but should not return anything\\.$#"
+			message: "#^Method App\\\\Exceptions\\\\Handler\\:\\:report\\(\\) with return type void returns null but should not return anything\\.$#"
 			count: 1
 			path: app/Exceptions/Handler.php
 
@@ -206,11 +211,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^Access to an undefined property Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\:\\:\\$id\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminUserController.php
-
-		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:destroy\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminUserController.php
@@ -341,7 +341,7 @@ parameters:
 			path: app/Http/Libraries/ContentTypes/H5PContentType.php
 
 		-
-			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
+			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int\\<0, max\\>, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
 			count: 1
 			path: app/Http/Libraries/ContentTypes/H5PContentType.php
 
@@ -354,6 +354,11 @@ parameters:
 			message: "#^Anonymous function has an unused use \\$newH5P\\.$#"
 			count: 1
 			path: app/Http/Libraries/H5PFileVersioner.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function array_filter expects \\(callable\\(string\\)\\: bool\\)\\|null, 'strlen' given\\.$#"
+			count: 1
+			path: app/Http/Libraries/License.php
 
 		-
 			message: "#^Property App\\\\Http\\\\Middleware\\\\CheckOwnership\\:\\:\\$content is unused\\.$#"
@@ -471,12 +476,12 @@ parameters:
 			path: app/Libraries/Games/Millionaire/Millionaire.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{answer\\: string, isCorrect\\: bool\\}, Closure\\(App\\\\QuestionSetQuestionAnswer\\)\\: array\\{answer\\: string, isCorrect\\: bool\\} given\\.$#"
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\|string\\)\\: array\\{answer\\: string, isCorrect\\: bool\\}, Closure\\(App\\\\QuestionSetQuestionAnswer\\)\\: array\\{answer\\: string, isCorrect\\: bool\\} given\\.$#"
 			count: 1
 			path: app/Libraries/Games/Millionaire/Millionaire.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, \\(int\\|string\\)\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\}, Closure\\(App\\\\QuestionSetQuestion\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\} given\\.$#"
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\|string\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\}, Closure\\(App\\\\QuestionSetQuestion\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\} given\\.$#"
 			count: 1
 			path: app/Libraries/Games/Millionaire/Millionaire.php
 
@@ -544,6 +549,11 @@ parameters:
 			message: "#^Should not use node with type \"Expr_Exit\", please change the code\\.$#"
 			count: 3
 			path: app/Libraries/H5P/AjaxRequest.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Support\\\\Collection\\<int,App\\\\H5PLibrary\\>\\:\\:filter\\(\\) expects \\(callable\\(App\\\\H5PLibrary, int\\)\\: bool\\)\\|null, Closure\\(mixed\\)\\: int given\\.$#"
+			count: 1
+			path: app/Libraries/H5P/EditorAjax.php
 
 		-
 			message: "#^Access to an undefined property App\\\\H5PLibrary\\:\\:\\$isOld\\.$#"
@@ -762,12 +772,12 @@ parameters:
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
-			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: \\(int\\|string\\)\\} on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Packages/InteractiveVideo.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with stdClass will always evaluate to false\\.$#"
+			message: "#^Call to function is_null\\(\\) with object\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, answers\\: mixed, context\\: string\\|null\\}&stdClass will always evaluate to false\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Reports/H5PPackage.php
 
@@ -882,6 +892,16 @@ parameters:
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$answers\\.$#"
+			count: 1
+			path: app/Libraries/QuestionSet/QuestionSetConvert.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$question_text\\.$#"
+			count: 1
+			path: app/Libraries/QuestionSet/QuestionSetConvert.php
+
+		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 4
 			path: app/Libraries/QuestionSet/QuestionSetHandler.php
@@ -912,7 +932,7 @@ parameters:
 			path: app/QuestionSet.php
 
 		-
-			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			message: "#^PHPDoc type array of property App\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<int, string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
 			count: 1
 			path: app/User.php
 
@@ -977,6 +997,16 @@ parameters:
 			path: database/migrations/2020_12_07_133958_set_admin_password.php
 
 		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Integration/Jobs/PingVideoApiTest.php
+
+		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: tests/Integration/Libraries/H5P/Package/MultiChoiceTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 2
+			path: tests/Integration/Models/ContentVersionTest.php
