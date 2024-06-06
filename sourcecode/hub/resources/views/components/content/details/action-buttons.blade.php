@@ -29,7 +29,7 @@
 
 @if (!$explicitVersion && $version->published)
     <a
-        class="btn btn-secondary d-flex gap-2 text-nowrap"
+        class="btn btn-secondary d-flex gap-2 text-nowrap share-button"
         href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
         target="_blank"
         role="button"

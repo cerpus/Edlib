@@ -10,6 +10,7 @@ use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
+use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\ContentCard;
@@ -669,5 +670,28 @@ final class ContentTest extends DuskTestCase
                 ->assertTitleContains($content->getTitle() . ' (copy)')
                 ->assertSee('You are viewing an unpublished draft version')
         );
+    }
+
+    public function testSharingCopiesUrl(): void
+    {
+        $content = Content::factory()->withPublishedVersion()->create();
+
+        $this->browse(function (Browser $browser) use ($content) {
+            $devTools = (new ChromeDevToolsDriver($browser->driver));
+            $devTools->execute('Browser.grantPermissions', [
+                'permissions' => ['clipboardReadWrite'],
+            ]);
+
+            $browser
+                ->visit('/content/' . $content->id)
+                ->clickLink('Share')
+                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
+                ->acceptDialog()
+                ->assertPathIs('/content/' . $content->id)
+                ->assertScript(
+                    'navigator.clipboard.readText()',
+                    'https://hub-test.edlib.test/c/' . $content->id,
+                );
+        });
     }
 }
