@@ -34,7 +34,7 @@ class CliH5pAjax
 
         ob_start();
         $_SERVER['REQUEST_METHOD'] = 'POST'; // Install and update are only allowed for POST requests
-        $ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL,'', $machineName);
+        $ajax->action(H5PEditorEndpoints::LIBRARY_INSTALL, '', $machineName);
 
         return ob_get_clean();
     }
