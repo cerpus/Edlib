@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\ContentUserRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\ContentView;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -34,8 +35,10 @@ final class ContentFactory extends Factory
         return $this->hasAttached($user, ['role' => $role], 'users');
     }
 
-    public function withVersion(ContentVersionFactory $version): self
+    public function withVersion(ContentVersionFactory|null $version = null): self
     {
+        $version ??= ContentVersion::factory();
+
         return $this->has($version, 'versions');
     }
 
@@ -44,5 +47,12 @@ final class ContentFactory extends Factory
         return $this->withVersion(
             ContentVersion::factory()->published(),
         );
+    }
+
+    public function withView(ContentViewFactory|null $view = null): self
+    {
+        $view ??= ContentView::factory();
+
+        return $this->has($view, 'views');
     }
 }

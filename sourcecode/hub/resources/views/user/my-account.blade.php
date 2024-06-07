@@ -62,4 +62,14 @@
             @endif
         </x-form>
     @endif
+
+    {{-- TODO: make less unpleasant --}}
+    @if ($user->debug_mode)
+        <details class="mt-3" lang="en">
+            <summary>API credentials</summary>
+            <pre>URL: <a href="{{ url('/api') }}">{{ url('/api') }}</a><br>Key: <kbd class="user-select-all">{{ $user->getApiKey() }}</kbd><br>Secret: <kbd class="user-select-all">{{ $user->getApiSecret() }}</pre>
+            <pre>Header: <kbd class="user-select-all">{{ $user->getApiAuthorization() }}</kbd></pre>
+            <pre>curl: <kbd>curl --basic --user {{ $user->getApiKey() }}:{{ $user->getApiSecret() }} {{ url('/api') }}</kbd></pre>
+        </details>
+    @endif
 </x-layout>

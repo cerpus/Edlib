@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Events\UserSaved;
+use BadMethodCallException;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -12,6 +13,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
+use RuntimeException;
+use SensitiveParameter;
+
+use function config;
 
 class User extends Model implements AuthenticatableContract
 {
@@ -60,9 +65,39 @@ class User extends Model implements AuthenticatableContract
      * @var array<string, mixed>
      */
     protected $attributes = [
+        'locale' => 'en',
         'admin' => false,
         'debug_mode' => false,
     ];
+
+    public function getApiKey(): string
+    {
+        return $this->id;
+    }
+
+    public function getApiSecret(): string
+    {
+        $key = config('app.key') ?? throw new RuntimeException('missing app key');
+        $userId = $this->id ?? throw new BadMethodCallException('missing id');
+        $password = $this->password ?? '';
+
+        return base64_encode(hash(
+            'sha256',
+            sprintf('%s.%s.%s', $key, $userId, $password),
+            binary: true,
+        ));
+    }
+
+    public function validateApiSecret(#[SensitiveParameter] string $secret): bool
+    {
+        return hash_equals($this->getApiSecret(), $secret);
+    }
+
+    public function getApiAuthorization(): string
+    {
+        return 'Authorization: Basic ' .
+            base64_encode($this->getApiKey() . ':' . $this->getApiSecret());
+    }
 
     public function getAuthIdentifierName(): string
     {

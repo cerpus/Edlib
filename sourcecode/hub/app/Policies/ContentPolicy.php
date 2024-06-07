@@ -83,6 +83,10 @@ class ContentPolicy
             return false;
         }
 
+        if ($user->admin) {
+            return true;
+        }
+
         // TODO: check owner role
         return $content->hasUser($user);
     }

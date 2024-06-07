@@ -28,4 +28,12 @@ class ContentView extends Model
     {
         return $this->belongsTo(Content::class);
     }
+
+    /**
+     * @return BelongsTo<LtiPlatform, self>
+     */
+    public function ltiPlatform(): BelongsTo
+    {
+        return $this->belongsTo(LtiPlatform::class);
+    }
 }

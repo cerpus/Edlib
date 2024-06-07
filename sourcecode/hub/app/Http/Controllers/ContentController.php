@@ -317,9 +317,10 @@ class ContentController extends Controller
 
     public function sitemap(): Response
     {
-        $document = Content::generateSiteMap();
+        $xml = Content::generateSiteMap()->saveXML();
+        assert(is_string($xml));
 
-        return new Response($document->saveXML(), headers: [
+        return new Response($xml, headers: [
             'Content-Type' => 'application/xml',
         ]);
     }

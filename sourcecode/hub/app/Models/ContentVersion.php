@@ -49,6 +49,19 @@ class ContentVersion extends Model
         'content',
     ];
 
+    protected $fillable = [
+        'title',
+        'lti_launch_url',
+        'lti_tool_id',
+        'language_iso_639_3',
+        'license',
+        'published',
+        'min_score',
+        'max_score',
+        'created_at',
+        'edited_by',
+    ];
+
     /**
      * @var array<string, class-string>
      */

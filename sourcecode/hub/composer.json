@@ -16,11 +16,13 @@
         "laravel/vapor-cli": "^1.65",
         "laravel/vapor-core": "^2.37",
         "league/flysystem-path-prefixing": "^3.23.1",
+        "league/fractal": "^0.20.1",
         "meilisearch/meilisearch-php": "^1.7.0",
         "predis/predis": "^2.2",
         "psr/clock": "^1.0",
         "socialiteproviders/auth0": "^4.1",
-        "socialiteproviders/manager": "^4.5.1"
+        "socialiteproviders/manager": "^4.5.1",
+        "spatie/laravel-fractal": "^6.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
