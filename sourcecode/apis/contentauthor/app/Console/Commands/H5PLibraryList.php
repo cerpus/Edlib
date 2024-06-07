@@ -65,11 +65,12 @@ class H5PLibraryList extends Command
                 'minor_version',
                 'patch_version',
                 'runnable',
-            ])
-            ->when($this->option('library'), function($query) {
+            ]
+        )
+            ->when($this->option('library'), function ($query) {
                 $query->where(DB::raw('lower(name)'), '=', Str::lower($this->option('library')));
             })
-            ->when($this->option('runnable'), function($query) {
+            ->when($this->option('runnable'), function ($query) {
                 $query->where('runnable', 1);
             })
             ->orderBy('name')
@@ -77,7 +78,7 @@ class H5PLibraryList extends Command
             ->orderBy('minor_version')
             ->orderBy('patch_version')
             ->get()
-            ->map(function(H5PLibrary $library) {
+            ->map(function (H5PLibrary $library) {
                 return [
                     $library->name,
                     sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version),
@@ -116,10 +117,10 @@ class H5PLibraryList extends Command
                 'h5p_major_version',
                 'h5p_minor_version',
             ])
-            ->when($this->option('library'), function($query) {
+            ->when($this->option('library'), function ($query) {
                 $query->where(DB::raw('lower(name)'), '=', Str::lower($this->option('library')));
             })
-            ->when(!$this->option('all'), function($query) {
+            ->when(!$this->option('all'), function ($query) {
                 $query->whereNotExists(function ($query) {
                     $query->select(DB::raw(1))
                         ->from('h5p_libraries as lib')
@@ -128,7 +129,7 @@ class H5PLibraryList extends Command
             })
             ->orderBy('name')
             ->get()
-            ->map(function($cache) {
+            ->map(function ($cache) {
                 return [
                     $cache->name,
                     sprintf('%d.%d.%d', $cache->major_version, $cache->minor_version, $cache->patch_version),
@@ -159,7 +160,7 @@ class H5PLibraryList extends Command
         $upgrades = [];
 
         H5PLibrariesHubCache::select(['name', 'major_version', 'minor_version', 'patch_version'])
-            ->when($this->option('library'), function($query) {
+            ->when($this->option('library'), function ($query) {
                 $query->where(DB::raw('lower(name)'), '=', Str::lower($this->option('library')));
             })
             ->whereExists(function ($query) {
@@ -169,7 +170,7 @@ class H5PLibraryList extends Command
             })
             ->orderBy('name')
             ->get()
-            ->each(function($library) use (&$upgrades, $localIsNewer) {
+            ->each(function ($library) use (&$upgrades, $localIsNewer) {
                 $installed = H5PLibrary::select(['major_version', 'minor_version', 'patch_version'])
                     ->where('name', $library->name)
                     ->orderBy('major_version', 'desc')

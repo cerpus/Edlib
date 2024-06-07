@@ -77,12 +77,12 @@ class H5PLibraryInstall extends Command
         $data = $core->updateContentTypeCache();
 
         if ($data === false) {
-            foreach($core->h5pF->getMessages('error') as $message) {
+            foreach ($core->h5pF->getMessages('error') as $message) {
                 $this->error($message);
                 return Command::FAILURE;
             }
         }
-        foreach($core->h5pF->getMessages('info') as $message) {
+        foreach ($core->h5pF->getMessages('info') as $message) {
             $this->info($message);
         }
 
@@ -102,7 +102,7 @@ class H5PLibraryInstall extends Command
         if ($result['success']) {
             $this->info('Installation complete');
             if (isset($result['data']['details']) && count($result['data']['details']) > 0) {
-                foreach($result['data']['details'] as $detail) {
+                foreach ($result['data']['details'] as $detail) {
                     $this->line($detail);
                 }
             } else {
