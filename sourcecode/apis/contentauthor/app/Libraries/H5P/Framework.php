@@ -1312,6 +1312,8 @@ class Framework implements \H5PFrameworkInterface, Result
                     'keywords' => !empty($type->keywords) ? json_encode($type->keywords) : '',
                     'categories' => json_encode($type->categories ?? []),
                     'owner' => $type->owner,
+                    'created_at' => $type->createdAt,
+                    'updated_at' => $type->updatedAt,
                 ]);
             }
         });
