@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\H5POption;
 use Carbon\Carbon;
-use GrahamCampbell\ResultType\Success;
 use Illuminate\Console\Command;
 
 class H5PLibraryHubCache extends Command
