@@ -94,7 +94,7 @@ RUN set -eux; \
         storage/framework/sessions \
         storage/framework/views \
         storage/logs; \
-    ln -s /app/public/storage/app/public /app/public/storage; \
+    ln -s ../storage/app public/h5pstorage; \
     chmod -R o+w \
         bootstrap/cache \
         storage; \
