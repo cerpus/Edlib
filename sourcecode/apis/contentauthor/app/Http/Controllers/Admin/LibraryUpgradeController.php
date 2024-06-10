@@ -38,7 +38,6 @@ class LibraryUpgradeController extends Controller
         $config = resolve(AdminConfig::class);
         $config->getConfig();
 
-        /** @var H5PLibrariesHubCache $hubCacheLibraries */
         $hubCacheLibraries = H5PLibrariesHubCache::all();
 
         $isPatchUpdate = function ($library) {
@@ -101,7 +100,7 @@ class LibraryUpgradeController extends Controller
 
         $available = collect();
         $hubCacheLibraries
-            ->each(function ($hubCache) use ($contentTypes, $hubCacheLibraries, $available) {
+            ->each(function ($hubCache) use ($contentTypes, $available) {
                 $hasLast = $contentTypes->where('machineName', $hubCache->name)->firstWhere('isLast', true);
                 if (empty($hasLast)) {
                     $available->push([

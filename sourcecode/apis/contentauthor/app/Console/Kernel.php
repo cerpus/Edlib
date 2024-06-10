@@ -4,6 +4,8 @@ namespace App\Console;
 
 use App\Console\Commands\EdlibLicenseStats;
 use App\Console\Commands\EnsureVersionExists;
+use App\Console\Commands\H5PLibraryInstall;
+use App\Console\Commands\H5PLibraryList;
 use App\Console\Commands\Inspire;
 use App\Console\Commands\CerpusSetup;
 use App\Console\Commands\PublishPresave;
@@ -27,6 +29,8 @@ class Kernel extends ConsoleKernel
         RemoveOldContentLocks::class,
         VersionAllUnversionedContent::class,
         EdlibLicenseStats::class,
+        H5PLibraryList::class,
+        H5PLibraryInstall::class,
     ];
 
     /**

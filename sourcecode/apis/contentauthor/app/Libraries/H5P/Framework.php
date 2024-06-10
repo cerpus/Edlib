@@ -193,9 +193,19 @@ class Framework implements \H5PFrameworkInterface, Result
         $this->errorMessages[] = $message;
     }
 
+    public function clearErrorMessages(): void
+    {
+        $this->errorMessages = [];
+    }
+
     public function setInfoMessage($message): void
     {
         $this->infoMessages[] = $message;
+    }
+
+    public function clearInfoMessages(): void
+    {
+        $this->infoMessages = [];
     }
 
     public function getMessages($type): array
@@ -1312,6 +1322,8 @@ class Framework implements \H5PFrameworkInterface, Result
                     'keywords' => !empty($type->keywords) ? json_encode($type->keywords) : '',
                     'categories' => json_encode($type->categories ?? []),
                     'owner' => $type->owner,
+                    'created_at' => $type->createdAt,
+                    'updated_at' => $type->updatedAt,
                 ]);
             }
         });
