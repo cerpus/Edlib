@@ -236,11 +236,6 @@ parameters:
 			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
 
 		-
-			message: "#^Anonymous function has an unused use \\$hubCacheLibraries\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/LibraryUpgradeController.php
-
-		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/LocksController.php
@@ -971,20 +966,6 @@ parameters:
 			count: 1
 			path: database/migrations/2016_04_19_073909_ChangeAdminPassword.php
 
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 1
-			path: database/migrations/2018_04_05_083016_add_h5p_hub_cache.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 1
-			path: database/migrations/2019_04_24_103853_update_hub_cache.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 1
-			path: database/migrations/2019_05_21_121648_add_cerpus_video_and_image_to_cache.php
 
 		-
 			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
