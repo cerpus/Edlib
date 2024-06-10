@@ -6,7 +6,6 @@ use App\H5PContentsVideo;
 use App\H5PFile;
 use App\H5PLibrary;
 use App\Jobs\PingVideoApi;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PDownloadInterface;
@@ -28,17 +27,14 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     private Filesystem $filesystem;
     private Filesystem $uploadDisk;
     private string $diskName;
-    private ContentAuthorStorage $contentAuthorStorage;
 
     public function __construct(
-        ContentAuthorStorage $contentAuthorStorage,
         private readonly LoggerInterface $logger,
         private readonly H5PVideoInterface $videoAdapter,
     ) {
         $this->filesystem = Storage::disk();
         $this->diskName = Storage::getDefaultDriver();
-        $this->uploadDisk = $contentAuthorStorage->getH5pTmpDisk();
-        $this->contentAuthorStorage = $contentAuthorStorage;
+        $this->uploadDisk = Storage::disk('h5pTmp');
     }
 
     private function triggerVideoConvert($fromId, $toId, $file)
@@ -354,7 +350,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             $files[$type] = [(object)[
                 'path' => $outputfile,
                 'version' => '',
-                'url' => $this->contentAuthorStorage->getAssetUrl($outputfile)
+                'url' => $this->filesystem->url($outputfile),
             ]];
         }
     }
@@ -374,7 +370,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                 $files[$type] = [(object)[
                     'path' => $file,
                     'version' => '',
-                    'url' => $this->contentAuthorStorage->getAssetUrl($file)
+                    'url' => $this->filesystem->url($file),
                 ]];
             }
         }
@@ -619,7 +615,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     public function getFileUrl(string $path)
     {
         if ($this->filesystem->exists($path)) {
-            return $this->contentAuthorStorage->getAssetUrl($path);
+            return $this->filesystem->url($path);
         }
 
         return '';

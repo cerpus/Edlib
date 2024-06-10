@@ -130,4 +130,8 @@ Route::get('article/{article}/copyright', [ArticleCopyrightController::class, 'c
 
 Route::get('/health', [HealthController::class, 'index']);
 
-Route::get('content/assets/{path?}', ContentAssetController::class)->where('path', '.*')->name('content.asset')->middleware('adaptermode');
+// New code should not generate URLs to this, but this endpoint needs to exist
+// for backward compatibility.
+Route::get('content/assets/{path?}', ContentAssetController::class)
+    ->where('path', '.*')
+    ->name('content.asset');

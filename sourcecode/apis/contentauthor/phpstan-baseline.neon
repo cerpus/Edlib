@@ -917,11 +917,6 @@ parameters:
 			path: app/Providers/H5PServiceProvider.php
 
 		-
-			message: "#^Class App\\\\Libraries\\\\H5P\\\\EditorStorage constructor invoked with 2 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/QuestionSet.php

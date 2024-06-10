@@ -207,7 +207,7 @@ class AjaxRequest
 
         return [
             'styles' => $styles,
-            'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
+            'file' => Storage::disk()->url($fileName),
         ];
     }
 
@@ -298,7 +298,7 @@ class AjaxRequest
         // Download files from bucket to tmp folder
         $this->contentAuthorStorage->copyFolder(
             Storage::disk(),
-            $this->contentAuthorStorage->getH5pTmpDisk(),
+            Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
             $tmpLibraryRelative
         );

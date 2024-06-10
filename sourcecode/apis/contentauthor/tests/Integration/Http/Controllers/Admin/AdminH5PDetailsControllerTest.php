@@ -108,7 +108,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $validator
             ->expects($this->once())
             ->method('getLibraryData')
-            ->with($this->equalTo('H5P.Foobar-1.2'), $this->isNull(), $this->isNull())
+            ->with($this->equalTo('H5P.Foobar-1.2'), '/tmp/h5p/libraries/H5P.Foobar-1.2', '/tmp/h5p/libraries')
             ->willReturn([
                 'editorDependencies' => [
                     [

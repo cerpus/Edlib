@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Libraries\ArticleFileVersioner;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Versioning\VersionableObject;
@@ -21,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
@@ -284,8 +284,7 @@ class Article extends Content implements VersionableObject
 
     private static function rewriteUploadUrls(string $content): string
     {
-        $cas = app()->make(ContentAuthorStorage::class);
-        assert($cas instanceof ContentAuthorStorage);
+        $fs = Storage::disk();
 
         $previous = libxml_use_internal_errors(true);
         try {
@@ -298,7 +297,7 @@ class Article extends Content implements VersionableObject
                     'src',
                     preg_replace_callback(
                         '@^/h5pstorage/article-uploads/(.*?)@',
-                        fn (array $matches) => $cas->getAssetUrl(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                        fn (array $matches) => $fs->url(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
                         $node->getAttribute('src'),
                     ),
                 ));

@@ -31,7 +31,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://localhost/content/assets/article-uploads/foo.jpg\"></p>\n",
+            "<p>This is an image: <img src=\"http://localhost/h5pstorage/article-uploads/foo.jpg\"></p>\n",
             $article->render(),
         );
     }

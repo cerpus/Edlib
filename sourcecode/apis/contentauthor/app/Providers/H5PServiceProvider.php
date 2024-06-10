@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Console\Libraries\CliH5pFramework;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
 use App\Libraries\H5P\Audio\NDLAAudioBrowser;
@@ -184,16 +183,10 @@ class H5PServiceProvider extends ServiceProvider
             return $adapter;
         });
 
-        $this->app->singletonIf(H5peditorStorage::class, function ($app) {
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            return new EditorStorage(resolve(H5PCore::class), $contentAuthorStorage);
-        });
+        $this->app->singletonIf(H5peditorStorage::class, EditorStorage::class);
 
         $this->app->singletonIf(H5PFrameworkInterface::class, function () {
             $pdoConnection = DB::connection()->getPdo();
-            /** @var ContentAuthorStorage $contentAuthorStorage */
-            $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
 
             // H5P Editor preforms permission checks when installing/updating libraries, so we override
             // the permission functions in a CLI version of the Framework
@@ -201,14 +194,14 @@ class H5PServiceProvider extends ServiceProvider
                 return new CliH5pFramework(
                     new Client(),
                     $pdoConnection,
-                    $contentAuthorStorage->getH5pTmpDisk(),
+                    Storage::disk('h5pTmp'),
                 );
             }
 
             return new Framework(
                 new Client(),
                 $pdoConnection,
-                $contentAuthorStorage->getH5pTmpDisk(),
+                Storage::disk('h5pTmp'),
             );
         });
 
@@ -216,8 +209,7 @@ class H5PServiceProvider extends ServiceProvider
             /** @var App $app */
             /** @var CerpusStorageInterface|H5PFileStorage $fileStorage */
             $fileStorage = $app->make(H5PFileStorage::class);
-            $contentAuthorStorage = $app->make(ContentAuthorStorage::class);
-            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, $contentAuthorStorage->getAssetsBaseUrl());
+            $core = new H5PCore($app->make(H5PFrameworkInterface::class), $fileStorage, Storage::disk()->url(''));
             $core->aggregateAssets = true;
 
             $app->instance(H5PCore::class, $core);

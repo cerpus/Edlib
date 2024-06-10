@@ -290,7 +290,7 @@ class H5PControllerTest extends TestCase
             default => throw new LogicException('Invalid adapter'),
         });
 
-        Storage::fake('test');
+        Storage::fake('test', ['url' => 'http://localhost/h5pstorage']);
         $resourceId = $this->faker->uuid;
 
         $depH5PVideo = H5PLibrary::factory()->create(['name' => 'H5P.Video', 'major_version' => 2, 'minor_version' => 9]);
@@ -369,8 +369,8 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($result['jsScripts']);
         $this->assertNotEmpty($result['styles']);
         $this->assertArrayHasKey('inlineStyle', $result);
-        $assetJs = Str::after($result['jsScripts'][0], '/content/assets/');
-        $assetCss = Str::after($result['styles'][0], '/content/assets/');
+        $assetJs = Str::after($result['jsScripts'][0], '/h5pstorage/');
+        $assetCss = Str::after($result['styles'][0], '/h5pstorage/');
         Storage::assertExists($assetJs);
         Storage::assertExists($assetCss);
         $this->assertStringContainsString('Here be JS content', Storage::get($assetJs));

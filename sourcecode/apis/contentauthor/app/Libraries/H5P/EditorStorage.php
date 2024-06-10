@@ -5,7 +5,6 @@ namespace App\Libraries\H5P;
 use App\H5PFile;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\DataObjects\ContentStorageSettings;
 use H5peditorFile;
 use Illuminate\Http\UploadedFile;
@@ -136,16 +135,13 @@ class EditorStorage implements \H5peditorStorage
      */
     public static function saveFileTemporarily($data, $move_file)
     {
-        /** @var ContentAuthorStorage $contentAuthorStorage */
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-
         $interface = resolve(\H5PFrameworkInterface::class);
         $path = $interface->getUploadedH5pPath();
 
         if ($move_file) {
             if (is_uploaded_file($data)) {
                 $uploadedFile = new UploadedFile($data, $path);
-                $result = $uploadedFile->storeAs(ContentStorageSettings::TEMP_DIR, $uploadedFile->getClientOriginalName(), ['disk' => $contentAuthorStorage->getH5pTmpDiskName()]);
+                $uploadedFile->storeAs(ContentStorageSettings::TEMP_DIR, $uploadedFile->getClientOriginalName(), ['disk' => 'h5pTmp']);
             }
         } else {
             // Create file from data

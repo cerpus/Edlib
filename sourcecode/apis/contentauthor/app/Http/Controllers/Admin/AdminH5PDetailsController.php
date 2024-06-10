@@ -11,6 +11,7 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
+use ErrorException;
 use Exception;
 use H5PCore;
 use H5PValidator;
@@ -39,7 +40,7 @@ class AdminH5PDetailsController extends Controller
         // Download files from bucket to tmp folder
         $this->contentAuthorStorage->copyFolder(
             Storage::disk(),
-            $this->contentAuthorStorage->getH5pTmpDisk(),
+            Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
             $tmpLibraryRelative
         );
@@ -53,7 +54,7 @@ class AdminH5PDetailsController extends Controller
         // The Validator does not check if the library folder exists before accessing files
         try {
             $libraryData = $validator->getLibraryData($h5pDataFolderName, $tmpLibraryFolder, $tmpLibraries);
-        } catch (Exception $e) {
+        } catch (ErrorException $e) {
             $validator->h5pF->setErrorMessage($e->getMessage());
         }
 
