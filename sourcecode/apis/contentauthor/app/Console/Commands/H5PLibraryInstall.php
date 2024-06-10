@@ -6,9 +6,9 @@ namespace App\Console\Commands;
 
 use App\Console\Libraries\CliH5pAjax;
 use App\H5PLibrariesHubCache;
-use App\H5POption;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class H5PLibraryInstall extends Command
 {
@@ -17,106 +17,76 @@ class H5PLibraryInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'h5p:library-manage
-                                {action   : install, update-cache}
-                                {library? : For install, machinename of library to install or update}';
+    protected $signature = 'h5p:library-install
+                                {library*      : Name of library to install or update}
+                                {--force-cache : Force update of library cache}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Install or update H5P library from h5p.org Hub, update the local cache of available libraries';
+    protected $description = 'Install or update H5P libraries from h5p.org hub, cache is updated if required';
+    protected $help = 'Install or update select libraries from h5p.org hub. If the local h5p.org hub cache is empty or stale, it will be updated before install/update, this will also register the installation with h5p.org hub if not registered.';
 
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        $action = $this->argument('action');
-
         if (!config('h5p.isHubEnabled', false)) {
             $this->newLine();
-            $this->warn("Use of h5p.org hub is not enabled. To enable set 'H5P_IS_HUB_ENABLED=true' in your environment file");
+            $this->warn("Use of h5p.org hub is not enabled. To enable set 'H5P_IS_HUB_ENABLED=true'");
             $this->newLine();
 
             return Command::FAILURE;
         }
 
-        if ($action === 'update-cache') {
-            return $this->updateCache();
-        }
-
-        if ($action === 'install') {
-            if ($this->argument('library') === null) {
-                $this->newLine();
-                $this->error('Not enough arguments (missing "library").');
-                $this->info('To see available libraries run "h5p:library-list available".');
-                return Command::FAILURE;
-            }
-
-            return $this->install($this->argument('library'));
-        }
-
-        return Command::FAILURE;
-    }
-
-    private function updateCache(): int
-    {
-        $lastUpdate = H5POption::where('option_name', 'content_type_cache_updated_at')->first();
-        if ($lastUpdate) {
-            $when = Carbon::createFromTimestamp($lastUpdate->option_value)->format('Y-m-d H:i:s e');
+        $cacheUpdate = $this->call('h5p:library-hub-cache', ['--force' => $this->option('force-cache')]);
+        if ($cacheUpdate === Command::SUCCESS) {
+            $this->install();
         } else {
-            $when = 'Never';
-        }
-
-        $this->line("Previous update was: <fg=yellow>$when</>");
-        $this->line("Updating libraries list...");
-
-        $core = app(\H5PCore::class);
-        $data = $core->updateContentTypeCache();
-
-        if ($data === false) {
-            foreach ($core->h5pF->getMessages('error') as $message) {
-                $this->error($message);
-                return Command::FAILURE;
-            }
-        }
-        foreach ($core->h5pF->getMessages('info') as $message) {
-            $this->info($message);
+            return $cacheUpdate;
         }
 
         return Command::SUCCESS;
     }
 
-    private function install(string $library): int
+    private function install(): int
     {
-        $cache = H5PLibrariesHubCache::where('name', $library)->first();
-        if (!$cache) {
-            $this->error("Library '$library' was not found in the cache");
-            return Command::FAILURE;
-        }
+        $hasError = false;
+        $libraries = $this->argument('library');
 
-        $result = json_decode(CliH5PAjax::installLibrary($library), true);
+        foreach ($libraries as $library) {
+            $cache = H5PLibrariesHubCache::where(DB::raw('lower(name)'), '=', Str::lower($library))->first();
+            if (!$cache) {
+                $hasError = true;
+                $this->error("   - $library: Not found in cache, skipping");
+                continue;
+            }
 
-        if ($result['success']) {
-            $this->info('Installation complete');
-            if (isset($result['data']['details']) && count($result['data']['details']) > 0) {
-                foreach ($result['data']['details'] as $detail) {
-                    $this->line($detail);
+            $this->output->write("   - $cache->name: ");
+            $result = json_decode(CliH5pAjax::installLibrary($library), true);
+
+            if ($result['success']) {
+                if (isset($result['data']['details']) && count($result['data']['details']) > 0) {
+                    foreach ($result['data']['details'] as $detail) {
+                        $this->info($detail);
+                    }
+                } else {
+                    $this->info('No change, already up to date');
                 }
             } else {
-                $this->line('No libraries was installed or updated');
+                $hasError = true;
+                $this->error('Failed');
+                if (isset($result['message'])) {
+                    $this->error('      ' . $result['message']);
+                }
             }
-
-            return Command::SUCCESS;
-        } else {
-            $this->info('Installation failed');
-            if (isset($result['message'])) {
-                $this->info($result['message']);
-            }
-
-            return Command::FAILURE;
         }
+
+        $this->newLine();
+
+        return $hasError ? Command::FAILURE : Command::SUCCESS;
     }
 }

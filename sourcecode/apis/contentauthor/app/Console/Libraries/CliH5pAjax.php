@@ -3,13 +3,8 @@
 namespace App\Console\Libraries;
 
 use App;
-use App\Libraries\ContentAuthorStorage;
-use App\Libraries\H5P\EditorAjax;
-use App\Libraries\H5P\EditorStorage;
-use H5PCore;
 use H5peditor;
 use H5PEditorEndpoints;
-use H5PFileStorage;
 use RuntimeException;
 
 class CliH5pAjax
@@ -20,16 +15,7 @@ class CliH5pAjax
             throw new RuntimeException('Interface not supported');
         }
 
-        // H5P Editor preforms permission checks when installing/updating libraries, so we override
-        // the permission functions in a CLI version of the Framework
-        $cliFramework = app(CliH5pFramework::class);
-
-        $fileStorage = app(H5PFileStorage::class);
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-        $core = new H5PCore($cliFramework, $fileStorage, $contentAuthorStorage->getAssetsBaseUrl());
-        $core->aggregateAssets = true; // @phpstan-ignore property.notFound
-        $editor = new H5peditor($core, app(EditorStorage::class), app(EditorAjax::class));
-
+        $editor = app(H5peditor::class);
         $ajax = $editor->ajax;
 
         ob_start();

@@ -211,7 +211,7 @@ class H5PLibraryList extends Command
         $this->line('Color legend:');
         $this->line(' - <fg=yellow>Major or minor</> release available, will be installed in addition to existing');
         $this->line(' - <fg=red>Patch</> release available, will replace existing library');
-        $this->line(' - <fg=green>Installed</> version is newer');
+        $this->line(' - <fg=green>Installed</> version is newer (use -a option to list)');
         $this->newLine();
 
         $this->printCacheLastUpdated();

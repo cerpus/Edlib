@@ -193,9 +193,19 @@ class Framework implements \H5PFrameworkInterface, Result
         $this->errorMessages[] = $message;
     }
 
+    public function clearErrorMessages(): void
+    {
+        $this->errorMessages = [];
+    }
+
     public function setInfoMessage($message): void
     {
         $this->infoMessages[] = $message;
+    }
+
+    public function clearInfoMessages(): void
+    {
+        $this->infoMessages = [];
     }
 
     public function getMessages($type): array

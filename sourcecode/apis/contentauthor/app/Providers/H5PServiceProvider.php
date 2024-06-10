@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Console\Libraries\CliH5pFramework;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
@@ -193,6 +194,16 @@ class H5PServiceProvider extends ServiceProvider
             $pdoConnection = DB::connection()->getPdo();
             /** @var ContentAuthorStorage $contentAuthorStorage */
             $contentAuthorStorage = $this->app->make(ContentAuthorStorage::class);
+
+            // H5P Editor preforms permission checks when installing/updating libraries, so we override
+            // the permission functions in a CLI version of the Framework
+            if ($this->app->runningInConsole() && !$this->app->runningUnitTests()) {
+                return new CliH5pFramework(
+                    new Client(),
+                    $pdoConnection,
+                    $contentAuthorStorage->getH5pTmpDisk(),
+                );
+            }
 
             return new Framework(
                 new Client(),
