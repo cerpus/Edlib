@@ -14,7 +14,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Substitute for {@link TestCase::artisan()} that always returns a pending
      * command.
-     * @param array<string, string> $parameters
+     * @param array<string, string|bool> $parameters
      */
     protected function command(string $command, array $parameters = []): PendingCommand
     {

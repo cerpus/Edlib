@@ -30,6 +30,7 @@ class LtiTool extends Model
         'send_email' => false,
         'edit_mode' => LtiToolEditMode::Replace,
         'proxy_launch' => false,
+        'edit_mode' => LtiToolEditMode::Replace,
     ];
 
     protected $casts = [
