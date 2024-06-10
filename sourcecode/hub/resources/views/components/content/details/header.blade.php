@@ -24,7 +24,7 @@
         <ul class="nav nav-underline">
             <li class="nav-item">
                 <a
-                    href="{{ route('content.details', [$content]) }}"
+                    href="{{ $content->getDetailsUrl() }}"
                     @class(['nav-link', 'active' => $current === 'content'])
                     @if ($current === 'content') aria-current="page" @endif
                 >

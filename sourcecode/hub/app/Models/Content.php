@@ -80,6 +80,23 @@ class Content extends Model
         return $version->getTitle();
     }
 
+    /**
+     * Get the appropriate URL to the content's details page. If the content is
+     * unpublished, returns the URL to the latest draft version.
+     * @throws DomainException if there is no version
+     */
+    public function getDetailsUrl(): string
+    {
+        if (isset($this->latestPublishedVersion)) {
+            return route('content.details', [$this]);
+        }
+
+        $version = $this->latestDraftVersion
+            ?? throw new DomainException('No usable URL for the content');
+
+        return route('content.version-details', [$this, $version]);
+    }
+
     public function toItemSelectionRequest(): Oauth1Request
     {
         $returnUrl = session()->get('lti.content_item_return_url')

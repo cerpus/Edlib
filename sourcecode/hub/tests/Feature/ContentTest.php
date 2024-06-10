@@ -9,6 +9,7 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use Carbon\Carbon;
+use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -140,5 +141,37 @@ final class ContentTest extends TestCase
         $content->save();
 
         $this->assertStringStartsWith('0000000kh0', $content->id);
+    }
+
+    public function testGeneratesUnversionedDetailsUrlForPublishedContent(): void
+    {
+        $content = Content::factory()->withPublishedVersion()->create();
+        $id = $content->id ?: $this->fail('Expected content ID');
+
+        $this->assertSame(
+            "https://hub-test.edlib.test/content/{$id}",
+            $content->getDetailsUrl(),
+        );
+    }
+
+    public function testGeneratesVersionedDetailsUrlForDraftContent(): void
+    {
+        $content = Content::factory()
+            ->withVersion(ContentVersion::factory()->unpublished())
+            ->create();
+        $id = $content->id ?: $this->fail('Expected content ID');
+        $versionId = $content->latestVersion?->id ?: $this->fail('Expected version ID');
+
+        $this->assertSame(
+            "https://hub-test.edlib.test/content/{$id}/version/{$versionId}",
+            $content->getDetailsUrl(),
+        );
+    }
+
+    public function testThrowsWhenGeneratingUrlToVersionlessContent(): void
+    {
+        $this->expectException(DomainException::class);
+
+        (new Content())->getDetailsUrl();
     }
 }
