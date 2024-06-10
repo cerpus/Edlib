@@ -134,6 +134,13 @@ class ContentController extends Controller
         ]);
     }
 
+    public function roles(Content $content): View
+    {
+        return view('content.roles', [
+            'content' => $content,
+        ]);
+    }
+
     public function create(): View
     {
         $tools = LtiTool::all();

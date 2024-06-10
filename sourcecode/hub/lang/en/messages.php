@@ -188,4 +188,10 @@ return [
     'this-version' => 'This version',
     'created-with' => 'Created with',
     'content-copy-suffix' => '(copy)',
+    'roles' => 'Roles',
+    'role' => 'Role',
+    'owner' => 'Owner',
+    'editor' => 'Editor',
+    'reader' => 'Reader',
+    'content-has-no-roles' => 'No roles are assigned to this content.',
 ];

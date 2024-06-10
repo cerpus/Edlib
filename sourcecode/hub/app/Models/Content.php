@@ -273,9 +273,8 @@ class Content extends Model
     {
         return $this->belongsToMany(User::class)
             ->withPivot('role')
-            ->withCasts([
-                'role' => ContentUserRole::class,
-            ]);
+            ->withTimestamps()
+            ->using(ContentUser::class);
     }
 
     /**

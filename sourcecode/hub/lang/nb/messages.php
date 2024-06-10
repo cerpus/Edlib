@@ -158,4 +158,10 @@ return [
     'this-version' => 'Denne versjonen',
     'created-with' => 'Laget med',
     'content-copy-suffix' => '(kopi)',
+    'roles' => 'Roller',
+    'role' => 'Rolle',
+    'owner' => 'Eier',
+    'editor' => 'Redaktør',
+    'reader' => 'Leser',
+    'content-has-no-roles' => 'Ingen roller har blitt satt for dette innholdet.',
 ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Enums\ContentUserRole;
 use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
@@ -693,5 +694,44 @@ final class ContentTest extends DuskTestCase
                     'https://hub-test.edlib.test/c/' . $content->id,
                 );
         });
+    }
+
+    public function testViewsContentRoles(): void
+    {
+        $content = Content::factory()
+            ->withUser(User::factory()->name('Owner McOwnerson'), ContentUserRole::Owner)
+            ->withUser(User::factory()->name('Editor McEditorson'), ContentUserRole::Editor)
+            ->withUser(User::factory()->name('Reader McReaderson'), ContentUserRole::Reader)
+            ->withPublishedVersion()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->admin()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/' . $content->id . '/roles')
+                ->with(
+                    'main table tbody',
+                    fn (Browser $tbody) => $tbody
+                        ->with(
+                            'tr:nth-child(1)',
+                            fn (Browser $row) => $row
+                                ->assertSeeIn('td:nth-child(1)', 'Owner McOwnerson')
+                                ->assertSeeIn('td:nth-child(2)', 'Owner')
+                        )
+                        ->with(
+                            'tr:nth-child(2)',
+                            fn (Browser $row) => $row
+                                ->assertSeeIn('td:nth-child(1)', 'Editor McEditorson')
+                                ->assertSeeIn('td:nth-child(2)', 'Editor')
+                        )
+                        ->with(
+                            'tr:nth-child(3)',
+                            fn (Browser $row) => $row
+                                ->assertSeeIn('td:nth-child(1)', 'Reader McReaderson')
+                                ->assertSeeIn('td:nth-child(2)', 'Reader')
+                        )
+                )
+        );
     }
 }

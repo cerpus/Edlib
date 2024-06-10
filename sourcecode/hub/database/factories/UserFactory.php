@@ -28,6 +28,11 @@ class UserFactory extends Factory
         ];
     }
 
+    public function name(string $name): static
+    {
+        return $this->state(['name' => $name]);
+    }
+
     public function withEmail(string $email): static
     {
         return $this->state(['email' => $email]);

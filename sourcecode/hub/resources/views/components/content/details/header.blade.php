@@ -40,6 +40,15 @@
                     {{ trans('messages.history') }}
                 </a>
             </li>
+            <li class="nav-item">
+                <a
+                    href="{{ route('content.roles', [$content]) }}"
+                    @class(['nav-link', 'active' => $current === 'roles'])
+                    @if ($current === 'roles') aria-current="page" @endif
+                >
+                    {{ trans('messages.roles') }}
+                </a>
+            </li>
         </ul>
     </nav>
 @endcan
