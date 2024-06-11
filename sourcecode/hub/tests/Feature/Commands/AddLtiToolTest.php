@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Commands;
+namespace Tests\Feature\Commands;
 
 use App\Enums\LtiToolEditMode;
 use App\Enums\LtiVersion;
