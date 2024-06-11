@@ -28,7 +28,6 @@ class LtiTool extends Model
     protected $attributes = [
         'send_name' => false,
         'send_email' => false,
-        'edit_mode' => LtiToolEditMode::Replace,
         'proxy_launch' => false,
         'edit_mode' => LtiToolEditMode::Replace,
     ];
