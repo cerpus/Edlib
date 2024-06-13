@@ -1,5 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', App::getLocale()) }}">
+@php
+    $locale = strtolower(str_replace('_', '-', Session::get('locale', App::getLocale())));
+    if (strlen($locale) > 2 && !str_contains($locale, '-')) {
+        $locale = Iso639p3::code2letters($locale);
+    }
+@endphp
+<html lang="{{ $locale }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

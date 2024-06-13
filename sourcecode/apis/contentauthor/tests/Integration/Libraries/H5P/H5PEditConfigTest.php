@@ -8,7 +8,6 @@ use App\H5PLibrary;
 use App\Libraries\H5P\H5PConfigAbstract;
 use App\Libraries\H5P\H5PEditConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Tests\TestCase;
 
@@ -19,8 +18,11 @@ class H5PEditConfigTest extends TestCase
     /** @dataProvider provider_adapterMode */
     public function test_getConfig(string $adapterMode): void
     {
-        Config::set('ndla-mode.h5p.audio.url', 'https://audio.url');
-        Config::set('ndla-mode.h5p.image.url', 'https://ndla-image.url');
+        config([
+            'ndla-mode.h5p.audio.url' => 'https://ndla-audio.url',
+            'ndla-mode.h5p.image.url' => 'https://ndla-image.url',
+            "h5p.default-resource-language" => 'fi',
+        ]);
 
         Session::put('adapterMode', $adapterMode);
 
@@ -73,8 +75,8 @@ class H5PEditConfigTest extends TestCase
         $this->assertNotEmpty($data->editor->apiVersion['majorVersion']);
         $this->assertNotEmpty($data->editor->apiVersion['minorVersion']);
         $this->assertNotEmpty($data->editor->extraAllowedContent);
-        $this->assertSame('en', $data->editor->language);
-        $this->assertSame('en', $data->editor->defaultLanguage);
+        $this->assertSame('fi', $data->editor->language);
+        $this->assertSame('fi', $data->editor->defaultLanguage);
 
         // Adapter specific
         if ($adapterMode === 'ndla') {
@@ -90,7 +92,7 @@ class H5PEditConfigTest extends TestCase
             $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
-            $this->assertSame('https://audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
+            $this->assertSame('https://ndla-audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
             $this->assertSame('https://ndla-image.url/image-api/v3/images', $data->imageBrowserDetailsUrl);
         } elseif ($adapterMode === 'cerpus') {
             $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
