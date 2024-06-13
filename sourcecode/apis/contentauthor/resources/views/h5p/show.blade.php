@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="noindex,indexifembedded">
     <title>{{ $title }}</title>
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/h5p-core.css') }}">
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/h5pcss.css') }}">
