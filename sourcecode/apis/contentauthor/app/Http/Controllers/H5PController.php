@@ -418,6 +418,9 @@ class H5PController extends Controller
                     published: H5PContent::isUserPublishEnabled()
                         ? $request->validated('isPublished')
                         : null,
+                    shared: ($share = $request->validated('share'))
+                        ? $share === 'share'
+                        : null,
                 ),
                 $request->input('redirectToken'),
             ),
@@ -531,6 +534,9 @@ class H5PController extends Controller
                 $content->toLtiContent(
                     published: H5PContent::isUserPublishEnabled()
                         ? $request->validated('isPublished')
+                        : null,
+                    shared: ($share = $request->validated('share'))
+                        ? $share === 'share'
                         : null,
                 ),
                 $request->input('redirectToken'),

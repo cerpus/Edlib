@@ -35,8 +35,12 @@ communicate extra information that isn't part of the LTI Deep-Linking spec:
     * `@id`: `https://spec.edlib.com/lti/vocab#published`
     * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
 
+* `shared`
+    * `@id`: `https://spec.edlib.com/lti/vocab#shared`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
+
 * `tag`
-    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
+    * `@id`: `https://spec.edlib.com/lti/vocab#tag`
     * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
     * Can be either a list of strings, or just a string.
 

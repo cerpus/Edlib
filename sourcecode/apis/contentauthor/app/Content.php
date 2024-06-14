@@ -513,8 +513,10 @@ abstract class Content extends Model
         );
     }
 
-    public function toLtiContent(bool|null $published = null): LtiContent
-    {
+    public function toLtiContent(
+        bool|null $published = null,
+        bool|null $shared = null,
+    ): LtiContent {
         return new LtiContent(
             id: $this->id,
             url: $this->getUrl(),
@@ -529,6 +531,7 @@ abstract class Content extends Model
             license: $this->license,
             iconUrl: $this->getIconUrl(),
             published: $published,
+            shared: $shared,
             tags: $this->getTags(),
         );
     }

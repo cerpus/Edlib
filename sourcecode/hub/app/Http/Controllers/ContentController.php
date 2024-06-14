@@ -14,6 +14,7 @@ use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
@@ -253,6 +254,11 @@ class ContentController extends Controller
                 'role' => ContentUserRole::Owner,
             ]);
             $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+
+            if ($item instanceof EdlibLtiLinkItem && $item->isShared() !== null) {
+                $content->shared = $item->isShared();
+            }
+
             $content->save();
 
             return $version;
@@ -298,6 +304,11 @@ class ContentController extends Controller
             $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
             $version->previousVersion()->associate($previousVersion);
             $version->save();
+
+            if ($item instanceof EdlibLtiLinkItem && $item->isShared() !== null) {
+                $content->shared = $item->isShared();
+                $content->save();
+            }
 
             return $version;
         });

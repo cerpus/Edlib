@@ -24,6 +24,7 @@ final readonly class LtiContent
         public string|null $license = null,
         public string|null $iconUrl = null,
         public bool|null $published = null,
+        public bool|null $shared = null,
         public array $tags = [],
     ) {
     }
