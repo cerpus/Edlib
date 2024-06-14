@@ -18,8 +18,8 @@
                             <tr>
                                 <td>{{$resource->id}}</td>
                                 <td>{{$resource->title}}</td>
-                                <td>{{sprintf('%s (%s %d.%d.%d)', $resource->library->title, $resource->library->name, $resource->library->major_version, $resource->library->minor_version, $resource->library->patch_version)}}</td>
-                                <td>{{$resource->created_at}}</td>
+                                <td>{{sprintf('%s (%s)', $resource->library->title, $resource->library->getLibraryString(true))}}</td>
+                                <td>{{$resource->created_at->format('Y-m-d H:i:s e')}}</td>
                                 <td>{{$resource->ownerName}}</td>
                             </tr>
                         @empty
