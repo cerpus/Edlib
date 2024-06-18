@@ -15,7 +15,6 @@
     @foreach( $styles as $css)
         {!! HTML::style($css) !!}
     @endforeach
-    {!! HTML::script('https://code.jquery.com/jquery-1.12.4.min.js') !!}
     <script type="text/x-mathjax-config">
         // When MathJax is done, check if a resize of the container is required
         MathJax.Hub.Register.StartupHook("End", function () {
@@ -49,9 +48,9 @@
     @endforeach
     {!! HTML::script('js/listener.js') !!}
     <script>
-        H5P.jQuery.ajaxSetup({
+        window.H5P.jQuery.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': H5P.jQuery('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': window.H5P.jQuery('meta[name="csrf-token"]').attr('content')
             }
         });
     </script>
