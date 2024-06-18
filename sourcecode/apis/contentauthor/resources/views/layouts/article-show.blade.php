@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="article-title" content="{{ strip_tags($article->title) }}">
     <meta name="article-url" content="{{ route('article.show', $article) }}">
+    <meta name="robots" content="noindex,indexifembedded">
     <title>@yield('title', 'Article')</title>
     <link rel="stylesheet" href="{{ mix('css/content_explorer_bootstrap.css') }}">
     <link rel="stylesheet" href="{{ mix('css/h5picons.css') }}">
