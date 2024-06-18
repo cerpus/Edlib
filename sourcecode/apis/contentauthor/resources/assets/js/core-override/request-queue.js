@@ -1,3 +1,5 @@
+const H5P = window.H5P = window.H5P || {};
+
 /**
  * Queue requests and handle them at your convenience
  *

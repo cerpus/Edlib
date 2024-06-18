@@ -29,7 +29,6 @@ Homestead.json
 !/public/js/videos/brightcove.js
 !/public/js/videos/streamps.js
 !/public/js/h5p/ndlah5p-youtube.js
-!public/js/h5p/core-override
 !/public/js/h5p/h5peditor-pre-save.js
 !public/css
 /public/css/*
