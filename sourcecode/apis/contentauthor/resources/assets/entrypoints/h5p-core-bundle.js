@@ -1,5 +1,4 @@
-import '../js/core-override/h5p-jquery.js';
-import '../../../vendor/h5p/h5p-core/js/h5p.js';
+import '../js/core-override/jquery.js';
 import '../../../vendor/h5p/h5p-core/js/h5p.js';
 import '../../../vendor/h5p/h5p-core/js/h5p-event-dispatcher.js';
 import '../../../vendor/h5p/h5p-core/js/h5p-x-api-event.js';
