@@ -1,3 +1,5 @@
+const H5P = window.H5P = window.H5P || {};
+
 /**
  * H5P.ContentType is a base class for all content types. Used by newRunnable()
  *
