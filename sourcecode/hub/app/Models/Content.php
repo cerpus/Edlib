@@ -252,6 +252,14 @@ class Content extends Model
     }
 
     /**
+     * @return BelongsToMany<Tag>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class)->withPivot('verbatim_name');
+    }
+
+    /**
      * @return HasMany<ContentView>
      */
     public function views(): HasMany

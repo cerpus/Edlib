@@ -38,7 +38,7 @@ class Tag extends Model
     /**
      * @return array{prefix: string, name: string}
      */
-    private static function parse(string $tag): array
+    public static function parse(string $tag): array
     {
         $parts = explode(':', $tag, 2);
 

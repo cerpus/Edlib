@@ -8,10 +8,13 @@ use App\Enums\ContentUserRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\Tag;
 use App\Models\User;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\Factory;
+
+use function is_string;
 
 /**
  * @template-extends Factory<Content>
@@ -28,6 +31,22 @@ final class ContentFactory extends Factory
     public function shared(bool $shared = true): self
     {
         return $this->state(['shared' => $shared]);
+    }
+
+    public function tag(TagFactory|string $tag, string|null $verbatimName = null): self
+    {
+        if (is_string($tag)) {
+            ['name' => $name, 'prefix' => $prefix] = Tag::parse($tag);
+
+            $tag = Tag::factory(null, [
+                'name' => $name,
+                'prefix' => $prefix,
+            ]);
+        }
+
+        return $this->hasAttached($tag, [
+            'verbatim_name' => $verbatimName,
+        ], 'tags');
     }
 
     public function trashed(DateTimeInterface|null $deletedAt = null): self

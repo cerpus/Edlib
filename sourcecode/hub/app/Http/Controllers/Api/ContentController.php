@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\ContentRequest;
 use App\Models\Content;
+use App\Models\Tag;
 use App\Transformers\ContentTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -43,11 +44,16 @@ final readonly class ContentController
         $content = DB::transaction(function () use ($request) {
             $content = new Content();
             $content->fill($request->validated());
-            $content->trashed();
-            $content->save();
+            $content->saveOrFail();
 
             foreach ($request->getRoles() as ['user' => $user, 'role' => $role]) {
                 $content->users()->attach($user, ['role' => $role]);
+            }
+
+            foreach ($request->getTags() as $tag) {
+                $content->tags()->attach(Tag::findOrCreateFromString($tag), [
+                    'verbatim_name' => Tag::extractVerbatimName($tag)
+                ]);
             }
 
             return $content;

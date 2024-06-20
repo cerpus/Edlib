@@ -7,8 +7,11 @@ namespace Tests\Feature;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use Carbon\Carbon;
+use Cerpus\EdlibResourceKit\Oauth1\Request;
+use Cerpus\EdlibResourceKit\Oauth1\Signer;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -90,6 +93,30 @@ final class ContentTest extends TestCase
             'https://hub-test.edlib.test/lti/content/' . $content->id,
             $content->toLtiLinkItem()->getUrl(),
         );
+    }
+
+    public function testCanLaunchContentByEdlib2UsageId(): void
+    {
+        $url = 'https://hub-test.edlib.test/lti/content/by-edlib2-usage/a4e99aa5-a68c-4d26-9118-451fc05812b5';
+
+        $credentials = LtiPlatform::factory()->create()->getOauth1Credentials();
+
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->tag('edlib2_usage_id:a4e99aa5-a68c-4d26-9118-451fc05812b5')
+            ->create();
+
+        $parameters = $this->app->make(Signer::class)
+            ->sign(new Request('POST', $url, [
+                'lti_message_type' => 'basic-lti-launch-request',
+                'lti_version' => 'LTI-1p0',
+            ]), $credentials)
+            ->toArray();
+
+        $this
+            ->withCookie('_edlib_cookies', '1')
+            ->post($url, $parameters)
+            ->assertRedirect('https://hub-test.edlib.test/content/' . $content->id . '/embed');
     }
 
     public function testCannotPreviewUnpublishedContent(): void

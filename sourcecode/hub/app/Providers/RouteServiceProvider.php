@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Models\Content;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -34,6 +35,13 @@ class RouteServiceProvider extends ServiceProvider
                 ->withTrashed()
                 ->where('id', $value)
                 ->firstOrFail();
+        });
+
+        Route::bind('edlib2UsageContent', function (string $value): Content {
+            return Content::whereHas('tags', fn (Builder $query) => $query
+                ->where('prefix', 'edlib2_usage_id')
+                ->where('name', $value)
+            )->limit(1)->firstOrFail();
         });
 
         $this->configureRateLimiting();

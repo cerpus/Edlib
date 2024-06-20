@@ -42,6 +42,8 @@ final class ContentRequest extends FormRequest
                 Rule::enum(ContentUserRole::class),
                 'required_with:roles.*.user',
             ],
+
+            'tags.*' => ['string'],
         ];
     }
 
@@ -56,5 +58,13 @@ final class ContentRequest extends FormRequest
             'user' => User::where('id', $role['user'])->firstOrFail(),
             'role' => ContentUserRole::from($role['role']),
         ], $roles);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTags(): array
+    {
+        return $this->validated('tags', []);
     }
 }
