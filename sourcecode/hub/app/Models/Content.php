@@ -64,6 +64,11 @@ class Content extends Model
         'shared' => 'boolean',
     ];
 
+    protected $fillable = [
+        'shared',
+        'created_at',
+    ];
+
     public static function booted(): void
     {
         static::addGlobalScope('atLeastOneVersion', function (Builder $query) {

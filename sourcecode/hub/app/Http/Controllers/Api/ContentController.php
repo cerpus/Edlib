@@ -9,6 +9,7 @@ use App\Models\Content;
 use App\Transformers\ContentTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 use function fractal;
@@ -39,9 +40,17 @@ final readonly class ContentController
 
     public function store(ContentRequest $request): JsonResponse
     {
-        $content = new Content();
-        $content->forceFill($request->validated());
-        $content->saveOrFail();
+        $content = DB::transaction(function () use ($request) {
+            $content = new Content();
+            $content->fill($request->validated());
+            $content->save();
+
+            foreach ($request->getRoles() as ['user' => $user, 'role' => $role]) {
+                $content->users()->attach($user, ['role' => $role]);
+            }
+
+            return $content;
+        });
 
         return fractal($content)
             ->transformWith($this->transformer)

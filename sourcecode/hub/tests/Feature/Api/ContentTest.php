@@ -137,9 +137,17 @@ final class ContentTest extends TestCase
 
     public function testStoresContent(): void
     {
+        $owner = User::factory()->create();
+
         $data = [
             'created_at' => $this->faker->dateTime->format('c'),
             'shared' => $this->faker->boolean,
+            'roles' => [
+                [
+                    'user' => $owner->id,
+                    'role' => 'owner',
+                ]
+            ],
         ];
 
         $this->postJson('/api/contents', $data)
@@ -161,6 +169,14 @@ final class ContentTest extends TestCase
                             ->where('shared', $data['shared'])
                             ->has('links.self')
                             ->has('versions')
+                            ->where('roles', [
+                                'data' => [
+                                    [
+                                        'user_id' => $owner->id,
+                                        'role' => 'owner',
+                                    ],
+                                ],
+                            ])
                     )
             );
     }
