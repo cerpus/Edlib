@@ -12,7 +12,6 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 use function abort;
 use function to_route;
@@ -59,7 +58,7 @@ final readonly class LtiController
                 return to_route('content.embed', [$content]);
 
             default:
-                throw new BadRequestException('Invalid LTI message type');
+                abort(400, 'Invalid LTI message type');
         }
     }
 
