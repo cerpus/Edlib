@@ -169,8 +169,7 @@ Route::prefix('/lti')->middleware([
         ->uses([LtiController::class, 'content'])
         ->name('lti.content')
         ->can('view', 'content')
-        ->whereUlid('content')
-        ->middleware('lti.launch-type:basic-lti-launch-request');
+        ->whereUlid('content');
 
     Route::post('/dl')
         ->uses([LtiController::class, 'select'])

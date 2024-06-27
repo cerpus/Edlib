@@ -12,7 +12,9 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
+use function abort;
 use function to_route;
 
 final readonly class LtiController
@@ -41,12 +43,24 @@ final readonly class LtiController
 
     public function content(Content $content, Request $request): RedirectResponse
     {
-        $key = $request->attributes->get('lti')['oauth_consumer_key'];
-        $platform = LtiPlatform::where('key', $key)->first();
+        switch (($request->attributes->get('lti')['lti_message_type'] ?? '')) {
+            case 'ContentItemSelectionRequest':
+                $version = $content->latestVersion
+                    ?? abort(404, 'The content has no version to edit');
 
-        $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
+                return to_route('content.edit', [$content, $version]);
 
-        return to_route('content.embed', [$content]);
+            case 'basic-lti-launch-request':
+                $key = $request->attributes->get('lti')['oauth_consumer_key'];
+                $platform = LtiPlatform::where('key', $key)->first();
+
+                $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
+
+                return to_route('content.embed', [$content]);
+
+            default:
+                throw new BadRequestException('Invalid LTI message type');
+        }
     }
 
     public function select(): RedirectResponse
