@@ -14,7 +14,6 @@ use App\Http\Controllers\Admin\ImportExportSettingsController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
-use App\Http\Controllers\Admin\NDLAReplaceRefController;
 use App\Http\Controllers\Admin\VersioningController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -104,11 +103,5 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         // Locks admin
         Route::get("locks", [LocksController::class, 'index'])->name("admin.locks");
         Route::delete("locks", [LocksController::class, 'destroy'])->name("admin.locks.delete");
-
-        // Refs
-        Route::get("video/ndla/replace", [NDLAReplaceRefController::class, 'index'])->name("admin.video.ndla.replaceref");
-        Route::get("video/ndla/doreplaceref", [NDLAReplaceRefController::class, 'doReplaceRef'])->name("admin.video.ndla.doreplaceref");
-        Route::get("video/ndla/populatetargets", [NDLAReplaceRefController::class, 'populateTable'])->name("admin.video.ndla.populatetargets");
-        Route::get("video/ndla/reindexrefs", [NDLAReplaceRefController::class, 'reindex'])->name("admin.video.ndla.reindexrefs");
     }
 );

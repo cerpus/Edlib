@@ -50,9 +50,6 @@
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
-                            <li>
-                                <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
-                            </li>
                         </ul>
                     </li>
                     @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
