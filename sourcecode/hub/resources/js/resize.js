@@ -40,6 +40,7 @@ addEventListener('message', (event) => {
     if (window.parent) {
         // forward to parent iframe
         parent.postMessage({
+            context: 'h5p',
             action: 'resize',
             scrollHeight: event.data.scrollHeight,
         }, '*');
