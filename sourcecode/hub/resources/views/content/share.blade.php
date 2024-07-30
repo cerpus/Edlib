@@ -6,7 +6,7 @@
     <nav class="d-flex gap-3 my-3">
         <span class="flex-grow-1" role="separator"></span>
 
-        <a href="{{ route('content.details', [$content]) }}" class="btn btn-primary">
+        <a href="{{ $content->getDetailsUrl() }}" class="btn btn-primary">
             {{ trans('messages.more-details') }}
         </a>
     </nav>

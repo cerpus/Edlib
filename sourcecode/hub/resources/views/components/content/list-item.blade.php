@@ -5,7 +5,7 @@
     <div class="card-body">
         <div class="row">
             <a
-                href="{{ route('content.details', [$content->id]) }}"
+                href="{{ $content->getDetailsUrl() }}"
                 class="col text-decoration-none link-body-emphasis"
                 @if ($titlePreviews)
                     hx-get="{{ route('content.preview', [$content, $version]) }}"

@@ -57,7 +57,7 @@
                             {{ trans('messages.preview') }}
                         </x-content.preview-link>
                     @else
-                        <a href="{{ route('content.details', [$content]) }}" class="dropdown-item">
+                        <a href="{{ $content->getDetailsUrl() }}" class="dropdown-item">
                             <x-icon name="info-lg" class="me-2" />
                             {{ trans('messages.details') }}
                         </a>
