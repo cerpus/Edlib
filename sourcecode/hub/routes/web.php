@@ -221,6 +221,11 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     Route::prefix('/lti-platforms')->controller(LtiPlatformController::class)->group(function () {
         Route::get('', 'index')->name('admin.lti-platforms.index');
         Route::post('', 'store')->name('admin.lti-platforms.store');
+        Route::delete('/{platform}')
+            ->uses([LtiPlatformController::class, 'destroy'])
+            ->name('admin.lti-platforms.remove')
+            ->can('delete', 'platform')
+            ->whereUlid('platform');
     });
 
     Route::prefix('/lti-tools')->controller(LtiToolController::class)->group(function () {

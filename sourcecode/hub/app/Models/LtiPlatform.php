@@ -8,6 +8,7 @@ use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Random\Randomizer;
 
@@ -15,6 +16,7 @@ class LtiPlatform extends Model
 {
     use HasFactory;
     use HasUlids;
+    use SoftDeletes;
 
     /** @var array<string, mixed> */
     protected $attributes = [

@@ -126,4 +126,22 @@ final class LtiToolTest extends TestCase
             ->post('/lti/dl', $request->toArray())
             ->assertRedirect('https://example.com/return?lti_errorlog=Invalid+LTI+launch+type%2C+expected+%22ContentItemSelectionRequest%22+but+got+%22basic-lti-launch-request%22');
     }
+
+    public function testSoftDeletedPlatformsCannotLaunchEdlib(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $credentials = $platform->getOauth1Credentials();
+        $platform->delete();
+
+        $request = $this->oauthSigner->sign(
+            new Request('POST', 'https://hub-test.edlib.test/lti/samples/presentation', [
+                'lti_message_type' => 'basic-lti-launch-request',
+            ]),
+            $credentials,
+        );
+
+        $this->withCookie('_edlib_cookies', '1')
+            ->post('https://hub-test.edlib.test/lti/samples/presentation', $request->toArray())
+            ->assertUnauthorized();
+    }
 }

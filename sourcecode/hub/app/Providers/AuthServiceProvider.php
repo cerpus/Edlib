@@ -6,9 +6,11 @@ namespace App\Providers;
 
 use App\Configuration\Features;
 use App\Models\Content;
+use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
 use App\Policies\ContentPolicy;
+use App\Policies\LtiPlatformPolicy;
 use App\Policies\LtiToolPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -24,6 +26,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Content::class => ContentPolicy::class,
+        LtiPlatform::class => LtiPlatformPolicy::class,
         LtiTool::class => LtiToolPolicy::class,
     ];
 

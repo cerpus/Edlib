@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
 use Laravel\Dusk\Browser;
@@ -41,5 +42,31 @@ final class AdminTest extends DuskTestCase
                 })
                 ->assertSee('The LTI tool "Unused tool" was removed');
         });
+    }
+
+    public function testCanRemoveLtiPlatforms(): void
+    {
+        LtiPlatform::factory()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->admin()->create()->email)
+                ->visit('/admin/lti-platforms')
+                ->with(
+                    'main .lti-platform',
+                    fn (Browser $main) => $main
+                        ->press('Remove')
+                )
+                ->waitFor('#htmxConfirmModal')
+                ->with(
+                    '#htmxConfirmModal',
+                    fn (Browser $modal) => $modal
+                        ->assertSee('Are you sure you want to remove the LTI platform?')
+                        ->press('OK')
+                )
+                ->waitForReload()
+                ->assertNotPresent('.lti-platform')
+                ->assertSee('The LTI platform has been removed')
+        );
     }
 }
