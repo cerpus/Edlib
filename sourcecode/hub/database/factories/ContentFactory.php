@@ -9,6 +9,8 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
 use App\Models\User;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +28,15 @@ final class ContentFactory extends Factory
     public function shared(bool $shared = true): self
     {
         return $this->state(['shared' => $shared]);
+    }
+
+    public function trashed(DateTimeInterface|null $deletedAt = null): self
+    {
+        return $this->state([
+            'deleted_at' => DateTimeImmutable::createFromInterface(
+                $deletedAt ?? $this->faker->dateTime
+            ),
+        ]);
     }
 
     public function withUser(

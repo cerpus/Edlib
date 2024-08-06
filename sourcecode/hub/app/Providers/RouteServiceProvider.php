@@ -31,6 +31,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::bind('apiContent', function (string $value) {
             return Content::withoutGlobalScope('atLeastOneVersion')
+                ->withTrashed()
                 ->where('id', $value)
                 ->firstOrFail();
         });

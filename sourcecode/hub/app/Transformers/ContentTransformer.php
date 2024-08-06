@@ -37,6 +37,7 @@ final class ContentTransformer extends TransformerAbstract
             'id' => $content->id,
             'created_at' => $content->created_at?->format('c'),
             'updated_at' => $content->updated_at?->format('c'),
+            'deleted_at' => $content->deleted_at?->format('c'),
             'shared' => $content->shared,
             'links' => [
                 'self' => route('api.contents.show', [$content]),
