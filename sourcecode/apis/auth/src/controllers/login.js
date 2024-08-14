@@ -10,6 +10,8 @@ const loginValidation = Joi.object().keys({
 
 export default {
     cerpusAuthLoginCallback: async (req, res, next) => {
+        logger.info('Cerpus auth login');
+
         const { code, callbackUrl } = validateJoi(req.query, loginValidation);
 
         logger.info('Getting external auth service configuration');
