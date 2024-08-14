@@ -6,6 +6,7 @@ import {
     validateJoi,
     ValidationException,
     validationExceptionError,
+    logger,
 } from '@cerpus/edlib-node-utils';
 import JsonWebToken from 'jsonwebtoken';
 
@@ -16,6 +17,8 @@ import jwksProviderService from '../services/jwksProvider.js';
 
 export default {
     convertToken: async (req) => {
+        logger.info('Converting a token');
+
         const { externalToken } = validateJoi(
             req.body,
             Joi.object({
@@ -28,6 +31,7 @@ export default {
         const { data, iss } = await JsonWebToken.decode(externalToken);
 
         if (iss === 'fake') {
+            logger.info('fake issuer');
             // We have a fake issuer in order to test easier locally
             if (!appConfig.allowFakeToken) {
                 throw new ValidationException(
@@ -56,11 +60,13 @@ export default {
                 isAdmin: data.user.isAdmin,
             };
         } else if (iss === externalTokenVerifierConfig.issuer) {
+            logger.info('Verifying token against JWKS');
             // If the issuer is the one set in the environment variables we use the configuration from there
             const payload = await externalAuthService.verifyToken(
                 externalTokenVerifierConfig.wellKnownEndpoint,
                 externalToken
             );
+            logger.info('Verified token against JWKS');
 
             user = externalAuthService.getUserDataFromToken(
                 externalTokenVerifierConfig.adapter,
@@ -137,6 +143,7 @@ export default {
         }
 
         if (shouldUpdate) {
+            logger.info('updating the user');
             dbUser = await req.context.db.user.update(user.id, {
                 ...user,
                 lastSeen: new Date(),
@@ -146,8 +153,10 @@ export default {
                     ? new Date()
                     : undefined,
             });
+            logger.info('updated the user');
         }
 
+        logger.info('encrypting the stuff');
         const { token, expiresAt } = await jwksProviderService.encrypt(
             req.context,
             { type: 'user', user, roles },
