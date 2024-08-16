@@ -1,5 +1,4 @@
-import { db, pubsub } from '@cerpus/edlib-node-utils';
-import { ApiException } from '@cerpus/edlib-node-utils';
+import { db, pubsub, ApiException } from './node-utils/index.js';
 
 export default async () => {
     const migrations = await db.migrate.list();

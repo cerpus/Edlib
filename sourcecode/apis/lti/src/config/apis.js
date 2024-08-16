@@ -1,4 +1,4 @@
-import { env } from '@cerpus/edlib-node-utils';
+import { env } from '../node-utils/index.js';
 
 export default {
     coreInternal: {
