@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { db, dbHelpers } from '@cerpus/edlib-node-utils';
+import { db, dbHelpers } from '../node-utils/index.js';
 
 const table = 'usages';
 

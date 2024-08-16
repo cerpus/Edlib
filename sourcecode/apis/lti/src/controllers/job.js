@@ -1,4 +1,4 @@
-import { NotFoundException, pubsub } from '@cerpus/edlib-node-utils';
+import { NotFoundException, pubsub } from '../node-utils/index.js';
 import jobNames from '../constants/jobNames.js';
 
 export default {

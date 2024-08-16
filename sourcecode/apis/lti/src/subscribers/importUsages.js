@@ -1,5 +1,5 @@
 import { buildRawContext } from '../context/index.js';
-import { logger, validateJoi } from '@cerpus/edlib-node-utils';
+import { logger, validateJoi } from '../node-utils/index.js';
 import JobKilledException from '../exceptions/JobKilledException.js';
 import { getJobData, updateJobInfo } from '../services/job.js';
 import Joi from 'joi';

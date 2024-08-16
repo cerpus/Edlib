@@ -1,4 +1,4 @@
-import { apiClients } from '@cerpus/edlib-node-utils';
+import { apiClients } from '../../node-utils/index.js';
 import apiConfig from '../../config/apis.js';
 import resource from './resource.js';
 
