@@ -53,4 +53,7 @@ CKEDITOR.editorConfig = function (config) {
     // config.extraAllowedContent = 'section aside header h1 h2 h3 h4 h5 h6 p ul ol li br b strong iframe embed *(*)[class,data-*];' +
     // 'math maction maligngroup malignmark menclose merror mfenced mfrac mglyph mi mlabeledtr mlongdiv mmultiscripts mn mo mover mpadded mphantom mroot mrow ms mscarries ' +
     // 'mscarry msgroup msline mspace msqrt msrow mstack mstyle msub msup msubsup mtable mtd mtext mtr munder munderover semantics annotation annotation-xml';
+
+    // Disable version check, https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-versionCheck
+    config.versionCheck = false;
 };

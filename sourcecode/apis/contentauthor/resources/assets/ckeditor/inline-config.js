@@ -12,4 +12,7 @@ CKEDITOR.editorConfig = function (config) {
     config.removeButtons = '';
 
     config.extraPlugins = 'edlibmatheditor';
+
+    // Disable version check, https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-versionCheck
+    config.versionCheck = false;
 };
