@@ -274,8 +274,6 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-      redis:
-        condition: service_healthy
     command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
     healthcheck:
       test: [CMD, curl, -f, "http://localhost/_ah/health"]

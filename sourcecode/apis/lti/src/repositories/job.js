@@ -1,4 +1,4 @@
-import { db, dbHelpers } from '../node-utils/index.js';
+import { db, dbHelpers } from '@cerpus/edlib-node-utils';
 const table = 'jobs';
 
 const create = async (job) => {

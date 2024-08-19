@@ -1,3 +1,3 @@
-import { runMigrations } from './node-utils/index.js';
+import { runMigrations } from '@cerpus/edlib-node-utils';
 
 runMigrations();

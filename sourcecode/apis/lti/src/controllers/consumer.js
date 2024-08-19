@@ -1,4 +1,4 @@
-import { NotFoundException } from '../node-utils/index.js';
+import { NotFoundException } from '@cerpus/edlib-node-utils';
 
 export default {
     getConsumerByKey: async (req) => {

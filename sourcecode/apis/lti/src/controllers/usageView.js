@@ -1,4 +1,4 @@
-import { NotFoundException, validateJoi } from '../node-utils/index.js';
+import { NotFoundException, validateJoi } from '@cerpus/edlib-node-utils';
 import Joi from 'joi';
 
 export default {
