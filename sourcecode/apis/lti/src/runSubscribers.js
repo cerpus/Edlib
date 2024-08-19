@@ -1,4 +1,4 @@
-import { runSubscribers } from './node-utils/index.js';
+import { runSubscribers } from '@cerpus/edlib-node-utils';
 import jobNames from './constants/jobNames.js';
 import importUsages from './subscribers/importUsages.js';
 

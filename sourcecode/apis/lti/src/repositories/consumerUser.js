@@ -1,4 +1,4 @@
-import { dbHelpers, db } from '../node-utils/index.js';
+import { dbHelpers, db } from '@cerpus/edlib-node-utils';
 
 const table = 'consumerUsers';
 

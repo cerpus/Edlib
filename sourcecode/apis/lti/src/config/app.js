@@ -1,4 +1,4 @@
-import { config, env } from '../node-utils/index.js';
+import { config, env } from '@cerpus/edlib-node-utils';
 
 export default {
     isProduction: config.app.isProduction,
