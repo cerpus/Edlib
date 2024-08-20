@@ -441,11 +441,6 @@ parameters:
 			path: app/Jobs/H5PFilesUpload.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$path\\.$#"
-			count: 1
-			path: app/Jobs/ReplaceVideoRefId.php
-
-		-
 			message: "#^Method App\\\\Libraries\\\\DataObjects\\\\Attribution\\:\\:getOrigin\\(\\) should return null but returns string\\.$#"
 			count: 1
 			path: app/Libraries/DataObjects/Attribution.php
@@ -960,7 +955,6 @@ parameters:
 			message: "#^Method ChangeAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"
 			count: 1
 			path: database/migrations/2016_04_19_073909_ChangeAdminPassword.php
-
 
 		-
 			message: "#^Method SetAdminPassword\\:\\:createPassword\\(\\) is unused\\.$#"

@@ -43,24 +43,26 @@ class H5PLibraryInstall extends Command
         }
 
         $cacheUpdate = $this->call('h5p:library-hub-cache', ['--force' => $this->option('force-cache')]);
-        if ($cacheUpdate === Command::SUCCESS) {
-            $this->install();
-        } else {
+
+        if ($cacheUpdate !== Command::SUCCESS) {
             return $cacheUpdate;
         }
 
-        return Command::SUCCESS;
+        return $this->install() ? Command::SUCCESS : Command::FAILURE;
     }
 
-    private function install(): int
+    /**
+     * @return bool True if success, otherwise false
+     */
+    private function install(): bool
     {
-        $hasError = false;
+        $success = true;
         $libraries = $this->argument('library');
 
         foreach ($libraries as $library) {
             $cache = H5PLibrariesHubCache::where(DB::raw('lower(name)'), '=', Str::lower($library))->first();
             if (!$cache) {
-                $hasError = true;
+                $success = false;
                 $this->error("   - $library: Not found in cache, skipping");
                 continue;
             }
@@ -77,7 +79,7 @@ class H5PLibraryInstall extends Command
                     $this->info('No change, already up to date');
                 }
             } else {
-                $hasError = true;
+                $success = false;
                 $this->error('Failed');
                 if (isset($result['message'])) {
                     $this->error('      ' . $result['message']);
@@ -87,6 +89,6 @@ class H5PLibraryInstall extends Command
 
         $this->newLine();
 
-        return $hasError ? Command::FAILURE : Command::SUCCESS;
+        return $success;
     }
 }

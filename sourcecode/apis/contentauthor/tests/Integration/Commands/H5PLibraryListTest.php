@@ -126,7 +126,7 @@ class H5PLibraryListTest extends TestCase
     {
         $this->artisan('h5p:library-list available -a -l test.audio')
             ->expectsOutput('Library cache updated: ' . $this->cacheUpdated->format('Y-m-d H:i:s e'))
-            ->expectsOutput('Installed H5P Core version: 1.25')
+            ->expectsOutput('Installed H5P Core version: 1.26')
             ->expectsOutput('Libraries found: 1')
             ->expectsTable(
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
