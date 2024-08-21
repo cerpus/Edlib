@@ -167,6 +167,7 @@ final class ContentTest extends TestCase
                             })
                             ->where('created_at', $data['created_at'])
                             ->has('updated_at')
+                            ->where('deleted_at', null)
                             ->where('shared', $data['shared'])
                             ->has('links.self')
                             ->has('versions')
