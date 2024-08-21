@@ -907,11 +907,6 @@ parameters:
 			path: app/Providers/AuthServiceProvider.php
 
 		-
-			message: "#^Access to an undefined property H5PCore\\:\\:\\$aggregateAssets\\.$#"
-			count: 1
-			path: app/Providers/H5PServiceProvider.php
-
-		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
 			count: 1
 			path: app/QuestionSet.php
