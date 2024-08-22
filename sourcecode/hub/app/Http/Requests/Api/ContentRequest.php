@@ -26,6 +26,12 @@ final class ContentRequest extends FormRequest
                 'date',
             ],
 
+            'deleted_at' => [
+                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                'sometimes',
+                'date',
+            ],
+
             'roles.*.user' => [
                 Rule::prohibitedIf(fn () => $gate->denies('admin')),
                 Rule::exists(User::class, 'id'),

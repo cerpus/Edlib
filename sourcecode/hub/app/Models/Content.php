@@ -67,6 +67,7 @@ class Content extends Model
     protected $fillable = [
         'shared',
         'created_at',
+        'deleted_at',
     ];
 
     public static function booted(): void

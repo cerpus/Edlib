@@ -43,6 +43,7 @@ final readonly class ContentController
         $content = DB::transaction(function () use ($request) {
             $content = new Content();
             $content->fill($request->validated());
+            $content->trashed();
             $content->save();
 
             foreach ($request->getRoles() as ['user' => $user, 'role' => $role]) {

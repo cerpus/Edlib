@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Api;
 
 use App\Models\Content;
+use App\Models\ContentVersion;
 use App\Models\ContentView;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -166,6 +167,7 @@ final class ContentTest extends TestCase
                             })
                             ->where('created_at', $data['created_at'])
                             ->has('updated_at')
+                            ->where('deleted_at', null)
                             ->where('shared', $data['shared'])
                             ->has('links.self')
                             ->has('versions')
@@ -286,6 +288,55 @@ final class ContentTest extends TestCase
                             ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $data['lti_tool_id'])
                     )
             );
+    }
+
+    public function testAddsDeletedContent(): void
+    {
+        $data = $this->postJson('/api/contents', [
+            'deleted_at' => '2024-08-01T00:00:00Z',
+        ])
+            ->assertCreated()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->has('id')
+                    ->where('deleted_at', '2024-08-01T00:00:00+00:00')
+                    ->etc()
+                )
+                ->etc()
+            )
+            ->json();
+
+        $content = Content::withTrashed()
+            ->withoutGlobalScope('atLeastOneVersion')
+            ->where('id', $data['data']['id'])
+            ->firstOrFail();
+
+        $this->assertTrue($content->trashed());
+    }
+
+    public function testAddsVersionToDeletedContent(): void
+    {
+        $ltiTool = LtiTool::factory()->create();
+        $content = Content::factory()->trashed()->create();
+
+        $this->postJson('/api/contents/' . $content->id . '/versions', [
+            'title' => 'My deleted content',
+            'lti_launch_url' => 'https://example.com/',
+            'lti_tool_id' => $ltiTool->id,
+        ])
+            ->assertCreated()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('data', fn (AssertableJson $json) => $json
+                    ->has('id')
+                    ->where('title', 'My deleted content')
+                    ->etc(),
+                )
+                ->etc(),
+            );
+
+        $this->assertDatabaseHas(ContentVersion::class, [
+            'title' => 'My deleted content',
+        ]);
     }
 
     public function testDeletesContent(): void

@@ -47,7 +47,7 @@
         <ul class="row list-unstyled">
             @foreach ($platforms as $platform)
                 <li class="col-12 col-md-6 col-lg-4 mb-3">
-                    <div class="card">
+                    <div class="card lti-platform">
                         <div class="card-body">
                             <h5 class="card-title">{{ $platform->name }}</h5>
                             <dl>
@@ -59,6 +59,19 @@
                                 <dd>{{ $platform->enable_sso ? trans('messages.yes') : trans('messages.no') }}</dd>
                             </dl>
                         </div>
+
+                        @can('delete', $platform)
+                            <div class="card-footer">
+                                <x-form
+                                    action="{{ route('admin.lti-platforms.remove', [$platform]) }}"
+                                    method="DELETE"
+                                    hx-confirm="{{ trans('messages.confirm-lti-platform-deletion') }}"
+                                    hx-delete="{{ route('admin.lti-platforms.remove', [$platform]) }}"
+                                >
+                                    <x-form.button class="btn btn-danger">{{ trans('messages.remove') }}</x-form.button>
+                                </x-form>
+                            </div>
+                        @endcan
                     </div>
                 </li>
             @endforeach

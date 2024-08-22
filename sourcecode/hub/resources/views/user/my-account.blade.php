@@ -18,12 +18,14 @@
             name="password"
             type="password"
             :label="trans('messages.password')"
+            autocomplete="new-password"
         />
 
         <x-form.field
             name="password_confirmation"
             type="password"
             :label="trans('messages.password-confirmation')"
+            autocomplete="new-password"
         />
 
         <h5>{{ trans('messages.change-email') }}</h5>

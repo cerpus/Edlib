@@ -9,6 +9,9 @@ use App\Models\LtiPlatform;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use function route;
 
 final class LtiPlatformController
 {
@@ -33,6 +36,20 @@ final class LtiPlatformController
         $platform->save();
 
         $request->session()->flash('created-lti-platform', $platform->id);
+
+        return to_route('admin.lti-platforms.index');
+    }
+
+    public function destroy(LtiPlatform $platform, Request $request): Response
+    {
+        $platform->delete();
+
+        $request->session()->flash('alert', trans('messages.alert-lti-platform-removed'));
+
+        if ($request->header('HX-Request')) {
+            return response()->noContent()
+                ->header('HX-Redirect', route('admin.lti-platforms.index'));
+        }
 
         return to_route('admin.lti-platforms.index');
     }

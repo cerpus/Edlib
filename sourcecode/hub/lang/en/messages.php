@@ -194,4 +194,6 @@ return [
     'editor' => 'Editor',
     'reader' => 'Reader',
     'content-has-no-roles' => 'No roles are assigned to this content.',
+    'alert-lti-platform-removed' => 'The LTI platform has been removed.',
+    'confirm-lti-platform-deletion' => 'Are you sure you want to remove the LTI platform? The platform will no longer be allowed to launch or select content.',
 ];
