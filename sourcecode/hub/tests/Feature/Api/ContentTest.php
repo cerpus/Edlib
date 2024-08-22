@@ -296,13 +296,16 @@ final class ContentTest extends TestCase
             'deleted_at' => '2024-08-01T00:00:00Z',
         ])
             ->assertCreated()
-            ->assertJson(fn (AssertableJson $json) => $json
-                ->has('data', fn (AssertableJson $json) => $json
-                    ->has('id')
-                    ->where('deleted_at', '2024-08-01T00:00:00+00:00')
+            ->assertJson(
+                fn (AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn (AssertableJson $json) => $json
+                            ->has('id')
+                            ->where('deleted_at', '2024-08-01T00:00:00+00:00')
+                            ->etc()
+                    )
                     ->etc()
-                )
-                ->etc()
             )
             ->json();
 
@@ -325,13 +328,16 @@ final class ContentTest extends TestCase
             'lti_tool_id' => $ltiTool->id,
         ])
             ->assertCreated()
-            ->assertJson(fn (AssertableJson $json) => $json
-                ->has('data', fn (AssertableJson $json) => $json
-                    ->has('id')
-                    ->where('title', 'My deleted content')
+            ->assertJson(
+                fn (AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn (AssertableJson $json) => $json
+                            ->has('id')
+                            ->where('title', 'My deleted content')
+                            ->etc(),
+                    )
                     ->etc(),
-                )
-                ->etc(),
             );
 
         $this->assertDatabaseHas(ContentVersion::class, [
