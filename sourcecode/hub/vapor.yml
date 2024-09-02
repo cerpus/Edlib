@@ -7,7 +7,7 @@ environments:
         runtime: docker
         domain: hub.edlibdev.net
         network: edlib-cerpus-test
-        database: edlib-cerpus-test-hub
+        database: hub-v2
         cache: edlib-cerpus-test-cache
         queues: edlib-cerpus-test
         storage: edlib-cerpus-test-hub
