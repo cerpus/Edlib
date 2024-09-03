@@ -3,6 +3,7 @@ import 'htmx.org';
 import { findIframeByWindow } from './helpers';
 import './clipboard';
 import './resize';
+import './xApi';
 import './dateHelper';
 import './htmxEvents';
 import './filterSelect';
