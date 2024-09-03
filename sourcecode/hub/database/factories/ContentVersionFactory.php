@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -50,15 +51,19 @@ final class ContentVersionFactory extends Factory
         return $this->state(['published' => false]);
     }
 
-    public function withTag(TagFactory $tag): self
+    public function withTag(TagFactory|string $tag, string|null $verbatimName = null): self
     {
-        $values = $tag->getRawAttributes(null);
-        return $this->hasAttached(
-            $tag,
-            [
-                'verbatim_name' => $values['name'],
-            ],
-            'tags'
-        );
+        if (is_string($tag)) {
+            ['name' => $name, 'prefix' => $prefix] = Tag::parse($tag);
+
+            $tag = Tag::factory(null, [
+                'name' => $name,
+                'prefix' => $prefix,
+            ]);
+        }
+
+        return $this->hasAttached($tag, [
+            'verbatim_name' => $verbatimName,
+        ], 'tags');
     }
 }

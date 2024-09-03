@@ -34,6 +34,7 @@ use Laravel\Scout\Searchable;
 use function app;
 use function assert;
 use function is_string;
+use function property_exists;
 use function session;
 use function url;
 
@@ -161,6 +162,15 @@ class Content extends Model
             $version->published = false;
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
+
+            foreach ($previousVersion->tags()->where('prefix', 'h5p')->get() as $tag) {
+                assert(property_exists($tag, 'pivot') && property_exists($tag->pivot, 'verbatim_name'));
+
+                $version->tags()->attach($tag, [
+                    'verbatim_name' => $tag->pivot->verbatim_name,
+                ]);
+            }
+
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
             $copy->save();
 

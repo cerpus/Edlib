@@ -614,7 +614,11 @@ final class ContentTest extends DuskTestCase
     public function testCanCopySharedContent(): void
     {
         $content = Content::factory()
-            ->withPublishedVersion()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag('h5p:h5p.coursepresentation', 'H5P.CoursePresentation')
+            )
             ->shared()
             ->create();
 
@@ -638,6 +642,7 @@ final class ContentTest extends DuskTestCase
                 )
                 ->assertTitleContains($content->getTitle() . ' (copy)')
                 ->assertSee('You are viewing an unpublished draft version')
+                ->assertSeeIn('aside table', 'H5P.CoursePresentation')
                 ->pause(500) // FIXME: indexing should be synchronous in tests
                 ->visit('/content/mine')
                 ->with(
