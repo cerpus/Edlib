@@ -153,7 +153,7 @@ class Content extends Model
 
         return DB::transaction(function () use ($user, $previousVersion) {
             $copy = new Content();
-            $copy->save();
+            $copy->saveQuietly();
 
             $version = $previousVersion->replicate();
             assert($version instanceof ContentVersion);
@@ -161,8 +161,8 @@ class Content extends Model
             $version->published = false;
             $version->title .= ' ' . trans('messages.content-copy-suffix');
             $copy->versions()->save($version);
-
             $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
+            $copy->save();
 
             return $copy;
         });

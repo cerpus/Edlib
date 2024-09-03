@@ -38,9 +38,11 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('edlib2UsageContent', function (string $value): Content {
-            return Content::whereHas('tags', fn (Builder $query) => $query
-                ->where('prefix', 'edlib2_usage_id')
-                ->where('name', $value)
+            return Content::whereHas(
+                'tags',
+                fn (Builder $query) => $query
+                    ->where('prefix', 'edlib2_usage_id')
+                    ->where('name', $value)
             )->limit(1)->firstOrFail();
         });
 

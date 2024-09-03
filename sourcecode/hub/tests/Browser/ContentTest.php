@@ -638,6 +638,13 @@ final class ContentTest extends DuskTestCase
                 )
                 ->assertTitleContains($content->getTitle() . ' (copy)')
                 ->assertSee('You are viewing an unpublished draft version')
+                ->pause(500) // FIXME: indexing should be synchronous in tests
+                ->visit('/content/mine')
+                ->with(
+                    new ContentCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', $content->getTitle() . ' (copy)')
+                )
         );
     }
 
