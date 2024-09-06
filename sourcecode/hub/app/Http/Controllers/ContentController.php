@@ -247,6 +247,14 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
 
+        if (
+            $request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest' &&
+            $item instanceof EdlibLtiLinkItem
+        ) {
+            // force inserted content to be published
+            $item = $item->withPublished(true);
+        }
+
         $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
             $content->saveQuietly();
@@ -297,6 +305,14 @@ class ContentController extends Controller
     ): View {
         $item = $mapper->map($request->input('content_items'))[0];
         assert($item instanceof LtiLinkItem);
+
+        if (
+            $request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest' &&
+            $item instanceof EdlibLtiLinkItem
+        ) {
+            // force inserted content to be published
+            $item = $item->withPublished(true);
+        }
 
         $version = DB::transaction(function () use ($content, $version, $item, $tool) {
             $previousVersion = $version;

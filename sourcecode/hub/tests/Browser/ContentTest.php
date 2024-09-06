@@ -564,6 +564,65 @@ final class ContentTest extends DuskTestCase
         );
     }
 
+    public function testEnsuresContentReturnedToLtiPlatformIsPublished(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $edlib3 = LtiTool::factory()
+            ->withName('Edlib 3')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->launchUrl('https://hub-test.edlib.test/lti/dl')
+            ->state(['send_name' => true, 'send_email' => true])
+            ->create();
+        LtiTool::factory()
+            ->withName('Sample tool')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
+            ->state(['send_name' => true, 'send_email' => true])
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/content/create/' . $edlib3->id)
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $edlib3) => $edlib3
+                        ->clickLink('Create')
+                        ->clickLink('Sample tool')
+                        ->withinFrame(
+                            '.lti-launch',
+                            fn (Browser $ltiTool) => $ltiTool
+                                ->type('payload', <<<EOJSON
+                    {
+                        "@context": ["http://purl.imsglobal.org/ctx/lti/v1/ContentItem", {
+                            "edlib": "https://spec.edlib.com/lti/vocab#",
+                            "xs": "http://www.w3.org/2001/XMLSchema#",
+                            "published": {
+                                "@id": "edlib:tag",
+                                "@type": "xs:boolean"
+                            }
+                        }],
+                        "@graph": [
+                            {
+                                "@type": "LtiLinkItem",
+                                "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                                "title": "TMK Course Presentation",
+                                "published": false
+                            }
+                        ]
+                    }
+                    EOJSON)
+                                ->press('Send')
+                        )
+                )
+                ->waitForReload()
+                ->assertTitleContains('TMK Course Presentation')
+                ->assertDontSee('You are viewing an unpublished draft version.')
+        );
+    }
+
     public function testUserCanDisableSharingContent(): void
     {
         $user = User::factory()->create();

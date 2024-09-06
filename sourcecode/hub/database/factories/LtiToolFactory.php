@@ -27,6 +27,11 @@ final class LtiToolFactory extends Factory
         ];
     }
 
+    public function launchUrl(string $launchUrl): self
+    {
+        return $this->state(['creator_launch_url' => $launchUrl]);
+    }
+
     public function proxyLaunch(bool $proxyLaunch): self
     {
         return $this->state(['proxy_launch' => $proxyLaunch]);
