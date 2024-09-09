@@ -14,6 +14,8 @@ use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
@@ -141,6 +143,9 @@ class Content extends Model
             title: $version->getTitle(),
             url: $url,
             icon: $iconUrl ? new Image($iconUrl) : null,
+            lineItem: $version->max_score > 0 ?
+                new LineItem(new ScoreConstraints(normalMaximum: (float) $version->max_score)) :
+                null,
         ))
             ->withLanguageIso639_3($version->language_iso_639_3)
             ->withLicense($version->license)
