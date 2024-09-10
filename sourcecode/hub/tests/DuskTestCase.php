@@ -35,6 +35,10 @@ abstract class DuskTestCase extends BaseTestCase
             '--headless',
             '--disable-gpu',
             '--window-size=1920,1080',
+            '--disable-search-engine-choice-screen',
+            '--start-maximized',
+            '--disable-infobars',
+            '--disable-dev-shm-usage',
         ]);
 
         $capabilities = DesiredCapabilities::chrome()

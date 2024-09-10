@@ -9208,16 +9208,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v8.2.0",
+            "version": "v8.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "773a12dfbd3f84174b0f26fbc2807a414a379a66"
+                "reference": "e641800393ce4ad39f0a47133f51aae67ceb01ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/773a12dfbd3f84174b0f26fbc2807a414a379a66",
-                "reference": "773a12dfbd3f84174b0f26fbc2807a414a379a66",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/e641800393ce4ad39f0a47133f51aae67ceb01ad",
+                "reference": "e641800393ce4ad39f0a47133f51aae67ceb01ad",
                 "shasum": ""
             },
             "require": {
@@ -9274,9 +9274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/dusk/issues",
-                "source": "https://github.com/laravel/dusk/tree/v8.2.0"
+                "source": "https://github.com/laravel/dusk/tree/v8.2.5"
             },
-            "time": "2024-04-16T15:51:19+00:00"
+            "time": "2024-08-26T12:34:33+00:00"
         },
         {
             "name": "laravel/telescope",

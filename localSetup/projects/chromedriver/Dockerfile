@@ -11,4 +11,4 @@ RUN useradd -ms /bin/bash chromeuser
 COPY docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["chromedriver", "--allowed-ips=", "--allowed-origins=*", "--log-level=INFO"]
+CMD ["chromedriver", "--allowed-ips=", "--allowed-origins=*", "--log-level=INFO", "--port=9515"]
