@@ -310,7 +310,5 @@ jobs:
         role-session-name: GithubCerpusDevDeploy
      
      - name: Restart Elastic Beanstalk app servers
-       with:
-        environment: ${{ matrix.environment }}
        run: |
         aws elasticbeanstalk restart-app-server --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
