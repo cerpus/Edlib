@@ -236,7 +236,7 @@ jobs:
     strategy:
       matrix:
         environment:
-          - cerpus_test
+          - test
           # - ndla_test
     environment: ${{ matrix.environment }}
     concurrency: deploy-ca-${{ matrix.environment }}
@@ -248,7 +248,6 @@ jobs:
      - name: Configure AWS Credentials
        uses: aws-actions/configure-aws-credentials@v4
        with:
-        environment: ${{ matrix.environment }}
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         aws-region: eu-west-1
         role-duration-seconds: 3600
