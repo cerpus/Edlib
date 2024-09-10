@@ -298,11 +298,12 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
+      contents: read
 
     steps:
      - name: Checkout
        uses: actions/checkout@v4
-       
+
      - name: Configure AWS Credentials
        uses: aws-actions/configure-aws-credentials@v4
        with:
