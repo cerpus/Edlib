@@ -228,3 +228,32 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  deploy-eb:
+    name: Deploy CA to test environments
+    if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
+    needs: [build_test_publish]
+    strategy:
+      matrix:
+        environment:
+          - cerpus_test
+          # - ndla_test
+    environment: ${{ matrix.environment }}
+    concurrency: deploy-ca-${{ matrix.environment }}
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+
+    steps:
+     - name: Configure AWS Credentials
+       uses: aws-actions/configure-aws-credentials@v4
+       with:
+        environment: ${{ matrix.environment }}
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        aws-region: eu-west-1
+        role-duration-seconds: 3600
+        role-session-name: GithubCerpusDevDeploy
+     
+     - name: Restart Elastic Beanstalk app servers
+       run: |
+        aws elasticbeanstalk restart-app-server --environment-name ${{ vars.CA_ENVIRONMENT_NAME }}
