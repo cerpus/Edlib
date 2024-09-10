@@ -300,6 +300,9 @@ jobs:
       id-token: write
 
     steps:
+     - name: Checkout
+       uses: actions/checkout@v4
+       
      - name: Configure AWS Credentials
        uses: aws-actions/configure-aws-credentials@v4
        with:
