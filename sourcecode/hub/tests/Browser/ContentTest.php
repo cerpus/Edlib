@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Browser;
 
 use App\Enums\ContentUserRole;
-use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -681,8 +680,6 @@ final class ContentTest extends DuskTestCase
             ->shared()
             ->create();
 
-        RebuildContentIndex::dispatchSync();
-
         $this->browse(
             fn (Browser $browser) => $browser
                 ->loginAs(User::factory()->create()->email)
@@ -720,8 +717,6 @@ final class ContentTest extends DuskTestCase
             ->withPublishedVersion()
             ->shared(false)
             ->create();
-
-        RebuildContentIndex::dispatchSync();
 
         $this->browse(
             fn (Browser $browser) => $browser

@@ -169,10 +169,10 @@ class Content extends Model
             $copy->versions()->save($version);
 
             foreach ($previousVersion->tags()->where('prefix', 'h5p')->get() as $tag) {
-                assert(property_exists($tag, 'pivot') && property_exists($tag->pivot, 'verbatim_name'));
+                assert(property_exists($tag, 'original') && array_key_exists('pivot_verbatim_name', $tag->original));
 
                 $version->tags()->attach($tag, [
-                    'verbatim_name' => $tag->pivot->verbatim_name,
+                    'verbatim_name' => $tag->original['pivot_verbatim_name'],
                 ]);
             }
 
