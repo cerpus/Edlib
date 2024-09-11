@@ -312,6 +312,6 @@ jobs:
         role-duration-seconds: 3600
         role-session-name: GithubCerpusDevDeploy
      
-     - name: Restart Elastic Beanstalk app servers
+     - name: Re-deploy docker-compose on Elastic Beanstalk
        run: |
-        aws elasticbeanstalk restart-app-server --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
+        aws elasticbeanstalk update-environment --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }} --version-label ${{ vars.HUB_APPLICATION_VERSION }}
