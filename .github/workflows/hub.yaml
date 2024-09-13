@@ -249,41 +249,6 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  deploy-vapor:
-    name: Deploy Hub
-    if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
-    needs: [build_test_publish]
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          tools: composer:v2
-          coverage: none
-
-      - name: Install Vapor CLI
-        working-directory: sourcecode/hub/tools/vapor-cli
-        run: composer install --prefer-dist
-
-      - name: Add Vapor to path
-        run: echo "$PWD/tools/vapor-cli/vendor/bin" >> "$GITHUB_PATH"
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --no-dev --optimize-autoloader
-
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Deploy
-        run: vapor deploy staging --without-waiting
-        env:
-          VAPOR_API_TOKEN: ${{ secrets.VAPOR_API_TOKEN }}
-
   deploy-eb:
     name: Deploy hub to test environments
     if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/hubbub'
