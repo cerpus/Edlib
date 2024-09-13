@@ -59,3 +59,4 @@ buildid
 
 test-storage-volume/
 /storage/framework/testing/
+/tools/vapor-cli/vendor
