@@ -75,7 +75,6 @@ class H5PController extends Controller
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
         $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
-        $this->middleware('core.ownership', ['only' => ['edit', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
 

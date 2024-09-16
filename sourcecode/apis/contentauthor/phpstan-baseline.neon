@@ -356,11 +356,6 @@ parameters:
 			path: app/Http/Libraries/License.php
 
 		-
-			message: "#^Property App\\\\Http\\\\Middleware\\\\CheckOwnership\\:\\:\\$content is unused\\.$#"
-			count: 1
-			path: app/Http/Middleware/CheckOwnership.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\GameAccess\\:\\:\\$request\\.$#"
 			count: 1
 			path: app/Http/Middleware/GameAccess.php

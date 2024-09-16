@@ -77,7 +77,6 @@ class Kernel extends HttpKernel
 
         // App middleware
         'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
-        'core.ownership' => \App\Http\Middleware\CheckOwnership::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,

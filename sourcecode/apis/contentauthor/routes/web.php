@@ -55,7 +55,7 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('lti-content/create', [LtiContentController::class, 'create']);
     Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
     Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
-    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.ownership','core.behavior-settings:editor']);
+    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.behavior-settings:editor']);
 
     Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
     Route::post('/game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
@@ -80,10 +80,8 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::resource('game', GameController::class, ['except' => ['destroy']]);
     Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
 
-    Route::group(['middleware' => ['core.ownership']], function () {
-        Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
-        Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
-    });
+    Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
+    Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
 });
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
