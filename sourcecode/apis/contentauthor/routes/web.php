@@ -16,7 +16,6 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCopyrightController;
 use App\Http\Controllers\ArticleUploadController;
 use App\Http\Controllers\ContentAssetController;
-use App\Http\Controllers\ContentController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\H5PController;
 use App\Http\Controllers\HealthController;
@@ -33,7 +32,7 @@ Route::get('/lti-return', ReturnToCoreController::class)
     ->name('lti-return');
 
 Route::post('h5p/adapter', function () {
-    return ["url" => route('create')];
+    return response()->noContent();
 })->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
@@ -71,8 +70,6 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor']);
 
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
-
-    Route::match(['GET', 'POST'], '/create/{contenttype?}', [ContentController::class, 'index'])->middleware(["lti.verify-auth", "lti.question-set", 'core.behavior-settings:editor'])->name('create');
 
     Route::resource('questionset', QuestionSetController::class, ['except' => ['destroy']]);
     Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
