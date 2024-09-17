@@ -172,8 +172,7 @@ Route::prefix('/lti')->middleware([
         ->whereUlid('content');
 
     Route::post('/content/by-edlib2-usage/{edlib2UsageContent}')
-        ->uses([LtiController::class, 'contentByEdlib2Usage'])
-        ->middleware('lti.launch-type:basic-lti-launch-request')
+        ->uses([LtiController::class, 'content'])
         ->can('view', 'edlib2UsageContent');
 
     Route::post('/dl')
