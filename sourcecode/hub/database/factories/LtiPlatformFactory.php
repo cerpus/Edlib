@@ -19,6 +19,7 @@ final class LtiPlatformFactory extends Factory
             'key' => $this->faker->unique()->uuid,
             'secret' => $this->faker->sha256,
             'enable_sso' => true,
+            'authorizes_edit' => false,
         ];
     }
 }

@@ -6,7 +6,9 @@ namespace App\Policies;
 
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\LtiPlatform;
 use App\Models\User;
+use Illuminate\Support\Facades\Session;
 
 use function request;
 
@@ -50,6 +52,14 @@ class ContentPolicy
 
         if ($user->admin) {
             return true;
+        }
+
+        if (Session::has('lti.oauth_consumer_key')) {
+            $key = Session::get('lti.oauth_consumer_key');
+            $platform = LtiPlatform::where('key', $key)->first();
+            if ($platform?->authorizes_edit === true) {
+                return true;
+            }
         }
 
         return $content->hasUser($user);

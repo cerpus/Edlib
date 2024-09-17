@@ -22,6 +22,7 @@ class StoreLtiPlatformRequest extends FormRequest
                 Rule::unique(LtiPlatform::class, 'name'),
             ],
             'enable_sso' => ['boolean'],
+            'authorizes_edit' => ['boolean'],
         ];
     }
 }
