@@ -7,6 +7,7 @@ use App\Apis\ResourceApiService;
 use App\ContentVersion;
 use App\H5POption;
 use App\Http\Middleware\RequestId;
+use App\Http\Middleware\TrimStrings;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
 use App\Listeners\ResourceEventHandler;
@@ -14,6 +15,7 @@ use App\Observers\ContentVersionsObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
 
         H5POption::observe(H5POptionObserver::class);
         ContentVersion::observe(ContentVersionsObserver::class);
+
+        TrimStrings::skipWhen(fn (Request $request) => $request->has('lti_message_type'));
     }
 
     /**
