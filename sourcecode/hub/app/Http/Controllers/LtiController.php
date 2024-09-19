@@ -62,19 +62,6 @@ final readonly class LtiController
         }
     }
 
-    public function contentByEdlib2Usage(
-        Content $edlib2UsageContent,
-        Request $request,
-    ): RedirectResponse {
-        $key = $request->attributes->get('lti')['oauth_consumer_key'];
-        $platform = LtiPlatform::where('key', $key)->first();
-
-        $content = $edlib2UsageContent;
-        $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
-
-        return to_route('content.embed', [$content]);
-    }
-
     public function select(): RedirectResponse
     {
         return to_route('content.index');
