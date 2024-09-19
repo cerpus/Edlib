@@ -166,4 +166,7 @@ return [
     'content-has-no-roles' => 'Ingen roller har blitt satt for dette innholdet.',
     'alert-lti-platform-removed' => 'LTI-plattformen har blitt fjernet.',
     'confirm-lti-platform-deletion' => 'Er du sikker på at du vil fjerne LTI-plattformen? Plattformen vil ikke lengre kunne velge og vise innhold.',
+    'lti-platform-authorizes-edit' => 'Plattformen styrer redigeringstilgang',
+    'lti-platform-authorizes-edit-warning' => 'Aktiver kun for pålitelige plattformer',
+    'lti-platform-authorizes-edit-help' => 'Overfører ansvaret for tilgangskontroll av redigering fra :site til plattformen, m.a.o. :site vil godta alle gyldige redigeringsforespørsler fra plattformen',
 ];

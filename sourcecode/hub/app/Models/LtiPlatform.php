@@ -21,6 +21,7 @@ class LtiPlatform extends Model
     /** @var array<string, mixed> */
     protected $attributes = [
         'enable_sso' => false,
+        'authorizes_edit' => false,
     ];
 
     protected $hidden = [
@@ -30,10 +31,12 @@ class LtiPlatform extends Model
     protected $fillable = [
         'name',
         'enable_sso',
+        'authorizes_edit',
     ];
 
     protected $casts = [
         'enable_sso' => 'boolean',
+        'authorizes_edit' => 'boolean',
     ];
 
     protected static function booted(): void

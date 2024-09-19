@@ -37,6 +37,18 @@
             </p>
         </div>
 
+        <div class="form-check mb-3">
+            <label class="form-check-label">
+                <x-form.checkbox name="authorizes_edit" aria-labelledby="authorizes_edit_help" />
+                {{ trans('messages.lti-platform-authorizes-edit') }}
+            </label>
+
+            <p class="form-text" id="authorizes_edit_help">
+                {{ trans('messages.lti-platform-authorizes-edit-help', ['site' => config('app.name')]) }}
+                <b class="text-danger">{{ trans('messages.lti-platform-authorizes-edit-warning') }}</b>
+            </p>
+        </div>
+
         <x-form.button class="btn-primary">
             {{ trans('messages.create') }}
         </x-form.button>
@@ -48,8 +60,10 @@
             @foreach ($platforms as $platform)
                 <li class="col-12 col-md-6 col-lg-4 mb-3">
                     <div class="card lti-platform">
-                        <div class="card-body">
+                        <div class="card-header">
                             <h5 class="card-title">{{ $platform->name }}</h5>
+                        </div>
+                        <div class="card-body">
                             <dl>
                                 <dt>{{ trans('messages.key') }}</dt>
                                 <dd><kbd class="user-select-all">{{ $platform->key }}</kbd></dd>
@@ -57,6 +71,8 @@
                                 <dd>{{ $platform->created_at }}</dd>
                                 <dt>{{ trans('messages.single-sign-on') }}</dt>
                                 <dd>{{ $platform->enable_sso ? trans('messages.yes') : trans('messages.no') }}</dd>
+                                <dt>{{ trans('messages.lti-platform-authorizes-edit') }}</dt>
+                                <dd>{{ $platform->authorizes_edit ? trans('messages.yes') : trans('messages.no') }}</dd>
                             </dl>
                         </div>
 

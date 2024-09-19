@@ -21,6 +21,7 @@ final class LtiPlatformTransformer extends TransformerAbstract
             'enable_sso' => $platform->enable_sso,
             'created_at' => $platform->created_at,
             'updated_at' => $platform->updated_at,
+            'authorizes_edit' => $platform->authorizes_edit,
         ];
     }
 }
