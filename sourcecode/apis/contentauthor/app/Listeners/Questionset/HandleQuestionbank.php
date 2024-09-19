@@ -2,7 +2,6 @@
 
 namespace App\Listeners\Questionset;
 
-use App\ACL\ArticleAccess;
 use App\Events\QuestionsetWasSaved;
 use Cerpus\QuestionBankClient\DataObjects\AnswerDataObject;
 use Cerpus\QuestionBankClient\DataObjects\MetadataDataObject;
@@ -12,8 +11,6 @@ use Cerpus\QuestionBankClient\QuestionBankClient;
 
 class HandleQuestionbank
 {
-    use ArticleAccess;
-
     protected $questionset;
     protected $tags;
 

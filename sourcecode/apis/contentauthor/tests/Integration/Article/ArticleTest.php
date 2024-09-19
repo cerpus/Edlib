@@ -63,22 +63,6 @@ class ArticleTest extends TestCase
         );
     }
 
-    public function testEditArticleAccessDenied()
-    {
-        $this->setUpResourceApi();
-        $authId = Str::uuid();
-        $someOtherId = Str::uuid();
-
-        $article = Article::factory()->create([
-            'owner_id' => $authId,
-            'license' => 'BY-NC-ND',
-        ]);
-
-        $this->withSession(['authId' => $someOtherId])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testCreateArticle()
     {
         $this->withoutMiddleware(VerifyCsrfToken::class);

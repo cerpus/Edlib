@@ -9,7 +9,6 @@ use App\ContentLock;
 use App\Events\ArticleWasSaved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Tests\Helpers\MockAuthApi;
 use Tests\Helpers\MockMQ;
@@ -107,28 +106,6 @@ class ArticleLockTest extends TestCase
             ->get(route('article.edit', $article->id))
             ->assertSee($authName);
         $this->assertCount(1, ContentLock::all());
-    }
-
-    /** @test */
-    public function forkArticle_thenFail()
-    {
-        $this->setUpResourceApi();
-
-        $authId = Str::uuid();
-
-        $article = Article::factory()->create([
-            'owner_id' => $authId,
-            'license' => 'PRIVATE',
-        ]);
-
-        $authId2 = Str::uuid();
-        $authName2 = $this->faker->name;
-        $authEmail2 = $this->faker->email;
-
-        // Try to fork as another user
-        $this->withSession(['authId' => $authId2, 'email' => $authEmail2, 'name' => $authName2, 'verifiedEmails' => [$authEmail2]])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /** @test */

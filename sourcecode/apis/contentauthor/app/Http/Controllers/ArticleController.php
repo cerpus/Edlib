@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\Article;
 use App\Content;
 use App\ContentVersion;
@@ -34,7 +33,6 @@ use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
 {
-    use ArticleAccess;
     use LtiTrait;
     use ReturnToCore;
 
@@ -61,10 +59,6 @@ class ArticleController extends Controller
      */
     public function create(Request $request): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $ltiRequest = $this->lti->getRequest($request);
 
         $license = License::getDefaultLicense($ltiRequest);
@@ -108,10 +102,6 @@ class ArticleController extends Controller
      */
     public function store(ArticleRequest $request): JsonResponse
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $inputs = $request->all();
         if (!empty($inputs['content'])) {
             $inputs['content'] = $this->cleanContent($inputs['content']);
@@ -182,10 +172,6 @@ class ArticleController extends Controller
     public function edit(Request $request, $id)
     {
         $article = Article::findOrFail($id);
-
-        if (!$this->canUpdateArticle($article)) {
-            abort(403);
-        }
 
         $origin = $article->getAttribution()->getOrigin();
         $originators = $article->getAttribution()->getOriginators();
@@ -260,9 +246,6 @@ class ArticleController extends Controller
     public function update(ArticleRequest $request, Article $article)
     {
         $oldArticle = clone $article;
-        if (!$this->canUpdateArticle($oldArticle)) {
-            abort(403);
-        }
 
         $oldLicense = $oldArticle->getContentLicense();
         $reason = $oldArticle->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;

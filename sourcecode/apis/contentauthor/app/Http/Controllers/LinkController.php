@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\ContentVersion;
 use App\Events\LinkWasSaved;
 use App\Http\Libraries\License;
@@ -23,7 +22,6 @@ class LinkController extends Controller
 {
     use LtiTrait;
     use ReturnToCore;
-    use ArticleAccess;
 
     public function __construct(private readonly Lti $lti)
     {
@@ -34,10 +32,6 @@ class LinkController extends Controller
 
     public function create(Request $request)
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
         $ltiRequest = $this->lti->getRequest($request);
@@ -61,10 +55,6 @@ class LinkController extends Controller
      */
     public function store(LinksRequest $request): JsonResponse
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $inputs = $request->all();
         $metadata = json_decode($inputs['linkMetadata']);
 
@@ -133,10 +123,6 @@ class LinkController extends Controller
     {
         $link = new Link();
         $oldLink = $link::findOrFail($id);
-
-        if (!$this->canCreate()) {
-            abort(403);
-        }
 
         $inputs = $request->all();
 

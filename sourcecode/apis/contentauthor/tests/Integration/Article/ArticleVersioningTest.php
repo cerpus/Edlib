@@ -240,30 +240,7 @@ class ArticleVersioningTest extends TestCase
         $article->license = 'PRIVATE';
         $article->save();
 
-        // Cannot edit article if not collaborator and non copyable resource
-        $this->withSession([
-            'authId' => $eve->auth_id,
-            'email' => $eve->email,
-            'verifiedEmails' => [$eve->email],
-        ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_FORBIDDEN);
         $this->assertDatabaseCount('article_collaborators', 2);
-
-        // Well, maybe if i post directly? PURE GENIUS!
-        $this->withSession([
-            'authId' => $eve->auth_id,
-            'email' => $eve->email,
-            'verifiedEmails' => [$eve->email],
-        ])
-        ->put(route('article.update', $article->id), [
-            '_token' => csrf_token(),
-            'title' => 'Evil edit',
-            'content' => 'Muahahaha',
-            'license' => 'BY',
-            'collaborators' => 'a@b.com,c@d.com',
-        ])
-        ->assertStatus(Response::HTTP_FORBIDDEN);
 
         // Can edit if you are a collaborator even if the resource is non copyable
         $this->withSession([

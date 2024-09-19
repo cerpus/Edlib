@@ -356,21 +356,6 @@ parameters:
 			path: app/Http/Libraries/License.php
 
 		-
-			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\GameAccess\\:\\:\\$request\\.$#"
-			count: 1
-			path: app/Http/Middleware/GameAccess.php
-
-		-
-			message: "#^Call to static method debug\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
-			count: 1
-			path: app/Http/Middleware/GameAccess.php
-
-		-
-			message: "#^Call to static method error\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
-			count: 1
-			path: app/Http/Middleware/GameAccess.php
-
-		-
 			message: "#^Variable \\$registerSettings might not be defined\\.$#"
 			count: 1
 			path: app/Http/Middleware/LtiBehaviorSettings.php
@@ -379,26 +364,6 @@ parameters:
 			message: "#^Variable \\$validator might not be defined\\.$#"
 			count: 2
 			path: app/Http/Middleware/LtiBehaviorSettings.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Http\\\\Middleware\\\\QuestionSetAccess\\:\\:\\$request\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
-
-		-
-			message: "#^Call to static method debug\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
-
-		-
-			message: "#^Call to static method error\\(\\) on an unknown class App\\\\Http\\\\Middleware\\\\Log\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
-
-		-
-			message: "#^Method App\\\\Content\\:\\:isExternalCollaborator\\(\\) invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Http/Middleware/QuestionSetAccess.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers is not covariant with PHPDoc type int of overridden property Illuminate\\\\Http\\\\Middleware\\\\TrustProxies\\:\\:\\$headers\\.$#"

@@ -2,22 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Article;
-use App\ACL\ArticleAccess;
-
 class FileUploadToArticle extends Request
 {
-    use ArticleAccess;
-
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
-        $article = Article::findOrFail($this->route('id'));
-        return $this->canUpdateArticle($article);
+        // TODO: check intent for LTI launch
+        return false;
     }
 
     /**

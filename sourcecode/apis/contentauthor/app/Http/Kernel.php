@@ -5,8 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
-use App\Http\Middleware\GameAccess;
-use App\Http\Middleware\QuestionSetAccess;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -85,8 +83,6 @@ class Kernel extends HttpKernel
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,
         'lti.signed-launch' => \App\Http\Middleware\LtiSignedLaunch::class,
         'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,
-        'game-access' => GameAccess::class,
-        'questionset-access' => QuestionSetAccess::class,
         'adaptermode' => AdapterMode::class,
     ];
 

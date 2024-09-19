@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\Gametype;
 use App\H5PLibrary;
 use App\Http\Libraries\License;
@@ -34,14 +33,12 @@ class QuestionSetController extends Controller
 {
     use LtiTrait;
     use ReturnToCore;
-    use ArticleAccess;
     use FractalTransformer;
 
     public function __construct(private readonly Lti $lti)
     {
         $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
         $this->middleware('lti.question-set')->only(['ltiCreate']);
-        $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
     }
 
     private function getQuestionsetContentTypes(): Collection
@@ -70,10 +67,6 @@ class QuestionSetController extends Controller
 
     public function create(Request $request): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
@@ -126,10 +119,6 @@ class QuestionSetController extends Controller
 
     public function edit(Request $request, $id): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $questionset = QuestionSet::findOrFail($id);
 
         $links = (object)[
@@ -188,9 +177,6 @@ class QuestionSetController extends Controller
 
     public function update(ApiQuestionsetRequest $request, QuestionSet $questionset)
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
         /** @var QuestionSetHandler $questionsetHandler */

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\Game;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
@@ -16,13 +15,11 @@ use Illuminate\Support\Facades\Session;
 class GameController extends Controller
 {
     use LtiTrait;
-    use ArticleAccess;
     use ReturnToCore;
 
     public function __construct(private Lti $lti)
     {
         $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
-        $this->middleware('game-access', ['only' => ['ltiEdit']]);
     }
 
     public function show($id)
@@ -42,11 +39,6 @@ class GameController extends Controller
     {
         /** @var Game $game */
         $game = Game::with('gametype')->findOrFail($gameId);
-
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
         return $gameType->edit($game, $request);
     }

@@ -6,7 +6,6 @@ use App\Content;
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\Events\ResourceSaved;
-use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\User;
