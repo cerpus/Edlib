@@ -4,7 +4,7 @@ set -e
 CACERT=/usr/local/share/ca-certificates/cacert.pem
 NSSDB=/home/chromeuser/.pki/nssdb
 
-if [ "$1" = "chromedriver" ]; then
+if [ "$1" = "chromedriver" ] && [ ! -d "$NSSDB" ]; then
     mkdir -p "$NSSDB"
     certutil -d "sql:$NSSDB" -N --empty-password
     certutil -d "sql:$NSSDB" -A -t "CP,," -n cerpus -i "$CACERT"
