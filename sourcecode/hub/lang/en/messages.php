@@ -196,6 +196,7 @@ return [
     'content-has-no-roles' => 'No roles are assigned to this content.',
     'alert-lti-platform-removed' => 'The LTI platform has been removed.',
     'confirm-lti-platform-deletion' => 'Are you sure you want to remove the LTI platform? The platform will no longer be allowed to launch or select content.',
+    'invalid-login-credentials' => 'Invalid login credentials. Please try again.',
     'lti-platform-authorizes-edit' => 'The platform authorizes edit access',
     'lti-platform-authorizes-edit-warning' => 'Only enable this for trusted platforms',
     'lti-platform-authorizes-edit-help' => 'Transfers responsibility for access control of editing from :site to the platform, i.e. :site will accept all valid edit requests from the platform',

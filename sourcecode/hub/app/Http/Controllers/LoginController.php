@@ -38,7 +38,7 @@ final class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Something something credentials',
+            'email' => trans('messages.invalid-login-credentials'),
         ])->onlyInput('email');
     }
 
