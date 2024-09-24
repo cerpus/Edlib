@@ -168,12 +168,10 @@ Route::prefix('/lti')->middleware([
     Route::post('/content/{content}')
         ->uses([LtiController::class, 'content'])
         ->name('lti.content')
-        ->can('view', 'content')
         ->whereUlid('content');
 
     Route::post('/content/by-edlib2-usage/{edlib2UsageContent}')
-        ->uses([LtiController::class, 'content'])
-        ->can('view', 'edlib2UsageContent');
+        ->uses([LtiController::class, 'content']);
 
     Route::post('/dl')
         ->uses([LtiController::class, 'select'])

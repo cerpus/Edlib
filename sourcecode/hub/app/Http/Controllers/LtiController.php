@@ -44,6 +44,8 @@ final readonly class LtiController
     {
         switch (($request->attributes->get('lti')['lti_message_type'] ?? '')) {
             case 'ContentItemSelectionRequest':
+                $request->session()->put('intent-to-edit.' . $content->id, true);
+
                 $version = $content->latestVersion
                     ?? abort(404, 'The content has no version to edit');
 

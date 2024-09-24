@@ -57,7 +57,11 @@ class ContentPolicy
         if (Session::has('lti.oauth_consumer_key')) {
             $key = Session::get('lti.oauth_consumer_key');
             $platform = LtiPlatform::where('key', $key)->first();
-            if ($platform?->authorizes_edit === true) {
+
+            if (
+                $platform?->authorizes_edit &&
+                Session::has('intent-to-edit.' . $content->id)
+            ) {
                 return true;
             }
         }
