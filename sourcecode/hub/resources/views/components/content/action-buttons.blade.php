@@ -3,14 +3,14 @@
     use App\Support\SessionScope;
     use Illuminate\Support\Facades\Gate;
 
-    $canUse = Gate::allows('use', $content);
+    $canUse = Gate::allows('use', [$content, $version]);
     $canEdit = Gate::allows('edit', $content);
     $canView = Gate::allows('view', $content);
     $canDelete = $mine && Gate::allows('delete', $content);
     $canCopy = Gate::allows('copy', $content);
 @endphp
 @if($canUse)
-    <x-form action="{{ route('content.use', [$content]) }}" method="POST">
+    <x-form action="{{ $version->getUseUrl() }}" method="POST">
         <button class="btn btn-primary btn-sm me-1 content-use-button">
             {{ trans('messages.use-content') }}
         </button>

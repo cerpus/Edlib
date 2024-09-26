@@ -1,8 +1,8 @@
 @php use App\Support\SessionScope; @endphp
 @props(['content', 'version', 'explicitVersion'])
 
-@can('use', $content)
-    <x-form action="{{ route('content.use', [$content]) }}">
+@can('use', [$content, $version])
+    <x-form action="{{ $version->getUseUrl() }}">
         <button class="btn btn-primary d-flex gap-2 text-nowrap">
             <x-icon name="check-lg" />
             <span class="flex-grow-1">{{ trans('messages.use-content')}}</span>

@@ -6,9 +6,17 @@ namespace App\Models;
 
 use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
+use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiLaunch;
 use App\Lti\LtiLaunchBuilder;
 use App\Support\HasUlidsFromCreationDate;
+use App\Support\SessionScope;
+use BadMethodCallException;
+use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +26,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+use function app;
+use function assert;
 use function is_string;
+use function session;
 use function url;
 
 class ContentVersion extends Model
@@ -70,6 +81,24 @@ class ContentVersion extends Model
         'saving' => ContentVersionSaving::class,
     ];
 
+    public function toLtiLinkItem(): EdlibLtiLinkItem
+    {
+        $iconUrl = $this->icon?->getUrl();
+
+        return (new EdlibLtiLinkItem(
+            title: $this->getTitle(),
+            url: $this->getExternalLaunchUrl(),
+            icon: $iconUrl ? new Image($iconUrl) : null,
+            lineItem: $this->max_score > 0
+                ? new LineItem(new ScoreConstraints(normalMaximum: (float) $this->max_score))
+                : null,
+        ))
+            ->withLanguageIso639_3($this->language_iso_639_3)
+            ->withLicense($this->license)
+            ->withTags($this->getSerializedTags())
+        ;
+    }
+
     /**
      * @param string[] $claims
      */
@@ -99,10 +128,58 @@ class ContentVersion extends Model
         return $launch->toPresentationLaunch($this, $url);
     }
 
+    public function toItemSelectionRequest(): Oauth1Request
+    {
+        $returnUrl = session()->get('lti.content_item_return_url')
+            ?? throw new BadMethodCallException('Not in LTI selection context');
+        assert(is_string($returnUrl));
+
+        $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
+            ->firstOrFail()
+            ->getOauth1Credentials();
+
+        return app()->make(ContentItemSelectionFactory::class)
+            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
+    }
+
+    /**
+     * Get the launch URL that will be returned on item selection requests.
+     */
+    public function getExternalLaunchUrl(): string
+    {
+        $content = $this->content ?? throw new DomainException('No content for version');
+        $tool = $this->tool ?? throw new DomainException('No tool for LTI resource');
+
+        if (!$tool->proxy_launch) {
+            return $this->lti_launch_url;
+        }
+
+        if (session('lti.ext_edlib3_return_exact_version')) {
+            return route('lti.content-version', [
+                'content' => $content->id,
+                'version' => $this->id,
+                SessionScope::TOKEN_PARAM => null,
+            ]);
+        }
+
+        return route('lti.content', [
+            'content' => $content->id,
+            SessionScope::TOKEN_PARAM => null,
+        ]);
+    }
+
     public function getTitle(): string
     {
         return $this->title
             ?? throw new DomainException('The content version has no title');
+    }
+
+    /**
+     * Get the URL to the endpoint for using/inserting content.
+     */
+    public function getUseUrl(): string
+    {
+        return route('content.use', [$this->content, $this]);
     }
 
     /**

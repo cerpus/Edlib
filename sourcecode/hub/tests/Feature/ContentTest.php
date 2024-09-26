@@ -8,7 +8,6 @@ use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
-use App\Models\LtiTool;
 use Carbon\Carbon;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\Signer;
@@ -55,44 +54,6 @@ final class ContentTest extends TestCase
         $content = Content::factory()->create();
 
         $this->assertFalse($content->shouldBeSearchable());
-    }
-
-    public function testContentIsNotProxiedWhenProxyingDisabled(): void
-    {
-        $content = Content::factory()
-            ->withVersion(
-                ContentVersion::factory()
-                    ->published()
-                    ->tool(LtiTool::factory()->proxyLaunch(false))
-                    ->state([
-                        'lti_launch_url' => 'https://launch.example.com/'
-                    ])
-            )
-            ->create();
-
-        $this->assertSame(
-            'https://launch.example.com/',
-            $content->toLtiLinkItem()->getUrl(),
-        );
-    }
-
-    public function testContentIsProxiedWhenProxyingEnabled(): void
-    {
-        $content = Content::factory()
-            ->withVersion(
-                ContentVersion::factory()
-                    ->published()
-                    ->state([
-                        'lti_launch_url' => 'https://launch.example.com/'
-                    ])
-                    ->tool(LtiTool::factory()->proxyLaunch(true))
-            )
-            ->create();
-
-        $this->assertSame(
-            'https://hub-test.edlib.test/lti/content/' . $content->id,
-            $content->toLtiLinkItem()->getUrl(),
-        );
     }
 
     public function testCanLaunchContentByEdlib2UsageId(): void

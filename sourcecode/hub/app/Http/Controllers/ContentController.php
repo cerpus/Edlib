@@ -10,10 +10,13 @@ use App\Enums\LtiToolEditMode;
 use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\ContentFilter;
+use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\LtiPlatform;
 use App\Models\LtiTool;
+use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
@@ -97,12 +100,10 @@ class ContentController extends Controller
         ]);
     }
 
-    public function embed(Content $content): View
+    public function embed(Content $content, ContentVersion|null $version = null): View
     {
-        $launch = $content
-            ->latestPublishedVersion()
-            ->firstOrFail()
-            ->toLtiLaunch();
+        $version ??= $content->latestPublishedVersion()->firstOrFail();
+        $launch = $version->toLtiLaunch();
 
         return view('content.embed', [
             'content' => $content,
@@ -197,9 +198,25 @@ class ContentController extends Controller
         return redirect()->back();
     }
 
-    public function use(Content $content): View
-    {
-        $ltiRequest = $content->toItemSelectionRequest();
+    public function use(
+        Content $content,
+        ContentVersion $version,
+        Request $request,
+        ContentItemSelectionFactory $itemSelectionFactory,
+    ): View {
+        $returnUrl = $request->session()->get('lti.content_item_return_url')
+            ?? throw new BadMethodCallException('Not in LTI selection context');
+        assert(is_string($returnUrl));
+
+        $credentials = LtiPlatform::where('key', $request->session()->get('lti.oauth_consumer_key'))
+            ->firstOrFail()
+            ->getOauth1Credentials();
+
+        $ltiRequest = $itemSelectionFactory->createItemSelection(
+            [$version->toLtiLinkItem()],
+            $returnUrl,
+            $credentials,
+        );
 
         return view('lti.redirect', [
             'url' => $ltiRequest->getUrl(),
@@ -278,7 +295,7 @@ class ContentController extends Controller
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
-            $ltiRequest = $content->toItemSelectionRequest();
+            $ltiRequest = $version->toItemSelectionRequest();
 
             return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),
@@ -328,10 +345,11 @@ class ContentController extends Controller
 
             return $version;
         });
+        assert($version instanceof ContentVersion);
 
         // return to platform consuming Edlib
         if ($request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest') {
-            $ltiRequest = $content->toItemSelectionRequest();
+            $ltiRequest = $version->toItemSelectionRequest();
 
             return view('lti.redirect', [
                 'url' => $ltiRequest->getUrl(),

@@ -7,16 +7,9 @@ namespace App\Models;
 use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
-use App\Lti\ContentItemSelectionFactory;
 use App\Support\HasUlidsFromCreationDate;
-use App\Support\SessionScope;
-use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use DomainException;
 use DOMDocument;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,12 +26,8 @@ use InvalidArgumentException;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
-use function app;
 use function assert;
-use function is_string;
 use function property_exists;
-use function session;
-use function url;
 
 class Content extends Model
 {
@@ -104,53 +93,6 @@ class Content extends Model
             ?? throw new DomainException('No usable URL for the content');
 
         return route('content.version-details', [$this, $version]);
-    }
-
-    public function toItemSelectionRequest(): Oauth1Request
-    {
-        $returnUrl = session()->get('lti.content_item_return_url')
-            ?? throw new BadMethodCallException('Not in LTI selection context');
-        assert(is_string($returnUrl));
-
-        $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
-            ->firstOrFail()
-            ->getOauth1Credentials();
-
-        return app()->make(ContentItemSelectionFactory::class)
-            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
-    }
-
-    public function toLtiLinkItem(): EdlibLtiLinkItem
-    {
-        $version = $this->latestPublishedVersion
-            ?? throw new DomainException('No version for content');
-        $tool = $version->tool
-            ?? throw new DomainException('No tool for LTI resource');
-
-        if ($tool->proxy_launch) {
-            $url = url()->route('lti.content', [
-                'content' => $this->id,
-                SessionScope::TOKEN_PARAM => null,
-            ]);
-        } else {
-            $url = $version->lti_launch_url;
-        }
-        assert(is_string($url));
-
-        $iconUrl = $version->icon?->getUrl();
-
-        return (new EdlibLtiLinkItem(
-            title: $version->getTitle(),
-            url: $url,
-            icon: $iconUrl ? new Image($iconUrl) : null,
-            lineItem: $version->max_score > 0 ?
-                new LineItem(new ScoreConstraints(normalMaximum: (float) $version->max_score)) :
-                null,
-        ))
-            ->withLanguageIso639_3($version->language_iso_639_3)
-            ->withLicense($version->license)
-            ->withTags($version->getSerializedTags())
-        ;
     }
 
     public function createCopyBelongingTo(User $user, ContentVersion|null $version = null): self

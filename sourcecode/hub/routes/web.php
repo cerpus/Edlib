@@ -108,6 +108,13 @@ Route::controller(ContentController::class)->group(function () {
         ->can('view', 'content')
         ->whereUlid('content');
 
+    Route::get('/content/{content}/version/{version}/embed')
+        ->uses([ContentController::class, 'embed'])
+        ->name('content.embed-version')
+        ->can('view', ['content', 'version'])
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
+
     Route::get('/content/create', 'create')
         ->middleware('auth')
         ->can('create', \App\Models\Content::class)
@@ -125,11 +132,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid(['content', 'version'])
         ->scopeBindings();
 
-    Route::post('/content/{content}/use')
+    Route::post('/content/{content}/version/{version}/use')
         ->uses([ContentController::class, 'use'])
         ->name('content.use')
-        ->can('use', 'content')
-        ->whereUlid('content');
+        ->can('use', ['content', 'version'])
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
 
     Route::delete('/content/{content}')
         ->uses([ContentController::class, 'delete'])
@@ -169,6 +177,12 @@ Route::prefix('/lti')->middleware([
         ->uses([LtiController::class, 'content'])
         ->name('lti.content')
         ->whereUlid('content');
+
+    Route::post('/content/{content}/version/{version}')
+        ->uses([LtiController::class, 'content'])
+        ->name('lti.content-version')
+        ->whereUlid(['content', 'version'])
+        ->scopeBindings();
 
     Route::post('/content/by-edlib2-usage/{edlib2UsageContent}')
         ->uses([LtiController::class, 'content']);

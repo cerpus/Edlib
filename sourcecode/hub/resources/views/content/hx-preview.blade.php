@@ -45,8 +45,8 @@
                 </a>
             @endcan
 
-            @can('use', [$content])
-                <x-form action="{{ route('content.use', [$content]) }}" method="POST">
+            @can('use', [$content, $version])
+                <x-form action="{{ $version->getUseUrl() }}" method="POST">
                     <button class="btn btn-primary use-button" role="button">
                         {{ trans('messages.use-content') }}
                     </button>

@@ -18,6 +18,13 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
 * Proper LTI requests: `$request->attributes->get('lti')`
 * LTI sessions after initial launch: `$request->session()->get('lti')`
 
+## LTI settings
+
+* `ext_edlib3_return_exact_version=1`
+
+  Make the Use Content button in item selections return a link to the current
+  version of a resource.
+
 ## LTI Deep-Linking 1.0 extensions
 
 The following attributes can be used with items of the `LtiLinkItem` type to

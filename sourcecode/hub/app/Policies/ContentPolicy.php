@@ -105,17 +105,21 @@ class ContentPolicy
         return $content->hasUser($user);
     }
 
-    public function use(User|null $user, Content $content): bool
+    public function use(User|null $user, Content $content, ContentVersion $version): bool
     {
         if (
             !request()->hasPreviousSession() ||
-            !request()->session()->has('lti.content_item_return_url') ||
-            !$content->latestPublishedVersion()->exists()
+            !request()->session()->has('lti.content_item_return_url')
         ) {
+            // not in LTI Deep Linking context
             return false;
         }
 
-        if (!$content->shared && (!$user || $content->hasUser($user))) {
+        if (!$version->content?->is($content)) {
+            return false;
+        }
+
+        if (!$version->published) {
             return false;
         }
 

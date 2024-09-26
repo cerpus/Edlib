@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\ContentViewSource;
 use App\Lti\LtiLaunch;
 use App\Models\Content;
+use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\RedirectResponse;
@@ -40,13 +41,16 @@ final readonly class LtiController
         ]);
     }
 
-    public function content(Content $content, Request $request): RedirectResponse
-    {
+    public function content(
+        Content $content,
+        Request $request,
+        ContentVersion|null $version = null,
+    ): RedirectResponse {
         switch (($request->attributes->get('lti')['lti_message_type'] ?? '')) {
             case 'ContentItemSelectionRequest':
                 $request->session()->put('intent-to-edit.' . $content->id, true);
 
-                $version = $content->latestVersion
+                $version ??= $content->latestVersion
                     ?? abort(404, 'The content has no version to edit');
 
                 return to_route('content.edit', [$content, $version]);
@@ -56,6 +60,10 @@ final readonly class LtiController
                 $platform = LtiPlatform::where('key', $key)->first();
 
                 $content->trackView($request, ContentViewSource::LtiPlatform, $platform);
+
+                if ($version) {
+                    return to_route('content.embed-version', [$content, $version]);
+                }
 
                 return to_route('content.embed', [$content]);
 
