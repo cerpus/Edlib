@@ -191,6 +191,7 @@ class Content extends Model
             $version->published = $item->isPublished() ?? true;
             $version->language_iso_639_3 = strtolower($item->getLanguageIso639_3() ?? 'und');
             $version->license = $item->getLicense();
+            $version->max_score = $item->getLineItem()?->getScoreConstraints()?->getTotalMaximum() ?? 0;
 
             if (count($item->getTags()) > 0) {
                 $version->saveQuietly();

@@ -533,6 +533,7 @@ abstract class Content extends Model
             published: $published,
             shared: $shared,
             tags: $this->getTags(),
+            maxScore: $this->getMaxScore(),
         );
     }
 
