@@ -7,6 +7,7 @@ namespace App\Libraries\H5P;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use Iso639p3;
 
 class H5PCreateConfig extends H5PConfigAbstract
 {
@@ -30,7 +31,7 @@ class H5PCreateConfig extends H5PConfigAbstract
             'apiVersion' => \H5PCore::$coreApi,
             'extraAllowedContent' => implode(" ", $this->adapter::getCoreExtraTags()),
             'language' => '',
-            'defaultLanguage' => \Iso639p3::code2letters(config("h5p.default-resource-language")),
+            'defaultLanguage' => Iso639p3::code2letters(config("h5p.default-resource-language")),
         ];
         $this->config['ajax']['contentUserData'] = '/api/progress?action=h5p_preview&c=1';
         $this->config['ajax']['setFinished'] = '/api/progress?action=h5p_preview&f=1';
@@ -53,7 +54,7 @@ class H5PCreateConfig extends H5PConfigAbstract
 
     protected function addInheritorConfig(): void
     {
-        $this->editorConfig['language'] = $this->language ?? 'en';
+        $this->editorConfig['language'] = $this->language ?? Iso639p3::code2letters(config("h5p.default-resource-language"));
         $this->editorConfig['ajaxPath'] = sprintf("/ajax?redirectToken=%s&h5p_id=&action=", $this->redirectToken);
 
         $this->config['editor'] = (object) $this->editorConfig;
