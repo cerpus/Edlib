@@ -36,7 +36,7 @@ Route::post('h5p/adapter', function () {
 })->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
-Route::resource('/h5p', H5PController::class, ['except' => ['destroy']]);
+Route::resource('/h5p', H5PController::class, ['except' => ['index', 'destroy']]);
 
 Route::get('images/browse', [H5PController::class, 'browseImages']);
 Route::get('images/browse/{imageId}', [H5PController::class, 'getImage']);
@@ -71,10 +71,10 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
 
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
 
-    Route::resource('questionset', QuestionSetController::class, ['except' => ['destroy']]);
+    Route::resource('questionset', QuestionSetController::class, ['except' => ['index', 'destroy']]);
     Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
 
-    Route::resource('game', GameController::class, ['except' => ['destroy']]);
+    Route::resource('game', GameController::class, ['except' => ['index', 'destroy']]);
     Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
 
     Route::group(['middleware' => ['core.ownership']], function () {
@@ -85,8 +85,8 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
 
-Route::resource('/article', ArticleController::class, ['except' => ['destroy']]);
-Route::resource('/link', LinkController::class, ['except' => ['destroy']]);
+Route::resource('/article', ArticleController::class, ['except' => ['index', 'destroy']]);
+Route::resource('/link', LinkController::class, ['except' => ['index', 'destroy']]);
 
 Route::post('/article/create/upload', [ArticleUploadController::class, 'uploadToNewArticle'])->name('article-upload.new');
 Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToExistingArticle'])->name('article-upload.existing');
