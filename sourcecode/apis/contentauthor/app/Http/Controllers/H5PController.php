@@ -78,12 +78,6 @@ class H5PController extends Controller
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
 
-    public function index(): View
-    {
-        $title = "Viewing H5P content";
-        return view('h5p.index', ['title' => $title, 'message' => trans('h5p-editor.need-id')]);
-    }
-
     public function doShow($id, $context): View
     {
         $ltiRequest = $this->lti->getRequest(request());

@@ -45,16 +45,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        abort(404);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request): View
