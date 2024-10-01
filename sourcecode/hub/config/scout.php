@@ -131,6 +131,9 @@ return [
                     'tags',
                     'gives_score',
                 ],
+                'pagination' => [
+                    'maxTotalHits' => 1000000000,
+                ],
                 'sortableAttributes' => [
                     'created_at',
                     'updated_at',
