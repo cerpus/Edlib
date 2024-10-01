@@ -92,15 +92,17 @@
                                 </a>
                             </li>
                         @endcan
-                        <li>
-                            <form action="{{ route('log_out') }}" method="POST">
-                                @csrf
-                                <button class="dropdown-item d-flex gap-2">
-                                    <x-icon name="box-arrow-right" />
-                                    <span>{{ trans('messages.log-out') }}</span>
-                                </button>
-                            </form>
-                        </li>
+                        @can('logout')
+                            <li>
+                                <form action="{{ route('log_out') }}" method="POST">
+                                    @csrf
+                                    <button class="dropdown-item d-flex gap-2">
+                                        <x-icon name="box-arrow-right" />
+                                        <span>{{ trans('messages.log-out') }}</span>
+                                    </button>
+                                </form>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @else

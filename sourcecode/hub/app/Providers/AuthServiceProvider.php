@@ -45,6 +45,10 @@ class AuthServiceProvider extends ServiceProvider
             return !$request->hasPreviousSession() || !$request->session()->has('lti');
         });
 
+        Gate::define('logout', function (User $user) {
+            return !request()->session()->has('lti');
+        });
+
         Gate::define('register', function (User|null $user) {
             $features = app()->make(Features::class);
 

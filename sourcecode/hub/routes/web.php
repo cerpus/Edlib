@@ -47,7 +47,8 @@ Route::middleware('can:login')->group(function () {
 
 Route::post('/log-out')
     ->uses([LoginController::class, 'logout'])
-    ->name('log_out');
+    ->name('log_out')
+    ->can('logout');
 
 Route::controller(ContentController::class)->group(function () {
     Route::get('/content', 'index')->name('content.index');
