@@ -9,6 +9,8 @@ use App\Lti\LtiRequest;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Serializer\DeepLinking\ContentItemsSerializerInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
+use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
 use Cerpus\EdlibResourceKit\Oauth1\Claim;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
@@ -42,6 +44,9 @@ final readonly class ReturnToCoreController
                 title: $content->title,
                 url: $content->url,
                 icon: $content->iconUrl ? new Image($content->iconUrl) : null,
+                lineItem: $content->maxScore > 0 ?
+                    (new LineItem(new ScoreConstraints(normalMaximum: $content->maxScore))) :
+                    null
             ))
                 ->withLanguageIso639_3($content->languageIso639_3)
                 ->withLicense($content->license)
