@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'Article' => 'Article',
     'create-article' => 'Create article',
     'edit-article' => 'Edit article',
     'title' => 'Title',

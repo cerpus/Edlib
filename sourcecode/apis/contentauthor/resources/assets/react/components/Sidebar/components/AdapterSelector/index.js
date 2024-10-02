@@ -30,7 +30,7 @@ class AdapterSelector extends Component {
             {
                 adapterMode: selectedAdapter,
             })
-            .then(data => window.location.href = data.data.url)
+            .then(() => window.location.reload())
             .catch(data => console.log(data));
     }
 
