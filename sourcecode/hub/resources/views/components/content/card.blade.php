@@ -36,7 +36,7 @@
             </span>
         </div>
     </header>
-    <div class="card-body">
+    <div class="card-body overflow-hidden">
         <div class="row card-text mb-2">
             <div class="col-auto small content-type">
                 {{ $version->getDisplayedContentType() }}
@@ -45,10 +45,8 @@
                 {{ strtoupper($version->language_iso_639_3) }}
             </div>
         </div>
-        <div class="card-text small">
-            @foreach ($content->users as $user)
-                {{ $user->name }}
-            @endforeach
+        <div class="card-text small text-line-clamp clamp-2-lines">
+            {{ $content->users->map(fn ($user) => $user->name)->join(', ') }}
         </div>
     </div>
     <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">

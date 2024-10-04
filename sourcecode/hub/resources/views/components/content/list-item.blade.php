@@ -20,9 +20,7 @@
             </a>
             <time class="col-2" aria-label="{{ trans('messages.last-changed') }}" datetime="{{$version->created_at->toIso8601String()}}"></time>
             <div class="col-2" aria-label="{{ trans('messages.author') }}">
-                @foreach ($content->users as $user)
-                    {{ $user->name }}
-                @endforeach
+                {{ $content->users->map(fn ($user) => $user->name)->join(', ') }}
             </div>
             <div class="col-2" aria-label="{{ trans('messages.language') }}">
                 {{ $version->language_iso_639_3 }}
