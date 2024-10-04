@@ -1,3 +1,4 @@
+@props(['current' => null])
 <nav class="navbar navbar-expand">
     <div class="container-md d-flex justify-content-between">
         <a href="{{ route('home') }}" class="navbar-brand">
@@ -12,7 +13,7 @@
             <li class="nav-item">
                 <a
                     href="{{ route('content.index') }}"
-                    @class(['nav-link', 'active' => request()->routeIs('content.index'), 'd-flex', 'gap-2'])
+                    @class(['nav-link', 'active' => $current === 'shared-content', 'd-flex', 'gap-2'])
                 >
                     <x-icon name="globe-americas" />
                     <span class="d-none d-sm-block">{{ trans('messages.explore') }}</span>
@@ -22,7 +23,7 @@
             <li class="nav-item">
                 <a
                     href="{{ route('content.create') }}"
-                    @class(['nav-link', 'active' => request()->routeIs('content.create'), 'd-flex', 'gap-2'])
+                    @class(['nav-link', 'active' => $current === 'create', 'd-flex', 'gap-2'])
                 >
                     <x-icon name="pencil" class="me-1" />
                     <span class="d-none d-sm-block">{{ trans('messages.create') }}</span>
@@ -32,7 +33,7 @@
             <li class="nav-item">
                 <a
                     href="{{ route('content.mine') }}"
-                    @class(['nav-link', 'active' => request()->routeIs('content.mine'), 'd-flex', 'gap-2'])
+                    @class(['nav-link', 'active' => $current === 'my-content', 'd-flex', 'gap-2'])
                 >
                     <x-icon name="person-lines-fill" />
                     <span class="d-none d-sm-block">{{ trans('messages.my-content') }}</span>
@@ -110,7 +111,7 @@
                     <li class="nav-item">
                         <a
                             href="{{ route('login') }}"
-                            @class(['nav-link', 'active' => request()->routeIs('login')])
+                            @class(['nav-link', 'active' => $current === 'login'])
                         >
                             {{ trans('messages.log-in') }}
                         </a>

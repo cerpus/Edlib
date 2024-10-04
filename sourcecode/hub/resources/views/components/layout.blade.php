@@ -4,6 +4,7 @@
     'noFooter' => false,
     'expand' => false,
     'title' => null,
+    'current' => null,
 ])
 <!DOCTYPE html>
 <html
@@ -31,7 +32,7 @@
         @endif
 
         @unless ($noNav)
-            <x-layout.navbar />
+            <x-layout.navbar :$current />
         @endunless
 
         @if (session()->has('alert'))

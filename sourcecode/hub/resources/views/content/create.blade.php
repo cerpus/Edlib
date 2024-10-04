@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout current="create">
     <x-slot:title>Content types</x-slot:title>
 
     <p>Select a content type</p>
