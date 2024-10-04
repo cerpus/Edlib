@@ -11,6 +11,8 @@ use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 use function assert;
 
@@ -24,6 +26,17 @@ class LtiLaunchBuilder
      */
     private array $claims = [
         'lti_version' => 'LTI-1p0',
+    ];
+
+    /** @var string[] Claims starting with any of these should be forwarded */
+    private array $forwardClaimsAllow = [
+        'ext_',
+        'launch_presentation_css_url',
+    ];
+
+    /** @var string[] Claims that starts with any of the strings will not be forwarded */
+    private array $forwardClaimsPrevent = [
+        'ext_edlib3_',
     ];
 
     public function __construct(
@@ -61,6 +74,19 @@ class LtiLaunchBuilder
         return $self;
     }
 
+    private function withForwardedClaims(): static
+    {
+        $self = clone $this;
+
+        foreach (Session::get('lti', []) as $key => $value) {
+            if (Str::startsWith($key, $this->forwardClaimsAllow) && !Str::startsWith($key, $this->forwardClaimsPrevent)) {
+                $self = $self->withClaim($key, $value);
+            }
+        }
+
+        return $self;
+    }
+
     public function toPresentationLaunch(
         ContentVersion $contentVersion,
         string $url,
@@ -68,7 +94,9 @@ class LtiLaunchBuilder
         $tool = $contentVersion->tool;
         assert($tool !== null);
 
-        $launch = $this->withClaim('lti_message_type', 'basic-lti-launch-request');
+        $launch = $this
+            ->withForwardedClaims()
+            ->withClaim('lti_message_type', 'basic-lti-launch-request');
 
         $event = new LaunchLti($url, $launch, $tool);
         $this->dispatcher->dispatch($event);
@@ -88,6 +116,7 @@ class LtiLaunchBuilder
         string $itemReturnUrl,
     ): LtiLaunch {
         $launch = $this
+            ->withForwardedClaims()
             ->withClaim('accept_media_types', 'application/vnd.ims.lti.v1.ltilink')
             ->withClaim('accept_presentation_document_targets', 'iframe')
             ->withClaim('content_item_return_url', $itemReturnUrl)

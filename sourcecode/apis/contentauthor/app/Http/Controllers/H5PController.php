@@ -36,6 +36,7 @@ use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Lti\Lti;
+use App\Lti\LtiRequest;
 use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Exception;
@@ -174,6 +175,8 @@ class H5PController extends Controller
             }
         }
 
+        $ltiRequest = $this->lti->getRequest(request());
+
         $editorSetup = H5PEditorConfigObject::create([
             'userPublishEnabled' => $adapter->isUserPublishEnabled(),
             'canPublish' => true,
@@ -187,6 +190,7 @@ class H5PController extends Controller
             'h5pLanguage' => Iso639p3::code2letters($language),
             'creatorName' => Session::get("name"),
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
+            'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
@@ -236,13 +240,14 @@ class H5PController extends Controller
         if (!is_null($h5pLanguage)) {
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
+        $redirectToken = $request->input('redirectToken');
 
         $editorConfig = (app(H5PEditConfig::class))
             ->setUserId(Session::get('authId', false))
             ->setUserUsername(Session::get('userName', false))
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
-            ->setRedirectToken($request->input('redirectToken'))
+            ->setRedirectToken($redirectToken)
             ->setLanguage(LtiToH5PLanguage::convert(Session::get('locale')))
             ->loadContent($id);
 
@@ -271,6 +276,9 @@ class H5PController extends Controller
         $settings = [];
         $scripts = $h5pView->getScripts(false);
 
+        /** @var LtiRequest|null $ltiRequest */
+        $ltiRequest = Session::get('lti_requests.' . $redirectToken);
+
         $editorSetup = H5PEditorConfigObject::create([
             'userPublishEnabled' => $adapter->isUserPublishEnabled(),
             'canPublish' => $h5pContent->canPublish($request),
@@ -281,6 +289,7 @@ class H5PController extends Controller
             'h5pLanguage' => $h5pLanguage,
             'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
+            'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
         ]);
 
         if ($h5pContent->canList($request)) {

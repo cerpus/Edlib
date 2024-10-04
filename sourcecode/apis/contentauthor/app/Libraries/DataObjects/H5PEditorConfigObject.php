@@ -20,6 +20,7 @@ class H5PEditorConfigObject extends EditorConfigObject
     public $showDisplayOptions = false;
     public $h5pLanguage;
     public $creatorName;
+    public bool $enableUnsavedWarning = true; // Enable onUnload warning if unsaved changes
 
     public function toJson(): string
     {

@@ -179,4 +179,10 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     {
         return $this->param('ext_edlib3_embed_resize_code');
     }
+
+    public function getEnableUnsavedWarning(): bool|null
+    {
+        $value = $this->param('ext_ca_enable_unsaved_warning');
+        return $value !== null ? $value !== '0' : null;
+    }
 }

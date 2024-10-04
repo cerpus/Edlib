@@ -11,4 +11,5 @@ return [
     "export_h5p_on_save" => env("FEATURE_EXPORT_H5P_ON_SAVE", false),
     "export_h5p_with_local_files" => env("FEATURE_EXPORT_H5P_WITH_LOCAL_FILES", true),
     "lock-max-hours" => env("FEATURE_MAX_LOCKING_HOURS", 24),
+    "enable-unsaved-warning" => env("FEATURE_ENABLE_UNSAVED_WARNING", true),
 ];

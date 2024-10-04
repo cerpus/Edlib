@@ -93,7 +93,9 @@ const H5PEditorContainer = ({ intl }) => {
         );
     }, [getCurrentParams, startupParameters, isSaved]);
 
-    useConfirmWindowClose(shouldConfirmClose);
+    if (editorSetup.enableUnsavedWarning) {
+        useConfirmWindowClose(shouldConfirmClose);
+    }
 
     React.useEffect(() => {
         const H5PReadyInterval = setInterval(() => {
