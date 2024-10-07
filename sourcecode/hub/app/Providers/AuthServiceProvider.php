@@ -49,6 +49,10 @@ class AuthServiceProvider extends ServiceProvider
             return !request()->session()->has('lti');
         });
 
+        Gate::define('update-account', function (User $user) {
+            return !request()->session()->has('lti');
+        });
+
         Gate::define('register', function (User|null $user) {
             $features = app()->make(Features::class);
 

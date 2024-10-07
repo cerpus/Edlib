@@ -64,15 +64,17 @@
                         <li class="nav-item d-md-none">
                             <hr class="dropdown-divider">
                         </li>
-                        <li>
-                            <a
-                                href="{{ route('user.my-account') }}"
-                                class="dropdown-item gap-2 d-flex"
-                            >
-                                <x-icon name="person-fill-gear"/>
-                                <span>{{ trans('messages.my-account') }}</span>
-                            </a>
-                        </li>
+                        @can('update-account')
+                            <li>
+                                <a
+                                    href="{{ route('user.my-account') }}"
+                                    class="dropdown-item gap-2 d-flex"
+                                >
+                                    <x-icon name="person-fill-gear"/>
+                                    <span>{{ trans('messages.my-account') }}</span>
+                                </a>
+                            </li>
+                        @endcan
                         <li>
                             <a
                                 href="{{ route('user.preferences') }}"
