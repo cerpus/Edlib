@@ -5,6 +5,7 @@ declare(strict_types=1);
 // Routes that should not start sessions
 
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\LtiController;
 use App\Http\Controllers\LtiSample\PresentationController;
 use App\Http\Controllers\LtiSample\ResizeController;
@@ -36,3 +37,5 @@ Route::get('/oembed')
 Route::get('/sitemap.xml')
     ->uses([ContentController::class, 'sitemap'])
     ->name('sitemap');
+
+Route::get('/up', HealthController::class);
