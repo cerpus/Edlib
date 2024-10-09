@@ -17,17 +17,13 @@
             </label>
 
             <div class="col-12 col-md-6 col-lg-4">
-                {{-- TODO: componentify --}}
-                <select class="form-select" name="locale" id="locale">
-                    @foreach($locales as $locale => $name)
-                        <option
-                            value="{{ $locale }}"
-                            @selected(old('locale', $user->locale) === $locale)
-                        >
-                            {{ $name }}
-                        </option>
-                    @endforeach
-                </select>
+                <x-form.dropdown
+                    name="locale"
+                    id="locale"
+                    :options="$locales"
+                    :selected="$user->locale"
+                    :disabled="!$canChangeLocale"
+                />
             </div>
         </div>
 
@@ -37,17 +33,13 @@
             </label>
 
             <div class="col-12 col-md-6 col-lg-4">
-                <select class="form-select" name="theme" id="theme">
-                    <option value="">{{ trans('messages.default') }}</option>
-                    @foreach ($themes as $theme => $name)
-                        <option
-                            value="{{ $theme }}"
-                            @selected(old('theme', $user->theme) === $theme)
-                        >
-                            {{ $name }}
-                        </option>
-                    @endforeach
-                </select>
+                <x-form.dropdown
+                    name="theme"
+                    id="theme"
+                    :options="$themes"
+                    :selected="$user->theme"
+                    :emptyOption="trans('messages.default')"
+                />
             </div>
         </div>
 

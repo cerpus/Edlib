@@ -30,7 +30,11 @@ final class SavePreferencesRequest extends FormRequest
     public function rules(Locales $locales, Themes $themes): array
     {
         return [
-            'locale' => ['required', Rule::in($locales->all())],
+            'locale' => [
+                Rule::excludeIf(fn () => $this->session()->has('lti.launch_presentation_locale')),
+                'required',
+                Rule::in($locales->all()),
+            ],
             'theme' => ['sometimes', 'nullable', Rule::in($themes->all())],
             'debug_mode' => ['required', 'boolean'],
         ];

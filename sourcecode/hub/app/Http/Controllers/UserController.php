@@ -49,9 +49,10 @@ class UserController extends Controller
         return to_route('home');
     }
 
-    public function preferences(Locales $locales, Themes $themes): View
+    public function preferences(Locales $locales, Themes $themes, Request $request): View
     {
         return view('user.preferences', [
+            'canChangeLocale' => !$request->session()->has('lti.launch_presentation_locale'),
             'locales' => $locales->getTranslatedMap(app()->getLocale()),
             'themes' => $themes->getTranslatedMap(app()->getLocale()),
             'user' => $this->getUser(),
