@@ -64,6 +64,14 @@ class LtiTool extends Model
         return $this->hasMany(ContentVersion::class);
     }
 
+    /**
+     * @return HasMany<LtiToolExtra>
+     */
+    public function extras(): HasMany
+    {
+        return $this->hasMany(LtiToolExtra::class);
+    }
+
     public function getOauth1Credentials(): Credentials
     {
         assert($this->consumer_key !== null && $this->consumer_secret !== null);

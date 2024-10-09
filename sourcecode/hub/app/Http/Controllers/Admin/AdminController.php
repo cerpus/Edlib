@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\RebuildContentIndex;
+use App\Models\LtiToolExtra;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -16,7 +17,9 @@ final class AdminController extends Controller
 {
     public function index(): View
     {
-        return view('admin.index');
+        return view('admin.index', [
+           'toolExtras' => LtiToolExtra::forAdmins()->get(),
+        ]);
     }
 
     public function rebuildContentIndex(): RedirectResponse

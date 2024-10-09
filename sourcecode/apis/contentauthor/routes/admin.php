@@ -6,7 +6,6 @@
 use App\Http\Controllers\Admin\AdminArticleController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
-use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
@@ -15,17 +14,15 @@ use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
 use App\Http\Controllers\Admin\VersioningController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('auth/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('auth/login', [LoginController::class, 'login']);
-Route::post('auth/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('auth/logout', LogoutController::class)->name('logout');
 
 Route::post('/lti/admin', LtiAdminAccess::class)
     ->middleware(['lti.add-to-session', 'lti.signed-launch']);
 
-Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
+Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
     function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
 
@@ -96,8 +93,6 @@ Route::middleware(['auth:admin,sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('ndla-import-export/settings/run-presave', [ImportExportSettingsController::class, 'runPresave'])->name('admin.importexport.run-presave');
 
         // More general Admin Backend routes
-        Route::resource('admin-users', AdminUserController::class)->only(['index', 'store', 'destroy']);
-
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
 
         // Locks admin

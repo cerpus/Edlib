@@ -69,4 +69,32 @@ final class AdminTest extends DuskTestCase
                 ->assertSee('The LTI platform has been removed')
         );
     }
+
+    public function testCreatesAndUsesAdminEndpoints(): void
+    {
+        $platform = LtiPlatform::factory()
+            ->create();
+
+        $tool = LtiTool::factory()
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs(User::factory()->admin()->create()->email)
+                ->assertAuthenticated()
+                ->visit('/admin/lti-tools/' . $tool->id . '/extras/add')
+                ->type('name', 'LTI extra test')
+                ->type('lti_launch_url', 'https://hub-test.edlib.test/lti/samples/resize')
+                ->check('admin')
+                ->press('Add')
+                ->visit('/admin')
+                ->clickLink('LTI extra test')
+                ->withinFrame(
+                    '.lti-launch',
+                    fn (Browser $frame) => $frame
+                        ->press('Resize to 640')
+                )
+        );
+    }
 }

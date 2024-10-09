@@ -6,11 +6,6 @@ parameters:
 			path: app/Article.php
 
 		-
-			message: "#^Instanceof between App\\\\Administrator\\|App\\\\User\\|null and Illuminate\\\\Auth\\\\GenericUser will always evaluate to false\\.$#"
-			count: 1
-			path: app/Auth/Guards/EdlibGuard.php
-
-		-
 			message: "#^Property App\\\\Auth\\\\Guards\\\\EdlibGuard\\:\\:\\$user \\(Illuminate\\\\Auth\\\\GenericUser\\|null\\) does not accept Illuminate\\\\Contracts\\\\Auth\\\\Authenticatable\\|null\\.$#"
 			count: 1
 			path: app/Auth/Guards/EdlibGuard.php
@@ -209,21 +204,6 @@ parameters:
 			message: "#^Static call to instance method App\\\\H5PContent\\:\\:noMaxScoreScope\\(\\)\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/AdminController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:destroy\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminUserController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:index\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\View\\\\View\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminUserController.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Controllers\\\\Admin\\\\AdminUserController\\:\\:store\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\RedirectResponse\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminUserController.php
 
 		-
 			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"

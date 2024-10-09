@@ -16,6 +16,7 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
+use App\Models\LtiToolExtra;
 use BadMethodCallException;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
@@ -240,14 +241,17 @@ class ContentController extends Controller
         return redirect()->route('content.mine');
     }
 
-    public function launchCreator(LtiTool $tool, LtiLaunchBuilder $launchBuilder): View
-    {
+    public function launchCreator(
+        LtiTool $tool,
+        LtiToolExtra|null $extra,
+        LtiLaunchBuilder $launchBuilder,
+    ): View {
         $launch = $launchBuilder
             ->withWidth(640)
             ->withHeight(480)
             ->toItemSelectionLaunch(
                 $tool,
-                $tool->creator_launch_url,
+                $extra?->lti_launch_url ?? $tool->creator_launch_url,
                 route('content.lti-store', [$tool]),
             );
 

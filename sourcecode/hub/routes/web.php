@@ -146,10 +146,12 @@ Route::controller(ContentController::class)->group(function () {
         ->can('delete', 'content')
         ->whereUlid('content');
 
-    Route::get('/content/create/{tool}', 'launchCreator')
+    Route::get('/content/create/{tool}/{extra?}', 'launchCreator')
         ->name('content.launch-creator')
         ->can('create', \App\Models\Content::class)
-        ->whereUlid('tool');
+        ->can('launchCreator', ['tool', 'extra'])
+        ->whereUlid('tool')
+        ->scopeBindings();
 });
 
 Route::prefix('/lti/dl')->middleware([
@@ -250,9 +252,30 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
         Route::get('', 'index')->name('admin.lti-tools.index');
         Route::get('/add', 'add')->name('admin.lti-tools.add');
         Route::post('', 'store')->name('admin.lti-tools.store');
+
+        Route::get('/{tool}/extras/add')
+            ->uses([LtiToolController::class, 'addExtra'])
+            ->name('admin.lti-tools.add-extra')
+            ->can('add-extra', ['tool'])
+            ->whereUlid(['tool']);
+
+        Route::post('/{tool}/extras/add')
+            ->uses([LtiToolController::class, 'storeExtra'])
+            ->name('admin.lti-tools.store-extra')
+            ->can('add-extra', ['tool'])
+            ->whereUlid(['tool']);
+
+        Route::delete('/{tool}/extras/{extra}')
+            ->uses([LtiToolController::class, 'removeExtra'])
+            ->name('admin.lti-tools.remove-extra')
+            ->can('remove-extra', ['tool', 'extra'])
+            ->whereUlid(['tool', 'extra'])
+            ->scopeBindings();
+
         Route::delete('/{tool}', 'destroy')
             ->name('admin.lti-tools.remove')
-            ->whereUlid('tool');
+            ->can('remove', ['tool'])
+            ->whereUlid(['tool']);
     });
 });
 

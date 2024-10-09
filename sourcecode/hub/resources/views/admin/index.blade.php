@@ -20,4 +20,12 @@
             </x-form>
         </li>
     </ul>
+
+    <h3>Admin tools</h3>
+
+    <ul>
+        @foreach ($toolExtras as $extra)
+            <li>{{ $extra->tool->name }}: <a href="{{ route('content.launch-creator', [$extra->tool, $extra]) }}">{{ $extra->name }}</a></li>
+        @endforeach
+    </ul>
 </x-layout>

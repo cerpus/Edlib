@@ -49,4 +49,9 @@ final class LtiToolFactory extends Factory
             'consumer_secret' => $credentials->secret,
         ]);
     }
+
+    public function extra(LtiToolExtraFactory $extra): self
+    {
+        return $this->has($extra, 'extras');
+    }
 }

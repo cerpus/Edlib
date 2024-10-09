@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Admin;
 
+use App\Models\LtiTool;
+use App\Models\LtiToolExtra;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -33,6 +35,15 @@ final class AdminTest extends TestCase
 
         $this->actingAs($login)
             ->get('/admin')
+            ->assertForbidden();
+    }
+
+    public function testNonAdminsCannotUseAdminEndpoints(): void
+    {
+        $tool = LtiTool::factory()->extra(LtiToolExtra::factory())->create();
+
+        $this->actingAs(User::factory()->create())
+            ->get('/content/create/' . $tool->id . '/' . $tool->extras->firstOrFail()->id)
             ->assertForbidden();
     }
 }
