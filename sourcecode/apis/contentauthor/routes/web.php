@@ -9,7 +9,6 @@ use App\Http\Controllers\API\H5PInfoController;
 use App\Http\Controllers\API\H5PTypeApi;
 use App\Http\Controllers\API\LinkInfoController;
 use App\Http\Controllers\API\LockStatusController;
-use App\Http\Controllers\API\PublishResourceController;
 use App\Http\Controllers\API\QuestionSetInfoController;
 use App\Http\Controllers\API\UnlockController;
 use App\Http\Controllers\ArticleController;
@@ -120,7 +119,6 @@ Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->m
 
 Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
     Route::post('v1/contenttypes/questionsets', [ContentTypeController::class, 'storeH5PQuestionset']);
-    Route::put('v1/resources/{resourceId}/publish', [PublishResourceController::class, 'publishResource'])->name('api.resource.publish');
     Route::post('v1/h5p/import', [H5PImportController::class, 'importH5P'])->name('api.import.h5p');
 });
 
