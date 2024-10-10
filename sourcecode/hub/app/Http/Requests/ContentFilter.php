@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
@@ -136,6 +137,10 @@ class ContentFilter extends FormRequest
         return $this->session()->has('lti');
     }
 
+    /**
+     * @param Builder<Content> $query
+     * @return Builder<Content>
+     */
     public function applyCriteria(Builder $query): Builder
     {
         return $query

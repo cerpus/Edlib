@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Database\Factories\LtiPlatformFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Random\Randomizer;
 
 class LtiPlatform extends Model
 {
+    /** @use HasFactory<LtiPlatformFactory> */
     use HasFactory;
     use HasUlids;
     use SoftDeletes;

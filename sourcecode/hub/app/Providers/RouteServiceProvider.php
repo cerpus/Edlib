@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Models\Content;
+use App\Models\Tag;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -40,9 +41,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::bind('edlib2UsageContent', function (string $value): Content {
             return Content::whereHas(
                 'tags',
-                fn (Builder $query) => $query
-                    ->where('prefix', 'edlib2_usage_id')
-                    ->where('name', $value)
+                function (Builder $query) use ($value) {
+                    /** @var Builder<Tag> $query */
+                    $query
+                        ->where('prefix', 'edlib2_usage_id')
+                        ->where('name', $value);
+                },
             )->limit(1)->firstOrFail();
         });
 

@@ -17,6 +17,7 @@ use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\Image;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LineItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ScoreConstraints;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Database\Factories\ContentVersionFactory;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +35,7 @@ use function url;
 
 class ContentVersion extends Model
 {
+    /** @use HasFactory<ContentVersionFactory> */
     use HasFactory;
     use HasUlidsFromCreationDate;
 

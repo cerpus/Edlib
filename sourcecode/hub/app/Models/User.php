@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Events\UserSaved;
 use BadMethodCallException;
+use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -21,6 +22,7 @@ use function config;
 class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
     use HasUlids;
 

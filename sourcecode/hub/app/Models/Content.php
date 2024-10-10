@@ -10,6 +10,7 @@ use App\Events\ContentForceDeleting;
 use App\Support\HasUlidsFromCreationDate;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
+use Database\Factories\ContentFactory;
 use DomainException;
 use DOMDocument;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,6 +32,7 @@ use function property_exists;
 
 class Content extends Model
 {
+    /** @use HasFactory<ContentFactory> */
     use HasFactory;
     use HasUlidsFromCreationDate;
     use Searchable;
@@ -312,6 +314,9 @@ class Content extends Model
         return $this->versions()->exists();
     }
 
+    /**
+     * @return ScoutBuilder<Content>
+     */
     public static function findShared(string $keywords = ''): ScoutBuilder
     {
         return Content::search($keywords)
@@ -325,6 +330,9 @@ class Content extends Model
         ;
     }
 
+    /**
+     * @return ScoutBuilder<Content>
+     */
     public static function findForUser(User $user, string $keywords = ''): ScoutBuilder
     {
         return Content::search($keywords)

@@ -6,12 +6,14 @@ namespace App\Models;
 
 use App\Enums\ContentViewSource;
 use App\Support\HasUlidsFromCreationDate;
+use Database\Factories\ContentViewFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContentView extends Model
 {
+    /** @use HasFactory<ContentViewFactory> */
     use HasFactory;
     use HasUlidsFromCreationDate;
 
