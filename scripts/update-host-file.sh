@@ -10,7 +10,9 @@ docs
 facade
 hub
 hub-vite-hmr
+hub-ndla-legacy
 hub-test
+hub-test-ndla-legacy
 mailpit
 moodle
 npm.components

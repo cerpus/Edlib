@@ -3,7 +3,9 @@ server {
 
   server_name
     hub.${EDLIB_ROOT_DOMAIN}
+    hub-ndla-legacy.${EDLIB_ROOT_DOMAIN}
     hub-test.${EDLIB_ROOT_DOMAIN}
+    hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN}
     hub-vite-hmr.${EDLIB_ROOT_DOMAIN}
     ~^edlib-hub[a-z0-9-]+\.ngrok\.dev$
   ;
@@ -14,7 +16,12 @@ server {
 server {
   include includes/https.conf;
 
-  server_name  hub.${EDLIB_ROOT_DOMAIN} ~^edlib-hub[a-z0-9-]+\.ngrok\.dev$;
+  server_name
+    hub.${EDLIB_ROOT_DOMAIN}
+    hub-ndla-legacy.${EDLIB_ROOT_DOMAIN}
+    ~^edlib-hub[a-z0-9-]+\.ngrok\.dev$
+  ;
+
   root /srv/www/hub/public;
 
   location / {
@@ -32,7 +39,11 @@ server {
 server {
   include includes/https.conf;
 
-  server_name  hub-test.${EDLIB_ROOT_DOMAIN};
+  server_name
+    hub-test.${EDLIB_ROOT_DOMAIN}
+    hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN}
+  ;
+
   root /srv/www/hub/public;
 
   location / {

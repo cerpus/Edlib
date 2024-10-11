@@ -141,6 +141,8 @@ services:
           - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
   contentauthor:
     image: nginx:1-alpine

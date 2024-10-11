@@ -30,6 +30,7 @@ final readonly class ContentItemSelectionFactory
         array $items,
         string $returnUrl,
         Credentials $credentials,
+        string|null $data = null,
     ): Request {
         $serializedItems = json_encode(
             $this->contentItemsSerializer->serialize($items),
@@ -40,7 +41,7 @@ final readonly class ContentItemSelectionFactory
             'content_items' => $serializedItems,
             'lti_message_type' => 'ContentItemSelection',
             'lti_version' => 'LTI-1p0',
-            // TODO: 'data'
+            ...($data !== null ? ['data' => $data] : [])
         ]), $credentials);
     }
 }

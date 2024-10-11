@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Configuration\NdlaLegacyConfig;
 use App\Models\Content;
 use App\Models\Tag;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -12,8 +13,14 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use RuntimeException;
 
 use function base_path;
+use function config;
+use function is_string;
+use function parse_url;
+
+use const PHP_URL_HOST;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -52,15 +59,27 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->configureRateLimiting();
 
-        $this->routes(function () {
+        $this->routes(function (NdlaLegacyConfig $ndlaLegacy) {
+            $domain = parse_url(config('app.url'), PHP_URL_HOST);
+            if (!is_string($domain)) {
+                throw new RuntimeException('APP_URL must be set and valid');
+            }
+
+            Route::middleware('ndla-legacy')
+                ->domain($ndlaLegacy->isEnabled() ? $ndlaLegacy->getDomain() : 'invalid.')
+                ->group(base_path('routes/ndla-legacy.php'));
+
             Route::middleware('api')
+                ->domain($domain)
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('stateless')
+                ->domain($domain)
                 ->group(base_path('routes/stateless.php'));
 
             Route::middleware('web')
+                ->domain($domain)
                 ->group(base_path('routes/web.php'));
         });
     }

@@ -42,6 +42,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'ndla-legacy' => [
+            'driver' => 'ndla-legacy',
+        ],
     ],
 
     /*

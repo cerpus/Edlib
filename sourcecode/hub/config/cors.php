@@ -17,7 +17,12 @@ return [
     |
     */
 
-    'paths' => ['api/*'],
+    'paths' => [
+        'api',
+        'api/*',
+
+        env('NDLA_LEGACY_DOMAIN', 'invalid') => ['*'],
+    ],
 
     'allowed_methods' => ['*'],
 

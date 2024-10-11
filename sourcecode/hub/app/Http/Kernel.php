@@ -50,6 +50,12 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ],
 
+        'ndla-legacy' => [
+            \App\Http\Middleware\NdlaLegacyAccess::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ContentSecurityPolicy::class,
+        ],
+
         'api' => [
             \App\Http\Middleware\ApiAuthentication::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',

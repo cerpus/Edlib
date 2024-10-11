@@ -95,6 +95,7 @@ class ContentVersion extends Model
                 ? new LineItem(new ScoreConstraints(normalMaximum: (float) $this->max_score))
                 : null,
         ))
+            ->withEdlibVersionId($this->id)
             ->withLanguageIso639_3($this->language_iso_639_3)
             ->withLicense($this->license)
             ->withTags($this->getSerializedTags())
@@ -140,8 +141,10 @@ class ContentVersion extends Model
             ->firstOrFail()
             ->getOauth1Credentials();
 
+        $data = session()->get('lti.data');
+
         return app()->make(ContentItemSelectionFactory::class)
-            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials);
+            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials, $data);
     }
 
     /**
