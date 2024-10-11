@@ -171,6 +171,12 @@
                                     </a>
                                 </td>
                             </tr>
+                            <tr>
+                                <th>Used as subcontent</th>
+                                <td colspan="2">
+                                    {{ $subContentCount ?? '' }}
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>
