@@ -46,7 +46,7 @@ return [
             'url' => env('AWS_URL', env('CDN_WITH_PREFIX')),
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'visibility' => 'public',
+            'visibility' => 'private',
         ],
 
         'testDisk' => [ // disk where tests are located.
