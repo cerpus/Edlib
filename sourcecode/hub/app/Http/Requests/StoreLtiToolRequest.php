@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\LtiToolEditMode;
-use App\Enums\LtiVersion;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,9 +18,8 @@ class StoreLtiToolRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'creator_launch_url' => ['required', 'url'],
-            'lti_version' => ['required', Rule::enum(LtiVersion::class)],
-            'consumer_key' => ['string'],
-            'consumer_secret' => ['required_with:consumer_key', 'string'],
+            'consumer_key' => ['required', 'string'],
+            'consumer_secret' => ['required', 'string'],
             'edit_mode' => ['required', Rule::enum(LtiToolEditMode::class)],
             'send_name' => ['boolean'],
             'send_email' => ['boolean'],

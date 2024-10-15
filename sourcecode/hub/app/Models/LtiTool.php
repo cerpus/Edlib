@@ -28,6 +28,7 @@ class LtiTool extends Model
 
     /** @var mixed[] */
     protected $attributes = [
+        'lti_version' => LtiVersion::Lti1_1,
         'send_name' => false,
         'send_email' => false,
         'proxy_launch' => false,
@@ -48,7 +49,6 @@ class LtiTool extends Model
 
     protected $fillable = [
         'name',
-        'lti_version',
         'creator_launch_url',
         'consumer_key',
         'consumer_secret',

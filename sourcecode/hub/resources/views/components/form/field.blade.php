@@ -1,41 +1,29 @@
-@props([
-    'name' => '',
-    'type' => 'text',
-    'label' => '',
-    'required' => false,
-    'value' => '',
-    'autocomplete' => null,
-    'text' => null,
-])
+<div @class([
+    $class ?? '',
+    'mb-3',
+    'form-check' => in_array($type ?? 'text', ['checkbox', 'radio']),
+])>
+    @switch ($type ?? 'text')
+        @case('radio')
+        @case('checkbox')
+            <label for="{{ $name }}" class="form-check-label">{{ $label ?? $name }}</label>
+            <x-form.checkbox :attributes="$attributes->except(['class', 'label', 'text'])" />
+            @break
 
-<div @class(['mb-3', 'has-validation' => $errors->has($name)])>
-    <label for="{{ $name }}">
-        {{ $label ?: $name }}
-        @if ($required)
-            <small class="text-secondary text-lowercase" aria-hidden="true" role="presentation">
-                ({{ trans('messages.required') }})
-            </small>
-        @endif
-    </label>
+        @default
+            <x-form.label for="{{ $name }}" :required="$required ?? false">
+                {{ $label ?? $name }}
+            </x-form.label>
+            <x-form.input :attributes="$attributes->except(['class', 'label', 'text'])" />
+    @endswitch
 
-    <x-form.input
-        :name="$name"
-        :type="$type"
-        :aria-describedby="$errors->has($name) ? 'errors-' . $name : null"
-        :required="$required"
-        :value="$value"
-        :autocomplete="$autocomplete"
-    />
-
-    @if ($text)
+    @if ($text ?? false)
         <div class="form-text">
             {{ $text }}
         </div>
     @endif
 
-    @foreach ($errors->get($name) as $error)
-        <div id="errors-{{ $name }}" class="invalid-feedback">
-            <div>{{ $error }}</div>
-        </div>
-    @endforeach
+    @error($name)
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
 </div>

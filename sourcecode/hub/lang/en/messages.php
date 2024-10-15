@@ -56,7 +56,6 @@ return [
     'lti-platform-secret-shown-only-once' => 'This secret will be shown only once.',
     'lti-platform-enable-sso' => 'Enable single sign-on (SSO)',
     'lti-platform-enable-sso-help' => 'The email address from the LTI launch shall be used to authenticate the user during the :site session.',
-    'lti-platform-enable-sso-warning' => 'Only enable this for trusted platforms with email verification.',
     'lti-platform-selection-url' => 'LTI Content-Item Selection/Deep Linking URL',
     'lti-version' => 'LTI version',
     'debug-mode' => 'Debug mode',
@@ -205,6 +204,6 @@ return [
     'confirm-lti-platform-deletion' => 'Are you sure you want to remove the LTI platform? The platform will no longer be allowed to launch or select content.',
     'invalid-login-credentials' => 'Invalid login credentials. Please try again.',
     'lti-platform-authorizes-edit' => 'The platform authorizes edit access',
-    'lti-platform-authorizes-edit-warning' => 'Only enable this for trusted platforms',
     'lti-platform-authorizes-edit-help' => 'Transfers responsibility for access control of editing from :site to the platform, i.e. :site will accept all valid edit requests from the platform',
+    'dangerous-lti-platform-settings' => 'These settings are dangerous, and should only be enabled for trusted platforms with email verification.',
 ];

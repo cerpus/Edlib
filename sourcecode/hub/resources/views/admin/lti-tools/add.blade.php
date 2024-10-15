@@ -1,147 +1,92 @@
 @php
 use App\Enums\LtiToolEditMode;
-use App\Enums\LtiVersion;
 @endphp
 
 <x-layout>
     <x-slot:title>Add LTI tool</x-slot:title>
 
-    <form action="{{ route('admin.lti-tools.store') }}" method="POST">
-        @csrf
+    <x-form action="{{ route('admin.lti-tools.store') }}">
+        {{-- Fake fields for password managers to fill --}}
+        <div class="visually-hidden" aria-hidden="true">
+            <input tabindex="-1">
+            <input type="password" autocomplete="new-password" tabindex="-1">
+        </div>
 
-        @if ($errors->any())
-            @foreach($errors->all() as $error)
-                <p>{{ $error }}</p>
-            @endforeach
-        @endif
+        <x-form.field
+            name="name"
+            required
+            :label="trans('messages.name')"
+        />
 
-        <p>
-            <label>
-                Name
-                <input type="text" name="name" required>
-            </label>
-        </p>
+        <x-form.field
+            name="creator_launch_url"
+            inputmode="url"
+            required
+            :label="trans('messages.lti-launch-url')"
+        />
 
-        <p>
-            <label>
-                {{ trans('messages.lti-version') }}
-                <select name="lti_version">
-                    <option value="" selected>Pick one…</option>
-                    <option value="{{ LtiVersion::Lti1_1->value }}">1.1</option>
-                    <option value="{{ LtiVersion::Lti1_3->value }}">1.3</option>
-                </select>
-            </label>
-        </p>
+        <x-form.field
+            name="consumer_key"
+            autocomplete="off"
+            required
+            :label="trans('messages.key')"
+        />
 
-        <p>
-            <label>
-                Creator launch URL
-                <input type="text" inputmode="url" name="creator_launch_url" required>
-            </label>
-        </p>
+        <x-form.field
+            name="consumer_secret"
+            type="password"
+            required
+            :label="trans('messages.secret')"
+        />
 
-        <p>
-            <label>
-                Consumer key
-                <input type="text" name="consumer_key">
-            </label>
-        </p>
-
-        <p>
-            <label>
-                Consumer secret
-                <input type="password" name="consumer_secret">
-            </label>
-        </p>
-
-        <fieldset class="mt-3">
+        <fieldset>
             <legend>{{ trans('messages.launch-settings') }}</legend>
 
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input
-                        type="checkbox"
-                        name="proxy_launch"
-                        value="1"
-                        class="form-check-input"
-                        aria-describedby="proxy-launch-to-lti-tool-help"
-                        @checked(old('proxy_launch', false))
-                    > {{ trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')]) }}
-                </label>
-                <div class="form-text" id="proxy-launch-to-lti-tool-help">
-                    {{ trans('messages.proxy-launch-to-lti-tool-help', ['site' => config('app.name')]) }}
-                </div>
-            </div>
+            <x-form.field
+                name="proxy_launch"
+                type="checkbox"
+                :label="trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')])"
+                :text="trans('messages.proxy-launch-to-lti-tool-help', ['site' => config('app.name')])"
+            />
         </fieldset>
 
-        <fieldset class="mt-3">
+        <fieldset>
             <legend>{{ trans('messages.edit-mode') }}</legend>
 
-            <div class="position-relative form-check">
-                <label class="form-check-label stretched-link">
-                    <input
-                        type="radio"
-                        name="edit_mode"
-                        value="{{ LtiToolEditMode::Replace }}"
-                        aria-describedby="edit-mode-replace-help"
-                        class="form-check-input"
-                        @checked(old('edit_mode', true))
-                    >
-                    <b>{{ trans('messages.edit-mode-replace') }}</b>
-                </label>
-                <div class="form-text" id="edit-mode-replace-help">
-                    {{ trans('messages.edit-mode-replace-help') }}
-                </div>
-            </div>
+            <x-form.field
+                name="edit_mode"
+                value="{{ LtiToolEditMode::Replace }}"
+                type="radio"
+                checked
+                :label="trans('messages.edit-mode-replace')"
+                :text="trans('messages.edit-mode-replace-help')"
+            />
 
-            <div class="position-relative form-check">
-                <label class="form-check-label stretched-link">
-                    <input
-                        type="radio"
-                        name="edit_mode"
-                        value="{{ LtiToolEditMode::DeepLinkingRequestToContentUrl }}"
-                        aria-describedby="edit-mode-deep-linking-request-to-content-url-help"
-                        class="form-check-input"
-                        @checked(old('edit_mode', false))
-                    >
-                    <b>{{ trans('messages.edit-mode-deep-linking-request-to-content-url') }}</b>
-                </label>
-                <div class="form-text" id="edit-mode-deep-linking-request-to-content-url-help">
-                    {{ trans('messages.edit-mode-deep-linking-request-to-content-url-help') }}
-                </div>
-            </div>
+            <x-form.field
+                name="edit_mode"
+                value="{{ LtiToolEditMode::DeepLinkingRequestToContentUrl }}"
+                type="radio"
+                :label="trans('messages.edit-mode-deep-linking-request-to-content-url')"
+                :text="trans('messages.edit-mode-deep-linking-request-to-content-url-help')"
+            />
         </fieldset>
 
-        <fieldset class="mt-3">
+        <fieldset>
             <legend>{{ trans('messages.privacy-settings') }}</legend>
 
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input
-                        type="checkbox"
-                        name="send_name"
-                        value="1"
-                        class="form-check-input"
-                        @checked(old('send_name', false))
-                    > {{ trans('messages.send-full-name-to-lti-tool', ['site' => config('app.name')]) }}
-                </label>
-            </div>
+            <x-form.field
+                name="send_name"
+                type="checkbox"
+                :label="trans('messages.send-full-name-to-lti-tool', ['site' => config('app.name')])"
+            />
 
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input
-                        type="checkbox"
-                        name="send_email"
-                        value="1"
-                        class="form-check-input"
-                        @checked(old('send_email', false))
-                    > {{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}
-                </label>
-            </div>
+            <x-form.field
+                name="send_email"
+                type="checkbox"
+                :label="trans('messages.send-email-to-lti-tool', ['site' => config('app.name')])"
+            />
         </fieldset>
 
-        <p class="mt-3">
-            <button class="btn btn-primary">{{ trans('messages.add') }}</button>
-        </p>
-    </form>
+        <x-form.button class="btn-primary">{{ trans('messages.add') }}</x-form.button>
+    </x-form>
 </x-layout>

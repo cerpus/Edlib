@@ -52,6 +52,7 @@ final class AdminTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs(User::factory()->admin()->create()->email)
                 ->visit('/admin/lti-platforms')
+                ->resize(1920, 1920)
                 ->with(
                     'main .lti-platform',
                     fn (Browser $main) => $main

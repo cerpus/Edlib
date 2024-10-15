@@ -25,29 +25,25 @@
     <x-form action="{{ route('admin.lti-platforms.store') }}">
         <x-form.field name="name" type="text" :label="trans('messages.name')" />
 
-        <div class="form-check mb-3">
-            <label class="form-check-label">
-                <x-form.checkbox name="enable_sso" aria-labelledby="enable_sso_help" />
-                {{ trans('messages.lti-platform-enable-sso') }}
-            </label>
-
-            <p class="form-text" id="enable_sso_help">
-                {{ trans('messages.lti-platform-enable-sso-help', ['site' => config('app.name')]) }}
-                <b class="text-danger">{{ trans('messages.lti-platform-enable-sso-warning') }}</b>
+        <fieldset aria-describedby="dangerous-stuff">
+            <p class="alert alert-danger" id="dangerous-stuff">
+                {{ trans('messages.dangerous-lti-platform-settings') }}
             </p>
-        </div>
 
-        <div class="form-check mb-3">
-            <label class="form-check-label">
-                <x-form.checkbox name="authorizes_edit" aria-labelledby="authorizes_edit_help" />
-                {{ trans('messages.lti-platform-authorizes-edit') }}
-            </label>
+            <x-form.field
+                name="enable_sso"
+                type="checkbox"
+                :label="trans('messages.lti-platform-enable-sso')"
+                :text="trans('messages.lti-platform-enable-sso-help', ['site' => config('app.name')])"
+            />
 
-            <p class="form-text" id="authorizes_edit_help">
-                {{ trans('messages.lti-platform-authorizes-edit-help', ['site' => config('app.name')]) }}
-                <b class="text-danger">{{ trans('messages.lti-platform-authorizes-edit-warning') }}</b>
-            </p>
-        </div>
+            <x-form.field
+                name="authorizes_edit"
+                type="checkbox"
+                :label="trans('messages.lti-platform-authorizes-edit')"
+                :text="trans('messages.lti-platform-authorizes-edit-help', ['site' => config('app.name')])"
+            />
+        </fieldset>
 
         <x-form.button class="btn-primary">
             {{ trans('messages.create') }}
