@@ -1,15 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\ArticleInfoController;
-use App\Http\Controllers\API\ContentInfoController;
 use App\Http\Controllers\API\ContentTypeController;
-use App\Http\Controllers\API\GameInfoController;
 use App\Http\Controllers\API\H5PImportController;
-use App\Http\Controllers\API\H5PInfoController;
 use App\Http\Controllers\API\H5PTypeApi;
 use App\Http\Controllers\API\LinkInfoController;
 use App\Http\Controllers\API\LockStatusController;
-use App\Http\Controllers\API\QuestionSetInfoController;
 use App\Http\Controllers\API\UnlockController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCopyrightController;
@@ -97,15 +92,7 @@ Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToEx
 // *************************
 Route::get('api/h5p-type/{ids}', [H5PTypeApi::class, 'getTypes']);
 
-Route::get('v1/content/{id}', [ContentInfoController::class, 'index']);
-Route::get('v1/content', [ContentInfoController::class, 'list']);
-Route::get('v1/h5p/{id}/info', [H5PInfoController::class, 'index']);
-Route::get('v1/article/{id}/info', [ArticleInfoController::class, 'index']);
-Route::get('v1/link/{id}/info', [LinkInfoController::class, 'index']);
-Route::get('v1/questionset/{id}/info', [QuestionSetInfoController::class, 'index']);
-Route::get('v1/game/{id}/info', [GameInfoController::class, 'index']);
 Route::get('v1/link/embeddata', [LinkInfoController::class, 'embed']);
-
 
 Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index'])->name('lock.status');
 Route::post('v1/content/{id}/lock-status', [LockStatusController::class, 'pulse'])->name('lock.pulse');
