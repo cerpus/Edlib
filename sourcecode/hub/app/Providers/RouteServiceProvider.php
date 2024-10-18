@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Configuration\NdlaLegacyConfig;
+use App\Http\Controllers\HealthController;
 use App\Models\Content;
 use App\Models\Tag;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -64,6 +65,10 @@ class RouteServiceProvider extends ServiceProvider
             if (!is_string($domain)) {
                 throw new RuntimeException('APP_URL must be set and valid');
             }
+
+            // must exist on all domains
+            Route::middleware('stateless')
+                ->get('/up', HealthController::class);
 
             Route::middleware('ndla-legacy')
                 ->domain($ndlaLegacy->isEnabled() ? $ndlaLegacy->getDomain() : 'invalid.')
