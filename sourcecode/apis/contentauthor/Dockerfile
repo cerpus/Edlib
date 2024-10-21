@@ -26,7 +26,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_HOME="/tmp" \
     COMPOSER_MEMORY_LIMIT=-1
 
-COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
+COPY docker/php/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf;
 
@@ -136,6 +136,7 @@ RUN set -eux; \
     ;
 
 COPY docker/php/docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
+COPY docker/php/php-dev.ini "$PHP_INI_DIR/conf.d/zz-php-dev.ini"
 
 ENTRYPOINT ["/docker-entrypoint-dev.sh"]
 
@@ -147,5 +148,5 @@ FROM nginx:1-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=prod /app/public /app/public
-COPY docker/no-security-theatre.conf /etc/nginx/conf.d/
-COPY docker/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
+COPY docker/nginx/no-security-theatre.conf /etc/nginx/conf.d/
+COPY docker/nginx/contentAuthor.conf.template /etc/nginx/templates/contentAuthor.conf.template
