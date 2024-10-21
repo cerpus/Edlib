@@ -38,7 +38,7 @@ Route::get('/oembed/preview')
     ->uses([OembedController::class, 'content']);
 
 Route::post('/select')
-//    ->middleware(['auth:ndla-legacy'])
+    ->middleware(['auth:ndla-legacy'])
     ->uses([SelectController::class, 'select']);
 
 Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(function () {
