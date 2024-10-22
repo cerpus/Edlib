@@ -243,9 +243,10 @@ class ContentVersion extends Model
     {
         return $this->tags->map(
             fn (Tag $tag) => $tag->prefix !== ''
-                ? "{$tag->prefix}:{$tag->name}"
-                : $tag->name
-        )->toArray();
+            ? "{$tag->prefix}:{$tag->name}"
+            : $tag->name
+        )
+            ->toArray();
     }
 
     public function getDisplayedContentType(): string
@@ -310,9 +311,9 @@ class ContentVersion extends Model
     /**
      * The locales (ISO 639-3) used by content as key, display name in the current locale as value
      *
-     * @return array<string, string>
+     * @return Collection<string, string>
      */
-    public static function getTranslatedUsedLocales(User $user = null): array
+    public static function getTranslatedUsedLocales(User $user = null): Collection
     {
         $locales = self::getUsedLocales($user);
         $displayLocale = app()->getLocale();
@@ -320,8 +321,7 @@ class ContentVersion extends Model
 
         return $locales
             ->mapWithKeys(fn (string $locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
-            ->sort()
-            ->toArray();
+            ->sort();
     }
 
     public function getTranslatedLanguage(): string

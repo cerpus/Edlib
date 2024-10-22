@@ -130,6 +130,7 @@ return [
                     'language_iso_639_3',
                     'tags',
                     'gives_score',
+                    'content_type',
                 ],
                 'pagination' => [
                     'maxTotalHits' => 1000000000,
@@ -138,6 +139,9 @@ return [
                     'created_at',
                     'updated_at',
                     'published_at',
+                ],
+                "faceting" => [
+                    "maxValuesPerFacet" => 300,
                 ],
             ],
         ],

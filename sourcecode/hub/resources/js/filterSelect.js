@@ -5,11 +5,11 @@ window.ChoicesJs = ChoicesJs;
 /**
  * Replace the choices (options) for a Choices.js select
  *
- * @param {Element} elm
+ * @param {Element|null} elm
  * @param {{string: string} } options
  */
 window.replaceChoicesJsOptions = function (elm, options) {
-    if (elm.choices) {
+    if (elm && elm.choices) {
         const selected = elm.choices.getValue(true);
         const keys = Object.keys(options);
         const isMultiple = elm.getAttribute('multiple') !== null;

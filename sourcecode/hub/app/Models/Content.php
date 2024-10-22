@@ -306,6 +306,7 @@ class Content extends Model
             'language_iso_639_3' => $version->language_iso_639_3,
             'tags' => $version->getSerializedTags(),
             'gives_score' => $version->givesScore(),
+            'content_type' => $version->getDisplayedContentType(),
         ];
     }
 

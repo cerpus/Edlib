@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tests\Browser\Components;
 
 use Facebook\WebDriver\Exception\TimeoutException;
+use Facebook\WebDriver\Exception\UnsupportedOperationException;
 use InvalidArgumentException;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\Component;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class ChoicesJs extends Component
@@ -79,6 +81,20 @@ class ChoicesJs extends Component
     }
 
     /**
+     * Assert that the label of an available option contains $needle, case is ignored
+     *
+     * @throws UnsupportedOperationException
+     */
+    public function assertOptionLabelContainsString(Browser $browser, string $optionValue, string $needle): Browser
+    {
+        $haystack = $browser->element("@availableOptionItem[data-value='$optionValue']")?->getDomProperty('innerHTML');
+        $errorMsg = sprintf('Failed asserting that label of option with data-value "%s" contains "%s".', $optionValue, $needle);
+        Assert::assertStringContainsStringIgnoringCase($needle, $haystack, $errorMsg);
+
+        return $browser;
+    }
+
+    /**
      * True if option with data-value equal to $value is not present
      *
      * @throws ExpectationFailedException
@@ -104,6 +120,20 @@ class ChoicesJs extends Component
         } catch (ExpectationFailedException $e) {
             throw new ExpectationFailedException('Failed asserting that option with data-value "' . $value . '" is selected.', $e->getComparisonFailure(), $e);
         }
+    }
+
+    /**
+     * Asserts that the label of a selected option contains $needle, case is ignored
+     *
+     * @throws UnsupportedOperationException
+     */
+    public function assertSelectedOptionLabelContainsString(Browser $browser, string $optionValue, string $needle): Browser
+    {
+        $haystack = $browser->element("@selectedOptionItem[data-value='$optionValue']")?->getDomProperty('innerHTML');
+        $errorMsg = sprintf('Failed asserting that label of selected option with data-value "%s" contains "%s".', $optionValue, $needle);
+        Assert::assertStringContainsStringIgnoringCase($needle, $haystack, $errorMsg);
+
+        return $browser;
     }
 
     /**

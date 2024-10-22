@@ -51,7 +51,7 @@ final class ContentVersionFactory extends Factory
         return $this->state(['published' => false]);
     }
 
-    public function withTag(TagFactory|string $tag, string|null $verbatimName = null): self
+    public function withTag(TagFactory|Tag|string $tag, string|null $verbatimName = null): self
     {
         if (is_string($tag)) {
             ['name' => $name, 'prefix' => $prefix] = Tag::parse($tag);

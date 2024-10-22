@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Content;
-use App\Models\ContentVersion;
-use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
@@ -20,7 +17,12 @@ use function trans;
 
 class ContentFilter extends FormRequest
 {
+    /** @var Builder<Content>  */
+    private Builder $builder;
     private bool $forUser = false;
+    private bool $languageChanged = false;
+    private bool $queryChanged = false;
+    private bool $typesChanged = false;
 
     #[Override] protected function failedValidation(Validator $validator): never
     {
@@ -68,9 +70,53 @@ class ContentFilter extends FormRequest
     /**
      * @return array<string, string>
      */
-    public function getLanguageOptions(): array
+    public function getLanguageOptions(bool $withExpectedHits = false): array
     {
-        return ContentVersion::getTranslatedUsedLocales($this->isForUser() ? $this->user() : null);
+        $displayLocale = app()->getLocale();
+        $fallBack = app()->getFallbackLocale();
+        $options = collect($this->getLanguageOptionsWithHits());
+
+        // Add the current selected value if not present, and if not present it has zero results
+        $selectedOption = $this->getLanguage();
+        if ($selectedOption !== '' && !$options->has($selectedOption)) {
+            $options->put($selectedOption, 0);
+        }
+
+        return $options
+            ->map(
+                fn (int $value, string $key) =>
+                $key === ''
+                ? trans('messages.filter-language-all')
+                : (locale_get_display_name($key, $displayLocale) ?: (locale_get_display_name($key, $fallBack) ?: $key))
+            )
+            ->when(
+                $withExpectedHits,
+                fn (Collection $items) =>
+                $items->map(fn (string $value, string $key) => sprintf('%s (%d)', $value, $options[$key] ?? 0))
+            )
+            ->sort()
+            ->toArray();
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function getLanguageOptionsWithHits(): array
+    {
+        $builder = clone($this->builder);
+        unset($builder->wheres['language_iso_639_3']);
+
+        $result = $builder
+            ->options([
+                'facets' => ['language_iso_639_3'],
+            ])
+            ->take(1)
+            ->raw();
+
+        $counts = $result['facetDistribution']['language_iso_639_3'] ?? [];
+        $counts[''] = $result['totalHits'];
+
+        return $counts;
     }
 
     /**
@@ -101,27 +147,42 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @return Collection<int|string, mixed>
+     * @return array<string, string>
      */
-    public function getContentTypeOptions(): Collection
+    public function getContentTypeOptions(bool $withExpectedHits = false): array
     {
-        return DB::table('tags AS t')
-            ->select(['t.prefix', 't.name', 'cvt.verbatim_name'])
-            ->join('content_version_tag AS cvt', 'cvt.tag_id', '=', 't.id')
-            ->join('content_versions AS cv', 'cv.id', '=', 'cvt.content_version_id')
-            ->join('contents AS c', 'c.id', '=', 'cv.content_id')
-            ->when($this->isForUser() && $this->user() instanceof User, function ($query) {
-                $query->join('content_user AS cu', 'cu.content_id', '=', 'c.id')
-                    ->where('cu.user_id', $this->user()?->id);
-            })
-            ->whereNull('c.deleted_at')
-            ->where('prefix', '=', 'h5p')
-            ->orderBy('verbatim_name')
-            ->get()
-            ->mapWithKeys(function ($item) {
-                $key = $item->prefix !== '' ? "{$item->prefix}:{$item->name}" : $item->name ;
-                return [$key => $item->verbatim_name ?? $item->name];
-            });
+        $options = collect($this->getContentTypeOptionsWithHits());
+        $selectedOptions = $this->getContentTypes();
+
+        // Add the current selected types if not present, not present means it has zero results
+        foreach ($selectedOptions as $selected) {
+            if (!$options->has($selected)) {
+                $options->put($selected, 0);
+            }
+        }
+
+        return $options
+            ->map(fn (int $value, string $key) => $withExpectedHits ? sprintf('%s (%d)', $key, $value) : $key)
+            ->sort()
+            ->toArray();
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function getContentTypeOptionsWithHits(): array
+    {
+        $builder = clone($this->builder);
+        unset($builder->whereIns['content_type']);
+
+        $result = $builder
+            ->options([
+                'facets' => ['content_type'],
+            ])
+            ->take(1)
+            ->raw();
+
+        return $result['facetDistribution']['content_type'] ?? [];
     }
 
     /**
@@ -143,7 +204,9 @@ class ContentFilter extends FormRequest
      */
     public function applyCriteria(Builder $query): Builder
     {
-        return $query
+        $this->detectChanges();
+
+        $query
             ->when(
                 $this->getLanguage(),
                 fn (Builder $query) => $query
@@ -152,17 +215,59 @@ class ContentFilter extends FormRequest
             ->when(
                 count($this->getContentTypes()) > 0,
                 fn (Builder $query) => $query
-                    ->whereIn('tags', $this->getContentTypes())
+                    ->whereIn('content_type', $this->getContentTypes())
             )
-            ->orderBy(match ($this->getSortBy()) {
-                'created' => 'created_at',
-                'updated' => $this->isForUser() ? 'updated_at' : 'published_at',
-            }, 'desc')
         ;
+
+        $this->builder = clone($query);
+
+        return $query->orderBy(match ($this->getSortBy()) {
+            'created' => 'created_at',
+            'updated' => $this->isForUser() ? 'updated_at' : 'published_at',
+        }, 'desc');
     }
 
+    /**
+     * Number of active filters
+     */
     public function activeCount(): int
     {
         return (empty($this->getLanguage()) ? 0 : 1) + (empty($this->getContentTypes()) ? 0 : 1);
+    }
+
+    /**
+     * Could the updated filter values change the options for the content type filter?
+     */
+    public function shouldUpdateContentTypeOptions(): bool
+    {
+        return $this->languageChanged || $this->queryChanged;
+    }
+
+    /**
+     * Could the updated filter values change the options for the language filter?
+     */
+    public function shouldUpdateLanguageOptions(): bool
+    {
+        return $this->typesChanged || $this->queryChanged;
+    }
+
+    /**
+     * Figure out what filter values have changed and flash current input
+     */
+    private function detectChanges(): void
+    {
+        if ($this->getLanguage() !== old('language', '')) {
+            $this->languageChanged = true;
+        }
+
+        if (json_encode($this->getContentTypes()) !== json_encode(old('type', []))) {
+            $this->typesChanged = true;
+        }
+
+        if ($this->getQuery() !== old('q', '')) {
+            $this->queryChanged = true;
+        }
+
+        $this->flash();
     }
 }

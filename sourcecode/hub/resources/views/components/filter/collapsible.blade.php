@@ -1,5 +1,5 @@
 @props(['filter'])
-<div class="row py-3 g-3">
+<div class="row pt-3 g-3">
     <label class="col-12" id="filterContentTypeLabel">
         {{ trans('messages.content-type') }}
         <span class="visually-hidden" id="filterContentTypeLabelText">
@@ -9,7 +9,7 @@
             id="filterContentType"
             name="type[]"
             multiple
-            :options="$filter->getContentTypeOptions()"
+            :options="$filter->getContentTypeOptions(withExpectedHits: true)"
             :selected="$filter->getContentTypes()"
             class="filter-content-type"
             aria-labelledby="filterContentTypeLabelText"
@@ -25,8 +25,7 @@
             id="filterLanguage"
             name="language"
             :selected="$filter->getLanguage()"
-            :options="$filter->getLanguageOptions()"
-            :emptyOption="trans('messages.filter-language-all')"
+            :options="$filter->getLanguageOptions(withExpectedHits: true)"
             aria-labelledby="filterLanguageLabelText"
             data-choicesjs-should-sort="false"
         />

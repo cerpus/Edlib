@@ -84,7 +84,7 @@ final class FilterTest extends DuskTestCase
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         $content = Content::factory()
             ->withVersion(
@@ -96,7 +96,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
@@ -111,7 +111,7 @@ final class FilterTest extends DuskTestCase
                         ->expand()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->selectOption('h5p:h5p.techtype')
+                                ->selectOption('h5p.techtype')
                         )
                 )
                 ->waitForEvent('htmx:afterSwap')
@@ -127,8 +127,8 @@ final class FilterTest extends DuskTestCase
                         ->assertExpanded()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->assertOptionSelected('h5p:h5p.techtype')
-                                ->selectOption('h5p:h5p.magiccontent')
+                                ->assertOptionSelected('h5p.techtype')
+                                ->selectOption('h5p.magiccontent')
                         )
                 )
                 ->waitForEvent('htmx:afterSwap')
@@ -139,8 +139,8 @@ final class FilterTest extends DuskTestCase
                         ->assertExpanded()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->assertOptionSelected('h5p:h5p.techtype')
-                                ->assertOptionSelected('h5p:h5p.magiccontent')
+                                ->assertOptionSelected('h5p.techtype')
+                                ->assertOptionSelected('h5p.magiccontent')
                                 ->assertNoOptionsAvailable()
                         )
                 )
@@ -156,7 +156,7 @@ final class FilterTest extends DuskTestCase
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         Content::factory()
             ->withVersion(
@@ -168,7 +168,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
@@ -183,7 +183,7 @@ final class FilterTest extends DuskTestCase
                         ->expand()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->selectOption('h5p:h5p.techtype')
+                                ->selectOption('h5p.techtype')
                         )
                 )
                 ->waitForEvent('htmx:afterSwap')
@@ -193,8 +193,8 @@ final class FilterTest extends DuskTestCase
                     fn ($filter) => $filter
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->assertOptionSelected('h5p:h5p.techtype')
-                                ->removeSelectedOption('h5p:h5p.techtype')
+                                ->assertOptionSelected('h5p.techtype')
+                                ->removeSelectedOption('h5p.techtype')
                         )
                 )
                 ->waitForEvent('htmx:afterSwap')
@@ -219,7 +219,7 @@ final class FilterTest extends DuskTestCase
                     ->withTag(Tag::factory()->asH5PContentType('magiccontent'))
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         Content::factory()
             ->withVersion(
@@ -231,7 +231,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
@@ -245,11 +245,11 @@ final class FilterTest extends DuskTestCase
                         ->expand()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->assertHasOption('h5p:h5p.techtype')
-                                ->assertHasOption('h5p:h5p.magiccontent')
+                                ->assertHasOption('h5p.techtype')
+                                ->assertHasOption('h5p.magiccontent')
                                 ->typeOptionsFilter('tech')
-                                ->assertHasOption('h5p:h5p.techtype')
-                                ->assertNotHasOption('h5p:h5p.magiccontent')
+                                ->assertHasOption('h5p.techtype')
+                                ->assertNotHasOption('h5p.magiccontent')
                         )
                 )
         );
@@ -440,7 +440,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         Content::factory()
             ->withVersion(
@@ -453,7 +453,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
@@ -481,7 +481,7 @@ final class FilterTest extends DuskTestCase
                         ->assertExpanded()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->selectOption('h5p:h5p.magiccontent')
+                                ->selectOption('h5p.magiccontent')
                         )
                 )
                 ->waitForEvent('htmx:afterSwap')
@@ -530,7 +530,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         Content::factory()
             ->withVersion(
@@ -543,7 +543,7 @@ final class FilterTest extends DuskTestCase
                     ])
             )
             ->shared()
-            ->create();
+            ->createQuietly();
 
         // We must re-sync to include the tags in Meilisearch data
         RebuildContentIndex::dispatchSync();
@@ -564,7 +564,7 @@ final class FilterTest extends DuskTestCase
                         )
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->selectOption('h5p:h5p.magiccontent')
+                                ->selectOption('h5p.magiccontent')
                         )
                         ->typeSearchText('innhold')
                 )
@@ -627,6 +627,9 @@ final class FilterTest extends DuskTestCase
                 'deleted_at' => Carbon::now(),
             ]);
 
+        // We must re-sync to include the tags in Meilisearch data
+        RebuildContentIndex::dispatchSync();
+
         $this->browse(
             fn (Browser $browser) => $browser
                 ->visit('/content')
@@ -637,13 +640,168 @@ final class FilterTest extends DuskTestCase
                         ->expand()
                         ->withContentTypeFilter(
                             fn ($typeFilter) => $typeFilter
-                                ->assertNotHasOption('h5p:h5p.deletedcontent')
-                                ->assertHasOption('h5p:h5p.magiccontent')
+                                ->assertNotHasOption('h5p.deletedcontent')
+                                ->assertHasOption('h5p.magiccontent')
                         )
                         ->withLanguageFilter(
                             fn ($langFilter) => $langFilter
                                 ->assertNotHasOption('swe')
                                 ->assertHasOption('nob')
+                        )
+                )
+        );
+    }
+
+    public function testCanSeeResultCountInFilterOptions(): void
+    {
+        $tagMagic = Tag::factory()->asH5PContentType('magiccontent')->create();
+        $tagTech = Tag::factory()->asH5PContentType('techtype')->create();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag($tagMagic)
+                    ->state([
+                        'language_iso_639_3' => 'nob',
+                        'title' => 'Norwegian magic',
+                    ])
+            )
+            ->shared()
+            ->createQuietly();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag($tagMagic)
+                    ->state([
+                        'language_iso_639_3' => 'swe',
+                        'title' => 'Swedish magic',
+                    ])
+            )
+            ->shared()
+            ->createQuietly();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag($tagTech)
+                    ->state([
+                        'language_iso_639_3' => 'nob',
+                        'title' => 'Norwegian tech',
+                    ])
+            )
+            ->shared()
+            ->createQuietly();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->published()
+                    ->withTag($tagTech)
+                    ->state([
+                        'language_iso_639_3' => 'swe',
+                        'title' => 'Swedish tech',
+                    ])
+            )
+            ->shared()
+            ->createQuietly();
+
+        // We must re-sync to include the tags in Meilisearch data
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content')
+                ->assertSee('4 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->expand()
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertSelectedOptionLabelContainsString('', '(4)')
+                                ->assertOptionLabelContainsString('nob', '(2)')
+                                ->assertOptionLabelContainsString('swe', '(2)')
+                        )
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionLabelContainsString('h5p.magiccontent', '(2)')
+                                ->assertOptionLabelContainsString('h5p.techtype', '(2)')
+                                ->selectOption('h5p.techtype')
+                        )
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionLabelContainsString('h5p.magiccontent', '(2)')
+                                ->assertSelectedOptionLabelContainsString('h5p.techtype', '(2)')
+                        )
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertSelectedOptionLabelContainsString('', '(2)')
+                                ->assertOptionLabelContainsString('nob', '(1)')
+                                ->assertOptionLabelContainsString('swe', '(1)')
+                                ->selectOption('nob')
+                        )
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionLabelContainsString('', '(2)')
+                                ->assertSelectedOptionLabelContainsString('nob', '(1)')
+                                ->assertOptionLabelContainsString('swe', '(1)')
+                        )
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertOptionLabelContainsString('h5p.magiccontent', '(1)')
+                                ->assertSelectedOptionLabelContainsString('h5p.techtype', '(1)')
+                                ->selectOption('h5p.magiccontent')
+                        )
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('2 contents found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertSelectedOptionLabelContainsString('h5p.magiccontent', '(1)')
+                                ->assertSelectedOptionLabelContainsString('h5p.techtype', '(1)')
+                        )
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionLabelContainsString('', '(4)')
+                                ->assertSelectedOptionLabelContainsString('nob', '(2)')
+                                ->assertOptionLabelContainsString('swe', '(2)')
+                        )
+                        ->typeSearchText('tech')
+                )
+                ->waitForEvent('htmx:afterSwap')
+                ->assertSee('1 content found')
+                ->with(
+                    new FilterForm(),
+                    fn ($filter) => $filter
+                        ->withContentTypeFilter(
+                            fn ($typeFilter) => $typeFilter
+                                ->assertSelectedOptionLabelContainsString('h5p.magiccontent', '(0)')
+                                ->assertSelectedOptionLabelContainsString('h5p.techtype', '(1)')
+                        )
+                        ->withLanguageFilter(
+                            fn ($langFilter) => $langFilter
+                                ->assertOptionLabelContainsString('', '(2)')
+                                ->assertSelectedOptionLabelContainsString('nob', '(1)')
+                                ->assertOptionLabelContainsString('swe', '(1)')
                         )
                 )
         );
