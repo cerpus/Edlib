@@ -322,11 +322,6 @@ class Content extends Model
         return Content::search($keywords)
             ->where('published', true)
             ->where('shared', true)
-            ->query(
-                fn (Builder $query) => $query
-                    ->with(['latestPublishedVersion', 'users'])
-                    ->withCount(['views']),
-            )
         ;
     }
 
@@ -337,11 +332,6 @@ class Content extends Model
     {
         return Content::search($keywords)
             ->where('user_ids', $user->id)
-            ->query(
-                fn (Builder $query) => $query
-                    ->with(['latestVersion', 'users'])
-                    ->withCount(['views']),
-            )
         ;
     }
 
