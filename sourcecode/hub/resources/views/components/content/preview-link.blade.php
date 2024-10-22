@@ -1,5 +1,4 @@
-@props(['version'])
-@php($content = $version->content)
+@props(['content', 'version'])
 <a {{ $attributes->merge([
     'href' => route('content.version-details', [$content, $version]),
     'hx-get' => route('content.preview', [$content, $version]),

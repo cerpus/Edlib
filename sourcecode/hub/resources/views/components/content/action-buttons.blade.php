@@ -52,7 +52,7 @@
                 </li>
                 <li>
                     @if ($showPreview)
-                        <x-content.preview-link :$version class="dropdown-item">
+                        <x-content.preview-link :$content :$version class="dropdown-item">
                             <x-icon name="display" class="me-2" />
                             {{ trans('messages.preview') }}
                         </x-content.preview-link>

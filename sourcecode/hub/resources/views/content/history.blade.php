@@ -35,7 +35,7 @@
                     </td>
                     <td>{{ $version->getTranslatedLanguage() }}
                     <td>{{ $version->license }}
-                    <td><x-content.preview-link :$version>{{ trans('messages.preview') }}</x-content.preview-link>
+                    <td><x-content.preview-link :$content :$version>{{ trans('messages.preview') }}</x-content.preview-link>
                 </tr>
             @endforeach
         </tbody>
