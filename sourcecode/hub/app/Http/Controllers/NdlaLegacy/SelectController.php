@@ -10,10 +10,12 @@ use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
 use App\Models\Tag;
+use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,27 +23,44 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 use function route;
+use function url;
 
 /**
  * @deprecated
  */
 final readonly class SelectController
 {
-    public function select(): JsonResponse
+    public function select(Request $request, Encrypter $encrypter): JsonResponse
     {
-        return response()->json([
-            'url' => url()->temporarySignedRoute('ndla-legacy.select-iframe', 30),
+        $user = $request->user();
+        assert($user instanceof User);
+
+        $url = url()->temporarySignedRoute('ndla-legacy.select-iframe', 30, [
+            'user' => $encrypter->encrypt([
+                'name' => $user->name,
+                'email' => $user->email,
+            ]),
+            'locale' => str_replace('-', '_', $request->input('locale', '')),
+            'deep_link' => $request->input('canReturnResources', 'false'),
         ]);
+
+        return response()->json(['url' => $url]);
     }
 
     public function selectIframe(
         Request $request,
         NdlaLegacyConfig $config,
         SignerInterface $signer,
+        Encrypter $encrypter,
     ): Response {
         $credentials = LtiPlatform::where('key', $config->getInternalLtiPlatformKey())
             ->firstOrFail()
             ->getOauth1Credentials();
+
+        ['name' => $name, 'email' => $email] = $encrypter->decrypt($request->input('user'));
+        $locale = $request->input('locale');
+        // TODO: do something with this
+        //$deepLink = $request->boolean('deep_link');
 
         $csrfToken = 'csrf_' . Str::random();
         $request->session()->put($csrfToken, true);
@@ -51,6 +70,9 @@ final readonly class SelectController
             'accept_presentation_document_targets' => 'iframe',
             'content_item_return_url' => route('ndla-legacy.select-return'),
             'data' => $csrfToken,
+            ...($locale ? ['launch_presentation_locale' => $locale] : []),
+            'lis_person_name_full' => $name,
+            'lis_person_contact_email_primary' => $email,
             'lti_message_type' => 'ContentItemSelectionRequest',
         ]), $credentials);
 
