@@ -217,6 +217,7 @@ class ContentController extends Controller
             [$version->toLtiLinkItem()],
             $returnUrl,
             $credentials,
+            $request->session()->get('lti.data'),
         );
 
         return view('lti.redirect', [
