@@ -237,7 +237,7 @@ jobs:
       matrix:
         environment:
           - test
-          # - ndla_test
+          - ndla_staging
     environment: ${{ matrix.environment }}
     concurrency: deploy-ca-${{ matrix.environment }}
     runs-on: ubuntu-22.04
