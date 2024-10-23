@@ -62,7 +62,7 @@ final readonly class JwtDecoder implements JwtDecoderInterface
         if (!str_starts_with($publicKeyOrJwksUri, '-----BEGIN ')) {
             // Turns a non-armoured, possibly-uri-safe, possibly-padded
             // base64-encoded key into a well-formatted PEM key
-            $publicKey = sprintf(
+            $publicKeyOrJwksUri = sprintf(
                 "-----BEGIN PUBLIC KEY-----\n%s\n-----END PUBLIC KEY-----",
                 implode("\n", str_split(base64_encode(base64_decode(
                     strtr($publicKeyOrJwksUri, '-_', '+/'),

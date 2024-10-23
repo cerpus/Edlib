@@ -57,4 +57,18 @@ final class JwtDecoderTest extends TestCase
 
         $this->jwtDecoder->getVerifiedPayload($jwt, $pubkey);
     }
+
+    public function testHandlesUriSafePubkeys(): void
+    {
+        $jwt = file_get_contents(__DIR__ . '/files/valid-jwt.txt');
+        assert($jwt);
+
+        $key = file_get_contents(__DIR__ . '/files/urisafe.key.pub');
+        assert($key !== false);
+
+        $payload = $this->jwtDecoder->getVerifiedPayload($jwt, $key);
+
+        $this->assertObjectHasProperty('name', $payload);
+        $this->assertSame('Jason Webb Tokin', $payload->name);
+    }
 }
