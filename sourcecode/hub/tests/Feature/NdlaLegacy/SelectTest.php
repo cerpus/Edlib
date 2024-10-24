@@ -56,6 +56,7 @@ final class SelectTest extends TestCase
                     $this->assertEquals([
                         'name' => 'Bob',
                         'email' => 'bob@example.com',
+                        'admin' => false,
                     ], $user);
 
                     return true;
