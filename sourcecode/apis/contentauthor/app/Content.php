@@ -2,13 +2,9 @@
 
 namespace App;
 
-use App\Apis\AuthApiService;
-use App\Apis\ResourceApiService;
-use App\EdlibResource\CaEdlibResource;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\LtiContent;
-use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
@@ -164,22 +160,6 @@ abstract class Content extends Model
             ->isNotEmpty();
     }
 
-    public function getOwnerName($ownerId): ?string
-    {
-        $ownerName = null;
-        try {
-            /** @var AuthApiService $authApi */
-            $authApi = app(AuthApiService::class);
-            $user = $authApi->getUser($ownerId);
-            if ($user) {
-                $ownerName = trim(implode(' ', [$user->getFirstName() ?? '', $user->getLastName() ?? '']));
-            }
-        } catch (Exception $e) {
-        }
-
-        return $ownerName;
-    }
-
     /**
      * @throws Exception
      */
@@ -189,18 +169,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $resourceApi = app(ResourceApiService::class);
-        $collaborators = $resourceApi->getCollaborators("contentauthor", $this->id);
-
-        $isCollaborator = false;
-
-        foreach ($collaborators as $collaborator) {
-            if ($collaborator->getTenantId() === $currentUserId) {
-                $isCollaborator = true;
-            }
-        }
-
-        return $isCollaborator;
+        return false;
     }
 
     /**
@@ -324,28 +293,6 @@ abstract class Content extends Model
     public function scopeUnversioned(Builder $query): void
     {
         $query->where('version_id', null);
-    }
-
-    /**
-     * @throws \JsonException
-     */
-    public function getOwnerData(): ResourceUserDataObject
-    {
-        $user = ResourceUserDataObject::create();
-        $user->id = $this->getAttribute($this->userColumn);
-
-        /** @var AuthApiService $authApiService */
-        $authApiService = app(AuthApiService::class);
-
-        $ownerData = $authApiService->getUser($user->id);
-
-        if ($ownerData) {
-            $user->firstname = $ownerData->getFirstName() ?? '';
-            $user->lastname = $ownerData->getLastName() ?? '';
-            $user->email = $ownerData->getEmail() ?? '';
-        }
-
-        return $user;
     }
 
     public function getVersionColumn()
@@ -485,32 +432,6 @@ abstract class Content extends Model
     protected function getTags(): array
     {
         return [];
-    }
-
-    public function getEdlibDataObject(): CaEdlibResource
-    {
-        return new CaEdlibResource(
-            (string) $this->id,
-            $this->title_clean ?? $this->title,
-            $this->getContentOwnerId(),
-            $this->isPublished(),
-            $this->isDraft(),
-            $this->isListed(),
-            $this->getISO6393Language(),
-            $this->getContentType(true),
-            $this->getContentLicense(),
-            $this->getMaxScore(),
-            $this->created_at->toDateTimeImmutable(),
-            $this->updated_at->toDateTimeImmutable(),
-            CollaboratorContext::getResourceContextCollaborators($this->id),
-            $this->collaborators
-                ->map(fn ($collaborator) => strtolower($collaborator->email))
-                ->filter(fn ($email) => $email !== "")
-                ->sort()
-                ->values()
-                ->toArray(),
-            $this->getAuthorOverwrite()
-        );
     }
 
     public function toLtiContent(

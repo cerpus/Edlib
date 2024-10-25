@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
 use App\Game;
 use App\Gametype;
 use App\Http\Controllers\GameController;
@@ -13,27 +12,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
 
 class GameControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
 
     public function testEdit(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-        $this->setupAuthApi(['getUser' => $user]);
-        $this->session([
-            'authId' => $user->getId(),
-        ]);
+        $userId = $this->faker->uuid;
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
         $game = Game::factory()->create([
-            'owner' => $user->getId(),
+            'owner' => $userId,
             'gametype' => $gameType->id,
             'game_settings' => '{"questionSet":{"questions":[{"questionText":"<p>&Eacute;n million<\/p>\n","image":null,"answers":[{"answer":"<p>1000000<\/p>\n","isCorrect":true},{"answer":"<p>100000<\/p>\n","isCorrect":false},{"answer":"<p>10000000<\/p>\n","isCorrect":false},{"answer":"<p>10000<\/p>\n","isCorrect":false}]},{"questionText":"<p>Hvilken er <strong>HTML<\/strong>?<\/p>\n","image":null,"answers":[{"answer":"<p>&lt;p&gt;<strong>Paragraph<\/strong>&lt;\/p&gt;<\/p>\n","isCorrect":true},{"answer":"<p><em>nano -LN<\/em> README.md<\/p>\n","isCorrect":false},{"answer":"<p>$html = <strong>true<\/strong>;<\/p>\n","isCorrect":false},{"answer":"<p><strong>#CDCDCD<\/strong><\/p>\n","isCorrect":false}]},{"questionText":"Vil du bli million\u00e6r?","image":null,"answers":[{"answer":"Ja","isCorrect":true},{"answer":"Nei","isCorrect":false},{"answer":"Kanskje","isCorrect":false},{"answer":"Vet ikke","isCorrect":false}]},{"questionText":"2","image":null,"answers":[{"answer":"2","isCorrect":true},{"answer":"3","isCorrect":false},{"answer":"4","isCorrect":false},{"answer":"5","isCorrect":false}]},{"questionText":"Hvor mange sp\u00f8rsm\u00e5l er p\u00e5krevd?","image":null,"answers":[{"answer":"15","isCorrect":true},{"answer":"10","isCorrect":false},{"answer":"5","isCorrect":false},{"answer":"20","isCorrect":false}]},{"questionText":"Er du million\u00e6r n\u00e5?","image":null,"answers":[{"answer":"Nei","isCorrect":true},{"answer":"Ja","isCorrect":false},{"answer":"Kanskje","isCorrect":false},{"answer":"Vet ikke","isCorrect":false}]},{"questionText":"Hvor mange tall er det i \u00e9n million?","image":null,"answers":[{"answer":"7","isCorrect":true},{"answer":"6","isCorrect":false},{"answer":"5","isCorrect":false},{"answer":"8","isCorrect":false}]},{"questionText":"5","image":null,"answers":[{"answer":"5","isCorrect":true},{"answer":"6","isCorrect":false},{"answer":"7","isCorrect":false},{"answer":"8","isCorrect":false}]},{"questionText":"1","image":null,"answers":[{"answer":"1","isCorrect":true},{"answer":"2","isCorrect":false},{"answer":"3","isCorrect":false},{"answer":"4","isCorrect":false}]},{"questionText":"Hvor mage sp\u00f8rsm\u00e5l mangler n\u00e5?","image":null,"answers":[{"answer":"<p>Ingen<\/p>\n","isCorrect":true},{"answer":"6","isCorrect":false},{"answer":"8","isCorrect":false},{"answer":"5","isCorrect":false}]},{"questionText":"Hvilket sp\u00f8rsm\u00e5l er dette?","image":null,"answers":[{"answer":"3","isCorrect":false},{"answer":"1","isCorrect":false},{"answer":"2","isCorrect":false},{"answer":"<p>11<\/p>\n","isCorrect":true}]},{"questionText":"3","image":null,"answers":[{"answer":"3","isCorrect":true},{"answer":"4","isCorrect":false},{"answer":"5","isCorrect":false},{"answer":"6","isCorrect":false}]},{"questionText":"6","image":null,"answers":[{"answer":"6","isCorrect":true},{"answer":"7","isCorrect":false},{"answer":"8","isCorrect":false},{"answer":"9","isCorrect":false}]},{"questionText":"Mange bekker sm\u00e5, ...","image":null,"answers":[{"answer":"gj\u00f8r en stor \u00c5","isCorrect":true},{"answer":"gj\u00f8r en v\u00e5t p\u00e5 beina","isCorrect":false},{"answer":"etter mye regn","isCorrect":false},{"answer":"er bare irriterende","isCorrect":false}]},{"questionText":"4","image":null,"answers":[{"answer":"4","isCorrect":true},{"answer":"5","isCorrect":false},{"answer":"6","isCorrect":false},{"answer":"7","isCorrect":false}]}]},"locale":"nb-no"}',
             'license' => 'AllMine!',
@@ -71,21 +64,21 @@ class GameControllerTest extends TestCase
         $this->assertIsArray($editorSetup);
         $this->assertArrayHasKey('contentProperties', $editorSetup);
         $this->assertIsArray($editorSetup['contentProperties']);
-        $this->assertEquals('Emily Quackfaster', $editorSetup['contentProperties']['ownerName']);
+        $this->assertSame(null, $editorSetup['contentProperties']['ownerName']);
     }
 
     public function testUpdate(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-        $this->setupAuthApi(['getUser' => $user]);
+        $userId = $this->faker->uuid;
+
         $this->session([
-            'authId' => $user->getId(),
+            'authId' => $userId,
         ]);
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
         $game = Game::factory()->create([
-            'owner' => $user->getId(),
+            'owner' => $userId,
             'gametype' => $gameType->id,
             'license' => License::LICENSE_EDLIB,
         ]);

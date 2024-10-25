@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
-use App\ApiModels\Resource;
 use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
@@ -249,12 +248,6 @@ class AdminH5PDetailsControllerTest extends TestCase
             'library_id' => $library->id,
         ]);
 
-        $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
-        $resourceAPI->expects($this->once())
-            ->method('getResourceFromExternalReference')
-            ->willReturn(new Resource($f4mId, '', '', '', '', '', ''));
-        $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
-
         $parentVersion = ContentVersion::factory()->create([
             'id' => $parent->version_id,
             'content_id' => $parent->id,
@@ -279,12 +272,10 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $this->assertArrayHasKey('content', $data);
         $this->assertArrayHasKey('latestVersion', $data);
-        $this->assertArrayHasKey('resource', $data);
         $this->assertArrayHasKey('history', $data);
 
         $this->assertFalse($data['latestVersion']);
         $this->assertSame($content->id, $data['content']->id);
-        $this->assertSame($f4mId, $data['resource']->id);
 
         $this->assertInstanceOf(Collection::class, $data['history']);
         $this->assertCount(3, $data['history']);
@@ -313,12 +304,6 @@ class AdminH5PDetailsControllerTest extends TestCase
             'library_id' => $library->id,
         ]);
 
-        $resourceAPI = $this->createMock('\App\Apis\ResourceApiService');
-        $resourceAPI->expects($this->once())
-            ->method('getResourceFromExternalReference')
-            ->willThrowException(new \ErrorException('Just testing'));
-        $this->instance('\App\Apis\ResourceApiService', $resourceAPI);
-
         $response = $this->withSession(['user' => $user])
             ->get(route('admin.content-details', $content))
             ->assertOk()
@@ -326,7 +311,6 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $data = $response->getData();
 
-        $this->assertNull($data['resource']);
         $this->assertSame($content->id, $data['content']['id']);
         $this->assertTrue($data['latestVersion']);
         $this->assertCount(0, $data['history']);

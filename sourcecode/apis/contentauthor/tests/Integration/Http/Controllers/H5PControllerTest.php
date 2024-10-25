@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
@@ -29,13 +28,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use LogicException;
-use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
 
 class H5PControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
 
     /** @dataProvider provider_testCreate */
@@ -129,15 +126,12 @@ class H5PControllerTest extends TestCase
     public function testEdit(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-        $this->setupAuthApi([
-            'getUser' => $user,
-        ]);
+        $userId = $this->faker->uuid;
         $this->session([
-            'authId' => $this->faker->uuid(),
+            'authId' => $userId,
             'name' => 'Emily Quackfaster',
             'userName' => 'QuackMaster',
-            'email' => $user->getEmail(),
+            'email' => $this->faker->email,
             'locale' => 'nn-no',
         ]);
         $request = Request::create('lti-content/create', 'POST', [
@@ -154,7 +148,7 @@ class H5PControllerTest extends TestCase
         ]);
 
         $h5pContent = H5PContent::factory()->create([
-            'user_id' => $user->getId(),
+            'user_id' => $this->faker->uuid,
             'library_id' => $lib->id,
             'license' => License::LICENSE_CC,
             'language_iso_639_3' => 'nob',
@@ -162,7 +156,7 @@ class H5PControllerTest extends TestCase
 
         H5PContentsUserData::factory()->create([
             'content_id' => $h5pContent->id,
-            'user_id' => $user->getId(),
+            'user_id' => $userId,
             'data' => $this->faker->sentence,
         ]);
 
@@ -219,7 +213,7 @@ class H5PControllerTest extends TestCase
 
         $editorSetup = json_decode($data['editorSetup'], true, flags: JSON_THROW_ON_ERROR);
         $this->assertEquals($lib->title . ' 1.6.3', $editorSetup['contentProperties']['type']);
-        $this->assertEquals('Emily Quackfaster', $editorSetup['contentProperties']['ownerName']);
+        $this->assertSame(null, $editorSetup['contentProperties']['ownerName']);
         $this->assertSame($upgradeLib->id, $editorSetup['libraryUpgradeList'][0]['id']);
         $this->assertSame('nb', $editorSetup['h5pLanguage']);
 
@@ -245,7 +239,7 @@ class H5PControllerTest extends TestCase
     public function testStoreRequiresParameters(array $jsonData, array $errorFields): void
     {
         $this
-            ->withAuthenticated($this->makeAuthUser())
+            ->withSession(['authId' => $this->faker->uuid])
             ->postJson('/h5p', ['_token' => csrf_token(), ...$jsonData])
             ->assertUnprocessable()
             ->assertJsonValidationErrors($errorFields);
@@ -259,7 +253,7 @@ class H5PControllerTest extends TestCase
         $content = H5PContent::factory()->create();
 
         $this
-            ->withAuthenticated($this->makeAuthUser())
+            ->withSession(['authId' => $this->faker->uuid])
             ->putJson('/h5p/'.$content->id, [
                 '_token' => csrf_token(),
                 ...$jsonData,

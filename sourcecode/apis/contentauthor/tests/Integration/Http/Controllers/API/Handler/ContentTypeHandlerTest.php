@@ -11,7 +11,6 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Helpers\MockResourceApi;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
@@ -19,7 +18,6 @@ class ContentTypeHandlerTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use MockResourceApi;
 
     public function setUp(): void
     {
@@ -34,8 +32,6 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArray_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
-
         $handler = new ContentTypeHandler();
         $this->isInstanceOf(ContentTypeHandler::class);
 
@@ -110,8 +106,6 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromArrayWithUserPublish_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
@@ -192,7 +186,6 @@ class ContentTypeHandlerTest extends TestCase
      */
     public function createNewQuestionSetFromClient_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
         $handler = new ContentTypeHandler();
 
         $authId = $this->faker->uuid;

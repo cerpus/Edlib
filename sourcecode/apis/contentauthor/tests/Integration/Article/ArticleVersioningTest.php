@@ -15,24 +15,15 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockMQ;
-use Tests\Helpers\MockResourceApi;
 use Tests\TestCase;
 
 class ArticleVersioningTest extends TestCase
 {
     use RefreshDatabase;
-    use MockMQ;
-    use MockResourceApi;
-    use MockAuthApi;
     use WithFaker;
 
     public function testDatabaseVersioning()
     {
-        $this->setupAuthApi([
-            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
-        ]);
         $authId = Str::uuid();
         $article = Article::factory()->create(['owner_id' => $authId]);
         $startCount = Article::count();
@@ -144,10 +135,6 @@ class ArticleVersioningTest extends TestCase
         $inviteEmail->expects($this->exactly(3))->method('handle');
         $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
 
-        $this->setUpResourceApi();
-        $this->setupAuthApi([
-            'getUser' => new \App\ApiModels\User("1", "this", "that", "this@that.com")
-        ]);
         $owner = User::factory()->make();
         $collaborator = User::factory()->make();
         $copyist = User::factory()->make();

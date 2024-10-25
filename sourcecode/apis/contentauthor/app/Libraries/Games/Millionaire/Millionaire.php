@@ -167,8 +167,6 @@ class Millionaire extends GameBase
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
 
-        $ownerName = $game->getOwnerName($game->owner);
-
         $editorSetup = EditorConfigObject::create(
             [
                 'userPublishEnabled' => Game::isUserPublishEnabled(),
@@ -180,7 +178,7 @@ class Millionaire extends GameBase
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $game->id,
             'createdAt' => $game->created_at->toIso8601String(),
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         $state = QuestionSetStateDataObject::create([
