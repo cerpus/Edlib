@@ -1,6 +1,5 @@
 <?php
 return [
-    'questions' => "Spørsmål",
     'create-question' => "Opprett spørsmål",
     'edit-question' => "Rediger sprørsmål",
     'error.title' => "Ein tittel er påkravd.",

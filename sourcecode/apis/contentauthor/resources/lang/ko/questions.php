@@ -1,7 +1,6 @@
 <?php
 
 return [
-    "questions" => "문항",
     "create-question" => "문항 만들기",
     "edit-question" => "문항 편집",
     "error.title" => "제목은 필수입니다.",

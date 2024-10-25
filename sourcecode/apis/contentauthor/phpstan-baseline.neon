@@ -246,41 +246,6 @@ parameters:
 			path: app/Http/Kernel.php
 
 		-
-			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/ArticleContentType.php
-
-		-
-			message: "#^Return type \\(array\\) of method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ArticleContentType\\:\\:getContentTypes\\(\\) should be compatible with return type \\(App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\) of method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentTypeInterface\\:\\:getContentTypes\\(\\)$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/ArticleContentType.php
-
-		-
-			message: "#^Property App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\:\\:\\$guarded is never read, only written\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/ContentType.php
-
-		-
-			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
-			message: "#^Class App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 2
-			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
-			message: "#^Method App\\\\Http\\\\Libraries\\\\ContentTypes\\\\H5PContentType\\:\\:getContentTypes\\(\\) should return App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType but returns array\\<int\\<0, max\\>, App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\>\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/H5PContentType.php
-
-		-
-			message: "#^PHPDoc tag @return with type array is incompatible with native type App\\\\Http\\\\Libraries\\\\ContentTypes\\\\ContentType\\.$#"
-			count: 1
-			path: app/Http/Libraries/ContentTypes/LinkContentType.php
-
-		-
 			message: "#^Anonymous function has an unused use \\$newH5P\\.$#"
 			count: 1
 			path: app/Http/Libraries/H5PFileVersioner.php

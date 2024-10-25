@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'Article' => '글',
-    'create-article' => '글 작성하기',
-    'edit-article' => '글 편집하기',
     'title' => '제목',
     'please-give-title' => '글 제목을 작성하세요',
     'content' => '내용',

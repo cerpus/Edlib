@@ -1,7 +1,6 @@
 <?php
 
 return [
-    "questions" => "Questions",
     "create-question" => "Create question",
     "edit-question" => "Edit question",
     "error.title" => "A title is required.",
