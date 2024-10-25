@@ -39,6 +39,7 @@ final readonly class SelectController
             'user' => $encrypter->encrypt([
                 'name' => $user->name,
                 'email' => $user->email,
+                'admin' => $user->admin,
             ]),
             'locale' => str_replace('-', '_', $request->input('locale', '')),
             'deep_link' => $request->input('canReturnResources', 'false'),
@@ -57,7 +58,11 @@ final readonly class SelectController
             ->firstOrFail()
             ->getOauth1Credentials();
 
-        ['name' => $name, 'email' => $email] = $encrypter->decrypt($request->input('user'));
+        [
+            'name' => $name,
+            'email' => $email,
+            'admin' => $admin,
+        ] = $encrypter->decrypt($request->input('user'));
         $locale = $request->input('locale');
         // TODO: do something with this
         //$deepLink = $request->boolean('deep_link');
@@ -74,6 +79,7 @@ final readonly class SelectController
             'lis_person_name_full' => $name,
             'lis_person_contact_email_primary' => $email,
             'lti_message_type' => 'ContentItemSelectionRequest',
+            ...($admin ? ['roles' => 'Administrator'] : []),
         ]), $credentials);
 
         return response()->view('lti.redirect', [

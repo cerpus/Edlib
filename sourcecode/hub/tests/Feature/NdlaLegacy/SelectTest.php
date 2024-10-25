@@ -33,34 +33,34 @@ final class SelectTest extends TestCase
             ->withToken($jwt)
             ->post('https://hub-test-ndla-legacy.edlib.test/select?locale=nb-no')
             ->assertOk()
-            ->assertJson(
-                fn (AssertableJson $json) => $json
-                    ->has('url')
-                    ->where('url', function (string $url) {
-                        $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('url')
+                ->where('url', function (string $url) {
+                    $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
 
-                        $qs = parse_url($url, PHP_URL_QUERY);
-                        $this->assertIsString($qs);
-                        parse_str($qs, $query);
+                    $qs = parse_url($url, PHP_URL_QUERY);
+                    $this->assertIsString($qs);
+                    parse_str($qs, $query);
 
-                        $this->assertArrayHasKey('deep_link', $query);
-                        $this->assertArrayHasKey('user', $query);
+                    $this->assertArrayHasKey('deep_link', $query);
+                    $this->assertArrayHasKey('user', $query);
 
-                        $this->assertArrayHasKey('locale', $query);
-                        $this->assertSame('nb_no', $query['locale']);
+                    $this->assertArrayHasKey('locale', $query);
+                    $this->assertSame('nb_no', $query['locale']);
 
-                        $this->assertArrayHasKey('user', $query);
-                        $this->assertIsString($query['user']);
-                        $encrypter = $this->app->make(Encrypter::class);
-                        $user = $encrypter->decrypt($query['user']);
+                    $this->assertArrayHasKey('user', $query);
+                    $this->assertIsString($query['user']);
+                    $encrypter = $this->app->make(Encrypter::class);
+                    $user = $encrypter->decrypt($query['user']);
 
-                        $this->assertEquals([
-                            'name' => 'Bob',
-                            'email' => 'bob@example.com',
-                        ], $user);
+                    $this->assertEquals([
+                        'name' => 'Bob',
+                        'email' => 'bob@example.com',
+                        'admin' => false,
+                    ], $user);
 
-                        return true;
-                    })
+                    return true;
+                })
             );
     }
 
