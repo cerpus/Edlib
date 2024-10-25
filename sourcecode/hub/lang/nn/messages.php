@@ -25,6 +25,7 @@ return [
     'version' => 'Versjon',
     'draft' => 'Kladd',
     'by' => 'av',
+    'contact-us' => 'Kontakt oss',
     'documentation' => 'Dokumentasjon',
     'facebook' => 'Facebook',
     'github' => 'GitHub',
