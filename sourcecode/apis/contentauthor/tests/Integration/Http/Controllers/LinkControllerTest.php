@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
 use App\Events\LinkWasSaved;
 use App\Http\Controllers\LinkController;
 use App\Http\Libraries\License;
@@ -12,13 +11,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
 
 class LinkControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
 
     public function testCreate(): void
@@ -44,13 +41,13 @@ class LinkControllerTest extends TestCase
 
     public function testEdit(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $userId = $this->faker->uuid;
         $this->session([
-            'authId' => $user->getId(),
+            'authId' => $userId,
         ]);
         $link = Link::factory()->create([
             'license' => License::LICENSE_BY_NC_ND,
-            'owner_id' => $user->getId(),
+            'owner_id' => $userId,
         ]);
 
         $request = Request::create('', parameters: [
@@ -108,9 +105,9 @@ class LinkControllerTest extends TestCase
 
     public function testUpdate(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $userId = $this->faker->uuid;
         $this->session([
-            'authId' => $user->getId(),
+            'authId' => $userId,
         ]);
 
         $this->expectsEvents([
@@ -124,7 +121,7 @@ class LinkControllerTest extends TestCase
             'title' => 'No title',
             'metadata' => json_encode(['title' => 'No title']),
             'license' => License::LICENSE_BY_NC,
-            'owner_id' => $user->getId(),
+            'owner_id' => $userId,
         ]);
 
         $response = $this->call('patch', '/link/' . $link->getId(), [

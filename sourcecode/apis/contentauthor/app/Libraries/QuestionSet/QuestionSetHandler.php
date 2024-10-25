@@ -5,7 +5,6 @@ namespace App\Libraries\QuestionSet;
 use App\Content;
 use App\ContentVersion;
 use App\Events\QuestionsetWasSaved;
-use App\Events\ResourceSaved;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
@@ -42,10 +41,7 @@ class QuestionSetHandler
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
-            $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
-            event(new ResourceSaved($questionSet->getEdlibDataObject()));
-
-            return $presentation;
+            return $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
         }
 
         return $questionSet;
@@ -183,10 +179,7 @@ class QuestionSetHandler
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_UPDATE, Session::all()));
 
         if (!empty($values['selectedPresentation'])) {
-            $presentation = $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
-            event(new ResourceSaved($questionSet->getEdlibDataObject()));
-
-            return $presentation;
+            return $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
         }
 
         return $questionSet;

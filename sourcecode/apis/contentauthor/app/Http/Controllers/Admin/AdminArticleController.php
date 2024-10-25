@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\ResourceSaved;
-use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
 use Exception;
@@ -66,9 +64,6 @@ class AdminArticleController extends Controller
                 } finally {
                     $batch->push($status);
                     $article->save();
-                    if ($status['success'] === true) {
-                        event(new ResourceSaved($article->getEdlibDataObject()));
-                    }
                 }
             });
         return response()->json([
@@ -104,14 +99,8 @@ class AdminArticleController extends Controller
 
     public function viewFailedCalculations()
     {
-        $resources = Article::ofBulkCalculated(Article::BULK_FAILED)
-            ->get()
-            ->each(function (Article $resource) {
-                /** @var ResourceUserDataObject $ownerData */
-                $ownerData = $resource->getOwnerData();
-                $resource->ownerName = $ownerData->getNameAndEmail();
-                return $resource;
-            });
+        $resources = Article::ofBulkCalculated(Article::BULK_FAILED)->get();
+
         return view('admin.articles.maxscore-failed-overview', compact('resources'));
     }
 }

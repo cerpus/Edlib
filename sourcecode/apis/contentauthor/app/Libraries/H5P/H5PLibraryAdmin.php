@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P;
 
-use App\Events\ResourceSaved;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
@@ -173,7 +172,6 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Setting of score failed");
                     }
-                    event(new ResourceSaved($content->getEdlibDataObject()));
                 });
         }
 

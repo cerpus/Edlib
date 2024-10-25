@@ -5,7 +5,6 @@ namespace Tests\Integration\Libraries\H5P;
 use App\Content;
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
-use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\User;
@@ -19,8 +18,6 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Tests\Helpers\MockH5PAdapterInterface;
-use Tests\Helpers\MockMQ;
-use Tests\Helpers\MockResourceApi;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -30,9 +27,7 @@ class CRUTest extends TestCase
     use RefreshDatabase;
     use TestHelpers;
     use WithFaker;
-    use MockMQ;
     use MockH5PAdapterInterface;
-    use MockResourceApi;
 
     public const testDirectory = "h5pstorage";
     public const testContentDirectory = "content";
@@ -300,7 +295,6 @@ class CRUTest extends TestCase
     public function upgradeContentNoExtraChanges_validParams_thenSuccess()
     {
         $this->expectsEvents([
-            ResourceSaved::class,
             H5PWasSaved::class,
         ]);
 
@@ -347,7 +341,6 @@ class CRUTest extends TestCase
     public function upgradeContentExtraChanges_validParams_thenSuccess()
     {
         $this->expectsEvents(
-            ResourceSaved::class,
             H5PWasSaved::class,
         );
 
@@ -401,7 +394,6 @@ class CRUTest extends TestCase
     public function enabledUserPublishActionAndLTISupport()
     {
         $this->expectsEvents([
-            ResourceSaved::class,
             H5PWasSaved::class,
         ]);
         $this->seed(TestH5PSeeder::class);

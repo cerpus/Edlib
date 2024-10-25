@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Article;
 
-use App\ApiModels\User;
 use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -14,15 +13,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockResourceApi;
 use Tests\TestCase;
 
 class ArticleTest extends TestCase
 {
     use RefreshDatabase;
-    use MockResourceApi;
-    use MockAuthApi;
 
     public function testRewriteUploadUrls(): void
     {
@@ -156,9 +151,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticle()
     {
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
         Event::fake();
         $authId = Str::uuid();
         $article = Article::factory()->create([
@@ -198,10 +190,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticleWithDraftEnabled()
     {
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");

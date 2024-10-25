@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Libraries\H5P\H5PLibraryAdmin;
@@ -110,7 +109,6 @@ class H5PLibraryAdminTest extends TestCase
             'bulk_calculated' => H5PLibraryAdmin::BULK_UNTOUCHED,
         ]);
 
-        $this->expectsEvents(ResourceSaved::class);
         $libAdmin = app()->make(H5PLibraryAdmin::class);
         $ret = $libAdmin->upgradeMaxscore(
             [$libFoobar->id, $libQs->id],

@@ -2,15 +2,12 @@
 
 namespace App\Providers;
 
-use App\Apis\AuthApiService;
-use App\Apis\ResourceApiService;
 use App\ContentVersion;
 use App\H5POption;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\TrimStrings;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Helper\H5POptionsCache;
-use App\Listeners\ResourceEventHandler;
 use App\Observers\ContentVersionsObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
@@ -56,26 +53,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(ContentAuthorStorage::class);
 
-        $this->app->bind(
-            ResourceApiService::class,
-            function ($app) {
-                return new ResourceApiService();
-            }
-        );
-
-        $this->app->bind(
-            AuthApiService::class,
-            function ($app) {
-                return new AuthApiService();
-            }
-        );
-
         $this->app->when(RequestId::class)
             ->needs(Logger::class)
             ->give(fn () => Log::channel());
-
-        $this->app->when(ResourceEventHandler::class)
-            ->needs('$enableEdlib2')
-            ->giveConfig('app.enable-edlib2');
     }
 }

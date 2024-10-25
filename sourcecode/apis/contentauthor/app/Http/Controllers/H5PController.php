@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
-use App\Events\ResourceSaved;
 use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
@@ -230,7 +229,6 @@ class H5PController extends Controller
 
         /** @var H5PContent $h5pContent */
         $h5pContent = H5PContent::with(['library', 'ndlaMapper', 'metadata'])->find($id);
-        $ownerName = $h5pContent->getOwnerName($h5pContent->user_id);
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
@@ -311,7 +309,7 @@ class H5PController extends Controller
             'createdAt' => $h5pContent->created_at->toIso8601String(),
             'type' => $library->getTitleAndVersionString(),
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
@@ -411,8 +409,6 @@ class H5PController extends Controller
         $core->fs->deleteExport(sprintf("%s-%d.h5p", $h5p->slug, $h5p->id));
 
         $h5p->unlock();
-
-        event(new ResourceSaved($newH5pContent->getEdlibDataObject()));
 
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
@@ -528,8 +524,6 @@ class H5PController extends Controller
         $content = $this->persistContent($request, Session::get('authId'));
 
         Cache::forget($this->viewDataCacheName . $content->id);
-
-        event(new ResourceSaved($content->getEdlibDataObject()));
 
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(

@@ -166,8 +166,6 @@ class ArticleController extends Controller
         $origin = $article->getAttribution()->getOrigin();
         $originators = $article->getAttribution()->getOriginators();
 
-        $ownerName = $article->getOwnerName($article->owner_id);
-
         $emails = $this->getCollaboratorsEmails($article);
 
         $config = json_encode([
@@ -192,7 +190,7 @@ class ArticleController extends Controller
             'id' => $article['id'],
             'createdAt' => $article->created_at->toIso8601String(),
             'maxScore' => $article->max_score,
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         if (!$article->shouldCreateFork(Session::get('authId', false))) {

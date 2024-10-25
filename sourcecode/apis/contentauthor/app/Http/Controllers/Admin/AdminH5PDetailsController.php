@@ -12,7 +12,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
 use ErrorException;
-use Exception;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
@@ -20,7 +19,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdminH5PDetailsController extends Controller
@@ -157,17 +155,8 @@ class AdminH5PDetailsController extends Controller
 
     public function contentHistory(H5PContent $content): View
     {
-        /** @var \App\Apis\ResourceApiService $resourceService */
-        $resourceService = app('\App\Apis\ResourceApiService');
         $versions = collect();
         $history = [];
-
-        try {
-            $resource = $resourceService->getResourceFromExternalReference('contentauthor', $content->id);
-        } catch (Exception $e) {
-            Log::warning($e);
-            $resource = null;
-        }
 
         if ($content->version_id) {
             $data = $content->getVersion();
@@ -177,7 +166,6 @@ class AdminH5PDetailsController extends Controller
         return view('admin.library-upgrade.content-details', [
             'content' => $content,
             'latestVersion' => !isset($history[$content->id]['children']),
-            'resource' => $resource,
             'history' => $history,
             'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
         ]);

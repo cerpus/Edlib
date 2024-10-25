@@ -132,7 +132,6 @@ class QuestionSetController extends Controller
         $questionSetData = $this->buildItem($questionset, new QuestionSetsTransformer());
         $contenttypes = $this->getQuestionsetContentTypes();
         $emails = $questionset->getCollaboratorEmails();
-        $ownerName = $questionset->getOwnerName($questionset->owner);
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
@@ -147,7 +146,7 @@ class QuestionSetController extends Controller
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $questionset->id,
             'createdAt' => $questionset->created_at->toIso8601String(),
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         $editorSetup = $editorSetup->toJson();

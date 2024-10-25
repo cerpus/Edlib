@@ -31,32 +31,8 @@
                                 <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
-                                <th>Created (Resource API)</th>
-                                <td>{{
-                                    $resource ?
-                                        $resource->createdAt ? \Carbon\Carbon::make($resource->createdAt)->utc()->format('Y-m-d H:i:s e') : '-'
-                                    : ''
-                                }}</td>
-                            </tr>
-                            <tr>
                                 <th>Updated (Content author)</th>
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
-                            </tr>
-                            <tr>
-                                <th>Updated (Resource API)</th>
-                                <td>{{
-                                    $resource ?
-                                        $resource->updatedAt ? \Carbon\Carbon::make($resource->updatedAt)->utc()->format('Y-m-d H:i:s e') : '-'
-                                    : ''
-                                }}</td>
-                            </tr>
-                            <tr>
-                                <th>Deleted (Resource API)</th>
-                                <td>{{
-                                    $resource ?
-                                        $resource->deletedAt ? \Carbon\Carbon::make($resource->deletedAt)->utc()->format('Y-m-d H:i:s e') : 'No'
-                                    : ''
-                                }}</td>
                             </tr>
                             <tr>
                                 <th>Latest version</th>

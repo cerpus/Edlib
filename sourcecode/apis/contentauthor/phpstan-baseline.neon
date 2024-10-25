@@ -27,7 +27,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$email\\.$#"
-			count: 3
+			count: 2
 			path: app/Content.php
 
 		-
@@ -149,16 +149,6 @@ parameters:
 			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\UnlockController\\:\\:index\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/UnlockController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\Article\\:\\:\\$ownerName\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminArticleController.php
-
-		-
-			message: "#^Access to an undefined property App\\\\H5PContent\\:\\:\\$ownerName\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
 			message: "#^Called 'count' on Laravel collection, but could have been retrieved as a query\\.$#"

@@ -217,6 +217,4 @@ return [
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
     'cdnPrefix' => env('CDN_WITH_PREFIX', ''),
-
-    'enable-edlib2' => (bool) env('ENABLE_EDLIB2', true),
 ];
