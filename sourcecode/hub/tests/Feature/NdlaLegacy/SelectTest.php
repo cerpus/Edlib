@@ -50,7 +50,7 @@ final class SelectTest extends TestCase
                         $this->assertArrayHasKey('user', $query);
 
                         $this->assertArrayHasKey('admin', $query);
-                        $this->assertSame('false', $query['admin']);
+                        $this->assertSame('0', $query['admin']);
 
                         $this->assertArrayHasKey('locale', $query);
                         $this->assertSame('nb_no', $query['locale']);
