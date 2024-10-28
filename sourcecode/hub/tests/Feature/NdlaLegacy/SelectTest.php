@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Feature\NdlaLegacy;
 
+use App\Models\LtiPlatform;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Feature\NdlaLegacy\Jwt;
 use Tests\TestCase;
 
+use function config;
 use function parse_str;
 use function parse_url;
+use function url;
 
 use const PHP_URL_QUERY;
 
@@ -31,7 +34,7 @@ final class SelectTest extends TestCase
 
         $this
             ->withToken($jwt)
-            ->post('https://hub-test-ndla-legacy.edlib.test/select?locale=nb-no')
+            ->post('https://hub-test-ndla-legacy.edlib.test/select?locale=nb-no&canReturnResources=true')
             ->assertOk()
             ->assertJson(
                 fn (AssertableJson $json) => $json
@@ -46,6 +49,9 @@ final class SelectTest extends TestCase
                         $this->assertArrayHasKey('deep_link', $query);
                         $this->assertArrayHasKey('user', $query);
 
+                        $this->assertArrayHasKey('admin', $query);
+                        $this->assertSame('false', $query['admin']);
+
                         $this->assertArrayHasKey('locale', $query);
                         $this->assertSame('nb_no', $query['locale']);
 
@@ -57,12 +63,31 @@ final class SelectTest extends TestCase
                         $this->assertEquals([
                             'name' => 'Bob',
                             'email' => 'bob@example.com',
-                            'admin' => false,
                         ], $user);
 
                         return true;
                     })
             );
+    }
+
+    public function testRendersSelectIframe(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        config()->set('ndla-legacy.internal-lti-platform-key', $platform->key);
+
+        $url = url()->signedRoute('ndla-legacy.select-iframe', [
+            'user' => $this->app->make(Encrypter::class)->encrypt([
+                'name' => 'Ender Ella',
+                'email' => 'ender@example.com',
+            ]),
+            'deep_link' => true,
+            'admin' => false,
+        ]);
+
+        $this->get($url)
+            ->assertOk()
+            // TODO: add more useful assertions
+            ->assertSeeHtml('<form');
     }
 
     public function testSelectRequiresJwt(): void

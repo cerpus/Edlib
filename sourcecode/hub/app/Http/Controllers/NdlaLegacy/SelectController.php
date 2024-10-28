@@ -6,6 +6,7 @@ namespace App\Http\Controllers\NdlaLegacy;
 
 use App\Configuration\NdlaLegacyConfig;
 use App\Http\Requests\DeepLinkingReturnRequest;
+use App\Http\Requests\NdlaLegacy\SelectRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
@@ -22,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
+use function response;
 use function route;
 use function url;
 
@@ -39,48 +41,48 @@ final readonly class SelectController
             'user' => $encrypter->encrypt([
                 'name' => $user->name,
                 'email' => $user->email,
-                'admin' => $user->admin,
             ]),
+            'admin' => $user->admin,
+            'deep_link' => $request->boolean('canReturnResources'),
             'locale' => str_replace('-', '_', $request->input('locale', '')),
-            'deep_link' => $request->input('canReturnResources', 'false'),
         ]);
 
         return response()->json(['url' => $url]);
     }
 
     public function selectIframe(
-        Request $request,
+        SelectRequest $request,
         NdlaLegacyConfig $config,
         SignerInterface $signer,
-        Encrypter $encrypter,
     ): Response {
         $credentials = LtiPlatform::where('key', $config->getInternalLtiPlatformKey())
             ->firstOrFail()
             ->getOauth1Credentials();
 
-        [
-            'name' => $name,
-            'email' => $email,
-            'admin' => $admin,
-        ] = $encrypter->decrypt($request->input('user'));
-        $locale = $request->input('locale');
-        // TODO: do something with this
-        //$deepLink = $request->boolean('deep_link');
+        $locale = $request->validated('locale');
+        $admin = $request->safe()->boolean('admin');
+        $deepLink = $request->safe()->boolean('deep_link');
 
         $csrfToken = 'csrf_' . Str::random();
         $request->session()->put($csrfToken, true);
 
-        $launch = $signer->sign(new Oauth1Request('POST', route('lti.select'), [
+        $params = [
             'accept_media_types' => 'application/vnd.ims.lti.v1.ltilink',
             'accept_presentation_document_targets' => 'iframe',
-            'content_item_return_url' => route('ndla-legacy.select-return'),
             'data' => $csrfToken,
-            ...($locale ? ['launch_presentation_locale' => $locale] : []),
-            'lis_person_name_full' => $name,
-            'lis_person_contact_email_primary' => $email,
             'lti_message_type' => 'ContentItemSelectionRequest',
+            'lis_person_name_full' => $request->validated('user.name'),
+            'lis_person_contact_email_primary' => $request->validated('user.email'),
+            'lti_version' => 'LTI-1p0',
             ...($admin ? ['roles' => 'Administrator'] : []),
-        ]), $credentials);
+            ...($deepLink ? ['content_item_return_url' => route('ndla-legacy.select-return')] : []),
+            ...($locale ? ['launch_presentation_locale' => $locale] : []),
+        ];
+
+        $launch = $signer->sign(
+            new Oauth1Request('POST', route('lti.select'), $params),
+            $credentials,
+        );
 
         return response()->view('lti.redirect', [
             'url' => $launch->getUrl(),
