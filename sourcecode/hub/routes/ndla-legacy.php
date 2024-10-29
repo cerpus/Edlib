@@ -11,7 +11,8 @@ use App\Http\Controllers\NdlaLegacy\ViewResourceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/resource/{edlib2UsageContent}')
-    ->uses(ViewResourceController::class);
+    ->uses(ViewResourceController::class)
+    ->name('ndla-legacy.resource');
 
 Route::get('/v1/resource/{edlib2UsageContent}/copyright')
     ->uses(ResourceCopyrightController::class);

@@ -133,7 +133,9 @@ final readonly class SelectController
         return response()->view('ndla-legacy.return', [
             'type' => 'h5p',
             'embed_id' => $tag->name,
-            'oembed_url' => route('ndla-legacy.oembed', [$tag->name]),
+            'oembed_url' => route('ndla-legacy.oembed', [
+                'url' => route('ndla-legacy.resource', [$tag->name]),
+            ]),
         ]);
     }
 }
