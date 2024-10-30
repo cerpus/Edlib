@@ -78,5 +78,5 @@ return [
     'details' => 'Detaljar',
     'result-list' => 'Vis resultata som ei liste',
     'result-grid' => 'Vis resultata som eit rutenett',
-    'about-edlib' => ':site er drive av :edlib, eit opent kjeldekode-system for organisering av læreressursar, utvikla av Cerpus.',
+    'about-edlib' => ':site er drive av :edlib, eit system for organisering av læreressursar, basert på open kjeldekode utvikla av Cerpus AS.',
 ];
