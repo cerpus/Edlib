@@ -107,7 +107,7 @@ final readonly class SelectController
             'accept_media_types' => 'application/vnd.ims.lti.v1.ltilink',
             'accept_presentation_document_targets' => 'iframe',
             'data' => $csrfToken,
-            'lti_message_type' => 'ContentItemSelectionRequest',
+            'lti_message_type' => $deepLink ? 'ContentItemSelectionRequest' : 'basic-lti-launch-request',
             'lis_person_name_full' => $request->validated('user.name'),
             'lis_person_contact_email_primary' => $request->validated('user.email'),
             'lti_version' => 'LTI-1p0',

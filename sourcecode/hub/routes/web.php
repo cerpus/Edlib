@@ -192,8 +192,7 @@ Route::prefix('/lti')->middleware([
 
     Route::post('/dl')
         ->uses([LtiController::class, 'select'])
-        ->name('lti.select')
-        ->middleware('lti.launch-type:ContentItemSelectionRequest');
+        ->name('lti.select');
 
     // Deprecated: use /lti/dl instead.
     Route::post('/1.1/select')
