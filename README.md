@@ -22,7 +22,6 @@ Documentation for setting up your own development environment can be found in ou
 * Licensing module with an intelligent [Creative-Commons](https://creativecommons.org/) license selector.
 * Authoring workflows, including maintaining resources private or making them publicly available.
 * Easy integration with third-party APIs, including audio, video, and image APIs.
-* The ability to create quizzes and game-based learning activities quickly and easily from the integrated question bank.
 * [Learning Tools Interoperability (LTI)](https://www.imsglobal.org/activity/learning-tools-interoperability) version 1.0/1.2 provider and consumer support.
 * Resource versioning. 
 * The ability to create copies and language variants of existing resources quickly and easily.
@@ -57,18 +56,21 @@ Translation status
 
 | API Name             | Status                                         |
 |----------------------|------------------------------------------------|
+| The Hub              | N/A - pending setup. |
 | API - Content author | [![Translation status](https://weblate.edlib.com/widgets/content-author/-/multi-auto.svg)](https://weblate.edlib.com/engage/content-author/) |
-| WWW -                | [![Translation status](https://weblate.edlib.com/widgets/www/-/www/multi-auto.svg)](https://weblate.edlib.com/engage/www/) |
+
 
 
 
 ## Code coverage and test status
 
-[![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
+Overall coverage [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
 
 The code coverage report is currently covering the PHP parts of the Edlib code for the following parts of Edlib:
 
+- The Hub: N/A - pending setup.
+
 - Content Author: [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
 
-- The Hub: N/A - pending setup.
+
 
