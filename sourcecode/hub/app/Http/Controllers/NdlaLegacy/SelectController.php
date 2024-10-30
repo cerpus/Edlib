@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
 
 use function response;
 use function route;
+use function str_replace;
 use function url;
 
 /**
@@ -50,6 +51,34 @@ final readonly class SelectController
         return response()->json(['url' => $url]);
     }
 
+    public function selectByUrl(Request $request, Encrypter $encrypter, NdlaLegacyConfig $config): JsonResponse
+    {
+        $user = $request->user();
+        assert($user instanceof User);
+
+        $resourceId = $config->extractEdlib2IdFromUrl($request->input('url', ''));
+        if ($resourceId === null) {
+            abort(404, 'No Edlib 2 ID');
+        }
+
+        $contentId = Content::ofTag([
+            'prefix' => 'edlib2_usage_id',
+            'name' => $resourceId,
+        ])->limit(1)->firstOrFail()->id;
+
+        $url = url()->temporarySignedRoute('ndla-legacy.select-iframe', 30, [
+            'user' => $encrypter->encrypt([
+                'name' => $user->name,
+                'email' => $user->email,
+            ]),
+            'admin' => $user->admin,
+            'content_id' => $contentId,
+            'locale' => str_replace('-', '_', $request->input('locale', '')),
+        ]);
+
+        return response()->json(['url' => $url]);
+    }
+
     public function selectIframe(
         SelectRequest $request,
         NdlaLegacyConfig $config,
@@ -61,7 +90,15 @@ final readonly class SelectController
 
         $locale = $request->validated('locale');
         $admin = $request->safe()->boolean('admin');
-        $deepLink = $request->safe()->boolean('deep_link');
+        $contentId = $request->validated('content_id');
+
+        if ($contentId !== null) {
+            $deepLink = true;
+            $ltiUrl = route('lti.content', [$contentId]);
+        } else {
+            $deepLink = $request->safe()->boolean('deep_link');
+            $ltiUrl = route('lti.select');
+        }
 
         $csrfToken = 'csrf_' . Str::random();
         $request->session()->put($csrfToken, true);
@@ -80,7 +117,7 @@ final readonly class SelectController
         ];
 
         $launch = $signer->sign(
-            new Oauth1Request('POST', route('lti.select'), $params),
+            new Oauth1Request('POST', $ltiUrl, $params),
             $credentials,
         );
 

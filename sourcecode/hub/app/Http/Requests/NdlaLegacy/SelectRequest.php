@@ -28,7 +28,8 @@ class SelectRequest extends FormRequest
             'user.email' => ['required', 'email'],
             'admin' => ['sometimes', 'boolean'],
             'locale' => ['sometimes', 'string'],
-            'deep_link' => ['sometimes', 'boolean'],
+            'content_id' => ['sometimes', 'string'],
+            'deep_link' => ['exclude_with:content_id', 'boolean'],
         ];
     }
 }

@@ -42,6 +42,10 @@ Route::post('/select')
     ->middleware(['auth:ndla-legacy'])
     ->uses([SelectController::class, 'select']);
 
+Route::post('/select/edit/byurl')
+    ->middleware(['auth:ndla-legacy'])
+    ->uses([SelectController::class, 'selectByUrl']);
+
 Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(function () {
     // internal, not part of the API
     Route::get('/select')

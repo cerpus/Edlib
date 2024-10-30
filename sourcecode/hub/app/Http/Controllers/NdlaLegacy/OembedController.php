@@ -7,11 +7,9 @@ namespace App\Http\Controllers\NdlaLegacy;
 use App\Configuration\NdlaLegacyConfig;
 use App\Http\Requests\NdlaLegacy\OembedRequest;
 use App\Models\Content;
-use App\Models\Tag;
 use App\Oembed\OembedFormat;
 use App\Oembed\RichContentResponse;
 use App\Oembed\Serializer;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 
 /**
@@ -30,15 +28,9 @@ final readonly class OembedController
     {
         $id = $request->getResourceId($this->config);
 
-        $content = Content::whereHas(
-            'tags',
-            function (Builder $query) use ($id) {
-                /** @var Builder<Tag> $query */
-                $query
-                    ->where('prefix', 'edlib2_usage_id')
-                    ->where('name', $id);
-            }
-        )->firstOrFail();
+        $content = Content::ofTag(['prefix' => 'edlib2_usage_id', 'name' => $id])
+            ->limit(1)
+            ->firstOrFail();
 
         $format = OembedFormat::from($request->validated('format', 'json'));
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Feature\NdlaLegacy;
 
+use App\Models\Content;
 use App\Models\LtiPlatform;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -67,6 +68,44 @@ final class SelectTest extends TestCase
 
                         return true;
                     })
+            );
+    }
+
+    public function testLaunchesSelectByUrl(): void
+    {
+        $jwt = Jwt::sign([
+            'https://ndla.no/user_name' => 'Bob',
+            'https://ndla.no/user_email' => 'bob@example.com',
+            'https://ndla.no/ndla_id' => '89w7tg87as8g78a7s8',
+            'exp' => time() + 600,
+            'scope' => 'openid profile email',
+        ]);
+
+        $content = Content::factory()
+            ->tag('edlib2_usage_id:dd72be4f-672d-44b4-bc0c-570947b17437')
+            ->withPublishedVersion()
+            ->create();
+
+        $this
+            ->withToken($jwt)
+            ->post('https://hub-test-ndla-legacy.edlib.test/select/edit/byurl', [
+                'url' => 'https://hub-test-ndla-legacy.edlib.test/resource/dd72be4f-672d-44b4-bc0c-570947b17437?locale=nb-no',
+            ])
+            ->assertOk()
+            ->assertJson(fn (AssertableJson $json) => $json
+                ->has('url')
+                ->where('url', function (string $url) use ($content) {
+                    $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
+
+                    $qs = parse_url($url, PHP_URL_QUERY);
+                    $this->assertIsString($qs);
+                    parse_str($qs, $query);
+
+                    $this->assertArrayHasKey('content_id', $query);
+                    $this->assertSame($content->id, $query['content_id']);
+
+                    return true;
+                })
             );
     }
 

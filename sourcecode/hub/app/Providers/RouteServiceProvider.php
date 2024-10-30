@@ -7,9 +7,7 @@ namespace App\Providers;
 use App\Configuration\NdlaLegacyConfig;
 use App\Http\Controllers\HealthController;
 use App\Models\Content;
-use App\Models\Tag;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -47,15 +45,10 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::bind('edlib2UsageContent', function (string $value): Content {
-            return Content::whereHas(
-                'tags',
-                function (Builder $query) use ($value) {
-                    /** @var Builder<Tag> $query */
-                    $query
-                        ->where('prefix', 'edlib2_usage_id')
-                        ->where('name', $value);
-                },
-            )->limit(1)->firstOrFail();
+            return Content::ofTag([
+                'prefix' => 'edlib2_usage_id',
+                'name' => $value,
+            ])->limit(1)->firstOrFail();
         });
 
         $this->configureRateLimiting();

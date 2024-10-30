@@ -7,6 +7,12 @@ namespace App\Configuration;
 use BadMethodCallException;
 use GuzzleHttp\ClientInterface;
 
+use function is_string;
+use function parse_url;
+
+use const PHP_URL_HOST;
+use const PHP_URL_PATH;
+
 final readonly class NdlaLegacyConfig
 {
     public function __construct(
@@ -30,6 +36,25 @@ final readonly class NdlaLegacyConfig
         }
 
         return $this->domain;
+    }
+
+    public function extractEdlib2IdFromUrl(string $url): string|null
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+        $path = parse_url($url, PHP_URL_PATH);
+
+        if (!is_string($host) || !is_string($path)) {
+            return null;
+        }
+
+        if (
+            $host !== $this->getDomain() ||
+            !preg_match('!^/resource/([^/]+)!', $path, $matches)
+        ) {
+            return null;
+        }
+
+        return $matches[1];
     }
 
     public function getContentAuthorHost(): string

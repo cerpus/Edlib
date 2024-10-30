@@ -220,6 +220,26 @@ class Content extends Model
     }
 
     /**
+     * @param Builder<Content> $query
+     * @param array{prefix: string, name: string}|string $tag
+     */
+    public function scopeOfTag(Builder $query, string|array $tag): void
+    {
+        if (is_string($tag)) {
+            $tag = Tag::parse($tag);
+        }
+
+        ['prefix' => $prefix, 'name' => $name] = $tag;
+
+        $query->whereHas('tags', function (Builder $query) use ($prefix, $name) {
+            /** @var Builder<Tag> $query */
+            return $query
+                ->where('prefix', $prefix)
+                ->where('name', $name);
+        });
+    }
+
+    /**
      * @return HasMany<ContentView>
      */
     public function views(): HasMany
