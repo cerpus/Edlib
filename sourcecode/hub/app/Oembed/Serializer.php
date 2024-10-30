@@ -9,7 +9,7 @@ use RuntimeException;
 
 final readonly class Serializer
 {
-    public function serialize(OembedResponse $response, OembedFormat $format): string
+    public function serialize(RichContentResponse $response, OembedFormat $format): string
     {
         return match ($format) {
             OembedFormat::Json => $this->serializeJson($response),
@@ -17,17 +17,17 @@ final readonly class Serializer
         };
     }
 
-    private function serializeJson(OembedResponse $response): string
+    private function serializeJson(RichContentResponse $response): string
     {
-        return json_encode($response->data, JSON_THROW_ON_ERROR);
+        return json_encode($response->getData(), JSON_THROW_ON_ERROR);
     }
 
-    private function serializeXml(OembedResponse $response): string
+    private function serializeXml(RichContentResponse $response): string
     {
         $dom = new DOMDocument('1.0', 'UTF-8');
         $root = $dom->createElement('oembed');
-        foreach ($response->data as $key => $value) {
-            $root->appendChild($dom->createElement($key, $value));
+        foreach ($response->getData() as $key => $value) {
+            $root->appendChild($dom->createElement($key, (string) $value));
         }
         $dom->appendChild($root);
 

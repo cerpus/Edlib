@@ -26,13 +26,13 @@ final class SerializerTest extends TestCase
 
         $json = (new Serializer())->serialize($response, OembedFormat::Json);
 
-        $this->assertEqualsCanonicalizing([
+        $this->assertSame([
             'version' => '1.0',
             'type' => 'rich',
-            'title' => 'The content title',
             'html' => '<iframe src="http://example.com"></iframe>',
             'width' => 640,
             'height' => 480,
+            'title' => 'The content title',
         ], json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR));
     }
 
@@ -52,10 +52,10 @@ final class SerializerTest extends TestCase
         <oembed>
             <version>1.0</version>
             <type>rich</type>
-            <title>The content title</title>
             <html>&lt;iframe src="http://example.com"&gt;&lt;/iframe&gt;</html>
             <width>640</width>
             <height>480</height>
+            <title>The content title</title>
         </oembed>
         EOXML, $xml);
     }

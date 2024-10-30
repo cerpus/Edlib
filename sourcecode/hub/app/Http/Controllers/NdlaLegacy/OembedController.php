@@ -42,6 +42,7 @@ final readonly class OembedController
             ])->render(),
             width: 800,
             height: 600,
+            title: $content->getTitle(),
         ), $format);
 
         return new Response($data, headers: [

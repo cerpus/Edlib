@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace App\Oembed;
 
-class RichContentResponse extends OembedResponse
+class RichContentResponse
 {
     /**
      * @param positive-int $width
      * @param positive-int $height
      */
     public function __construct(
-        string $html,
-        int $width,
-        int $height,
-        string|null $title = null,
+        public readonly string $html,
+        public readonly int $width,
+        public readonly int $height,
+        public readonly string|null $title = null,
     ) {
-        parent::__construct([
-            'html' => $html,
-            'width' => (string) $width,
-            'height' => (string) $height,
-        ], $title);
     }
 
-    public function getType(): string
+    /**
+     * @return array<string, string|int>
+     */
+    public function getData(): array
     {
-        return 'rich';
+        return [
+            'version' => '1.0',
+            'type' => 'rich',
+            'html' => $this->html,
+            'width' => $this->width,
+            'height' => $this->height,
+            ...($this->title !== null ? ['title' => $this->title] : []),
+        ];
     }
 }
