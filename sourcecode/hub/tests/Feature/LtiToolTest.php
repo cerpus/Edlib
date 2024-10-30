@@ -115,7 +115,7 @@ final class LtiToolTest extends TestCase
         $platform = LtiPlatform::factory()->create();
 
         $request = $this->oauthSigner->sign(
-            new Request('POST', 'https://hub-test.edlib.test/lti/dl', [
+            new Request('POST', 'https://hub-test.edlib.test/lti/samples/deep-link', [
                 'launch_presentation_return_url' => 'https://example.com/return',
                 'lti_message_type' => 'basic-lti-launch-request',
             ]),
@@ -123,7 +123,7 @@ final class LtiToolTest extends TestCase
         );
 
         $this->withCookie('_edlib_cookies', '1')
-            ->post('/lti/dl', $request->toArray())
+            ->post('/lti/samples/deep-link', $request->toArray())
             ->assertRedirect('https://example.com/return?lti_errorlog=Invalid+LTI+launch+type%2C+expected+%22ContentItemSelectionRequest%22+but+got+%22basic-lti-launch-request%22');
     }
 
