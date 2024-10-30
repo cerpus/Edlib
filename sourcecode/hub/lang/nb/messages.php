@@ -119,7 +119,7 @@ return [
     'draft' => 'Utkast',
     'by' => 'av',
     'recent-content' => 'Siste innhold',
-    'about-edlib' => ':site er drevet av :edlib, et åpent kildekode-system for organisering av læreressurser, utviklet av Cerpus.',
+    'about-edlib' => ':site er drevet av :edlib, et system for organisering av læreressurser, basert på åpen kildekode utviklet av Cerpus AS.',
     'contact-us' => 'Kontakt oss',
     'documentation' => 'Dokumentasjon',
     'facebook' => 'Facebook',
