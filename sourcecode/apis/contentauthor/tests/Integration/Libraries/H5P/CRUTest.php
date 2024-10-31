@@ -36,7 +36,6 @@ class CRUTest extends TestCase
     /** @test */
     public function test_environment()
     {
-        $this->assertTrue(env('MAIL_PRETEND'));
         $this->assertEquals('/tmp', env('TEST_FS_ROOT'));
 
         $dest = env('TEST_FS_ROOT') . '/tree.jpg';

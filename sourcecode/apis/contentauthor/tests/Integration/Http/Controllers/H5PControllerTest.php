@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PContentsMetadata;
@@ -64,7 +63,6 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['config']);
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
-        $this->assertArrayHasKey('emails', $data);
         $this->assertArrayHasKey('libName', $data);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
@@ -167,13 +165,6 @@ class H5PControllerTest extends TestCase
 
         H5PContentLibrary::factory()->create(['content_id' => $h5pContent->id, 'library_id' => $upgradeLib->id]);
 
-        if ($adapterMode === 'cerpus') {
-            H5PCollaborator::factory()->create([
-                'h5p_id' => $h5pContent->id,
-                'email' => 'dd@duckburg.quack',
-            ]);
-        }
-
         $articleController = app(H5PController::class);
         $result = $articleController->edit($request, $h5pContent->id);
         $this->assertNotEmpty($result);
@@ -189,7 +180,6 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
         $this->assertNotEmpty($data['libName']);
-        $this->assertSame($adapterMode === 'cerpus' ? 'dd@duckburg.quack' : '', $data['emails']);
         $this->assertNotEmpty($data['hasUserProgress']);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);

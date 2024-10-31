@@ -47,7 +47,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Iso639p3;
@@ -64,8 +63,6 @@ class H5PController extends Controller
     use ReturnToCore;
 
     private string $viewDataCacheName = 'viewData-';
-
-    private bool $sendEmail = true;
 
     public function __construct(
         private Lti $lti,
@@ -397,8 +394,6 @@ class H5PController extends Controller
         $versionPurpose = $this->getVersionPurpose($request, $h5p, $authId);
         [$oldContent, $content, $newH5pContent] = $this->performUpdate($request, $h5p, $authId, $versionPurpose);
 
-        //
-        $this->sendCollaboratorInviteEmails($newH5pContent, $h5p);
         Cache::forget($this->viewDataCacheName . $content['id']);
         if ($oldContent['library']['name'] !== $content['library']['machineName']) {
             // Remove old progresses
@@ -434,55 +429,6 @@ class H5PController extends Controller
         }
 
         return response()->json($responseValues, Response::HTTP_OK);
-    }
-
-    private function sendCollaboratorInviteEmails($newContent, $oldContent)
-    {
-        if ($this->sendEmail === true && $newContent->id !== $oldContent->id) {
-            $oldCollaborators = $oldContent->collaborators ? $oldContent->collaborators->pluck('email')->toArray() : [];
-            $newContent->collaborators
-                ->pluck('email')// All emails in new article
-                ->filter(function ($newCollaborator) use ($oldCollaborators) {
-                    //Remove emails that exist as collaborators in the old article
-                    return !in_array($newCollaborator, $oldCollaborators) && Session::get("email") !== $newCollaborator;
-                })->each(function ($collaborator) use ($newContent) {
-                    if ($collaborator) {// Send mails to the new additions
-                        $mailData = new stdClass();
-                        $mailData->emailTo = $collaborator;
-                        $mailData->inviterName = Session::get('name');
-                        $mailData->contentTitle = $newContent->title;
-                        $mailData->originSystemName = Session::get('originalSystem', 'edLib');
-                        $mailData->emailTitle = trans(
-                            'emails/collaboration-invite.email-title',
-                            ['originSystemName' => $mailData->originSystemName]
-                        );
-
-                        $loginUrl = 'https://edstep.com/';
-                        $emailFrom = 'no-reply@edlib.com';
-                        switch (mb_strtolower(Session::get('originalSystem'))) {
-                            case 'edstep':
-                                $loginUrl = 'https://edstep.com/';
-                                $emailFrom = 'no-reply@edstep.com';
-                                break;
-                            case 'learnplayground':
-                                $loginUrl = 'https://learnplayground.com/';
-                                $emailFrom = 'no-reply@learnplayground.com';
-                                break;
-                        }
-                        $mailData->loginUrl = $loginUrl;
-                        $mailData->emailFrom = $emailFrom;
-
-                        Mail::send(
-                            'emails.collaboration-invite',
-                            ['mailData' => $mailData],
-                            function ($m) use ($mailData) {
-                                $m->from($mailData->emailFrom, $mailData->originSystemName);
-                                $m->to($mailData->emailTo)->subject($mailData->emailTitle);
-                            }
-                        );
-                    }
-                });
-        }
     }
 
     public static function addAuthorToParameters($paramsString)
@@ -563,11 +509,7 @@ class H5PController extends Controller
 
         $this->store_content_is_private($newH5pContent, $request);
 
-        $theOldContent = $this->getEmptyOldContent();
-
         event(new H5PWasSaved($newH5pContent, $request, ContentVersion::PURPOSE_CREATE));
-
-        $this->sendCollaboratorInviteEmails($newH5pContent, $theOldContent);
 
         return $newH5pContent;
     }
@@ -640,17 +582,6 @@ class H5PController extends Controller
         }
 
         return License::getDefaultLicense();
-    }
-
-    /**
-     * @return stdClass
-     */
-    protected function getEmptyOldContent()
-    {
-        $theOldContent = new stdClass();
-        $theOldContent->id = null;
-        $theOldContent->collaborators = collect([]);
-        return $theOldContent;
     }
 
     /**

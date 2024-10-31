@@ -6,7 +6,6 @@ use App\Article;
 use App\ArticleCollaborator;
 use App\Content;
 use App\ContentVersion;
-use App\Listeners\Article\HandleCollaborationInviteEmails;
 use App\User;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -130,10 +129,6 @@ class ArticleVersioningTest extends TestCase
     public function testVersioning(bool $useLinearVersioning)
     {
         Config::set('feature.linear-versioning', $useLinearVersioning);
-
-        $inviteEmail = $this->createMock(HandleCollaborationInviteEmails::class);
-        $inviteEmail->expects($this->exactly(3))->method('handle');
-        $this->instance(HandleCollaborationInviteEmails::class, $inviteEmail);
 
         $owner = User::factory()->make();
         $collaborator = User::factory()->make();

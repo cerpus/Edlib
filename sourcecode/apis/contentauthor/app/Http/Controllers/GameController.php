@@ -52,7 +52,7 @@ class GameController extends Controller
         $updatedGame = $gamehandler->update($game, $request);
         if ($game->isOwner(Session::get('authId'))) {
             $collaborators = explode(',', $request->input('col-emails', ''));
-            $game->setCollaborators($collaborators)->notifyNewCollaborators();
+            $game->setCollaborators($collaborators);
         }
 
         $url = $this->getRedirectToCoreUrl($updatedGame->toLtiContent(), $request->input('redirectToken'));
