@@ -9,6 +9,8 @@ use App\Models\Content;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use function json_decode;
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Get H5P copyright info.
@@ -40,6 +42,11 @@ final readonly class ResourceCopyrightController
                 ->getContents();
         } catch (ClientException $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
+        }
+
+        $data = json_decode($json, flags: JSON_THROW_ON_ERROR);
+        if (($data->h5p ?? null) === null) {
+            abort(404, 'Missing H5P info');
         }
 
         return JsonResponse::fromJsonString($json, headers: [
