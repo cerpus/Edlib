@@ -7,6 +7,7 @@ namespace Tests\Browser;
 use App\Enums\ContentUserRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\ContentView;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -798,6 +799,28 @@ final class ContentTest extends DuskTestCase
                                 ->assertSeeIn('td:nth-child(2)', 'Reader')
                         )
                 )
+        );
+    }
+
+    public function testCanSeeStatisticsOnDetailsPage(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
+
+        ContentView::factory()
+            ->create([
+                'content_id' => $content->id,
+            ]);
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('/content/' . $content->id . '/statistics')
+                ->assertPresent('#chart_usage svg g.bb-main')
+                ->assertPresent('#chart_usage svg g.bb-bars-total')
+                ->assertPresent('#chart_usage svg g.bb-texts-total')
+                ->assertSeeIn('#chart_usage svg g.bb-texts-total text.bb-text-0', '1')
         );
     }
 }

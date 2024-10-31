@@ -49,6 +49,15 @@
                     {{ trans('messages.roles') }}
                 </a>
             </li>
+            <li class="nav-item">
+                <a
+                    href="{{ route('content.statistics', [$content]) }}"
+                    @class(['nav-link', 'active' => $current === 'statistics'])
+                    @if ($current === 'statistics') aria-current="page" @endif
+                >
+                    {{ trans('messages.statistics') }}
+                </a>
+            </li>
         </ul>
     </nav>
 @endcan

@@ -89,6 +89,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid(['content'])
         ->can('edit', ['content']);
 
+    Route::get('/content/{content}/statistics')
+        ->name('content.statistics')
+        ->uses([ContentController::class, 'statistics'])
+        ->whereUlid(['content'])
+        ->can('view', ['content']);
+
     Route::get('/content/{content}/version/{version}/preview')
         ->uses([ContentController::class, 'preview'])
         ->name('content.preview')

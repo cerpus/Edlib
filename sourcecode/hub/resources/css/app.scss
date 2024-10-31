@@ -58,5 +58,10 @@ $font-family-sans-serif: Lato, sans-serif;
 @import 'content/card';
 @import 'content/list-item';
 @import 'choices.js/src/styles/choices';
+@import 'billboard.js/dist/billboard';
 @import 'layout';
 @import 'theme';
+
+[data-bs-theme="dark"] {
+    @import 'billboard.js/dist/theme/dark';
+}

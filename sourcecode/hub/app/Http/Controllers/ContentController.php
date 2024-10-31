@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\ContentUserRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
+use App\Http\Requests\ContentStatisticsRequest;
 use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\ContentFilter;
@@ -22,6 +23,7 @@ use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -390,5 +392,39 @@ class ContentController extends Controller
         };
 
         return redirect()->back();
+    }
+
+    public function statistics(ContentStatisticsRequest $request, Content $content): View|JsonResponse
+    {
+        $data = $request->getData($content);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'values' => $data,
+                'formats' => $request->getDateFormatsForResolution(),
+            ]);
+        }
+
+        return view('content.statistics', [
+            'content' => $content,
+            'graph' => [
+                'values' => $data,
+                'groups' => $request->dataGroups(),
+                'defaultHiddenGroups' => $request->dataGroups()->flip()->except(['total'])->keys(),
+                'texts' => [
+                    'title' => trans('messages.number-of-views'),
+                    'emptyData' => trans('messages.chart-no-data'),
+                    'resetButton' => trans('messages.reset-zoom'),
+                    'groupNames' =>
+                        $request->dataGroups()
+                            ->mapWithKeys(function ($item) {
+                                return [$item => trans("messages.view-$item")];
+                            }),
+                    'loading' => trans('messages.loading'),
+                    'loadingFailed' => trans('messages.chart-load-error'),
+                ],
+                'formats' => $request->getDateFormatsForResolution(),
+            ],
+        ]);
     }
 }

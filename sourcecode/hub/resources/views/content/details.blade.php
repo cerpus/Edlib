@@ -66,6 +66,15 @@
                             {{ $version->getDisplayedContentType() }}
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row">{{ trans('messages.created') }}</th>
+                        <td>
+                            <time
+                                datetime="{{ $content->created_at->toIso8601String() }}"
+                                data-dh-relative="true"
+                            ></time>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <table class="table table-sm table-striped caption-top">

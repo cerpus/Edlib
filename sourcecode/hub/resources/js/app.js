@@ -7,6 +7,7 @@ import './xApi';
 import './dateHelper';
 import './htmxEvents';
 import './filterSelect';
+import './usagechart';
 
 import.meta.glob(['bootstrap-icons/bootstrap-icons.svg', '../images/**']);
 
