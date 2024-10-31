@@ -21,6 +21,9 @@
         ]) }}">
         <title>{{ $title ?? config('app.name') }}</title>
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
+        @if ($noindex)
+            <meta name="robots" content="noindex">
+        @endif
         {{ $head ?? '' }}
     </head>
 

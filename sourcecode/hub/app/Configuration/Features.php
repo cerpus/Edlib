@@ -23,4 +23,9 @@ final readonly class Features
     {
         return $this->enabled('forgot-password');
     }
+
+    public function isNoindexEnabled(): bool
+    {
+        return $this->enabled('noindex');
+    }
 }

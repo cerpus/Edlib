@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\LtiAuth::class,
             \App\Http\Middleware\SetRequestLocale::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\ShareFeaturesWithView::class,
             \App\Http\Middleware\LtiShareWithView::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -46,11 +47,13 @@ class Kernel extends HttpKernel
         ],
 
         'stateless' => [
+            \App\Http\Middleware\ShareFeaturesWithView::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ],
 
         'ndla-legacy' => [
+            \App\Http\Middleware\ShareFeaturesWithView::class,
             \App\Http\Middleware\NdlaLegacyAccess::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ContentSecurityPolicy::class,
