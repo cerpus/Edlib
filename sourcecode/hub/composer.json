@@ -5,8 +5,8 @@
         "ext-bcmath": "*",
         "ext-dom": "*",
         "ext-intl": "*",
-        "cerpus/edlib-resource-kit": "0.7.x-dev",
-        "cerpus/edlib-resource-kit-laravel": "0.7.x-dev",
+        "cerpus/edlib-resource-kit": "^0.8.x-dev",
+        "cerpus/edlib-resource-kit-laravel": "^0.8.x-dev",
         "firebase/php-jwt": "^6.10.1",
         "guzzlehttp/guzzle": "^7.9.2",
         "http-interop/http-factory-guzzle": "^1.2",
@@ -19,10 +19,10 @@
         "meilisearch/meilisearch-php": "^1.10.1",
         "predis/predis": "^2.2.2",
         "psr/clock": "^1.0",
-        "symfony/cache": "^7.1.5",
         "socialiteproviders/auth0": "^4.2",
         "socialiteproviders/manager": "^4.6.0",
-        "spatie/laravel-fractal": "^6.2.1"
+        "spatie/laravel-fractal": "^6.2.1",
+        "symfony/cache": "^7.1.5"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.1",
@@ -71,9 +71,6 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        },
-        "platform": {
-            "ext-sockets": "8.3.99"
         }
     },
     "minimum-stability": "stable",

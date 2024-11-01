@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a251bb3074e5b40b0d62c4f244d5edfb",
+    "content-hash": "c792d71f012db91fa21a0d2c11d2df4a",
     "packages": [
         {
             "name": "brick/math",
@@ -141,31 +141,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit.git",
-                "reference": "72fa5cd365806564b6aa9c2ab8317248b0a96c6f"
+                "reference": "78d60abe30a1afd50df8eb002517ee531b2f7ab7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/72fa5cd365806564b6aa9c2ab8317248b0a96c6f",
-                "reference": "72fa5cd365806564b6aa9c2ab8317248b0a96c6f",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit/zipball/78d60abe30a1afd50df8eb002517ee531b2f7ab7",
+                "reference": "78d60abe30a1afd50df8eb002517ee531b2f7ab7",
                 "shasum": ""
             },
             "require": {
-                "cerpus/pubsub": "^1.0",
                 "php": "8.2.*|8.3.*",
-                "php-http/discovery": "^1.14.1",
                 "psr/clock": "^1.0",
                 "psr/clock-implementation": "^1.0",
-                "psr/http-client": "^1.0",
-                "psr/http-client-implementation": "^1.0",
-                "psr/http-factory": "^1.0",
-                "psr/http-factory-implementation": "^1.0",
                 "psr/simple-cache": "^1.0|^2.0|^3.0",
                 "psr/simple-cache-implementation": "^1.0|^2.0|^3.0"
             },
             "require-dev": {
                 "cache/array-adapter": "^1.2",
-                "guzzlehttp/guzzle": "^7.4",
-                "guzzlehttp/psr7": "^2.1",
                 "phpunit/phpunit": "^10.1",
                 "symfony/clock": "^6.3"
             },
@@ -173,7 +165,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.7.x-dev"
+                    "dev-master": "0.8.x-dev"
                 }
             },
             "autoload": {
@@ -201,7 +193,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit/tree/master"
             },
-            "time": "2024-09-03T06:25:52+00:00"
+            "time": "2024-10-16T08:59:45+00:00"
         },
         {
             "name": "cerpus/edlib-resource-kit-laravel",
@@ -209,22 +201,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cerpus/php-edlib-resource-kit-laravel.git",
-                "reference": "cc68b37efeb8889835907c5f4f28c9d281fc025d"
+                "reference": "f703402c6a12820c5f9b5833ed5dd6e9fa21641c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/cc68b37efeb8889835907c5f4f28c9d281fc025d",
-                "reference": "cc68b37efeb8889835907c5f4f28c9d281fc025d",
+                "url": "https://api.github.com/repos/cerpus/php-edlib-resource-kit-laravel/zipball/f703402c6a12820c5f9b5833ed5dd6e9fa21641c",
+                "reference": "f703402c6a12820c5f9b5833ed5dd6e9fa21641c",
                 "shasum": ""
             },
             "require": {
-                "cerpus/edlib-resource-kit": "^0.7",
-                "cerpus/pubsub": "^1.0",
+                "cerpus/edlib-resource-kit": "^0.8",
                 "illuminate/support": "^9.0|^10.0|^11.0",
-                "php": "8.2.*|8.3.*",
-                "php-http/discovery": "^1.14",
-                "psr/http-client-implementation": "^1.0",
-                "psr/http-factory-implementation": "^1.0"
+                "php": "8.2.*|8.3.*"
             },
             "provide": {
                 "psr/clock-implementation": "1.0"
@@ -238,7 +226,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.7.x-dev"
+                    "dev-master": "0.8.x-dev"
                 },
                 "laravel": {
                     "providers": [
@@ -268,56 +256,7 @@
                 "issues": "https://github.com/cerpus/Edlib/issues",
                 "source": "https://github.com/cerpus/php-edlib-resource-kit-laravel/tree/master"
             },
-            "time": "2024-03-21T13:51:13+00:00"
-        },
-        {
-            "name": "cerpus/pubsub",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/cerpus/php-pubsub.git",
-                "reference": "93b24c1b7eea00d910a1ac700afdbbf0d0261299"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/cerpus/php-pubsub/zipball/93b24c1b7eea00d910a1ac700afdbbf0d0261299",
-                "reference": "93b24c1b7eea00d910a1ac700afdbbf0d0261299",
-                "shasum": ""
-            },
-            "require": {
-                "php": "8.0.*|8.1.*|8.2.*|8.3.*",
-                "php-amqplib/php-amqplib": "^3.1",
-                "psr/log": "^1.0|^2.0|^3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Cerpus\\PubSub\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Max Moeschinger",
-                    "email": "max.moeschinger@cerpus.com"
-                },
-                {
-                    "name": "Emma Cecilie Hughes",
-                    "email": "emma.hughes@cerpus.com"
-                }
-            ],
-            "description": "Client for RabbitMQ pub-sub",
-            "support": {
-                "issues": "https://github.com/cerpus/php-pubsub/issues",
-                "source": "https://github.com/cerpus/php-pubsub/tree/v1.2.0"
-            },
-            "time": "2023-12-01T14:23:20+00:00"
+            "time": "2024-10-16T09:11:47+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -3158,87 +3097,6 @@
             "time": "2020-10-15T08:29:30+00:00"
         },
         {
-            "name": "php-amqplib/php-amqplib",
-            "version": "v3.7.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "5db9a68435fdde9ba4248a8fd2fae6d07b442b65"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/5db9a68435fdde9ba4248a8fd2fae6d07b442b65",
-                "reference": "5db9a68435fdde9ba4248a8fd2fae6d07b442b65",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "ext-sockets": "*",
-                "php": "^7.2||^8.0",
-                "phpseclib/phpseclib": "^2.0|^3.0"
-            },
-            "conflict": {
-                "php": "7.4.0 - 7.4.1"
-            },
-            "replace": {
-                "videlalvaro/php-amqplib": "self.version"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "nategood/httpful": "^0.2.20",
-                "phpunit/phpunit": "^7.5|^9.5",
-                "squizlabs/php_codesniffer": "^3.6"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PhpAmqpLib\\": "PhpAmqpLib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Alvaro Videla",
-                    "role": "Original Maintainer"
-                },
-                {
-                    "name": "Raúl Araya",
-                    "email": "nubeiro@gmail.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Luke Bakken",
-                    "email": "luke@bakken.io",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Ramūnas Dronga",
-                    "email": "github@ramuno.lt",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
-            "homepage": "https://github.com/php-amqplib/php-amqplib/",
-            "keywords": [
-                "message",
-                "queue",
-                "rabbitmq"
-            ],
-            "support": {
-                "issues": "https://github.com/php-amqplib/php-amqplib/issues",
-                "source": "https://github.com/php-amqplib/php-amqplib/tree/v3.7.1"
-            },
-            "time": "2024-09-03T19:18:03+00:00"
-        },
-        {
             "name": "php-http/discovery",
             "version": "1.20.0",
             "source": {
@@ -4656,16 +4514,16 @@
         },
         {
             "name": "symfony/cache",
-            "version": "v7.1.5",
+            "version": "v7.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache.git",
-                "reference": "86e5296b10e4dec8c8441056ca606aedb8a3be0a"
+                "reference": "567ef6de47fdcba56eb6c0b344b857d1fce1cce0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/86e5296b10e4dec8c8441056ca606aedb8a3be0a",
-                "reference": "86e5296b10e4dec8c8441056ca606aedb8a3be0a",
+                "url": "https://api.github.com/repos/symfony/cache/zipball/567ef6de47fdcba56eb6c0b344b857d1fce1cce0",
+                "reference": "567ef6de47fdcba56eb6c0b344b857d1fce1cce0",
                 "shasum": ""
             },
             "require": {
@@ -4733,7 +4591,7 @@
                 "psr6"
             ],
             "support": {
-                "source": "https://github.com/symfony/cache/tree/v7.1.5"
+                "source": "https://github.com/symfony/cache/tree/v7.1.6"
             },
             "funding": [
                 {
@@ -4749,7 +4607,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-17T09:16:35+00:00"
+            "time": "2024-10-25T15:39:55+00:00"
         },
         {
             "name": "symfony/cache-contracts",
@@ -7058,16 +6916,16 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v7.1.2",
+            "version": "v7.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "b80a669a2264609f07f1667f891dbfca25eba44c"
+                "reference": "90173ef89c40e7c8c616653241048705f84130ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/b80a669a2264609f07f1667f891dbfca25eba44c",
-                "reference": "b80a669a2264609f07f1667f891dbfca25eba44c",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/90173ef89c40e7c8c616653241048705f84130ef",
+                "reference": "90173ef89c40e7c8c616653241048705f84130ef",
                 "shasum": ""
             },
             "require": {
@@ -7114,7 +6972,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v7.1.2"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.1.6"
             },
             "funding": [
                 {
@@ -7130,7 +6988,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T08:00:31+00:00"
+            "time": "2024-09-25T14:20:29+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -10954,9 +10812,6 @@
         "ext-dom": "*",
         "ext-intl": "*"
     },
-    "platform-dev": [],
-    "platform-overrides": {
-        "ext-sockets": "8.3.99"
-    },
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
