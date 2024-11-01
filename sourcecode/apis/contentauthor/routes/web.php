@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\API\ContentTypeController;
 use App\Http\Controllers\API\H5PImportController;
-use App\Http\Controllers\API\H5PTypeApi;
 use App\Http\Controllers\API\LinkInfoController;
 use App\Http\Controllers\API\LockStatusController;
 use App\Http\Controllers\API\UnlockController;
@@ -87,8 +86,6 @@ Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToEx
 // *************************
 // API Endpoints     TODO: clean up!
 // *************************
-Route::get('api/h5p-type/{ids}', [H5PTypeApi::class, 'getTypes']);
-
 Route::get('v1/link/embeddata', [LinkInfoController::class, 'embed']);
 
 Route::get('v1/content/{id}/lock-status', [LockStatusController::class, 'index'])->name('lock.status');
