@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Feature\NdlaLegacy;
+namespace Tests\Feature\NdlaLegacy;
 
 use App\Models\Content;
 use App\Models\LtiPlatform;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\Feature\NdlaLegacy\Jwt;
 use Tests\TestCase;
 
 use function config;
