@@ -9,7 +9,6 @@ use App\Http\Requests\DeepLinkingReturnRequest;
 use App\Http\Requests\NdlaLegacy\SelectRequest;
 use App\Models\Content;
 use App\Models\ContentVersion;
-use App\Models\LtiPlatform;
 use App\Models\Tag;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
@@ -84,8 +83,7 @@ final readonly class SelectController
         NdlaLegacyConfig $config,
         SignerInterface $signer,
     ): Response {
-        $credentials = LtiPlatform::where('key', $config->getInternalLtiPlatformKey())
-            ->firstOrFail()
+        $credentials = $config->getInternalLtiPlatform()
             ->getOauth1Credentials();
 
         $locale = $request->validated('locale');

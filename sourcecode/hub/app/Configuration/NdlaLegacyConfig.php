@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Configuration;
 
+use App\Models\LtiPlatform;
 use BadMethodCallException;
 use GuzzleHttp\ClientInterface;
 
@@ -103,12 +104,23 @@ final readonly class NdlaLegacyConfig
         return $this->publicKeyOrJwksUri;
     }
 
-    public function getInternalLtiPlatformKey(): string|null
+    public function getInternalLtiPlatform(): LtiPlatform
     {
-        if ($this->internalLtiPlatformKey === null) {
+        $key = $this->internalLtiPlatformKey;
+
+        if ($key === null) {
             throw new BadMethodCallException('$internalLtiPlatformKey must be set');
         }
 
-        return $this->internalLtiPlatformKey;
+        return LtiPlatform::where('key', $key)->firstOr(function () use ($key) {
+            $platform = new LtiPlatform();
+            $platform->key = $key;
+            $platform->name = 'NDLA internal';
+            $platform->authorizes_edit = true;
+            $platform->enable_sso = true;
+            $platform->save();
+
+            return $platform;
+        });
     }
 }

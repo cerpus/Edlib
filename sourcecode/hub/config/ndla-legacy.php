@@ -12,5 +12,10 @@ return [
 
     'public-key-or-jwks-uri' => env('NDLA_LEGACY_PUBLIC_KEY_OR_JWKS_URI'),
 
-    'internal-lti-platform-key' => env('NDLA_LEGACY_INTERNAL_LTI_PLATFORM_KEY'),
+    /**
+     * This does not need to be changed, but is left configurable for existing
+     * environments that do not use the default key.
+     */
+    'internal-lti-platform-key' => env('NDLA_LEGACY_INTERNAL_LTI_PLATFORM_KEY', 'ndla'),
+
 ];

@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature\NdlaLegacy;
 
 use App\Models\Content;
-use App\Models\LtiPlatform;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-use function config;
 use function parse_str;
 use function parse_url;
 use function url;
@@ -91,28 +89,26 @@ final class SelectTest extends TestCase
                 'url' => 'https://hub-test-ndla-legacy.edlib.test/resource/dd72be4f-672d-44b4-bc0c-570947b17437?locale=nb-no',
             ])
             ->assertOk()
-            ->assertJson(fn (AssertableJson $json) => $json
-                ->has('url')
-                ->where('url', function (string $url) use ($content) {
-                    $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
+            ->assertJson(
+                fn (AssertableJson $json) => $json
+                    ->has('url')
+                    ->where('url', function (string $url) use ($content) {
+                        $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
 
-                    $qs = parse_url($url, PHP_URL_QUERY);
-                    $this->assertIsString($qs);
-                    parse_str($qs, $query);
+                        $qs = parse_url($url, PHP_URL_QUERY);
+                        $this->assertIsString($qs);
+                        parse_str($qs, $query);
 
-                    $this->assertArrayHasKey('content_id', $query);
-                    $this->assertSame($content->id, $query['content_id']);
+                        $this->assertArrayHasKey('content_id', $query);
+                        $this->assertSame($content->id, $query['content_id']);
 
-                    return true;
-                })
+                        return true;
+                    })
             );
     }
 
     public function testRendersSelectIframe(): void
     {
-        $platform = LtiPlatform::factory()->create();
-        config()->set('ndla-legacy.internal-lti-platform-key', $platform->key);
-
         $url = url()->signedRoute('ndla-legacy.select-iframe', [
             'user' => $this->app->make(Encrypter::class)->encrypt([
                 'name' => 'Ender Ella',

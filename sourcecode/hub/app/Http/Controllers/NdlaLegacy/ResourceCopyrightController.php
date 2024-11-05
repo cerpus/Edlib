@@ -9,7 +9,9 @@ use App\Models\Content;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 use function json_decode;
+
 use const JSON_THROW_ON_ERROR;
 
 /**
