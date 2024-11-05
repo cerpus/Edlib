@@ -1,7 +1,7 @@
-@props(['content', 'version'])
+@props(['content' => null, 'version' => null, 'detailsUrl' => null, 'previewUrl' => null])
 <a {{ $attributes->merge([
-    'href' => route('content.version-details', [$content, $version]),
-    'hx-get' => route('content.preview', [$content, $version]),
+    'href' => $detailsUrl ?: route('content.version-details', [$content, $version]),
+    'hx-get' => $previewUrl ?: route('content.preview', [$content, $version]),
     'hx-target' => '#previewModal',
     'data-bs-toggle' => 'modal',
     'data-bs-target' => '#previewModal',

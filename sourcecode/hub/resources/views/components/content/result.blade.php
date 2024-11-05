@@ -1,12 +1,12 @@
-@props(['contents', 'filter', 'showDrafts' => false , 'mine' => false])
+@props(['contents', 'filter', 'mine' => false])
 
 @unless ($contents->isEmpty())
     @if ($filter->getLayout() === 'grid')
         <x-content.grid-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.grid :$contents :$showDrafts :titlePreviews="$filter->isTitlePreview()" :$mine />
+        <x-content.grid :$contents :titlePreviews="$filter->isTitlePreview()" />
     @else
         <x-content.list-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.list :$contents :$showDrafts :titlePreviews="$filter->isTitlePreview()" :$mine />
+        <x-content.list :$contents :titlePreviews="$filter->isTitlePreview()" />
     @endif
 
     <div hx-boost="true" hx-target="#content" class="mt-3">

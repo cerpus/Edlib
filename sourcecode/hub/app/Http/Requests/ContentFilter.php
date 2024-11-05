@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\DataObjects\ContentDisplayItem;
 use App\Models\Content;
+use App\Models\ContentVersion;
+use App\Support\SessionScope;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
@@ -269,5 +274,84 @@ class ContentFilter extends FormRequest
         }
 
         $this->flash();
+    }
+
+    /**
+     * @param Builder<Content> $builder
+     * @return LengthAwarePaginator<mixed>
+     */
+    public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
+    {
+        /** @var LengthAwarePaginator<Content> $paginator */
+        $paginator = $builder->paginateRaw();
+
+        return $paginator->setCollection(
+            $this->attachModel(
+                $paginator->getCollection(),
+                $forUser,
+                $showDrafts
+            )
+        );
+    }
+
+    /**
+     * @param Builder<Content> $builder
+     * @return Collection<int, ContentDisplayItem>
+     */
+    public function getWithModel(Builder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
+    {
+        return $this->attachModel(new Collection($builder->take($limit)->raw()), $forUser, $showDrafts);
+    }
+
+    /**
+     * @param Collection<string, Content> $items
+     * @return Collection<int, ContentDisplayItem>
+     */
+    private function attachModel(Collection $items, bool $forUser, bool $showDrafts): Collection
+    {
+        /** @var Collection<int, array<string, mixed>> $hits */
+        $hits = new Collection($items->get('hits'));
+
+        $eagerLoad = ['users'];
+        if ($showDrafts) {
+            $eagerLoad[] = 'latestVersion';
+        } else {
+            $eagerLoad[] = 'latestPublishedVersion';
+        }
+        /** @var Collection<int, Content> $models */
+        $models = Content::whereIn('id', $hits->pluck('id'))
+            ->with($eagerLoad)
+            ->withCount(['views'])
+            ->get();
+
+        return $hits->map(function (array $item) use ($models, $forUser, $showDrafts) {
+            /** @var Content $model */
+            $model = $models->firstWhere('id', $item['id']);
+            /** @var ContentVersion $version */
+            $version = $showDrafts ? $model->latestVersion : $model->latestPublishedVersion;
+
+            $canUse = Gate::allows('use', [$model, $version]);
+            $canEdit = Gate::allows('edit', $model);
+            $canView = Gate::allows('view', $model);
+            $canDelete = $forUser && Gate::allows('delete', $model);
+            $canCopy = Gate::allows('copy', $model);
+
+            return new ContentDisplayItem(
+                title: $version->title,
+                createdAt: $version->created_at?->toImmutable(),
+                isPublished: $version->published,
+                viewsCount: $model->views_count,
+                contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
+                languageIso639_3: strtoupper($version->language_iso_639_3),
+                users: $model->users->map(fn ($user) => $user->name)->join(', '),
+                detailsUrl: $showDrafts ? route('content.version-details', [$model, $version]) : route('content.details', [$model]),
+                previewUrl: route('content.preview', [$model, $version]),
+                useUrl: $canUse ? route('content.use', [$model, $version]) : null,
+                editUrl: $canEdit ? route('content.edit', [$model, $version]) : null,
+                shareUrl: $canView ? route('content.share', [$model, SessionScope::TOKEN_PARAM => null]) : null,
+                copyUrl: $canCopy ? route('content.copy', [$model, $version]) : null,
+                deleteUrl: $canDelete ? route('content.delete', [$model]) : null,
+            );
+        });
     }
 }

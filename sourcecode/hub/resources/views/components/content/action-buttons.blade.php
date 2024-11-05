@@ -1,30 +1,21 @@
-@props(['content', 'version', 'showPreview' => false, 'mine' => false])
-@php
-    use App\Support\SessionScope;
-    use Illuminate\Support\Facades\Gate;
+@props(['content', 'showPreview' => false])
 
-    $canUse = Gate::allows('use', [$content, $version]);
-    $canEdit = Gate::allows('edit', $content);
-    $canView = Gate::allows('view', $content);
-    $canDelete = $mine && Gate::allows('delete', $content);
-    $canCopy = Gate::allows('copy', $content);
-@endphp
-@if($canUse)
-    <x-form action="{{ $version->getUseUrl() }}" method="POST">
+@if($content->useUrl)
+    <x-form action="{{ $content->useUrl }}" method="POST">
         <button class="btn btn-primary btn-sm me-1 content-use-button">
             {{ trans('messages.use-content') }}
         </button>
     </x-form>
 @endif
-@if($canEdit)
+@if($content->editUrl)
     <a
-        href="{{ route('content.edit', [$content, $version]) }}"
+        href="{{ $content->editUrl }}"
         class="btn btn-secondary btn-sm d-none d-md-inline-block me-1"
     >
         {{ trans('messages.edit-content') }}
     </a>
 @endif
-@if($canView || $canEdit || $canCopy || $canDelete)
+@if($content->shareUrl || $content->editUrl || $content->copyUrl || $content->deleteUrl)
     <div class="dropup">
         <button
             type="button"
@@ -36,10 +27,10 @@
             <x-icon name="three-dots-vertical" />
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-            @if($canView)
+            @if($content->shareUrl)
                 <li>
                     <a
-                        href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
+                        href="{{ $content->shareUrl }}"
                         class="dropdown-item share-button"
                         data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
                         data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
@@ -52,29 +43,29 @@
                 </li>
                 <li>
                     @if ($showPreview)
-                        <x-content.preview-link :$content :$version class="dropdown-item">
+                        <x-content.preview-link :detailsUrl="$content->detailsUrl" :previewUrl="$content->previewUrl" class="dropdown-item">
                             <x-icon name="display" class="me-2" />
                             {{ trans('messages.preview') }}
                         </x-content.preview-link>
                     @else
-                        <a href="{{ $content->getDetailsUrl() }}" class="dropdown-item">
+                        <a href="{{ $content->detailsUrl }}" class="dropdown-item">
                             <x-icon name="info-lg" class="me-2" />
                             {{ trans('messages.details') }}
                         </a>
                     @endif
                 </li>
             @endif
-            @if($canEdit)
+            @if($content->editUrl)
                 <li class="d-md-none">
-                    <a href="{{ route('content.edit', [$content, $version]) }}" class="dropdown-item content-edit-link">
+                    <a href="{{ $content->editUrl }}" class="dropdown-item content-edit-link">
                         <x-icon name="pencil" class="me-2" />
                         {{ trans('messages.edit-content') }}
                     </a>
                 </li>
             @endif
-            @if($canCopy)
+            @if($content->copyUrl)
                 <li>
-                    <x-form action="{{ route('content.copy', [$content, $version]) }}">
+                    <x-form action="{{ $content->copyUrl }}">
                         <button class="dropdown-item">
                             <x-icon name="copy" class="me-2" />
                             {{ trans('messages.copy') }}
@@ -82,11 +73,11 @@
                     </x-form>
                 </li>
             @endif
-            @if($canDelete)
+            @if($content->deleteUrl)
                 <li>
                     <button
                         class="dropdown-item"
-                        hx-delete="{{ route('content.delete', [$content]) }}"
+                        hx-delete="{{ $content->deleteUrl }}"
                         hx-confirm="{{ trans('messages.delete-content-confirm-text') }}"
                         data-confirm-title="{{ trans('messages.delete-content') }}"
                         data-confirm-ok="{{ trans('messages.delete-content') }}"

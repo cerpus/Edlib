@@ -47,7 +47,7 @@ class ContentController extends Controller
         $request->applyCriteria($query);
 
         return view($request->ajax() ? 'content.hx-index' : 'content.index', [
-            'contents' => $query->paginate(),
+            'contents' => $request->paginateWithModel($query),
             'filter' => $request,
         ]);
     }
@@ -59,7 +59,11 @@ class ContentController extends Controller
         $request->applyCriteria($query);
 
         return view($request->ajax() ? 'content.hx-mine' : 'content.mine', [
-            'contents' => $query->paginate(),
+            'contents' => $request->paginateWithModel(
+                $query,
+                forUser: true,
+                showDrafts: true
+            ),
             'filter' => $request,
         ]);
     }
