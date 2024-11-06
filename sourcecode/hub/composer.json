@@ -14,6 +14,7 @@
         "laravel/scout": "^10.11.4",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.10",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "league/flysystem-path-prefixing": "^3.28.0",
         "league/fractal": "^0.20.1",
         "meilisearch/meilisearch-php": "^1.10.1",
