@@ -16,12 +16,13 @@ function QuestionSetLayout(props) {
         onPresentationChange,
         contentTypes,
         handleDragEnd,
+        canAddRemoveAnswer,
     } = props;
     return (
         <Fragment>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="questionSetDropZone">
-                    {(provided, snapshot) => (
+                    {(provided) => (
                         <div
                             ref={provided.innerRef}
                             {...provided.droppableProps}
@@ -33,6 +34,7 @@ function QuestionSetLayout(props) {
                                     onDeleteCard={handleDeleteCard}
                                     card={card}
                                     collectData={onChange}
+                                    showAddAnswerButton={canAddRemoveAnswer}
                                 />
                             ))}
                             {provided.placeholder}
@@ -63,6 +65,7 @@ QuestionSetLayout.propTypes = {
     onAddCard: PropTypes.func,
     onPresentationChange: PropTypes.func,
     contentTypes: PropTypes.array,
+    canAddRemoveAnswer: PropTypes.bool,
 };
 
 QuestionSetLayout.defaultProps = {

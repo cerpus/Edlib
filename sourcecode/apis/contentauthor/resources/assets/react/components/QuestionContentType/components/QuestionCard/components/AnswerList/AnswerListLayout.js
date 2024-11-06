@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 
 import { AnswerContainer } from '../Answer';
 import AddAnswer from '../AddAnswer';
 
 const AnswerListLayout = props => {
     return (
-        <div className="answerList">
+        <div className={clsx('answerList', props.className)}>
             {props.answers.map(answer => {
                 return (
                     <AnswerContainer
                         key={'answer_' + answer.id}
                         onAnswerChange={props.onAnswerChange}
                         onDeleteAnswer={props.deleteAnswer ? props.deleteAnswer : null}
-                        text={answer.answerText}
+                        editorConfig={props.editorConfig}
                         {...answer}
                     />
                 );
@@ -35,6 +36,8 @@ AnswerListLayout.propTypes = {
     answers: PropTypes.array,
     readonly: PropTypes.bool,
     addAnswer: PropTypes.func,
+    className: PropTypes.string,
+    editorConfig: PropTypes.object,
 };
 
 AnswerListLayout.defaultProps = {
@@ -46,6 +49,7 @@ AnswerListLayout.defaultProps = {
     answers: [],
     readonly: false,
     addAnswer: null,
+    className: '',
 };
 
 export default AnswerListLayout;

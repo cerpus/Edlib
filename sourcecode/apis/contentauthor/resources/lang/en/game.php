@@ -9,4 +9,5 @@ return [
     "could-not-make-copy-of-game" => "Could not make a copy of the game `:title`",
     "error.exactly-15" => "You must have exactly 15 questions in a millionaire game.",
     "error.exactly-4" => "Each question must have exactly four answers.",
+    "millionaire-title" => "Millionaire mini game",
 ];

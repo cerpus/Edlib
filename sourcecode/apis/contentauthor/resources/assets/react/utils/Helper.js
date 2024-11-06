@@ -11,7 +11,7 @@ class Helper {
      * Strip HTML tags
      *
      * @param {string} html
-     * @param {bool} trimHtml
+     * @param {boolean} trimHtml
      * @returns {string}
      */
     static stripHTML(html, trimHtml) {

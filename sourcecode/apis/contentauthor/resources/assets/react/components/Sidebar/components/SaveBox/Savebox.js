@@ -94,7 +94,7 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
                 } else {
                     errorMessages = errorHandler(response);
                 }
-                setErrors(errorMessages);
+                setErrors(Array.isArray(errorMessages) ? [...new Set(errorMessages.flat())] : errorMessages);
             });
     };
 

@@ -21,49 +21,52 @@ class QuestionSetHandler
      */
     public function store($values, Request $request): Content
     {
-        /** @var QuestionSet $questionSet */
-        $questionSet = QuestionSet::make();
-        $questionSet->title = $values['title'];
+        $qsData = [
+            'title' => $values['title'],
+            'language_code' => $request->session()->get('locale', ''),
+            'is_published' => QuestionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1,
+            'license' => $request->get('license', ''),
+            'is_draft' => $request->input('isDraft', 0),
+            'tags' => implode(',', $request->get('tags', [])),
+        ];
+
+        if (!empty($values['selectedPresentation'])) {
+            $qsData['owner'] = Session::get('authId');
+            $qsData['cards'] = $values['cards'];
+
+            return $this->createPresentation($values['selectedPresentation'], $request, $qsData);
+        }
+
+        $questionSet = new QuestionSet($qsData);
         $questionSet->owner = Session::get('authId');
-        $questionSet->language_code = $request->session()->get('locale', '');
-        $questionSet->is_published = $questionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
-        $questionSet->license = $request->get('license', '');
-        $questionSet->is_draft = $request->input('isDraft', 0);
+
         if ($questionSet->save() !== true) {
             throw new \Exception("Could not store Question Set");
         }
 
+        $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
         $collaborators = explode(',', $request->input('col-emails', ''));
         $questionSet->setCollaborators($collaborators);
 
-        $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
-
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
-
-        if (!empty($values['selectedPresentation'])) {
-            return $this->createPresentation($values['selectedPresentation'], $request, $questionSet);
-        }
 
         return $questionSet;
     }
 
-
     /**
-     * @param array $questions
      * @throws \Exception
      */
-    private function storeNewQuestionsWithAnswers(QuestionSet $questionSet, $questions)
+    private function storeNewQuestionsWithAnswers(QuestionSet $questionSet, array $questions): void
     {
         foreach ($questions as $card) {
-            /** @var QuestionSetQuestion $question */
-            $question = QuestionSetQuestion::make();
+            $question = new QuestionSetQuestion();
             $question->question_text = QuestionBankClient::stripMathContainer($card['question']['text']);
             $question->image = !empty($card['question']['image']['id']) ? $card['question']['image']['id'] : null;
             $question->order = $card['order'];
             $questionSet->questions()->save($question);
 
             foreach ($card['answers'] as $answerIndex => $answer) {
-                $questionAnswer = QuestionSetQuestionAnswer::make();
+                $questionAnswer = new QuestionSetQuestionAnswer();
                 $questionAnswer->answer_text = QuestionBankClient::stripMathContainer($answer['answerText']);
                 $questionAnswer->correct = $answer['isCorrect'];
                 $questionAnswer->image = !empty($answer['image']['id']) ? $answer['image']['id'] : null;
@@ -75,12 +78,9 @@ class QuestionSetHandler
         }
     }
 
-    private function createPresentation($selectedPresentation, Request $request, QuestionSet $questionSet): Content
+    private function createPresentation($selectedPresentation, Request $request, QuestionSet|array $questionSet): Content
     {
-        /** @var QuestionSetConvert $questionsetConverter */
-        $questionsetConverter = app(QuestionSetConvert::class);
-
-        return $questionsetConverter->convert(
+        return app(QuestionSetConvert::class)->convert(
             $selectedPresentation,
             $questionSet,
             new ResourceMetadataDataObject(
@@ -91,7 +91,6 @@ class QuestionSetHandler
         );
     }
 
-
     /**
      * @throws \Throwable
      */
@@ -101,6 +100,7 @@ class QuestionSetHandler
         $questionSet->is_published = $questionSet::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $questionSet->is_draft = $request->input('isDraft', 0);
         $questionSet->license = $request->input('license', $questionSet->license);
+        $questionSet->tags = implode(',', $request->input('tags', []));
         $questionSet->save();
 
         DB::transaction(function () use ($values, $questionSet) {
@@ -155,7 +155,7 @@ class QuestionSetHandler
                     $providedAnswers
                         ->diffKeys($existingAnswers)
                         ->each(function ($newAnswer) use ($question) {
-                            $answer = QuestionSetQuestionAnswer::make();
+                            $answer = new QuestionSetQuestionAnswer();
                             $answer->answer_text = QuestionBankClient::stripMathContainer($newAnswer['answerText']);
                             $answer->correct = $newAnswer['isCorrect'];
                             $answer->image = !empty($newAnswer['image']['id']) ? $newAnswer['image']['id'] : null;

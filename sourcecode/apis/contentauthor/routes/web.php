@@ -65,9 +65,12 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
 
     Route::resource('questionset', QuestionSetController::class, ['except' => ['index', 'destroy']]);
+    Route::post('questionset/{id}', [QuestionSetController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
     Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
 
     Route::resource('game', GameController::class, ['except' => ['index', 'destroy']]);
+    Route::post('game/create/{type}', [GameController::class, 'ltiCreate']);
+    Route::post('game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
     Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
 
     Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');

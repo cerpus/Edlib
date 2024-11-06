@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import QuestionContainerLayout from './QuestionContainerLayout';
-import { H5PQuizContainer } from '../H5PQuiz';
 import { QuestionsetContainer } from '../QuestionSet';
 import { Card, uniqueId } from '../utils';
 import { MillionaireContainer } from '../Millionaire';
+import MillionaireHeader from '../Millionaire/MillionaireHeader';
 
 export default QuestionContainerLayout;
 
@@ -23,6 +23,10 @@ class QuestionContainer extends Component {
         minimumSecondsDisplaytime: PropTypes.number,
         contentTypes: PropTypes.array,
         editMode: PropTypes.bool,
+        isLockedPresentation: PropTypes.bool,
+        numberOfDefaultAnswers: PropTypes.number,
+        canAddRemoveQuestion: PropTypes.bool,
+        canAddRemoveAnswer: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -36,6 +40,10 @@ class QuestionContainer extends Component {
         minimumSecondsDisplaytime: 2,
         contentTypes: [],
         editMode: false,
+        isLockedPresentation: false,
+        numberOfDefaultAnswers: 1,
+        canAddRemoveQuestion: true,
+        canAddRemoveAnswer: true,
     };
 
     state = {
@@ -43,6 +51,7 @@ class QuestionContainer extends Component {
         contentTitle: '',
         contentIcon: null,
         title: '',
+        header: null,
     };
 
     constructor(props) {
@@ -193,24 +202,17 @@ class QuestionContainer extends Component {
         });
     }
 
+    getHeaderComponent() {
+        if (this.props.isLockedPresentation && this.props.currentContainer === 'CERPUS.MILLIONAIRE') {
+            return <MillionaireHeader />;
+        }
+
+        return null;
+    }
+
     getCards(current) {
         const cards = [];
         switch (current) {
-            case 'H5P.QuestionSet':
-                cards.push(
-                    <H5PQuizContainer
-                        cards={this.props.questions}
-                        key="h5pquiz"
-                        handleDeleteCard={this.handleDeleteCard}
-                        onChange={this.handleCollectAnswersAndQuestions}
-                        onReturnToOriginal={this.props.onResetToOriginal}
-                        onBulkChange={this.handleChange}
-                        onToggleDialog={this.handleToggleDialog}
-                        tags={this.props.tags}
-                        onSave={this.props.onSave}
-                        handleDragEnd={this.handleDragEnd}
-                    />);
-                break;
             case 'CERPUS.MILLIONAIRE':
                 cards.push(
                     <MillionaireContainer
@@ -225,6 +227,7 @@ class QuestionContainer extends Component {
                         editMode={this.props.editMode}
                         onSave={this.props.onSave}
                         handleDragEnd={this.handleDragEnd}
+                        isLockedPresentation={this.props.isLockedPresentation}
                     />);
                 break;
             default:
@@ -233,11 +236,13 @@ class QuestionContainer extends Component {
                         cards={this.props.questions}
                         key="questionset"
                         onChange={this.handleCollectAnswersAndQuestions}
-                        onDeleteCard={this.handleDeleteCard}
-                        onAddCard={this.handleChange}
+                        onDeleteCard={this.props.canAddRemoveQuestion ? this.handleDeleteCard : null}
+                        onAddCard={this.props.canAddRemoveQuestion ? this.handleChange : null}
                         onPresentationChange={this.handlePresentationSelect}
                         contentTypes={this.props.contentTypes}
                         handleDragEnd={this.handleDragEnd}
+                        canAddRemoveAnswer={this.props.canAddRemoveAnswer}
+                        numberOfDefaultAnswers={this.props.numberOfDefaultAnswers}
                     />
                 );
         }
@@ -262,6 +267,7 @@ class QuestionContainer extends Component {
                 editMode={this.props.editMode}
                 searchTitle={this.state.title}
                 placeholder={this.props.intl.formatMessage({ id: 'QUESTIONCONTAINER.TITLE_PLACEHOLDER' })}
+                header={this.getHeaderComponent()}
             />
         );
     }

@@ -19,10 +19,8 @@ use function route;
  * @property string $owner
  * @property string $external_reference
  * @property string $tags
- * @property Collection<QuestionSetQuestion> $questions
+ * @property Collection<int, QuestionSetQuestion> $questions
  *
- * @method static self|null create(array $attributes = [])
- * @method static self|Builder make(array $attributes = [])
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
@@ -31,6 +29,11 @@ class QuestionSet extends Content
     use Collaboratable;
     use HasFactory;
     use HasUuids;
+
+    protected $guarded = [
+        'id',
+        'owner',
+    ];
 
     public string $editRouteName = 'questionset.edit';
 
@@ -87,5 +90,12 @@ class QuestionSet extends Content
     public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
     {
         return new ContentTypeDataObject('QuestionSet', $contentType, 'Question set', "mui:DoneAll");
+    }
+
+    protected function getTags(): array
+    {
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
     }
 }

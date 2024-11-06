@@ -186,11 +186,6 @@ parameters:
 			path: app/Http/Controllers/ArticleCopyrightController.php
 
 		-
-			message: "#^Call to an undefined method App\\\\Http\\\\Controllers\\\\GameController\\:\\:create\\(\\)\\.$#"
-			count: 1
-			path: app/Http/Controllers/GameController.php
-
-		-
 			message: "#^Called 'isNotEmpty' on Laravel collection, but could have been retrieved as a query\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
@@ -314,36 +309,6 @@ parameters:
 			message: "#^Method App\\\\Libraries\\\\Games\\\\GameBase\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
 			count: 1
 			path: app/Libraries/Games/GameBase.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 1
-			path: app/Libraries/Games/GameHandler.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 3
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\|string\\)\\: array\\{answer\\: string, isCorrect\\: bool\\}, Closure\\(App\\\\QuestionSetQuestionAnswer\\)\\: array\\{answer\\: string, isCorrect\\: bool\\} given\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
-			message: "#^Parameter \\#1 \\$callback of method Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<\\(int\\|string\\),Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\:\\:map\\(\\) expects callable\\(Illuminate\\\\Database\\\\Eloquent\\\\Model, int\\|string\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\}, Closure\\(App\\\\QuestionSetQuestion\\)\\: array\\{questionText\\: string, image\\: string, answers\\: array\\} given\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
-			message: "#^Property App\\\\QuestionSet\\:\\:\\$questions \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestion\\>\\) does not accept Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), App\\\\QuestionSetQuestion\\>\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
-
-		-
-			message: "#^Property App\\\\QuestionSetQuestion\\:\\:\\$answers \\(Illuminate\\\\Database\\\\Eloquent\\\\Collection&iterable\\<App\\\\QuestionSetQuestionAnswer\\>\\) does not accept array\\<App\\\\QuestionSetQuestionAnswer\\>\\.$#"
-			count: 1
-			path: app/Libraries/Games/Millionaire/Millionaire.php
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
@@ -740,21 +705,6 @@ parameters:
 			message: "#^Parameter \\$token of method App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\MathMLSpaceNormalize\\:\\:handleText\\(\\) has invalid type App\\\\Libraries\\\\HTMLPurify\\\\Injector\\\\HTMLPurifier_Token\\.$#"
 			count: 1
 			path: app/Libraries/HTMLPurify/Injector/MathMLSpaceNormalize.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$answers\\.$#"
-			count: 1
-			path: app/Libraries/QuestionSet/QuestionSetConvert.php
-
-		-
-			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$question_text\\.$#"
-			count: 1
-			path: app/Libraries/QuestionSet/QuestionSetConvert.php
-
-		-
-			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
-			count: 4
-			path: app/Libraries/QuestionSet/QuestionSetHandler.php
 
 		-
 			message: "#^PHPDoc type array of property App\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies is not covariant with PHPDoc type array\\<class\\-string, class\\-string\\> of overridden property Illuminate\\\\Foundation\\\\Support\\\\Providers\\\\AuthServiceProvider\\:\\:\\$policies\\.$#"

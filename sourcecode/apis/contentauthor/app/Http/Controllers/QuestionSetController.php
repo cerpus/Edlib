@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Gametype;
-use App\H5PLibrary;
 use App\Http\Libraries\License;
 use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
@@ -12,7 +11,6 @@ use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\Libraries\QuestionSet\QuestionSetHandler;
 use App\Lti\Lti;
 use App\QuestionSet;
@@ -44,21 +42,10 @@ class QuestionSetController extends Controller
     private function getQuestionsetContentTypes(): Collection
     {
         $contentTypes = collect();
-        if (
-            H5PLibrary::fromMachineName(QuestionSetPackage::$machineName)
-            ->version(QuestionSetPackage::$majorVersion, QuestionSetPackage::$minorVersion)
-            ->count() > 0
-        ) {
-            $contentTypes->push([
-                'img' => '/graphical/QuizIcon.png',
-                'label' => 'Question Set (H5P)',
-                'outcome' => QuestionSetPackage::$machineName,
-            ]);
-        }
         if (Gametype::ofName(Millionaire::$machineName)->count() > 0) {
             $contentTypes->push([
                 'img' => '/graphical/MillionaireIcon.png',
-                'label' => 'Millionaire mini game',
+                'label' => trans('game.millionaire-title'),
                 'outcome' => Millionaire::$machineName,
             ]);
         }
@@ -92,6 +79,8 @@ class QuestionSetController extends Controller
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('questionset.store'),
             '_method' => "POST",
+            'numberOfDefaultQuestions' => 2,
+            'numberOfDefaultAnswers' => 2,
         ])->toJson();
 
         return view('question.create')->with(compact([
@@ -101,10 +90,7 @@ class QuestionSetController extends Controller
         ]));
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function store(ApiQuestionsetRequest $request)
+    public function store(ApiQuestionsetRequest $request): JsonResponse
     {
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
@@ -198,7 +184,8 @@ class QuestionSetController extends Controller
 
     public function doShow($id, $context)
     {
-        return trans("questions.preview");
+        $qCount = QuestionSet::findOrFail($id)->questions()->count();
+        return trans("questions.preview", ['qCount' => $qCount]);
     }
 
     public function setQuestionImage(Request $request)

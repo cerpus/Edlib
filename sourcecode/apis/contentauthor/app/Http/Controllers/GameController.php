@@ -8,9 +8,11 @@ use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\Games\GameHandler;
 use App\Lti\Lti;
 use App\Traits\ReturnToCore;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 
 class GameController extends Controller
 {
@@ -27,7 +29,7 @@ class GameController extends Controller
         return $this->doShow($id, null);
     }
 
-    public function doShow($id, $context)
+    public function doShow($id, $context): View
     {
         $game = Game::findOrFail($id);
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
@@ -35,20 +37,27 @@ class GameController extends Controller
         return $gameType->view($game, $context);
     }
 
-    public function edit(Request $request, $gameId)
+    public function create(Request $request): View
+    {
+        $type = $request->route()->parameter('type');
+        $handler = GameHandler::getGameTypeInstance($type);
+
+        return $handler->create($request);
+    }
+
+    public function edit(Request $request, $gameId): View
     {
         /** @var Game $game */
         $game = Game::with('gametype')->findOrFail($gameId);
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
+
         return $gameType->edit($game, $request);
     }
 
-    public function update(Game $game, ApiQuestionsetRequest $request)
+    public function update(Game $game, ApiQuestionsetRequest $request): JsonResponse
     {
-        /** @var GameHandler $gamehandler */
         $gamehandler = app(GameHandler::class);
         $request->request->add(json_decode($request->get('questionSetJsonData'), true));
-        //$gameData = json_decode($request->questionSetJsonData);
         $updatedGame = $gamehandler->update($game, $request);
         if ($game->isOwner(Session::get('authId'))) {
             $collaborators = explode(',', $request->input('col-emails', ''));

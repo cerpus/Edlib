@@ -6,5 +6,5 @@ return [
     'error.no-cards' => "Ver vennleg og legg til minst eit spørsmål.",
     'error.question-missing-text' => "Eit eller fleire spørsmål manglar tekst.",
     'error.answer-missing-text' => "Eit eller fleire svar manglar tekst.",
-    'preview' => "Dette er eit Edlib Spørsmålsett og kan ikkje bli vist i si nåverande form. Du må redigera det og velje presentasjonsform nede i botnen.",
+    'preview' => "Dette er eit Edlib Spørsmålssett og kan ikkje visast i si noverande form. Du må redigera det og velja presentasjonsform nedst på sida. Settet inneheld :qCount spørsmål.",
 ];

@@ -118,4 +118,11 @@ class Link extends Content implements VersionableObject
     {
         return 'Link';
     }
+
+    protected function getTags(): array
+    {
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
+    }
 }

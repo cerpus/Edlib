@@ -13,6 +13,10 @@ class Question extends Component {
         readonly: PropTypes.bool,
         useImage: PropTypes.bool,
         richText: PropTypes.bool,
+        editorConfig: PropTypes.shape({
+            warningAtLength: PropTypes.number,
+            warningMessage: PropTypes.node,
+        }),
     };
 
     static defaultProps = {
@@ -23,6 +27,7 @@ class Question extends Component {
         readonly: false,
         useImage: false,
         richText: false,
+        editorConfig: null,
     };
 
     constructor(props) {
@@ -43,7 +48,15 @@ class Question extends Component {
             };
         }
         changes.readyForSubmit = typeof submit === 'boolean' ? submit : true;
-        const values = Object.assign(new QuestionDataType(), { text: this.props.text, image: this.props.image }, changes);
+        const values = Object.assign(
+            new QuestionDataType(),
+            {
+                text: this.props.text,
+                image: this.props.image,
+                richText: this.props.richText,
+            },
+            changes
+        );
         this.handleChange(values);
     }
 
@@ -63,6 +76,7 @@ class Question extends Component {
                 image={this.props.image}
                 useImage={this.props.useImage}
                 richText={this.props.richText}
+                {...this.props.editorConfig}
             />
         );
     }

@@ -9,4 +9,5 @@ return [
     "could-not-make-copy-of-game" => "Kunne ikke lage en kopi av spillet `:title`",
     "error.exactly-15" => "Et Millionær spill må ha nøyaktig 15 spørsmål.",
     "error.exactly-4" => "Et spørsmål må ha nøyaktig fire svaralternativ.",
+    "millionaire-title" => "Millionær minispill",
 ];
