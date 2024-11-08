@@ -693,7 +693,7 @@ class H5PController extends Controller
             $this->storeContentLicense($request, $content['id']);
             $this->store_content_shares($content['id'], $collaborators);
         }
-        return [$oldContent, $content, $newH5pContent];
+        return [$oldContent, $content, $newH5pContent->fresh()];
     }
 
     public function downloadContent(H5PContent $h5p, H5PExport $export, H5PCore $core, H5PCerpusStorage $storage)
