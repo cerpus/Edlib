@@ -19,6 +19,7 @@ use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
+use App\Libraries\H5P\TranslationServices\NullTranslationAdapter;
 use App\Libraries\H5P\TranslationServices\NynorobotAdapter;
 use App\Libraries\H5P\TranslationServices\NynorskrobotenAdapter;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
@@ -160,10 +161,10 @@ class H5PServiceProvider extends ServiceProvider
             ->needs('$style')
             ->giveConfig('services.nynorobot.style');
 
-        $this->app->bind(TranslationServiceInterface::class, match (config('h5p.nynorskAdapter')) {
+        $this->app->bind(TranslationServiceInterface::class, match (config('h5p.translator')) {
             'nynorskroboten' => NynorskrobotenAdapter::class,
             'nynorobot' => NynorobotAdapter::class,
-            default => throw new \Exception('Unknown nynorsk adapter'),
+            default => NullTranslationAdapter::class,
         });
 
         $this->app->bind(H5PAdapterInterface::class, function () {

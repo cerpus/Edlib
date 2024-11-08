@@ -92,8 +92,6 @@ interface H5PAdapterInterface
 
     public function useMaxScore(): bool;
 
-    public function autoTranslateTo(): ?string;
-
     public function addTrackingScripts(): ?string;
 
     public function getConfigJs(): array;

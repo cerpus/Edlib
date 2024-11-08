@@ -79,5 +79,9 @@ const Debounce = RateLimiter.Debounce;
 
 const deepCopy = objectToCopy => JSON.parse(JSON.stringify(objectToCopy));
 
-export { Debounce, set, nextTick, removeKeys, compare, deepCopy };
+const flattenPath = (path) => {
+    return path.reduce((agg, cur) => [...agg, cur.index ?? cur], []).join('.');
+};
+
+export { Debounce, set, nextTick, removeKeys, compare, deepCopy, flattenPath };
 

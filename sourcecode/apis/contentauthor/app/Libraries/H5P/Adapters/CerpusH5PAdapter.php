@@ -157,11 +157,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return true;
     }
 
-    public function autoTranslateTo(): ?string
-    {
-        return null;
-    }
-
     public function addTrackingScripts(): ?string
     {
         return null;

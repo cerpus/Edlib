@@ -32,6 +32,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
+use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Lti\Lti;
@@ -54,6 +55,7 @@ use MatthiasMullie\Minify\CSS;
 use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+use function app;
 use function Cerpus\Helper\Helpers\profile as config;
 use function request;
 
@@ -136,7 +138,7 @@ class H5PController extends Controller
     {
         Log::info("Create H5P, user: " . Session::get('authId', 'not-logged-in-user'));
 
-        $language = $this->getTargetLanguage(Session::get('locale') ?? config("h5p.default-resource-language"));
+        $language = Session::get('locale') ?? config("h5p.default-resource-language");
         try {
             $language = Iso639p3::code($language);
         } catch (Exception) {
@@ -178,9 +180,7 @@ class H5PController extends Controller
             'canPublish' => true,
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            'hideNewVariant' => true,
             'adapterName' => config('feature.allow-mode-switch') === true ? $adapter->getAdapterName() : null,
             'adapterList' => $adapter::getAllAdapters(),
             'h5pLanguage' => Iso639p3::code2letters($language),
@@ -229,9 +229,8 @@ class H5PController extends Controller
 
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $contentLanguage = $this->getTargetLanguage($h5pContent->language_iso_639_3);
-        $isNewLanguageVariant = $adapter->autoTranslateTo() !== null && $contentLanguage === $adapter->autoTranslateTo() && $h5pContent->language_iso_639_3 !== $adapter->autoTranslateTo();
-        $h5pLanguage = $this->getTargetLanguage($h5pContent->metadata->default_language ?? null);
+        $contentLanguage = $h5pContent->language_iso_639_3;
+        $h5pLanguage = $h5pContent->metadata->default_language ?? null;
         if (!is_null($h5pLanguage)) {
             $h5pLanguage = Iso639p3::code2letters($h5pLanguage);
         }
@@ -279,12 +278,12 @@ class H5PController extends Controller
             'canPublish' => $h5pContent->canPublish($request),
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
-            'autoTranslateTo' => $adapter->autoTranslateTo(),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
             'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
             'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
+            'supportedTranslations' => app()->make(TranslationServiceInterface::class)->getSupportedLanguages(),
         ]);
 
         if ($h5pContent->canList($request)) {
@@ -329,7 +328,6 @@ class H5PController extends Controller
             'libraryid' => $h5pContent->library_id,
             'parameters' => $params,
             'language_iso_639_3' => $contentLanguage,
-            'isNewLanguageVariant' => $isNewLanguageVariant,
             'title' => $h5pContent->title,
             'license' => $h5pContent->license ?: License::getDefaultLicense(),
             'isPublished' => $h5pContent->isPublished(),
@@ -375,12 +373,6 @@ class H5PController extends Controller
         }
 
         return ContentVersion::PURPOSE_UPDATE;
-    }
-
-    private function getTargetLanguage(?string $language)
-    {
-        return $this->lti->getRequest(request())?->getExtTranslationLanguage()
-            ?? $language;
     }
 
     /**

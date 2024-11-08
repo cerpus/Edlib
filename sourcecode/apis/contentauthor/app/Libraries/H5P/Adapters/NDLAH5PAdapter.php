@@ -337,11 +337,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return false;
     }
 
-    public function autoTranslateTo(): ?string
-    {
-        return 'nno';
-    }
-
     private function traverseParameters(Collection $values): Collection
     {
         return $values->map(function ($value) {

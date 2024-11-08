@@ -16,6 +16,7 @@ hub-test-ndla-legacy
 mailpit
 moodle
 npm.components
+nynorobot
 www
 "
 

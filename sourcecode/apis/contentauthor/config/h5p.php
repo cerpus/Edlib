@@ -46,6 +46,6 @@ return [
     'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),
     'showDisplayOptions' => env("H5P_SHOW_DISPLAY_OPTIONS", false),
 
-    // one of 'nynorskroboten', 'nynorobot'
-    'nynorskAdapter' => env('H5P_NYNORSK_ADAPTER', 'nynorskroboten'),
+    // one of 'null', 'nynorskroboten', 'nynorobot'
+    'translator' => env('H5P_TRANSLATOR', env('H5P_NYNORSK_ADAPTER', 'null')),
 ];

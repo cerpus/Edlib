@@ -143,6 +143,7 @@ services:
           - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
 
   contentauthor:
     image: nginx:1-alpine
@@ -607,3 +608,8 @@ services:
   #      test: [CMD, curl, -f, http://localhost:8080/health]
   #    ports:
   #      - 5505:5555
+
+  nynorobot:
+    image: php:8.3-fpm-alpine
+    volumes:
+      - ./sourcecode/mock/nynorobot:/srv/www/nynorobot:ro
