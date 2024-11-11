@@ -2,14 +2,14 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\Games\Contracts\GameTypeModelContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+
+use function collect;
 
 /**
  * @property string $id
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
  * @method static findOrFail($id, $columns = ['*'])
  */
 
-class Gametype extends Model implements GameTypeModelContract
+class Gametype extends Model
 {
     use HasFactory;
     use HasUuids;
@@ -119,60 +119,55 @@ class Gametype extends Model implements GameTypeModelContract
             ->first();
     }
 
-    public function getScripts(): array
+    public function getBasePath(): string
     {
-        return $this->scripts;
+        return Storage::disk()->url('games/millionaire/' . $this->getVersion() . '/');
     }
 
-    public function getCss(): array
-    {
-        return $this->css;
-    }
-
+    /**
+     * @return array<int, object{
+     *     rel: string,
+     *     href: string,
+     *     sizes?: string,
+     *     type?: string,
+     * }>
+     */
     public function getLinks(): array
     {
-        return $this->links;
+        $fs = Storage::disk();
+        $prefix = 'games/millionaire/' . $this->getVersion();
+
+        return collect($this->links)->map(fn (array $link): object => (object) [
+            ...$link,
+            'href' => $fs->url("$prefix/{$link['href']}"),
+        ])->toArray();
     }
 
-    public function getPublicFolder(): string
+    /**
+     * Get a list of fully qualified URLs for the game CSS.
+     * @return string[]
+     */
+    public function getCss(): array
     {
         $fs = Storage::disk();
-        return $fs->url(sprintf(ContentStorageSettings::GAMES_PATH, $this->getMachineFolder())) . '/';
+        $prefix = 'games/millionaire/' . $this->getVersion();
+
+        return collect($this->css)
+            ->map(fn ($css) => $fs->url("$prefix/$css"))
+            ->toArray();
     }
 
-    public function getMachineFolder(): string
+    /**
+     * Get a list of fully qualified URLs for the game scripts.
+     * @return string[]
+     */
+    public function getScripts(): array
     {
-        return 'millionaire/' . $this->getVersion() . '/';
-    }
-
-    public function getAssets($type = null): array
-    {
-        $assets = collect();
-        $machinePath = $this->getMachineFolder();
         $fs = Storage::disk();
-        switch ($type) {
-            case 'scripts':
-                $assets = collect($this->getScripts())->map(function ($script) use ($machinePath, $fs) {
-                    return $fs->url(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $script));
-                });
-                break;
+        $prefix = 'games/millionaire/' . $this->getVersion();
 
-            case 'css':
-                $assets = collect($this->getCss())->map(function ($css) use ($machinePath, $fs) {
-                    return $fs->url(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $css));
-                });
-                break;
-
-            case 'links':
-                $assets = collect($this->getLinks())->map(function ($link) use ($machinePath, $fs) {
-                    $link['href'] = $fs->url(sprintf(ContentStorageSettings::GAMES_FILE, $machinePath, $link['href']));
-                    return (object)$link;
-                });
-                break;
-            default:
-                break;
-        }
-
-        return $assets->toArray();
+        return collect($this->scripts)
+            ->map(fn ($script) => $fs->url("$prefix/$script"))
+            ->toArray();
     }
 }

@@ -67,11 +67,6 @@ return [
             'url' => 'http://localhost/h5pstorage/',
         ],
 
-        'tmp' => [ // temporary folder for contentauthor
-            'driver' => 'local',
-            'root' => '/tmp/contentauthor'
-        ],
-
         'h5pTmp' => [ // temporary folder for h5p
             'driver' => 'local',
             'root' => '/tmp/h5p'
