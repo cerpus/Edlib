@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\NdlaLegacy\CopyController;
 use App\Http\Controllers\NdlaLegacy\OembedController;
 use App\Http\Controllers\NdlaLegacy\PublishController;
 use App\Http\Controllers\NdlaLegacy\ResourceCopyrightController;
@@ -44,7 +45,13 @@ Route::post('/select')
 
 Route::post('/select/edit/byurl')
     ->middleware(['auth:ndla-legacy'])
-    ->uses([SelectController::class, 'selectByUrl']);
+    ->uses([SelectController::class, 'selectByUrl'])
+    ->name('ndla-legacy.select-by-url');
+
+Route::post('/copy')
+    ->uses(CopyController::class)
+    ->middleware(['auth:ndla-legacy'])
+    ->name('ndla-legacy.copy');
 
 Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(function () {
     // internal, not part of the API
