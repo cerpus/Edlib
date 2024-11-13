@@ -13,10 +13,6 @@
                 embed_id: {!! json_encode($embed_id) !!},
                 oembed_url: {!! json_encode($oembed_url) !!},
             }, '*');
-
-            parent.postMessage({
-                messageType: 'closeEdlibModal',
-            }, '*');
         </script>
     </body>
 </html>
