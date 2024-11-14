@@ -92,6 +92,31 @@ final class ContentTest extends TestCase
             );
     }
 
+    public function testListsContentsByTag(): void
+    {
+        $taggedContent = Content::factory()
+            ->tag('correct:tag')
+            ->withPublishedVersion()
+            ->create();
+
+        Content::factory()
+            ->tag('wrong:tag')
+            ->withPublishedVersion()
+            ->create();
+
+        // untagged
+        Content::factory()->withPublishedVersion()->create();
+
+        $this->getJson('/api/contents/by_tag/correct%3Atag')
+            ->assertOk()
+            ->assertJson(
+                fn (AssertableJson $json) => $json
+                    ->count('data', 1)
+                    ->where('data.0.id', $taggedContent->id)
+                    ->has('meta')
+            );
+    }
+
     public function testPaginatesContent(): void
     {
         Content::factory()

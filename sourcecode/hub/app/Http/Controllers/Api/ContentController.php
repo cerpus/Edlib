@@ -32,6 +32,16 @@ final readonly class ContentController
             ->respond();
     }
 
+    public function indexByTag(string $tag): JsonResponse
+    {
+        $contents = Content::ofTag($tag)->paginate();
+
+        return fractal($contents)
+            ->transformWith($this->transformer)
+            ->paginateWith(new IlluminatePaginatorAdapter($contents))
+            ->respond();
+    }
+
     public function show(Content $apiContent): JsonResponse
     {
         return fractal($apiContent)

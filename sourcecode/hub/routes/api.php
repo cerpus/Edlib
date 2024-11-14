@@ -17,6 +17,10 @@ Route::whereUlid('content')->name('api.contents.')->group(function () {
         ->uses([ContentController::class, 'index'])
         ->can('admin');
 
+    Route::get('/contents/by_tag/{tag}')
+        ->uses([ContentController::class, 'indexByTag'])
+        ->can('admin');
+
     Route::get('/contents/{apiContent}')
         ->uses([ContentController::class, 'show'])
         ->can('view', 'apiContent')
