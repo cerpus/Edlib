@@ -187,7 +187,7 @@ class ChoicesJs extends Component
             '@optionListOpen' => '.choices__list--dropdown.is-active',
             '@availableOptionItem' => '.choices__list--dropdown .choices__item',
             '@selectedOptionItem' => '.choices__inner .choices__list .choices__item',
-            '@optionsFilter' => 'input[name="search_terms"]',
+            '@optionsFilter' => 'input[type="search"][role="textbox"]',
         ];
     }
 }

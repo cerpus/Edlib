@@ -6,20 +6,20 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "laravel-vite-plugin": "^1.0.2",
-        "sass": "^1.71.1",
-        "vite": "^5.1.5",
-        "vite-plugin-manifest-sri": "^0.1.0"
+        "laravel-vite-plugin": "^1.0.5",
+        "sass": "^1.80.6",
+        "vite": "^5.4.10",
+        "vite-plugin-manifest-sri": "^0.2.0"
     },
     "dependencies": {
-        "@fontsource/lato": "^5.0.19",
+        "@fontsource/lato": "^5.1.0",
         "@popperjs/core": "^2.11.8",
-        "billboard.js": "^3.13.0",
+        "billboard.js": "^3.14.0",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
-        "choices.js": "^10.2.0",
-        "date-fns": "^3.3.1",
-        "htmx.org": "^1.9.10"
+        "choices.js": "^11.0.2",
+        "date-fns": "^4.1.0",
+        "htmx.org": "^2.0.3"
     },
     "engines": {
         "node": "^18"

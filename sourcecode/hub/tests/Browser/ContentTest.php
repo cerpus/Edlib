@@ -11,6 +11,7 @@ use App\Models\ContentView;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
+use Carbon\Carbon;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
@@ -204,12 +205,15 @@ final class ContentTest extends DuskTestCase
                 ->visit('/content/create/' . $tool->id)
                 ->assertPresent('.lti-launch')
                 ->withinFrame('.lti-launch', function (Browser $iframe) use ($content) {
-                    $iframe->with(new ContentCard(), function (Browser $card) use ($content) {
-                        $card
-                            ->assertSeeIn('@title', $content->getTitle())
-                            ->click('@use-button');
-                    });
+                    $iframe
+                        ->waitFor('article.content-card')
+                        ->with(new ContentCard(), function (Browser $card) use ($content) {
+                            $card
+                                ->assertSeeIn('@title', $content->getTitle())
+                                ->click('@use-button');
+                        });
                 })
+                ->waitForText($content->getTitle())
                 ->assertTitleContains($content->getTitle());
         });
 
@@ -320,9 +324,11 @@ final class ContentTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->visit('/content/create/' . $ltiTool->id)
+                ->waitFor('iframe.lti-launch')
                 ->withinFrame(
                     '.lti-launch',
                     fn (Browser $launch) => $launch
+                        ->waitFor('article.content-card')
                         ->with(new ContentCard(), fn (Browser $card) => $card->click('@title'))
                         ->waitFor('#previewModal .modal-dialog')
                         ->with(
@@ -331,6 +337,7 @@ final class ContentTest extends DuskTestCase
                                 ->click('@use-button')
                         )
                 )
+                ->waitForText($content->getTitle())
                 ->assertTitleContains($content->getTitle())
         );
     }
@@ -510,6 +517,7 @@ final class ContentTest extends DuskTestCase
                         EOJSON)
                         ->press('Send')
                 )
+                ->waitFor('main div h1')
                 ->assertTitleContains('It should be a draft')
                 ->assertSee('You are viewing an unpublished draft version.')
         );
@@ -553,6 +561,7 @@ final class ContentTest extends DuskTestCase
                         EOJSON)
                         ->press('Send')
                 )
+                ->waitFor('main div h1')
                 ->assertTitleContains('TMK Course Presentation')
                 ->visit('/content')
                 ->with(
@@ -585,11 +594,14 @@ final class ContentTest extends DuskTestCase
                 ->loginAs(User::factory()->create()->email)
                 ->assertAuthenticated()
                 ->visit('/content/create/' . $edlib3->id)
+                ->waitFor('iframe.lti-launch')
                 ->withinFrame(
                     '.lti-launch',
-                    fn (Browser $edlib3) => $edlib3
+                    fn (Browser $e3Frame) => $e3Frame
                         ->clickLink('Create')
+                        ->waitForText('Select a content type')
                         ->clickLink('Sample tool')
+                        ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
                             fn (Browser $ltiTool) => $ltiTool
@@ -821,6 +833,38 @@ final class ContentTest extends DuskTestCase
                 ->assertPresent('#chart_usage svg g.bb-bars-total')
                 ->assertPresent('#chart_usage svg g.bb-texts-total')
                 ->assertSeeIn('#chart_usage svg g.bb-texts-total text.bb-text-0', '1')
+        );
+    }
+
+    public function testDateIsFormattedAndLocalised(): void
+    {
+        $user = User::factory()->create(['locale' => 'nb']);
+
+        $content = Content::factory()
+            ->withVersion(
+                ContentVersion::factory()->state([
+                    'published' => true,
+                    'created_at' => '2024-10-09 13:30:37',
+                ])->published()
+            )
+            ->shared()
+            ->create();
+
+        $contentVersion = $content->latestVersion;
+        $this->assertNotNull($contentVersion);
+        /** @var Carbon $date */
+        $date = $contentVersion->created_at;
+        $date->locale('nb_NO');
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/')
+                ->assertSeeIn('article.card', $contentVersion->title)
+                ->assertSeeIn('article time', $date->translatedFormat('j. F Y'))
+                ->assertAttribute('article time', 'datetime', $date->toIso8601String())
+                ->assertAttribute('article time', 'title', $date->translatedFormat('l j. F Y \k\l. H:i:s'))
         );
     }
 }

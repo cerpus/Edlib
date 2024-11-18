@@ -61,7 +61,11 @@ final class UserTest extends DuskTestCase
                 ->visit('/preferences')
                 ->select('locale', 'nb')
                 ->press('Save')
-                ->assertSee('Mitt innhold');
+                ->assertSee('Mitt innhold')
+                ->select('locale', 'en')
+                ->press('Lagre')
+                ->assertSee('My content')
+            ;
         });
     }
 
@@ -226,7 +230,8 @@ final class UserTest extends DuskTestCase
                 ->visit('/preferences')
                 ->select('theme', 'dark')
                 ->press('Save')
-                ->assertSourceHas('data-bs-theme="dark"');
+                ->waitForLocation('/preferences')
+                ->assertDataAttribute('', 'bs-theme', 'dark');
         });
     }
 

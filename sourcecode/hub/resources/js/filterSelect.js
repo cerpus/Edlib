@@ -12,7 +12,6 @@ window.replaceChoicesJsOptions = function (elm, options) {
     if (elm && elm.choices) {
         const selected = elm.choices.getValue(true);
         const keys = Object.keys(options);
-        const isMultiple = elm.getAttribute('multiple') !== null;
         const newOptions = [];
 
         keys.forEach((value) => {
@@ -24,9 +23,7 @@ window.replaceChoicesJsOptions = function (elm, options) {
         });
 
         // To update labels for selected items they have to be re-selected
-        if (isMultiple) {
-            elm.choices.removeActiveItems();
-        }
+        elm.choices.removeActiveItems();
         elm.choices.setChoices(newOptions, 'value', 'label', true);
     }
 };

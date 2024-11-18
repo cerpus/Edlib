@@ -13,9 +13,17 @@ export default defineConfig({
             protocol: 'wss',
         },
         watch: {
-            ignored: [
-                '**/vendor/**',
-            ],
+            ignored: (file) => {
+                return !(
+                    file.endsWith('/hub') ||
+                    file.endsWith('/resources') ||
+                    file.endsWith('/resources/js') ||
+                    file.endsWith('/resources/css') ||
+                    file.endsWith('vite.config.js') ||
+                    file.includes('/resources/css/') ||
+                    file.includes('/resources/js/')
+                );
+            },
         },
     },
     plugins: [
@@ -27,5 +35,10 @@ export default defineConfig({
     ],
     css: {
         devSourcemap: true,
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler',
+            },
+        },
     },
 });
