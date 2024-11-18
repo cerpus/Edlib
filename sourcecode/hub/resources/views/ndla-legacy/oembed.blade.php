@@ -1,8 +1,19 @@
 <div>
-<iframe src="{{ $src }}" title="{{ $title }}" width="800" height="600" allowfullscreen></iframe>
-<script>((f, h) => addEventListener('message', e => f &&
-f.contentWindow === e.source &&
-e.data && e.data.action && e.data.action === 'resize' && e.data[h] &&
-(f.height = String(e.data[h] + f.getBoundingClientRect().height - f[h]))
-))(document.currentScript.previousElementSibling, 'scrollHeight')</script>
+<iframe src="{{ $src }}" title="{{ $title }}" width="800" height="600" allowfullscreen id="edlib-{{ $id }}"></iframe>
+<script>
+    addEventListener('message', (event) => {
+        const frame = document.getElementById('edlib-{{ $id }}');
+        if (event.source !== frame.contentWindow) {
+            return;
+        }
+        if (event?.data?.action !== 'resize') {
+            return;
+        }
+        frame.height = String(
+            event.data.scrollHeight +
+            frame.getBoundingClientRect().height -
+            frame.scrollHeight,
+        );
+    });
+</script>
 </div>
