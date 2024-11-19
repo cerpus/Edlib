@@ -56,5 +56,6 @@
         <server name="FEATURE_ENABLE_USER_PUBLISH" value="false"/>
         <server name="FILESYSTEM_DRIVER" value="test"/>
         <server name="NDLA_H5P_VIDEO_ACCOUNT_ID" value="videoAccountId"/>
+        <server name="H5P_VIDEO_ADAPTER" value="null"/>
     </php>
 </phpunit>

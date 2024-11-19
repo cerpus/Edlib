@@ -207,13 +207,6 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($state['parameters']);
         $this->assertNotEmpty($state['redirectToken']);
         $this->assertNotEmpty($state['title']);
-
-        // Adapter specific
-        if ($adapterMode === 'ndla') {
-            $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
-            $this->assertSame([], $data['configJs']);
-        }
     }
 
     /**
@@ -385,7 +378,6 @@ class H5PControllerTest extends TestCase
 
         // Adapter specific
         $this->assertContains('//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG', $result['jsScripts']);
-        $this->assertContains('/js/videos/brightcove.js', $result['jsScripts']);
 
         if ($adapterMode === "ndla") {
             $this->assertContains('/js/h5p/wiris/view.js', $result['jsScripts']);
@@ -393,8 +385,6 @@ class H5PControllerTest extends TestCase
 
             $this->assertContains('/css/ndlah5p-iframe-legacy.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
             $this->assertContains('/css/ndlah5p-iframe.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
-        } elseif ($adapterMode === "cerpus") {
-            $this->assertContains('/js/videos/streamps.js', $result['jsScripts']);
         }
     }
 

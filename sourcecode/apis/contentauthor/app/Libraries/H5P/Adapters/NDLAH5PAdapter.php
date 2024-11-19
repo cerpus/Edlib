@@ -203,7 +203,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $css[] = (string) mix('css/ndlah5p-iframe.css');
         return array_unique([
             ...$css,
-            $this->videoAdapter->getViewCss(),
+            ...$this->videoAdapter->getViewCss(),
         ]);
     }
 
