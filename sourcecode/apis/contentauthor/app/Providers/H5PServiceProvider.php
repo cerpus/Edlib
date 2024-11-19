@@ -79,7 +79,7 @@ class H5PServiceProvider extends ServiceProvider
             ->needs(Cloud::class)
             ->give(fn () => Storage::disk('h5p-presave'));
 
-        $this->app->bind(H5PVideoInterface::class, match(config('h5p.video.adapter')) {
+        $this->app->bind(H5PVideoInterface::class, match (config('h5p.video.adapter')) {
             'ndla' => NDLAVideoAdapter::class,
             default => NullVideoAdapter::class,
         });
