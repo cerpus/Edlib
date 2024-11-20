@@ -319,6 +319,7 @@ class Content extends Model
             'shared' => $this->shared,
             'title' => $title,
             'user_ids' => $this->users()->allRelatedIds()->toArray(),
+            'users' => $this->users->map(fn ($user) => $user->name)->toArray(),
             'created_at' => $this->created_at,
             'updated_at' => $this->latestVersion?->created_at,
             'published_at' => $this->latestPublishedVersion?->created_at,

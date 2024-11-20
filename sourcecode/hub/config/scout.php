@@ -122,6 +122,11 @@ return [
         'key' => env('MEILISEARCH_KEY', null),
         'index-settings' => [
             Content::class => [
+                'searchableAttributes' => [
+                    'title',
+                    'content_type',
+                    'users',
+                ],
                 'filterableAttributes' => [
                     'published',
                     'shared',
