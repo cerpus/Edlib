@@ -193,7 +193,6 @@ return [
     'editor' => 'Editor',
     'reader' => 'Reader',
     'extra-endpoints' => 'Extra endpoints',
-    'content-has-no-roles' => 'No roles are assigned to this content.',
     'statistics' => 'Statistics',
     'reset-zoom' => 'Reset view',
     'view-detail' => 'Detail',
@@ -215,4 +214,7 @@ return [
     'lti-platform-authorizes-edit' => 'The platform authorizes edit access',
     'lti-platform-authorizes-edit-help' => 'Transfers responsibility for access control of editing from :site to the platform, i.e. :site will accept all valid edit requests from the platform',
     'dangerous-lti-platform-settings' => 'These settings are dangerous, and should only be enabled for trusted platforms with email verification.',
+    'users' => 'Users',
+    'contexts' => 'Contexts',
+    'nothing-to-display' => 'Nothing to display.',
 ];

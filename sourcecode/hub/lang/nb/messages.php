@@ -163,7 +163,6 @@ return [
     'owner' => 'Eier',
     'editor' => 'Redaktør',
     'reader' => 'Leser',
-    'content-has-no-roles' => 'Ingen roller har blitt satt for dette innholdet.',
     'statistics' => 'Statistikk',
     'reset-zoom' => 'Nullstill visning',
     'view-detail' => 'Detalj',
@@ -179,4 +178,5 @@ return [
     'lti-platform-authorizes-edit' => 'Plattformen styrer redigeringstilgang',
     'lti-platform-authorizes-edit-help' => 'Overfører ansvaret for tilgangskontroll av redigering fra :site til plattformen, m.a.o. :site vil godta alle gyldige redigeringsforespørsler fra plattformen',
     'dangerous-lti-platform-settings' => 'Disse innstillingene er farlige og bør kun aktiveres for klarerte plattformer med epost-verifikasjon.',
+    'nothing-to-display' => 'Ingenting å vise',
 ];

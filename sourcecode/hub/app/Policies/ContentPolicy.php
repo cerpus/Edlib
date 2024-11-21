@@ -125,4 +125,12 @@ class ContentPolicy
 
         return true;
     }
+
+    public function addContext(User $user, Content $content): bool
+    {
+        // TODO: check owner role
+        if ($content->hasUser($user)) {
+            return true;
+        }
+    }
 }

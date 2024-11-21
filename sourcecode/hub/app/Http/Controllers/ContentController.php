@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
 use App\Http\Requests\ContentStatisticsRequest;
@@ -287,7 +287,7 @@ class ContentController extends Controller
             $content = new Content();
             $content->saveQuietly();
             $content->users()->save($this->getUser(), [
-                'role' => ContentUserRole::Owner,
+                'role' => ContentRole::Owner,
             ]);
             $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
 
