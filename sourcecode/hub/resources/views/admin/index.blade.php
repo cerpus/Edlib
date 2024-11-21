@@ -28,4 +28,27 @@
             <li>{{ $extra->tool->name }}: <a href="{{ route('content.launch-creator', [$extra->tool, $extra]) }}">{{ $extra->name }}</a></li>
         @endforeach
     </ul>
+
+    <h3>Stats</h3>
+
+    <div class="row">
+        <div class="col-12 col-lg-6 col-xl-4">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Active contents in database</th>
+                        <td>{{ \App\Models\Content::count() }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Deleted contents in database</th>
+                        <td>{{ \App\Models\Content::onlyTrashed()->count() }}</td>
+                    </tr>
+                    <tr>
+                        <th>Users</th>
+                        <td>{{ \App\Models\User::count() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </x-layout>
