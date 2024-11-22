@@ -15,6 +15,12 @@
         </li>
 
         <li>
+            <a href="{{ route('admin.contexts.index') }}">
+                {{ trans('messages.manage-contexts') }}
+            </a>
+        </li>
+
+        <li>
             <x-form action="{{ route('admin.rebuild-content-index') }}">
                 <button class="btn btn-link p-0">{{ trans('messages.rebuild-content-index') }}</button>
             </x-form>

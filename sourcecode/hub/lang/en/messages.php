@@ -21,6 +21,7 @@ return [
     'admin-home' => 'Admin home',
     'manage-lti-platforms' => 'Manage LTI platforms',
     'manage-lti-tools' => 'Manage LTI tools',
+    'manage-contexts' => 'Manage contexts',
     'more-details' => 'More details',
     'details' => 'Details',
     'preview' => 'Preview',
@@ -217,4 +218,7 @@ return [
     'users' => 'Users',
     'contexts' => 'Contexts',
     'nothing-to-display' => 'Nothing to display.',
+    'context' => 'Context',
+    'context-help' => 'Contexts are used to grant implicit permissions for accessing content.',
+    'context-name-help' => 'The name must be unique, and consist of characters from A-Z, 0-9, and underscores.',
 ];

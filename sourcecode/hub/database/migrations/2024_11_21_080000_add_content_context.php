@@ -11,7 +11,7 @@ return new class () extends Migration {
     {
         Schema::create('contexts', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->timestampsTz();
         });
 

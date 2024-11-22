@@ -13,4 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 class Context extends Model
 {
     use HasUlidsFromCreationDate;
+
+    protected $fillable = [
+        'name',
+    ];
 }

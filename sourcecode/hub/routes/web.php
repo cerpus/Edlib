@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContextController;
 use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
@@ -248,6 +249,14 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
 
     Route::post('/rebuild-content-index', [AdminController::class, 'rebuildContentIndex'])
         ->name('admin.rebuild-content-index');
+
+    Route::get('/contexts')
+        ->uses([ContextController::class, 'index'])
+        ->name('admin.contexts.index');
+
+    Route::post('/contexts')
+        ->uses([ContextController::class, 'add'])
+        ->name('admin.contexts.add');
 
     Route::prefix('/lti-platforms')->controller(LtiPlatformController::class)->group(function () {
         Route::get('', 'index')->name('admin.lti-platforms.index');

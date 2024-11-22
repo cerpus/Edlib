@@ -15,6 +15,7 @@ use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
@@ -145,8 +146,13 @@ class ContentController extends Controller
 
     public function roles(Content $content): View
     {
+        $contexts = Context::all()->mapWithKeys(fn (Context $context) => [
+            $context->id => $context->name,
+        ]);
+
         return view('content.roles', [
             'content' => $content,
+            'available_contexts' => $contexts,
         ]);
     }
 

@@ -60,14 +60,19 @@
     @endif
 
     @can('add-context', [$content])
-        <x-form action="{{ route('content.add-context', [$content]) }}">
-            <x-form.field
-                name="context"
-                type="select"
-                :options="\App\Models\Context::all()->mapWithKeys(fn (Context $context) => [$context->id => $context->name])"
-            />
+        @if (count($available_contexts) > 0)
+            <x-form action="{{ route('content.add-context', [$content]) }}">
+                <x-form.field
+                    name="context"
+                    type="select"
+                    :label="trans('messages.context')"
+                    :options="$available_contexts"
+                />
 
-            <x-form.button class="btn-outline-primary">{{ trans('messages.add') }}</x-form.button>
-        </x-form>
+                <x-form.button class="btn-outline-primary">{{ trans('messages.add') }}</x-form.button>
+            </x-form>
+        @else
+            <p>TODO: link to add a context</p>
+        @endif
     @endcan
 </x-layout>
