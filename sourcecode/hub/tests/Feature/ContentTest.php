@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\ContentRole;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
@@ -13,6 +14,7 @@ use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\Signer;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 final class ContentTest extends TestCase
@@ -161,5 +163,13 @@ final class ContentTest extends TestCase
         $this->expectException(DomainException::class);
 
         (new Content())->getDetailsUrl();
+    }
+
+    #[TestWith([Conte], 'owner')]
+    public function testChecksIfHasRole(ContentRole $userRole): void
+    {
+        $content = new Content();
+        $content->
+        $this->assertTrue(Cont)
     }
 }

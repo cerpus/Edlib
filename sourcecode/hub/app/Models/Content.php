@@ -304,6 +304,17 @@ class Content extends Model
         return $this->users->contains($user);
     }
 
+    public function hasUserWithMinimumRole(User $user, ContentRole $role): bool
+    {
+        $matchingRoles = match ($role) {
+            ContentRole::Owner => [ContentRole::Owner],
+            ContentRole::Editor => [ContentRole::Editor, ContentRole::Owner],
+            ContentRole::Reader => [ContentRole::Reader, ContentRole::Editor, ContentRole::Owner],
+        };
+
+        return $this->users()->whereIn('role', $matchingRoles)->exists();
+    }
+
     /**
      * @return array<string, mixed>
      */

@@ -91,7 +91,7 @@ Route::controller(ContentController::class)->group(function () {
         ->can('edit', ['content']);
 
     Route::post('/content/{content}/roles/add-context')
-        ->uses([ContentController::class, ''])
+        ->uses([ContentController::class, 'addContext'])
         ->name('content.add-context')
         ->whereUlid(['content'])
         ->can('add-role', ['content']);

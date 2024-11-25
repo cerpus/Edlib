@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
+use App\Http\Requests\AddContextToContentRequest;
 use App\Http\Requests\ContentStatisticsRequest;
 use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
@@ -146,14 +147,26 @@ class ContentController extends Controller
 
     public function roles(Content $content): View
     {
-        $contexts = Context::all()->mapWithKeys(fn (Context $context) => [
-            $context->id => $context->name,
-        ]);
+        $contexts = Context::all()
+            ->diff($content->contexts)
+            ->mapWithKeys(fn (Context $context) => [$context->id => $context->name]);
 
         return view('content.roles', [
             'content' => $content,
             'available_contexts' => $contexts,
         ]);
+    }
+
+    public function addContext(Content $content, AddContextToContentRequest $request): RedirectResponse
+    {
+        $context = Context::where('id', $request->validated('context'))
+            ->firstOrFail();
+
+        $content->contexts()->attach($context, [
+            'role' => ContentRole::from($request->validated('role')),
+        ]);
+
+        return redirect()->route('content.roles', [$content]);
     }
 
     public function create(): View

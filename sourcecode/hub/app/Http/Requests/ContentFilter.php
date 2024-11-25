@@ -325,9 +325,7 @@ class ContentFilter extends FormRequest
             ->get();
 
         return $hits->map(function (array $item) use ($models, $forUser, $showDrafts) {
-            /** @var Content $model */
             $model = $models->firstWhere('id', $item['id']);
-            /** @var ContentVersion $version */
             $version = $showDrafts ? $model->latestVersion : $model->latestPublishedVersion;
 
             $canUse = Gate::allows('use', [$model, $version]);
