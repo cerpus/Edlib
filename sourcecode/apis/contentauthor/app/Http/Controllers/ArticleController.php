@@ -8,7 +8,6 @@ use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ArticleRequest;
 use App\Libraries\DataObjects\ArticleStateDataObject;
 use App\Libraries\DataObjects\EditorConfigObject;
@@ -33,13 +32,11 @@ use function Cerpus\Helper\Helpers\profile as config;
 
 class ArticleController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
 
     public function __construct(private readonly Lti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.behavior-settings:view', ['only' => ['show']]);
     }
@@ -132,7 +129,7 @@ class ArticleController extends Controller
      * @param int $id
      * @return View
      */
-    public function doShow($id, $context)
+    public function show($id)
     {
         /** @var Article $article */
         $article = Article::findOrFail($id);
@@ -146,11 +143,6 @@ class ArticleController extends Controller
         $resourceType = sprintf($article::RESOURCE_TYPE_CSS, $article->getContentType());
 
         return view('article.show')->with(compact('article', 'customCSS', 'ndlaArticle', 'resourceType'));
-    }
-
-    public function show($id)
-    {
-        return $this->doShow($id, null);
     }
 
     /**

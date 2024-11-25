@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Gametype;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
@@ -12,7 +11,6 @@ use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\QuestionSet\QuestionSetHandler;
-use App\Lti\Lti;
 use App\QuestionSet;
 use App\SessionKeys;
 use App\Traits\FractalTransformer;
@@ -29,14 +27,12 @@ use function Cerpus\Helper\Helpers\profile as config;
 
 class QuestionSetController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
     use FractalTransformer;
 
-    public function __construct(private readonly Lti $lti)
+    public function __construct()
     {
-        $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
-        $this->middleware('lti.question-set')->only(['ltiCreate']);
+        $this->middleware('lti.question-set')->only(['create']);
     }
 
     private function getQuestionsetContentTypes(): Collection
@@ -178,11 +174,6 @@ class QuestionSetController extends Controller
     }
 
     public function show($id)
-    {
-        return $this->doShow($id, null);
-    }
-
-    public function doShow($id, $context)
     {
         $qCount = QuestionSet::findOrFail($id)->questions()->count();
         return trans("questions.preview", ['qCount' => $qCount]);

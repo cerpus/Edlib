@@ -13,7 +13,6 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\H5PController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\LinkController;
-use App\Http\Controllers\LtiContentController;
 use App\Http\Controllers\Progress;
 use App\Http\Controllers\QuestionSetController;
 use App\Http\Controllers\ReturnToCoreController;
@@ -29,7 +28,6 @@ Route::post('h5p/adapter', function () {
 })->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
-Route::resource('/h5p', H5PController::class, ['except' => ['index', 'destroy']]);
 
 Route::get('images/browse', [H5PController::class, 'browseImages']);
 Route::get('images/browse/{imageId}', [H5PController::class, 'getImage']);
@@ -44,43 +42,42 @@ Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->nam
 Route::get('content/upgrade/library', [H5PController::class, 'contentUpgradeLibrary'])->name('content-upgrade-library');
 
 Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'core.locale', 'adaptermode'])->group(function () {
-    Route::post('lti-content/create', [LtiContentController::class, 'create']);
-    Route::post('lti-content/create/{type}', [LtiContentController::class, 'create']);
-    Route::post('lti-content/{id}', [LtiContentController::class, 'show'])->middleware(['core.behavior-settings:view']);
-    Route::post('lti-content/{id}/edit', [LtiContentController::class, 'edit'])->middleware(['core.behavior-settings:editor']);
+    Route::resource('/h5p', H5PController::class, ['except' => ['index', 'destroy']]);
+    Route::post("/h5p/create/{contenttype?}", [H5PController::class, 'create']);
+    Route::post('/h5p/{id}', [H5PController::class, 'show'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
+    Route::post('/h5p/{id}/edit', [H5PController::class, 'edit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
 
-    Route::post('/h5p/{id}', [H5PController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
-    Route::post('/game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
+    Route::resource('/link', LinkController::class, ['except' => ['index', 'destroy']]);
+    Route::post('/link/create', [LinkController::class, 'create']);
+    Route::post('/link/{id}', [LinkController::class, 'show'])->middleware(['lti.redirect-to-editor']);
+    Route::post('/link/{id}/edit', [LinkController::class, 'edit']);
 
-    Route::post('/link/create', [LinkController::class, 'ltiCreate']);
-    Route::post('/link/{id}', [LinkController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
+    Route::resource('/article', ArticleController::class, ['except' => ['index', 'destroy']]);
+    Route::post('/article/create', [ArticleController::class, 'create'])->middleware(['core.behavior-settings:editor']);
+    Route::post('/article/{id}', [ArticleController::class, 'show'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor']);
+    Route::post('/article/{id}/edit', [ArticleController::class, 'edit'])->middleware(['core.behavior-settings:editor']);
 
-    Route::post('questionset/create', [QuestionSetController::class, 'ltiCreate']);
-    Route::post('questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
+    Route::resource('/questionset', QuestionSetController::class, ['except' => ['index', 'destroy']]);
+    Route::post('/questionset/create', [QuestionSetController::class, 'create']);
+    Route::post('/questionsets/image', [QuestionSetController::class, 'setQuestionImage'])->name('set.questionImage');
+    Route::post('/questionset/{id}', [QuestionSetController::class, 'show'])->middleware(['lti.redirect-to-editor']);
+    Route::post('/questionset/{id}/edit', [QuestionSetController::class, 'edit']);
 
-    Route::post('/article/create', [ArticleController::class, 'ltiCreate'])->middleware(['core.behavior-settings:editor']);
-    Route::post('/article/{id}', [ArticleController::class, 'ltiShow'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor']);
-    Route::post('/article/{id}/edit', [ArticleController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor']);
+    Route::resource('/game', GameController::class, ['except' => ['index', 'destroy']]);
+    Route::post('/game/create/{type}', [GameController::class, 'create']);
+    Route::post('/game/{id}', [GameController::class, 'show'])->middleware(['lti.redirect-to-editor']);
+    Route::post('/game/{id}/edit', [GameController::class, 'edit']);
 
-    Route::get("/h5p/create/{contenttype}", [H5PController::class, 'create'])->name("create.h5pContenttype");
-
-    Route::resource('questionset', QuestionSetController::class, ['except' => ['index', 'destroy']]);
-    Route::post('questionset/{id}', [QuestionSetController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
-    Route::post('questionset/{id}/edit', [QuestionSetController::class, 'ltiEdit']);
-
-    Route::resource('game', GameController::class, ['except' => ['index', 'destroy']]);
-    Route::post('game/create/{type}', [GameController::class, 'ltiCreate']);
-    Route::post('game/{id}', [GameController::class, 'ltiShow'])->middleware(['lti.redirect-to-editor']);
-    Route::post('game/{id}/edit', [GameController::class, 'ltiEdit']);
-
-    Route::post('h5p/{id}/edit', [H5PController::class, 'ltiEdit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
-    Route::post('link/{id}/edit', [LinkController::class, 'ltiEdit']);
+    // deprecated routes, do not add more of these.
+    // references to these exist in external systems, so these cannot be removed.
+    Route::post('/lti-content/create/article', [ArticleController::class, 'create']);
+    Route::post('/lti-content/create/game', [GameController::class, 'create']);
+    Route::post('/lti-content/create/link', [LinkController::class, 'create']);
+    Route::post('/lti-content/create/questionset', [QuestionSetController::class, 'create']);
+    Route::post('/lti-content/create/{type?}', [H5PController::class, 'create']);
 });
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
-
-Route::resource('/article', ArticleController::class, ['except' => ['index', 'destroy']]);
-Route::resource('/link', LinkController::class, ['except' => ['index', 'destroy']]);
 
 Route::post('/article/create/upload', [ArticleUploadController::class, 'uploadToNewArticle'])->name('article-upload.new');
 Route::post('/article/{id}/upload', [ArticleUploadController::class, 'uploadToExistingArticle'])->name('article-upload.existing');

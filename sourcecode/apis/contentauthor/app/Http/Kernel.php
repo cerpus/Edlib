@@ -82,7 +82,6 @@ class Kernel extends HttpKernel
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,
         'lti.signed-launch' => \App\Http\Middleware\LtiSignedLaunch::class,
-        'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,
         'adaptermode' => AdapterMode::class,
     ];
 
@@ -98,7 +97,6 @@ class Kernel extends HttpKernel
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\LtiAddToSession::class,
         \App\Http\Middleware\LtiSignedLaunch::class,
-        \App\Http\Middleware\LtiVerifyAuth::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,

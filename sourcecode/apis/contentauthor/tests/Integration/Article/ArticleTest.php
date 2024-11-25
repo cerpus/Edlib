@@ -13,10 +13,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Tests\Helpers\LtiHelper;
 use Tests\TestCase;
 
 class ArticleTest extends TestCase
 {
+    use LtiHelper;
     use RefreshDatabase;
 
     public function testRewriteUploadUrls(): void
@@ -285,7 +287,11 @@ class ArticleTest extends TestCase
             'license' => 'BY',
         ]);
 
-        $this->get(route('article.show', $article->id))
+        $url = "http://localhost/article/$article->id";
+        $this->post($url, $this->getSignedLtiParams($url, [
+            'lti_message_type' => 'basic-lti-launch-request',
+        ]))
+            ->assertOk()
             ->assertSee($article->title)
             ->assertSee($article->render(), false);
     }
@@ -293,7 +299,7 @@ class ArticleTest extends TestCase
     public function testMustBeLoggedInToCreateArticle()
     {
         $this->get(route('article.create'))
-            ->assertForbidden();
+            ->assertUnauthorized();
     }
 
     public function testRewriteUrls()
