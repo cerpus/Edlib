@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Traits\Collaboratable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -85,11 +84,6 @@ class QuestionSet extends Content
     public function getMachineName(): string
     {
         return 'QuestionSet';
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return new ContentTypeDataObject('QuestionSet', $contentType, 'Question set', "mui:DoneAll");
     }
 
     protected function getTags(): array

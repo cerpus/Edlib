@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
@@ -135,11 +134,6 @@ class Game extends Content implements VersionableObject
     public function getMachineName(): string
     {
         return 'Game';
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return new ContentTypeDataObject('Game', $contentType, 'Millionaire mini game', "mui:VideogameAsset");
     }
 
     protected function getTags(): array

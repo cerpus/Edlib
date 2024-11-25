@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Libraries\License;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\LtiContent;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\Attributable;
@@ -456,10 +455,5 @@ abstract class Content extends Model
             tags: $this->getTags(),
             maxScore: $this->getMaxScore(),
         );
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return null;
     }
 }
