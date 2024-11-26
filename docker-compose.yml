@@ -72,7 +72,6 @@ services:
       redis: { condition: service_healthy }
     env_file:
       - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
     command: /startup.sh
     healthcheck:
       test: [CMD, nc, -z, localhost, "9000"]
@@ -91,7 +90,6 @@ services:
       contentauthor-fpm: { condition: service_healthy }
     env_file:
       - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/apis/contentauthor:/app
@@ -107,7 +105,6 @@ services:
       redis: { condition: service_healthy }
     env_file:
       - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/apis/contentauthor:/app
