@@ -46,22 +46,6 @@ services:
   # Content Author
   # ==============
 
-  contentauthor:
-    image: nginx:1-alpine
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost]
-    volumes:
-      - ./sourcecode/apis/contentauthor/docker/contentAuthor.conf.template:/etc/nginx/templates/contentAuthor.conf.template:ro
-      - ./sourcecode/apis/contentauthor/docker/no-security-theatre.conf:/etc/nginx/conf.d/no-security-theatre.conf:ro
-      - ./sourcecode/apis/contentauthor/public:/app/public
-      - ./sourcecode/apis/contentauthor/storage:/app/storage
-      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-editor:/app/public/h5p-editor-php-library:ro
-      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-core:/app/public/h5p-php-library:ro
-    environment:
-      PHP_FPM_HOST: "contentauthor-fpm:9000"
-    depends_on:
-      contentauthor-fpm: { condition: service_healthy }
-
   contentauthor-fpm:
     build:
       context: ./sourcecode/apis/contentauthor
@@ -70,31 +54,25 @@ services:
       certs: { condition: service_completed_successfully }
       mysql: { condition: service_healthy }
       redis: { condition: service_healthy }
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
-    command: /startup.sh
     healthcheck:
       test: [CMD, nc, -z, localhost, "9000"]
     volumes:
-      - ./localSetup/projects/content-author/startup.sh:/startup.sh
-      - ./sourcecode/apis/contentauthor:/app
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
 
   contentauthor-cron:
     build:
       context: ./sourcecode/apis/contentauthor
       dockerfile: Dockerfile
       target: dev
-    command: [sh, -c, 'while true; do php /app/artisan schedule:run -q; sleep 60; done']
+    command: [sh, -c, 'while true; do php artisan schedule:run -q; sleep 60; done']
     depends_on:
       contentauthor-fpm: { condition: service_healthy }
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/apis/contentauthor:/app
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
 
   contentauthor-horizonqueue:
     build:
@@ -105,20 +83,18 @@ services:
     depends_on:
       contentauthor-fpm: { condition: service_healthy }
       redis: { condition: service_healthy }
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/apis/contentauthor:/app
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
 
   contentauthor-watch:
     image: node:16-alpine
     command: [sh, -c, 'npm ci && npm run watch']
     volumes:
       - npm_cache:/root/.npm
-      - ./sourcecode/apis/contentauthor:/app
-    working_dir: /app
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
 
 
   # ===
@@ -140,8 +116,8 @@ services:
       - ./localSetup/projects/nginx/docker-entrypoint.d/update-ca-certificates.sh:/docker-entrypoint.d/update-ca-certificates.sh:ro
       - ./localSetup/projects/nginx/includes:/etc/nginx/includes:ro
       - ./localSetup/projects/nginx/templates:/etc/nginx/templates:ro
-      - ./sourcecode/hub/public:/srv/www/hub/public:ro
-      - ./sourcecode/hub/storage/app/public:/srv/www/hub/storage/app/public:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor:ro
+      - ./sourcecode/hub:/srv/www/hub:ro
     ports:
       - "80:80"
       - "443:443"
