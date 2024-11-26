@@ -2,37 +2,11 @@
 
 namespace App\Console;
 
-use App\Console\Commands\EdlibLicenseStats;
-use App\Console\Commands\EnsureVersionExists;
-use App\Console\Commands\H5PLibraryInstall;
-use App\Console\Commands\H5PLibraryList;
-use App\Console\Commands\Inspire;
-use App\Console\Commands\CerpusSetup;
-use App\Console\Commands\PublishPresave;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\RemoveOldContentLocks;
-use App\Console\Commands\VersionAllUnversionedContent;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-        CerpusSetup::class,
-        EnsureVersionExists::class,
-        Inspire::class,
-        PublishPresave::class,
-        RemoveOldContentLocks::class,
-        VersionAllUnversionedContent::class,
-        EdlibLicenseStats::class,
-        H5PLibraryList::class,
-        H5PLibraryInstall::class,
-    ];
-
     /**
      * Define the application's command schedule.
      *
@@ -52,7 +26,5 @@ class Kernel extends ConsoleKernel
     protected function commands()
     {
         $this->load(__DIR__ . '/Commands');
-
-        require base_path('routes/console.php');
     }
 }

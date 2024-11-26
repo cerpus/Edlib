@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
-class FileUploadToNewArticle extends Request
+use Illuminate\Foundation\Http\FormRequest;
+
+class FileUploadToNewArticle extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

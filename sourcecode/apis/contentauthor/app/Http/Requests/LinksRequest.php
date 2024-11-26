@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
-class LinksRequest extends Request
+use Illuminate\Foundation\Http\FormRequest;
+
+class LinksRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

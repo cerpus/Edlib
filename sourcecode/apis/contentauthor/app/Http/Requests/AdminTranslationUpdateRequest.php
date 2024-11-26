@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class AdminTranslationUpdateRequest extends Request
+class AdminTranslationUpdateRequest extends FormRequest
 {
     public function authorize(): bool
     {

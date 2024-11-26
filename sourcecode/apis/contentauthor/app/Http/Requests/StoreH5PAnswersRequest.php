@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\User;
+use Illuminate\Foundation\Http\FormRequest;
 
-class StoreH5PAnswersRequest extends Request
+class StoreH5PAnswersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
