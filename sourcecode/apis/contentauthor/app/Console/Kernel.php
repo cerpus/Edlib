@@ -14,13 +14,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $outputLocation = '/proc/1/fd/1';
-        // PS! Always use '->onOneServer()'. In production CA is running on several servers...
         $schedule->command('cerpus:remove-content-locks')
             ->everyMinute()
             ->withoutOverlapping()
             ->onOneServer()
-            ->appendOutputTo($outputLocation);
+            ->appendOutputTo('php://stdout');
     }
 
     protected function commands()
