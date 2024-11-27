@@ -9,7 +9,7 @@ on:
         default: ''
   push:
     branches:
-      - master
+      - edlib2
 
 jobs:
   get_variables:
@@ -36,7 +36,7 @@ jobs:
 # ---------- APIS -----------------
   release_api_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-auth.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -44,7 +44,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_common:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-common.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-common.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -52,7 +52,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_contentauthor:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-contentauthor.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -60,7 +60,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-lti.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -68,7 +68,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_api_resources:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@master
+    uses: cerpus/Edlib/.github/workflows/api-resources.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -78,7 +78,7 @@ jobs:
   # ---------- Proxies -----------------
   release_proxy_admin:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@master
+    uses: cerpus/Edlib/.github/workflows/proxy-admin.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -86,7 +86,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_auth:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@master
+    uses: cerpus/Edlib/.github/workflows/proxy-auth.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -94,7 +94,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_lti:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@master
+    uses: cerpus/Edlib/.github/workflows/proxy-lti.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -102,7 +102,7 @@ jobs:
       AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
   release_proxy_resource:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@master
+    uses: cerpus/Edlib/.github/workflows/proxy-resource.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -111,7 +111,7 @@ jobs:
   # ------------ www ---------------
   release_www:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/www.yaml@master
+    uses: cerpus/Edlib/.github/workflows/www.yaml@edlib2
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
     secrets:
@@ -164,7 +164,7 @@ jobs:
     needs:
       - building_done
       - get_variables
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/edlib2' && github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: false
       matrix:
