@@ -24,7 +24,7 @@ Route::get('/lti-return', ReturnToCoreController::class)
     ->name('lti-return');
 
 Route::post('h5p/adapter', function () {
-    return ["url" => route('create')];
+    return response()->noContent();
 })->name('h5p.adapter')->middleware('adaptermode');
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
