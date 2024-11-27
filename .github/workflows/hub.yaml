@@ -3,7 +3,7 @@ name: Hub
 on:
   push:
     branches:
-      - edlib3
+      - master
     paths:
       - ".github/workflows/hub.yaml"
       - "sourcecode/hub/**"
@@ -11,7 +11,7 @@ on:
       - 'v*'
   pull_request:
     branches:
-      - edlib3
+      - master
     paths:
       - '.github/workflows/hub.yaml'
       - 'sourcecode/hub/**'
@@ -37,7 +37,7 @@ jobs:
         run: composer validate --no-check-publish
 
   php-cs-fixer:
-    if: github.ref != 'refs/heads/edlib3'
+    if: github.ref != 'refs/heads/master'
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
@@ -201,7 +201,7 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-hub
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/edlib3' }},prefix=php-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }},prefix=php-
             type=semver,pattern={{version}},prefix=php-
             type=semver,pattern={{major}}.{{minor}},prefix=php-
             type=semver,pattern={{major}},prefix=php-
@@ -215,7 +215,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
           context: sourcecode/hub
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/edlib3' }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           target: prod
           tags: ${{ steps.php_meta.outputs.tags }}
 
@@ -226,7 +226,7 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-hub
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/edlib3' }},prefix=web-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }},prefix=web-
             type=semver,pattern={{version}},prefix=web-
             type=semver,pattern={{major}}.{{minor}},prefix=web-
             type=semver,pattern={{major}},prefix=web-
@@ -240,7 +240,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           context: sourcecode/hub
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/edlib3' }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
 
@@ -251,7 +251,7 @@ jobs:
 
   deploy-eb:
     name: Deploy hub to test environments
-    if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/edlib3'
+    if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: [build_test_publish]
     strategy:
       matrix:
