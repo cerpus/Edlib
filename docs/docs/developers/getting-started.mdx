@@ -6,22 +6,19 @@ sidebar_position: 1
 
 The goal of this guide is to get you up and running with a **development** environment for Edlib.
 
-We are still working on documentation for setting up Edlib on-premise and in the cloud. Be sure to check back later if you are interested in this or [contact us](mailto:support@edlib.com) directly if you need any help or have any questions. You can also visit the [discussions section on GitHub](https://github.com/cerpus/Edlib/discussions) to se what other users have asked for or start your own discussion thread. 
+W are still working on documentation for setting up Edlib on-premise and in the cloud. Be sure to check back later if you are interested in this or [contact us](mailto:support@edlib.com) directly if you need any help or have any questions. You can also visit the [discussions section on GitHub](https://github.com/cerpus/Edlib/discussions) to se what other users have asked for or start your own discussion thread. 
 
 ## Prerequisites
 
-- A recent version of [Docker](https://docs.docker.com/get-docker/). Make sure you're on the latest (non distro-provided) version of `docker-compose`. 
+- A recent version of [Docker](https://docs.docker.com/get-docker/) with Docker Compose.
 - The [git](https://git-scm.com/downloads) command-line utility
-- Ports 80, 443, 3306, 5432, 5672, 6379, 9200, and 15672 on the host machine must be unoccupied
+- Ports 80, 443, 3306, 5432, and 6379 on the host machine must be unoccupied.
 
 :::note
 
-1. Edlib is a complex web application with the need of mulitple ports and HTTPS.
-2. Check the error log if there are problems with services not starting. 
-3. Note that the following services will have the status `Exited (0)` after their run:
-- certs
-- common-startup
-- elasticsearch_password
+1. Edlib requires HTTPS in development.
+2. Check the error log if there are problems with services not starting. Some services just execute a task at launch and
+   then exit with code 0; this is normal.
 
 :::
 
@@ -40,13 +37,7 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    cd Edlib
    ```
 
-2. Copy `localSetup/.env.example` to `localSetup/.env`
-
-   ```bash
-   cp localSetup/.env.example localSetup/.env
-   ```
-
-3. Start Edlib via Docker Compose
+2. Start Edlib via Docker Compose
 
    ```bash
    docker compose up -d
@@ -58,7 +49,7 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    docker compose ps
    ```
 
-4. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux and
+3. Update your hosts files to point Edlib's services to 127.0.0.1. On Linux and
    macOS, you can update your hosts file with `scripts/update-host-file.sh`:
 
    ```bash
@@ -68,7 +59,7 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    On Windows, you will have to update the file manually with the values found
    in the script.
 
-5. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
+4. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
    system. The exact procedure will vary depending on your operating system.
 
 ## What's next?
