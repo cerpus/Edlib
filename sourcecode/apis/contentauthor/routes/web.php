@@ -74,7 +74,8 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('/lti-content/create/game', [GameController::class, 'create']);
     Route::post('/lti-content/create/link', [LinkController::class, 'create']);
     Route::post('/lti-content/create/questionset', [QuestionSetController::class, 'create']);
-    Route::post('/lti-content/create/{type?}', [H5PController::class, 'create']);
+    Route::post('/lti-content/create/h5p', [H5PController::class, 'create']);
+    Route::post('/lti-content/create', [H5PController::class, 'create']);
 });
 
 Route::get('/slo', [SingleLogoutController::class, 'index'])->name('slo'); // Single logout route
