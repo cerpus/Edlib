@@ -4,14 +4,21 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
+use function array_unique;
+
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
+
+    public function __construct(private readonly H5PVideoInterface $videoAdapter)
+    {
+    }
 
     /**
      * Alter parameters before added to the H5PIntegrationObject
@@ -32,46 +39,40 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getEditorCss(): array
     {
-        return [];
+        return $this->videoAdapter->getEditorCss();
     }
-
 
     public function getEditorSettings(): array
     {
         return [];
     }
 
-
     public function getCustomEditorScripts(): array
     {
-        return ['/js/videos/streamps.js', '/js/videos/brightcove.js'];
+        return array_unique([
+            ...$this->videoAdapter->getEditorScripts(),
+        ]);
     }
-
 
     public function getCustomViewScripts(): array
     {
         $scripts = [];
-        $libraries = $this->config->h5pCore->loadContentDependencies($this->config->id, "preloaded");
-        if ($this->hasVideoLibrary($libraries, 1, 3) === true) {
-            $scripts[] = '/js/videos/streamps.js';
-        }
-
-        if ($this->hasCerpusVideoLibrary($libraries, 1, 0) === true) {
-            $scripts[] = '/js/videos/brightcove.js';
-        }
 
         if (config('h5p.include-mathjax') === true) {
             $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG';
         }
-        return $scripts;
+
+        return array_unique([
+            ...$scripts,
+            ...$this->videoAdapter->getViewScripts(),
+        ]);
     }
 
 
     public function getCustomViewCss(): array
     {
-        return [];
+        return $this->videoAdapter->getViewCss();
     }
-
 
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
     {
@@ -169,12 +170,12 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return [];
+        return $this->videoAdapter->getConfigJs();
     }
 
     public function getCustomEditorStyles(): array
     {
-        return [];
+        return $this->videoAdapter->getEditorCss();
     }
 
     public function getAdapterName(): string

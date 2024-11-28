@@ -11,7 +11,11 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Utils as GuzzleUtils;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Session;
 use InvalidArgumentException;
+
+use function asset;
+use function mix;
 
 class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterface
 {
@@ -179,5 +183,46 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     public function getType(): string
     {
         return "video";
+    }
+
+    public function getViewCss(): array
+    {
+        return [];
+    }
+
+    public function getViewScripts(): array
+    {
+        return [
+            asset('js/videos/brightcove.js'),
+        ];
+    }
+
+    public function getEditorCss(): array
+    {
+        $css = [
+            (string) mix('css/ndlah5p-editor.css'),
+        ];
+
+        $isAdmin = Session::get('isAdmin');
+        if (!$isAdmin) {
+            $css[] = asset('css/ndlah5p-youtube.css');
+        }
+
+        return $css;
+    }
+
+    public function getEditorScripts(): array
+    {
+        return [
+            (string) mix("js/ndla-contentbrowser.js"),
+            asset('js/videos/brightcove.js'),
+        ];
+    }
+
+    public function getConfigJs(): array
+    {
+        return [
+            (string) mix('js/react-contentbrowser.js'),
+        ];
     }
 }

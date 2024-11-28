@@ -103,13 +103,6 @@ class H5PControllerTest extends TestCase
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
-
-        // Adapter specific
-        if ($adapterMode === 'ndla') {
-            $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
-            $this->assertSame([], $data['configJs']);
-        }
     }
 
     public function provider_testCreate(): Generator

@@ -12,30 +12,6 @@ trait H5PCommonAdapterTrait
 {
     protected $config;
 
-    public function hasVideoLibrary(array $scripts, int $minimumMajorVersion = 1, int $minimumMinorVersion = 1)
-    {
-        return collect($scripts)
-            ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if ($library['machineName'] === 'H5P.Video') {
-                    return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
-                }
-                return false;
-            })
-            ->isNotEmpty();
-    }
-
-    public function hasCerpusVideoLibrary(array $scripts, int $minimumMajorVersion = 1, int $minimumMinorVersion = 0)
-    {
-        return collect($scripts)
-            ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if ($library['machineName'] === 'H5P.CerpusVideo') {
-                    return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
-                }
-                return false;
-            })
-            ->isNotEmpty();
-    }
-
     public function alterPackageSemantics(&$semantics, $machineName)
     {
         try {
