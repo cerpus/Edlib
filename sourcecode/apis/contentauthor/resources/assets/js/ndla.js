@@ -1,11 +1,10 @@
+import { initAudioBrowser, initImageBrowser, initVideoBrowser } from '../react/contentBrowser';
 import { getLicenseByNBTitle } from '@ndla/licenses';
 
-const $ = H5P.jQuery;
+const $ = window.H5P.jQuery;
 
 /**
  * Content browser editor widget module.
- *
- * @param {jQuery} $
  */
 
 class ContentBrowserBase {
@@ -219,7 +218,7 @@ class AudioBrowser extends ContentBrowserBase {
     constructor(parent, field, params, setValue) {
         super(parent, field, params);
         this.cbContent = params && params[0] && params[0].externalId;
-        this.widget = new originalAudioWidget(parent, field, this.params, this.setValue(setValue));
+        this.widget = new window.originalAudioWidget(parent, field, this.params, this.setValue(setValue));
         originalAudioWidget.providers = originalAudioWidget.providers.concat(this.providers);
         this.changes = this.widget.changes;
     }
@@ -298,7 +297,7 @@ class AudioBrowser extends ContentBrowserBase {
     init() {
         const promise = this.syncLicense();
 
-        parent.initAudioBrowser(this.cbContainer.get(0), {
+        initAudioBrowser(this.cbContainer.get(0), {
             onSelectCallback: values => {
                 promise.finally(() => {
                     this.setCopyright(values);
@@ -319,7 +318,7 @@ class ImageBrowser extends ContentBrowserBase {
     constructor(parent, field, params, setValue) {
         super(parent, field, params);
         this.cbContent = params && params.externalId;
-        this.widget = new originalImageWidget(parent, field, params, this.setValue(setValue));
+        this.widget = new window.originalImageWidget(parent, field, params, this.setValue(setValue));
         this.changes = this.widget.changes;
     }
 
@@ -450,7 +449,7 @@ class ImageBrowser extends ContentBrowserBase {
     init() {
         const promise = this.syncLicense();
 
-        parent.initImageBrowser(this.cbContainer.get(0), {
+        initImageBrowser(this.cbContainer.get(0), {
             onSelectCallback: values => {
                 promise.finally(() => {
                     this.copyrightHandler.reset();
@@ -482,7 +481,7 @@ class VideoBrowser extends ContentBrowserBase {
     constructor(parent, field, params, setValue) {
         super(parent, field, params);
         this.cbContent = params && params[0] && params[0].mime === 'video/Brightcove';
-        this.widget = new originalVideoWidget(parent, field, params, this.setValue(setValue));
+        this.widget = new window.originalVideoWidget(parent, field, params, this.setValue(setValue));
         originalVideoWidget.providers = originalVideoWidget.providers.concat(this.providers);
         this.changes = this.widget.changes;
     }
@@ -569,7 +568,7 @@ class VideoBrowser extends ContentBrowserBase {
     init() {
         const promise = this.syncLicense();
 
-        parent.initVideoBrowser(this.cbContainer.get(0), {
+        initVideoBrowser(this.cbContainer.get(0), {
             onSelectCallback: values => {
                 promise.finally(() => {
                     this.copyrightHandler.reset();
@@ -737,9 +736,8 @@ class CopyrightDataObject {
     authors = [];
 }
 
-const originalAudioWidget = H5PEditor.widgets.audio;
-const originalImageWidget = H5PEditor.widgets.image;
-const originalVideoWidget = H5PEditor.widgets.video;
-H5PEditor.widgets.audio = AudioBrowser;
-H5PEditor.widgets.video = VideoBrowser;
-H5PEditor.widgets.image = ImageBrowser;
+export {
+    AudioBrowser,
+    ImageBrowser,
+    VideoBrowser,
+};

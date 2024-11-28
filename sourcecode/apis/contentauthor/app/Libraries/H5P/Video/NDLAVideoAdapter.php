@@ -214,15 +214,13 @@ class NDLAVideoAdapter implements H5PVideoInterface, H5PExternalProviderInterfac
     public function getEditorScripts(): array
     {
         return [
-            (string) mix("js/ndla-contentbrowser.js"),
+            (string) mix("js/ndla-video.js"),
             asset('js/videos/brightcove.js'),
         ];
     }
 
     public function getConfigJs(): array
     {
-        return [
-            (string) mix('js/react-contentbrowser.js'),
-        ];
+        return [];
     }
 }
