@@ -1,9 +1,0 @@
-{
-    "name": "authapi",
-    "collectCoverage": true,
-    "coverageReporters": ["text"],
-    "transformIgnorePatterns": [
-        "/node_modules/(?!@cerpus|uuid|colorette).+\\.js$"
-    ],
-    "setupFiles": ["./src/tests/setEnvVars.js"]
-}

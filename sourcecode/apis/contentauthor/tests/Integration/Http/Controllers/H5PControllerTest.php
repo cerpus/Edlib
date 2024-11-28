@@ -266,7 +266,7 @@ class H5PControllerTest extends TestCase
     }
 
     /** @dataProvider provider_adapterMode */
-    public function testDoShow(string $adapterMode): void
+    public function testShow(string $adapterMode): void
     {
         $this->app->singleton(H5PAdapterInterface::class, match ($adapterMode) {
             'cerpus' => CerpusH5PAdapter::class,

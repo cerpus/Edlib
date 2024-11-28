@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CapabilityEnableRequest extends Request
+class CapabilityEnableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

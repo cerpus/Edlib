@@ -18,39 +18,6 @@ docker run --rm -e NGROK_AUTHTOKEN=your-token-here --network=edlib_default \
 * Proper LTI requests: `$request->attributes->get('lti')`
 * LTI sessions after initial launch: `$request->session()->get('lti')`
 
-## LTI settings
-
-* `ext_edlib3_return_exact_version=1`
-
-  Make the Use Content button in item selections return a link to the current
-  version of a resource.
-
-## LTI Deep-Linking 1.0 extensions
-
-The following attributes can be used with items of the `LtiLinkItem` type to
-communicate extra information that isn't part of the LTI Deep-Linking spec:
-
-* `license`
-    * `@id`: `https://spec.edlib.com/lti/vocab#license`
-    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
-
-* `languageIso639_3`
-    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
-    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
-
-* `published`
-    * `@id`: `https://spec.edlib.com/lti/vocab#published`
-    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
-
-* `shared`
-    * `@id`: `https://spec.edlib.com/lti/vocab#shared`
-    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
-
-* `tag`
-    * `@id`: `https://spec.edlib.com/lti/vocab#tag`
-    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
-    * Can be either a list of strings, or just a string.
-
 ## LTI sample endpoints
 
 Edlib includes some LTI endpoints to make testing and developing easier. These
@@ -67,18 +34,6 @@ require an authenticated LTI launch.
 * Test self-resizing iframes
 
   <https://hub.edlib.test/lti/samples/resize>
-
-## Resize requests
-
-When iframed, Edlib can emit messages (via [postMessage][1]) requesting the
-iframe be resized to fit the content. The format of these messages is:
-
-```json
-{
-    "action": "resize",
-    "scrollHeight": 480
-}
-```
 
 ## Useful resources
 

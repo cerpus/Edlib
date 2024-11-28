@@ -2,10 +2,18 @@
 *.iml
 .DS_Store
 /sourcecode/not_migrated
-/sourcecode/apis/version
-/sourcecode/npm/nodeUtils
 /data
 /localSetup/.env
 node_modules
 *.phar
 docker-compose.override.yml
+
+# Removed source code
+/sourcecode/apis/auth
+/sourcecode/apis/common
+/sourcecode/apis/lti
+/sourcecode/apis/version
+/sourcecode/npm
+/sourcecode/npm/nodeUtils
+/sourcecode/proxies
+/sourcecode/www

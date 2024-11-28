@@ -94,6 +94,8 @@ return [
 
     'links' => [
         public_path('h5pstorage') => '../storage/app',
+        public_path('h5p-php-library') => '../vendor/h5p/h5p-core',
+        public_path('h5p-editor-php-library') => '../vendor/h5p/h5p-editor',
     ],
 
 ];

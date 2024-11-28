@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\ContentVersion;
 use App\Events\LinkWasSaved;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\LinksRequest;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Link;
@@ -20,13 +19,11 @@ use Illuminate\View\View;
 
 class LinkController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
 
     public function __construct(private readonly Lti $lti)
     {
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store', 'update']]);
     }
 
@@ -170,7 +167,7 @@ class LinkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function doShow($id, $context): View
+    public function show($id): View
     {
         $customCSS = $this->lti->getRequest(request())?->getLaunchPresentationCssUrl();
         /** @var Link $link */
@@ -179,10 +176,5 @@ class LinkController extends Controller
         $metadata = !is_null($link->metadata) ? json_decode($link->metadata) : null;
 
         return view('link.show')->with(compact('link', 'customCSS', 'metadata'));
-    }
-
-    public function show($id)
-    {
-        return $this->doShow($id, null);
     }
 }

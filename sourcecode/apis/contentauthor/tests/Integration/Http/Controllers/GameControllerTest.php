@@ -9,17 +9,17 @@ use App\Http\Libraries\License;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
-use App\Lti\LtiRequest;
-use Cerpus\EdlibResourceKit\Oauth1\ValidatorInterface;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Tests\Helpers\LtiHelper;
 use Tests\TestCase;
 
 class GameControllerTest extends TestCase
 {
+    use LtiHelper;
     use RefreshDatabase;
     use WithFaker;
 
@@ -118,13 +118,14 @@ class GameControllerTest extends TestCase
 
     public function testCreate(): void
     {
-        $this->mockLti();
+        $url = 'http://localhost/game/create/millionaire';
 
         $response = $this->withSession(['locale' => 'se-fi'])
-            ->post('/game/create/millionaire', [
+            ->post($url, $this->getSignedLtiParams($url, [
                 'lti_version' => 'LTI-1p0',
                 'lti_message_type' => 'basic-lti-launch-request',
-            ])
+            ]))
+            ->assertOk()
             ->getOriginalContent();
 
         $this->assertInstanceOf(View::class, $response);
@@ -153,7 +154,6 @@ class GameControllerTest extends TestCase
 
     public function testView(): void
     {
-        $this->mockLti();
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
@@ -165,11 +165,13 @@ class GameControllerTest extends TestCase
             'license' => 'BY-NC',
         ]);
 
+        $url = "http://localhost/game/$game->id";
         $response = $this->withSession(['locale' => 'se-fi', 'userId' => $this->faker->uuid])
-            ->post("/game/$game->id", [
+            ->post($url, $this->getSignedLtiParams($url, [
                 'lti_version' => 'LTI-1p0',
                 'lti_message_type' => 'basic-lti-launch-request',
-            ])
+            ]))
+            ->assertOk()
             ->getOriginalContent();
 
         $this->assertInstanceOf(View::class, $response);
@@ -181,15 +183,5 @@ class GameControllerTest extends TestCase
         $this->assertNull($gameSettings->questionSet->questions[0]->image);
         $this->assertCount(4, $gameSettings->questionSet->questions[0]->answers);
         $this->assertNull($gameSettings->questionSet->questions[0]->answers[0]->image);
-    }
-
-    private function mockLti(): void
-    {
-        $ltiRequest = $this->createMock(LtiRequest::class);
-        $this->instance(LTIRequest::class, $ltiRequest);
-
-        $validator = $this->createMock(ValidatorInterface::class);
-        $validator->expects($this->once())->method('validate');
-        $this->instance(ValidatorInterface::class, $validator);
     }
 }

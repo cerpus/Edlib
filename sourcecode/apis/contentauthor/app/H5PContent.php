@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Libraries\H5PFileVersioner;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
@@ -322,21 +321,6 @@ class H5PContent extends Content implements VersionableObject
         }
 
         return $authors[0]->name;
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        $library = H5PLibrary::fromMachineName($contentType)
-            ->orderBy('major_version', 'desc')
-            ->orderBy('minor_version', 'desc')
-            ->orderBy('patch_version', 'desc')
-            ->first();
-
-        if (!$library) {
-            return null;
-        }
-
-        return new ContentTypeDataObject("H5P", $contentType, $library->title, $library->getIconUrl());
     }
 
     public function getUrl(): string

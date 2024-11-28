@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Libraries\Storage\LogStorage;
 use Carbon\Carbon;
 use Exception;
 use App\Article;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class AdminArticleController extends Controller
 {
     public const chunkSize = 30;
     public const logFile = 'articleMaxScore.log';
 
-    private $log;
+    private Filesystem $log;
 
-    public function __construct(LogStorage $logStorage)
+    public function __construct()
     {
-        $this->log = $logStorage::disk();
+        $this->log = Storage::disk('storageLogs');
     }
 
     public function index()

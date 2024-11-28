@@ -9,7 +9,6 @@ use App\H5PContent;
 use App\H5PFile;
 use App\H5PLibrary;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
@@ -61,7 +60,6 @@ use function request;
 
 class H5PController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
 
     private string $viewDataCacheName = 'viewData-';
@@ -73,11 +71,10 @@ class H5PController extends Controller
     ) {
         $this->middleware('adaptermode', ['only' => ['show', 'edit', 'update', 'store', 'create']]);
         $this->middleware('core.return', ['only' => ['create', 'edit']]);
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
         $this->middleware('core.locale', ['only' => ['create', 'edit', 'store']]);
     }
 
-    public function doShow($id, $context): View
+    public function show($id): View
     {
         $ltiRequest = $this->lti->getRequest(request());
         $styles = [];
@@ -94,7 +91,7 @@ class H5PController extends Controller
             ->setUserEmail(Session::get('email', false))
             ->setUserName(Session::get('name', false))
             ->setPreview($ltiRequest?->isPreview())
-            ->setContext($context)
+            ->setContext($ltiRequest?->generateContextKey() ?? '')
             ->setEmbedId($ltiRequest?->getExtEmbedId())
             ->setEmbedCode($ltiRequest?->getEmbedCode() ?? '')
             ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
@@ -119,16 +116,6 @@ class H5PController extends Controller
             'preview' => $ltiRequest?->isPreview(),
             'resourceType' => sprintf($h5pContent::RESOURCE_TYPE_CSS, $h5pContent->getContentType()),
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @throws Exception
-     */
-    public function show(int $id): View
-    {
-        return $this->doShow($id, null);
     }
 
     /**
@@ -597,14 +584,6 @@ class H5PController extends Controller
         } else {
             return '';
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(int $id): void
-    {
-        //
     }
 
     public function ajaxLoading(Request $request, AjaxRequest $ajaxRequest): object|array|string|null

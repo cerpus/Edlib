@@ -4,7 +4,6 @@ namespace App;
 
 use App\Http\Libraries\ArticleFileVersioner;
 use App\Libraries\DataObjects\ContentStorageSettings;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\Versioning\VersionableObject;
 use Carbon\Carbon;
 use Cerpus\Helper\Clients\Client;
@@ -275,11 +274,6 @@ class Article extends Content implements VersionableObject
     public function getIncrementing()
     {
         return false;
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return new ContentTypeDataObject('Article', $contentType, 'Article', "fa:newspaper-o");
     }
 
     private static function rewriteUploadUrls(string $content): string

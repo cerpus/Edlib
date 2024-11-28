@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Game;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\Games\GameHandler;
-use App\Lti\Lti;
 use App\Traits\ReturnToCore;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,25 +14,14 @@ use Illuminate\View\View;
 
 class GameController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
 
-    public function __construct(private Lti $lti)
-    {
-        $this->middleware('lti.verify-auth', ['only' => ['create', 'edit', 'store', 'update']]);
-    }
-
     public function show($id)
-    {
-        return $this->doShow($id, null);
-    }
-
-    public function doShow($id, $context): View
     {
         $game = Game::findOrFail($id);
         $gameType = GameHandler::makeGameTypeFromId($game->gametype);
 
-        return $gameType->view($game, $context);
+        return $gameType->view($game);
     }
 
     public function create(Request $request): View

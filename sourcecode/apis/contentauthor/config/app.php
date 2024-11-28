@@ -211,8 +211,8 @@ return [
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
 
-    'consumer-key' => env('H5P_CONSUMER_KEY', 'h5p'),
-    'consumer-secret' => env('H5P_CONSUMER_SECRET', 'changeme'),
+    'consumer-key' => env('LTI_CONSUMER_KEY', env('H5P_CONSUMER_KEY')),
+    'consumer-secret' => env('LTI_CONSUMER_SECRET', env('H5P_CONSUMER_SECRET')),
 
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
     'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),

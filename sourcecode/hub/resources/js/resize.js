@@ -37,8 +37,9 @@ addEventListener('message', (event) => {
     const border = iframe.getBoundingClientRect().height - iframe.scrollHeight;
     iframe.height = String(event.data.scrollHeight + border);
 
-    if (window.parent) {
-        // forward to parent iframe
+    if (window.parent && iframe.closest('.forwards-resize-messages')) {
+        console.debug('Forwarding the resize request');
+
         parent.postMessage({
             action: 'resize',
             scrollHeight: event.data.scrollHeight,
