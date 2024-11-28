@@ -58,7 +58,7 @@ return [
     |
     */
 
-    'url' => rtrim(env('APP_URL', 'http://localhost'), '/'),
+    'url' => rtrim((string) env('APP_URL', 'http://localhost'), '/'),
 
     'asset_url' => env('ASSET_URL'),
 

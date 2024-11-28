@@ -6,7 +6,6 @@ namespace App\Http\Requests;
 
 use App\DataObjects\ContentDisplayItem;
 use App\Models\Content;
-use App\Models\ContentVersion;
 use App\Support\SessionScope;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,6 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Laravel\Scout\Builder;
 use Override;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function abort;
 use function trans;
@@ -278,16 +278,16 @@ class ContentFilter extends FormRequest
 
     /**
      * @param Builder<Content> $builder
-     * @return LengthAwarePaginator<mixed>
+     * @return LengthAwarePaginator<ContentDisplayItem>
      */
     public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
     {
-        /** @var LengthAwarePaginator<Content> $paginator */
         $paginator = $builder->paginateRaw();
+        assert($paginator instanceof LengthAwarePaginator);
 
         return $paginator->setCollection(
             $this->attachModel(
-                $paginator->getCollection(),
+                $paginator->getCollection()['hits'],
                 $forUser,
                 $showDrafts
             )
@@ -300,17 +300,16 @@ class ContentFilter extends FormRequest
      */
     public function getWithModel(Builder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
     {
-        return $this->attachModel(new Collection($builder->take($limit)->raw()), $forUser, $showDrafts);
+        return $this->attachModel($builder->take($limit)->raw()['hits'], $forUser, $showDrafts);
     }
 
     /**
-     * @param Collection<string, Content> $items
+     * @param array<int, array{id: string, content_type: string|null}> $hits
      * @return Collection<int, ContentDisplayItem>
      */
-    private function attachModel(Collection $items, bool $forUser, bool $showDrafts): Collection
+    private function attachModel(array $hits, bool $forUser, bool $showDrafts): Collection
     {
-        /** @var Collection<int, array<string, mixed>> $hits */
-        $hits = new Collection($items->get('hits'));
+        $hits = new Collection($hits);
 
         $eagerLoad = ['users'];
         if ($showDrafts) {
@@ -318,17 +317,18 @@ class ContentFilter extends FormRequest
         } else {
             $eagerLoad[] = 'latestPublishedVersion';
         }
-        /** @var Collection<int, Content> $models */
+
         $models = Content::whereIn('id', $hits->pluck('id'))
             ->with($eagerLoad)
             ->withCount(['views'])
-            ->get();
+            ->get()
+            ->keyBy('id');
 
         return $hits->map(function (array $item) use ($models, $forUser, $showDrafts) {
-            /** @var Content $model */
-            $model = $models->firstWhere('id', $item['id']);
-            /** @var ContentVersion $version */
-            $version = $showDrafts ? $model->latestVersion : $model->latestPublishedVersion;
+            $model = $models[$item['id']]
+                ?? throw new NotFoundHttpException();
+            $version = ($showDrafts ? $model->latestVersion : $model->latestPublishedVersion)
+                ?? throw new NotFoundHttpException();
 
             $canUse = Gate::allows('use', [$model, $version]);
             $canEdit = Gate::allows('edit', $model);

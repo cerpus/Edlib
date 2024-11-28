@@ -24,7 +24,7 @@ class ContentView extends Model
     ];
 
     /**
-     * @return BelongsTo<Content, self>
+     * @return BelongsTo<Content, $this>
      */
     public function content(): BelongsTo
     {
@@ -32,7 +32,7 @@ class ContentView extends Model
     }
 
     /**
-     * @return BelongsTo<LtiPlatform, self>
+     * @return BelongsTo<LtiPlatform, $this>
      */
     public function ltiPlatform(): BelongsTo
     {

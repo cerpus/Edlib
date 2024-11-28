@@ -38,7 +38,7 @@ class LtiToolExtra extends Model
     ];
 
     /**
-     * @return BelongsTo<LtiTool, self>
+     * @return BelongsTo<LtiTool, $this>
      */
     public function tool(): BelongsTo
     {
