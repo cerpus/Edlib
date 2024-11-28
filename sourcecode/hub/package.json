@@ -6,7 +6,7 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "laravel-vite-plugin": "^1.0.5",
+        "laravel-vite-plugin": "^1.0.6",
         "sass": "^1.80.6",
         "vite": "^5.4.10",
         "vite-plugin-manifest-sri": "^0.2.0"
