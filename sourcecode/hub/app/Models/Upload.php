@@ -17,7 +17,7 @@ class Upload extends Model
     public const UPDATED_AT = null;
 
     /**
-     * @return HasMany<ContentVersion>
+     * @return HasMany<ContentVersion, $this>
      */
     public function contentVersions(): HasMany
     {

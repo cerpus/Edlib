@@ -128,7 +128,7 @@ class Content extends Model
     }
 
     /**
-     * @return HasOne<ContentVersion>
+     * @return HasOne<ContentVersion, $this>
      */
     public function latestVersion(): HasOne
     {
@@ -138,7 +138,7 @@ class Content extends Model
     }
 
     /**
-     * @return HasOne<ContentVersion>
+     * @return HasOne<ContentVersion, $this>
      */
     public function latestDraftVersion(): HasOne
     {
@@ -151,7 +151,7 @@ class Content extends Model
     }
 
     /**
-     * @return HasOne<ContentVersion>
+     * @return HasOne<ContentVersion, $this>
      */
     public function latestPublishedVersion(): HasOne
     {
@@ -164,7 +164,7 @@ class Content extends Model
     }
 
     /**
-     * @return HasMany<ContentVersion>
+     * @return HasMany<ContentVersion, $this>
      */
     public function versions(): HasMany
     {
@@ -212,7 +212,7 @@ class Content extends Model
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {
@@ -240,7 +240,7 @@ class Content extends Model
     }
 
     /**
-     * @return HasMany<ContentView>
+     * @return HasMany<ContentView, $this>
      */
     public function views(): HasMany
     {
@@ -278,7 +278,7 @@ class Content extends Model
     }
 
     /**
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {
@@ -289,7 +289,7 @@ class Content extends Model
     }
 
     /**
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
     public function usersWithTimestamps(): BelongsToMany
     {

@@ -59,7 +59,7 @@ class LtiTool extends Model
     ];
 
     /**
-     * @return HasMany<ContentVersion>
+     * @return HasMany<ContentVersion, $this>
      */
     public function contentVersions(): HasMany
     {
@@ -67,7 +67,7 @@ class LtiTool extends Model
     }
 
     /**
-     * @return HasMany<LtiToolExtra>
+     * @return HasMany<LtiToolExtra, $this>
      */
     public function extras(): HasMany
     {

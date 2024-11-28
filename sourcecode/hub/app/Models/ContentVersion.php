@@ -188,7 +188,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<User, self>
+     * @return BelongsTo<User, $this>
      */
     public function editedBy(): BelongsTo
     {
@@ -196,7 +196,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<Content, self>
+     * @return BelongsTo<Content, $this>
      */
     public function content(): BelongsTo
     {
@@ -204,7 +204,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<Upload, self>
+     * @return BelongsTo<Upload, $this>
      */
     public function icon(): BelongsTo
     {
@@ -212,7 +212,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<self, self>
+     * @return BelongsTo<self, $this>
      */
     public function previousVersion(): BelongsTo
     {
@@ -220,7 +220,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsTo<LtiTool, self>
+     * @return BelongsTo<LtiTool, $this>
      */
     public function tool(): BelongsTo
     {
@@ -228,7 +228,7 @@ class ContentVersion extends Model
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {
