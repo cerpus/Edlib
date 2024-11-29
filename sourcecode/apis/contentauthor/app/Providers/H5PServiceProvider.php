@@ -79,27 +79,23 @@ class H5PServiceProvider extends ServiceProvider
             ->needs(Cloud::class)
             ->give(fn () => Storage::disk('h5p-presave'));
 
-        $this->app->bind(H5PVideoInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class)->getAdapterName();
-
-            return match (strtolower($adapter)) {
-                'ndla' => $this->app->make(NDLAVideoAdapter::class),
-                default => $this->app->make(NullVideoAdapter::class),
-            };
+        $this->app->bind(H5PVideoInterface::class, match (config('h5p.video.adapter')) {
+            'ndla' => NDLAVideoAdapter::class,
+            default => NullVideoAdapter::class,
         });
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs(Client::class)
             ->give(fn () => Oauth2Client::getClient(OauthSetup::create([
-                'authUrl' => config('h5p.video.authUrl'),
-                'coreUrl' => config('h5p.video.url'),
-                'key' => config('h5p.video.key'),
-                'secret' => config('h5p.video.secret'),
+                'authUrl' => config('ndla.video.authUrl'),
+                'coreUrl' => config('ndla.video.url'),
+                'key' => config('ndla.video.key'),
+                'secret' => config('ndla.video.secret'),
             ])));
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs('$accountId')
-            ->giveConfig('h5p.video.accountId');
+            ->giveConfig('ndla.video.accountId');
 
         $this->app->when(NDLAContentBrowser::class)
             ->needs(Client::class)
@@ -169,15 +165,10 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->bind(H5PAdapterInterface::class, function () {
             $adapterTarget = strtolower(Session::get('adapterMode', config('h5p.h5pAdapter')));
-            switch ($adapterTarget) {
-                case 'ndla':
-                    $adapter = new NDLAH5PAdapter();
-                    break;
-                case 'cerpus':
-                default:
-                    $adapter = new CerpusH5PAdapter();
-                    break;
-            }
+            $adapter = match ($adapterTarget) {
+                'ndla' => $this->app->make(NDLAH5PAdapter::class),
+                default => $this->app->make(CerpusH5PAdapter::class),
+            };
             if (Session::has('adapterMode')) {
                 $adapter->overrideAdapterSettings();
             }

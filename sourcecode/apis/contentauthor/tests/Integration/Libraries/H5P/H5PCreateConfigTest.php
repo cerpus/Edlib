@@ -76,23 +76,15 @@ class H5PCreateConfigTest extends TestCase
 
         // Adapter specific
         if ($adapterMode === 'ndla') {
-            $this->assertContains('/css/ndlah5p-editor.css', $data->editor->assets->css);
             $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);
-            $this->assertContains('/css/ndlah5p-youtube.css', $data->editor->assets->css);
-
             $this->assertContains('/js/h5p/wiris/h5peditor-html-wiris-addon.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/ndla-contentbrowser.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-image-popup.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-custom.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
             $this->assertSame('https://audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
             $this->assertSame('https://ndla-image.url/image-api/v3/images', $data->imageBrowserDetailsUrl);
         } elseif ($adapterMode === 'cerpus') {
-            $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
             $this->assertObjectNotHasAttribute('audioBrowserDetailsUrl', $data);
             $this->assertObjectNotHasAttribute('imageBrowserDetailsUrl', $data);

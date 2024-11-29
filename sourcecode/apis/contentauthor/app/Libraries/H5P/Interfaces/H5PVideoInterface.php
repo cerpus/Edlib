@@ -2,7 +2,7 @@
 
 namespace App\Libraries\H5P\Interfaces;
 
-interface H5PVideoInterface
+interface H5PVideoInterface extends LoadsCustomAssets
 {
     /**
      * @return object{videoId: string}

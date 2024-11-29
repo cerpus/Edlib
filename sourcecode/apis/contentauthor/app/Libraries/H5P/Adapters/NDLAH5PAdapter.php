@@ -9,13 +9,13 @@ use App\Libraries\H5P\File\NDLATextTrack;
 use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-use Illuminate\Support\Facades\Session;
-
+use function array_unique;
 use function Cerpus\Helper\Helpers\profile as config;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
@@ -27,6 +27,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     /** @var H5PAlterParametersSettingsDataObject */
     private $parameterSettings;
+
+    public function __construct(private readonly H5PVideoInterface $videoAdapter)
+    {
+    }
 
     /**
      * Alter parameters before added to the H5PIntegrationObject
@@ -138,16 +142,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function getEditorCss(): array
     {
-        $css = [(string) mix('css/ndlah5p-editor.css')];
         $css[] = '/js/cropperjs/cropper.min.css';
         if (config('h5p.include-custom-css') === true) {
             $css[] = (string) mix('css/ndlah5p-edit.css');
         }
-        $isAdmin = Session::get('isAdmin');
-        if (!$isAdmin) {
-            $css[] = '/css/ndlah5p-youtube.css';
-        }
-        return $css;
+        return array_unique([
+            ...$this->videoAdapter->getEditorCss(),
+            ...$css,
+        ]);
     }
 
 
@@ -162,37 +164,29 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomEditorScripts(): array
     {
         $js[] = "/js/h5p/wiris/h5peditor-html-wiris-addon.js";
-        $js[] = (string) mix("js/ndla-contentbrowser.js");
-        $js[] = "/js/videos/brightcove.js";
         $js[] = (string) mix('js/h5peditor-image-popup.js');
         $js[] = (string) mix('js/h5peditor-custom.js');
-        $isAdmin = Session::get('isAdmin');
-        if (!$isAdmin) {
-            $js[] = '/js/h5p/ndlah5p-youtube.js';
-        }
-        return $js;
+
+        return array_unique([
+            ...$js,
+            ...$this->videoAdapter->getEditorScripts(),
+        ]);
     }
 
     public function getCustomEditorStyles(): array
     {
-        return [];
+        return $this->videoAdapter->getEditorCss();
     }
-
 
     public function getCustomViewScripts(): array
     {
-        $scripts = [
+        return [
             '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
             '/js/h5p/wiris/view.js',
             (string) mix('js/h5peditor-custom.js'),
+            ...$this->videoAdapter->getViewScripts(),
         ];
-        $libraries = $this->config->h5pCore->loadContentDependencies($this->config->id, "preloaded");
-        if ($this->hasVideoLibrary($libraries, 1, 3) === true) {
-            $scripts[] = '/js/videos/brightcove.js';
-        }
-        return $scripts;
     }
-
 
     public function getCustomViewCss(): array
     {
@@ -207,7 +201,10 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             }
         }
         $css[] = (string) mix('css/ndlah5p-iframe.css');
-        return $css;
+        return array_unique([
+            ...$css,
+            ...$this->videoAdapter->getViewCss(),
+        ]);
     }
 
     /**
@@ -256,11 +253,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'feature.export_h5p_on_save',
             'export_h5p_with_local_files',
             'h5p.video.enable',
-            'h5p.video.url',
-            'h5p.video.key',
-            'h5p.video.secret',
-            'h5p.video.accountId',
-            'h5p.video.authUrl',
             'h5p.video.deleteVideoSourceAfterConvertToStream',
             'h5p.video.pingDelay',
             'h5p.image.authDomain',
@@ -372,9 +364,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return [
-            (string) mix('js/react-contentbrowser.js')
-        ];
+        return $this->videoAdapter->getConfigJs();
     }
 
     public function getAdapterName(): string
