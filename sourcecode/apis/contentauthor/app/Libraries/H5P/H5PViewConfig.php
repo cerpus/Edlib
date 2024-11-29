@@ -7,7 +7,6 @@ namespace App\Libraries\H5P;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
-use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\SessionKeys;
@@ -17,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use function htmlspecialchars;
+use function request;
 use function sprintf;
 use function url;
 
@@ -45,7 +45,7 @@ class H5PViewConfig extends H5PConfigAbstract
             'exportUrl' => '',
             'embedCode' => '',
             'resizeCode' => '',
-            'url' => UrlHelper::getCurrentFullUrl(),
+            'url' => request()->getSchemeAndHttpHost() . request()->getBasePath(),
             'title' => '',
             'metadata' => [],
             'displayOptions' => [],
