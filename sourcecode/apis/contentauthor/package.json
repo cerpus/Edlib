@@ -31,7 +31,7 @@
     "axios": "^1.3.5",
     "bootstrap-sass": "^3.3.7",
     "ckeditor4-react": "^3.1.0",
-    "clsx": "^1.2.1",
+    "clsx": "^2.1.1",
     "concatenate": "0.0.2",
     "core-js": "^3.30.0",
     "cropperjs": "^1.5.7",
