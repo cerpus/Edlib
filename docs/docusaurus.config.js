@@ -107,14 +107,6 @@ module.exports = {
               label: 'Contributing',
               to: '/docs/developers/contributing',
             },
-            {
-              label: 'API documentation',
-              to: '/docs/developers/api-documentation/introduction',
-            },
-            {
-              label: 'Plugins',
-              to: '/docs/developers/plugins',
-            },
           ],
         },
         {
