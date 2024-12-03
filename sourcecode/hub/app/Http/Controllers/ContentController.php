@@ -334,6 +334,13 @@ class ContentController extends Controller
         $item = $mapper->map($request->input('content_items'))[0];
         assert($item instanceof LtiLinkItem);
 
+        $user = $this->getUser();
+
+        if ($request->session()->get('lti.ext_edlib3_copy_before_save') === '1') {
+            $content = $content->createCopyBelongingTo($user, $version);
+            $version = $content->latestVersion;
+        }
+
         if (
             $request->session()->get('lti.lti_message_type') === 'ContentItemSelectionRequest' &&
             $item instanceof EdlibLtiLinkItem
@@ -342,10 +349,10 @@ class ContentController extends Controller
             $item = $item->withPublished(true);
         }
 
-        $version = DB::transaction(function () use ($content, $version, $item, $tool) {
+        $version = DB::transaction(function () use ($content, $version, $item, $tool, $user) {
             $previousVersion = $version;
 
-            $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+            $version = $content->createVersionFromLinkItem($item, $tool, $user);
             $version->previousVersion()->associate($previousVersion);
             $version->save();
 
