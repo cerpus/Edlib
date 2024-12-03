@@ -123,7 +123,7 @@ class ContentControllerTest extends TestCase
         $this->assertCount(2, $versionsOnCopy);
 
         // The requested version is copied
-        $copiedVersion = ContentVersion::where('content_id', '=', $contentCopyId)->where('previous_version_id', '=',  $toBeCopiedVersion->id)->first();
+        $copiedVersion = ContentVersion::where('content_id', '=', $contentCopyId)->where('previous_version_id', '=', $toBeCopiedVersion->id)->first();
         $this->assertNotNull($copiedVersion);
         $this->assertNotEmpty($toBeCopiedVersion->title);
         $this->assertStringStartsWith($toBeCopiedVersion->title, $copiedVersion->title);
