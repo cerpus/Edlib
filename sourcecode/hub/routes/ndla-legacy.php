@@ -8,6 +8,7 @@ use App\Http\Controllers\NdlaLegacy\PublishController;
 use App\Http\Controllers\NdlaLegacy\ResourceCopyrightController;
 use App\Http\Controllers\NdlaLegacy\ResourceInformationController;
 use App\Http\Controllers\NdlaLegacy\SelectController;
+use App\Http\Controllers\NdlaLegacy\SwaggerController;
 use App\Http\Controllers\NdlaLegacy\ViewResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,3 +67,15 @@ Route::middleware([\Illuminate\Session\Middleware\StartSession::class])->group(f
         ->uses([SelectController::class, 'return'])
         ->name('ndla-legacy.select-return');
 });
+
+Route::get('/swagger')
+    ->uses([SwaggerController::class, 'swagger'])
+    ->withoutMiddleware(\App\Http\Middleware\ContentSecurityPolicy::class)
+    ->name('ndla-legacy.swagger');
+
+Route::get('/swagger-ui.html')
+    ->uses([SwaggerController::class, 'redirect']);
+
+Route::get('/openapi.json')
+    ->uses([SwaggerController::class, 'schema'])
+    ->name('ndla-legacy.openapi-schema');
