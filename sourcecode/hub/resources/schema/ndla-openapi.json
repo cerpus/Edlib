@@ -1,0 +1,366 @@
+{
+    "openapi": "3.1.0",
+
+    "info": {
+        "title": "Edlib facade",
+        "version": "1.0"
+    },
+
+    "components": {
+        "parameters": {
+            "contentId": {
+                "name": "id",
+                "in": "path",
+                "description": "ID of the content",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+
+            "canReturnResources": {
+                "name": "canReturnResources",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": ["true", "false"]
+                }
+            },
+
+            "locale": {
+                "name": "locale",
+                "in": "query",
+                "description": "Locale to launch in",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            },
+
+            "oembedFormat": {
+                "name": "format",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "enum": ["json", "xml"]
+                }
+            },
+
+            "oembedUrl": {
+                "name": "url",
+                "in": "query",
+                "description": "The full URL to the content (e.g. https://h5p.ndla.no/resource/...)",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+
+        "requestBodies": {
+            "byUrl": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "url": {
+                                    "description": "The full URL to the content (e.g. https://h5p.ndla.no/resource/...)",
+                                    "type": "url"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "responses": {
+            "copyrightOk": {
+                "description": "The copyright info was retrieved"
+            },
+
+            "copyrightNotFound": {
+                "description": "The content or its copyright info was not found"
+            },
+
+            "nothingHappened": {
+                "description": "Nothing happened"
+            },
+
+            "contentUrl": {
+                "description": "A response with the URL to the content",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "url": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "securitySchemes": {
+            "bearerToken": {
+                "description": "Bearer token with JWT",
+                "type": "http",
+                "scheme": "Bearer"
+            }
+        }
+    },
+
+    "paths": {
+
+        "/resource/{id}": {
+            "get": {
+                "tags": ["Launch"],
+                "summary": "View the content",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "A redirect to the requested content",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "description": "The URL to the requested content"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/select": {
+            "post": {
+                "tags": ["Launch"],
+                "summary": "Launch content explorer",
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/canReturnResources"
+                    },
+                    {
+                        "$ref": "#/components/parameters/locale"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/contentUrl"
+                    }
+                }
+            }
+        },
+
+        "/select/edit/byurl": {
+            "post": {
+                "tags": ["Launch"],
+                "summary": "Launch editor for given content",
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/canReturnResources"
+                    },
+                    {
+                        "$ref": "#/components/parameters/locale"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/byUrl"
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/contentUrl"
+                    }
+                }
+            }
+        },
+
+
+        "/oembed": {
+            "get": {
+                "summary": "Retrieve an Oembed response for inserting content",
+                "tags": ["Oembed"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/oembedFormat"
+                    },
+                    {
+                        "$ref": "#/components/parameters/oembedUrl"
+                    }
+                ]
+            }
+        },
+
+        "/oembed/preview": {
+            "get": {
+                "summary": "Retrieve an Oembed response for previewing the content",
+                "tags": ["Oembed"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/oembedFormat"
+                    },
+                    {
+                        "$ref": "#/components/parameters/oembedUrl"
+                    }
+                ]
+            }
+        },
+
+        "/v2/resource/{id}/copyright": {
+            "get": {
+                "tags": ["Content info"],
+                "summary": "Get the copyright information for the content",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/copyrightOk"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/copyrightNotFound"
+                    }
+                }
+            }
+        },
+
+        "/v1/resource/{id}/info": {
+            "get": {
+                "tags": ["Content info"],
+                "summary": "Get the information for the content",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The info for the content"
+                    },
+                    "404": {
+                        "description": "The content was not found"
+                    }
+                }
+            }
+        },
+
+        "/v1/resource/{id}/copyright": {
+            "get": {
+                "deprecated": true,
+                "tags": ["Content info"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/copyrightOk"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/copyrightNotFound"
+                    }
+                }
+            }
+        },
+
+        "/copy": {
+            "post": {
+                "tags": ["Alter content"],
+                "summary": "Copies the content",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/byUrl"
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/contentUrl"
+                    },
+                    "404": {
+                        "description": "The content was not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ]
+            }
+        },
+
+        "/v1/resource/{id}/publish": {
+            "put": {
+                "deprecated": true,
+                "description": "Old publish endpoint (does nothing)",
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "tags": ["Alter content"],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/contentId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/nothingHappened"
+                    },
+                    "404": {
+                        "description": "The content was not found"
+                    }
+                }
+            }
+        },
+
+        "/v1/resource/publish": {
+            "put": {
+                "deprecated": true,
+                "description": "Old publish endpoint (does nothing)",
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "tags": ["Alter content"],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/byUrl"
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/nothingHappened"
+                    }
+                }
+            }
+        }
+
+    }
+}

@@ -36,6 +36,8 @@ services:
   hub-vite:
     image: node:18-alpine
     command: [sh, -c, 'npm ci && npm run dev']
+    environment:
+      - SCARF_ANALYTICS=false
     volumes:
       - npm_cache:/root/.npm
       - ./sourcecode/hub:/srv/www/hub
