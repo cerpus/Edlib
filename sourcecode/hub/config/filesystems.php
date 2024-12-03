@@ -80,7 +80,10 @@ return [
     */
 
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        // The destinations must be relative to the source to make the symlinks
+        // work both inside and outside of containers.
+
+        public_path('storage') => '../storage/app/public',
     ],
 
 ];
