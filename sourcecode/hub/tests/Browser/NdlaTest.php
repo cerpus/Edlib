@@ -11,9 +11,10 @@ final class NdlaTest extends DuskTestCase
 {
     public function testLoadsSwagger(): void
     {
-        $this->browse(fn (Browser $browser) => $browser
-            ->visit('https://hub-test-ndla-legacy.edlib.test/swagger')
-            ->waitForTextIn('h2.title', 'Edlib facade'),
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->visit('https://hub-test-ndla-legacy.edlib.test/swagger')
+                ->waitForTextIn('h2.title', 'Edlib facade'),
         );
     }
 }
