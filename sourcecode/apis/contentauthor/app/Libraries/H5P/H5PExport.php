@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P;
 
 use App\H5PContent;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use H5PContentValidator;
 use H5PCore;
