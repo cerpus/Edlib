@@ -33,9 +33,9 @@ final readonly class NdlaContentController
         return response($images, 200, ['Content-Type' => 'application/json']);
     }
 
-    public function getImage($imageId, array $params = []): Response
+    public function getImage($imageId, Request $request): Response
     {
-        $language = !empty($params['language']) ? $params['language'] : null;
+        $language = $request->input('language');
 
         $request = $this->imageClient->request('GET', '/image-api/v3/images/' . $imageId, [
             'query' => [
