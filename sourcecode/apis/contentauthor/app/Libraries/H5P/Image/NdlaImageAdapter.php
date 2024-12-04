@@ -3,14 +3,14 @@
 namespace App\Libraries\H5P\Image;
 
 use App\Libraries\DataObjects\ContentStorageSettings;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use Exception;
-use GuzzleHttp\Client;
 use Illuminate\Http\File;
 
-class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProviderInterface
+final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderInterface
 {
     private $mappings = [
         'startX' => 'cropStartX',
@@ -21,45 +21,10 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         'height' => 'height',
     ];
 
-    public const FIND_IMAGES_URL = '/image-api/v3/images';
-    public const GET_IMAGE_URL = '/image-api/v3/images/%s';
-    public const GET_IMAGE_ID = '/image-api/raw/id/%s';
-    public const GET_IMAGE_NAME = '/image-api/raw/%s';
-    public const GET_IMAGE_DETAILS_CLIENT = '/image-api/v3/images';
-
     public function __construct(
-        private readonly Client $client,
+        private readonly NdlaImageClient $client,
         private readonly CerpusStorageInterface $storage,
     ) {
-    }
-
-    public function findImages($filterParameters)
-    {
-        $request = $this->client->get(self::FIND_IMAGES_URL, [
-            'query' => [
-                'page' => !empty($filterParameters['page']) ? $filterParameters['page'] : 1,
-                'query' => !empty($filterParameters['searchString']) ? $filterParameters['searchString'] : null,
-                'language' => !empty($filterParameters['language']) ? $filterParameters['language'] : null,
-                'fallback' => !empty($filterParameters['fallback']) ? $filterParameters['fallback'] : null,
-            ]
-        ]);
-        $images = $request->getBody()->getContents();
-
-        return \response()->json(json_decode($images));
-    }
-
-    public function getImage($imageId, array $params = [])
-    {
-        $language = !empty($params['language']) ? $params['language'] : null;
-
-        $request = $this->client->get(sprintf(self::GET_IMAGE_URL, $imageId), [
-            'query' => [
-                'language' => $language,
-            ],
-        ]);
-        $image = $request->getBody()->getContents();
-
-        return \response()->json(json_decode($image));
     }
 
     public function mapParams($params, $originalKeys = false)
@@ -79,18 +44,18 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
     public function getImageUrlFromId($imageId, array $parameters, bool $useOriginalKeys): string
     {
         $imageParams = $this->mapParams($parameters, $useOriginalKeys);
-        return $this->getImageUrl(sprintf(self::GET_IMAGE_ID, $imageId), $imageParams);
+        return $this->getImageUrl('/image-api/raw/id/' . $imageId, $imageParams);
     }
 
-    public function getImageUrlFromName($imageName, array $parameters, bool $useOriginalKeys): string
+    private function getImageUrlFromName($imageName, array $parameters, bool $useOriginalKeys): string
     {
         $imageParams = $this->mapParams($parameters, $useOriginalKeys);
-        return $this->getImageUrl(sprintf(self::GET_IMAGE_NAME, $imageName), $imageParams);
+        return $this->getImageUrl('/image-api/raw/' . $imageName, $imageParams);
     }
 
     private function getImageUrl($path, $requestParameters)
     {
-        return config('h5p.image.url') . $path . "?" . http_build_query($requestParameters);
+        return config('ndla.image.url') . $path . "?" . http_build_query($requestParameters);
     }
 
     public function isTargetType($mimeType, $pathToFile): bool
@@ -98,14 +63,14 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         return $this->isImageMime($mimeType) && $this->isSameDomain($pathToFile);
     }
 
-    private function isSameDomain($pathToFile)
+    private function isSameDomain($pathToFile): bool
     {
-        return strpos($pathToFile, config('h5p.image.url')) === 0;
+        return str_starts_with($pathToFile, config('h5p.image.url'));
     }
 
-    private function isImageMime($mime)
+    private function isImageMime($mime): bool
     {
-        return !empty($mime) && strpos($mime, 'image/') === 0;
+        return !empty($mime) && str_starts_with($mime, 'image/');
     }
 
     /**
@@ -140,7 +105,7 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         return "image";
     }
 
-    public function alterImageProperties($imageProperties, bool $includeWidthQuery): object
+    public function alterImageProperties($imageProperties, H5PAlterParametersSettingsDataObject $settings): object
     {
         if (empty($imageProperties->path)) {
             return $imageProperties;
@@ -149,16 +114,16 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
         $imageProperties->path = html_entity_decode($imageProperties->path);
         $url = parse_url($imageProperties->path);
         $query = [
-            'width' => config('h5p.image.properties.width'),
+            'width' => config('ndla.image.properties.width'),
         ];
         if (!empty($url['query'])) {
             parse_str($url['query'], $existingQuery);
             $query = array_merge($query, $existingQuery);
         }
-        if (!$includeWidthQuery) {
+        if (!$settings->useImageWidth) {
             unset($query['width']);
         }
-        if (!empty($imageProperties->externalId) && strpos($imageProperties->path, "/" . $imageProperties->externalId . "?") !== false) {
+        if (!empty($imageProperties->externalId) && str_contains($imageProperties->path, "/" . $imageProperties->externalId . "?")) {
             $imageProperties->path = $this->getImageUrlFromId($imageProperties->externalId, $query, true);
         } else {
             $imageProperties->path = $this->getImageUrlFromName(basename($url['path']), $query, true);
@@ -168,11 +133,38 @@ class NDLAContentBrowser implements H5PImageAdapterInterface, H5PExternalProvide
 
     public static function getClientDetailsUrl(): ?string
     {
-        $url = config('h5p.image.url');
+        $url = config('ndla.image.url');
         if ($url !== null) {
-            return $url . self::GET_IMAGE_DETAILS_CLIENT;
+            return $url . '/image-api/v3/images';
         }
 
         return null;
+    }
+
+    public function getViewCss(): array
+    {
+        return [];
+    }
+
+    public function getViewScripts(): array
+    {
+        return [];
+    }
+
+    public function getEditorCss(): array
+    {
+        return [];
+    }
+
+    public function getEditorScripts(): array
+    {
+        return [
+            (string) mix('js/ndla-image.js'),
+        ];
+    }
+
+    public function getConfigJs(): array
+    {
+        return [];
     }
 }

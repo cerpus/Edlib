@@ -13,4 +13,11 @@ return [
         'accountId' => env("NDLA_H5P_VIDEO_ACCOUNT_ID"),
         'authUrl' => env("NDLA_H5P_VIDEO_AUTH_URL"),
     ],
+
+    'image' => [
+        'url' => env('NDLA_H5P_IMAGE_URL'),
+        'properties' => [
+            'width' => env('NDLA_H5P_IMAGE_PROPERTIES_WIDTH', 2500),
+        ],
+    ],
 ];
