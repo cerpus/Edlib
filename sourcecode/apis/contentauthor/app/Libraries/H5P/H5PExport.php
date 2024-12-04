@@ -24,7 +24,6 @@ readonly class H5PExport
      */
     public function __construct(
         private H5PDefaultExport $export,
-        H5PAdapterInterface $adapter,
         private H5PContentValidator $validator,
         private bool $convertMediaToLocal,
         private array $externalProviders,

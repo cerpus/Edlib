@@ -31,21 +31,6 @@ parameters:
 			path: app/Content.php
 
 		-
-			message: "#^Right side of && is always true\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: app/Content.php
-
-		-
 			message: "#^Access to an undefined property App\\\\Events\\\\ArticleWasCopied\\:\\:\\$article\\.$#"
 			count: 1
 			path: app/Events/ArticleWasCopied.php
@@ -86,11 +71,6 @@ parameters:
 			path: app/H5PCollaborator.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with App\\\\H5PContentsMetadata will always evaluate to false\\.$#"
-			count: 1
-			path: app/H5PContent.php
-
-		-
 			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
 			count: 2
 			path: app/H5PContent.php
@@ -101,24 +81,9 @@ parameters:
 			path: app/H5PContent.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LinkInfoController.php
-
-		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\LinkInfoController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
 			count: 1
 			path: app/Http/Controllers/API/LinkInfoController.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/LockStatusController.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/API/QuestionsetController.php
 
 		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\API\\\\QuestionsetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
@@ -171,11 +136,6 @@ parameters:
 			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
 
 		-
-			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/LocksController.php
-
-		-
 			message: "#^Function collect invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/ArticleController.php
@@ -204,26 +164,6 @@ parameters:
 			message: "#^Variable \\$emails in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Variable \\$library in empty\\(\\) always exists and is not falsy\\.$#"
-			count: 1
-			path: app/Http/Controllers/H5PController.php
-
-		-
-			message: "#^Negated boolean expression is always false\\.$#"
-			count: 1
-			path: app/Http/Controllers/HealthController.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with string will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/LinkController.php
-
-		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Http/Controllers/QuestionSetController.php
 
 		-
 			message: "#^Method App\\\\Http\\\\Controllers\\\\QuestionSetController\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
@@ -276,11 +216,6 @@ parameters:
 			path: app/Http/Requests/H5PStorageRequest.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with App\\\\H5PFile will always evaluate to false\\.$#"
-			count: 1
-			path: app/Jobs/H5PFileUpload.php
-
-		-
 			message: "#^Property App\\\\Jobs\\\\H5PFileUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
 			count: 1
 			path: app/Jobs/H5PFileUpload.php
@@ -296,11 +231,6 @@ parameters:
 			path: app/Libraries/DataObjects/Attribution.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with League\\\\Fractal\\\\Manager will always evaluate to false\\.$#"
-			count: 1
-			path: app/Libraries/Games/GameBase.php
-
-		-
 			message: "#^Method App\\\\Libraries\\\\Games\\\\GameBase\\:\\:buildResourceResponse\\(\\) should return Illuminate\\\\Http\\\\Response but returns Illuminate\\\\Http\\\\JsonResponse\\.$#"
 			count: 1
 			path: app/Libraries/Games/GameBase.php
@@ -312,11 +242,6 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property object\\:\\:\\$tags\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Adapters/NDLAH5PAdapter.php
-
-		-
-			message: "#^Call to an undefined method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PImageAdapterInterface\\:\\:isTargetType\\(\\)\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Adapters/NDLAH5PAdapter.php
 
@@ -339,11 +264,6 @@ parameters:
 			message: "#^Property App\\\\Libraries\\\\H5P\\\\AdminConfig\\:\\:\\$id is never read, only written\\.$#"
 			count: 1
 			path: app/Libraries/H5P/AdminConfig.php
-
-		-
-			message: "#^Call to function is_string\\(\\) with array will always evaluate to false\\.$#"
-			count: 2
-			path: app/Libraries/H5P/AjaxRequest.php
 
 		-
 			message: "#^Cannot access property \\$css on array\\.$#"
@@ -393,11 +313,6 @@ parameters:
 		-
 			message: "#^Property App\\\\H5PLibrary\\:\\:\\$restricted \\(int\\) does not accept false\\.$#"
 			count: 1
-			path: app/Libraries/H5P/EditorStorage.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between int and '1' will always evaluate to false\\.$#"
-			count: 2
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
@@ -470,16 +385,6 @@ parameters:
 			message: "#^Property App\\\\Libraries\\\\H5P\\\\Framework\\:\\:\\$adminUrl is never read, only written\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Framework.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PCopyright.php
-
-		-
-			message: "#^Ternary operator condition is always true\\.$#"
-			count: 1
-			path: app/Libraries/H5P/H5PCopyright.php
 
 		-
 			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
@@ -577,11 +482,6 @@ parameters:
 			path: app/Libraries/H5P/Packages/CoursePresentation.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface will always evaluate to false\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Packages/CoursePresentation.php
-
-		-
 			message: "#^Offset 'package' on array\\{package\\: App\\\\Libraries\\\\H5P\\\\Interfaces\\\\PackageInterface, index\\: \\(int\\|string\\)\\} on left side of \\?\\? always exists and is not nullable\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Packages/InteractiveVideo.php
@@ -638,11 +538,6 @@ parameters:
 
 		-
 			message: "#^Static call to instance method App\\\\H5PFile\\:\\:deleteContentPendingUpload\\(\\)\\.$#"
-			count: 1
-			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Storage/H5PCerpusStorage.php
 
