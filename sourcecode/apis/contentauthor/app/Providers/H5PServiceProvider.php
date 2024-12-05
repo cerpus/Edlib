@@ -11,11 +11,13 @@ use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5pPresave;
-use App\Libraries\H5P\Image\NDLAContentBrowser;
+use App\Libraries\H5P\Image\NdlaImageAdapter;
+use App\Libraries\H5P\Image\NdlaImageClient;
+use App\Libraries\H5P\Image\NullImageAdapter;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\Storage\H5PCerpusStorage;
@@ -61,6 +63,7 @@ class H5PServiceProvider extends ServiceProvider
         return [
             H5PFileStorage::class,
             H5PAdapterInterface::class,
+            H5PImageInterface::class,
             H5PVideoInterface::class,
             H5PLibraryAdmin::class,
             H5peditorStorage::class,
@@ -97,25 +100,19 @@ class H5PServiceProvider extends ServiceProvider
             ->needs('$accountId')
             ->giveConfig('ndla.video.accountId');
 
-        $this->app->when(NDLAContentBrowser::class)
-            ->needs(Client::class)
-            ->give(fn () => new Client([
-                'base_uri' => config('h5p.image.url'),
-            ]));
-
-        $this->app->bind(H5PImageAdapterInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class);
-
-            return match (strtolower($adapter->getAdapterName())) {
-                'ndla' => $this->app->make(NDLAContentBrowser::class),
-                default => null,
-            };
+        $this->app->bind(H5PImageInterface::class, match (config('h5p.image.adapter')) {
+            'ndla' => NdlaImageAdapter::class,
+            default => NullImageAdapter::class,
         });
+
+        $this->app->bind(NdlaImageClient::class, fn () => new NdlaImageClient([
+            'base_uri' => config('ndla.image.url'),
+        ]));
 
         $this->app->when(NDLAAudioBrowser::class)
             ->needs(Client::class)
             ->give(fn () => new Client([
-                'base_uri' => config('h5p.audio.url') ?: config('h5p.image.url'),
+                'base_uri' => config('h5p.audio.url'),
             ]));
 
         $this->app->bind(H5PAudioInterface::class, function () {
@@ -211,6 +208,16 @@ class H5PServiceProvider extends ServiceProvider
         $this->app->when(\App\Libraries\H5P\H5PExport::class)
             ->needs('$convertMediaToLocal')
             ->giveConfig('feature.export_h5p_with_local_files');
+
+        $this->app->tag([
+            H5PAudioInterface::class,
+            H5PImageInterface::class,
+            H5PVideoInterface::class,
+        ], 'external-providers');
+
+        $this->app->when(\App\Libraries\H5P\H5PExport::class)
+            ->needs('$externalProviders')
+            ->giveTagged('external-providers');
 
         $this->app->bind(H5PExport::class, function ($app) {
             /** @var App $app */

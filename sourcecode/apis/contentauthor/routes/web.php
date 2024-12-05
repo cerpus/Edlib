@@ -13,6 +13,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\H5PController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\LinkController;
+use App\Http\Controllers\NdlaContentController;
 use App\Http\Controllers\Progress;
 use App\Http\Controllers\QuestionSetController;
 use App\Http\Controllers\ReturnToCoreController;
@@ -29,8 +30,8 @@ Route::post('h5p/adapter', function () {
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
 
-Route::get('images/browse', [H5PController::class, 'browseImages']);
-Route::get('images/browse/{imageId}', [H5PController::class, 'getImage']);
+Route::get('images/browse', [NdlaContentController::class, 'browseImages']);
+Route::get('images/browse/{imageId}', [NdlaContentController::class, 'getImage']);
 
 Route::get('videos/browse', [H5PController::class, 'browseVideos']);
 Route::get('videos/browse/{videoId}', [H5PController::class, 'getVideo']);

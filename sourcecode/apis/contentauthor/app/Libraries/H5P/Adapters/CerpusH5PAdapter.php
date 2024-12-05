@@ -4,6 +4,7 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
@@ -11,24 +12,31 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 use function array_unique;
+use function json_decode;
+
+use const JSON_THROW_ON_ERROR;
 
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
 
-    public function __construct(private readonly H5PVideoInterface $videoAdapter)
-    {
+    public function __construct(
+        private readonly H5PImageInterface $imageAdapter,
+        private readonly H5PVideoInterface $videoAdapter,
+    ) {
     }
 
-    /**
-     * Alter parameters before added to the H5PIntegrationObject
-     *
-     * @param string $parameters
-     * @return string
-     */
-    public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
-    {
-        return QuestionBankClient::convertMathToInlineDisplay($parameters);
+    public function alterParameters(
+        string $parameters,
+        H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
+    ): string {
+        if ($parameters === '') {
+            return '';
+        }
+
+        $parameters = QuestionBankClient::convertMathToInlineDisplay($parameters);
+
+        return $this->traverseParameters(collect(json_decode($parameters, flags: JSON_THROW_ON_ERROR)), $settings)->toJson();
     }
 
     public function getEditorExtraTags($field): array
@@ -36,10 +44,12 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return self::getCoreExtraTags();
     }
 
-
     public function getEditorCss(): array
     {
-        return $this->videoAdapter->getEditorCss();
+        return array_unique([
+            ...$this->imageAdapter->getEditorCss(),
+            ...$this->videoAdapter->getEditorCss(),
+        ]);
     }
 
     public function getEditorSettings(): array
@@ -50,6 +60,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getCustomEditorScripts(): array
     {
         return array_unique([
+            ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
         ]);
     }
@@ -64,6 +75,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
         return array_unique([
             ...$scripts,
+            ...$this->imageAdapter->getViewScripts(),
             ...$this->videoAdapter->getViewScripts(),
         ]);
     }
@@ -71,7 +83,10 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getCustomViewCss(): array
     {
-        return $this->videoAdapter->getViewCss();
+        return array_unique([
+            ...$this->imageAdapter->getViewCss(),
+            ...$this->videoAdapter->getViewCss(),
+        ]);
     }
 
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
@@ -148,11 +163,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getExternalProviders(): array
-    {
-        return [];
-    }
-
     public function useMaxScore(): bool
     {
         return true;
@@ -170,12 +180,18 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return $this->videoAdapter->getConfigJs();
+        return array_unique([
+            ...$this->imageAdapter->getConfigJs(),
+            ...$this->videoAdapter->getConfigJs(),
+        ]);
     }
 
     public function getCustomEditorStyles(): array
     {
-        return $this->videoAdapter->getEditorCss();
+        return array_unique([
+            ...$this->imageAdapter->getEditorCss(),
+            ...$this->videoAdapter->getEditorCss(),
+        ]);
     }
 
     public function getAdapterName(): string

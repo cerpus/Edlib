@@ -7,12 +7,13 @@ use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 interface H5PAdapterInterface
 {
     /**
-     * Alter parameters before added to the H5PIntegrationObject
-     *
-     * @param string $parameters
-     * @return string
+     * @param string $parameters JSON parameters
+     * @return string modified JSON parameters
      */
-    public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null);
+    public function alterParameters(
+        string $parameters,
+        H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
+    ): string;
 
     /**
      * @param object $field
@@ -84,11 +85,6 @@ interface H5PAdapterInterface
 
 
     public function enableEverybodyIsCollaborators(): bool;
-
-    /**
-     * @return array<H5PExternalProviderInterface>
-     */
-    public function getExternalProviders(): array;
 
     public function useMaxScore(): bool;
 
