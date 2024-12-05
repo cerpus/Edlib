@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Browser;
+namespace Tests\Browser;
 
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
