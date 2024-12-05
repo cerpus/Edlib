@@ -31,7 +31,7 @@
             "locale": {
                 "name": "locale",
                 "in": "query",
-                "description": "Locale to launch in",
+                "description": "Locale to launch in (e.g. nb-no)",
                 "required": false,
                 "schema": {
                     "type": "string"
