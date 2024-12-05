@@ -4,10 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Swagger</title>
+        @vite('resources/js/swagger.js')
     </head>
 
     <body>
         <div id="swagger"></div>
-        @vite('resources/js/swagger.js')
     </body>
 </html>
