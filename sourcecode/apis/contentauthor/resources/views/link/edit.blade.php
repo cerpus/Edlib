@@ -5,8 +5,9 @@
 @section('headerInfo', trans('link.edit-link'))
 
 @section('form_open')
-    {!! Form::open(['route' => ['link.update', $link->id], 'method' => 'put', 'id' => 'content-form']) !!}
-    {!! Form::hidden("redirectToken", $redirectToken) !!}
+    <form action="{{ route('link.update', $link->id) }}" method="POST" id="content-form">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="redirectToken" value="{{ $redirectToken }}">
 @endsection
 
 @section("content")

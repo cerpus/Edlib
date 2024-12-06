@@ -5,7 +5,7 @@
         window.CKEDITOR_BASEPATH = '/js/ckeditor/';
     </script>
     @foreach( $configJs as $js)
-        {!! HTML::script($js) !!}
+        <script src="{{ $js }}"></script>
     @endforeach
 @endpush
 
@@ -15,14 +15,14 @@
     {!! $config !!}
     {!! $adminConfig !!}
     @foreach( $jsScript as $js)
-        {!! HTML::script($js) !!}
+        <script src="{{ $js }}"></script>
     @endforeach
 @endpush
 
 @push('css')
     @if(isset($styles))
         @foreach( $styles as $css)
-            {!! HTML::style($css) !!}
+            <link rel="stylesheet" href="{{ $css }}">
         @endforeach
     @endif
 @endpush
