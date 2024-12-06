@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Exceptions\GameTypeNotFoundException;
+use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
@@ -37,8 +39,9 @@ class Game extends Content implements VersionableObject
     use HasUuids;
 
     public string $editRouteName = 'game.edit';
+
     /**
-     * @throws Exception
+     * @throws GameTypeNotFoundException
      */
     protected function getRequestContent(Request $request)
     {
@@ -78,9 +81,9 @@ class Game extends Content implements VersionableObject
     }
 
     /**
-     * @throws Exception
+     * @throws GameTypeNotFoundException
      */
-    public function getGameTypeHandler(): Libraries\Games\Contracts\GameTypeContract
+    public function getGameTypeHandler(): GameTypeContract
     {
         return GameHandler::makeGameTypeFromId($this->gametype);
     }
@@ -149,7 +152,7 @@ class Game extends Content implements VersionableObject
         try {
             $handler = $this->getGameTypeHandler();
             return $handler->getMaxScore();
-        } catch (Exception) {
+        } catch (GameTypeNotFoundException) {
             return null;
         }
     }
