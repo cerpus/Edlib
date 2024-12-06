@@ -5,8 +5,8 @@
 @section('headerInfo', trans('link.create-link'))
 
 @section('form_open')
-    {!! Form::open(['route' => 'link.store', 'method' => 'post', 'id' => 'content-form']) !!}
-    {!! Form::hidden("redirectToken", $redirectToken) !!}
+    <form action="{{ route('link.store') }}" method="POST" id="content-form">
+        <input type="hidden" name="redirectToken" value="{{ $redirectToken }}">
 @endsection
 
 @section("content")
