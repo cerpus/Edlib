@@ -37,13 +37,13 @@ class BaseH5PContentTest extends TestCase
     {
         $response = $this->abstractClass->getImportJson();
 
-        $this->assertObjectHasAttribute('h5p_lib', $response);
-        $this->assertObjectHasAttribute('h5p_content_data', $response);
-        $this->assertObjectHasAttribute('title', $response);
-        $this->assertObjectHasAttribute('content_type', $response);
-        $this->assertObjectHasAttribute('nodeId', $response);
-        $this->assertObjectHasAttribute('license', $response);
-        $this->assertObjectHasAttribute('license', $response->license);
+        $this->assertObjectHasProperty('h5p_lib', $response);
+        $this->assertObjectHasProperty('h5p_content_data', $response);
+        $this->assertObjectHasProperty('title', $response);
+        $this->assertObjectHasProperty('content_type', $response);
+        $this->assertObjectHasProperty('nodeId', $response);
+        $this->assertObjectHasProperty('license', $response);
+        $this->assertObjectHasProperty('license', $response->license);
 
         $this->assertIsObject($response->h5p_content_data);
         $this->assertSame('h5p_content', $response->content_type);

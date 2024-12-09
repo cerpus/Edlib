@@ -125,7 +125,7 @@ class h5pTest extends TestCase
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -149,7 +149,7 @@ class h5pTest extends TestCase
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -187,7 +187,7 @@ class h5pTest extends TestCase
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -210,7 +210,7 @@ class h5pTest extends TestCase
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);

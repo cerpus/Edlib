@@ -18,7 +18,6 @@ use ZipArchive;
 
 class H5PExportTest extends TestCase
 {
-    use DatabaseMigrations;
     use RefreshDatabase;
     use WithFaker;
     use MockH5PAdapterInterface;

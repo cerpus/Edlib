@@ -347,32 +347,32 @@ class H5PControllerTest extends TestCase
         $this->assertStringContainsString('Here be CSS content', Storage::get($assetCss));
 
         $config = json_decode(substr($result['config'], 25, -9), flags: JSON_THROW_ON_ERROR);
-        $this->assertObjectHasAttribute('baseUrl', $config);
-        $this->assertObjectHasAttribute('url', $config);
+        $this->assertObjectHasProperty('baseUrl', $config);
+        $this->assertObjectHasProperty('url', $config);
         if (config('h5p.saveFrequency') === false) {
-            $this->assertObjectNotHasAttribute('user', $config);
+            $this->assertObjectNotHasProperty('user', $config);
         } else {
-            $this->assertObjectHasAttribute('user', $config);
+            $this->assertObjectHasProperty('user', $config);
         }
-        $this->assertObjectHasAttribute('tokens', $config);
-        $this->assertObjectHasAttribute('siteUrl', $config);
-        $this->assertObjectHasAttribute('l10n', $config);
-        $this->assertObjectHasAttribute('loadedJs', $config);
-        $this->assertObjectHasAttribute('loadedCss', $config);
-        $this->assertObjectHasAttribute('pluginCacheBuster', $config);
-        $this->assertObjectHasAttribute('libraryUrl', $config);
+        $this->assertObjectHasProperty('tokens', $config);
+        $this->assertObjectHasProperty('siteUrl', $config);
+        $this->assertObjectHasProperty('l10n', $config);
+        $this->assertObjectHasProperty('loadedJs', $config);
+        $this->assertObjectHasProperty('loadedCss', $config);
+        $this->assertObjectHasProperty('pluginCacheBuster', $config);
+        $this->assertObjectHasProperty('libraryUrl', $config);
         $this->assertEquals('/ajax?action=', $config->ajaxPath);
         $this->assertTrue($config->canGiveScore);
         $this->assertStringEndsWith("/s/resources/$resourceId", $config->documentUrl);
 
         $contents = $config->contents->{"cid-$content->id"};
         $this->assertEquals('H5P.Foobar 1.18', $contents->library);
-        $this->assertObjectHasAttribute('jsonContent', $contents);
-        $this->assertObjectHasAttribute('exportUrl', $contents);
-        $this->assertObjectHasAttribute('embedCode', $contents);
-        $this->assertObjectHasAttribute('resizeCode', $contents);
-        $this->assertObjectHasAttribute('displayOptions', $contents);
-        $this->assertObjectHasAttribute('contentUserData', $contents);
+        $this->assertObjectHasProperty('jsonContent', $contents);
+        $this->assertObjectHasProperty('exportUrl', $contents);
+        $this->assertObjectHasProperty('embedCode', $contents);
+        $this->assertObjectHasProperty('resizeCode', $contents);
+        $this->assertObjectHasProperty('displayOptions', $contents);
+        $this->assertObjectHasProperty('contentUserData', $contents);
         $this->assertStringContainsString("/s/resources/$resourceId", $contents->embedCode);
         $this->assertStringContainsString('Some resource title', $contents->embedCode);
 

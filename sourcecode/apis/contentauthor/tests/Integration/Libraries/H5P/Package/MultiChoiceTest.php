@@ -24,13 +24,13 @@ class MultiChoiceTest extends TestCase
 
         $this->assertEquals(JSON_ERROR_NONE, json_last_error());
         $this->assertIsObject($generatedStructure);
-        $this->assertObjectHasAttribute("media", $generatedStructure);
-        $this->assertObjectHasAttribute("answers", $generatedStructure);
-        $this->assertObjectHasAttribute("UI", $generatedStructure);
-        $this->assertObjectHasAttribute("behaviour", $generatedStructure);
-        $this->assertObjectHasAttribute("confirmCheck", $generatedStructure);
-        $this->assertObjectHasAttribute("confirmRetry", $generatedStructure);
-        $this->assertObjectHasAttribute("question", $generatedStructure);
+        $this->assertObjectHasProperty("media", $generatedStructure);
+        $this->assertObjectHasProperty("answers", $generatedStructure);
+        $this->assertObjectHasProperty("UI", $generatedStructure);
+        $this->assertObjectHasProperty("behaviour", $generatedStructure);
+        $this->assertObjectHasProperty("confirmCheck", $generatedStructure);
+        $this->assertObjectHasProperty("confirmRetry", $generatedStructure);
+        $this->assertObjectHasProperty("question", $generatedStructure);
         $this->assertCount(7, array_keys((array)$generatedStructure));
 
         $this->assertEquals((array)$structure, (array)$generatedStructure);
