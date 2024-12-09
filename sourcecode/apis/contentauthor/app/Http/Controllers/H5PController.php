@@ -714,23 +714,4 @@ class H5PController extends Controller
         $information = $h5PInfo->getInformation($h5p);
         return response()->json($information);
     }
-
-    public function browseAudios(Request $request)
-    {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->findAudio([
-            'query' => $request->get('query'),
-            'fallback' => 'true',
-        ]);
-    }
-
-    public function getAudio(Request $request, $audioId)
-    {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->getAudio($audioId, [
-            'language' => $request->get('language'),
-        ]);
-    }
 }
