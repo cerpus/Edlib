@@ -10,14 +10,14 @@ abstract class TestCase extends BaseTestCase
 {
     private static Mix $fakeMix;
 
-//    protected function setUp(): void
-//    {
-//        parent::setUp();
-//
-//        // Enable testing without building manifests
-//        $this->instance(Mix::class, self::getFakeMix());
-//    }
-//
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Enable testing without building manifests
+        $this->instance(Mix::class, self::getFakeMix());
+    }
+
     /**
      * Fake Mix that doesn't care whether a file exists or not. This allows
      * running tests without building frontend assets.
