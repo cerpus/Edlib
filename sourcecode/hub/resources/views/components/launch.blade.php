@@ -3,6 +3,8 @@
     'name' => 'launch-frame-' . $uniqueId,
     'data-log-to' => $logTo,
     'frameborder' => '0',
+    'width' => $width,
+    'height' => $height,
 ])->class([
     'lti-launch',
     'd-block',
