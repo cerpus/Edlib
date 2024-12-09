@@ -20,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use function htmlspecialchars_decode;
-
 use function property_exists;
 
 use const ENT_HTML5;

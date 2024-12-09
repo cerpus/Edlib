@@ -106,7 +106,7 @@ class PingVideoApiTest extends TestCase
         /** @var H5PContentsVideo $contentVideo */
         $contentVideo = $h5pContent->contentVideos()->first();
         ContentVersion::factory()->create([
-            'id' =>$h5pContent->version_id,
+            'id' => $h5pContent->version_id,
             'content_id' => $h5pContent->id,
         ]);
 

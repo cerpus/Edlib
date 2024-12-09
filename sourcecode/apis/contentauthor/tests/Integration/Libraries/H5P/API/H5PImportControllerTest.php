@@ -30,7 +30,7 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Support\Facades\Storage;
     use Tests\TestCase;
 
-use function base_path;
+    use function base_path;
     use function fopen;
 
     class H5PImportControllerTest extends TestCase

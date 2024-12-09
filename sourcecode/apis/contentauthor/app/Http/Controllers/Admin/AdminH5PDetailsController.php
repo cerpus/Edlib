@@ -120,7 +120,7 @@ class AdminH5PDetailsController extends Controller
             ->orderBy('updated_at', 'DESC')
             ->orderBy('id', 'DESC')
             ->limit($pageSize)
-            ->offset($pageSize * ($page-1))
+            ->offset($pageSize * ($page - 1))
             ->get()
             ->map(function (H5PContent $row) use (&$latestCount) {
                 try {

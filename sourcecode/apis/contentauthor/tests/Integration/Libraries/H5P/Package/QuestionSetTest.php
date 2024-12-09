@@ -19,15 +19,15 @@ class QuestionSetTest extends TestCase
 
         $this->assertEquals(JSON_ERROR_NONE, json_last_error());
         $this->assertIsObject($generatedStructure);
-        $this->assertObjectHasAttribute("introPage", $generatedStructure);
-        $this->assertObjectHasAttribute("progressType", $generatedStructure);
-        $this->assertObjectHasAttribute("passPercentage", $generatedStructure);
-        $this->assertObjectHasAttribute("questions", $generatedStructure);
-        $this->assertObjectHasAttribute("texts", $generatedStructure);
-        $this->assertObjectHasAttribute("disableBackwardsNavigation", $generatedStructure);
-        $this->assertObjectHasAttribute("randomQuestions", $generatedStructure);
-        $this->assertObjectHasAttribute("endGame", $generatedStructure);
-        $this->assertObjectHasAttribute("override", $generatedStructure);
+        $this->assertObjectHasProperty("introPage", $generatedStructure);
+        $this->assertObjectHasProperty("progressType", $generatedStructure);
+        $this->assertObjectHasProperty("passPercentage", $generatedStructure);
+        $this->assertObjectHasProperty("questions", $generatedStructure);
+        $this->assertObjectHasProperty("texts", $generatedStructure);
+        $this->assertObjectHasProperty("disableBackwardsNavigation", $generatedStructure);
+        $this->assertObjectHasProperty("randomQuestions", $generatedStructure);
+        $this->assertObjectHasProperty("endGame", $generatedStructure);
+        $this->assertObjectHasProperty("override", $generatedStructure);
         $this->assertCount(9, array_keys((array)$generatedStructure));
 
         $this->assertEquals((array)$structure, (array)$generatedStructure);

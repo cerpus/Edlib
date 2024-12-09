@@ -11,7 +11,7 @@ class SetAdminPassword extends Migration
      */
     public function up()
     {
-//        DB::statement('UPDATE administrators SET password="'.$this->createPassword().'" WHERE username="admin"');
+        //        DB::statement('UPDATE administrators SET password="'.$this->createPassword().'" WHERE username="admin"');
     }
 
     /**
