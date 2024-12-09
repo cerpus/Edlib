@@ -5,6 +5,7 @@ namespace App\Libraries\H5P\Adapters;
 use App\H5POption;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
@@ -20,6 +21,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     use H5PCommonAdapterTrait;
 
     public function __construct(
+        private readonly H5PAudioInterface $audioAdapter,
         private readonly H5PImageInterface $imageAdapter,
         private readonly H5PVideoInterface $videoAdapter,
     ) {
@@ -138,6 +140,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $css[] = (string) mix('css/ndlah5p-edit.css');
         }
         return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
+            ...$this->imageAdapter->getEditorCss(),
             ...$this->videoAdapter->getEditorCss(),
             ...$css,
         ]);
@@ -160,6 +164,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
         return array_unique([
             ...$js,
+            ...$this->audioAdapter->getEditorScripts(),
+            ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
         ]);
     }
@@ -175,6 +181,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
             '/js/h5p/wiris/view.js',
             (string) mix('js/h5peditor-custom.js'),
+            ...$this->audioAdapter->getViewScripts(),
+            ...$this->imageAdapter->getViewScripts(),
             ...$this->videoAdapter->getViewScripts(),
         ];
     }
@@ -194,6 +202,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $css[] = (string) mix('css/ndlah5p-iframe.css');
         return array_unique([
             ...$css,
+            ...$this->audioAdapter->getViewCss(),
+            ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
         ]);
     }
@@ -246,7 +256,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'h5p.video.enable',
             'h5p.video.deleteVideoSourceAfterConvertToStream',
             'h5p.video.pingDelay',
-            'h5p.audio.url',
             'h5p.H5P_DragQuestion',
             'h5p.H5P_Dialogcards',
             'h5p.isHubEnabled',
@@ -325,6 +334,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getConfigJs(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getConfigJs(),
             ...$this->imageAdapter->getConfigJs(),
             ...$this->videoAdapter->getConfigJs(),
         ]);

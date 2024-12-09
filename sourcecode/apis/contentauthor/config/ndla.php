@@ -20,4 +20,9 @@ return [
             'width' => env('NDLA_H5P_IMAGE_PROPERTIES_WIDTH', 2500),
         ],
     ],
+
+    'audio' => [
+        'url' => env('NDLA_H5P_AUDIO_URL'),
+    ],
+
 ];

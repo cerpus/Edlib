@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
-use App\Libraries\H5P\Audio\NDLAAudioBrowser;
+use App\Libraries\H5P\Audio\NdlaAudioAdapter;
 use App\Libraries\H5P\Image\NdlaImageAdapter;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PAudioInterface;
@@ -62,11 +62,11 @@ class H5PCreateConfig extends H5PConfigAbstract
 
         $imageBrowser = app(H5PImageInterface::class);
         if ($imageBrowser instanceof NdlaImageAdapter) {
-            $this->config['imageBrowserDetailsUrl'] = $imageBrowser::getClientDetailsUrl();
+            $this->config['imageBrowserDetailsUrl'] = $imageBrowser->getClientDetailsUrl();
         }
         $audioBrowser = app(H5PAudioInterface::class);
-        if ($audioBrowser instanceof NDLAAudioBrowser) {
-            $this->config['audioBrowserDetailsUrl'] = $audioBrowser::getClientDetailsUrl();
+        if ($audioBrowser instanceof NdlaAudioAdapter) {
+            $this->config['audioBrowserDetailsUrl'] = $audioBrowser->getClientDetailsUrl();
         }
     }
 }

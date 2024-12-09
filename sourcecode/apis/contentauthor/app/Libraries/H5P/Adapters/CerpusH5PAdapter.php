@@ -4,6 +4,7 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
 use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
@@ -21,6 +22,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     use H5PCommonAdapterTrait;
 
     public function __construct(
+        private readonly H5PAudioInterface $audioAdapter,
         private readonly H5PImageInterface $imageAdapter,
         private readonly H5PVideoInterface $videoAdapter,
     ) {
@@ -47,6 +49,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getEditorCss(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
             ...$this->imageAdapter->getEditorCss(),
             ...$this->videoAdapter->getEditorCss(),
         ]);
@@ -60,6 +63,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getCustomEditorScripts(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getEditorScripts(),
             ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
         ]);
@@ -75,6 +79,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
         return array_unique([
             ...$scripts,
+            ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
             ...$this->videoAdapter->getViewScripts(),
         ]);
@@ -84,6 +89,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getCustomViewCss(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getViewCss(),
             ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
         ]);
@@ -181,6 +187,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getConfigJs(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getConfigJs(),
             ...$this->imageAdapter->getConfigJs(),
             ...$this->videoAdapter->getConfigJs(),
         ]);
@@ -189,6 +196,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getCustomEditorStyles(): array
     {
         return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
             ...$this->imageAdapter->getEditorCss(),
             ...$this->videoAdapter->getEditorCss(),
         ]);

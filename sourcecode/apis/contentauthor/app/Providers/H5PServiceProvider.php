@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Console\Libraries\CliH5pFramework;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
 use App\Libraries\H5P\Adapters\NDLAH5PAdapter;
-use App\Libraries\H5P\Audio\NDLAAudioBrowser;
+use App\Libraries\H5P\Audio\NdlaAudioAdapter;
+use App\Libraries\H5P\Audio\NdlaAudioClient;
+use App\Libraries\H5P\Audio\NullAudioAdapter;
 use App\Libraries\H5P\EditorAjax;
 use App\Libraries\H5P\EditorStorage;
 use App\Libraries\H5P\Framework;
@@ -63,6 +65,7 @@ class H5PServiceProvider extends ServiceProvider
         return [
             H5PFileStorage::class,
             H5PAdapterInterface::class,
+            H5PAudioInterface::class,
             H5PImageInterface::class,
             H5PVideoInterface::class,
             H5PLibraryAdmin::class,
@@ -109,20 +112,18 @@ class H5PServiceProvider extends ServiceProvider
             'base_uri' => config('ndla.image.url'),
         ]));
 
-        $this->app->when(NDLAAudioBrowser::class)
-            ->needs(Client::class)
-            ->give(fn () => new Client([
-                'base_uri' => config('h5p.audio.url'),
-            ]));
-
-        $this->app->bind(H5PAudioInterface::class, function () {
-            $adapter = $this->app->make(H5PAdapterInterface::class);
-
-            return match (strtolower($adapter->getAdapterName())) {
-                'ndla' => $this->app->make(NDLAAudioBrowser::class),
-                default => null, // none supported at the moment
-            };
+        $this->app->bind(H5PAudioInterface::class, match (config('h5p.audio.adapter')) {
+            'ndla' => NdlaAudioAdapter::class,
+            default => NullAudioAdapter::class,
         });
+
+        $this->app->when(NdlaAudioAdapter::class)
+            ->needs('$url')
+            ->giveConfig('ndla.audio.url');
+
+        $this->app->bind(NdlaAudioClient::class, fn () => new NdlaAudioClient([
+            'base_uri' => config('ndla.image.url'),
+        ]));
 
         $this->app->bind(H5PCerpusStorage::class);
         $this->app->bind(H5PFileStorage::class, H5PCerpusStorage::class);

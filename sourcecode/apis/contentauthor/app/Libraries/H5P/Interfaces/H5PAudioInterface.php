@@ -1,10 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Libraries\H5P\Interfaces;
 
-interface H5PAudioInterface
+interface H5PAudioInterface extends LoadsCustomAssets
 {
-    public function findAudio($filterParameters);
-
-    public function getAudio($audioId, array $params = []);
 }
