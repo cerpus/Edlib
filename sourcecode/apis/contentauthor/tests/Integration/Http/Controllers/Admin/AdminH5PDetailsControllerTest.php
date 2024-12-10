@@ -10,6 +10,7 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
+use Exception;
 use Generator;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Filesystem\FilesystemAdapter;
@@ -95,11 +96,19 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $framework = $this->createMock(Framework::class);
         $this->instance(Framework::class, $framework);
+        $invokedCount = $this->exactly(2);
         $framework
-            ->expects($this->exactly(2))
+            ->expects($invokedCount)
             ->method('getMessages')
-            ->withConsecutive(['info'], ['error'])
-            ->willReturn([]);
+            ->willReturnCallback(function ($params) use ($invokedCount) {
+                match ($invokedCount->numberOfInvocations()) {
+                    1 => $this->assertSame('info', $params),
+                    2 => $this->assertSame('error', $params),
+                    default => throw new Exception('Mocked function "getMessages" called too many times'),
+                };
+
+                return [];
+            });
 
         $validator = $this->createMock(\H5PValidator::class);
         $this->instance(\H5PValidator::class, $validator);
