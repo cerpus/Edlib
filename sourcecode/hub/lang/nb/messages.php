@@ -80,7 +80,7 @@ return [
     'use-content' => 'Bruk innhold',
     'edit-content' => 'Rediger innhold',
     'delete-content' => 'Slett innhold',
-    'delete-content-confirm-text' => 'Innholdet vil bli fjernet fra Edlib. En feilmelding vil vises der innholdet er brukt',
+    'delete-content-confirm-text' => 'Innholdet vil bli fjernet fra Edlib og en feilmelding vil vises der innholdet er i bruk',
     'num-content-found' => '{0} Ingen innhold funnet|[1,*] :count innhold funnet',
     'today' => 'i dag',
     'number-of-views' => 'Antall visninger',
