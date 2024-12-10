@@ -11,6 +11,9 @@ return [
         'publicPath' => '',
         'path' => env("UPLOAD_STORAGE_PATH_H5P", public_path() . '/h5pstorage'),
     ],
+    'audio' => [
+        'adapter' => env('H5P_AUDIO_ADAPTER'),
+    ],
     'image' => [
         'adapter' => env('H5P_IMAGE_ADAPTER'),
     ],
@@ -29,9 +32,6 @@ return [
     'crossOriginRegexp' => env('H5P_CROSSORIGIN_REGEXP', '/.+/'),
     'overrideDisableSetting' => env("H5P_OVERRIDE_DISABLE_SETTING", false),
     'h5pAdapter' => env('H5P_ADAPTER', 'cerpus'),
-    'audio' => [
-        'url' => env("H5P_AUDIO_URL"),
-    ],
     'saveFrequency' => env('H5P_SAVE_FREQUENCY', 15),
     'include-custom-css' => env("H5P_INCLUDE_CUSTOM_CSS", false),
     "default-resource-language" => env("H5P_DEFAULT_RESOURCE_LANGUAGE", "eng"),

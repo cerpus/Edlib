@@ -36,8 +36,8 @@ Route::get('images/browse/{imageId}', [NdlaContentController::class, 'getImage']
 Route::get('videos/browse', [H5PController::class, 'browseVideos']);
 Route::get('videos/browse/{videoId}', [H5PController::class, 'getVideo']);
 
-Route::get('audios/browse', [H5PController::class, 'browseAudios']);
-Route::get('audios/browse/{audioId}', [H5PController::class, 'getAudio']);
+Route::get('audios/browse', [NdlaContentController::class, 'browseAudio']);
+Route::get('audios/browse/{audioId}', [NdlaContentController::class, 'getAudio']);
 
 Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);
 Route::get('content/upgrade/library', [H5PController::class, 'contentUpgradeLibrary'])->name('content-upgrade-library');
@@ -48,10 +48,8 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     Route::post('/h5p/{id}', [H5PController::class, 'show'])->middleware(['core.behavior-settings:view', 'lti.redirect-to-editor'])->name('h5p.ltishow');
     Route::post('/h5p/{id}/edit', [H5PController::class, 'edit'])->middleware(['core.behavior-settings:editor'])->name('h5p.ltiedit');
 
-    Route::resource('/link', LinkController::class, ['except' => ['index', 'destroy']]);
-    Route::post('/link/create', [LinkController::class, 'create']);
+    Route::resource('/link', LinkController::class, ['only' => ['show']]);
     Route::post('/link/{id}', [LinkController::class, 'show'])->middleware(['lti.redirect-to-editor']);
-    Route::post('/link/{id}/edit', [LinkController::class, 'edit']);
 
     Route::resource('/article', ArticleController::class, ['except' => ['index', 'destroy']]);
     Route::post('/article/create', [ArticleController::class, 'create'])->middleware(['core.behavior-settings:editor']);
@@ -73,7 +71,6 @@ Route::middleware(['core.return', 'lti.add-to-session', 'lti.signed-launch', 'co
     // references to these exist in external systems, so these cannot be removed.
     Route::post('/lti-content/create/article', [ArticleController::class, 'create']);
     Route::post('/lti-content/create/game', [GameController::class, 'create']);
-    Route::post('/lti-content/create/link', [LinkController::class, 'create']);
     Route::post('/lti-content/create/questionset', [QuestionSetController::class, 'create']);
     Route::post('/lti-content/create/h5p', [H5PController::class, 'create']);
     Route::post('/lti-content/create', [H5PController::class, 'create']);

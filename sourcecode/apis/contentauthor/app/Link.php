@@ -20,7 +20,7 @@ use function route;
  * @property string $owner_id
  * @property int $deleted_at
  * @property string $link_text
- * @property string $metadata
+ * @property ?string $metadata
  *
  * @property Collection<Collaborator> $collaborators
  *
@@ -32,7 +32,7 @@ class Link extends Content implements VersionableObject
     use HasFactory;
     use HasUuids;
 
-    public string $editRouteName = 'link.edit';
+    public string $editRouteName = 'link.edit'; // note: doesn't work anymore
 
     public function givesScore(): int
     {
