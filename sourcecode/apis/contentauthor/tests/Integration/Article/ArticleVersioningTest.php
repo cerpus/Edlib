@@ -147,7 +147,9 @@ class ArticleVersioningTest extends TestCase
         $article->version_id = $version->id;
         $article->save();
 
-        $article->collaborators()->save(ArticleCollaborator::factory()->create(['email' => $collaborator->email]));
+        $article->collaborators()->save(
+            ArticleCollaborator::factory()->make(['email' => $collaborator->email])
+        );
 
         $article->fresh();
 
