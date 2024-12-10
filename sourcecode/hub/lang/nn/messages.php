@@ -91,7 +91,7 @@ return [
     'chart-no-data' => 'Ingen data',
     'chart-load-error' => 'Lasting feila',
     'debug-mode' => 'Feilsøkingsmodus',
-    'debug-mode-form-help' => 'Feilsøkingsmodus vil avsløre tekniske detaljar som kan være til hjelp under feilsøking eller utvikling av innhaldstypar.',
+    'debug-mode-form-help' => 'Feilsøkingsmodus vil avsløra tekniske detaljar som kan vera til hjelp under feilsøking eller utvikling av innhaldstypar.',
     'delete' => 'Slett',
     'cancel' => 'Avbryt',
     'go-back' => 'Tilbake',
