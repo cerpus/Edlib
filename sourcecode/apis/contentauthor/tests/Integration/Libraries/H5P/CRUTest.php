@@ -17,6 +17,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
@@ -293,9 +294,7 @@ class CRUTest extends TestCase
      */
     public function upgradeContentNoExtraChanges_validParams_thenSuccess()
     {
-        $this->expectsEvents([
-            H5PWasSaved::class,
-        ]);
+        Event::fake();
 
         $this->seed(TestH5PSeeder::class);
         $owner = User::factory()->make();
@@ -332,6 +331,7 @@ class CRUTest extends TestCase
         $this->assertCount(2, $all);
         $this->assertEquals(39, $all->first()->library_id);
         $this->assertEquals(90, $all->last()->library_id);
+        Event::assertDispatched(H5PWasSaved::class);
     }
 
     /**
@@ -339,9 +339,7 @@ class CRUTest extends TestCase
      */
     public function upgradeContentExtraChanges_validParams_thenSuccess()
     {
-        $this->expectsEvents(
-            H5PWasSaved::class,
-        );
+        Event::fake();
 
         $this->seed(TestH5PSeeder::class);
         $owner = User::factory()->make();
@@ -385,6 +383,7 @@ class CRUTest extends TestCase
         $this->assertEquals("Title", $second->title);
         $this->assertEquals(90, $second->library_id);
         $this->assertJsonStringEqualsJsonString('{"simpleTest":"SimpleTest","original":false,"upgraded":"Hell yess!"}', $second->parameters);
+        Event::assertDispatched(H5PWasSaved::class);
     }
 
     /**
@@ -392,9 +391,7 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublishActionAndLTISupport()
     {
-        $this->expectsEvents([
-            H5PWasSaved::class,
-        ]);
+        Event::fake();
         $this->seed(TestH5PSeeder::class);
 
         $owner = User::factory()->make();
@@ -465,6 +462,7 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'New resource', 'is_published' => 0]);
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'New resource 2', 'is_published' => 1]);
+        Event::assertDispatched(H5PWasSaved::class);
     }
 
     /**

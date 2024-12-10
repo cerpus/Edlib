@@ -10,6 +10,7 @@ use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
 use Tests\TestCase;
 
@@ -73,12 +74,9 @@ class LinkControllerTest extends TestCase
 
     public function testStore(): void
     {
+        Event::fake();
         $this->withSession([
             'authId' => Uuid::uuid(),
-        ]);
-
-        $this->expectsEvents([
-            LinkWasSaved::class,
         ]);
 
         $response = $this->post(route('link.store'), [
@@ -101,17 +99,16 @@ class LinkControllerTest extends TestCase
         $response->assertJson([
             'url' => route('link.edit', $article->id),
         ]);
+
+        Event::assertDispatched(LinkWasSaved::class);
     }
 
     public function testUpdate(): void
     {
+        Event::fake();
         $userId = $this->faker->uuid;
         $this->session([
             'authId' => $userId,
-        ]);
-
-        $this->expectsEvents([
-            LinkWasSaved::class,
         ]);
 
         $link = Link::factory()->create([
@@ -146,5 +143,7 @@ class LinkControllerTest extends TestCase
         $response->assertJson([
             'url' => route("link.edit", ['link' => $newLink->getId()]),
         ]);
+
+        Event::assertDispatched(LinkWasSaved::class);
     }
 }

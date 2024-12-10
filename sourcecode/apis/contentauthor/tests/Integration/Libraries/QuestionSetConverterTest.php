@@ -14,6 +14,7 @@ use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class QuestionSetConverterTest extends TestCase
@@ -23,7 +24,7 @@ class QuestionSetConverterTest extends TestCase
 
     public function testCreateMillionaireGameFromQuestionSet(): void
     {
-        $this->expectsEvents([GameWasSaved::class]);
+        Event::fake();
 
         $questionSet = QuestionSet::factory()->create([
             'is_published' => false,
@@ -75,11 +76,12 @@ class QuestionSetConverterTest extends TestCase
         $this->assertSame($a1->correct, $convertedCard->answers[0]->isCorrect);
         $this->assertSame($a2->answer_text, $convertedCard->answers[1]->answer);
         $this->assertSame($a2->correct, $convertedCard->answers[1]->isCorrect);
+        Event::assertDispatched(GameWasSaved::class);
     }
 
     public function testCreateMillionaireGameFromArray(): void
     {
-        $this->expectsEvents([GameWasSaved::class]);
+        Event::fake();
 
         $questionSet = [
             'owner' => $this->faker->uuid,
@@ -145,5 +147,6 @@ class QuestionSetConverterTest extends TestCase
         $this->assertSame($inputCard['answers'][0]['isCorrect'], $convertedCard->answers[0]->isCorrect);
         $this->assertSame($inputCard['answers'][1]['answerText'], $convertedCard->answers[1]->answer);
         $this->assertSame($inputCard['answers'][1]['isCorrect'], $convertedCard->answers[1]->isCorrect);
+        Event::assertDispatched(GameWasSaved::class);
     }
 }
