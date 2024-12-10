@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Auth;
 use App\Traits\Locale;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CapabilityDescriptionPostRequest extends Request
+class CapabilityDescriptionPostRequest extends FormRequest
 {
     use Locale;
     /**

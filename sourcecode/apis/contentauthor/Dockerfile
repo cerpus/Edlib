@@ -30,6 +30,8 @@ COPY docker/php.ini $PHP_INI_DIR/conf.d/99-custom.ini
 
 RUN echo "access.log = /dev/null" >> /usr/local/etc/php-fpm.d/www.conf;
 
+COPY docker/php/startup.sh /usr/local/bin/
+
 WORKDIR /app
 
 
@@ -52,7 +54,7 @@ WORKDIR /app
 RUN npm i -g node-gyp
 
 COPY package.json package-lock.json ./
-RUN npm i
+RUN npm ci
 
 COPY --from=composer_deps /app/vendor/ckeditor/ckeditor vendor/ckeditor/ckeditor
 COPY --from=composer_deps /app/vendor/h5p vendor/h5p
@@ -94,7 +96,7 @@ RUN set -eux; \
         storage/framework/sessions \
         storage/framework/views \
         storage/logs; \
-    ln -s /app/public/storage/app/public /app/public/storage; \
+    ln -s ../storage/app public/h5pstorage; \
     chmod -R o+w \
         bootstrap/cache \
         storage; \
@@ -119,11 +121,6 @@ RUN set -eux; \
     ;
 
 CMD ["vendor/bin/phpunit"]
-
-
-FROM prod AS startup
-
-CMD ["php", "artisan", "migrate", "--force"]
 
 
 FROM base AS dev

@@ -40,18 +40,11 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('admin-users.index') }}">Admin users</a>
-                            </li>
-
-                            <li>
                                 <a href="{{ route('admin.locks') }}">Manage Edit Locks</a>
                             </li>
 
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
                             </li>
                         </ul>
                     </li>
@@ -123,7 +116,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('logout') }}"
+                                <a href="#"
                                    onclick="
                                         event.preventDefault();
                                         document.getElementById('logout-form').submit();">

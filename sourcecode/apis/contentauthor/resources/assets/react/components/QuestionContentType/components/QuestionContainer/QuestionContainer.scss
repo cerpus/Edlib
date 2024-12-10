@@ -1,6 +1,7 @@
 .questionSetSurface {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
 
     > div {
         flex: 1;

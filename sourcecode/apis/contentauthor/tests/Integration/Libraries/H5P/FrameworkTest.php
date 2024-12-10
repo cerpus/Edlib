@@ -7,7 +7,6 @@ namespace Tests\Integration\Libraries\H5P;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLibrary;
-use App\Libraries\ContentAuthorStorage;
 use App\Libraries\H5P\Framework;
 use ArrayObject;
 use Generator;
@@ -159,8 +158,7 @@ final class FrameworkTest extends TestCase
     public function test_deleteLibrary($usePatch): void
     {
         $disk = Storage::fake();
-        $caStorage = App(ContentAuthorStorage::class);
-        $tmpDisk = Storage::fake($caStorage->getH5pTmpDiskName());
+        $tmpDisk = Storage::fake('h5pTmp');
 
         $library = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
         $path = 'libraries/' . $library->getFolderName();

@@ -3,33 +3,46 @@
 namespace Tests\Integration\Libraries;
 
 use App\Events\GameWasSaved;
-use App\Events\H5PWasSaved;
+use App\Game;
 use App\Gametype;
-use App\H5PContent;
-use App\H5PLibrary;
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\H5P\Packages\QuestionSet as H5PQuestionSet;
 use App\Libraries\QuestionSet\QuestionSetConvert;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
-use H5peditor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class QuestionSetConverterTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
-    public function testCreateMillionaireGame(): void
+    public function testCreateMillionaireGameFromQuestionSet(): void
     {
         $this->expectsEvents([GameWasSaved::class]);
 
         $questionSet = QuestionSet::factory()->create([
             'is_published' => false,
         ]);
+        /** @var QuestionSetQuestion $question */
+        $question = $questionSet->questions()->save(QuestionSetQuestion::factory()->make());
+        /** @var QuestionSetQuestionAnswer $a1 */
+        $a1 = $question->answers()->save(QuestionSetQuestionAnswer::factory()->make([
+            'answer_text' => 'A1',
+            'correct' => true,
+            'order' => 1,
+        ]));
+        /** @var QuestionSetQuestionAnswer $a2 */
+        $a2 = $question->answers()->save(QuestionSetQuestionAnswer::factory()->make([
+            'answer_text' => 'A2',
+            'correct' => false,
+            'order' => 2,
+        ]));
+
         $gameType = Gametype::factory()->create([
             'name' => Millionaire::$machineName,
         ]);
@@ -40,6 +53,7 @@ class QuestionSetConverterTest extends TestCase
         );
 
         $questionsetConverter = app(QuestionSetConvert::class);
+        /** @var Game $game */
         $game = $questionsetConverter->convert(
             Millionaire::$machineName,
             $questionSet,
@@ -51,54 +65,85 @@ class QuestionSetConverterTest extends TestCase
             'title' => $questionSet->title,
             'license' => License::LICENSE_BY_NC,
             'gametype' => $gameType->id,
+            'owner' => $questionSet->owner,
         ]);
+
+        $convertedCard = $game->game_settings->questionSet->questions[0];
+
+        $this->assertSame($question->question_text, $convertedCard->questionText);
+        $this->assertSame($a1->answer_text, $convertedCard->answers[0]->answer);
+        $this->assertSame($a1->correct, $convertedCard->answers[0]->isCorrect);
+        $this->assertSame($a2->answer_text, $convertedCard->answers[1]->answer);
+        $this->assertSame($a2->correct, $convertedCard->answers[1]->isCorrect);
     }
 
-    public function testCreateH5PQuestionSet(): void
+    public function testCreateMillionaireGameFromArray(): void
     {
-        $this->expectsEvents([H5PWasSaved::class]);
+        $this->expectsEvents([GameWasSaved::class]);
 
-        $h5peditorMock = $this->createMock(H5peditor::class);
-        app()->instance(H5peditor::class, $h5peditorMock);
-        $h5peditorMock
-            ->expects($this->once())
-            ->method('processParameters');
-
-        $questionSet = QuestionSet::factory()->create([
+        $questionSet = [
+            'owner' => $this->faker->uuid,
             'is_published' => false,
-            'license' => License::LICENSE_BY_ND,
+            'title' => $this->faker->sentence,
+            'external_reference' => null,
+            'language_code' => $this->faker->languageCode,
+            'license' => '',
+            'cards' => [
+                [
+                    'question' => [
+                        'text' => 'QT',
+                    ],
+                    'answers' => [
+                        [
+                            'answerText' => 'AT 1',
+                            'isCorrect' => true,
+                        ],
+                        [
+                            'answerText' => 'AT 2',
+                            'isCorrect' => false,
+                        ]
+                    ],
+                ]
+            ],
+        ];
+
+        $gameType = Gametype::factory()->create([
+            'name' => Millionaire::$machineName,
         ]);
-        $question = QuestionSetQuestion::factory()->create([
-            'question_set_id' => $questionSet->id,
-        ]);
-        QuestionSetQuestionAnswer::factory()->count(4)->create([
-            'question_id' => $question->id,
-        ]);
+
         $resourceMetaObject = new ResourceMetadataDataObject(
             license: License::LICENSE_BY_NC,
             share: 'share',
             tags: ['List', 'of', 'tags'],
         );
 
-        H5PLibrary::factory([
-            'name' => 'H5P.QuestionSet',
-            'major_version' => 1,
-            'minor_version' => 12,
-        ])->create();
-
         $questionsetConverter = app(QuestionSetConvert::class);
-        $h5p = $questionsetConverter->convert(
-            H5PQuestionSet::$machineName,
+        /** @var Game $game */
+        $game = $questionsetConverter->convert(
+            Millionaire::$machineName,
             $questionSet,
             $resourceMetaObject
         );
 
-        $this->assertInstanceOf(H5PContent::class, $h5p);
-        $this->assertDatabaseHas('h5p_contents', [
-            'id' => $h5p->id,
-            'title' => $questionSet->title,
+        $this->assertDatabaseHas('games', [
+            'id' => $game->id,
+            'title' => $questionSet['title'],
             'license' => License::LICENSE_BY_NC,
+            'gametype' => $gameType->id,
+            'owner' => $questionSet['owner'],
         ]);
-        $this->assertSame('H5P.QuestionSet', $h5p->getMachineName());
+
+        $this->assertDatabaseMissing('question_sets', [
+            'title' => $questionSet['title'],
+        ]);
+
+        $inputCard = $questionSet['cards'][0];
+        $convertedCard = $game->game_settings->questionSet->questions[0];
+
+        $this->assertSame($inputCard['question']['text'], $convertedCard->questionText);
+        $this->assertSame($inputCard['answers'][0]['answerText'], $convertedCard->answers[0]->answer);
+        $this->assertSame($inputCard['answers'][0]['isCorrect'], $convertedCard->answers[0]->isCorrect);
+        $this->assertSame($inputCard['answers'][1]['answerText'], $convertedCard->answers[1]->answer);
+        $this->assertSame($inputCard['answers'][1]['isCorrect'], $convertedCard->answers[1]->isCorrect);
     }
 }

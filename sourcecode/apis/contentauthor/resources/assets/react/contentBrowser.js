@@ -83,6 +83,8 @@ function initAudioBrowser(element, settings) {
     })();
 }
 
-window.initImageBrowser = initImageBrowser;
-window.initVideoBrowser = initVideoBrowser;
-window.initAudioBrowser = initAudioBrowser;
+export {
+    initAudioBrowser,
+    initImageBrowser,
+    initVideoBrowser,
+};

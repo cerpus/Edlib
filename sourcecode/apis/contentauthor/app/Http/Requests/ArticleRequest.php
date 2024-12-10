@@ -6,9 +6,10 @@ use App\Article;
 use App\Rules\canPublishContent;
 use App\Rules\LicenseContent;
 use App\Rules\shareContent;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ArticleRequest extends Request
+class ArticleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

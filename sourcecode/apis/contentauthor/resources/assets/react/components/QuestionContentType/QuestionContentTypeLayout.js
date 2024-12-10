@@ -17,6 +17,10 @@ const QuestionContentTypeLayout = props => {
         contentTypes,
         editMode,
         onSave,
+        isLockedPresentation= false,
+        numberOfDefaultAnswers,
+        canAddRemoveQuestion = true,
+        canAddRemoveAnswer = true,
     } = props;
     return (
         <MuiThemeProvider
@@ -33,6 +37,10 @@ const QuestionContentTypeLayout = props => {
                 contentTypes={contentTypes}
                 editMode={editMode}
                 onSave={onSave}
+                isLockedPresentation={isLockedPresentation}
+                numberOfDefaultAnswers={numberOfDefaultAnswers}
+                canAddRemoveQuestion={canAddRemoveQuestion}
+                canAddRemoveAnswer={canAddRemoveAnswer}
             />
         </MuiThemeProvider>
     );
@@ -49,6 +57,8 @@ QuestionContentTypeLayout.propTypes = {
     onSave: PropTypes.func,
     contentTypes: PropTypes.array,
     editMode: PropTypes.bool,
+    isLockedPresentation: PropTypes.bool,
+    numberOfDefaultAnswers: PropTypes.number,
 };
 
 export default QuestionContentTypeLayout;

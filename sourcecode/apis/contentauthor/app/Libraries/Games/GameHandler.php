@@ -2,26 +2,27 @@
 
 namespace App\Libraries\Games;
 
+use App\ContentVersion;
 use App\Events\GameWasSaved;
+use App\Exceptions\GameTypeNotFoundException;
 use App\Game;
 use App\Gametype;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\Millionaire\Millionaire;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
 class GameHandler
 {
-    public function store($values, GameTypeContract $gametype)
+    public function store(array $values, GameTypeContract $gametype): Game
     {
-        $game = Game::make();
+        $game = new Game();
 
         $game->title = $values['title'];
         $game->gametype = $gametype->getGameType();
-        $game->language_code = $gametype->convertLanguageCode(App::getLocale());
+        $game->language_code = $gametype->convertLanguageCode($values['language_code'] ?? App::getLocale());
         $game->owner = $values['authId'];
         $game->game_settings = $gametype->createGameSettings($values);
         $game->is_published = $values['is_published'];
@@ -32,8 +33,7 @@ class GameHandler
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $values['license'],
             share: $values['share'],
-            reason: VersionData::CREATE,
-            owner: $values['authId'],
+            reason: ContentVersion::PURPOSE_CREATE,
             tags: $values['tags'],
         )));
 
@@ -41,29 +41,31 @@ class GameHandler
     }
 
     /**
-     * @throws \Exception
+     * @throws GameTypeNotFoundException
+     */
+    public static function getGameTypeInstance(string $type): GameTypeContract
+    {
+        return match ($type) {
+            'millionaire', Millionaire::$machineName => app(Millionaire::class),
+            default => throw new GameTypeNotFoundException(trans('game.could-not-find-the-gametype', ["gametype" => $type])),
+        };
+    }
+
+    /**
+     * @throws GameTypeNotFoundException
      */
     public static function makeGameTypeFromId($gametypeId): GameTypeContract
     {
-        $gametypes = Gametype::findOrFail($gametypeId)->get();
+        $gametypes = Gametype::find($gametypeId);
 
-        if ($gametypes->isEmpty()) {
-            throw new \Exception(trans('game.gametype-not-found'));
+        if ($gametypes === null) {
+            throw new GameTypeNotFoundException(trans('game.gametype-not-found'));
         }
 
-        $gametype = $gametypes->first();
-        switch ($gametype->name) {
-            case Millionaire::$machineName:
-                $className = Millionaire::class;
-                break;
-            default:
-                throw new \Exception(trans('game.could-not-find-the-gametype', ["gametype" => $gametype->name]));
-        }
-
-        return app($className);
+        return self::getGameTypeInstance($gametypes->name);
     }
 
-    public function update(Game $game, Request $request)
+    public function update(Game $game, Request $request): Game
     {
         /** @var Game $game */
         list($game, $reason) = $this->handleCopy($game, $request);
@@ -81,7 +83,6 @@ class GameHandler
             license: $request->get('license'),
             share: $request->get('share'),
             reason: $reason,
-            owner: Session::get('authId'),
             tags: $request->get('tags', []),
         )));
 
@@ -90,9 +91,9 @@ class GameHandler
 
     private function handleCopy(Game $game, Request $request)
     {
-        $reason = $game->shouldCreateFork(Session::get('authId', false)) ? VersionData::COPY : VersionData::UPDATE;
+        $reason = $game->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
 
-        if ($reason === VersionData::COPY && !$request->get("license", false)) {
+        if ($reason === ContentVersion::PURPOSE_COPY && !$request->get("license", false)) {
             $request->merge(["license" => $game->getContentLicense()]);
         }
 
@@ -103,10 +104,10 @@ class GameHandler
 
         if ($game->requestShouldBecomeNewVersion($request)) {
             switch ($reason) {
-                case VersionData::UPDATE:
+                case ContentVersion::PURPOSE_UPDATE:
                     $game = $game->makeCopy();
                     break;
-                case VersionData::COPY:
+                case ContentVersion::PURPOSE_COPY:
                     $game = $game->makeCopy(Session::get('authId'));
                     break;
             }

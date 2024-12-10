@@ -17,4 +17,9 @@ class QuestionSetStateDataObject extends ContentStateDataObject
     public $questionset;
     public $editmode;
     public $presentation;
+    public int $numberOfDefaultQuestions = 2;
+    public int $numberOfDefaultAnswers = 2;
+    public bool $canAddRemoveQuestion = true;
+    public bool $canAddRemoveAnswer = true;
+    public string|null $lockedPresentation = null;
 }

@@ -6,11 +6,11 @@ import H5P from '../H5P';
 import { injectIntl } from 'react-intl';
 import useH5PEditor from '../H5P/useH5PEditor';
 import useConfirmWindowClose from './useConfirmWindowClose';
-import { nextTick, removeKeys } from '../../utils/utils';
+import { deepCopy, flattenPath, nextTick, removeKeys, set } from '../../utils/utils';
 import FileUploadProgress from '../FileUploadProgress';
 import Fade from '@material-ui/core/Fade';
 import EditorContainer from '../EditorContainer/EditorContainer';
-import { useForm } from '../../contexts/FormContext';
+import { FormActions, useForm } from '../../contexts/FormContext';
 import Sidebar, {
     AdapterSelector,
     DisplayOptions,
@@ -20,11 +20,13 @@ import { getLanguageStringFromCode } from '../../utils/Helper';
 import NewReleases from '@material-ui/icons/NewReleases';
 import { useTheme } from '@material-ui/core/styles';
 import { useEditorSetupContext } from '../../contexts/EditorSetupContext';
+import getTextFields from "./List/getTextFields";
 
 const H5PEditorContainer = ({ intl }) => {
     const {
         state: formState,
         state: { parameters: formParameters, max_score: maxScore },
+        dispatch,
     } = useForm();
     const [currentView, setCurrentView] = React.useState(views.H5P);
     const [parameters, setParameters] = React.useState({
@@ -93,7 +95,9 @@ const H5PEditorContainer = ({ intl }) => {
         );
     }, [getCurrentParams, startupParameters, isSaved]);
 
-    useConfirmWindowClose(shouldConfirmClose);
+    if (editorSetup.enableUnsavedWarning) {
+        useConfirmWindowClose(shouldConfirmClose);
+    }
 
     React.useEffect(() => {
         const H5PReadyInterval = setInterval(() => {
@@ -234,7 +238,6 @@ const H5PEditorContainer = ({ intl }) => {
             copyright,
             download,
             language_iso_639_3: languageISO6393,
-            isNewLanguageVariant,
         } = formState;
 
         const components = [];
@@ -290,15 +293,29 @@ const H5PEditorContainer = ({ intl }) => {
             info: languageText !== null ? <div>({languageText})</div> : null,
             component: (
                 <LanguagePicker
-                    getParameters={() => getCurrentParams()}
-                    library={parameters.library}
-                    hideNewVariant={editorSetup.hideNewVariant}
-                    isNewLanguageVariant={isNewLanguageVariant}
-                    autoTranslateTo={editorSetup.autoTranslateTo}
-                    value={languageISO6393}
-                    libraryCache={getLibraryCache}
-                    setParams={(newParameters) => {
-                        onParamsChange({ parameters: newParameters });
+                    language={languageISO6393}
+                    onChange={(language) => {
+                        dispatch({ type: FormActions.setLanguage, payload: { language } });
+                    }}
+                    onGetFields={async () => {
+                        const fields = await getTextFields(getParams(), parameters.library, getLibraryCache());
+
+                        return fields.map(field => ({
+                            path: flattenPath(field.path),
+                            value: field.originalValue,
+                        }));
+                    }}
+                    onSetFields={(fields) => {
+                        const newParameters = deepCopy(getParams());
+                        for (const i in fields) {
+                            set(newParameters.params, i, fields[i]);
+                        }
+                        onParamsChange(newParameters);
+
+                        dispatch({ type: FormActions.setIsNewLanguageVariant, payload: {
+                            isNewLanguageVariant: true,
+                        }});
+
                         nextTick(() => {
                             if (currentView === views.H5P) {
                                 reDraw(newParameters, parameters.library);
@@ -308,6 +325,7 @@ const H5PEditorContainer = ({ intl }) => {
                             }
                         });
                     }}
+                    supportedLanguages={editorSetup.supportedTranslations}
                 />
             ),
         });

@@ -1,1 +1,1 @@
-export { default } from "./LanguagePickerContainer";
+export { default } from "./LanguagePicker";

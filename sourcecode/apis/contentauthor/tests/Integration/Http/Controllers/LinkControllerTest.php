@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
 use App\Http\Libraries\License;
 use App\Link;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
@@ -11,24 +10,22 @@ use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\View\View;
-use Tests\Helpers\MockAuthApi;
 use Tests\TestCase;
 
 class LinkControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
 
     public function test_doShow(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
+        $userId = $this->faker->uuid;
         $this->session([
-            'authId' => $user->getId(),
+            'authId' => $userId,
         ]);
         $link = Link::factory()->create([
             'license' => License::LICENSE_BY_NC_ND,
-            'owner_id' => $user->getId(),
+            'owner_id' => $userId,
         ]);
 
         $request = new Oauth1Request('POST', url('/link/' . $link->getId()), [
@@ -46,12 +43,11 @@ class LinkControllerTest extends TestCase
         );
 
         $result = $this->post('link/' . $link->getId(), $request->toArray())
-        ->assertOk();
+            ->assertOk();
 
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(View::class, $result->getOriginalContent());
         $data = $result->getOriginalContent()->getData();
-        $this->assertArrayHasKey('styles', $data);
-        $this->assertContains('my-styles.css', $data['styles']);
+        $this->assertSame('my-styles.css', $data['customCSS']);
     }
 }

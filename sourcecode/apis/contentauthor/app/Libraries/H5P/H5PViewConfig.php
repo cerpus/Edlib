@@ -7,7 +7,6 @@ namespace App\Libraries\H5P;
 use App\Exceptions\UnknownH5PPackageException;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
-use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ContentTypeInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\SessionKeys;
@@ -17,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 use function htmlspecialchars;
+use function request;
 use function sprintf;
 use function url;
 
@@ -29,6 +29,8 @@ class H5PViewConfig extends H5PConfigAbstract
     private ?H5PAlterParametersSettingsDataObject $alterParametersSettings = null;
     private ?string $filterParams = null;
     private ?string $embedId = null;
+    private string $embedCode = '';
+    private string $embedResizeCode = '';
     private ?string $resourceLinkTitle = null;
 
     public function __construct(H5PAdapterInterface $adapter, H5PCore $h5pCore)
@@ -43,7 +45,7 @@ class H5PViewConfig extends H5PConfigAbstract
             'exportUrl' => '',
             'embedCode' => '',
             'resizeCode' => '',
-            'url' => UrlHelper::getCurrentFullUrl(),
+            'url' => request()->getSchemeAndHttpHost() . request()->getBasePath(),
             'title' => '',
             'metadata' => [],
             'displayOptions' => [],
@@ -84,7 +86,12 @@ class H5PViewConfig extends H5PConfigAbstract
         $this->contentConfig['metadata'] = $this->content['metadata'];
 
         $embedPathTemplate = config('edlib.embedPath');
-        if ($embedPathTemplate && $this->embedId !== null) {
+        if ($this->embedCode) {
+            $this->contentConfig['embedCode'] = $this->embedCode;
+            if ($this->embedResizeCode) {
+                $this->contentConfig['resizeCode'] = $this->embedResizeCode;
+            }
+        } elseif ($embedPathTemplate && $this->embedId !== null) {
             $this->config['documentUrl'] = str_replace('<resourceId>', $this->embedId, $embedPathTemplate);
             $this->contentConfig['embedCode'] = sprintf(
                 self::EMBED_TEMPLATE,
@@ -112,6 +119,18 @@ class H5PViewConfig extends H5PConfigAbstract
     public function setEmbedId(string|null $embedId): static
     {
         $this->embedId = $embedId;
+        return $this;
+    }
+
+    public function setEmbedCode(string $embedCode): static
+    {
+        $this->embedCode = $embedCode;
+        return $this;
+    }
+
+    public function setEmbedResizeCode(string $embedResizeCode): static
+    {
+        $this->embedResizeCode = $embedResizeCode;
         return $this;
     }
 
@@ -195,7 +214,7 @@ class H5PViewConfig extends H5PConfigAbstract
     {
         $parameters = $this->adapter->alterParameters(
             $this->filterParams ?? '',
-            $this->alterParametersSettings
+            $this->alterParametersSettings ?? new H5PAlterParametersSettingsDataObject(),
         );
 
         if (!is_null($this->behaviorSettings)) {

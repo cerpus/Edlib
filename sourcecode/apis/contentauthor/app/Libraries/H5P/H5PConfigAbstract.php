@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
-use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Support\Facades\Session;
@@ -36,7 +35,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     ) {
         $this->adapter->setConfig($this);
 
-        $url = UrlHelper::getCurrentBaseUrl();
+        $url = request()->getSchemeAndHttpHost() . request()->getBasePath();
         $locale = Session::get('locale', config('app.fallback_locale'));
 
         $this->config = [

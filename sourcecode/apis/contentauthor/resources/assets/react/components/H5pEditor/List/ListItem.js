@@ -24,6 +24,29 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
     const inputType = getInputType(type, widget);
     const { editorLanguage } = useEditorSetupContext();
 
+    function encode (value) {
+        if (!value || value === '') {
+            return '';
+        }
+        return value.toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/'/g, '&#039;')
+            .replace(/"/g, '&quot;')
+            ;
+    }
+
+    function decode (value) {
+        if (!value || value === '') {
+            return '';
+        }
+        const elm = document.createElement('div');
+        elm.innerHTML = value;
+
+        return elm.innerText;
+    }
+
     return (
         <div
             className={clsx('h5p-editor-list-item', {
@@ -42,7 +65,7 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                             className="listitem-original-text"
                         />
                     )}
-                    {inputType === 'textarea' && <span>{startValue}</span>}
+                    {inputType === 'textarea' && <span>{decode(startValue)}</span>}
                 </div>
             )}
             {viewOldValue && (typeof startValue === 'undefined' || startValue === '') && (
@@ -55,9 +78,9 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                     <textarea
                         className="translation-textarea"
                         rows={2}
-                        value={value}
+                        value={decode(value)}
                         onChange={e => {
-                            onChange(e.target.value);
+                            onChange(encode(e.target.value));
                             setViewOldValue(true);
                         }}
                     />

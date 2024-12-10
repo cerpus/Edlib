@@ -1,17 +1,20 @@
 @import '../../../../../sass/_functions';
 
-.questionCard,
-.addCard {
+.questionCard, .addCard {
   background-color: $gray-lighter;
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   position: relative;
   margin-bottom: 15px;
   cursor: pointer;
+
   > div {
     width: 100%;
-    margin: 10px;
   }
+}
+
+.questionCard {
+  padding: 10px;
 }
 
 .questionCard:hover {
@@ -23,8 +26,7 @@
     align-items: center;
     overflow: hidden;
     width: 100%;
-    border: 1px solid #000;
-    border-style: dotted;
+    border: 1px dotted #000;
     border-radius: 5px;
     text-align: center;
 
@@ -32,7 +34,6 @@
         font-weight: bold;
         text-transform: inherit;
         flex-grow: 2;
-        margin-right: 5px;
     }
 }
 
@@ -46,10 +47,13 @@
 }
 
 .cardNumber {
-  width: 40px;
-  padding: 15px;
-  font-size: large;
+  font-family: monospace;
   font-weight: bold;
+  font-size: 20px;
+  text-align: right;
+  white-space: pre;
+  width: 2.4em;
+  margin: 8px 8px 0 0;
   opacity: 0.5;
 }
 
@@ -66,10 +70,12 @@
 }
 
 .answerList {
-  padding-right: 12px;
+  > div:not(:last-child) {
+    margin-bottom: 10px;
+  }
 
-  > div {
-    margin-bottom: 8px;
+  &.withDeleteBtn {
+    margin-top: 34px;
   }
 }
 
@@ -142,9 +148,7 @@
 }
 
 .imagePopover {
-  border-radius: 5px;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-radius: 5px 5px 10px 10px;
 }
 
 .imageContainer {
@@ -199,13 +203,18 @@
   position: absolute;
   top: 0;
   right: 0;
-  transform: rotate(45deg);
   opacity: .5;
   border: none;
   background: none;
+  padding: 2px 2px 0 0;
+
+  & > svg {
+    transform: rotate(45deg);
+  }
 
   &:hover {
     cursor: pointer;
+    opacity: 1;
   }
 }
 
@@ -214,4 +223,9 @@
     text-transform: none;
     font-size: 1.6rem;
     font-weight: 400 !important;
+}
+
+.editorWarning {
+    font-style: italic;
+    margin-top: 10px;
 }

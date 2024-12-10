@@ -40,13 +40,15 @@ return [
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
         ],
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
-            'level' => 'debug',
+            'level' => env('LOG_LEVEL', 'info'),
             'days' => 7,
+            'replace_placeholders' => true,
         ],
         'slack' => [
             'driver' => 'slack',
@@ -54,24 +56,27 @@ return [
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
             'level' => 'critical',
+            'replace_placeholders' => true,
         ],
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
-            'formatter' => App\Logging\JsonFormatter::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
             'with' => [
                 'stream' => 'php://stderr',
             ],
-            'level' => 'info',
+            'level' => env('LOG_LEVEL', 'info'),
         ],
         'syslog' => [
             'driver' => 'syslog',
-            'level' => 'debug',
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
         ],
         'errorlog' => [
             'driver' => 'errorlog',
-            'level' => 'debug',
-        ]
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
+        ],
     ],
 
 ];

@@ -83,6 +83,8 @@
                     >
                         <span class="fa fa-trash"></span>
                     </button>
+                @elseif(isset($showCount))
+                    <div class="h5p-action-button"></div>
                 @endif
                 @if(!empty($library['external_link']))
                     <a

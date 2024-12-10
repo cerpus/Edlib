@@ -2,20 +2,22 @@
 
 namespace Tests\Integration\Libraries\H5P;
 
-use App\Events\ResourceSaved;
-use App\H5PCollaborator;
+use App\Content;
+use App\ContentVersion;
+use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\User;
-use Cerpus\VersionClient\VersionData;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Exception;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Config;
 use Tests\Helpers\MockH5PAdapterInterface;
-use Tests\Helpers\MockMQ;
-use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -24,11 +26,8 @@ class CRUTest extends TestCase
 {
     use RefreshDatabase;
     use TestHelpers;
-    use MockVersioningTrait;
     use WithFaker;
-    use MockMQ;
     use MockH5PAdapterInterface;
-    use MockResourceApi;
 
     public const testDirectory = "h5pstorage";
     public const testContentDirectory = "content";
@@ -37,7 +36,6 @@ class CRUTest extends TestCase
     /** @test */
     public function test_environment()
     {
-        $this->assertTrue(env('MAIL_PRETEND'));
         $this->assertEquals('/tmp', env('TEST_FS_ROOT'));
 
         $dest = env('TEST_FS_ROOT') . '/tree.jpg';
@@ -48,19 +46,20 @@ class CRUTest extends TestCase
         $this->assertFileDoesNotExist($dest, "File $dest still exist");
     }
 
-    /** @test */
-    public function create_and_update_h5p_using_web_request()
+    /**
+     * @test
+     * @dataProvider provider_create_and_update_h5p_using_web_request
+     */
+    public function create_and_update_h5p_using_web_request(bool $useLinearVersioning)
     {
+        Config::set('feature.linear-versioning', $useLinearVersioning);
+
         $owner = User::factory()->make();
         $collaborator = User::factory()->make(['email' => 'a@b.com']);
         $copyist = User::factory()->make();
 
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => false,
             'getAdapterName' => "UnitTest",
@@ -89,10 +88,17 @@ class CRUTest extends TestCase
             ])
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
 
-        $this->assertCount(1, H5PContent::all());
+        $this->assertDatabaseCount('h5p_contents', 1);
         $h5p = H5PContent::find(1);
         $this->assertCount(1, $h5p->collaborators);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
+        $firstVersion = $h5p->version_id;
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $firstVersion,
+            'content_id' => 1,
+            'content_type' => Content::TYPE_H5P,
+            'version_purpose' => ContentVersion::PURPOSE_CREATE,
+        ]);
 
         $this->withSession([
             'authId' => $owner->auth_id,
@@ -116,16 +122,25 @@ class CRUTest extends TestCase
             ]);
 
         $h5p->refresh();
-        $this->assertCount(1, H5PContent::all());
+        $this->assertDatabaseCount('h5p_contents', 1);
         $this->assertCount(2, $h5p->collaborators);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
+
+        $this->assertDatabaseCount('content_versions', 2);
+        $secondVersion = $h5p->version_id;
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $secondVersion,
+            'parent_id' => $firstVersion,
+            'content_id' => 1,
+            'content_type' => Content::TYPE_H5P,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
+        ]);
 
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
-
         ])
             ->put(route('h5p.update', 1), [
                 '_token' => csrf_token(),
@@ -141,18 +156,26 @@ class CRUTest extends TestCase
                 'isDraft' => 0
             ]);
 
-        $this->assertCount(2, H5PContent::all());
+        $this->assertDatabaseCount('h5p_contents', 2);
         $this->assertCount(2, H5PContent::find(1)->collaborators); // Original still has two collaborators
         $this->assertCount(3, H5PContent::find(2)->collaborators); // New has three collaborators
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2', 'is_published' => 1]);
+
+        $this->assertDatabaseCount('content_versions', 3);
+        $thirdVersion = H5PContent::find(2)->version_id;
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $thirdVersion,
+            'content_id' => 2,
+            'parent_id' => $secondVersion,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
+        ]);
 
         $this->withSession([
             'authId' => $collaborator->auth_id,
             'email' => $collaborator->email,
             'name' => $collaborator->name,
             'verifiedEmails' => [$collaborator->email],
-
         ])
             ->put(route('h5p.update', $h5p->id), [
                 '_token' => csrf_token(),
@@ -168,9 +191,19 @@ class CRUTest extends TestCase
                 'isDraft' => 0
             ])
             ->assertStatus(Response::HTTP_OK);
-        $this->assertCount(3, H5PContent::all());
+
+        $this->assertDatabaseCount('h5p_contents', 3);
         $this->assertCount(2, H5PContent::find(3)->collaborators); // Collaborators not updated
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $owner->auth_id, 'title' => 'Tittel 3']); // Owner has not changed, title updated
+
+        $this->assertDatabaseCount('content_versions', 4);
+        $fourthVersion = H5PContent::find(3)->version_id;
+        $this->assertDatabaseHas('content_versions', [
+            'id' => $fourthVersion,
+            'content_id' => 3,
+            'parent_id' => $useLinearVersioning ? $thirdVersion : $secondVersion,
+            'version_purpose' => ContentVersion::PURPOSE_UPDATE,
+        ]);
 
         $h5p->license = 'BY';
         $h5p->save();
@@ -180,7 +213,6 @@ class CRUTest extends TestCase
             'email' => $copyist->email,
             'name' => $copyist->name,
             'verifiedEmails' => [$copyist->email],
-
         ])
             ->put(route('h5p.update', $h5p->id), [
                 '_token' => csrf_token(),
@@ -196,9 +228,24 @@ class CRUTest extends TestCase
                 //'license' => "PRIVATE",
             ])
             ->assertStatus(Response::HTTP_OK);
-        $this->assertCount(4, H5PContent::all()); // New H5P in db
+
+        $this->assertDatabaseCount('h5p_contents', 4); // New H5P in db
         $this->assertDatabaseHas('h5p_contents', ['user_id' => $copyist->auth_id, 'title' => 'Tittel 4']); // Owner and title updated
         $this->assertCount(0, H5PContent::find(4)->collaborators); //No collaborators on new resource
+
+        $this->assertDatabaseCount('content_versions', 5);
+        $this->assertDatabaseHas('content_versions', [
+            'id' => H5PContent::find(4)->version_id,
+            'content_id' => 4,
+            'parent_id' => $useLinearVersioning ? $fourthVersion : $secondVersion,
+            'version_purpose' => ContentVersion::PURPOSE_COPY,
+        ]);
+    }
+
+    public function provider_create_and_update_h5p_using_web_request(): Generator
+    {
+        yield 'linear_versioning' => [true];
+        yield 'non-linear_versioning' => [false];
     }
 
     private function setUpH5PLibrary(): void
@@ -246,7 +293,9 @@ class CRUTest extends TestCase
      */
     public function upgradeContentNoExtraChanges_validParams_thenSuccess()
     {
-        $this->expectsEvents(ResourceSaved::class);
+        $this->expectsEvents([
+            H5PWasSaved::class,
+        ]);
 
         $this->seed(TestH5PSeeder::class);
         $owner = User::factory()->make();
@@ -255,13 +304,6 @@ class CRUTest extends TestCase
             'parameters' => '{"simpleTest":"SimpleTest","original":true}',
             'library_id' => 39,
         ]);
-
-        $this->createUnitTestDirectories();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-
 
         $this->assertCount(1, H5PContent::all());
         $this->withSession([
@@ -285,6 +327,7 @@ class CRUTest extends TestCase
                 'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK); // Redirects after save
+
         $all = H5PContent::all();
         $this->assertCount(2, $all);
         $this->assertEquals(39, $all->first()->library_id);
@@ -296,7 +339,9 @@ class CRUTest extends TestCase
      */
     public function upgradeContentExtraChanges_validParams_thenSuccess()
     {
-        $this->expectsEvents(ResourceSaved::class);
+        $this->expectsEvents(
+            H5PWasSaved::class,
+        );
 
         $this->seed(TestH5PSeeder::class);
         $owner = User::factory()->make();
@@ -307,10 +352,6 @@ class CRUTest extends TestCase
         ]);
 
         $this->createUnitTestDirectories();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
 
         $this->assertCount(1, H5PContent::all());
         $this->withSession([
@@ -351,45 +392,39 @@ class CRUTest extends TestCase
      */
     public function enabledUserPublishActionAndLTISupport()
     {
-        $this->expectsEvents(ResourceSaved::class);
+        $this->expectsEvents([
+            H5PWasSaved::class,
+        ]);
         $this->seed(TestH5PSeeder::class);
 
         $owner = User::factory()->make();
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
 
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => true,
             'getAdapterName' => "UnitTest"
         ]);
 
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->post(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'frame' => "1",
-                'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => '',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 0,
-                'isDraft' => 0,
-            ])
-            ->assertStatus(Response::HTTP_CREATED);
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'frame' => "1",
+            'copyright' => "1",
+            'col_email' => '',
+            'col-emails' => '',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 0,
+            'isDraft' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
 
         $this->withSession([
             'authId' => $owner->auth_id,
@@ -397,22 +432,36 @@ class CRUTest extends TestCase
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->post(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource 2',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'frame' => "1",
-                'copyright' => "1",
-                'col_email' => '',
-                'col-emails' => '',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 1,
-                'isDraft' => 0,
-            ])
+            ->post(route('h5p.store'), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource 2',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'frame' => "1",
+            'copyright' => "1",
+            'col_email' => '',
+            'col-emails' => '',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 1,
+            'isDraft' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
+        $this->withSession([
+            'authId' => $owner->auth_id,
+            'name' => $owner->name,
+            'email' => $owner->email,
+            'verifiedEmails' => [$owner->email],
+        ])
+            ->post(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'New resource', 'is_published' => 0]);
         $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'New resource 2', 'is_published' => 1]);
@@ -430,23 +479,28 @@ class CRUTest extends TestCase
             'isUserPublishEnabled' => true,
         ]);
 
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 'invalidValue',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->postJson(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 'invalidValue',
-            ])
+            ->postJson(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -462,97 +516,29 @@ class CRUTest extends TestCase
             'isUserPublishEnabled' => false,
         ]);
 
+        $request = new Oauth1Request('POST', route('h5p.store'), [
+            'title' => 'New resource',
+            'action' => 'create',
+            'library' => 'H5P.MarkTheWords 1.6',
+            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
+            'license' => "PRIVATE",
+            'lti_message_type' => $this->faker->word,
+            'redirectToken' => $this->faker->unique()->uuid,
+            'isPublished' => 'invalidValue',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession([
             'authId' => $owner->auth_id,
             'name' => $owner->name,
             'email' => $owner->email,
             'verifiedEmails' => [$owner->email],
         ])
-            ->postJson(route('h5p.store'), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => 'H5P.MarkTheWords 1.6',
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => 'invalidValue',
-            ])
+            ->postJson(route('h5p.store'), $request->toArray())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(0, H5PContent::all());
-    }
-
-    /**
-     * @test
-     */
-    public function enabledUserPublish_NotOwner()
-    {
-        $owner = User::factory()->make();
-        $me = User::factory()->make();
-        $this->createUnitTestDirectories();
-        $this->setUpResourceApi();
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object)['id' => $this->faker->uuid]),
-        ]);
-
-        $contents = H5PContent::factory()->create([
-            'library_id' => H5PLibrary::factory()->create(),
-            'user_id' => $owner->auth_id,
-            'is_published' => 0,
-            'license' => 'PRIVATE',
-        ]);
-
-        $library = $contents->library;
-
-        $this->setupH5PAdapter([
-            'isUserPublishEnabled' => true,
-            'getAdapterName' => "UnitTest"
-        ]);
-
-        $this->withSession([
-            'authId' => $me->auth_id,
-            'name' => $me->name,
-            'email' => $me->email,
-            'verifiedEmails' => [$me->email],
-        ])
-            ->put(route('h5p.update', $contents->id), [
-                '_token' => csrf_token(),
-                'title' => 'New resource',
-                'action' => 'create',
-                'library' => $library->getLibraryString(false),
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => '1',
-            ])
-            ->assertStatus(Response::HTTP_FORBIDDEN);
-        $this->assertDatabaseHas('h5p_contents', ['id' => $contents->id, 'title' => $contents->title, 'is_published' => 0]);
-
-        $collaborator = new H5PCollaborator();
-        $collaborator->email = $me->email;
-        $contents->collaborators()->save($collaborator);
-
-        $this->withSession([
-            'authId' => $me->auth_id,
-            'name' => $me->name,
-            'email' => $me->email,
-            'verifiedEmails' => [$me->email],
-        ])
-            ->put(route('h5p.update', $contents->id), [
-                '_token' => csrf_token(),
-                'title' => $contents->title,
-                'library' => $library->getLibraryString(false),
-                'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-                'license' => "PRIVATE",
-                'lti_message_type' => $this->faker->word,
-                'redirectToken' => $this->faker->unique()->uuid,
-                'isPublished' => '1',
-                'isDraft' => 0,
-            ])
-            ->assertStatus(Response::HTTP_OK);
-        $this->assertDatabaseHas('h5p_contents', ['id' => ++$contents->id, 'title' => $contents->title, 'is_published' => 1]);
     }
 }

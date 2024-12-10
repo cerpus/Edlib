@@ -4,8 +4,9 @@ namespace App\Libraries\H5P;
 
 use App\H5PLibrary;
 use App\Libraries\ContentAuthorStorage;
+use App\Libraries\H5P\Image\NdlaImageAdapter;
 use App\Libraries\H5P\Interfaces\CerpusStorageInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use H5PContentValidator;
 use H5PCore;
 use H5peditor;
@@ -19,6 +20,7 @@ use H5PValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use LogicException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
@@ -207,7 +209,7 @@ class AjaxRequest
 
         return [
             'styles' => $styles,
-            'file' => $this->contentAuthorStorage->getAssetUrl($fileName),
+            'file' => Storage::disk()->url($fileName),
         ];
     }
 
@@ -298,7 +300,7 @@ class AjaxRequest
         // Download files from bucket to tmp folder
         $this->contentAuthorStorage->copyFolder(
             Storage::disk(),
-            $this->contentAuthorStorage->getH5pTmpDisk(),
+            Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
             $tmpLibraryRelative
         );
@@ -329,8 +331,11 @@ class AjaxRequest
     {
         $imageId = $request->get('imageId');
 
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
+        $imageAdapter = app(H5PImageInterface::class);
+        if ($imageAdapter instanceof NdlaImageAdapter) {
+            return $imageAdapter->getImageUrlFromId($imageId, $request->all(), false);
+        }
+
+        throw new LogicException('not implemented');
     }
 }

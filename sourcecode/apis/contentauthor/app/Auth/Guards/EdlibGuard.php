@@ -2,7 +2,6 @@
 
 namespace App\Auth\Guards;
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\StatefulGuard;
@@ -11,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 
 class EdlibGuard implements StatefulGuard
 {
-    protected ?GenericUser $user;
+    protected ?GenericUser $user = null;
     protected Request $request;
 
     public function __construct(Request $request)
@@ -45,18 +44,6 @@ class EdlibGuard implements StatefulGuard
     public function validate(array $credentials = []): bool
     {
         throw new \BadMethodCallException('Unexpected method call');
-    }
-
-    /**
-     * @throws AuthenticationException
-     */
-    public function authenticate(): GenericUser
-    {
-        $user = $this->user();
-        if ($user instanceof GenericUser) {
-            return $user;
-        }
-        throw new AuthenticationException();
     }
 
     public function hasUser(): bool

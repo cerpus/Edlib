@@ -13,6 +13,7 @@ class H5PTranslationDataObject implements JsonSerializable
      */
     public function __construct(
         private readonly array $fields,
+        private readonly string $language,
         private readonly string|null $id = null,
     ) {
     }
@@ -20,6 +21,11 @@ class H5PTranslationDataObject implements JsonSerializable
     public function getId(): string|null
     {
         return $this->id;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
     }
 
     /**

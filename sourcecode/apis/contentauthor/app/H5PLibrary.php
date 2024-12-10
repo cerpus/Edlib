@@ -2,6 +2,7 @@
 
 namespace App;
 
+use H5PFrameworkInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -327,6 +328,7 @@ class H5PLibrary extends Model
                 'l1.patch_version as patchVersion',
                 'l1.preloaded_js as preloadedJs',
                 'l1.preloaded_css as preloadedCss',
+                'l1.patch_version_in_folder_name as patchVersionInFolderName',
             ])
             ->whereNull('l2.name')
             ->whereNotNull('l1.add_to')
@@ -349,5 +351,22 @@ class H5PLibrary extends Model
     public function includeImageWidth(): bool
     {
         return !in_array($this->name, ['H5P.ThreeImage', 'H5P.NDLAThreeImage']);
+    }
+
+    public function getIconUrl(): string
+    {
+        $icon = null;
+
+        if ($this->has_icon) {
+            $h5pFramework = app(H5PFrameworkInterface::class);
+            $library_folder = $this->getFolderName();
+            $icon_path = $h5pFramework->getLibraryFileUrl($library_folder, 'icon.svg');
+
+            if (!empty($icon_path)) {
+                $icon = $icon_path;
+            }
+        }
+
+        return $icon ?? url('/graphical/h5p_logo.svg');
     }
 }

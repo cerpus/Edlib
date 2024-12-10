@@ -47,13 +47,13 @@ final class NynorobotAdapterTest extends TestCase
             'foo' => '<p>Noen greier</p>',
             'å oversette',
             'bar' => 'og teste',
-        ]);
+        ], 'nob');
 
         $adapter = new NynorobotAdapter(
             $this->client,
             NynorobotAdapter::STYLE_RADICAL,
         );
-        $translated = $adapter->getTranslations($data);
+        $translated = $adapter->translate('nno', $data);
 
         $this->assertNotSame($data, $translated);
         $this->assertSame([
@@ -66,11 +66,11 @@ final class NynorobotAdapterTest extends TestCase
     public function testThrowsOnHttpFailure(): void
     {
         $this->mockedResponses->append(new Response(500, [], ''));
-        $data = new H5PTranslationDataObject(['foo' => 'bar']);
+        $data = new H5PTranslationDataObject(['foo' => 'bar'], 'nob');
         $adapter = new NynorobotAdapter($this->client, NynorobotAdapter::STYLE_MODERATE);
 
         $this->expectExceptionMessage('Error from translation service');
 
-        $adapter->getTranslations($data);
+        $adapter->translate('nno', $data);
     }
 }

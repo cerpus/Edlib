@@ -4,9 +4,13 @@ import { FormattedMessage } from 'react-intl';
 import { CardContainer } from '../QuestionCard';
 import InfoBox from '../InfoBox';
 import FooterBox from '../FooterBox';
-import AddCard from '../QuestionCard/components/AddCard';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { Card } from '../utils';
 
+/**
+ * @param {{cards: Card[]}} props
+ * @return {Element}
+ */
 function MillionaireLayout(props) {
     const {
         cards,
@@ -21,15 +25,15 @@ function MillionaireLayout(props) {
         processingForm,
         onChangeProcessing,
         editMode,
-        minimumNumberOfQuestions,
-        onAddCard,
-        onDisplayAddAnswerButton,
         handleDragEnd,
-    } = props;
+        isLockedPresentation,
+        questionEditorConfig,
+        answerEditorConfig
+} = props;
 
     return (
         <Fragment>
-            {editMode === false && (
+            {editMode === false && !isLockedPresentation && (
                 <InfoBox
                     infoText={infoText}
                     generateButtonText={generateButtonText}
@@ -43,7 +47,7 @@ function MillionaireLayout(props) {
             )}
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="questionSetDropZone">
-                    {(provided, snapshot) => (
+                    {(provided) => (
                         <div
                             ref={provided.innerRef}
                             {...provided.droppableProps}
@@ -52,10 +56,12 @@ function MillionaireLayout(props) {
                                 <CardContainer
                                     key={'card_' + card.id}
                                     cardNumber={index + 1}
-                                    onDeleteCard={() => onDeleteCard(card.id)}
+                                    onDeleteCard={onDeleteCard}
                                     card={card}
                                     collectData={onChange}
-                                    showAddAnswerButton={onDisplayAddAnswerButton(card.answers)}
+                                    showAddAnswerButton={false}
+                                    questionEditorConfig={questionEditorConfig}
+                                    answerEditorConfig={answerEditorConfig}
                                 />
                             ))}
                             {provided.placeholder}
@@ -63,14 +69,7 @@ function MillionaireLayout(props) {
                     )}
                 </Droppable>
             </DragDropContext>
-            {cards.length < minimumNumberOfQuestions && typeof onAddCard === 'function' && (
-                <AddCard
-                    onClick={onAddCard}
-                    cardNumber={cards.length + 1}
-                    label={<FormattedMessage id="QUESTIONCONTAINER.ADD_LABEL" />}
-                />
-            )}
-            {editMode === false && (
+            {editMode === false && !isLockedPresentation && (
                 <FooterBox
                     generateButtonText={generateButtonText}
                     backButtonText={backButtonText}
@@ -86,10 +85,8 @@ function MillionaireLayout(props) {
 }
 
 MillionaireLayout.propTypes = {
-    cards: PropTypes.array,
-    onDeleteCard: PropTypes.func,
+    cards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
     onChange: PropTypes.func,
-    onAddCard: PropTypes.func,
     onGenerate: PropTypes.func,
     onReturnToOriginal: PropTypes.func,
     iconUrl: PropTypes.string,
@@ -99,8 +96,9 @@ MillionaireLayout.propTypes = {
     processingForm: PropTypes.bool,
     onChangeProcessing: PropTypes.func,
     editMode: PropTypes.bool,
-    minimumNumberOfQuestions: PropTypes.number,
-    onDisplayAddAnswerButton: PropTypes.func,
+    isLockedPresentation: PropTypes.bool,
+    questionEditorConfig: PropTypes.object,
+    answerEditorConfig: PropTypes.object,
 };
 
 MillionaireLayout.defaultProps = {
@@ -110,6 +108,7 @@ MillionaireLayout.defaultProps = {
     infoText: '',
     processingForm: false,
     editMode: false,
+    isLockedPresentation: false,
 };
 
 export default MillionaireLayout;

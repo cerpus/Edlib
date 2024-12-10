@@ -20,9 +20,11 @@ function Question(props) {
         multiline,
         intl,
         richText,
+        warningAtLength,
+        warningMessage,
     } = props;
     const { editorLanguage } = useEditorSetupContext();
-    let questionText = null;
+    let questionText;
 
     if (onChange) {
         if (richText) {
@@ -60,6 +62,10 @@ function Question(props) {
     return (
         <div className="questionContainer">
             {questionText}
+            {(onChange && warningMessage && warningAtLength && question.length > warningAtLength) ?
+                warningMessage:
+                null
+            }
             {useImage === true && (
                 <ImageContainer
                     onChange={onChange}
@@ -79,6 +85,8 @@ Question.propTypes = {
     maxRows: PropTypes.number,
     multiline: PropTypes.bool,
     richText: PropTypes.bool,
+    maxCharacters: PropTypes.number,
+    warningMessage: PropTypes.node,
 };
 
 Question.defaultProps = {
@@ -87,6 +95,8 @@ Question.defaultProps = {
     multiline: true,
     placeholder: 'QUESTIONCARD.QUESTION_PLACEHODLER',
     richText: false,
+    warningAtLength: null,
+    warningMessage: null,
 };
 
 export default injectIntl(Question);

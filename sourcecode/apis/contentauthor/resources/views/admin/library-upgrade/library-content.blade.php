@@ -1,7 +1,9 @@
 @extends ('layouts.admin')
 @section ('content')
     <div class="container">
-        <a href="{{ route('admin.update-libraries') }}">Back to library list</a>
+        <a href="{{ route('admin.update-libraries') }}">Library list</a>
+        <br>
+        <a href="{{ route('admin.check-library', [$library->id]) }}">Library details</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">

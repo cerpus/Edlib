@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Traits\Collaboratable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,16 +18,21 @@ use function route;
  * @property string $owner
  * @property string $external_reference
  * @property string $tags
- * @property Collection<QuestionSetQuestion> $questions
+ * @property Collection<int, QuestionSetQuestion> $questions
  *
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class QuestionSet extends Content
 {
     use Collaboratable;
     use HasFactory;
     use HasUuids;
+
+    protected $guarded = [
+        'id',
+        'owner',
+    ];
 
     public string $editRouteName = 'questionset.edit';
 
@@ -81,8 +86,10 @@ class QuestionSet extends Content
         return 'QuestionSet';
     }
 
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    protected function getTags(): array
     {
-        return new ContentTypeDataObject('QuestionSet', $contentType, 'Question set', "mui:DoneAll");
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
     }
 }

@@ -5,8 +5,6 @@ namespace App\Http;
 use App\Http\Middleware\RequestId;
 use App\Http\Middleware\AdapterMode;
 use App\Http\Middleware\APIAuth;
-use App\Http\Middleware\GameAccess;
-use App\Http\Middleware\QuestionSetAccess;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -77,7 +75,6 @@ class Kernel extends HttpKernel
 
         // App middleware
         'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
-        'core.ownership' => \App\Http\Middleware\CheckOwnership::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
         'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
@@ -85,9 +82,6 @@ class Kernel extends HttpKernel
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,
         'lti.signed-launch' => \App\Http\Middleware\LtiSignedLaunch::class,
-        'lti.verify-auth' => \App\Http\Middleware\LtiVerifyAuth::class,
-        'game-access' => GameAccess::class,
-        'questionset-access' => QuestionSetAccess::class,
         'adaptermode' => AdapterMode::class,
     ];
 
@@ -103,7 +97,6 @@ class Kernel extends HttpKernel
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \App\Http\Middleware\LtiAddToSession::class,
         \App\Http\Middleware\LtiSignedLaunch::class,
-        \App\Http\Middleware\LtiVerifyAuth::class,
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,

@@ -43,10 +43,6 @@ return [
         'sso' => [
             'driver' => 'edlib',
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
     ],
     /*
     |--------------------------------------------------------------------------
@@ -68,10 +64,6 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
-        ],
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Administrator::class,
         ],
     ],
     /*

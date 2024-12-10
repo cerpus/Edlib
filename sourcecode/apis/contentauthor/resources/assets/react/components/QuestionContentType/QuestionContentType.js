@@ -5,23 +5,29 @@ import { Answer, Card, Image, Question } from './components/utils';
 
 class QuestionContentType extends React.Component {
     static defaultProps = {
-        numberOfStartCards: 2,
+        numberOfDefaultQuestions: 2,
+        numberOfDefaultAnswers: 2,
         questionset: null,
         extQuestionSetData: null,
         onChange: null,
         contentTypes: [],
         editMode: false,
+        canAddRemoveQuestion: true,
+        canAddRemoveAnswer: true,
         lockedPresentation: null,
     };
 
     static propTypes = {
-        numberOfStartCards: PropTypes.number,
+        numberOfDefaultQuestions: PropTypes.number,
+        numberOfDefaultAnswers: PropTypes.number,
         questionset: PropTypes.object,
         extQuestionSetData: PropTypes.object,
         onChange: PropTypes.func,
         onSave: PropTypes.func,
         contentTypes: PropTypes.array,
         editMode: PropTypes.bool,
+        canAddRemoveQuestion: PropTypes.bool,
+        canAddRemoveAnswer: PropTypes.bool,
         lockedPresentation: PropTypes.string,
     };
 
@@ -44,21 +50,19 @@ class QuestionContentType extends React.Component {
             title: '',
             cards: [],
             tags: [],
-            selectedPresentation: '',
+            selectedPresentation: this.props.lockedPresentation || '',
         };
 
         const {
             props: {
                 questionset,
                 extQuestionSetData,
-                numberOfStartCards,
-                lockedPresentation,
+                numberOfDefaultQuestions,
+                numberOfDefaultAnswers,
+                canAddRemoveQuestion,
+                canAddRemoveAnswer,
             },
         } = this;
-
-        if ( lockedPresentation !== null) {
-            stateData.selectedPresentation = lockedPresentation;
-        }
 
         if (questionset !== null) {
             stateData.title = this.getQuestionSetTitle(questionset);
@@ -70,17 +74,29 @@ class QuestionContentType extends React.Component {
             stateData.cards = this.getQuestionSetQuestions(extQuestionSetData);
         } else {
             const cards = [];
-            for (let i = 0; i < numberOfStartCards; i++) {
+            for (let i = 0; i < numberOfDefaultQuestions; i++) {
                 const card = new Card();
-                const answer = new Answer();
-                answer.showToggle = true;
+                const answers = [];
+
+                for (let j = 0; j < numberOfDefaultAnswers; j++) {
+                    const answer = new Answer();
+
+                    answer.isCorrect = (j === 0);
+                    answer.showToggle = canAddRemoveAnswer;
+                    answer.canDelete = canAddRemoveAnswer;
+
+                    answers.push(answer);
+                }
 
                 card.question = new Question();
-                card.answers = [answer];
+                card.answers = answers;
+                card.canAddAnswer = canAddRemoveAnswer;
                 card.order = i;
-                card.canDelete = true;
+                card.canDelete = canAddRemoveQuestion;
+
                 cards.push(card);
             }
+
             stateData.cards = cards;
         }
 
@@ -182,16 +198,19 @@ class QuestionContentType extends React.Component {
     render() {
         return (
             <QuestionContentTypeLayout
-                numberOfCards={this.props.numberOfStartCards}
                 onChange={this.handleOnchange}
                 title={this.state.title}
                 questions={this.state.cards}
                 tags={this.state.tags}
                 currentContainer={this.state.selectedPresentation}
+                isLockedPresentation={this.props.lockedPresentation !== null}
                 onReset={this.handleReturnToOriginal}
                 contentTypes={this.props.contentTypes}
                 editMode={this.props.editMode}
                 onSave={this.props.onSave}
+                numberOfDefaultAnswers={this.props.numberOfDefaultAnswers}
+                canAddRemoveQuestion={this.props.canAddRemoveQuestion}
+                canAddRemoveAnswer={this.props.canAddRemoveAnswer}
             />
         );
     }

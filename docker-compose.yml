@@ -3,52 +3,178 @@
 # See https://docs.edlib.com/docs/developers/getting-started/
 #
 
-version: "3.7"
-
 volumes:
-  edlib-auth_nodemodules:
-  edlib-lti_nodemodules:
-  edlib-resources_nodemodules:
-  elasticsearch:
-  maven_cache:
+  mailpit_data:
+  meilisearch_data:
   moodle_data:
   mysql:
   npm_cache:
-  npm-components-storybook_nodemodules:
-  proxy-admin_nodemodules:
-  proxy-auth_nodemodules:
-  proxy-lti_nodemodules:
-  proxy-resource_nodemodules:
-  www_nodemodules:
-  api_contentauthor-main_bucket:
+  postgres_data:
 
 services:
-  redis:
-    image: "redis:alpine"
-    healthcheck:
-      test: [CMD, redis-cli, ping]
-    ports:
-      - "6379:6379"
 
-  postgres:
-    image: postgres:11-alpine
+  # ===
+  # Hub
+  # ===
+
+  hub:
+    build:
+      context: sourcecode/hub
+      target: dev
+    depends_on:
+      certs: { condition: service_completed_successfully }
+      chromedriver: { condition: service_started }
+      meilisearch: { condition: service_healthy }
+      postgres: { condition: service_healthy }
     healthcheck:
-      test:
-        [
-          CMD,
-          psql,
-          -d,
-          "postgres://postgres:thepgpassword@localhost:5432",
-          -c,
-          "select 1",
-        ]
+      test: [CMD, nc, -z, localhost, '9000']
     volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
-      - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
+      - ./sourcecode/hub:/srv/www/hub
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+    working_dir: /srv/www/hub
+
+  hub-vite:
+    image: node:18-alpine
+    command: [sh, -c, 'npm ci && npm run dev']
     environment:
-      POSTGRES_PASSWORD: thepgpassword
+      - SCARF_ANALYTICS=false
+    volumes:
+      - npm_cache:/root/.npm
+      - ./sourcecode/hub:/srv/www/hub
+    working_dir: /srv/www/hub
+
+
+  # ==============
+  # Content Author
+  # ==============
+
+  contentauthor-fpm:
+    build:
+      context: ./sourcecode/apis/contentauthor
+      target: dev
+    depends_on:
+      certs: { condition: service_completed_successfully }
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: [CMD, nc, -z, localhost, "9000"]
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
+
+  contentauthor-cron:
+    build:
+      context: ./sourcecode/apis/contentauthor
+      dockerfile: Dockerfile
+      target: dev
+    command: [sh, -c, 'while true; do php artisan schedule:run -q; sleep 60; done']
+    depends_on:
+      contentauthor-fpm: { condition: service_healthy }
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
+
+  contentauthor-horizonqueue:
+    build:
+      context: ./sourcecode/apis/contentauthor
+      dockerfile: Dockerfile
+      target: dev
+    command: [php, artisan, queue:work, -v]
+    depends_on:
+      contentauthor-fpm: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
+
+  contentauthor-watch:
+    image: node:16-alpine
+    command: [sh, -c, 'npm ci && npm run watch']
+    volumes:
+      - npm_cache:/root/.npm
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
+
+
+  # ===
+  # Web
+  # ===
+
+  nginx:
+    image: nginx:1-alpine
+    depends_on:
+      certs: { condition: service_completed_successfully }
+    environment:
+      - EDLIB_ROOT_DOMAIN=${EDLIB_ROOT_DOMAIN:-edlib.test}
+    healthcheck:
+      test: [CMD, curl, -f, https://localhost]
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./data/nginx/certs:/etc/ssl/private:ro
+      - ./localSetup/projects/nginx/defaults.conf:/etc/nginx/conf.d/defaults.conf:ro
+      - ./localSetup/projects/nginx/docker-entrypoint.d/update-ca-certificates.sh:/docker-entrypoint.d/update-ca-certificates.sh:ro
+      - ./localSetup/projects/nginx/includes:/etc/nginx/includes:ro
+      - ./localSetup/projects/nginx/templates:/etc/nginx/templates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor:ro
+      - ./sourcecode/hub:/srv/www/hub:ro
     ports:
-      - 5432:5432
+      - "80:80"
+      - "443:443"
+    networks:
+      default:
+        aliases:
+          - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-vite-hmr.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
+
+
+  # ==================
+  # Auxiliary services
+  # ==================
+
+  certs:
+    build: ./localSetup/projects/certs
+    command: [generate-certs.sh]
+    volumes:
+      - ./localSetup/projects/certs/generate-certs.sh:/usr/local/bin/generate-certs.sh:ro
+      - ./data/nginx/certs:/etc/ssl/private
+      - ./data/nginx/ca:/usr/local/share/ca-certificates
+
+  chromedriver:
+    build: ./localSetup/projects/chromedriver
+    cap_add:
+      - SYS_ADMIN
+    depends_on:
+      certs: { condition: service_completed_successfully }
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates
+
+  mailpit:
+    image: axllent/mailpit
+    environment:
+      MP_DATA_FILE: /data/mailpit.db
+    healthcheck:
+      test: [CMD, sh, -c, 'wget --no-verbose --tries=1 --spider http://localhost:8025/livez || exit 1']
+    volumes:
+      - mailpit_data:/data
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.8
+    environment:
+      MEILI_NO_ANALYTICS: 'true'
+      MEILI_MASTER_KEY: masterkey1234567
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost:7700/health]
+    volumes:
+      - meilisearch_data:/meili_data
 
   mysql:
     image: mariadb:11
@@ -64,541 +190,46 @@ services:
     ports:
       - "3306:3306"
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    healthcheck:
-      test: [CMD, rabbitmq-diagnostics, -q, ping]
+  nynorobot:
+    image: php:8.3-fpm-alpine
     volumes:
-      - ./data/rabbitmq:/var/lib/rabbitmq
+      - ./sourcecode/mock/nynorobot:/srv/www/nynorobot:ro
+
+  postgres:
+    image: postgres:16-alpine
+    healthcheck:
+      test: [CMD, pg_isready]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./localSetup/projects/postgres/postgresinit.d:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: thepgpassword
+      PGUSER: postgres
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 5432:5432
 
-  elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
-    depends_on:
-      elasticsearch_password:
-        condition: service_completed_successfully
+  redis:
+    image: "redis:alpine"
     healthcheck:
-      test: [CMD, curl, -f, http://localhost:9200/_cat/health]
-    volumes:
-      - ./data/elasticsearch/secrets:/run/secrets
-      - elasticsearch:/usr/share/elasticsearch/data
+      test: [CMD, redis-cli, ping]
     ports:
-      - "9200:9200"
-    environment:
-      bootstrap.memory_lock: "true"
-      discovery.type: single-node
-      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-      ELASTIC_PASSWORD_FILE: "/run/secrets/password.txt"
+      - "6379:6379"
 
-  elasticsearch_password:
-    image: alpine
-    command: ['generate-password', 'password.txt']
-    volumes:
-      - ./data/elasticsearch/secrets:/run/secrets
-      - ./scripts/generate-password.sh:/usr/local/bin/generate-password
-    working_dir: /run/secrets
 
-  certs:
-    build: ./localSetup/projects/certs
-    command: [generate-certs.sh]
-    volumes:
-      - ./localSetup/projects/certs/generate-certs.sh:/usr/local/bin/generate-certs.sh:ro
-      - ./data/nginx/certs:/etc/ssl/private
-      - ./data/nginx/ca:/usr/local/share/ca-certificates
-
-  nginx:
-    image: nginx:1-alpine
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-    environment:
-      - EDLIB_ROOT_DOMAIN=${EDLIB_ROOT_DOMAIN:-edlib.test}
-    healthcheck:
-      test: [CMD, curl, -f, https://localhost]
-    volumes:
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./data/nginx/certs:/etc/ssl/private:ro
-      - ./localSetup/projects/nginx/defaults.conf:/etc/nginx/conf.d/defaults.conf:ro
-      - ./localSetup/projects/nginx/docker-entrypoint.d/update-ca-certificates.sh:/docker-entrypoint.d/update-ca-certificates.sh:ro
-      - ./localSetup/projects/nginx/includes:/etc/nginx/includes:ro
-      - ./localSetup/projects/nginx/templates:/etc/nginx/templates:ro
-      - ./sourcecode/apis/common/public:/var/www/edlibcommon/public:ro
-    ports:
-      - "80:80"
-      - "443:443"
-    networks:
-      default:
-        aliases:
-          - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
-          - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
-
-  versionapi:
-    image: maven:3-openjdk-11
-    command:
-      [
-        sh,
-        -c,
-        'mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,address=*:5504,suspend=n,server=y"',
-      ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - maven_cache:/root/.m2
-      - ./sourcecode/apis/version/:/app
-    environment:
-      HEAPSPACE_MAX: 128m
-      DEBUGGING_ENABLED: "yes"
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres/versionapi"
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: thepgpassword
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost/health]
-    #ports:
-    #  - "5504:5504"  # debug port
-    working_dir: /app
-
-  contentauthor:
-    image: nginx:1-alpine
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost]
-    volumes:
-      - ./sourcecode/apis/contentauthor/docker/contentAuthor.conf.template:/etc/nginx/templates/contentAuthor.conf.template:ro
-      - ./sourcecode/apis/contentauthor/docker/no-security-theatre.conf:/etc/nginx/conf.d/no-security-theatre.conf:ro
-      - ./sourcecode/apis/contentauthor/public:/app/public
-      - ./sourcecode/apis/contentauthor/storage/app:/app/public/h5pstorage
-      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-editor:/app/public/h5p-editor-php-library:ro
-      - ./sourcecode/apis/contentauthor/vendor/h5p/h5p-core:/app/public/h5p-php-library:ro
-    environment:
-      PHP_FPM_HOST: "contentauthor-fpm:9000"
-    depends_on:
-      - contentauthor-fpm
-
-  contentauthor-fpm:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
-    command: /startup.sh
-    healthcheck:
-      test: [CMD, nc, -z, localhost, "9000"]
-    volumes:
-      - ./localSetup/projects/content-author/startup.sh:/startup.sh
-      - ./sourcecode/apis/contentauthor:/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  contentauthor-subscribers:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      target: dev
-    depends_on:
-      contentauthor-fpm:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
-    command: [php, artisan, 'laravel-rabbitmq-pubsub:consumer']
-    volumes:
-      - ./localSetup/projects/content-author/startup.sh:/startup.sh
-      - ./sourcecode/apis/contentauthor:/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  contentauthor-cron:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      dockerfile: Dockerfile
-      target: dev
-    command: [sh, -c, 'while true; do php /app/artisan schedule:run -q; sleep 60; done']
-    depends_on:
-      contentauthor-fpm:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
-    volumes:
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/apis/contentauthor:/app
-
-  contentauthor-horizonqueue:
-    build:
-      context: ./sourcecode/apis/contentauthor
-      dockerfile: Dockerfile
-      target: dev
-    command: [php, artisan, horizon]
-    depends_on:
-      contentauthor-fpm:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/projects/content-author/.env
-      - ./localSetup/.env
-    volumes:
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/apis/contentauthor:/app
-
-  contentauthor-watch:
-    image: node:16-alpine
-    command: [sh, -c, 'npm install --legacy-peer-deps && npm run watch']
-    volumes:
-      - npm_cache:/root/.npm
-      - ./sourcecode/apis/contentauthor:/app
-    working_dir: /app
-
+  # =====
+  # Misc.
+  # =====
+  
   docs:
     image: node:16-alpine
     command: [sh, -c, 'yarn && yarn run start --host=0.0.0.0 --port=80']
     volumes:
       - npm_cache:/root/.npm
-      - ./sourcecode/docs/docs.edlib.com:/app
+      - ./docs:/app
     working_dir: /app
-
-  resourceapi:
-    build:
-      context: ./sourcecode/apis/resources
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  resourceapi-subscribers:
-    build:
-      context: ./sourcecode/apis/resources
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      resourceapi:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
-    volumes:
-      - edlib-resources_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/resources:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  ltiapi:
-    build:
-      context: ./sourcecode/apis/lti
-      dockerfile: Dockerfile
-      target: dev
-    env_file:
-      - ./localSetup/.env
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn migrate && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti:/var/www/app
-      - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  ltiapi-subscribers:
-    build:
-      context: ./sourcecode/apis/lti
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      ltiapi:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn dev:subscribers']
-    volumes:
-      - edlib-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/lti:/var/www/app
-      - ./localSetup/projects/edlib-lti/configurations:/api-config:ro
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  authapi:
-    build:
-      context: ./sourcecode/apis/auth
-      dockerfile: Dockerfile
-      target: base
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'yarn && yarn migrate && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - edlib-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/apis/auth:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
 
   moodle:
     build: ./localSetup/projects/moodle
     volumes:
       - moodle_data:/var/www/moodledata
       - ./localSetup/projects/moodle/php.ini:/usr/local/etc/php/conf.d/zz-moodle.ini:ro
-
-  www:
-    build:
-      context: ./sourcecode/www
-      dockerfile: Dockerfile
-      target: dev
-    command: [sh, -c, 'yarn && yarn start']
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-    environment:
-      CLIENT_PUBLIC_PATH: https://www.${EDLIB_ROOT_DOMAIN:-edlib.test}/
-      PUBLIC_PATH: https://www.${EDLIB_ROOT_DOMAIN:-edlib.test}/
-      RAZZLE_EDLIB_ROOT_DOMAIN: ${EDLIB_ROOT_DOMAIN:-edlib.test}
-    env_file:
-      - ./localSetup/.env
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:3000]
-    volumes:
-      - npm_cache:/root/.npm
-      - www_nodemodules:/app/node_modules
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-      - ./sourcecode/www:/app
-
-  proxy-admin:
-    build:
-      context: ./sourcecode/proxies/admin
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-    env_file:
-      - ./localSetup/.env
-    environment:
-      WDS_SOCKET_PATH: /admin/sockjs-node
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:3000]
-    volumes:
-      - npm_cache:/root/.npm
-      - proxy-admin_nodemodules:/app/node_modules
-      - ./sourcecode/proxies/admin:/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  proxy-auth:
-    build:
-      context: ./sourcecode/proxies/auth
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-    env_file:
-      - ./localSetup/.env
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - proxy-auth_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/auth:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  proxy-lti:
-    build:
-      context: ./sourcecode/proxies/lti
-      dockerfile: Dockerfile
-      target: dev
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn dev']
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - proxy-lti_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/lti:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-  #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  proxy-resource:
-    build:
-      context: ./sourcecode/proxies/resource
-      dockerfile: Dockerfile
-      target: dev
-    command: [sh, -c, 'update-ca-certificates && yarn && yarn dev']
-    depends_on:
-      authapi:
-        condition: service_healthy
-      certs:
-        condition: service_completed_successfully
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost/_ah/health"]
-    volumes:
-      - npm_cache:/root/.npm
-      - proxy-resource_nodemodules:/var/www/app/node_modules
-      - ./sourcecode/proxies/resource:/var/www/app
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-    #      - ./sourcecode/npm/nodeUtils:/var/www/app/node_modules/@cerpus/edlib-node-utils:ro
-
-  npm-components-storybook:
-    build:
-      context: ./sourcecode/npm/components
-      dockerfile: Dockerfile
-    environment:
-      - STORYBOOK_EDLIB_ROOT_DOMAIN=${EDLIB_ROOT_DOMAIN:-edlib.test}
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost:9009]
-    volumes:
-      - npm_cache:/root/.npm
-      - ./sourcecode/npm/components:/app
-      - npm-components-storybook_nodemodules:/app/node_modules
-
-  common:
-    build:
-      context: ./sourcecode/apis/common
-      target: web
-    environment:
-      PHP_FPM_HOST: "edlib-common-fpm:9000"
-    healthcheck:
-      test: [CMD, curl, -f, http://localhost]
-    volumes:
-      - ./sourcecode/apis/common:/var/www/edlibcommon
-    depends_on:
-      - edlib-common-fpm
-
-  common-startup:
-    build:
-      context: ./sourcecode/apis/common
-      target: dev
-    command: [docker/php/startup-dev.sh]
-    depends_on:
-      certs:
-        condition: service_completed_successfully
-      mysql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    env_file:
-      - ./localSetup/.env
-    volumes:
-      - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  edlib-common-fpm:
-    build:
-      context: ./sourcecode/apis/common
-      target: dev
-    depends_on:
-      common-startup:
-        condition: service_completed_successfully
-    env_file:
-      - ./localSetup/.env
-    healthcheck:
-      test: [CMD, nc, -z, localhost, "9000"]
-    volumes:
-      - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  common-subscribers:
-    build:
-      context: ./sourcecode/apis/common
-      target: dev
-    command: [php, artisan, 'laravel-rabbitmq-pubsub:consumer']
-    depends_on:
-      common-startup:
-        condition: service_completed_successfully
-    env_file:
-      - ./localSetup/.env
-    volumes:
-      - ./sourcecode/apis/common:/var/www/edlibcommon
-      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
-
-  # --------------------------------------------
-  # ----- Services needed for edlib facade -----
-  # --------------------------------------------
-  #  configserver:
-  #    image: "hyness/spring-cloud-config-server:1.4.7.RELEASE"
-  #    volumes:
-  #      - ./localSetup/projects/config-server/settings:/config
-  #    environment:
-  #      SPRING_PROFILES_ACTIVE: native
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:8888/health]
-  #    ports:
-  #      - 8888:8888
-  #  edlibfacade:
-  #    build:
-  #      context: ./localSetup/projects/edlibfacade
-  #    entrypoint: /before-start.sh
-  #    command: [/start-app.sh]
-  #    depends_on:
-  #      configserver:
-  #        condition: service_healthy
-  #    volumes:
-  #      - ./sourcecode/not_migrated/edlibfacade/target/edlibfacade.jar:/app.jar
-  #      - ./data/nginx/ca:/cacerts.d:ro
-  #      - ./localSetup/helpers/before-start-java.sh:/before-start.sh:ro
-  #    environment:
-  #      CONFIGSERVICE_URI: http://configserver:8888
-  #      EDLIB_API_URL: https://api.edlib.test
-  #      HEAPSPACE_MAX: 128m
-  #      DEBUGGING_ENABLED: "yes"
-  #    healthcheck:
-  #      test: [CMD, curl, -f, http://localhost:8080/health]
-  #    ports:
-  #      - 5505:5555

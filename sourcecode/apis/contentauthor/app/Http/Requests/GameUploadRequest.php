@@ -3,11 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Auth;
-use Exception;
 use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
-use LogicException;
 use League\Flysystem\Filesystem;
 use Illuminate\Foundation\Http\FormRequest;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
@@ -47,48 +44,33 @@ class GameUploadRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            try {
-                $gameFile = $validator->getData()['gameFile'];
-                assert($gameFile instanceof UploadedFile);
+            $gameFile = $validator->getData()['gameFile'];
+            assert($gameFile instanceof UploadedFile);
 
-                $zipFile = new Filesystem(
-                    new ZipArchiveAdapter(
-                        new FilesystemZipArchiveProvider($gameFile->path()),
-                    ),
-                );
+            $zipFile = new Filesystem(
+                new ZipArchiveAdapter(
+                    new FilesystemZipArchiveProvider($gameFile->path()),
+                ),
+            );
 
-                if (!$zipFile->has('MILLIONAIRE/appmanifest.json')) {
-                    $validator->errors()->add(
-                        'gameFile',
-                        "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive."
-                    );
-                    return;
-                }
-
-                $appManifest = json_decode($zipFile->read('MILLIONAIRE/appmanifest.json'));
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $validator->errors()->add('gameFile', "'MILLIONAIRE/appmanifest.json' is not a valid json file.");
-                    return;
-                }
-
-                if (!property_exists($appManifest, 'description')) {
-                    $validator->errors()->add(
-                        'gameFile',
-                        "The appmanifest.json is missing the description property. The description property is used to read the version information."
-                    );
-                    return;
-                }
-            } catch (LogicException $e) {
-                Log::error($e->getFile() . ' (' . $e->getLine() . '): ' . $e->getMessage());
+            if (!$zipFile->has('MILLIONAIRE/appmanifest.json')) {
                 $validator->errors()->add(
                     'gameFile',
-                    "Something is wrong with the zip file. Error message:'" . $e->getMessage() . "'"
+                    "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive."
                 );
-            } catch (Exception $e) {
-                Log::error($e->getFile() . ' (' . $e->getLine() . '): ' . $e->getMessage());
+                return;
+            }
+
+            $appManifest = json_decode($zipFile->read('MILLIONAIRE/appmanifest.json'));
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $validator->errors()->add('gameFile', "'MILLIONAIRE/appmanifest.json' is not a valid json file.");
+                return;
+            }
+
+            if (!property_exists($appManifest, 'description')) {
                 $validator->errors()->add(
                     'gameFile',
-                    "Something went horribly, horribly wrong. Error message:'" . $e->getMessage() . "'"
+                    "The appmanifest.json is missing the description property. The description property is used to read the version information."
                 );
             }
         });

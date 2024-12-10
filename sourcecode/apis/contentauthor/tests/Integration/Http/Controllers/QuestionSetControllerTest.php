@@ -2,9 +2,7 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
 use App\Events\QuestionsetWasSaved;
-use App\Events\ResourceSaved;
 use App\Game;
 use App\Gametype;
 use App\H5PLibrary;
@@ -14,10 +12,12 @@ use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
-use App\Libraries\QuestionSet\QuestionSetConvert;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Faker\Provider\Uuid;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,16 +27,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockVersioningTrait;
 use Tests\TestCase;
 
 class QuestionSetControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
-    use MockVersioningTrait;
 
     public function setUp(): void
     {
@@ -80,21 +76,15 @@ class QuestionSetControllerTest extends TestCase
 
     public function testCreatePresentation(): void
     {
-        $this->expectsEvents([
+        $this->doesntExpectEvents([
             QuestionsetWasSaved::class,
-            ResourceSaved::class,
         ]);
+        $userId = $this->faker->uuid;
 
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-
-        $game = Game::factory()->create(['license' => License::LICENSE_BY_NC_SA]);
-
-        $questionSetConvertMock = $this->createMock(QuestionSetConvert::class);
-        app()->instance(QuestionSetConvert::class, $questionSetConvertMock);
-        $questionSetConvertMock
-            ->expects($this->once())
-            ->method('convert')
-            ->willReturn($game);
+        $gameType = Gametype::factory()->create([
+            'title' => 'MillionTest',
+            'name' => Millionaire::$machineName,
+        ]);
 
         $requestData = [
             'title' => 'Something',
@@ -105,20 +95,43 @@ class QuestionSetControllerTest extends TestCase
             'cards' => json_decode('[{"order":1,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":2,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":3,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":4,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":5,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":6,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":7,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":8,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":9,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":10,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":11,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":12,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":13,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":14,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":15,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]}]', true),
         ];
 
-        $this->withSession(['authid' => $user->getId()])
+        $response = $this->withSession(['authId' => $userId, 'locale' => 'se_fi'])
             ->post('/questionset', ['questionSetJsonData' => json_encode($requestData)])
-            ->assertCreated()
-            ->assertJson([
-                'url' => 'http://localhost/game/' . $game->id . '/edit',
-            ]);
+            ->assertCreated();
+
+        $this->assertDatabaseMissing('question_sets', [
+            'title' => $requestData['title'],
+        ]);
+
+        $this->assertDatabaseHas('games', [
+            'gametype' => $gameType->id,
+            'title' => $requestData['title'],
+            'owner' => $userId,
+        ]);
+
+        /** @var Game $game */
+        $game = Game::where('gameType', '=', $gameType->id)
+            ->where('owner', '=', $userId)
+            ->where('title', '=', $requestData['title'])
+            ->firstOrFail();
+
+        $response->assertJson([
+            'url' => 'http://localhost/game/' . $game->id . '/edit',
+        ]);
+
+        $this->assertSame('en_us', $game->language_code);
+
+        $this->assertObjectHasProperty('locale', $game->game_settings);
+        $this->assertSame('se_fi', $game->game_settings->locale);
+        $this->assertObjectHasProperty('questionSet', $game->game_settings);
+        $this->assertObjectHasProperty('questions', $game->game_settings->questionSet);
+        $this->assertCount(15, $game->game_settings->questionSet->questions);
     }
 
     public function testEdit(): void
     {
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-        $this->setupAuthApi([
-            'getUser' => $user,
-        ]);
+        $userId = $this->faker->uuid;
+        $this->withSession(['authId' => $userId]);
         H5PLibrary::factory()->create([
             'name' => QuestionSetPackage::$machineName,
             'major_version' => QuestionSetPackage::$majorVersion,
@@ -126,7 +139,7 @@ class QuestionSetControllerTest extends TestCase
         ]);
         Gametype::factory()->create(['name' => Millionaire::$machineName]);
 
-        $qs = QuestionSet::factory()->create(['owner' => $user->getId()]);
+        $qs = QuestionSet::factory()->create(['owner' => $userId]);
         $request = Request::create('', parameters: [
             'lti_version' => 'LTI-1p0',
             'lti_message_type' => 'basic-lti-launch-request',
@@ -150,7 +163,7 @@ class QuestionSetControllerTest extends TestCase
         $this->assertIsArray($editorSetup);
         $this->assertArrayHasKey('contentProperties', $editorSetup);
         $this->assertIsArray($editorSetup['contentProperties']);
-        $this->assertEquals('Emily Quackfaster', $editorSetup['contentProperties']['ownerName']);
+        $this->assertSame(null, $editorSetup['contentProperties']['ownerName']);
 
         $this->assertArrayHasKey('state', $data);
         $state = json_decode($data['state'], true);
@@ -159,7 +172,7 @@ class QuestionSetControllerTest extends TestCase
         $this->assertEquals('', $state['license']);
 
         $this->assertArrayHasKey('contentTypes', $state);
-        $this->assertCount(2, $state['contentTypes']);
+        $this->assertCount(1, $state['contentTypes']);
         $this->assertArrayHasKey('img', $state['contentTypes'][0]);
         $this->assertArrayHasKey('label', $state['contentTypes'][0]);
         $this->assertArrayHasKey('outcome', $state['contentTypes'][0]);
@@ -493,11 +506,6 @@ class QuestionSetControllerTest extends TestCase
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
 
-        $this->setupVersion();
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
@@ -541,7 +549,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', [
             'title' => "New title",
-            "tags" => "",
+            "tags" => "list,of,tags,goes,here",
             "is_published" => 1,
             'license' => 'BY',
         ]);
@@ -560,21 +568,15 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', [
             'title' => "Updated title",
-            "tags" => "",
+            "tags" => "list,of,tags,goes,here",
             "is_published" => 1,
             'license' => 'BY',
         ]);
-        $this->assertCount(1, QuestionSet::all());
     }
 
     public function testUpdateFullRequestWithDraftEnabled()
     {
         $this->expectsEvents(QuestionsetWasSaved::class);
-
-        $this->setupVersion();
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
@@ -607,45 +609,76 @@ class QuestionSetControllerTest extends TestCase
             ]
         ];
 
+        $request = new Oauth1Request('POST', route('questionset.store'), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $authId = Str::uuid();
         $this->withSession(["authId" => $authId])
-            ->post(route('questionset.store'), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-            ])
+            ->post(route('questionset.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas('question_sets', ['title' => "New title", "tags" => "", "is_published" => 0]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "New title",
+            "tags" => "list,of,tags,goes,here",
+            "is_published" => 0,
+        ]);
 
         /** @var QuestionSet $storedQuestionSet */
         $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
 
         $json['title'] = "Updated title";
+
+        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 1,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 1,
-            ])
+            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
             ->assertStatus(Response::HTTP_OK);
 
-        $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 1]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "Updated title",
+            "tags" => "list,of,tags,goes,here",
+            "is_published" => 1,
+        ]);
+
+        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
+            'license' => "BY",
+            'questionSetJsonData' => json_encode($json),
+            'share' => 'PRIVATE',
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
 
         $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), [
-                'license' => "BY",
-                'questionSetJsonData' => json_encode($json),
-                'share' => 'PRIVATE',
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-            ])
+            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
             ->assertStatus(Response::HTTP_OK);
 
-        $this->assertDatabaseHas('question_sets', ['title' => "Updated title", "tags" => "", "is_published" => 0]);
+        $this->assertDatabaseHas('question_sets', [
+            'title' => "Updated title",
+            "tags" => "list,of,tags,goes,here",
+            "is_published" => 0,
+        ]);
         $this->assertCount(1, QuestionSet::all());
     }
 }

@@ -3,38 +3,21 @@
 namespace App\Libraries\H5P\Traits;
 
 use App\Exceptions\UnknownH5PPackageException;
+use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
+use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use App\Libraries\H5P\Packages\H5PBase;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
+use Illuminate\Support\Collection;
+
+use function collect;
+use function is_array;
+use function is_object;
 
 trait H5PCommonAdapterTrait
 {
     protected $config;
-
-    public function hasVideoLibrary(array $scripts, int $minimumMajorVersion = 1, int $minimumMinorVersion = 1)
-    {
-        return collect($scripts)
-            ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if ($library['machineName'] === 'H5P.Video') {
-                    return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
-                }
-                return false;
-            })
-            ->isNotEmpty();
-    }
-
-    public function hasCerpusVideoLibrary(array $scripts, int $minimumMajorVersion = 1, int $minimumMinorVersion = 0)
-    {
-        return collect($scripts)
-            ->filter(function ($library) use ($minimumMajorVersion, $minimumMinorVersion) {
-                if ($library['machineName'] === 'H5P.CerpusVideo') {
-                    return intval($library['majorVersion']) >= $minimumMajorVersion && intval($library['minorVersion']) >= $minimumMinorVersion;
-                }
-                return false;
-            })
-            ->isNotEmpty();
-    }
 
     public function alterPackageSemantics(&$semantics, $machineName)
     {
@@ -46,6 +29,29 @@ trait H5PCommonAdapterTrait
             }
         } catch (UnknownH5PPackageException $exception) {
         }
+    }
+
+    private function traverseParameters(Collection $values, H5PAlterParametersSettingsDataObject $settings): Collection
+    {
+        return $values->map(function ($value) use ($settings) {
+            if ($this->isImageTarget($value)) {
+                $value = $this->imageAdapter->alterImageProperties($value, $settings);
+            }
+            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
+                return $this->traverseParameters(collect($value), $settings);
+            }
+
+            return $value;
+        });
+    }
+
+    private function isImageTarget($value): bool
+    {
+        if (!$this->imageAdapter instanceof H5PExternalProviderInterface) {
+            return false;
+        }
+
+        return is_object($value) && !empty($value->mime) && !empty($value->path) && $this->imageAdapter->isTargetType($value->mime, $value->path);
     }
 
     public static function getAllAdapters()

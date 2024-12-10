@@ -2,26 +2,24 @@
 
 namespace Tests\Integration\Article;
 
-use App\ApiModels\User;
 use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
+use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Tests\Helpers\LtiHelper;
 use Tests\TestCase;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
 
 class ArticleTest extends TestCase
 {
+    use LtiHelper;
     use RefreshDatabase;
-    use MockVersioningTrait;
-    use MockResourceApi;
-    use MockAuthApi;
 
     public function testRewriteUploadUrls(): void
     {
@@ -30,7 +28,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://localhost/content/assets/article-uploads/foo.jpg\"></p>\n",
+            "<p>This is an image: <img src=\"http://localhost/h5pstorage/article-uploads/foo.jpg\"></p>\n",
             $article->render(),
         );
     }
@@ -57,25 +55,9 @@ class ArticleTest extends TestCase
         // We don't really care that the output looks like this, but it's nice
         // to know if it suddenly changes after an update or such anyway.
         $this->assertSame(
-            "<div>Foo<b></b><p>bar</p></div>\n",
+            "<div>Foo<b></b></div><p>bar</p>\n",
             $article->render(),
         );
-    }
-
-    public function testEditArticleAccessDenied()
-    {
-        $this->setUpResourceApi();
-        $authId = Str::uuid();
-        $someOtherId = Str::uuid();
-
-        $article = Article::factory()->create([
-            'owner_id' => $authId,
-            'license' => 'BY-NC-ND',
-        ]);
-
-        $this->withSession(['authId' => $someOtherId])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testCreateArticle()
@@ -129,7 +111,6 @@ class ArticleTest extends TestCase
 
     public function testCreateAndEditArticleWithIframeContent()
     {
-        $this->setupVersion(['getVersion' => false]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -172,10 +153,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
         Event::fake();
         $authId = Str::uuid();
         $article = Article::factory()->create([
@@ -215,45 +192,57 @@ class ArticleTest extends TestCase
 
     public function testEditArticleWithDraftEnabled()
     {
-        $this->setupVersion(['getVersion' => false]);
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
+        $request = new Oauth1Request('POST', route('article.store'), [
+            'title' => "New article",
+            'content' => "New content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         Event::fake();
         $authId = Str::uuid();
         $this->withSession(['authId' => $authId])
-            ->post(route('article.store'), [
-                'title' => "New article",
-                'content' => "New content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY',
-            ])
+            ->post(route('article.store'), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'New article',
             'content' => 'New content',
             'is_published' => 0,
             'license' => 'BY',
         ]);
+
         /** @var Article $article */
         $article = Article::where('title', 'New article')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 0,
+            'license' => 'BY-ND',
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 0,
-                'license' => 'BY-ND',
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => 'Content',
@@ -263,14 +252,22 @@ class ArticleTest extends TestCase
 
         /** @var Article $article */
         $article = Article::where('title', 'Title')->first();
+
+        $request = new Oauth1Request('PUT', route('article.update', $article->id), [
+            'title' => "Title",
+            'content' => "Content",
+            'requestToken' => Str::uuid(),
+            'lti_message_type' => "ltirequest",
+            'isPublished' => 1,
+        ]);
+        $request = $this->app->make(SignerInterface::class)->sign(
+            $request,
+            $this->app->make(CredentialStoreInterface::class),
+        );
+
         $this->withSession(['authId' => $authId])
-            ->put(route('article.update', $article->id), [
-                'title' => "Title",
-                'content' => "Content",
-                'requestToken' => Str::uuid(),
-                'lti_message_type' => "ltirequest",
-                'isPublished' => 1,
-            ])->assertStatus(Response::HTTP_CREATED);
+            ->put(route('article.update', $article->id), $request->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
 
         /** @var Article $article */
@@ -285,14 +282,16 @@ class ArticleTest extends TestCase
 
     public function testViewArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
-
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
         ]);
 
-        $this->get(route('article.show', $article->id))
+        $url = "http://localhost/article/$article->id";
+        $this->post($url, $this->getSignedLtiParams($url, [
+            'lti_message_type' => 'basic-lti-launch-request',
+        ]))
+            ->assertOk()
             ->assertSee($article->title)
             ->assertSee($article->render(), false);
     }
@@ -300,7 +299,7 @@ class ArticleTest extends TestCase
     public function testMustBeLoggedInToCreateArticle()
     {
         $this->get(route('article.create'))
-            ->assertForbidden();
+            ->assertUnauthorized();
     }
 
     public function testRewriteUrls()

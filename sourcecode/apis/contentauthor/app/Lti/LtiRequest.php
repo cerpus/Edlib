@@ -4,6 +4,9 @@ namespace App\Lti;
 
 use Illuminate\Support\Facades\Session;
 
+use function explode;
+use function in_array;
+
 class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 {
     public function getReturnUrl(): string|null
@@ -93,7 +96,7 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $this->param("context_id");
     }
 
-    public function isPreview()
+    public function isPreview(): bool
     {
         return $this->param("ext_preview") === "true";
     }
@@ -145,11 +148,6 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         return $this->param('ext_behavior_settings');
     }
 
-    public function getExtTranslationLanguage()
-    {
-        return $this->param('ext_translation_language');
-    }
-
     public function getExtEmbedId(): string|null
     {
         return $this->param('ext_embed_id');
@@ -158,5 +156,28 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     public function getResourceLinkTitle(): string|null
     {
         return $this->param('resource_link_title');
+    }
+
+    public function isAdministrator(): bool
+    {
+        $roles = explode(',', $this->param('roles') ?? '');
+
+        return in_array('Administrator', $roles);
+    }
+
+    public function getEmbedCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_code');
+    }
+
+    public function getEmbedResizeCode(): string|null
+    {
+        return $this->param('ext_edlib3_embed_resize_code');
+    }
+
+    public function getEnableUnsavedWarning(): bool|null
+    {
+        $value = $this->param('ext_ca_enable_unsaved_warning');
+        return $value !== null ? $value !== '0' : null;
     }
 }

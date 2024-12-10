@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
 
     /*
@@ -37,10 +39,12 @@ return [
             'driver' => 'database',
             'table'  => 'cache',
             'connection' => null,
+            'lock_connection' => null,
         ],
         'file' => [
             'driver' => 'file',
-            'path'   => storage_path('framework/cache'),
+            'path'   => storage_path('framework/cache/data'),
+            'lock_path' => storage_path('framework/cache/data'),
         ],
         'memcached' => [
             'driver'  => 'memcached',
@@ -52,7 +56,8 @@ return [
         ],
         'redis' => [
             'driver' => 'redis',
-            'connection' => 'default',
+            'connection' => 'cache',
+            'lock_connection' => 'default',
         ],
     ],
 
@@ -66,8 +71,6 @@ return [
     | value to get prefixed to all our keys so we can avoid collisions.
     |
     */
-    'prefix' => env(
-        'CACHE_PREFIX',
-        'api-contentauthor'
-    )
+    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'Content Author'), '_') . '_cache_'),
+
 ];
