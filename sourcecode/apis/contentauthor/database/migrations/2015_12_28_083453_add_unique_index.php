@@ -12,7 +12,7 @@ class AddUniqueIndex extends Migration
     public function up()
     {
         Schema::table('cerpus_contents_shares', function ($table) {
-            $table->string('email', 100)->change();
+            $table->string('email', 100)->nullable()->change();
             $table->unique(['h5p_id', 'email']);
         });
     }
@@ -25,7 +25,7 @@ class AddUniqueIndex extends Migration
     public function down()
     {
         Schema::table('cerpus_contents_shares', function ($table) {
-            $table->text('email')->change();
+            $table->text('email')->nullable()->change();
             $table->dropUnique(['h5p_id', 'email']);
         });
     }
