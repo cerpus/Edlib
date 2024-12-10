@@ -30,10 +30,6 @@ class EventServiceProvider extends ServiceProvider
             HandleExport::class,
         ],
 
-        \App\Events\LinkWasSaved::class => [
-            \App\Listeners\Link\HandleVersioning::class,
-        ],
-
         \App\Events\VideoSourceChanged::class => [
             \App\Listeners\H5P\HandleVideoSource::class,
         ],

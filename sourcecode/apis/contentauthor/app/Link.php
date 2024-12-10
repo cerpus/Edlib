@@ -32,7 +32,7 @@ class Link extends Content implements VersionableObject
     use HasFactory;
     use HasUuids;
 
-    public string $editRouteName = 'link.edit';
+    public string $editRouteName = 'link.edit'; // note: doesn't work anymore
 
     public function givesScore(): int
     {

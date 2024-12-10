@@ -1,7 +1,0 @@
-<?php
-
-return [
-    "create-link" => "링크 만들기",
-    "edit-link" => "링크 편집",
-    "header" => "웹에서의 파일 사용하기",
-];
