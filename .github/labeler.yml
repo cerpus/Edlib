@@ -5,7 +5,7 @@
       - localSetup/projects/nginx/templates/ca.conf.template
       - sourcecode/apis/contentauthor/**
 
-'Component: Hub'
+'Component: Hub':
   - changed-files:
     - any-glob-to-any-file:
       - .github/workflows/hub.yaml
