@@ -12,7 +12,7 @@ use App\ContentLanguage;
 trait HasLanguage
 {
     /**
-     * @return HasOne<ContentLanguage>
+     * @return HasOne<ContentLanguage, $this>
      */
     public function language(): HasOne
     {

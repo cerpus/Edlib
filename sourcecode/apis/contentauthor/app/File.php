@@ -15,7 +15,7 @@ class File extends Model
     use HasFactory;
 
     /**
-     * @return BelongsTo<Article, self>
+     * @return BelongsTo<Article, $this>
      */
     public function article(): BelongsTo
     {

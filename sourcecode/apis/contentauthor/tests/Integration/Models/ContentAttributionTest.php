@@ -24,8 +24,8 @@ class ContentAttributionTest extends TestCase
 
         $this->assertInstanceOf(Attribution::class, $attribution);
 
-        $this->assertObjectHasAttribute('origin', $attribution);
-        $this->assertObjectHasAttribute('originators', $attribution);
+        $this->assertObjectHasProperty('origin', $attribution);
+        $this->assertObjectHasProperty('originators', $attribution);
 
         $this->assertNull($attribution->getOrigin());
         $this->assertEmpty($attribution->getOriginators());

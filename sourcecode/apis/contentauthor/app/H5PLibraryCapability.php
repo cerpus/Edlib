@@ -17,7 +17,7 @@ class H5PLibraryCapability extends Model
     protected $appends = ['title', 'description'];
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {

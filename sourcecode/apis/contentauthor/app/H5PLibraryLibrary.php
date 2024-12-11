@@ -20,7 +20,7 @@ class H5PLibraryLibrary extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {
@@ -28,7 +28,7 @@ class H5PLibraryLibrary extends Model
     }
 
     /**
-     * @return HasOne<H5PLibrary>
+     * @return HasOne<H5PLibrary, $this>
      */
     public function requiredLibrary(): HasOne
     {

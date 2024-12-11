@@ -80,7 +80,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasOne<H5PLibraryCapability>
+     * @return HasOne<H5PLibraryCapability, $this>
      */
     public function capability(): HasOne
     {
@@ -88,7 +88,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasOne<LibraryDescription>
+     * @return HasOne<LibraryDescription, $this>
      */
     public function description(): HasOne
     {
@@ -96,7 +96,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PContent>
+     * @return HasMany<H5PContent, $this>
      */
     public function contents(): HasMany
     {
@@ -109,7 +109,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PLibraryLanguage>
+     * @return HasMany<H5PLibraryLanguage, $this>
      */
     public function languages(): HasMany
     {
@@ -117,7 +117,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PLibraryLibrary>
+     * @return HasMany<H5PLibraryLibrary, $this>
      */
     public function libraries(): HasMany
     {

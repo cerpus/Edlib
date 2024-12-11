@@ -68,7 +68,7 @@ class Game extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<Gametype, self>
+     * @return BelongsTo<Gametype, $this>
      */
     public function gameType(): BelongsTo
     {

@@ -4,15 +4,14 @@ namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\Video;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class VideoTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alterSource_thenSuccess()
     {
         $orginalFile = 'videos/sources-originalFile';

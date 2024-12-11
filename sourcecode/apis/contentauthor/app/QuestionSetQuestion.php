@@ -26,7 +26,7 @@ class QuestionSetQuestion extends Model
     use HasUuids;
 
     /**
-     * @return BelongsTo<QuestionSet, self>
+     * @return BelongsTo<QuestionSet, $this>
      */
     public function questionset(): BelongsTo
     {
@@ -42,7 +42,7 @@ class QuestionSetQuestion extends Model
     }
 
     /**
-     * @return HasMany<QuestionSetQuestionAnswer>
+     * @return HasMany<QuestionSetQuestionAnswer, $this>
      */
     public function answers(): HasMany
     {

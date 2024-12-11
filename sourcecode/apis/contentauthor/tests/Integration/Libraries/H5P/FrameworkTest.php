@@ -19,6 +19,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Tests\TestCase;
@@ -154,7 +155,7 @@ final class FrameworkTest extends TestCase
         $this->assertSame($editDep->patch_version_in_folder_name, $library['editorDependencies'][0]['patchVersionInFolderName']);
     }
 
-    /** @dataProvider provider_usePatch */
+    #[DataProvider('provider_usePatch')]
     public function test_deleteLibrary($usePatch): void
     {
         $disk = Storage::fake();
@@ -180,7 +181,7 @@ final class FrameworkTest extends TestCase
         $this->assertFalse($tmpDisk->exists($path));
     }
 
-    /** @dataProvider provider_usePatch */
+    #[DataProvider('provider_usePatch')]
     public function test_loadContent($usePatch): void
     {
         $h5pLibrary = H5PLibrary::factory()->create(['patch_version_in_folder_name' => $usePatch]);
@@ -194,13 +195,13 @@ final class FrameworkTest extends TestCase
         $this->assertSame($h5pLibrary->getLibraryString(), $content['libraryFullVersionName']);
     }
 
-    public function provider_usePatch(): Generator
+    public static function provider_usePatch(): Generator
     {
         yield [false];
         yield [true];
     }
 
-    /** @dataProvider provider_isPatchedLibrary */
+    #[DataProvider('provider_isPatchedLibrary')]
     public function test_isPatchedLibrary(int $patchVersion, bool $expected)
     {
         $library = H5PLibrary::factory()->create();
@@ -213,7 +214,7 @@ final class FrameworkTest extends TestCase
         ]));
     }
 
-    public function provider_isPatchedLibrary(): Generator
+    public static function provider_isPatchedLibrary(): Generator
     {
         yield 'same patch' => [3, false];
         yield 'older patch' => [2, false];
@@ -262,7 +263,7 @@ final class FrameworkTest extends TestCase
         $this->assertSame($input['metadata']['license'], $content->metadata->license);
     }
 
-    /** @dataProvider provider_isContentSlugAvailable */
+    #[DataProvider('provider_isContentSlugAvailable')]
     public function test_isContentSlugAvailable(string $slug, bool $expected): void
     {
         H5PContent::factory()->create([
@@ -272,7 +273,7 @@ final class FrameworkTest extends TestCase
         $this->assertSame($expected, $this->framework->isContentSlugAvailable($slug));
     }
 
-    public function provider_isContentSlugAvailable(): Generator
+    public static function provider_isContentSlugAvailable(): Generator
     {
         yield 'unavailable' => ['taken', false];
         yield 'available' => ['available', true];

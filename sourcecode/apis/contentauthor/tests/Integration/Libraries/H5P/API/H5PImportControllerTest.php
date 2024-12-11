@@ -28,9 +28,11 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Storage;
+    use PHPUnit\Framework\Attributes\BackupGlobals;
+    use PHPUnit\Framework\Attributes\Test;
     use Tests\TestCase;
 
-use function base_path;
+    use function base_path;
     use function fopen;
 
     class H5PImportControllerTest extends TestCase
@@ -66,10 +68,8 @@ use function base_path;
             app()->instance(H5PAdapterInterface::class, $testAdapter);
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5P()
         {
             $this->_setUp();
@@ -138,10 +138,8 @@ use function base_path;
                 });
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5PWithImage()
         {
             $this->_setUp();
@@ -204,10 +202,8 @@ use function base_path;
             $this->assertEquals($machineName, $responseData['h5pType']);
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5PWithMetadata()
         {
             $this->_setUp();

@@ -5,15 +5,14 @@ namespace Tests\Integration\Models;
 use App\H5PLibrary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PLibraryTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @dataProvider provider_getLibraryString
-     */
+    #[DataProvider('provider_getLibraryString')]
     public function test_getLibraryString($usePatch, $hasPatch, $expected): void
     {
         $lib = H5PLibrary::factory()->make([
@@ -23,7 +22,7 @@ class H5PLibraryTest extends TestCase
         $this->assertSame($expected, $lib->getLibraryString($usePatch));
     }
 
-    public function provider_getLibraryString(): \Generator
+    public static function provider_getLibraryString(): \Generator
     {
         yield 0 => [null, false, 'H5P.Foobar 1.2'];
         yield 1 => [null, true, 'H5P.Foobar 1.2.3'];
@@ -33,9 +32,7 @@ class H5PLibraryTest extends TestCase
         yield 5 => [false, true, 'H5P.Foobar 1.2'];
     }
 
-    /**
-     * @dataProvider provider_getFolderName
-     */
+    #[DataProvider('provider_getFolderName')]
     public function test_getFolderName($usePatch, $hasPatch, $expected): void
     {
         $lib = H5PLibrary::factory()->make([
@@ -45,7 +42,7 @@ class H5PLibraryTest extends TestCase
         $this->assertSame($expected, $lib->getFolderName($usePatch));
     }
 
-    public function provider_getFolderName(): \Generator
+    public static function provider_getFolderName(): \Generator
     {
         yield 0 => [null, false, 'H5P.Foobar-1.2'];
         yield 1 => [null, true, 'H5P.Foobar-1.2.3'];
@@ -55,13 +52,13 @@ class H5PLibraryTest extends TestCase
         yield 5 => [false, true, 'H5P.Foobar-1.2'];
     }
 
-    /** @dataProvider provider_libraryToFolderName */
+    #[DataProvider('provider_libraryToFolderName')]
     public function test_libraryToFolderName($data, $usePatch, $expected): void
     {
         $this->assertSame($expected, H5PLibrary::libraryToFolderName($data, $usePatch));
     }
 
-    public function provider_libraryToFolderName(): \Generator
+    public static function provider_libraryToFolderName(): \Generator
     {
         yield 0 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], false, 'H5P.Foobar-2.1'];
         yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], true, 'H5P.Foobar-2.1.4'];
@@ -72,27 +69,27 @@ class H5PLibraryTest extends TestCase
         yield 6 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersionInFolderName' => true], false, 'H5P.Foobar-2.1'];
     }
 
-    /** @dataProvider provider_libraryToFolderNameExceptions */
+    #[DataProvider('provider_libraryToFolderNameExceptions')]
     public function test_libraryToFolderNameExceptions($data, $usePatch): void
     {
         $this->expectException(\InvalidArgumentException::class);
         H5PLibrary::libraryToFolderName($data, $usePatch);
     }
 
-    public function provider_libraryToFolderNameExceptions(): \Generator
+    public static function provider_libraryToFolderNameExceptions(): \Generator
     {
         yield 0 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersionInFolderName' => true], true];
         yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersionInFolderName' => false], true];
         yield 2 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersionInFolderName' => true], null];
     }
 
-    /** @dataProvider provider_libraryToString */
+    #[DataProvider('provider_libraryToString')]
     public function test_libraryToString($data, $usePatch, $expected): void
     {
         $this->assertSame($expected, H5PLibrary::libraryToString($data, $usePatch));
     }
 
-    public function provider_libraryToString(): \Generator
+    public static function provider_libraryToString(): \Generator
     {
         yield 0 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => true], null, 'H5P.Foobar 2.1.4'];
         yield 1 => [['name' => 'H5P.Foobar', 'majorVersion' => 2, 'minorVersion' => 1, 'patchVersion' => 4, 'patchVersionInFolderName' => false], null, 'H5P.Foobar 2.1'];

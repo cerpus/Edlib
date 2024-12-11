@@ -11,6 +11,7 @@ use App\Libraries\H5P\H5PCopyright;
 use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use JsonException;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class H5PCopyrightTest extends TestCase
@@ -29,9 +30,7 @@ class H5PCopyrightTest extends TestCase
         $h5pCopyright->getCopyrights($h5pContent);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noImage_useCopyright()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -45,9 +44,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noImage_useMetadata()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -61,9 +58,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function imageNoLicense_useCopyright()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -77,9 +72,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function imageNoLicense_useMetadata()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -93,9 +86,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function imageWithLicense_useCopyright()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -123,9 +114,7 @@ class H5PCopyrightTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function imageWithLicense_useMetadata()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -154,9 +143,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function imageAndText_withLicense_useCopyrightAndMetadata()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -203,9 +190,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function video_useCopyright()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -227,9 +212,7 @@ class H5PCopyrightTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function video_withTitleAuthorAndLicense_useCopyright()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -254,9 +237,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function video_withAllInfoSet_useCopyrights()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -285,9 +266,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function video_withAllInfoSet_useMetadata()
     {
         $h5pContent = H5PContent::factory()->create([
@@ -317,9 +296,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noMedia_withContentMetadata()
     {
         $h5pContentMetadata = H5PContentsMetadata::factory()->create([
@@ -351,9 +328,7 @@ class H5PCopyrightTest extends TestCase
         ], $actualCopyright);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noMedia_withAuthorAsNull_useMetadata()
     {
         $h5pContentMetadata = H5PContentsMetadata::factory()->create([
@@ -385,9 +360,7 @@ class H5PCopyrightTest extends TestCase
         ], $actualCopyright);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function media_withContentMetadata()
     {
         $h5pContentMetadata = H5PContentsMetadata::factory()->create([
@@ -428,9 +401,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function noMedia_withLibrary()
     {
         $h5pLibrary = H5PLibrary::factory()->create([
@@ -456,9 +427,7 @@ class H5PCopyrightTest extends TestCase
         ], $actualCopyright);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cerpusImageWithLicense_useMetadata()
     {
         $h5pContentMetadata = H5PContentsMetadata::factory()->create([
@@ -495,9 +464,7 @@ class H5PCopyrightTest extends TestCase
         ], $h5pCopyright->getCopyrights($h5pContent));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cerpusVideoWithLicense_useMetadata()
     {
         $h5pContentMetadata = H5PContentsMetadata::factory()->create([

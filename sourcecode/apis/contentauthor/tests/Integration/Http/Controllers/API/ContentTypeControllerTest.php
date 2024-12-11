@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
@@ -25,9 +26,7 @@ class ContentTypeControllerTest extends TestCase
         $this->seed(TestH5PSeeder::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ContentTypeController_validRequest_thenSuccess()
     {
         $authId = $this->faker->uuid;
@@ -79,9 +78,7 @@ class ContentTypeControllerTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ContentTypeConrollerJSON_invalidData_thenFailure()
     {
         $this->postJson("api/v1/contenttypes/questionsets")
@@ -97,9 +94,7 @@ class ContentTypeControllerTest extends TestCase
             ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function ContentTypeConrollerPOST_invalidData_thenFailure()
     {
         $this->post("api/v1/contenttypes/questionsets")

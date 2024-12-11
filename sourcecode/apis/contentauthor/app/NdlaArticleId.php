@@ -20,7 +20,7 @@ class NdlaArticleId extends Model
     }
 
     /**
-     * @return HasMany<NdlaArticleImportStatus>
+     * @return HasMany<NdlaArticleImportStatus, $this>
      */
     public function messages(): HasMany
     {

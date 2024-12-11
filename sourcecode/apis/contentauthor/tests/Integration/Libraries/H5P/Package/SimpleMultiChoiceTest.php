@@ -4,15 +4,14 @@ namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\SimpleMultiChoice;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class SimpleMultiChoiceTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validate()
     {
         $simpleMultiChoice = new SimpleMultiChoice('');
@@ -35,9 +34,7 @@ class SimpleMultiChoiceTest extends TestCase
         $this->assertTrue($simpleMultiChoice->validate());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getElements()
     {
         $alternatives = [

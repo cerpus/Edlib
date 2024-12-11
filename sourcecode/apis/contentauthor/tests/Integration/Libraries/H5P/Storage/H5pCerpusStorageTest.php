@@ -8,6 +8,7 @@ use App\Libraries\H5P\Storage\H5PCerpusStorage;
 use App\Libraries\H5P\Video\NullVideoAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\NullLogger;
 use Tests\TestCase;
 
@@ -15,7 +16,7 @@ class H5pCerpusStorageTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider provide_test_getUpdateScript */
+    #[DataProvider('provide_test_getUpdateScript')]
     public function test_getUpgradeScript(array $libConfig): void
     {
         $disk = Storage::fake();
@@ -37,7 +38,7 @@ class H5pCerpusStorageTest extends TestCase
         $this->assertStringContainsString($file, $path);
     }
 
-    public function provide_test_getUpdateScript(): \Generator
+    public static function provide_test_getUpdateScript(): \Generator
     {
         yield 'withoutPatch' => [[
            'name' => 'H5P.Blanks',

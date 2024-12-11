@@ -216,16 +216,6 @@ parameters:
 			path: app/Http/Requests/H5PStorageRequest.php
 
 		-
-			message: "#^Property App\\\\Jobs\\\\H5PFileUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
-			count: 1
-			path: app/Jobs/H5PFileUpload.php
-
-		-
-			message: "#^Property App\\\\Jobs\\\\H5PFilesUpload\\:\\:\\$filesystem \\(Illuminate\\\\Filesystem\\\\Filesystem\\) does not accept Illuminate\\\\Filesystem\\\\FilesystemAdapter\\.$#"
-			count: 2
-			path: app/Jobs/H5PFilesUpload.php
-
-		-
 			message: "#^Method App\\\\Libraries\\\\DataObjects\\\\Attribution\\:\\:getOrigin\\(\\) should return null but returns string\\.$#"
 			count: 1
 			path: app/Libraries/DataObjects/Attribution.php

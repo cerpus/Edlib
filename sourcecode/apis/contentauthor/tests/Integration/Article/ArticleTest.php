@@ -62,10 +62,8 @@ class ArticleTest extends TestCase
 
     public function testCreateArticle()
     {
+        Event::fake();
         $this->withoutMiddleware(VerifyCsrfToken::class);
-        $this->expectsEvents([
-            ArticleWasSaved::class,
-        ]);
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
@@ -79,7 +77,9 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'license' => 'PRIVATE',
             ]);
+
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+        Event::assertDispatched(ArticleWasSaved::class);
     }
 
     public function testCreateArticleWithMathContent()

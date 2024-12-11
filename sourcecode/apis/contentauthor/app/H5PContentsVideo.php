@@ -19,7 +19,7 @@ class H5PContentsVideo extends Model
     ];
 
     /**
-     * @return BelongsTo<H5PContent, self>
+     * @return BelongsTo<H5PContent, $this>
      */
     public function content(): BelongsTo
     {
