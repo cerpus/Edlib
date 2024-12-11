@@ -10,7 +10,7 @@
     - any-glob-to-any-file:
       - .github/workflows/hub.yaml
       - localSetup/projects/nginx/templates/hub.conf.template
-      - sourcecode/apis/hub/**
+      - sourcecode/hub/**
 
 dependencies:
   - changed-files:
