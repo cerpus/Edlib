@@ -27,7 +27,7 @@ class H5PLibraryLanguage extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {

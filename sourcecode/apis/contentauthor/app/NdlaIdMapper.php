@@ -99,7 +99,7 @@ class NdlaIdMapper extends Model
     }
 
     /**
-     * @return BelongsTo<H5PContent, self>
+     * @return BelongsTo<H5PContent, $this>
      */
     public function h5pContents(): BelongsTo
     {

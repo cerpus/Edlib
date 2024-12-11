@@ -58,7 +58,7 @@ class Gametype extends Model
     ];
 
     /**
-     * @return HasMany<Game>
+     * @return HasMany<Game, $this>
      */
     public function games(): HasMany
     {

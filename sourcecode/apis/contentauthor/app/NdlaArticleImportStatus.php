@@ -39,7 +39,7 @@ class NdlaArticleImportStatus extends Model
     }
 
     /**
-     * @return BelongsTo<NdlaArticleId, self>
+     * @return BelongsTo<NdlaArticleId, $this>
      */
     public function ndlaArticle(): BelongsTo
     {

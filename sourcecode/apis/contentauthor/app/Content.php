@@ -118,7 +118,7 @@ abstract class Content extends Model
     abstract public function getContentType(bool $withSubType = false);
 
     /**
-     * @return HasOne<NdlaIdMapper>
+     * @return HasOne<NdlaIdMapper, $this>
      */
     public function ndlaMapper(): HasOne
     {
@@ -131,7 +131,7 @@ abstract class Content extends Model
     }
 
     /**
-     * @return HasMany<ContentLock>
+     * @return HasMany<ContentLock, $this>
      */
     public function locks(): HasMany
     {

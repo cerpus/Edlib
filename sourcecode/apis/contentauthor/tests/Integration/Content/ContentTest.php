@@ -42,7 +42,6 @@ class ContentTest extends TestCase
     {
         $user = User::factory()->make();
         $h5p = H5PContent::factory()->create(['user_id' => $user->auth_id]);
-        /** @var Collection<ArticleCollaborator> $collaborators */
         $collaborators = H5PCollaborator::factory()->count(3)->make();
         $h5p->collaborators()->saveMany($collaborators);
         $h5p = $h5p->fresh();
