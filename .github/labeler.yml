@@ -1,0 +1,47 @@
+"Component: Content Author":
+  - changed-files:
+    - any-glob-to-any-file:
+      - localSetup/projects/nginx/templates/ca.conf.template
+      - sourcecode/apis/contentauthor/**
+
+"Component: Hub"
+  - changed-files:
+    - any-glob-to-any-file:
+      - localSetup/projects/nginx/templates/hub.conf.template
+      - sourcecode/apis/hub/**
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/composer.json'
+      - '**/composer.lock'
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - docs/**
+      - '**/*.md'
+      - '**/*.mdx'
+
+language:
+  - changed-files:
+    - any-glob-to-any-file:
+      - sourcecode/apis/contentauthor/resources/lang/**
+      - sourcecode/apis/contentauthor/resources/assets/react/language/**
+      - sourcecode/hub/lang/**
+
+composer:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/composer.json'
+      - '**/composer.lock'
+
+npm:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
