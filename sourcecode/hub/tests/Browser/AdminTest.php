@@ -105,7 +105,8 @@ final class AdminTest extends DuskTestCase
         $platform = LtiPlatform::factory()->create();
         $user = User::factory()->admin()->create();
 
-        $this->browse(fn (Browser $browser) =>
+        $this->browse(
+            fn (Browser $browser) =>
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
