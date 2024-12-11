@@ -24,6 +24,7 @@ class StoreLtiToolRequest extends FormRequest
             'send_name' => ['boolean'],
             'send_email' => ['boolean'],
             'proxy_launch' => ['boolean'],
+            'slug' => ['sometimes', 'string', 'max:50', 'regex:/^[a-z0-9-_]+$/'],
         ];
     }
 }

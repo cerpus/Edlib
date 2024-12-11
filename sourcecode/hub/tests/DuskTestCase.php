@@ -19,7 +19,6 @@ use function is_string;
 
 abstract class DuskTestCase extends BaseTestCase
 {
-    use CreatesApplication;
     use DatabaseTruncation;
 
     /**

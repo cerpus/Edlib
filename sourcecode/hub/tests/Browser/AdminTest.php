@@ -89,6 +89,7 @@ final class AdminTest extends DuskTestCase
                 ->type('lti_launch_url', 'https://hub-test.edlib.test/lti/samples/resize')
                 ->check('admin')
                 ->press('Add')
+                ->assertSee('The extra endpoint was added')
                 ->visit('/admin')
                 ->clickLink('LTI extra test')
                 ->withinFrame(
@@ -96,6 +97,34 @@ final class AdminTest extends DuskTestCase
                     fn (Browser $frame) => $frame
                         ->press('Resize to 640')
                 )
+        );
+    }
+
+    public function testCreatesToolsWithSlug(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(fn (Browser $browser) =>
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press($user->name)
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->clickLink('Add LTI tool')
+                ->type('name', 'The tool')
+                ->type('slug', 'the-tool')
+                ->type('creator_launch_url', 'https://hub-test.edlib.test/lti/samples/resize')
+                ->type('consumer_key', $platform->key)
+                ->type('consumer_secret', $platform->secret)
+                ->press('Add')
+                ->assertSee('LTI tool added')
+                ->clickLink('Create')
+                ->clickLink('The tool')
+                ->assertUrlIs('https://hub-test.edlib.test/content/create/the-tool')
+                ->assertPresent('.lti-launch')
         );
     }
 }
