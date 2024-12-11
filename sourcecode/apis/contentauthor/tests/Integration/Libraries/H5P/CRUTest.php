@@ -18,6 +18,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Helpers\TestHelpers;
 use Tests\Seeds\TestH5PSeeder;
@@ -34,7 +36,7 @@ class CRUTest extends TestCase
     public const testContentDirectory = "content";
     public const testEditorDirectory = "editor";
 
-    /** @test */
+    #[Test]
     public function test_environment()
     {
         $this->assertEquals('/tmp', env('TEST_FS_ROOT'));
@@ -47,10 +49,8 @@ class CRUTest extends TestCase
         $this->assertFileDoesNotExist($dest, "File $dest still exist");
     }
 
-    /**
-     * @test
-     * @dataProvider provider_create_and_update_h5p_using_web_request
-     */
+    #[DataProvider('provider_create_and_update_h5p_using_web_request')]
+    #[Test]
     public function create_and_update_h5p_using_web_request(bool $useLinearVersioning)
     {
         Config::set('feature.linear-versioning', $useLinearVersioning);
@@ -243,7 +243,7 @@ class CRUTest extends TestCase
         ]);
     }
 
-    public function provider_create_and_update_h5p_using_web_request(): Generator
+    public static function provider_create_and_update_h5p_using_web_request(): Generator
     {
         yield 'linear_versioning' => [true];
         yield 'non-linear_versioning' => [false];
@@ -289,9 +289,7 @@ class CRUTest extends TestCase
         return $this->getTempDirectory() . '/' . self::testEditorDirectory;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function upgradeContentNoExtraChanges_validParams_thenSuccess()
     {
         Event::fake();
@@ -334,9 +332,7 @@ class CRUTest extends TestCase
         Event::assertDispatched(H5PWasSaved::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function upgradeContentExtraChanges_validParams_thenSuccess()
     {
         Event::fake();
@@ -386,9 +382,7 @@ class CRUTest extends TestCase
         Event::assertDispatched(H5PWasSaved::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function enabledUserPublishActionAndLTISupport()
     {
         Event::fake();
@@ -465,9 +459,7 @@ class CRUTest extends TestCase
         Event::assertDispatched(H5PWasSaved::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function enabledUserPublishActionAndLTISupport_invalidPublishFlag_thenFails()
     {
         $owner = User::factory()->make();
@@ -502,9 +494,7 @@ class CRUTest extends TestCase
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function disabledUserPublishAction_invalidPublishFlag_thenFails()
     {
         $owner = User::factory()->make();

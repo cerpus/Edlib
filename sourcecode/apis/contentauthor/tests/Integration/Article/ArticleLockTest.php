@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ArticleLockTest extends TestCase
@@ -31,9 +32,7 @@ class ArticleLockTest extends TestCase
         $this->assertDatabaseHas('content_locks', ['content_id' => $article->id, 'email' => $authEmail, 'name' => $authName]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function LockIsRemovedOnSave()
     {
         Event::fake();
@@ -62,9 +61,7 @@ class ArticleLockTest extends TestCase
         Event::assertDispatched(ArticleWasSaved::class);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function CanOnlyHaveOneLock()
     {
         $authId = Str::uuid();
@@ -93,7 +90,7 @@ class ArticleLockTest extends TestCase
         $this->assertCount(1, ContentLock::all());
     }
 
-    /** @test */
+    #[Test]
     public function forkArticle_thenSuccess()
     {
         $authId = Str::uuid();

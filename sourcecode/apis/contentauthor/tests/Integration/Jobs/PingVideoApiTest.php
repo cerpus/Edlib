@@ -13,6 +13,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Helpers\VersionedH5PTrait;
 use Tests\Seeds\TestH5PSeeder;
@@ -49,9 +50,7 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertExists($newFile);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterNotReady_throwException()
     {
         $adapter = $this->createMock(H5PVideoInterface::class);
@@ -64,9 +63,7 @@ class PingVideoApiTest extends TestCase
         $this->assertFalse($job->handle($adapter));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_noChildren_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);
@@ -127,9 +124,7 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_noVideo_thenFail()
     {
         $streamUrl = 'http://www.stream.url';
@@ -143,9 +138,7 @@ class PingVideoApiTest extends TestCase
         $this->assertFalse($job->handle($adapter));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_oneChild_thenSuccess()
     {
         $this->seed(TestH5PSeeder::class);
@@ -243,9 +236,7 @@ class PingVideoApiTest extends TestCase
         return $content;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_withGrandchildren_thenSuccess()
     {
         $this->seed(TestH5PSeeder::class);
@@ -343,9 +334,7 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertMissing('content/' . $h5pContentGrandchild->id . '/' . $videoSource);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_withGrandchildrenAndDifferentSource_thenSuccess()
     {
         $this->seed(TestH5PSeeder::class);
@@ -444,9 +433,7 @@ class PingVideoApiTest extends TestCase
         $this->assertEquals(1, $job->processedChildren);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_noVideoFilesInJson_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);
@@ -495,9 +482,7 @@ class PingVideoApiTest extends TestCase
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function adapterReady_noLocalFiles_thensuccess()
     {
         $this->seed(TestH5PSeeder::class);

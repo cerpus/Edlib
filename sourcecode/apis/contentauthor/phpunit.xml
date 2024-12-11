@@ -4,6 +4,7 @@
          bootstrap="vendor/autoload.php"
          colors="true"
          beStrictAboutOutputDuringTests="true"
+         displayDetailsOnPhpunitDeprecations="true"
          cacheDirectory=".phpunit.cache">
     <source>
         <include>

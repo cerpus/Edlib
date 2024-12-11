@@ -28,6 +28,8 @@ namespace Tests\Integration\Libraries\H5P\API {
     use Illuminate\Http\Testing\File;
     use Illuminate\Support\Facades\Session;
     use Illuminate\Support\Facades\Storage;
+    use PHPUnit\Framework\Attributes\BackupGlobals;
+    use PHPUnit\Framework\Attributes\Test;
     use Tests\TestCase;
 
     use function base_path;
@@ -66,10 +68,8 @@ namespace Tests\Integration\Libraries\H5P\API {
             app()->instance(H5PAdapterInterface::class, $testAdapter);
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5P()
         {
             $this->_setUp();
@@ -138,10 +138,8 @@ namespace Tests\Integration\Libraries\H5P\API {
                 });
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5PWithImage()
         {
             $this->_setUp();
@@ -204,10 +202,8 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->assertEquals($machineName, $responseData['h5pType']);
         }
 
-        /**
-         * @test
-         * @backupGlobals enabled
-         */
+        #[BackupGlobals(true)]
+        #[Test]
         public function importH5PWithMetadata()
         {
             $this->_setUp();

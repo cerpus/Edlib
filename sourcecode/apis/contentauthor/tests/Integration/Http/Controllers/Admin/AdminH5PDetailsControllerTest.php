@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminH5PDetailsControllerTest extends TestCase
@@ -480,9 +481,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         $this->assertContains('No rows was updated', $data['messages']);
     }
 
-    /**
-     * @dataProvider provider_libraryTranslationUpdate_File
-     */
+    #[DataProvider('provider_libraryTranslationUpdate_File')]
     public function test_libraryTranslationUpdate_FileError(string $fileContents, ?string $expectedMessage): void
     {
         Storage::fake();
@@ -541,7 +540,7 @@ class AdminH5PDetailsControllerTest extends TestCase
         }
     }
 
-    public function provider_libraryTranslationUpdate_File(): Generator
+    public static function provider_libraryTranslationUpdate_File(): Generator
     {
         yield 'valid file' => ['{"data":"Upload translation"}', null];
         yield 'empty file' => ['', 'Content was empty'];

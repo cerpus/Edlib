@@ -11,6 +11,7 @@ use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
@@ -26,10 +27,9 @@ class ContentTypeHandlerTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * Uses a manually created array for values to test older structures
      */
+    #[Test]
     public function createNewQuestionSetFromArray_validData_thenSuccess()
     {
         $handler = new ContentTypeHandler();
@@ -100,10 +100,9 @@ class ContentTypeHandlerTest extends TestCase
     }
 
     /**
-     * @test
-     *
      * Uses a manually created array for values to test older structures
      */
+    #[Test]
     public function createNewQuestionSetFromArrayWithUserPublish_validData_thenSuccess()
     {
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
@@ -181,9 +180,7 @@ class ContentTypeHandlerTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createNewQuestionSetFromClient_validData_thenSuccess()
     {
         $handler = new ContentTypeHandler();

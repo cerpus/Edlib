@@ -9,6 +9,7 @@ use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\Test;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Tests\Helpers\TestHelpers;
@@ -102,9 +103,7 @@ class h5pTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithOutVersioningContent()
     {
         $request = Request::create('', parameters: [
@@ -164,9 +163,7 @@ class h5pTest extends TestCase
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, 'license' => "BY"]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithVersioningContent()
     {
         $request = Request::create('', parameters: [

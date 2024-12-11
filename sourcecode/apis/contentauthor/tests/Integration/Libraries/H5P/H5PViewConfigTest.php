@@ -14,6 +14,7 @@ use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PViewConfigTest extends TestCase
@@ -21,7 +22,7 @@ class H5PViewConfigTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_getConfig(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
@@ -65,13 +66,13 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
     }
 
-    public function provider_adapterMode(): Generator
+    public static function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
     }
 
-    /** @dataProvider provider_setPreview */
+    #[DataProvider('provider_setPreview')]
     public function test_setPreview(bool $preview, string $contentUserData, string $setFinished): void
     {
         $data = app(H5PViewConfig::class)
@@ -83,7 +84,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame($setFinished, $data->ajax['setFinished']);
     }
 
-    public function provider_setPreview(): Generator
+    public static function provider_setPreview(): Generator
     {
         yield [
             false,
@@ -97,7 +98,7 @@ class H5PViewConfigTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_loadContent(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);

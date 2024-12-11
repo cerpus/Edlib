@@ -9,6 +9,7 @@ use App\Libraries\H5P\AjaxRequest;
 use Exception;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\TestCase;
 
@@ -78,7 +79,7 @@ class AjaxRequestTest extends TestCase
         ]);
     }
 
-    /** @dataProvider provider_contentTypeCache_icon */
+    #[DataProvider('provider_contentTypeCache_icon')]
     public function test_contentTypeCache_icon(array $libraryData, string $iconPath): void
     {
         Storage::fake('test');
@@ -121,7 +122,7 @@ class AjaxRequestTest extends TestCase
         }
     }
 
-    public function provider_contentTypeCache_icon(): Generator
+    public static function provider_contentTypeCache_icon(): Generator
     {
         yield 'No patch with icon' => [
             [
@@ -156,7 +157,7 @@ class AjaxRequestTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_contentTypeCache_LocalAndCache */
+    #[DataProvider('provider_contentTypeCache_LocalAndCache')]
     public function test_contentTypeCache_localAndCache(bool $usePatchVersion): void
     {
         Storage::fake('test');
@@ -236,7 +237,7 @@ class AjaxRequestTest extends TestCase
         $this->assertArrayNotHasKey('license', $libData);
     }
 
-    public function provider_contentTypeCache_localAndCache(): Generator
+    public static function provider_contentTypeCache_localAndCache(): Generator
     {
         yield 'no patch version' => [false];
         yield 'patch version' => [true];

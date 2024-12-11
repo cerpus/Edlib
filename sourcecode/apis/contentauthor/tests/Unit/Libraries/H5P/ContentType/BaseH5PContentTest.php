@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Libraries\H5P\ContentType;
 
 use App\Libraries\H5P\ContentType\BaseH5PContent;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +20,7 @@ class BaseH5PContentTest extends TestCase
         $this->abstractClass = $this->getMockForAbstractClass(BaseH5PContent::class);
     }
 
-    /** @dataProvider provider_id */
+    #[DataProvider('provider_id')]
     public function test_id(string $id, bool $useHash, string $expected): void
     {
         $response = $this->abstractClass->setId($id, $useHash);
@@ -27,7 +28,7 @@ class BaseH5PContentTest extends TestCase
         $this->assertSame($expected, $response->getId());
     }
 
-    public function provider_id(): \Generator
+    public static function provider_id(): \Generator
     {
         yield 'noHash' => ['42', false, '-42'];
         yield 'hash' => ['42', true, '-' . md5('42')];

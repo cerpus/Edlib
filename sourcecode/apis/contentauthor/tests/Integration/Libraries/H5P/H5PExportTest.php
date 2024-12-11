@@ -10,6 +10,8 @@ use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Helpers\MockH5PAdapterInterface;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
@@ -42,10 +44,10 @@ class H5PExportTest extends TestCase
     }
 
     /**
-     * @test
      * @throws Exception
-     * @dataProvider provider_noMultimedia
      */
+    #[DataProvider('provider_noMultimedia')]
+    #[Test]
     public function noMultimedia(bool $usePatchFolder)
     {
         $this->setupH5PAdapter([
@@ -83,16 +85,16 @@ class H5PExportTest extends TestCase
         $zipArchive->close();
     }
 
-    public function provider_noMultimedia(): \Generator
+    public static function provider_noMultimedia(): \Generator
     {
         yield 'minorFolder' => [false];
         yield 'patchFolder' => [true];
     }
 
     /**
-     * @test
      * @throws Exception
      */
+    #[Test]
     public function withLocalImage()
     {
         $this->setupH5PAdapter([

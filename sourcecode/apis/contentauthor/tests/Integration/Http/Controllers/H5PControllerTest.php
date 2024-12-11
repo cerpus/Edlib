@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PControllerTest extends TestCase
@@ -34,7 +35,7 @@ class H5PControllerTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @dataProvider provider_testCreate */
+    #[DataProvider('provider_testCreate')]
     public function testCreate(string $adapterMode, ?string $contentType): void
     {
         $this->session([
@@ -105,7 +106,7 @@ class H5PControllerTest extends TestCase
         $this->assertEquals(config('license.default-license'), $state['license']);
     }
 
-    public function provider_testCreate(): Generator
+    public static function provider_testCreate(): Generator
     {
         yield 'cerpus-withoutContentType' => ['cerpus', null];
         yield 'ndla-withoutContentType' => ['ndla', null];
@@ -113,7 +114,7 @@ class H5PControllerTest extends TestCase
         yield 'ndla-withContentType' => ['ndla', 'H5P.Toolbar 1.2'];
     }
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function testEdit(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
@@ -209,9 +210,7 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($state['title']);
     }
 
-    /**
-     * @dataProvider invalidRequestsProvider
-     */
+    #[DataProvider('invalidRequestsProvider')]
     public function testStoreRequiresParameters(array $jsonData, array $errorFields): void
     {
         $this
@@ -221,9 +220,7 @@ class H5PControllerTest extends TestCase
             ->assertJsonValidationErrors($errorFields);
     }
 
-    /**
-     * @dataProvider invalidRequestsProvider
-     */
+    #[DataProvider('invalidRequestsProvider')]
     public function testUpdateRequiresParameters(array $jsonData, array $errorFields): void
     {
         $content = H5PContent::factory()->create();
@@ -238,7 +235,7 @@ class H5PControllerTest extends TestCase
             ->assertJsonValidationErrors($errorFields);
     }
 
-    public function invalidRequestsProvider(): iterable
+    public static function invalidRequestsProvider(): iterable
     {
         yield [[], ['title', 'parameters', 'library']];
         yield [[
@@ -251,7 +248,7 @@ class H5PControllerTest extends TestCase
         yield [['language_iso_639_3' => 'eeee'], ['language_iso_639_3']];
     }
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function testShow(string $adapterMode): void
     {
         $this->app->singleton(H5PAdapterInterface::class, match ($adapterMode) {
@@ -388,7 +385,7 @@ class H5PControllerTest extends TestCase
         }
     }
 
-    public function provider_adapterMode(): Generator
+    public static function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];

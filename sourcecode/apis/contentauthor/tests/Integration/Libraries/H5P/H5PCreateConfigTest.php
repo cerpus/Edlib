@@ -7,13 +7,14 @@ use App\Libraries\H5P\H5PCreateConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PCreateConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_getConfig(string $adapterMode): void
     {
         Config::set('ndla-mode.h5p.audio.url', 'https://audio.url');
@@ -87,7 +88,7 @@ class H5PCreateConfigTest extends TestCase
         }
     }
 
-    public function provider_adapterMode(): \Generator
+    public static function provider_adapterMode(): \Generator
     {
         yield 'cerpusMode' => ['cerpus'];
         yield 'ndlaMode' => ['ndla'];

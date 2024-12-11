@@ -3,6 +3,7 @@
 namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\MultiChoice;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class MultiChoiceTest extends TestCase
@@ -12,9 +13,7 @@ class MultiChoiceTest extends TestCase
         'oneQuestionWithThreeAnswersAndOneImage' => '{"media":{"params":{"contentName":"Image","file":{"path":"path/to/image#tmp","mime":"image/jpeg","copyright":{"license":"U"},"width":1244,"height":709},"alt":"Norge"},"library":"H5P.Image 1.0","subContentId":"96732b0d-98fb-4d42-a6a8-b9f13192529d"},"answers":[{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"Kong Harald"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"Kong Olav"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"Kong Haalpm"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"Dronning Sonja"}],"UI":{"checkAnswerButton":"Check","showSolutionButton":"Show solution","tryAgainButton":"Retry","tipsLabel":"Show tip","scoreBarLabel":"Score","tipAvailable":"Tip available","feedbackAvailable":"Feedback available","readFeedback":"Read feedback","wrongAnswer":"Wrong answer","correctAnswer":"Correct answer","feedback":"You got @score of @total points","shouldCheck":"Should have been checked","shouldNotCheck":"Should not have been checked","noInput":"Please answer before viewing the solution"},"behaviour":{"enableRetry":true,"enableSolutionsButton":true,"type":"auto","singlePoint":false,"randomAnswers":true,"showSolutionsRequiresInput":true,"disableImageZooming":false,"confirmCheckDialog":false,"confirmRetryDialog":false,"autoCheck":false,"passPercentage":100},"confirmCheck":{"header":"Finish ?","body":"Are you sure you wish to finish ?","cancelLabel":"Cancel","confirmLabel":"Finish"},"confirmRetry":{"header":"Retry ?","body":"Are you sure you wish to retry ?","cancelLabel":"Cancel","confirmLabel":"Confirm"},"question":"Hvem er regent i Norge?"}',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPackageSemantics()
     {
         $structure = json_decode('{"media":{"params":{}},"answers":[],"UI":{"checkAnswerButton":"Check","showSolutionButton":"Show solution","tryAgainButton":"Retry","tipsLabel":"Show tip","scoreBarLabel":"Score","tipAvailable":"Tip available","feedbackAvailable":"Feedback available","readFeedback":"Read feedback","wrongAnswer":"Wrong answer","correctAnswer":"Correct answer","feedback":"You got @score of @total points","shouldCheck":"Should have been checked","shouldNotCheck":"Should not have been checked","noInput":"Please answer before viewing the solution"},"behaviour":{"enableRetry":true,"enableSolutionsButton":true,"type":"auto","singlePoint":false,"randomAnswers":true,"showSolutionsRequiresInput":true,"disableImageZooming":false,"confirmCheckDialog":false,"confirmRetryDialog":false,"autoCheck":false,"passPercentage":100,"showScorePoints":true},"confirmCheck":{"header":"Finish ?","body":"Are you sure you wish to finish ?","cancelLabel":"Cancel","confirmLabel":"Finish"},"confirmRetry":{"header":"Retry ?","body":"Are you sure you wish to retry ?","cancelLabel":"Cancel","confirmLabel":"Confirm"},"question":""}');
@@ -36,9 +35,7 @@ class MultiChoiceTest extends TestCase
         $this->assertEquals((array)$structure, (array)$generatedStructure);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function populateSemantics()
     {
         $multiChoice = new MultiChoice();
@@ -70,9 +67,7 @@ class MultiChoiceTest extends TestCase
         $this->assertEquals($this->parameters['onequestionwiththreeanswers'], json_encode($semantics));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function populateSemanticsWithImage()
     {
         $this->markTestIncomplete();
