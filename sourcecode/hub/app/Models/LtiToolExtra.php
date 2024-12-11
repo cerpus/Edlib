@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use LogicException;
 
 class LtiToolExtra extends Model
 {
@@ -35,7 +36,15 @@ class LtiToolExtra extends Model
         'name',
         'lti_launch_url',
         'admin',
+        'slug',
     ];
+
+    public static function booted(): void
+    {
+        static::creating(function (self $tool) {
+            $tool->slug ??= $tool->id ?? throw new LogicException('expected an ID');
+        });
+    }
 
     /**
      * @return BelongsTo<LtiTool, $this>

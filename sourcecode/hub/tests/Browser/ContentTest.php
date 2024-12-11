@@ -183,7 +183,7 @@ final class ContentTest extends DuskTestCase
 
         $platform = LtiPlatform::factory()->create();
 
-        $tool = LtiTool::factory()->create([
+        LtiTool::factory()->slug('the-tool')->create([
             'name' => 'Edlib 3',
             'consumer_key' => $platform->key,
             'consumer_secret' => $platform->secret,
@@ -191,7 +191,7 @@ final class ContentTest extends DuskTestCase
             'send_email' => true,
         ]);
 
-        $this->browse(function (Browser $browser) use ($content, $tool, $user) {
+        $this->browse(function (Browser $browser) use ($content, $user) {
             $browser
                 ->visit('/login')
                 // FIXME: it seems buttons in iframes cannot be clicked, even if
@@ -202,7 +202,7 @@ final class ContentTest extends DuskTestCase
                 ->type('password', 'password')
                 ->press('Log in')
                 ->assertAuthenticated()
-                ->visit('/content/create/' . $tool->id)
+                ->visit('/content/create/the-tool')
                 ->assertPresent('.lti-launch')
                 ->withinFrame('.lti-launch', function (Browser $iframe) use ($content) {
                     $iframe
@@ -309,7 +309,8 @@ final class ContentTest extends DuskTestCase
     public function testUsesContentViaButtonInPreviewModal(): void
     {
         $ltiPlatform = LtiPlatform::factory()->create();
-        $ltiTool = LtiTool::factory()
+        LtiTool::factory()
+            ->slug('the-tool')
             ->state(['creator_launch_url' => 'https://hub-test.edlib.test/lti/dl'])
             ->withCredentials($ltiPlatform->getOauth1Credentials())
             ->create();
@@ -323,7 +324,7 @@ final class ContentTest extends DuskTestCase
         $this->browse(
             fn (Browser $browser) => $browser
                 ->loginAs($user->email)
-                ->visit('/content/create/' . $ltiTool->id)
+                ->visit('/content/create/the-tool')
                 ->waitFor('iframe.lti-launch')
                 ->withinFrame(
                     '.lti-launch',
@@ -403,7 +404,8 @@ final class ContentTest extends DuskTestCase
     public function testContentCardsHaveUseButtonAfterSearchingInLtiContext(): void
     {
         $platform = LtiPlatform::factory()->create();
-        $tool = LtiTool::factory()
+        LtiTool::factory()
+            ->slug('the-tool')
             ->state(['creator_launch_url' => route('lti.select')])
             ->withCredentials($platform->getOauth1Credentials())
             ->create();
@@ -423,7 +425,7 @@ final class ContentTest extends DuskTestCase
         $this->browse(fn (Browser $browser) => $browser
             ->loginAs(User::factory()->create()->email)
             ->assertAuthenticated()
-            ->visit('/content/create/' . $tool->id)
+            ->visit('/content/create/the-tool')
             ->withinFrame('.lti-launch', fn (Browser $frame) => $frame
                 ->assertSee('found content')
                 ->assertSee('excluded content')
@@ -482,7 +484,8 @@ final class ContentTest extends DuskTestCase
     public function testCreatesDraftVersions(): void
     {
         $platform = LtiPlatform::factory()->create();
-        $tool = LtiTool::factory()
+        LtiTool::factory()
+            ->slug('the-tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->create();
 
@@ -490,7 +493,7 @@ final class ContentTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs(User::factory()->create()->email)
                 ->assertAuthenticated()
-                ->visit('/content/create/' . $tool->id)
+                ->visit('/content/create/the-tool')
                 ->withinFrame(
                     '.lti-launch',
                     fn (Browser $browser) => $browser
@@ -526,7 +529,8 @@ final class ContentTest extends DuskTestCase
     public function testCreatesContentWithContentTypeTag(): void
     {
         $platform = LtiPlatform::factory()->create();
-        $tool = LtiTool::factory()
+        LtiTool::factory()
+            ->slug('the-tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->create();
 
@@ -534,7 +538,7 @@ final class ContentTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs(User::factory()->create()->email)
                 ->assertAuthenticated()
-                ->visit('/content/create/' . $tool->id)
+                ->visit('/content/create/the-tool')
                 ->withinFrame(
                     '.lti-launch',
                     fn (Browser $browser) => $browser
@@ -576,13 +580,15 @@ final class ContentTest extends DuskTestCase
     public function testEnsuresContentReturnedToLtiPlatformIsPublished(): void
     {
         $platform = LtiPlatform::factory()->create();
-        $edlib3 = LtiTool::factory()
+        LtiTool::factory()
+            ->slug('edlib-3')
             ->withName('Edlib 3')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/dl')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
         LtiTool::factory()
+            ->slug('sample-tool')
             ->withName('Sample tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
@@ -593,7 +599,7 @@ final class ContentTest extends DuskTestCase
             fn (Browser $browser) => $browser
                 ->loginAs(User::factory()->create()->email)
                 ->assertAuthenticated()
-                ->visit('/content/create/' . $edlib3->id)
+                ->visit('/content/create/edlib-3')
                 ->waitFor('iframe.lti-launch')
                 ->withinFrame(
                     '.lti-launch',

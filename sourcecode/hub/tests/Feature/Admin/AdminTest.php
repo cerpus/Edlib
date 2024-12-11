@@ -40,10 +40,13 @@ final class AdminTest extends TestCase
 
     public function testNonAdminsCannotUseAdminEndpoints(): void
     {
-        $tool = LtiTool::factory()->extra(LtiToolExtra::factory()->admin())->create();
+        LtiTool::factory()
+            ->slug('the-tool')
+            ->extra(LtiToolExtra::factory()->slug('the-extra')->admin())
+            ->create();
 
         $this->actingAs(User::factory()->create())
-            ->get('/content/create/' . $tool->id . '/' . $tool->extras->firstOrFail()->id)
+            ->get('/content/create/the-tool/the-extra')
             ->assertForbidden();
     }
 }

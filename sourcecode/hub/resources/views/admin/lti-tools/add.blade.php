@@ -19,6 +19,11 @@ use App\Enums\LtiToolEditMode;
         />
 
         <x-form.field
+            name="slug"
+            :label="trans('messages.url-slug')"
+        />
+
+        <x-form.field
             name="creator_launch_url"
             inputmode="url"
             required

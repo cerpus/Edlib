@@ -24,7 +24,13 @@ final class LtiToolFactory extends Factory
             'send_name' => $this->faker->boolean,
             'send_email' => $this->faker->boolean,
             'proxy_launch' => $this->faker->boolean,
+            'slug' => $this->faker->unique()->slug(nbWords: 2),
         ];
+    }
+
+    public function slug(string $slug): self
+    {
+        return $this->state(['slug' => $slug]);
     }
 
     public function launchUrl(string $launchUrl): self

@@ -20,11 +20,17 @@ final class LtiToolExtraFactory extends Factory
             'lti_tool_id' => LtiTool::factory(),
             'lti_launch_url' => $this->faker->url,
             'admin' => $this->faker->boolean,
+            'slug' => $this->faker->unique()->slug(nbWords: 2),
         ];
     }
 
     public function admin(bool $admin = true): self
     {
         return $this->state(['admin' => $admin]);
+    }
+
+    public function slug(string $slug): self
+    {
+        return $this->state(['slug' => $slug]);
     }
 }

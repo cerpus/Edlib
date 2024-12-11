@@ -4,6 +4,8 @@
     <x-form :action="route('admin.lti-tools.store-extra', [$tool])" method="POST">
         <x-form.field name="name" :label="trans('messages.name')" />
 
+        <x-form.field name="slug" :label="trans('messages.url-slug')" />
+
         <x-form.field name="lti_launch_url" :label="trans('messages.lti-launch-url')" />
 
         <div class="form-check mb-3">

@@ -19,6 +19,7 @@ class AddLtiToolTest extends TestCase
         $this->command('edlib:add-lti-tool', [
             'name' => 'Content Author',
             'url' => 'https://ca.edlib.test/lti-content/create',
+            '--slug' => 'sluggish-tool',
             '--send-name' => true,
             '--send-email' => true,
             '--edlib-editable' => true,
@@ -37,5 +38,6 @@ class AddLtiToolTest extends TestCase
         $this->assertSame('secret2', $tool->consumer_secret);
         $this->assertSame(LtiToolEditMode::DeepLinkingRequestToContentUrl, $tool->edit_mode);
         $this->assertSame(LtiVersion::Lti1_1, $tool->lti_version);
+        $this->assertSame('sluggish-tool', $tool->slug);
     }
 }

@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use LogicException;
 
 use function assert;
 
@@ -56,7 +57,15 @@ class LtiTool extends Model
         'send_email',
         'proxy_launch',
         'edit_mode',
+        'slug',
     ];
+
+    public static function booted(): void
+    {
+        static::creating(function (self $tool) {
+            $tool->slug ??= $tool->id ?? throw new LogicException('expected an ID');
+        });
+    }
 
     /**
      * @return HasMany<ContentVersion, $this>
