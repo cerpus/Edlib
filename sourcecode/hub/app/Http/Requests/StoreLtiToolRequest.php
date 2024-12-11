@@ -10,6 +10,15 @@ use Illuminate\Validation\Rule;
 
 class StoreLtiToolRequest extends FormRequest
 {
+    public function prepareForValidation(): void
+    {
+        $parameters = $this->getInputSource();
+
+        if (!$parameters->get('slug')) {
+            $parameters->remove('slug');
+        }
+    }
+
     /**
      * @return mixed[]
      */
