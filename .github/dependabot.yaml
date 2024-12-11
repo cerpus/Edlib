@@ -5,29 +5,28 @@ updates:
     directory: /
     schedule:
       interval: monthly
-    # the other ecosystems are labeled by labeler
     labels: [dependencies]
 
   - package-ecosystem: composer
     directory: /sourcecode/hub
     schedule:
       interval: weekly
-    labels: []
+    labels: [dependencies]
 
   - package-ecosystem: npm
     directory: /sourcecode/hub
     schedule:
       interval: weekly
-    labels: []
+    labels: [dependencies]
 
   - package-ecosystem: composer
     directory: /sourcecode/apis/contentauthor
     schedule:
       interval: weekly
-    labels: []
+    labels: [dependencies]
 
   - package-ecosystem: npm
     directory: /sourcecode/apis/contentauthor
     schedule:
       interval: weekly
-    labels: []
+    labels: [dependencies]
