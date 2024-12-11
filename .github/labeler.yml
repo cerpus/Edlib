@@ -1,12 +1,14 @@
-"Component: Content Author":
+'Component: Content Author':
   - changed-files:
     - any-glob-to-any-file:
+      - .github/workflows/contentauthor.yaml
       - localSetup/projects/nginx/templates/ca.conf.template
       - sourcecode/apis/contentauthor/**
 
-"Component: Hub"
+'Component: Hub'
   - changed-files:
     - any-glob-to-any-file:
+      - .github/workflows/hub.yaml
       - localSetup/projects/nginx/templates/hub.conf.template
       - sourcecode/apis/hub/**
 
@@ -25,6 +27,15 @@ documentation:
       - docs/**
       - '**/*.md'
       - '**/*.mdx'
+
+'Edlib 2':
+  - base-branch: edlib2
+
+github_actions:
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/actions/**
+      - .github/workflows/**
 
 language:
   - changed-files:

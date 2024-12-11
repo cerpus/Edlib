@@ -1,13 +1,12 @@
 version: 2
 
-# labels should be handled by labeler workflow
-
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
-    labels: []
+    # the other ecosystems are labeled by labeler
+    labels: [dependencies]
 
   - package-ecosystem: composer
     directory: /sourcecode/hub
