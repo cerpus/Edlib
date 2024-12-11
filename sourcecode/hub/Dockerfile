@@ -141,4 +141,5 @@ FROM nginx:1-alpine AS web
 ENV PHP_FPM_HOST "localhost:9000"
 
 COPY --from=prod /app/public /app/public
+COPY docker/nginx/server_tokens.conf /etc/nginx/conf.d/
 COPY docker/nginx/default.conf.template /etc/nginx/templates/
