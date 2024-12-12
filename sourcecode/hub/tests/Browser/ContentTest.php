@@ -898,27 +898,33 @@ final class ContentTest extends DuskTestCase
 
         RebuildContentIndex::dispatch();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/lti/playground')
-            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
-            ->type('key', $platform->key)
-            ->type('secret', $platform->secret)
-            ->type('parameters',
-                'content_item_return_url=about:blank' .
-                '&lti_message_type=ContentItemSelectionRequest' .
-                "&lis_person_contact_email_primary={$user->email}"
-            )
-            ->press('Launch')
-            ->withinFrame('iframe', fn (Browser $hub) => $hub
-                ->clickLink('My content')
-                ->clickLink('The original content')
-                ->waitForLink('Edit content')
-                ->clickLink('Edit content')
-                ->withinFrame('.lti-launch', fn (Browser $editor) => $editor
-                    ->waitForInput('payload')
-                    ->type('payload', <<<EOJSON
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    "&lis_person_contact_email_primary={$user->email}"
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $hub) => $hub
+                        ->clickLink('My content')
+                        ->clickLink('The original content')
+                        ->waitForLink('Edit content')
+                        ->clickLink('Edit content')
+                        ->withinFrame(
+                            '.lti-launch',
+                            fn (Browser $editor) => $editor
+                                ->waitForInput('payload')
+                                ->type('payload', <<<EOJSON
                     {
                         "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
                         "@graph": [
@@ -931,12 +937,12 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                    ->press('Send')
+                                ->press('Send')
+                        )
                 )
-            )
-            ->visit('/content/mine')
-            ->assertSeeLink('The updated content')
-            ->assertDontSee('The original content')
+                ->visit('/content/mine')
+                ->assertSeeLink('The updated content')
+                ->assertDontSee('The original content')
         );
     }
 
@@ -962,28 +968,34 @@ final class ContentTest extends DuskTestCase
 
         RebuildContentIndex::dispatch();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/lti/playground')
-            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
-            ->type('key', $platform->key)
-            ->type('secret', $platform->secret)
-            ->type('parameters',
-                'content_item_return_url=about:blank' .
-                '&ext_edlib3_copy_before_save=1' .
-                '&lti_message_type=ContentItemSelectionRequest' .
-                "&lis_person_contact_email_primary={$user->email}"
-            )
-            ->press('Launch')
-            ->withinFrame('iframe', fn (Browser $hub) => $hub
-                ->clickLink('My content')
-                ->clickLink('The original content')
-                ->waitForLink('Edit content')
-                ->clickLink('Edit content')
-                ->withinFrame('.lti-launch', fn (Browser $editor) => $editor
-                    ->waitForInput('payload')
-                    ->type('payload', <<<EOJSON
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&ext_edlib3_copy_before_save=1' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    "&lis_person_contact_email_primary={$user->email}"
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $hub) => $hub
+                        ->clickLink('My content')
+                        ->clickLink('The original content')
+                        ->waitForLink('Edit content')
+                        ->clickLink('Edit content')
+                        ->withinFrame(
+                            '.lti-launch',
+                            fn (Browser $editor) => $editor
+                                ->waitForInput('payload')
+                                ->type('payload', <<<EOJSON
                     {
                         "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
                         "@graph": [
@@ -996,12 +1008,12 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                    ->press('Send')
+                                ->press('Send')
+                        )
                 )
-            )
-            ->visit('/content/mine')
-            ->assertSeeLink('The updated content')
-            ->assertSeeLink('The original content')
+                ->visit('/content/mine')
+                ->assertSeeLink('The updated content')
+                ->assertSeeLink('The original content')
         );
     }
 }
