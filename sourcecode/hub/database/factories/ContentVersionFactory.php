@@ -31,6 +31,11 @@ final class ContentVersionFactory extends Factory
         ];
     }
 
+    public function title(string $title): self
+    {
+        return $this->state(['title' => $title]);
+    }
+
     public function withLaunchUrl(string $launchUrl): self
     {
         return $this->state(['lti_launch_url' => $launchUrl]);
