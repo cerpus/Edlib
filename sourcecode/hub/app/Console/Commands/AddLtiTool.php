@@ -16,6 +16,7 @@ class AddLtiTool extends Command
     edlib:add-lti-tool
     {name : The name of the tool}
     {url : The URL to which LTI Deep Linking requests will be sent}
+    {--slug=} The URL slug of the tool
     {--send-name} Send the name of the user to the tool upon launch
     {--send-email} Send the email address of the user to the tool upon launch
     {--edlib-editable} The tool accepts edit requests via an Edlib-specific mechanism
@@ -34,6 +35,10 @@ class AddLtiTool extends Command
         $tool->send_name = $this->option('send-name');
         $tool->send_email = $this->option('send-email');
         $tool->proxy_launch = true;
+
+        if ($this->option('slug')) {
+            $tool->slug = $this->option('slug');
+        }
 
         if ($this->option('edlib-editable')) {
             $tool->edit_mode = LtiToolEditMode::DeepLinkingRequestToContentUrl;

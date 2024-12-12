@@ -10,6 +10,15 @@ use Illuminate\Validation\Rule;
 
 class StoreLtiToolRequest extends FormRequest
 {
+    public function prepareForValidation(): void
+    {
+        $parameters = $this->getInputSource();
+
+        if (!$parameters->get('slug')) {
+            $parameters->remove('slug');
+        }
+    }
+
     /**
      * @return mixed[]
      */
@@ -24,6 +33,7 @@ class StoreLtiToolRequest extends FormRequest
             'send_name' => ['boolean'],
             'send_email' => ['boolean'],
             'proxy_launch' => ['boolean'],
+            'slug' => ['sometimes', 'string', 'max:50', 'regex:/^[a-z0-9-_]+$/'],
         ];
     }
 }
