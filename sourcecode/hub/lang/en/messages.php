@@ -216,4 +216,5 @@ return [
     'lti-platform-authorizes-edit-help' => 'Transfers responsibility for access control of editing from :site to the platform, i.e. :site will accept all valid edit requests from the platform',
     'dangerous-lti-platform-settings' => 'These settings are dangerous, and should only be enabled for trusted platforms with email verification.',
     'url-slug' => 'URL slug',
+    'lti-playground' => 'LTI playground',
 ];

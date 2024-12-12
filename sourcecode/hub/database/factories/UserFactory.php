@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'password' => Hash::make($this->faker->password),
             'admin' => false,
             'locale' => 'en',
+            'debug_mode' => false,
         ];
     }
 
