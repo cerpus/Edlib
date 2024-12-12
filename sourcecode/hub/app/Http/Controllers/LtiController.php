@@ -5,14 +5,21 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\ContentViewSource;
+use App\Http\Requests\LtiPlaygroundRequest;
 use App\Lti\LtiLaunch;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
+use Cerpus\EdlibResourceKit\Oauth1\Credentials;
+use Cerpus\EdlibResourceKit\Oauth1\Signer;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Random\Randomizer;
+use Symfony\Component\Clock\MockClock;
+use Symfony\Component\Clock\NativeClock;
 
 use function abort;
 use function to_route;
@@ -75,5 +82,35 @@ final readonly class LtiController
     public function select(): RedirectResponse
     {
         return to_route('content.index');
+    }
+
+    public function playground(LtiPlaygroundRequest $request): View
+    {
+        $ltiRequest = null;
+
+        if ($request->isMethod('POST')) {
+            $ltiRequest = new \Cerpus\EdlibResourceKit\Oauth1\Request(
+                'POST',
+                $request->validated('launch_url'),
+                $request->getParameters(),
+            );
+
+            if ($request->validated('time')) {
+                $clock = new MockClock($request->validated('time'));
+            } else {
+                $clock = new NativeClock();
+            }
+
+            $signer = new Signer($clock, new Randomizer());
+
+            $ltiRequest = $signer->sign($ltiRequest, new Credentials(
+                $request->validated('key', ''),
+                $request->validated('secret', ''),
+            ));
+        }
+
+        return view('lti.playground', [
+            'ltiRequest' => $ltiRequest,
+        ]);
     }
 }
