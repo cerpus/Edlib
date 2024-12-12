@@ -32,6 +32,10 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th scope="row">{{ trans('messages.url-slug') }}</th>
+                                <td>{{ $tool->slug }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Associated resources</th>
                                 <td>{{ $tool->content_versions_count }}</td>
                             </tr>
@@ -55,6 +59,7 @@
                     <table class="table table-striped">
                         <thead>
                             <th>{{ trans('messages.name') }}</th>
+                            <th>{{ trans('messages.url-slug') }}</th>
                             <th>{{ trans('messages.lti-launch-url') }}</th>
                             <th>{{ trans('messages.admin-tool') }}
                             <th></th>
@@ -64,6 +69,7 @@
                             @foreach ($tool->extras as $extra)
                                 <tr>
                                     <td>{{ $extra->name }}</td>
+                                    <td>{{ $extra->slug }}</td>
                                     <td>{{ $extra->lti_launch_url }}</td>
                                     <td>{{ $extra->admin ? trans('messages.yes') : trans('messages.no') }}</td>
                                     <td>

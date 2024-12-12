@@ -152,11 +152,11 @@ Route::controller(ContentController::class)->group(function () {
         ->can('delete', 'content')
         ->whereUlid('content');
 
-    Route::get('/content/create/{tool}/{extra?}', 'launchCreator')
+    Route::get('/content/create/{tool:slug}/{extra:slug?}', 'launchCreator')
+        ->uses([ContentController::class, 'launchCreator'])
         ->name('content.launch-creator')
         ->can('create', \App\Models\Content::class)
         ->can('launchCreator', ['tool', 'extra'])
-        ->whereUlid('tool')
         ->scopeBindings();
 });
 
