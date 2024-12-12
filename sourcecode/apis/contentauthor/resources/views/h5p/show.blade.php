@@ -13,7 +13,7 @@
         <style>{!! $inlineStyle !!}</style>
     @endif
     @foreach( $styles as $css)
-        {!! HTML::style($css) !!}
+        <link rel="stylesheet" href="{{ $css }}">
     @endforeach
     <script type="text/x-mathjax-config">
         // When MathJax is done, check if a resize of the container is required
@@ -33,9 +33,9 @@
 
     <script src="{{ mix('js/h5p-core-bundle.js') }}"></script>
     @foreach( $jsScripts as $js)
-        {!! HTML::script($js) !!}
+        <script src="{{ $js }}"></script>
     @endforeach
-    {!! HTML::script('js/listener.js') !!}
+    <script src="/js/listener.js"></script>
     <script>
         window.H5P.jQuery.ajaxSetup({
             headers: {

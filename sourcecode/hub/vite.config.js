@@ -28,7 +28,11 @@ export default defineConfig({
     },
     plugins: [
         laravel({
-            input: ['resources/css/app.scss', 'resources/js/app.js'],
+            input: [
+                'resources/css/app.scss',
+                'resources/js/app.js',
+                'resources/js/swagger.js',
+            ],
             refresh: true,
         }),
         manifestSRI(),

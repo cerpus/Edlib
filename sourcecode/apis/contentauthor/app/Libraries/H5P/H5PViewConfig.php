@@ -214,7 +214,7 @@ class H5PViewConfig extends H5PConfigAbstract
     {
         $parameters = $this->adapter->alterParameters(
             $this->filterParams ?? '',
-            $this->alterParametersSettings
+            $this->alterParametersSettings ?? new H5PAlterParametersSettingsDataObject(),
         );
 
         if (!is_null($this->behaviorSettings)) {

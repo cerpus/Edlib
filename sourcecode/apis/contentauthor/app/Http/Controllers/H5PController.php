@@ -28,8 +28,6 @@ use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\H5PProgress;
 use App\Libraries\H5P\H5PViewConfig;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PAudioInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use App\Libraries\H5P\LtiToH5PLanguage;
@@ -97,7 +95,7 @@ class H5PController extends Controller
             ->setEmbedResizeCode($ltiRequest?->getEmbedResizeCode() ?? '')
             ->setResourceLinkTitle($ltiRequest?->getResourceLinkTitle())
             ->loadContent($id)
-            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $h5pContent->library->includeImageWidth()]));
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $h5pContent->library->includeImageWidth()));
 
         $h5pView = $this->h5p->createView($viewConfig);
         $content = $viewConfig->getContent();
@@ -251,7 +249,7 @@ class H5PController extends Controller
             'metadata' => $content['metadata'],
         ]);
 
-        $params = $adapter->alterParameters($params, H5PAlterParametersSettingsDataObject::create(['useImageWidth' => false]));
+        $params = $adapter->alterParameters($params, new H5PAlterParametersSettingsDataObject(useImageWidth: false));
 
         $library = $h5pContent->library;
         $settings = [];
@@ -684,27 +682,6 @@ class H5PController extends Controller
         return response(trans('h5p-editor.could-not-find-content'), 404);
     }
 
-    public function browseImages(Request $request)
-    {
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->findImages([
-            'page' => $request->get('page'),
-            'searchString' => $request->get('searchstring'),
-            'language' => $request->get('language'),
-            'fallback' => 'true',
-        ]);
-    }
-
-    public function getImage(Request $request, $imageId)
-    {
-        /** @var H5PImageAdapterInterface $imageAdapter */
-        $imageAdapter = app(H5PImageAdapterInterface::class);
-        return $imageAdapter->getImage($imageId, [
-            'language' => $request->get('language'),
-        ]);
-    }
-
     public function browseVideos(Request $request)
     {
         /** @var H5PVideoInterface $videodapter */
@@ -735,24 +712,5 @@ class H5PController extends Controller
     {
         $information = $h5PInfo->getInformation($h5p);
         return response()->json($information);
-    }
-
-    public function browseAudios(Request $request)
-    {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->findAudio([
-            'query' => $request->get('query'),
-            'fallback' => 'true',
-        ]);
-    }
-
-    public function getAudio(Request $request, $audioId)
-    {
-        /** @var H5PAudioInterface $audioAdapter */
-        $audioAdapter = app(H5PAudioInterface::class);
-        return $audioAdapter->getAudio($audioId, [
-            'language' => $request->get('language'),
-        ]);
     }
 }

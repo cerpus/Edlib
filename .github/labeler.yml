@@ -1,0 +1,58 @@
+'Component: Content Author':
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/contentauthor.yaml
+      - localSetup/projects/nginx/templates/ca.conf.template
+      - sourcecode/apis/contentauthor/**
+
+'Component: Hub':
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/hub.yaml
+      - localSetup/projects/nginx/templates/hub.conf.template
+      - sourcecode/hub/**
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/composer.json'
+      - '**/composer.lock'
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - docs/**
+      - '**/*.md'
+      - '**/*.mdx'
+
+'Edlib 2':
+  - base-branch: edlib2
+
+github_actions:
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/actions/**
+      - .github/workflows/**
+
+language:
+  - changed-files:
+    - any-glob-to-any-file:
+      - sourcecode/apis/contentauthor/resources/lang/**
+      - sourcecode/apis/contentauthor/resources/assets/react/language/**
+      - sourcecode/hub/lang/**
+
+composer:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/composer.json'
+      - '**/composer.lock'
+
+npm:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'

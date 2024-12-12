@@ -3,46 +3,39 @@
 namespace App\Libraries\H5P\Adapters;
 
 use App\H5POption;
-use App\Libraries\H5P\Audio\NDLAAudioBrowser;
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
-use App\Libraries\H5P\File\NDLATextTrack;
-use App\Libraries\H5P\Image\NDLAContentBrowser;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Interfaces\H5PImageAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
-use App\Libraries\H5P\Video\NDLAVideoAdapter;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 use function array_unique;
 use function Cerpus\Helper\Helpers\profile as config;
+
+use const JSON_THROW_ON_ERROR;
 
 class NDLAH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
 
-    /** @var H5PImageAdapterInterface */
-    private $imageBrowser;
-
-    /** @var H5PAlterParametersSettingsDataObject */
-    private $parameterSettings;
-
-    public function __construct(private readonly H5PVideoInterface $videoAdapter)
-    {
+    public function __construct(
+        private readonly H5PAudioInterface $audioAdapter,
+        private readonly H5PImageInterface $imageAdapter,
+        private readonly H5PVideoInterface $videoAdapter,
+    ) {
     }
 
-    /**
-     * Alter parameters before added to the H5PIntegrationObject
-     *
-     * @param string $parameters
-     * @return string
-     */
-    public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
-    {
-        $this->imageBrowser = resolve(NDLAContentBrowser::class);
-        $this->parameterSettings = $settings ?? resolve(H5PAlterParametersSettingsDataObject::class);
-        return $this->traverseParameters(collect(json_decode($parameters)))->toJson();
+    public function alterParameters(
+        string $parameters,
+        H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
+    ): string {
+        if ($parameters === '') {
+            return '';
+        }
+
+        return $this->traverseParameters(collect(json_decode($parameters, flags: JSON_THROW_ON_ERROR)), $settings)->toJson();
     }
 
     public function getEditorExtraTags($field): array
@@ -147,6 +140,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $css[] = (string) mix('css/ndlah5p-edit.css');
         }
         return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
+            ...$this->imageAdapter->getEditorCss(),
             ...$this->videoAdapter->getEditorCss(),
             ...$css,
         ]);
@@ -169,6 +164,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
         return array_unique([
             ...$js,
+            ...$this->audioAdapter->getEditorScripts(),
+            ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
         ]);
     }
@@ -184,6 +181,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
             '/js/h5p/wiris/view.js',
             (string) mix('js/h5peditor-custom.js'),
+            ...$this->audioAdapter->getViewScripts(),
+            ...$this->imageAdapter->getViewScripts(),
             ...$this->videoAdapter->getViewScripts(),
         ];
     }
@@ -203,6 +202,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         $css[] = (string) mix('css/ndlah5p-iframe.css');
         return array_unique([
             ...$css,
+            ...$this->audioAdapter->getViewCss(),
+            ...$this->imageAdapter->getViewCss(),
             ...$this->videoAdapter->getViewCss(),
         ]);
     }
@@ -255,9 +256,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             'h5p.video.enable',
             'h5p.video.deleteVideoSourceAfterConvertToStream',
             'h5p.video.pingDelay',
-            'h5p.image.authDomain',
-            'h5p.image.url',
-            'h5p.audio.url',
             'h5p.H5P_DragQuestion',
             'h5p.H5P_Dialogcards',
             'h5p.isHubEnabled',
@@ -314,38 +312,9 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
     }
 
-    public function getExternalProviders(): array
-    {
-        return [
-            resolve(NDLAContentBrowser::class),
-            resolve(NDLAVideoAdapter::class),
-            resolve(NDLAAudioBrowser::class),
-            resolve(NDLATextTrack::class),
-        ];
-    }
-
     public function useMaxScore(): bool
     {
         return false;
-    }
-
-    private function traverseParameters(Collection $values): Collection
-    {
-        return $values->map(function ($value) {
-            if ($this->isImageTarget($value)) {
-                $value = $this->imageBrowser->alterImageProperties($value, $this->parameterSettings->useImageWidth);
-            }
-            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
-                return $this->traverseParameters(collect($value));
-            }
-
-            return $value;
-        });
-    }
-
-    private function isImageTarget($value): bool
-    {
-        return is_object($value) && !empty($value->mime) && !empty($value->path) && $this->imageBrowser->isTargetType($value->mime, $value->path);
     }
 
     public function addTrackingScripts(): ?string
@@ -364,7 +333,11 @@ class NDLAH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return $this->videoAdapter->getConfigJs();
+        return array_unique([
+            ...$this->audioAdapter->getConfigJs(),
+            ...$this->imageAdapter->getConfigJs(),
+            ...$this->videoAdapter->getConfigJs(),
+        ]);
     }
 
     public function getAdapterName(): string

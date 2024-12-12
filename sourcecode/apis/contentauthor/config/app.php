@@ -140,8 +140,6 @@ return [
         App\Providers\H5PServiceProvider::class,
 
 
-        Collective\Html\HtmlServiceProvider::class,
-
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
@@ -193,8 +191,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Form' => Collective\Html\FormFacade::class,
-        'HTML' => Collective\Html\HtmlFacade::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'QuestionBank' => \Cerpus\QuestionBankClient\QuestionBankClient::class,
         'ImageService' => \Cerpus\ImageServiceClient\ImageServiceClient::class,

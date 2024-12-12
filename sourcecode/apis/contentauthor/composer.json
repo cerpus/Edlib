@@ -29,7 +29,6 @@
         "h5p/h5p-editor": "dev-master#e442a251a6eda93043c637f5bf19beb60e92191b",
         "laravel/framework": "^9.52.18",
         "laravel/tinker": "^2.10",
-        "laravelcollective/html": "^6.4.1",
         "league/flysystem-aws-s3-v3": "^3.29",
         "league/flysystem-ziparchive": "^3.29",
         "league/fractal": "^0.20.1",

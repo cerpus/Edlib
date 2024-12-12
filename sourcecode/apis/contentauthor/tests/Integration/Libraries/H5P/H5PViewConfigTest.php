@@ -178,12 +178,12 @@ class H5PViewConfigTest extends TestCase
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
             'disable' => 2,
-            'filtered' => 'here be filtered data',
+            'filtered' => '{"here be":"filtered data"}',
         ]);
 
         $data = app(H5PViewConfig::class)
             ->loadContent($content->id)
-            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $content->library->includeImageWidth()]))
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $content->library->includeImageWidth()))
             ->getConfig();
 
         $this->assertSame($content->filtered, $data->contents->{"cid-$content->id"}->jsonContent);
@@ -204,7 +204,7 @@ class H5PViewConfigTest extends TestCase
 
         $data = app(H5PViewConfig::class)
             ->loadContent($content->id)
-            ->setAlterParameterSettings(H5PAlterParametersSettingsDataObject::create(['useImageWidth' => $content->library->includeImageWidth()]))
+            ->setAlterParameterSettings(new H5PAlterParametersSettingsDataObject(useImageWidth: $content->library->includeImageWidth()))
             ->getConfig();
 
         $this->assertSame($content->filtered, $data->contents->{"cid-$content->id"}->jsonContent);

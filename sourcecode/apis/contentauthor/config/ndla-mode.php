@@ -31,12 +31,6 @@ return [
         'crossOriginRegexp' => env('NDLA_H5P_CROSSORIGIN_REGEXP', '/.*/'),
         'overrideDisableSetting' => env("NDLA_H5P_OVERRIDE_DISABLE_SETTING", false),
         'h5pAdapter' => 'ndla',
-        'image' => [
-            'url' => env("NDLA_H5P_IMAGE_URL"),
-        ],
-        'audio' => [
-            'url' => env("NDLA_H5P_AUDIO_URL"),
-        ],
         'video' => [
             'enable' => env("NDLA_H5P_VIDEO_STREAM_ENABLED", true),
             'deleteVideoSourceAfterConvertToStream' => (bool)env("NDLA_H5P_VIDEO_ADAPTER_DELETEVIDEO", false),

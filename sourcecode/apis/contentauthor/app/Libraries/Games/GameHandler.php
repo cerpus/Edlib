@@ -4,12 +4,12 @@ namespace App\Libraries\Games;
 
 use App\ContentVersion;
 use App\Events\GameWasSaved;
+use App\Exceptions\GameTypeNotFoundException;
 use App\Game;
 use App\Gametype;
 use App\Libraries\DataObjects\ResourceMetadataDataObject;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\Millionaire\Millionaire;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
@@ -41,28 +41,28 @@ class GameHandler
     }
 
     /**
-     * @throws Exception
+     * @throws GameTypeNotFoundException
      */
     public static function getGameTypeInstance(string $type): GameTypeContract
     {
         return match ($type) {
             'millionaire', Millionaire::$machineName => app(Millionaire::class),
-            default => throw new Exception(trans('game.could-not-find-the-gametype', ["gametype" => $type])),
+            default => throw new GameTypeNotFoundException(trans('game.could-not-find-the-gametype', ["gametype" => $type])),
         };
     }
 
     /**
-     * @throws Exception
+     * @throws GameTypeNotFoundException
      */
     public static function makeGameTypeFromId($gametypeId): GameTypeContract
     {
-        $gametypes = Gametype::findOrFail($gametypeId)->get();
+        $gametypes = Gametype::find($gametypeId);
 
-        if ($gametypes->isEmpty()) {
-            throw new Exception(trans('game.gametype-not-found'));
+        if ($gametypes === null) {
+            throw new GameTypeNotFoundException(trans('game.gametype-not-found'));
         }
 
-        return self::getGameTypeInstance($gametypes->first()->name);
+        return self::getGameTypeInstance($gametypes->name);
     }
 
     public function update(Game $game, Request $request): Game

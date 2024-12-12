@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P;
 
 use App\H5PContent;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use H5PContentValidator;
 use H5PCore;
@@ -20,17 +19,14 @@ use const JSON_THROW_ON_ERROR;
 readonly class H5PExport
 {
     /**
-     * @var array<mixed, H5PExternalProviderInterface>
+     * @param array<array-key, object> $externalProviders
      */
-    private array $externalProviders;
-
     public function __construct(
         private H5PDefaultExport $export,
-        H5PAdapterInterface $adapter,
         private H5PContentValidator $validator,
         private bool $convertMediaToLocal,
+        private array $externalProviders,
     ) {
-        $this->externalProviders = $adapter->getExternalProviders();
     }
 
     /**
@@ -97,7 +93,11 @@ readonly class H5PExport
     private function applyExternalProviderHandling(array $values, H5PContent $content): array
     {
         $externalProvider = collect($this->externalProviders)
-            ->first(fn ($provider) => $provider->isTargetType($values['mime'], $values['path']));
+            ->first(
+                fn ($provider) =>
+                $provider instanceof H5PExternalProviderInterface &&
+                $provider->isTargetType($values['mime'], $values['path'])
+            );
 
         if ($externalProvider instanceof H5PExternalProviderInterface) {
             $fileDetails = $externalProvider->storeContent($values, $content);

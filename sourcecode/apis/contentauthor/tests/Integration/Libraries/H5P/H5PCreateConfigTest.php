@@ -82,12 +82,8 @@ class H5PCreateConfigTest extends TestCase
             $this->assertContains('/js/h5peditor-custom.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
-            $this->assertSame('https://audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
-            $this->assertSame('https://ndla-image.url/image-api/v3/images', $data->imageBrowserDetailsUrl);
         } elseif ($adapterMode === 'cerpus') {
             $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
-            $this->assertObjectNotHasAttribute('audioBrowserDetailsUrl', $data);
-            $this->assertObjectNotHasAttribute('imageBrowserDetailsUrl', $data);
         }
     }
 
