@@ -134,20 +134,21 @@ final class AdminTest extends DuskTestCase
         LtiTool::factory()->withName('Hammer')->slug('the-old-slug')->create();
         $user = User::factory()->name('Ben Hammerhead')->admin()->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/')
-            ->press('Ben Hammerhead')
-            ->clickLink('Admin home')
-            ->clickLink('Manage LTI tools')
-            ->clickLink('Edit')
-            ->assertValue('input[name="slug"]', 'the-old-slug')
-            ->type('slug', 'the-new-slug')
-            ->press('Update')
-            ->assertSee('LTI tool updated.')
-            ->visit('/content/create/the-new-slug')
-            ->assertPresent('.lti-launch')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Ben Hammerhead')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->clickLink('Edit')
+                ->assertValue('input[name="slug"]', 'the-old-slug')
+                ->type('slug', 'the-new-slug')
+                ->press('Update')
+                ->assertSee('LTI tool updated.')
+                ->visit('/content/create/the-new-slug')
+                ->assertPresent('.lti-launch')
         );
     }
 }
