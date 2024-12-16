@@ -77,31 +77,34 @@ final class AdminTest extends DuskTestCase
     {
         $user = User::factory()->admin()->name('Admin User')->create();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/')
-            ->press('Admin User')
-            ->clickLink('Admin home')
-            ->clickLink('Manage LTI platforms')
-            ->type('name', 'My LTI platform')
-            ->check('enable_sso')
-            ->check('authorizes_edit')
-            ->press('Create')
-            ->with(new LtiPlatformAddedAlert(), function (Browser $alert) {
-                $alert->assertSee('LTI platform "My LTI platform" was successfully created.');
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Admin User')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI platforms')
+                ->type('name', 'My LTI platform')
+                ->check('enable_sso')
+                ->check('authorizes_edit')
+                ->press('Create')
+                ->with(new LtiPlatformAddedAlert(), function (Browser $alert) {
+                    $alert->assertSee('LTI platform "My LTI platform" was successfully created.');
 
-                $this->assertDatabaseHas(LtiPlatform::class, [
-                    'key' => $alert->text('@key'),
-                    'secret' => $alert->text('@secret'),
-                    'authorizes_edit' => true,
-                    'enable_sso' => true,
-                ]);
-            })
-           ->with(new LtiPlatformCard(), fn (Browser $card) => $card
-               ->assertSeeIn('@enable-sso', 'Yes')
-               ->assertSeeIn('@authorizes-edit', 'Yes')
-            )
+                    $this->assertDatabaseHas(LtiPlatform::class, [
+                        'key' => $alert->text('@key'),
+                        'secret' => $alert->text('@secret'),
+                        'authorizes_edit' => true,
+                        'enable_sso' => true,
+                    ]);
+                })
+                ->with(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@enable-sso', 'Yes')
+                        ->assertSeeIn('@authorizes-edit', 'Yes')
+                )
         );
     }
 
@@ -110,22 +113,25 @@ final class AdminTest extends DuskTestCase
         LtiPlatform::factory()->name('Old name')->create();
         $user = User::factory()->admin()->name('Admin User')->create();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/')
-            ->press('Admin User')
-            ->clickLink('Admin home')
-            ->clickLink('Manage LTI platforms')
-            ->clickLink('Edit')
-            ->type('name', 'New name')
-            ->uncheck('input[name="enable_sso"]')
-            ->press('Update')
-            ->assertSee('LTI platform updated.')
-            ->within(new LtiPlatformCard(), fn (Browser $card) => $card
-                ->assertSeeIn('@title', 'New name')
-                ->assertSeeIn('@enable-sso', 'No')
-            )
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Admin User')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI platforms')
+                ->clickLink('Edit')
+                ->type('name', 'New name')
+                ->uncheck('input[name="enable_sso"]')
+                ->press('Update')
+                ->assertSee('LTI platform updated.')
+                ->within(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', 'New name')
+                        ->assertSeeIn('@enable-sso', 'No')
+                )
         );
     }
 
