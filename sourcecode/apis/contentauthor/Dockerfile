@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine AS base
+FROM php:8.3-fpm-alpine AS base
 
 RUN apk add --no-cache \
         git \
@@ -6,7 +6,7 @@ RUN apk add --no-cache \
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
+RUN install-php-extensions \
         bcmath \
         gettext \
         igbinary \
@@ -15,7 +15,6 @@ RUN IPE_GD_WITHOUTAVIF=1 install-php-extensions \
         pcntl \
         pdo_mysql \
         redis \
-        sockets \
         xmlrpc \
         zip
 
@@ -106,7 +105,7 @@ RUN set -eux; \
     chown -R www-data:www-data .
 
 
-FROM prod as test
+FROM prod AS test
 
 COPY phpunit.xml .
 COPY tests tests

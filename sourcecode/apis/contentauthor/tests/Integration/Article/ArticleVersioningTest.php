@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ArticleVersioningTest extends TestCase
@@ -123,9 +124,7 @@ class ArticleVersioningTest extends TestCase
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
     }
 
-    /**
-     * @dataProvider provider_testVersioning
-     */
+    #[DataProvider('provider_testVersioning')]
     public function testVersioning(bool $useLinearVersioning)
     {
         Config::set('feature.linear-versioning', $useLinearVersioning);
@@ -147,7 +146,9 @@ class ArticleVersioningTest extends TestCase
         $article->version_id = $version->id;
         $article->save();
 
-        $article->collaborators()->save(ArticleCollaborator::factory()->create(['email' => $collaborator->email]));
+        $article->collaborators()->save(
+            ArticleCollaborator::factory()->make(['email' => $collaborator->email])
+        );
 
         $article->fresh();
 
@@ -252,7 +253,7 @@ class ArticleVersioningTest extends TestCase
         $this->assertDatabaseCount('content_versions', 4);
     }
 
-    public function provider_testVersioning(): Generator
+    public static function provider_testVersioning(): Generator
     {
         yield 'linear_versioning' => [true];
         yield 'non-linear_versioning' => [false];

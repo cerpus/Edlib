@@ -40,7 +40,7 @@ class Link extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<ArticleCollaborator>
+     * @return HasMany<ArticleCollaborator, $this>
      */
     public function collaborators(): HasMany
     {

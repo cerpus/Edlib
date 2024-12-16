@@ -19,8 +19,6 @@ class H5PImport
     }
 
     /**
-     * @param bool $isDraft
-     * @param bool $isPrivate
      * @return H5PImportDataObject|bool
      * @throws \Exception
      */

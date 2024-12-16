@@ -77,7 +77,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<ArticleCollaborator>
+     * @return HasMany<ArticleCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -85,7 +85,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<File>
+     * @return HasMany<File, $this>
      */
     public function files(): HasMany
     {
@@ -103,7 +103,7 @@ class Article extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<Article, self>
+     * @return BelongsTo<Article, $this>
      */
     public function parent(): BelongsTo
     {

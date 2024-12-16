@@ -14,6 +14,7 @@ use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Session;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PViewConfigTest extends TestCase
@@ -21,7 +22,7 @@ class H5PViewConfigTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_getConfig(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
@@ -30,33 +31,33 @@ class H5PViewConfigTest extends TestCase
         $data = $config->getConfig();
 
         // Check that the common attributes are present
-        $this->assertObjectHasAttribute('baseUrl', $data);
-        $this->assertObjectHasAttribute('url', $data);
-        $this->assertObjectHasAttribute('postUserStatistics', $data);
-        $this->assertObjectHasAttribute('ajaxPath', $data);
+        $this->assertObjectHasProperty('baseUrl', $data);
+        $this->assertObjectHasProperty('url', $data);
+        $this->assertObjectHasProperty('postUserStatistics', $data);
+        $this->assertObjectHasProperty('ajaxPath', $data);
         if (config('h5p.saveFrequency') === false) {
-            $this->assertObjectNotHasAttribute('user', $data);
+            $this->assertObjectNotHasProperty('user', $data);
         } else {
-            $this->assertObjectHasAttribute('user', $data);
+            $this->assertObjectHasProperty('user', $data);
         }
-        $this->assertObjectHasAttribute('canGiveScore', $data);
-        $this->assertObjectHasAttribute('hubIsEnabled', $data);
-        $this->assertObjectHasAttribute('ajax', $data);
-        $this->assertObjectHasAttribute('tokens', $data);
-        $this->assertObjectHasAttribute('saveFreq', $data);
-        $this->assertObjectHasAttribute('siteUrl', $data);
-        $this->assertObjectHasAttribute('l10n', $data);
-        $this->assertObjectHasAttribute('baseUrl', $data);
-        $this->assertObjectHasAttribute('loadedJs', $data);
-        $this->assertObjectHasAttribute('loadedCss', $data);
-        $this->assertObjectHasAttribute('core', $data);
-        $this->assertObjectHasAttribute('contents', $data);
-        $this->assertObjectHasAttribute('crossorigin', $data);
-        $this->assertObjectHasAttribute('crossoriginRegex', $data);
-        $this->assertObjectHasAttribute('locale', $data);
-        $this->assertObjectHasAttribute('localeConverted', $data);
-        $this->assertObjectHasAttribute('pluginCacheBuster', $data);
-        $this->assertObjectHasAttribute('libraryUrl', $data);
+        $this->assertObjectHasProperty('canGiveScore', $data);
+        $this->assertObjectHasProperty('hubIsEnabled', $data);
+        $this->assertObjectHasProperty('ajax', $data);
+        $this->assertObjectHasProperty('tokens', $data);
+        $this->assertObjectHasProperty('saveFreq', $data);
+        $this->assertObjectHasProperty('siteUrl', $data);
+        $this->assertObjectHasProperty('l10n', $data);
+        $this->assertObjectHasProperty('baseUrl', $data);
+        $this->assertObjectHasProperty('loadedJs', $data);
+        $this->assertObjectHasProperty('loadedCss', $data);
+        $this->assertObjectHasProperty('core', $data);
+        $this->assertObjectHasProperty('contents', $data);
+        $this->assertObjectHasProperty('crossorigin', $data);
+        $this->assertObjectHasProperty('crossoriginRegex', $data);
+        $this->assertObjectHasProperty('locale', $data);
+        $this->assertObjectHasProperty('localeConverted', $data);
+        $this->assertObjectHasProperty('pluginCacheBuster', $data);
+        $this->assertObjectHasProperty('libraryUrl', $data);
 
         // Attributes altered or set
         $this->assertSame('', $data->documentUrl);
@@ -65,13 +66,13 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame('/api/progress?action=h5p_setFinished', $data->ajax['setFinished']);
     }
 
-    public function provider_adapterMode(): Generator
+    public static function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];
     }
 
-    /** @dataProvider provider_setPreview */
+    #[DataProvider('provider_setPreview')]
     public function test_setPreview(bool $preview, string $contentUserData, string $setFinished): void
     {
         $data = app(H5PViewConfig::class)
@@ -83,7 +84,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame($setFinished, $data->ajax['setFinished']);
     }
 
-    public function provider_setPreview(): Generator
+    public static function provider_setPreview(): Generator
     {
         yield [
             false,
@@ -97,7 +98,7 @@ class H5PViewConfigTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_loadContent(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
@@ -134,7 +135,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertDatabaseHas('h5p_contents_libraries', ['content_id' => 1, 'library_id' => $dependency->id, 'dependency_type' => 'preloaded']);
 
         $this->assertTrue($data->postUserStatistics);
-        $this->assertObjectHasAttribute('cid-' . $content->id, $data->contents);
+        $this->assertObjectHasProperty('cid-' . $content->id, $data->contents);
         $this->assertSame(
             "/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context=$context",
             $data->ajax['contentUserData']
@@ -152,9 +153,9 @@ class H5PViewConfigTest extends TestCase
         $this->assertSame(config('h5p.saveFrequency'), $data->saveFreq);
 
         if (config('h5p.saveFrequency') === false) {
-            $this->assertObjectNotHasAttribute('user', $data);
+            $this->assertObjectNotHasProperty('user', $data);
         } else {
-            $this->assertObjectHasAttribute('user', $data);
+            $this->assertObjectHasProperty('user', $data);
         }
 
         $this->assertSame('Emily Quackfaster', $contentData->metadata['authors'][0]->name);
