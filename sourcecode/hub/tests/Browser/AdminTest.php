@@ -163,7 +163,8 @@ final class AdminTest extends DuskTestCase
             ->proxyLaunch()
             ->create();
 
-        $this->browse(fn (Browser $browser) =>
+        $this->browse(
+            fn (Browser $browser) =>
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
@@ -171,7 +172,9 @@ final class AdminTest extends DuskTestCase
                 ->press('Flagg Stang')
                 ->clickLink('Admin home')
                 ->clickLink('Manage LTI tools')
-                ->with(new LtiToolCard(), fn (Browser $card) =>
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
                     $card
                         ->assertSeeIn('@proxy-launch', 'Yes')
                         ->assertSeeIn('@send-email', 'Yes')
@@ -189,7 +192,9 @@ final class AdminTest extends DuskTestCase
                 ->press('Flagg Stang')
                 ->clickLink('Admin home')
                 ->clickLink('Manage LTI tools')
-                ->with(new LtiToolCard(), fn (Browser $card) =>
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
                     $card
                         ->assertSeeIn('@proxy-launch', 'No')
                         ->assertSeeIn('@send-email', 'No')
