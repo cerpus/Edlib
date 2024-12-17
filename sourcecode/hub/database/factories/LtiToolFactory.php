@@ -38,7 +38,17 @@ final class LtiToolFactory extends Factory
         return $this->state(['creator_launch_url' => $launchUrl]);
     }
 
-    public function proxyLaunch(bool $proxyLaunch): self
+    public function sendName(bool $sendName = true): self
+    {
+        return $this->state(['send_name' => $sendName]);
+    }
+
+    public function sendEmail(bool $sendEmail = true): self
+    {
+        return $this->state(['send_email' => $sendEmail]);
+    }
+
+    public function proxyLaunch(bool $proxyLaunch = true): self
     {
         return $this->state(['proxy_launch' => $proxyLaunch]);
     }

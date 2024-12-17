@@ -21,6 +21,10 @@ final class UpdateLtiToolRequest extends FormRequest
         if (!$parameters->get('slug')) {
             $parameters->remove('slug');
         }
+
+        $parameters->set('send_name', $parameters->getBoolean('send_name', false));
+        $parameters->set('send_email', $parameters->getBoolean('send_email', false));
+        $parameters->set('proxy_launch', $parameters->getBoolean('proxy_launch', false));
     }
 
     /**
