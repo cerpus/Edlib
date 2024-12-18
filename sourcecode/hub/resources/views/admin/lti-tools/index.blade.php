@@ -5,7 +5,7 @@
 
     <div class="d-flex flex-column gap-3">
         @foreach ($tools as $tool)
-            <article class="card">
+            <article class="card lti-tool-card">
                 <div class="card-header">
                     <strong class="card-title">{{ $tool->name }}</strong>
                 </div>
@@ -41,15 +41,15 @@
                             </tr>
                             <tr>
                                 <th scope="row">{{ trans('messages.send-full-name-to-lti-tool', ['site' => config('app.name')]) }}</th>
-                                <td>{{ $tool->send_name ? trans('messages.yes') : trans('messages.no') }}</td>
+                                <td class="lti-tool-card-send-name">{{ $tool->send_name ? trans('messages.yes') : trans('messages.no') }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}</th>
-                                <td>{{ $tool->send_email ? trans('messages.yes') : trans('messages.no') }}</td>
+                                <td class="lti-tool-card-send-email">{{ $tool->send_email ? trans('messages.yes') : trans('messages.no') }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{ trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')]) }}</th>
-                                <td>{{ $tool->proxy_launch ? trans('messages.yes') : trans('messages.no') }}</td>
+                                <td class="lti-tool-card-proxy-launch">{{ $tool->proxy_launch ? trans('messages.yes') : trans('messages.no') }}</td>
                             </tr>
                         </tbody>
                     </table>

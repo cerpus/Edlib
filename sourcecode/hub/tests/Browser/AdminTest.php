@@ -10,6 +10,7 @@ use App\Models\User;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Components\LtiPlatformAddedAlert;
 use Tests\Browser\Components\LtiPlatformCard;
+use Tests\Browser\Components\LtiToolCard;
 use Tests\DuskTestCase;
 
 final class AdminTest extends DuskTestCase
@@ -193,7 +194,7 @@ final class AdminTest extends DuskTestCase
         );
     }
 
-    public function testCanEditUrlSlug(): void
+    public function testCanEditUrlSlugForTool(): void
     {
         LtiTool::factory()->withName('Hammer')->slug('the-old-slug')->create();
         $user = User::factory()->name('Ben Hammerhead')->admin()->create();
@@ -213,6 +214,56 @@ final class AdminTest extends DuskTestCase
                 ->assertSee('LTI tool updated.')
                 ->visit('/content/create/the-new-slug')
                 ->assertPresent('.lti-launch')
+        );
+    }
+
+    public function testCanEditFlagsForTool(): void
+    {
+        $user = User::factory()->name('Flagg Stang')->admin()->create();
+        LtiTool::factory()
+            ->withName('The Tool')
+            ->sendName()
+            ->sendEmail()
+            ->proxyLaunch()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) =>
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Flagg Stang')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
+                    $card
+                        ->assertSeeIn('@proxy-launch', 'Yes')
+                        ->assertSeeIn('@send-email', 'Yes')
+                        ->assertSeeIn('@send-name', 'Yes')
+                )
+                ->clickLink('Edit')
+                ->assertChecked('proxy_launch')
+                ->uncheck('proxy_launch')
+                ->assertChecked('send_name')
+                ->uncheck('send_name')
+                ->assertChecked('send_email')
+                ->uncheck('send_email')
+                ->press('Update')
+                ->assertSee('LTI tool updated.')
+                ->press('Flagg Stang')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
+                    $card
+                        ->assertSeeIn('@proxy-launch', 'No')
+                        ->assertSeeIn('@send-email', 'No')
+                        ->assertSeeIn('@send-name', 'No')
+                )
         );
     }
 }
