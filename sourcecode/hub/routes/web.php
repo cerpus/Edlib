@@ -332,6 +332,11 @@ Route::prefix('/{provider}')
             ->name('callback');
     });
 
+Route::match(['GET', 'POST'], '/lti/playground')
+    ->middleware('auth')
+    ->uses([LtiController::class, 'playground'])
+    ->name('lti.playground');
+
 Route::post('/lti/samples/deep-link')
     ->uses([DeepLinkController::class, 'launch'])
     ->middleware([
