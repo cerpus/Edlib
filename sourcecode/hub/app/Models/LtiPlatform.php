@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ContentRole;
+use App\Events\LtiPlatformDeleting;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Database\Factories\LtiPlatformFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Random\Randomizer;
+
+use function assert;
 
 class LtiPlatform extends Model
 {
@@ -40,6 +45,11 @@ class LtiPlatform extends Model
         'authorizes_edit' => 'boolean',
     ];
 
+    /** @var array<string, class-string> */
+    protected $dispatchesEvents = [
+        'deleting' => LtiPlatformDeleting::class,
+    ];
+
     protected static function booted(): void
     {
         static::creating(function (self $ltiPlatform): void {
@@ -52,6 +62,32 @@ class LtiPlatform extends Model
                 app()->make(Randomizer::class)->getBytes(24)
             );
         });
+    }
+
+    /**
+     * @return BelongsToMany<Context, $this>
+     */
+    public function contexts(): BelongsToMany
+    {
+        return $this->belongsToMany(Context::class, 'lti_platform_context')
+            ->withPivot('role')
+            ->using(LtiPlatformContext::class);
+    }
+
+    public function hasContextWithMinimumRole(Context $context, ContentRole $role): bool
+    {
+        foreach ($this->contexts as $platformContext) {
+            if ($platformContext->is($context)) {
+                // @phpstan-ignore property.notFound
+                $ltiPlatformRole = $platformContext->pivot->role;
+                assert($ltiPlatformRole instanceof ContentRole);
+
+                // Context cannot be added more than once, so we return here.
+                return $ltiPlatformRole->grants($role);
+            }
+        }
+
+        return false;
     }
 
     public function getOauth1Credentials(): Credentials

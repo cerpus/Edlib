@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\ContentRole;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiPlatform;
+use App\Models\User;
 use Carbon\Carbon;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\Signer;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\TestDox;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 final class ContentTest extends TestCase
@@ -161,5 +165,50 @@ final class ContentTest extends TestCase
         $this->expectException(DomainException::class);
 
         (new Content())->getDetailsUrl();
+    }
+
+    #[TestDox('User with role $roleOfUser in content is granted $roleToCheck')]
+    #[TestWith([ContentRole::Owner, ContentRole::Owner], 'owner, owner')]
+    #[TestWith([ContentRole::Owner, ContentRole::Editor], 'owner, editor')]
+    #[TestWith([ContentRole::Owner, ContentRole::Reader], 'owner, reader')]
+    #[TestWith([ContentRole::Editor, ContentRole::Editor], 'editor, editor')]
+    #[TestWith([ContentRole::Editor, ContentRole::Reader], 'editor, reader')]
+    #[TestWith([ContentRole::Reader, ContentRole::Reader], 'reader, reader')]
+    public function testCheckHasUserWithMinimumRole(ContentRole $roleOfUser, ContentRole $roleToCheck): void
+    {
+        $user = User::factory()
+            ->create();
+        $content = Content::factory()
+            ->withUser($user, $roleOfUser)
+            ->create();
+
+        $this->assertTrue($content->hasUserWithMinimumRole($user, $roleToCheck));
+    }
+
+    #[TestDox('User with role $roleOfUser in content is denied $roleToCheck')]
+    #[TestWith([ContentRole::Editor, ContentRole::Owner], 'editor, owner')]
+    #[TestWith([ContentRole::Reader, ContentRole::Owner], 'reader, owner')]
+    #[TestWith([ContentRole::Reader, ContentRole::Editor], 'reader, editor')]
+    public function testUserWithRoleInContentDoesNotHaveMinimumRole(ContentRole $roleOfUser, ContentRole $roleToCheck): void
+    {
+        $user = User::factory()
+            ->create();
+        $content = Content::factory()
+            ->withUser($user, $roleOfUser)
+            ->create();
+
+        $this->assertFalse($content->hasUserWithMinimumRole($user, $roleToCheck));
+    }
+
+    #[TestWith([ContentRole::Owner], 'owner')]
+    #[TestWith([ContentRole::Editor], 'editor')]
+    #[TestWith([ContentRole::Reader], 'reader')]
+    public function testRolelessContentHasNeitherUserNorMinimumRole(ContentRole $roleToCheck): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        $this->assertFalse($content->hasUser($user));
+        $this->assertFalse($content->hasUserWithMinimumRole($user, $roleToCheck));
     }
 }

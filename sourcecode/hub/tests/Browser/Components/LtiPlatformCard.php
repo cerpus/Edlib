@@ -28,6 +28,7 @@ class LtiPlatformCard extends Component
             '@title' => '.lti-platform-card-title',
             '@authorizes-edit' => '.lti-platform-card-authorizes-edit',
             '@enable-sso' => '.lti-platform-card-enable-sso',
+            '@context-count' => '.lti-platform-card-context-count',
         ];
     }
 }

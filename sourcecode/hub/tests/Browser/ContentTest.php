@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\LtiToolEditMode;
 use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -786,9 +787,9 @@ final class ContentTest extends DuskTestCase
     public function testViewsContentRoles(): void
     {
         $content = Content::factory()
-            ->withUser(User::factory()->name('Owner McOwnerson'), ContentUserRole::Owner)
-            ->withUser(User::factory()->name('Editor McEditorson'), ContentUserRole::Editor)
-            ->withUser(User::factory()->name('Reader McReaderson'), ContentUserRole::Reader)
+            ->withUser(User::factory()->name('Owner McOwnerson'), ContentRole::Owner)
+            ->withUser(User::factory()->name('Editor McEditorson'), ContentRole::Editor)
+            ->withUser(User::factory()->name('Reader McReaderson'), ContentRole::Reader)
             ->withPublishedVersion()
             ->create();
 
@@ -1014,6 +1015,191 @@ final class ContentTest extends DuskTestCase
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
                 ->assertSeeLink('The original content')
+        );
+    }
+
+    public function testOwnerOfContentCanAssignContextToContent(): void
+    {
+        $user = User::factory()->create();
+
+        Context::factory()->name('filler')->create();
+        $context = Context::factory()->name('desired')->create();
+        Context::factory()->name('more_filler')->create();
+
+        Content::factory()
+            ->withUser($user)
+            ->withVersion(ContentVersion::factory()->title('my beautiful content'))
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/mine')
+                ->clickLink('my beautiful content')
+                ->clickLink('Roles')
+            // Dusk doesn't support selecting the actual visual text
+                ->select('[name="context"]', $context->id)
+                ->press('Add')
+                ->assertSee('The context was added to the content.')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'desired')
+        );
+    }
+
+    public function testContentCreatedInLtiContextInheritsPlatformRoles(): void
+    {
+        $platform = LtiPlatform::factory()
+            ->withContext(Context::factory()->name('ndla_people'), ContentRole::Editor)
+            ->create();
+        LtiTool::factory()
+            ->withName('My tool')
+            ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()
+            ->withEmail('foo@example.com')
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type('parameters', 'lis_person_contact_email_primary=foo@example.com')
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $frame) => $frame
+                        ->clickLink('Create')
+                        ->clickLink('My tool')
+                        ->withinFrame(
+                            'iframe',
+                            fn (Browser $tool) => $tool
+                                ->type('payload', <<<EOJSON
+                    {
+                        "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                        "@graph": [
+                            {
+                                "@type": "LtiLinkItem",
+                                "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                                "title": "My new content"
+                            }
+                        ]
+                    }
+                    EOJSON)
+                                ->press('Send')
+                        )
+                )
+                ->visit('/content/mine')
+                ->clickLink('My new content')
+                ->clickLink('Roles')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'ndla_people')
+        );
+    }
+
+    public function testCanEditContentWhenGivenEditorRoleViaContext(): void
+    {
+        $context = Context::factory()
+            ->name('my_context')
+            ->create();
+
+        Content::factory()
+            ->shared()
+            ->withContext($context)
+            ->withVersion(
+                ContentVersion::factory()
+                    ->title('The content with context')
+                    ->published()
+            )
+            ->create();
+
+        $platform = LtiPlatform::factory()
+            ->withContext($context, ContentRole::Editor)
+            ->create();
+
+        $user = User::factory()
+            ->withEmail('person@example.com')
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    '&lis_person_contact_email_primary=person@example.com'
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $edlib) => $edlib
+                        ->with(
+                            new ContentCard(),
+                            fn (Browser $card) => $card
+                                ->press('@action-menu-toggle')
+                                ->assertPresent('@edit-link')
+                        )
+                )
+        );
+    }
+
+    public function testCannotEditContentInContextsOneIsNotPartOf(): void
+    {
+        Content::factory()
+            ->shared()
+            ->withContext(
+                Context::factory()->name('someone_elses_context')
+            )
+            ->withVersion(
+                ContentVersion::factory()
+                    ->title('The content to not edit')
+                    ->published()
+            )
+            ->create();
+
+        $platform = LtiPlatform::factory()
+            ->withContext(Context::factory()->name('my_context'), ContentRole::Editor)
+            ->create();
+
+        $user = User::factory()
+            ->withEmail('person@example.com')
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    '&lis_person_contact_email_primary=person@example.com'
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $edlib) => $edlib
+                        ->with(
+                            new ContentCard(),
+                            fn (Browser $card) => $card
+                                ->press('@action-menu-toggle')
+                                ->assertNotPresent('@edit-link')
+                        )
+                )
         );
     }
 }

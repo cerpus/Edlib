@@ -1,5 +1,5 @@
 <x-layout>
-    <x-slot:title>{{ trans('messages.edit-lti-platforms') }}</x-slot:title>
+    <x-slot:title>{{ trans('messages.edit-lti-platform') }}</x-slot:title>
 
     <x-admin.lti-platforms.form
         action="{{ route('admin.lti-platforms.update', [$platform]) }}"

@@ -4,6 +4,13 @@
     'form-check' => in_array($type ?? 'text', ['checkbox', 'radio']),
 ])>
     @switch ($type ?? 'text')
+        @case('select')
+            <x-form.label for="{{ $name }}" :required="$required ?? false">
+                {{ $label ?? $name }}
+            </x-form.label>
+            <x-form.dropdown :attributes="$attributes->except(['class', 'label', 'text'])" />
+            @break
+
         @case('radio')
         @case('checkbox')
             <label for="{{ $name }}" class="form-check-label">{{ $label ?? $name }}</label>
