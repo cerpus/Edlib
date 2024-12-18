@@ -8,11 +8,10 @@ use App\H5PLibrary;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use Tests\TestCase;
 
-/**
- * @covers \App\H5PContent::requestShouldBecomeNewVersion
- */
+#[CoversMethod(H5PContent::class, 'requestShouldBecomeNewVersion')]
 class H5PContentRequestShouldBecomeNewVersionTest extends TestCase
 {
     use RefreshDatabase;

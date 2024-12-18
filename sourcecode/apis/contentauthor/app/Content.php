@@ -20,7 +20,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use function htmlspecialchars_decode;
-
 use function property_exists;
 
 use const ENT_HTML5;
@@ -119,7 +118,7 @@ abstract class Content extends Model
     abstract public function getContentType(bool $withSubType = false);
 
     /**
-     * @return HasOne<NdlaIdMapper>
+     * @return HasOne<NdlaIdMapper, $this>
      */
     public function ndlaMapper(): HasOne
     {
@@ -132,7 +131,7 @@ abstract class Content extends Model
     }
 
     /**
-     * @return HasMany<ContentLock>
+     * @return HasMany<ContentLock, $this>
      */
     public function locks(): HasMany
     {

@@ -19,6 +19,11 @@ final readonly class LtiToolPolicy
         return true;
     }
 
+    public function edit(User $user, LtiTool $tool): bool
+    {
+        return $user->admin;
+    }
+
     public function addExtra(User $user, LtiTool $tool): bool
     {
         return $user->admin;

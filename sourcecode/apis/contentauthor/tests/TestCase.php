@@ -8,8 +8,6 @@ use Illuminate\Support\HtmlString;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
-
     private static Mix $fakeMix;
 
     protected function setUp(): void

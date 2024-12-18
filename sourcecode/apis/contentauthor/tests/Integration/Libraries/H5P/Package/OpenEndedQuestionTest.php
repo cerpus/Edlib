@@ -4,15 +4,14 @@ namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\OpenEndedQuestion;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OpenEndedQuestionTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateStructure()
     {
         $openEndedQuesiton = new OpenEndedQuestion('');
@@ -38,9 +37,7 @@ class OpenEndedQuestionTest extends TestCase
         $this->assertTrue($openEndedQuesiton->validate());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getElements()
     {
         $params['params'] = [

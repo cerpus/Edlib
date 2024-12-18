@@ -12,6 +12,7 @@ use Generator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ContentVersionTest extends TestCase
@@ -141,7 +142,7 @@ class ContentVersionTest extends TestCase
         ContentVersion::latestLeaf('123');
     }
 
-    /** @dataProvider providerLinearVersioning */
+    #[DataProvider('providerLinearVersioning')]
     public function testLinearVersioning(bool $parentLinear, bool $newLinear): void
     {
         $v1 = ContentVersion::factory()->create([
@@ -170,7 +171,7 @@ class ContentVersionTest extends TestCase
         $this->assertSame($v2->id, $v3->parent_id);
     }
 
-    public function providerLinearVersioning(): Generator
+    public static function providerLinearVersioning(): Generator
     {
         yield 'linear' => [true, true];
         yield 'nonLinearParent' => [false, true];
@@ -352,7 +353,7 @@ class ContentVersionTest extends TestCase
         $this->assertSame($child_TRANSLATION_UPDATE->id, $child_TRANSLATION->latestLeafVersion()->id);
     }
 
-    /** @dataProvider provider_isLeaf */
+    #[DataProvider('provider_isLeaf')]
     public function test_isLeaf(string $purpose, bool $parentLeaf, bool $childLeaf): void
     {
         $first = ContentVersion::factory()->create();
@@ -365,7 +366,7 @@ class ContentVersionTest extends TestCase
         $this->assertSame($childLeaf, $second->isLeaf());
     }
 
-    public function provider_isLeaf(): Generator
+    public static function provider_isLeaf(): Generator
     {
         // Parent is no longer a leaf node
         yield 'update' => [ContentVersion::PURPOSE_UPDATE, false, true];

@@ -69,7 +69,7 @@ class H5PContent extends Content implements VersionableObject
     ];
 
     /**
-     * @return HasMany<H5PCollaborator>
+     * @return HasMany<H5PCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -77,7 +77,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {
@@ -85,7 +85,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsUserData>
+     * @return HasMany<H5PContentsUserData, $this>
      */
     public function contentUserData(): HasMany
     {
@@ -93,7 +93,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentLibrary>
+     * @return HasMany<H5PContentLibrary, $this>
      */
     public function contentLibraries(): HasMany
     {
@@ -101,7 +101,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasOne<H5PContentsMetadata>
+     * @return HasOne<H5PContentsMetadata, $this>
      */
     public function metadata(): HasOne
     {
@@ -200,7 +200,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsVideo>
+     * @return HasMany<H5PContentsVideo, $this>
      */
     public function contentVideos(): HasMany
     {

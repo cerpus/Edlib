@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Doctrine\DBAL\Driver\PDOConnection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +19,6 @@ class HealthController extends Controller
             return response('cache test failed', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        /**
-         * @var PDOConnection $connection
-         */
         $connection = DB::connection()->getPdo();
 
         $query = $connection->query("SELECT '1'");

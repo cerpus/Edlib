@@ -18,7 +18,7 @@ class AddSupportForThreeLetterLanguageCodes extends Migration
         });
 
         Schema::table('ndla_id_mappers', function (Blueprint $table) {
-            $table->string('language_code', 3)->change();
+            $table->string('language_code', 3)->nullable()->default(null)->change();
         });
     }
 
@@ -34,7 +34,7 @@ class AddSupportForThreeLetterLanguageCodes extends Migration
         });
 
         Schema::table('ndla_id_mappers', function (Blueprint $table) {
-            $table->string('language_code', 2)->change();
+            $table->string('language_code', 2)->nullable()->default(null)->change();
         });
     }
 }

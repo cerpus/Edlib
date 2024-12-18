@@ -1,33 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-         bootstrap="tests/bootstrap.php"
-         backupGlobals="false"
-         backupStaticAttributes="false"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
          colors="true"
-         executionOrder="depends,defects"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         forceCoversAnnotation="false"
-         beStrictAboutCoversAnnotation="false"
          beStrictAboutOutputDuringTests="true"
-         beStrictAboutTodoAnnotatedTests="true"
-         verbose="true">
-    <coverage processUncoveredFiles="true">
+         displayDetailsOnPhpunitDeprecations="true"
+         cacheDirectory=".phpunit.cache">
+    <source>
         <include>
-            <directory suffix=".php">app</directory>
+            <directory>app</directory>
         </include>
-    </coverage>
+    </source>
+    <coverage/>
     <testsuites>
-        <testsuite name="Application Test Suite">
-            <directory suffix="Test.php">./tests/</directory>
-        </testsuite>
         <testsuite name="Integration tests">
-            <directory suffix="Test.php">./tests/Integration</directory>
+            <directory>./tests/Integration</directory>
         </testsuite>
         <testsuite name="Unit tests">
-            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory>./tests/Unit</directory>
         </testsuite>
     </testsuites>
     <php>

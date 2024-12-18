@@ -179,4 +179,5 @@ return [
     'lti-platform-authorizes-edit' => 'Plattformen styrer redigeringstilgang',
     'lti-platform-authorizes-edit-help' => 'Overfører ansvaret for tilgangskontroll av redigering fra :site til plattformen, m.a.o. :site vil godta alle gyldige redigeringsforespørsler fra plattformen',
     'dangerous-lti-platform-settings' => 'Disse innstillingene er farlige og bør kun aktiveres for klarerte plattformer med epost-verifikasjon.',
+    'select-a-content-type' => 'Velg en innholdstype',
 ];

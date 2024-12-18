@@ -97,15 +97,27 @@
                     </table>
                 </div>
 
-                @can('remove', $tool)
-                    <div class="card-footer">
-                        <x-form :action="route('admin.lti-tools.remove', [$tool])" method="DELETE">
-                            <x-form.button class="btn-sm btn-danger">
-                                {{ trans('messages.remove') }}
-                            </x-form.button>
-                        </x-form>
+                @canany(['edit', 'remove'], $tool)
+                    <div class="card-footer d-flex gap-2 justify-content-end">
+                        @can('edit', $tool)
+                            <a
+                                href="{{ route('admin.lti-tools.edit', [$tool]) }}"
+                                class="btn btn-sm btn-outline-success d-inline-flex gap-2"
+                            >
+                                <x-icon name="pencil" />
+                                <span>{{ trans('messages.edit') }}</span>
+                            </a>
+                        @endcan
+
+                        @can('remove', $tool)
+                            <x-form :action="route('admin.lti-tools.remove', [$tool])" method="DELETE">
+                                <x-form.button class="btn-sm btn-danger">
+                                    {{ trans('messages.remove') }}
+                                </x-form.button>
+                            </x-form>
+                        @endcan
                     </div>
-                @endcan
+                @endcanany
             </article>
         @endforeach
     </div>

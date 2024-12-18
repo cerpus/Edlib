@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -113,7 +114,7 @@ class AdminControllerTest extends TestCase
         ]);
     }
 
-    /** @dataProvider provider_index */
+    #[DataProvider('provider_index')]
     public function test_index(int $lockCount): void
     {
         ContentLock::factory($lockCount)->create();
@@ -124,7 +125,7 @@ class AdminControllerTest extends TestCase
         $this->assertEquals($lockCount, $data['editLockCount']);
     }
 
-    public function provider_index(): Generator
+    public static function provider_index(): Generator
     {
         yield [0];
         yield [3];

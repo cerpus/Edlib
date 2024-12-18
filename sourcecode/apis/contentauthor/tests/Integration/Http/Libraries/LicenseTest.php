@@ -4,25 +4,26 @@ namespace Tests\Integration\Http\Libraries;
 
 use App\Http\Libraries\License;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class LicenseTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider licenseProvider */
+    #[DataProvider('licenseProvider')]
     public function testIsLicenseSupported($data): void
     {
         $this->assertSame($data['isSupported'], License::isLicenseSupported($data['license']));
     }
 
-    /** @dataProvider licenseProvider */
+    #[DataProvider('licenseProvider')]
     public function testIsContentCopyable($data): void
     {
         $this->assertSame($data['isCopyable'], License::isContentCopyable($data['license']));
     }
 
-    public function licenseProvider(): array
+    public static function licenseProvider(): array
     {
         return [
             'PRIVATE' => [[
