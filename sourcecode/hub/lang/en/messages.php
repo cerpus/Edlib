@@ -42,6 +42,7 @@ return [
     'name' => 'Name',
     'name-form-help' => 'Your name will be displayed to those with whom you share content.',
     'rebuild-content-index' => 'Rebuild content index',
+    'alert-lti-platform-updated' => 'LTI platform updated.',
     'alert-lti-tool-added' => 'LTI tool added.',
     'alert-lti-tool-updated' => 'LTI tool updated.',
     'alert-lti-tool-removed' => 'The LTI tool ":name" was removed.',

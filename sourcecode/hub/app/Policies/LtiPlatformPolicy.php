@@ -9,6 +9,11 @@ use App\Models\User;
 
 final readonly class LtiPlatformPolicy
 {
+    public function edit(User $user, LtiPlatform $platform): bool
+    {
+        return $user->admin;
+    }
+
     public function delete(User $user, LtiPlatform $platform): bool
     {
         return $user->admin;
