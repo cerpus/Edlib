@@ -19,7 +19,10 @@ class LtiPlatformCard extends Component
         $browser->assertVisible($this->selector());
     }
 
-    public function elements()
+    /**
+     * @return array<mixed>
+     */
+    public function elements(): array
     {
         return [
             '@title' => '.lti-platform-card-title',
