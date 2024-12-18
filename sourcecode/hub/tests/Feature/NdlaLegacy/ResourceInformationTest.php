@@ -56,6 +56,7 @@ final class ResourceInformationTest extends TestCase
                 'proxied' => 'json data',
             ]);
 
+        $this->assertIsArray($history);
         $this->assertCount(1, $history);
         $this->assertSame('h5p/12345/info', $history[0]['request']->getUri()->__toString());
     }

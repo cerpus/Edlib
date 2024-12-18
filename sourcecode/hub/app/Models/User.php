@@ -63,9 +63,6 @@ class User extends Model implements AuthenticatableContract
         'saved' => UserSaved::class,
     ];
 
-    /**
-     * @var array<string, mixed>
-     */
     protected $attributes = [
         'locale' => 'en',
         'admin' => false,

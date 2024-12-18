@@ -27,7 +27,6 @@ class LtiTool extends Model
 
     protected $perPage = 12;
 
-    /** @var mixed[] */
     protected $attributes = [
         'lti_version' => LtiVersion::Lti1_1,
         'send_name' => false,

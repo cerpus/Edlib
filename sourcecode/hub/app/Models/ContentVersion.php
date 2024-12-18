@@ -41,9 +41,6 @@ class ContentVersion extends Model
 
     public const UPDATED_AT = null;
 
-    /**
-     * @var array<string, mixed>
-     */
     protected $attributes = [
         'language_iso_639_3' => 'und',
         'published' => true,

@@ -21,9 +21,6 @@ class LtiToolExtra extends Model
     public const CREATED_AT = null;
     public const UPDATED_AT = null;
 
-    /**
-     * @var array<string, mixed>
-     */
     protected $attributes = [
         'admin' => false,
     ];

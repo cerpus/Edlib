@@ -15,3 +15,5 @@ parameters:
 
     # https://github.com/nunomaduro/larastan/blob/master/docs/custom-config-parameters.md#checkmodelproperties
     checkModelProperties: true
+
+    treatPhpDocTypesAsCertain: false

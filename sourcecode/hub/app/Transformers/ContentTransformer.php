@@ -49,7 +49,7 @@ final class ContentTransformer extends TransformerAbstract
     public function includeRoles(Content $content): Collection
     {
         return $this->collection($content->users, function (User $user) {
-            assert(isset($user->pivot?->role));
+            assert(isset($user->pivot->role));
 
             return [
                 'user_id' => $user->id,

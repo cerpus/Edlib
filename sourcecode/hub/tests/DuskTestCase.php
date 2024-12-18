@@ -14,7 +14,6 @@ use Laravel\Dusk\ElementResolver;
 use Laravel\Dusk\TestCase as BaseTestCase;
 
 use function assert;
-use function env;
 use function is_string;
 
 abstract class DuskTestCase extends BaseTestCase
@@ -27,7 +26,7 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver(): RemoteWebDriver
     {
-        $url = env('DUSK_DRIVER_URL') ?? 'http://host.docker.internal:9515';
+        $url = $_ENV['DUSK_DRIVER_URL'] ?? 'http://host.docker.internal:9515';
         assert(is_string($url));
 
         $options = new ChromeOptions();
