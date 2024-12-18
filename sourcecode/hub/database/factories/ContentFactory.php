@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
@@ -60,7 +60,7 @@ final class ContentFactory extends Factory
 
     public function withUser(
         User|UserFactory $user,
-        ContentUserRole|null $role = ContentUserRole::Owner,
+        ContentRole|null $role = ContentRole::Owner,
     ): self {
         return $this->hasAttached($user, ['role' => $role], 'users');
     }

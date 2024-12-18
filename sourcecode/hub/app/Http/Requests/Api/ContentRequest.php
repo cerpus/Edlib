@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Api;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,7 +39,7 @@ final class ContentRequest extends FormRequest
 
             'roles.*.role' => [
                 Rule::prohibitedIf(fn () => $gate->denies('admin')),
-                Rule::enum(ContentUserRole::class),
+                Rule::enum(ContentRole::class),
                 'required_with:roles.*.user',
             ],
 
@@ -48,7 +48,7 @@ final class ContentRequest extends FormRequest
     }
 
     /**
-     * @return array<int, array{user: User, role: ContentUserRole}>
+     * @return array<int, array{user: User, role: ContentRole}>
      */
     public function getRoles(): array
     {
@@ -56,7 +56,7 @@ final class ContentRequest extends FormRequest
 
         return array_map(fn (array $role) => [
             'user' => User::where('id', $role['user'])->firstOrFail(),
-            'role' => ContentUserRole::from($role['role']),
+            'role' => ContentRole::from($role['role']),
         ], $roles);
     }
 

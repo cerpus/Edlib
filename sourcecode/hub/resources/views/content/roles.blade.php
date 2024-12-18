@@ -17,9 +17,9 @@
                     <tr>
                         <td>{{ $user->name }}</td>
                         <td>{{ match ($user->pivot->role) {
-                            \App\Enums\ContentUserRole::Owner => trans('messages.owner'),
-                            \App\Enums\ContentUserRole::Editor => trans('messages.editor'),
-                            \App\Enums\ContentUserRole::Reader => trans('messages.reader'),
+                            \App\Enums\ContentRole::Owner => trans('messages.owner'),
+                            \App\Enums\ContentRole::Editor => trans('messages.editor'),
+                            \App\Enums\ContentRole::Reader => trans('messages.reader'),
                         } }}</td>
                     </tr>
                 @endforeach

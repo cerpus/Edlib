@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
 use App\Support\HasUlidsFromCreationDate;
@@ -117,7 +117,7 @@ class Content extends Model
                 ]);
             }
 
-            $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
+            $copy->users()->save($user, ['role' => ContentRole::Owner]);
             $copy->save();
 
             return $copy;

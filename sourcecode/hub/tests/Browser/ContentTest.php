@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\LtiToolEditMode;
 use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
@@ -786,9 +786,9 @@ final class ContentTest extends DuskTestCase
     public function testViewsContentRoles(): void
     {
         $content = Content::factory()
-            ->withUser(User::factory()->name('Owner McOwnerson'), ContentUserRole::Owner)
-            ->withUser(User::factory()->name('Editor McEditorson'), ContentUserRole::Editor)
-            ->withUser(User::factory()->name('Reader McReaderson'), ContentUserRole::Reader)
+            ->withUser(User::factory()->name('Owner McOwnerson'), ContentRole::Owner)
+            ->withUser(User::factory()->name('Editor McEditorson'), ContentRole::Editor)
+            ->withUser(User::factory()->name('Reader McReaderson'), ContentRole::Reader)
             ->withPublishedVersion()
             ->create();
 
