@@ -42,6 +42,7 @@ return [
     'name' => 'Name',
     'name-form-help' => 'Your name will be displayed to those with whom you share content.',
     'rebuild-content-index' => 'Rebuild content index',
+    'alert-lti-platform-updated' => 'LTI platform updated.',
     'alert-lti-tool-added' => 'LTI tool added.',
     'alert-lti-tool-updated' => 'LTI tool updated.',
     'alert-lti-tool-removed' => 'The LTI tool ":name" was removed.',
@@ -218,4 +219,6 @@ return [
     'lti-platform-authorizes-edit-help' => 'Transfers responsibility for access control of editing from :site to the platform, i.e. :site will accept all valid edit requests from the platform',
     'dangerous-lti-platform-settings' => 'These settings are dangerous, and should only be enabled for trusted platforms with email verification.',
     'url-slug' => 'URL slug',
+    'lti-playground' => 'LTI playground',
+    'select-a-content-type' => 'Select a content type',
 ];

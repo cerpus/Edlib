@@ -1,7 +1,8 @@
 <x-layout current="create">
-    <x-slot:title>Content types</x-slot:title>
+    <x-slot:title>{{ trans('messages.create-content') }}</x-slot:title>
 
-    <p>Select a content type</p>
+    <p>{{ trans('messages.select-a-content-type') }}</p>
+
     <ul>
         @foreach ($types as $type)
             <li>
@@ -16,4 +17,12 @@
             </li>
         @endforeach
     </ul>
+
+    @can('admin')
+        <p>
+            <a href="{{ route('admin.lti-tools.index') }}" class="btn btn-outline-secondary">
+                {{ trans('messages.manage-lti-tools') }}
+            </a>
+        </p>
+    @endcan
 </x-layout>
