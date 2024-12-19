@@ -1031,19 +1031,20 @@ final class ContentTest extends DuskTestCase
             ->withVersion(ContentVersion::factory()->title('my beautiful content'))
             ->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/content/mine')
-            ->clickLink('my beautiful content')
-            ->clickLink('Roles')
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/content/mine')
+                ->clickLink('my beautiful content')
+                ->clickLink('Roles')
             // Dusk doesn't support selecting the actual visual text
-            ->select('[name="context"]', $context->id)
-            ->select('[name="role"]', 'editor')
-            ->press('Add')
-            ->assertSee('The context was added to the content.')
-            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'desired')
-            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
+                ->select('[name="context"]', $context->id)
+                ->select('[name="role"]', 'editor')
+                ->press('Add')
+                ->assertSee('The context was added to the content.')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'desired')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
         );
     }
 
