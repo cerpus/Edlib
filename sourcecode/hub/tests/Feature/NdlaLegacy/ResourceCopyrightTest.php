@@ -58,17 +58,16 @@ final class ResourceCopyrightTest extends TestCase
                 'h5p' => [],
             ]);
 
+        $this->assertIsArray($history);
         $this->assertCount(1, $history);
         $this->assertSame('h5p/12345/copyright', $history[0]['request']->getUri()->__toString());
     }
 
     public function test404sOnMissingH5pInfo(): void
     {
-        $history = [];
         $stack = HandlerStack::create(new MockHandler([
             new Response(200, [], '{}'),
         ]));
-        $stack->push(Middleware::history($history));
         $caClient = new Client(['handler' => $stack]);
 
         $this->instance(NdlaLegacyConfig::class, new NdlaLegacyConfig(

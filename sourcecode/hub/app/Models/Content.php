@@ -47,9 +47,6 @@ class Content extends Model
         'forceDeleting' => ContentForceDeleting::class,
     ];
 
-    /**
-     * @var array<string, mixed>
-     */
     protected $attributes = [
         'shared' => true,
     ];

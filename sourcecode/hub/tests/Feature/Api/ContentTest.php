@@ -287,7 +287,7 @@ final class ContentTest extends TestCase
         $data = [
             'title' => 'The new title',
             'lti_launch_url' => $this->faker->url,
-            'lti_tool_id' => $content->latestVersion?->lti_tool_id ?? $this->fail(),
+            'lti_tool_id' => $content->latestVersion->lti_tool_id ?? $this->fail(),
         ];
 
         $this->postJson('/api/contents/' . $content->id . '/versions', $data)

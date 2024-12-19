@@ -258,7 +258,7 @@ class ContentController extends Controller
             ->withHeight(480)
             ->toItemSelectionLaunch(
                 $tool,
-                $extra?->lti_launch_url ?? $tool->creator_launch_url,
+                $extra->lti_launch_url ?? $tool->creator_launch_url,
                 route('content.lti-store', [$tool]),
             );
 

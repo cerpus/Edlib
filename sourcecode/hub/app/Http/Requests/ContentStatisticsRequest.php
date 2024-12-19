@@ -101,7 +101,7 @@ class ContentStatisticsRequest extends FormRequest
                     ->put('point', $key);
 
                 $items->each(function ($item) use (&$out) {
-                    /** @var object{'source': string, 'views': int} $item */
+                    assert(is_int($item->views));
                     $out[$item->source] = $item->views;
                     $out['total'] += $item->views;
                 });

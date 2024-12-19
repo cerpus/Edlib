@@ -20,7 +20,6 @@ class LtiPlatform extends Model
     use HasUlids;
     use SoftDeletes;
 
-    /** @var array<string, mixed> */
     protected $attributes = [
         'enable_sso' => false,
         'authorizes_edit' => false,
