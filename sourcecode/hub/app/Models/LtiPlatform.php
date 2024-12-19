@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Events\LtiPlatformDeleting;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Database\Factories\LtiPlatformFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Random\Randomizer;
@@ -39,6 +41,21 @@ class LtiPlatform extends Model
         'enable_sso' => 'boolean',
         'authorizes_edit' => 'boolean',
     ];
+
+    /** @var array<string, class-string> */
+    protected $dispatchesEvents = [
+        'deleting' => LtiPlatformDeleting::class,
+    ];
+
+    /**
+     * @return BelongsToMany<Context, $this>
+     */
+    public function contexts(): BelongsToMany
+    {
+        return $this->belongsToMany(Context::class, 'lti_platform_context')
+            ->withPivot('role')
+            ->using(ContextPivot::class);
+    }
 
     protected static function booted(): void
     {

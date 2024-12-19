@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContextController;
 use App\Http\Controllers\Admin\LtiPlatformController;
 use App\Http\Controllers\Admin\LtiToolController;
 use App\Http\Controllers\ContentController;
@@ -88,6 +89,18 @@ Route::controller(ContentController::class)->group(function () {
         ->name('content.roles')
         ->whereUlid(['content'])
         ->can('edit', ['content']);
+
+    Route::post('/content/{content}/roles/add-context')
+        ->uses([ContentController::class, 'addContext'])
+        ->name('content.add-context')
+        ->whereUlid(['content'])
+        ->can('manage-roles', ['content']);
+
+    Route::delete('/content/{content}/roles/{role}')
+        ->uses([ContentController::class, 'removeContext'])
+        ->name('content.remove-context')
+        ->can('manage-roles', ['content'])
+        ->scopeBindings();
 
     Route::get('/content/{content}/statistics')
         ->name('content.statistics')
@@ -242,6 +255,14 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
 
     Route::post('/rebuild-content-index', [AdminController::class, 'rebuildContentIndex'])
         ->name('admin.rebuild-content-index');
+
+    Route::get('/contexts')
+        ->uses([ContextController::class, 'index'])
+        ->name('admin.contexts.index');
+
+    Route::post('/contexts')
+        ->uses([ContextController::class, 'add'])
+        ->name('admin.contexts.add');
 
     Route::prefix('/lti-platforms')->group(function () {
         Route::get('')

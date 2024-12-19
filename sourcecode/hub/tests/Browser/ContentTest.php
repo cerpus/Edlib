@@ -10,6 +10,7 @@ use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -1014,6 +1015,57 @@ final class ContentTest extends DuskTestCase
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
                 ->assertSeeLink('The original content')
+        );
+    }
+
+    public function testContentCreatedInLtiContextInheritsPlatformRoles(): void
+    {
+        $platform = LtiPlatform::factory()
+            ->withContext(Context::factory()->name('ndla_people'), ContentRole::Editor)
+            ->create();
+        LtiTool::factory()
+            ->withName('My tool')
+            ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()
+            ->withEmail('foo@example.com')
+            ->create();
+
+        $this->browse(fn(Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->assertAuthenticated()
+            ->visit('/lti/playground')
+            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+            ->type('key', $platform->key)
+            ->type('secret', $platform->secret)
+            ->type('parameters', 'lis_person_contact_email_primary=foo@example.com')
+            ->press('Launch')
+            ->withinFrame('iframe', fn (Browser $frame) => $frame
+                ->clickLink('Create')
+                ->clickLink('My tool')
+                ->withinFrame('iframe', fn (Browser $tool) => $tool
+                    ->type('payload', <<<EOJSON
+                    {
+                        "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                        "@graph": [
+                            {
+                                "@type": "LtiLinkItem",
+                                "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                "url": "https://hub-test.edlib.test/lti/samples/presentation",
+                                "title": "My new content"
+                            }
+                        ]
+                    }
+                    EOJSON)
+                    ->press('Send')
+                )
+            )
+            ->visit('/content/mine')
+            ->clickLink('My new content')
+            ->clickLink('Roles')
+            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'ndla_people')
+            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
         );
     }
 }
