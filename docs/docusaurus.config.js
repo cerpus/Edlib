@@ -58,6 +58,7 @@ module.exports = {
       logo: {
         alt: 'Edlib Logo',
         src: 'img/edlib-logo.png',
+        srcDark: 'img/edlib-logo_dark.png',
       },
       items: [
         {to: '/docs/intro', label: 'Documentation', position: 'left'},
