@@ -1032,20 +1032,25 @@ final class ContentTest extends DuskTestCase
             ->withEmail('foo@example.com')
             ->create();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/lti/playground')
-            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
-            ->type('key', $platform->key)
-            ->type('secret', $platform->secret)
-            ->type('parameters', 'lis_person_contact_email_primary=foo@example.com')
-            ->press('Launch')
-            ->withinFrame('iframe', fn (Browser $frame) => $frame
-                ->clickLink('Create')
-                ->clickLink('My tool')
-                ->withinFrame('iframe', fn (Browser $tool) => $tool
-                    ->type('payload', <<<EOJSON
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type('parameters', 'lis_person_contact_email_primary=foo@example.com')
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $frame) => $frame
+                        ->clickLink('Create')
+                        ->clickLink('My tool')
+                        ->withinFrame(
+                            'iframe',
+                            fn (Browser $tool) => $tool
+                                ->type('payload', <<<EOJSON
                     {
                         "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
                         "@graph": [
@@ -1058,14 +1063,14 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                    ->press('Send')
+                                ->press('Send')
+                        )
                 )
-            )
-            ->visit('/content/mine')
-            ->clickLink('My new content')
-            ->clickLink('Roles')
-            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'ndla_people')
-            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
+                ->visit('/content/mine')
+                ->clickLink('My new content')
+                ->clickLink('Roles')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'ndla_people')
+                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
         );
     }
 }
