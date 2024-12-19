@@ -1018,6 +1018,35 @@ final class ContentTest extends DuskTestCase
         );
     }
 
+    public function testOwnerOfContentCanAssignContextToContent(): void
+    {
+        $user = User::factory()->create();
+
+        Context::factory()->name('filler')->create();
+        $context = Context::factory()->name('desired')->create();
+        Context::factory()->name('more_filler')->create();
+
+        Content::factory()
+            ->withUser($user)
+            ->withVersion(ContentVersion::factory()->title('my beautiful content'))
+            ->create();
+
+        $this->browse(fn (Browser $browser) => $browser
+            ->loginAs($user->email)
+            ->assertAuthenticated()
+            ->visit('/content/mine')
+            ->clickLink('my beautiful content')
+            ->clickLink('Roles')
+            // Dusk doesn't support selecting the actual visual text
+            ->select('[name="context"]', $context->id)
+            ->select('[name="role"]', 'editor')
+            ->press('Add')
+            ->assertSee('The context was added to the content.')
+            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'desired')
+            ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(2)', 'Editor')
+        );
+    }
+
     public function testContentCreatedInLtiContextInheritsPlatformRoles(): void
     {
         $platform = LtiPlatform::factory()
