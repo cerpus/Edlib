@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\LtiToolEditMode;
 use App\Models\LtiTool;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -69,5 +70,10 @@ final class LtiToolFactory extends Factory
     public function extra(LtiToolExtraFactory $extra): self
     {
         return $this->has($extra, 'extras');
+    }
+
+    public function editMode(LtiToolEditMode $editMode): self
+    {
+        return $this->state(['edit_mode' => $editMode]);
     }
 }

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Browser;
 
 use App\Enums\ContentUserRole;
+use App\Enums\LtiToolEditMode;
+use App\Jobs\RebuildContentIndex;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
@@ -871,6 +873,147 @@ final class ContentTest extends DuskTestCase
                 ->assertSeeIn('article time', $date->translatedFormat('j. F Y'))
                 ->assertAttribute('article time', 'datetime', $date->toIso8601String())
                 ->assertAttribute('article time', 'title', $date->translatedFormat('l j. F Y \k\l. H:i:s'))
+        );
+    }
+
+    public function testEditsContentViaLti(): void
+    {
+        $user = User::factory()->create();
+        $platform = LtiPlatform::factory()->create();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->withLaunchUrl('https://hub-test.edlib.test/lti/samples/presentation')
+                    ->published()
+                    ->tool(
+                        LtiTool::factory()
+                            ->editMode(LtiToolEditMode::Replace)
+                            ->withCredentials($platform->getOauth1Credentials())
+                    )
+                    ->title('The original content')
+            )
+            ->withUser($user)
+            ->create();
+
+        RebuildContentIndex::dispatch();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    "&lis_person_contact_email_primary={$user->email}"
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $hub) => $hub
+                        ->clickLink('My content')
+                        ->clickLink('The original content')
+                        ->waitForLink('Edit content')
+                        ->clickLink('Edit content')
+                        ->withinFrame(
+                            '.lti-launch',
+                            fn (Browser $editor) => $editor
+                                ->waitForInput('payload')
+                                ->type('payload', <<<EOJSON
+                    {
+                        "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                        "@graph": [
+                            {
+                                "@type": "LtiLinkItem",
+                                "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                "url": "https://hub-test.edlib.test/lti/samples/presentation?v=2",
+                                "title": "The updated content"
+                            }
+                        ]
+                    }
+                    EOJSON)
+                                ->press('Send')
+                        )
+                )
+                ->visit('/content/mine')
+                ->assertSeeLink('The updated content')
+                ->assertDontSee('The original content')
+        );
+    }
+
+    public function testCopiesContentWhenUpdatingWithCopyFlagViaLti(): void
+    {
+        $user = User::factory()->create();
+        $platform = LtiPlatform::factory()->create();
+
+        Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->withLaunchUrl('https://hub-test.edlib.test/lti/samples/presentation')
+                    ->published()
+                    ->tool(
+                        LtiTool::factory()
+                            ->editMode(LtiToolEditMode::Replace)
+                            ->withCredentials($platform->getOauth1Credentials())
+                    )
+                    ->title('The original content')
+            )
+            ->withUser($user)
+            ->create();
+
+        RebuildContentIndex::dispatch();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&ext_edlib3_copy_before_save=1' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    "&lis_person_contact_email_primary={$user->email}"
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn (Browser $hub) => $hub
+                        ->clickLink('My content')
+                        ->clickLink('The original content')
+                        ->waitForLink('Edit content')
+                        ->clickLink('Edit content')
+                        ->withinFrame(
+                            '.lti-launch',
+                            fn (Browser $editor) => $editor
+                                ->waitForInput('payload')
+                                ->type('payload', <<<EOJSON
+                    {
+                        "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
+                        "@graph": [
+                            {
+                                "@type": "LtiLinkItem",
+                                "mediaType": "application/vnd.ims.lti.v1.ltilink",
+                                "url": "https://hub-test.edlib.test/lti/samples/presentation?v=2",
+                                "title": "The updated content"
+                            }
+                        ]
+                    }
+                    EOJSON)
+                                ->press('Send')
+                        )
+                )
+                ->visit('/content/mine')
+                ->assertSeeLink('The updated content')
+                ->assertSeeLink('The original content')
         );
     }
 }
