@@ -44,16 +44,6 @@ class ArticleFileVersionerTest extends TestCase
         $this->originalArticle->files()->save($file);
     }
 
-    public function tearDown(): void
-    {
-        // Remove directories
-        $disk = Storage::disk();
-        $directories = $disk->directories('/');
-        collect($directories)->each(function ($directory) use ($disk) {
-            $disk->deleteDirectory($directory);
-        });
-    }
-
     public function testSetup()
     {
         $this->setUpOriginal();

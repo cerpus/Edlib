@@ -22,4 +22,9 @@ final class LtiPlatformFactory extends Factory
             'authorizes_edit' => false,
         ];
     }
+
+    public function name(string $name): self
+    {
+        return $this->state(['name' => $name]);
+    }
 }

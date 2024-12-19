@@ -24,6 +24,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,9 +77,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testCreatePresentation(): void
     {
-        $this->doesntExpectEvents([
-            QuestionsetWasSaved::class,
-        ]);
+        Event::fake();
         $userId = $this->faker->uuid;
 
         $gameType = Gametype::factory()->create([
@@ -126,6 +125,7 @@ class QuestionSetControllerTest extends TestCase
         $this->assertObjectHasProperty('questionSet', $game->game_settings);
         $this->assertObjectHasProperty('questions', $game->game_settings->questionSet);
         $this->assertCount(15, $game->game_settings->questionSet->questions);
+        Event::assertNotDispatched(QuestionsetWasSaved::class);
     }
 
     public function testEdit(): void
@@ -180,7 +180,7 @@ class QuestionSetControllerTest extends TestCase
 
     public function testUpdate()
     {
-        $this->expectsEvents(QuestionsetWasSaved::class);
+        Event::fake();
 
         /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
@@ -335,11 +335,13 @@ class QuestionSetControllerTest extends TestCase
                 'id' => $answer->id,
                 'answer_text' => "Updated answer"
             ]);
+
+        Event::assertDispatched(QuestionsetWasSaved::class);
     }
 
     public function testUpdateWithMath()
     {
-        $this->expectsEvents(QuestionsetWasSaved::class);
+        Event::fake();
 
         /** @var Collection<QuestionSet> $questionsets */
         $questionsets = QuestionSet::factory()->count(3)
@@ -500,11 +502,12 @@ class QuestionSetControllerTest extends TestCase
                 'id' => $answer->id,
                 'answer_text' => "Updated answer"
             ]);
+        Event::assertDispatched(QuestionsetWasSaved::class);
     }
 
     public function testUpdateFullRequest()
     {
-        $this->expectsEvents(QuestionsetWasSaved::class);
+        Event::fake();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(false);
@@ -572,11 +575,12 @@ class QuestionSetControllerTest extends TestCase
             "is_published" => 1,
             'license' => 'BY',
         ]);
+        Event::assertDispatched(QuestionsetWasSaved::class);
     }
 
     public function testUpdateFullRequestWithDraftEnabled()
     {
-        $this->expectsEvents(QuestionsetWasSaved::class);
+        Event::fake();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
@@ -680,5 +684,6 @@ class QuestionSetControllerTest extends TestCase
             "is_published" => 0,
         ]);
         $this->assertCount(1, QuestionSet::all());
+        Event::assertDispatched(QuestionsetWasSaved::class);
     }
 }

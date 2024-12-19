@@ -4,6 +4,7 @@ namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\CoursePresentation;
 use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CoursePresentationTest extends TestCase
@@ -16,9 +17,7 @@ class CoursePresentationTest extends TestCase
         'oneSlidesWithEmptyAction' => '{"presentation":{"slides":[{"elements":[{"x":1.0893246187363834,"y":2.150537634408602,"width":78.21350762527233,"height":70.53763440860214,"action":"not an object","alwaysDisplayComments":false,"backgroundOpacity":0,"displayAsButton":false,"invisible":false,"solution":""}],"keywords":[],"slideBackgroundSelector":{}}]}}',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alterSource()
     {
         $coursePresentationSemantics = $this->structure['twoSlidesWithThreeElements'];
@@ -57,9 +56,7 @@ class CoursePresentationTest extends TestCase
         $this->assertEquals($coursePresentation->getPackageStructure(), $coursePresentationSemanticsObject);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function emptyAction()
     {
         $coursePresentationSemantics = $this->structure['oneSlidesWithEmptyAction'];

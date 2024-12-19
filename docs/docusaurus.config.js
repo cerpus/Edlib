@@ -17,7 +17,7 @@ module.exports = {
       id: 'cookie_consent',
       content:
         'This website uses cookies to ensure you get the best experience on our website. <a target="_blank" rel="noopener noreferrer" href="https://www.cookiesandyou.com/"> Learn more</a>',
-      backgroundColor: '#25c2a0',
+      backgroundColor: '#72aa8f',
       textColor: '#ffffff',
       isCloseable: true,
     },
@@ -144,7 +144,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
+      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Edlib AS</a>`,
     },
     prism: {
       additionalLanguages: [

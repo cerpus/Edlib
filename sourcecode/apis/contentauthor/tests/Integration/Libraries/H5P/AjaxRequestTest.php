@@ -6,8 +6,10 @@ use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\H5PLibraryCapability;
 use App\Libraries\H5P\AjaxRequest;
+use Exception;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\TestCase;
 
@@ -24,17 +26,32 @@ class AjaxRequestTest extends TestCase
 
         $this->assertDatabaseEmpty('h5p_libraries_libraries');
 
+        $invokedCount = $this->exactly(4);
         $validator = $this->createMock(\H5PValidator::class);
         $this->instance(\H5PValidator::class, $validator);
         $validator
-            ->expects($this->exactly(4))
+            ->expects($invokedCount)
             ->method('getLibraryData')
-            ->withConsecutive(['H5P.Foobar-1.2'], ['player-3.14'], ['H5P.Dynamic-2.42.3'], ['FontOk-1.3'])
-            ->willReturnOnConsecutiveCalls([
-                'preloadedDependencies' => [$preLib->getLibraryH5PFriendly()],
-                'dynamicDependencies' => [$dynLib->getLibraryH5PFriendly()],
-                'editorDependencies' => [$edLib->getLibraryH5PFriendly()],
-            ], [], [], []);
+            ->willReturnCallback(function ($params) use ($invokedCount, $preLib, $dynLib, $edLib) {
+                if ($invokedCount->numberOfInvocations() === 1) {
+                    $this->assertSame('H5P.Foobar-1.2', $params);
+                    return [
+                        'preloadedDependencies' => [$preLib->getLibraryH5PFriendly()],
+                        'dynamicDependencies' => [$dynLib->getLibraryH5PFriendly()],
+                        'editorDependencies' => [$edLib->getLibraryH5PFriendly()],
+                    ];
+                } elseif ($invokedCount->numberOfInvocations() === 2) {
+                    $this->assertSame('player-3.14', $params);
+                } elseif ($invokedCount->numberOfInvocations() === 3) {
+                    $this->assertSame('H5P.Dynamic-2.42.3', $params);
+                } elseif ($invokedCount->numberOfInvocations() === 4) {
+                    $this->assertSame('FontOk-1.3', $params);
+                } else {
+                    throw new Exception('Mocked function "getLibraryData" called too many times');
+                }
+
+                return [];
+            });
 
         $this
             ->withSession(['isAdmin' => true])
@@ -62,7 +79,7 @@ class AjaxRequestTest extends TestCase
         ]);
     }
 
-    /** @dataProvider provider_contentTypeCache_icon */
+    #[DataProvider('provider_contentTypeCache_icon')]
     public function test_contentTypeCache_icon(array $libraryData, string $iconPath): void
     {
         Storage::fake('test');
@@ -105,7 +122,7 @@ class AjaxRequestTest extends TestCase
         }
     }
 
-    public function provider_contentTypeCache_icon(): Generator
+    public static function provider_contentTypeCache_icon(): Generator
     {
         yield 'No patch with icon' => [
             [
@@ -140,7 +157,7 @@ class AjaxRequestTest extends TestCase
         ];
     }
 
-    /** @dataProvider provider_contentTypeCache_LocalAndCache */
+    #[DataProvider('provider_contentTypeCache_LocalAndCache')]
     public function test_contentTypeCache_localAndCache(bool $usePatchVersion): void
     {
         Storage::fake('test');
@@ -220,7 +237,7 @@ class AjaxRequestTest extends TestCase
         $this->assertArrayNotHasKey('license', $libData);
     }
 
-    public function provider_contentTypeCache_localAndCache(): Generator
+    public static function provider_contentTypeCache_localAndCache(): Generator
     {
         yield 'no patch version' => [false];
         yield 'patch version' => [true];

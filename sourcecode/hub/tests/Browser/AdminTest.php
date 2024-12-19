@@ -8,6 +8,9 @@ use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Components\LtiPlatformAddedAlert;
+use Tests\Browser\Components\LtiPlatformCard;
+use Tests\Browser\Components\LtiToolCard;
 use Tests\DuskTestCase;
 
 final class AdminTest extends DuskTestCase
@@ -54,7 +57,7 @@ final class AdminTest extends DuskTestCase
                 ->visit('/admin/lti-platforms')
                 ->resize(1920, 1920)
                 ->with(
-                    'main .lti-platform',
+                    'main .lti-platform-card',
                     fn (Browser $main) => $main
                         ->press('Remove')
                 )
@@ -66,8 +69,70 @@ final class AdminTest extends DuskTestCase
                         ->press('OK')
                 )
                 ->waitForReload()
-                ->assertNotPresent('.lti-platform')
+                ->assertNotPresent('.lti-platform-card')
                 ->assertSee('The LTI platform has been removed')
+        );
+    }
+
+    public function testCanAddLtiPlatforms(): void
+    {
+        $user = User::factory()->admin()->name('Admin User')->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Admin User')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI platforms')
+                ->type('name', 'My LTI platform')
+                ->check('enable_sso')
+                ->check('authorizes_edit')
+                ->press('Create')
+                ->with(new LtiPlatformAddedAlert(), function (Browser $alert) {
+                    $alert->assertSee('LTI platform "My LTI platform" was successfully created.');
+
+                    $this->assertDatabaseHas(LtiPlatform::class, [
+                        'key' => $alert->text('@key'),
+                        'secret' => $alert->text('@secret'),
+                        'authorizes_edit' => true,
+                        'enable_sso' => true,
+                    ]);
+                })
+                ->with(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@enable-sso', 'Yes')
+                        ->assertSeeIn('@authorizes-edit', 'Yes')
+                )
+        );
+    }
+
+    public function testCanEditLtiPlatform(): void
+    {
+        LtiPlatform::factory()->name('Old name')->create();
+        $user = User::factory()->admin()->name('Admin User')->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Admin User')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI platforms')
+                ->clickLink('Edit')
+                ->type('name', 'New name')
+                ->uncheck('input[name="enable_sso"]')
+                ->press('Update')
+                ->assertSee('LTI platform updated.')
+                ->within(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@title', 'New name')
+                        ->assertSeeIn('@enable-sso', 'No')
+                )
         );
     }
 
@@ -126,6 +191,79 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('The tool')
                 ->assertUrlIs('https://hub-test.edlib.test/content/create/the-tool')
                 ->assertPresent('.lti-launch')
+        );
+    }
+
+    public function testCanEditUrlSlugForTool(): void
+    {
+        LtiTool::factory()->withName('Hammer')->slug('the-old-slug')->create();
+        $user = User::factory()->name('Ben Hammerhead')->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Ben Hammerhead')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->clickLink('Edit')
+                ->assertValue('input[name="slug"]', 'the-old-slug')
+                ->type('slug', 'the-new-slug')
+                ->press('Update')
+                ->assertSee('LTI tool updated.')
+                ->visit('/content/create/the-new-slug')
+                ->assertPresent('.lti-launch')
+        );
+    }
+
+    public function testCanEditFlagsForTool(): void
+    {
+        $user = User::factory()->name('Flagg Stang')->admin()->create();
+        LtiTool::factory()
+            ->withName('The Tool')
+            ->sendName()
+            ->sendEmail()
+            ->proxyLaunch()
+            ->create();
+
+        $this->browse(
+            fn (Browser $browser) =>
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Flagg Stang')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
+                    $card
+                        ->assertSeeIn('@proxy-launch', 'Yes')
+                        ->assertSeeIn('@send-email', 'Yes')
+                        ->assertSeeIn('@send-name', 'Yes')
+                )
+                ->clickLink('Edit')
+                ->assertChecked('proxy_launch')
+                ->uncheck('proxy_launch')
+                ->assertChecked('send_name')
+                ->uncheck('send_name')
+                ->assertChecked('send_email')
+                ->uncheck('send_email')
+                ->press('Update')
+                ->assertSee('LTI tool updated.')
+                ->press('Flagg Stang')
+                ->clickLink('Admin home')
+                ->clickLink('Manage LTI tools')
+                ->with(
+                    new LtiToolCard(),
+                    fn (Browser $card) =>
+                    $card
+                        ->assertSeeIn('@proxy-launch', 'No')
+                        ->assertSeeIn('@send-email', 'No')
+                        ->assertSeeIn('@send-name', 'No')
+                )
         );
     }
 }

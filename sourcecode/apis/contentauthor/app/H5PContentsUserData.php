@@ -15,7 +15,7 @@ class H5PContentsUserData extends Model
     protected $table = "h5p_contents_user_data";
 
     /**
-     * @return BelongsTo<H5PContent, self>
+     * @return BelongsTo<H5PContent, $this>
      */
     public function content(): BelongsTo
     {

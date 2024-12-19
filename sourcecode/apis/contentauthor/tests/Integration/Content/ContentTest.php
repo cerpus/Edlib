@@ -9,6 +9,7 @@ use App\H5PContent;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ContentTest extends TestCase
@@ -20,7 +21,7 @@ class ContentTest extends TestCase
         parent::setUp();
     }
 
-    /** @test */
+    #[Test]
     public function test_ArticleIsCollaborator()
     {
         $user = User::factory()->make();
@@ -41,7 +42,6 @@ class ContentTest extends TestCase
     {
         $user = User::factory()->make();
         $h5p = H5PContent::factory()->create(['user_id' => $user->auth_id]);
-        /** @var Collection<ArticleCollaborator> $collaborators */
         $collaborators = H5PCollaborator::factory()->count(3)->make();
         $h5p->collaborators()->saveMany($collaborators);
         $h5p = $h5p->fresh();

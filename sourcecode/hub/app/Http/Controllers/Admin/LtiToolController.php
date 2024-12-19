@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLtiToolExtraRequest;
 use App\Http\Requests\StoreLtiToolRequest;
+use App\Http\Requests\UpdateLtiToolRequest;
 use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
 use Illuminate\Http\RedirectResponse;
@@ -40,6 +41,20 @@ final class LtiToolController extends Controller
 
         return to_route('admin.lti-tools.index')
             ->with('alert', trans('messages.alert-lti-tool-added'));
+    }
+
+    public function edit(LtiTool $tool): View
+    {
+        return view('admin.lti-tools.edit', ['tool' => $tool]);
+    }
+
+    public function update(LtiTool $tool, UpdateLtiToolRequest $request): RedirectResponse
+    {
+        $tool->update($request->validated());
+        $tool->save();
+
+        return redirect()->back()
+            ->with('alert', trans('messages.alert-lti-tool-updated'));
     }
 
     public function destroy(LtiTool $tool): RedirectResponse

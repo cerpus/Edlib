@@ -37,7 +37,7 @@ class QuestionSet extends Content
     public string $editRouteName = 'questionset.edit';
 
     /**
-     * @return HasMany<QuestionSetQuestion>
+     * @return HasMany<QuestionSetQuestion, $this>
      */
     public function questions(): HasMany
     {

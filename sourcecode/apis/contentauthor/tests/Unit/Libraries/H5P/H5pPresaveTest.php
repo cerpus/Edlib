@@ -10,6 +10,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class H5pPresaveTest extends TestCase
@@ -45,9 +46,7 @@ final class H5pPresaveTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getBadLibraries
-     */
+    #[DataProvider('getBadLibraries')]
     public function testCannotGetUrlOfNonExistentScript(string $library): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -63,9 +62,7 @@ final class H5pPresaveTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getBadLibraries
-     */
+    #[DataProvider('getBadLibraries')]
     public function testCannotGetContentsOfNonExistentScripts(string $library): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -73,7 +70,7 @@ final class H5pPresaveTest extends TestCase
         $this->presave->getScriptContents($library);
     }
 
-    public function getBadLibraries(): Generator
+    public static function getBadLibraries(): Generator
     {
         yield 'non-existent script directory' => ['H5P.Bar'];
         yield 'existing directory, but no presave.js' => ['BadLibrary'];

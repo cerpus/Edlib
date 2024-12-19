@@ -10,9 +10,9 @@ Do you need help with your next educational project? We can help with embedding 
 
 Want to get in touch? It would be great to hear from you. Here's how you can reach us.
 
-**Cerpus AS**<br/>
+**Edlib AS**<br/>
 
-General enquiries: <post@cerpus.com><br/>
+General enquiries: <post@edlib.com><br/>
 Support: <support@edlib.com><br/>
 
 ## Visit Us

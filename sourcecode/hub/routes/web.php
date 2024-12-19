@@ -243,9 +243,25 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
     Route::post('/rebuild-content-index', [AdminController::class, 'rebuildContentIndex'])
         ->name('admin.rebuild-content-index');
 
-    Route::prefix('/lti-platforms')->controller(LtiPlatformController::class)->group(function () {
-        Route::get('', 'index')->name('admin.lti-platforms.index');
-        Route::post('', 'store')->name('admin.lti-platforms.store');
+    Route::prefix('/lti-platforms')->group(function () {
+        Route::get('')
+            ->uses([LtiPlatformController::class, 'index'])
+            ->name('admin.lti-platforms.index');
+
+        Route::post('')
+            ->uses([LtiPlatformController::class, 'store'])
+            ->name('admin.lti-platforms.store');
+
+        Route::get('/{platform}/edit')
+            ->uses([LtiPlatformController::class, 'edit'])
+            ->name('admin.lti-platforms.edit')
+            ->can('edit', ['platform']);
+
+        Route::patch('/{platform}')
+            ->uses([LtiPlatformController::class, 'update'])
+            ->name('admin.lti-platforms.update')
+            ->can('edit', ['platform']);
+
         Route::delete('/{platform}')
             ->uses([LtiPlatformController::class, 'destroy'])
             ->name('admin.lti-platforms.remove')
@@ -253,10 +269,28 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
             ->whereUlid('platform');
     });
 
-    Route::prefix('/lti-tools')->controller(LtiToolController::class)->group(function () {
-        Route::get('', 'index')->name('admin.lti-tools.index');
-        Route::get('/add', 'add')->name('admin.lti-tools.add');
-        Route::post('', 'store')->name('admin.lti-tools.store');
+    Route::prefix('/lti-tools')->group(function () {
+        Route::get('')
+            ->uses([LtiToolController::class, 'index'])
+            ->name('admin.lti-tools.index');
+
+        Route::get('/add')
+            ->uses([LtiToolController::class, 'add'])
+            ->name('admin.lti-tools.add');
+
+        Route::post('')
+            ->uses([LtiToolController::class, 'store'])
+            ->name('admin.lti-tools.store');
+
+        Route::get('/{tool}/edit')
+            ->uses([LtiToolController::class, 'edit'])
+            ->name('admin.lti-tools.edit')
+            ->whereUlid(['tool']);
+
+        Route::patch('/{tool}')
+            ->uses([LtiToolController::class, 'update'])
+            ->name('admin.lti-tools.update')
+            ->whereUlid(['tool']);
 
         Route::get('/{tool}/extras/add')
             ->uses([LtiToolController::class, 'addExtra'])
@@ -277,7 +311,8 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
             ->whereUlid(['tool', 'extra'])
             ->scopeBindings();
 
-        Route::delete('/{tool}', 'destroy')
+        Route::delete('/{tool}')
+            ->uses([LtiToolController::class, 'destroy'])
             ->name('admin.lti-tools.remove')
             ->can('remove', ['tool'])
             ->whereUlid(['tool']);

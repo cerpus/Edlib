@@ -25,6 +25,7 @@ return [
     'details' => 'Details',
     'preview' => 'Preview',
     'edit' => 'Edit',
+    'update' => 'Update',
     'share' => 'Share',
     'search' => 'Search',
     'explore' => 'Explore',
@@ -41,7 +42,9 @@ return [
     'name' => 'Name',
     'name-form-help' => 'Your name will be displayed to those with whom you share content.',
     'rebuild-content-index' => 'Rebuild content index',
+    'alert-lti-platform-updated' => 'LTI platform updated.',
     'alert-lti-tool-added' => 'LTI tool added.',
+    'alert-lti-tool-updated' => 'LTI tool updated.',
     'alert-lti-tool-removed' => 'The LTI tool ":name" was removed.',
     'alert-rebuilding-content-index' => 'Rebuilding content index…',
     'close' => 'Close',
@@ -217,4 +220,5 @@ return [
     'dangerous-lti-platform-settings' => 'These settings are dangerous, and should only be enabled for trusted platforms with email verification.',
     'url-slug' => 'URL slug',
     'lti-playground' => 'LTI playground',
+    'select-a-content-type' => 'Select a content type',
 ];

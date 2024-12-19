@@ -5,11 +5,12 @@ namespace Tests\Integration\Models;
 use App\ContentLanguage;
 use Exception;
 use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
-    /** @dataProvider codeProvider */
+    #[DataProvider('codeProvider')]
     public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharacter(string $code)
     {
         $this->expectException(Exception::class);
@@ -19,7 +20,7 @@ class ContentLanguageTest extends TestCase
         $contentLanguage->language_code = $code;
     }
 
-    /** @dataProvider codeProvider */
+    #[DataProvider('codeProvider')]
     public function testLanguageCodeWillFailIfLanguageIsNotTwoOrThreeCharactersMassAssignment(string $code)
     {
         $this->expectException(Exception::class);
@@ -30,7 +31,7 @@ class ContentLanguageTest extends TestCase
         ]);
     }
 
-    public function codeProvider(): Generator
+    public static function codeProvider(): Generator
     {
         yield['e'];
         yield['engl'];
