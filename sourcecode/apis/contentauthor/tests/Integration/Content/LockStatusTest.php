@@ -37,6 +37,32 @@ class LockStatusTest extends TestCase
         $this->assertDatabaseCount('content_locks', 1);
     }
 
+    public function testLockUpdate(): void
+    {
+        $user = User::factory()->make();
+        $article = Article::factory()->create([
+            'owner_id' => $user->auth_id,
+            'version_id' => $this->faker->uuid,
+        ]);
+
+        $lock = ContentLock::factory()->create([
+            'content_id' => $article->id,
+            'auth_id' => $user->auth_id,
+            'created_at' => Carbon::now()->subSeconds(30),
+            'updated_at' => Carbon::now()->subSeconds(30),
+        ]);
+
+        $this->withSession(['authId' => $user->auth_id])
+            ->post(route('lock.status', $lock->content_id))
+            ->assertOk();
+
+        $lockStatus = ContentLock::findOrFail($article->id);
+
+        $this->assertTrue($lock->created_at->equalTo($lockStatus->created_at));
+        $this->assertTrue($lock->updated_at->notEqualTo($lockStatus->updated_at));
+        $this->assertTrue($lock->updated_at->isBefore($lockStatus->updated_at));
+    }
+
     public function testLockStatusExpired()
     {
         $user = User::factory()->make();
@@ -81,48 +107,30 @@ class LockStatusTest extends TestCase
     public function testLockStatusWithActivePulseButExpired()
     {
         config([
-            'feature.content-locking' => true,
             'feature.lock-max-hours' => 20,
         ]);
         $user = User::factory()->make();
-        $originalArticle = Article::factory()->create(
-            [
-                'id' => '0800e3f5-d7a7-4add-a12a-16df86462837',
-                'owner_id' => $user->auth_id,
-                'version_id' => '7313f894-4dba-4ea4-9896-9da549e2e88f'
-            ]
-        );
+        $article = Article::factory()->create([
+            'owner_id' => $user->auth_id,
+            'version_id' => $this->faker->uuid,
+        ]);
 
-        $lockStatus = ContentLock::factory()->create([
-            'content_id' => $originalArticle->id,
+        $lock = ContentLock::factory()->create([
+            'content_id' => $article->id,
             'auth_id' => $user->auth_id,
-            'created_at' => Carbon::now()->subSeconds(30),
+            'created_at' => Carbon::now()->subHours(24),
             'updated_at' => Carbon::now()->subSeconds(30),
         ]);
 
-        $this->assertDatabaseHas('content_locks', [
-            'content_id' => $originalArticle->id,
-            'auth_id' => $user->auth_id,
-        ]);
-
+        // Locks created for more than 'feature.lock-max-hours' ago are not updated
         $this->withSession(['authId' => $user->auth_id])
-            ->post(route('lock.status', $lockStatus->content_id))
+            ->post(route('lock.status', $lock->content_id))
             ->assertOk();
 
-        $lockStatus->refresh();
-        $this->assertLessThan($lockStatus->updated_at, $lockStatus->created_at);
+        $lockStatus = ContentLock::findOrFail($article->id);
 
-        $lastUpdated = $lockStatus->updated_at;
-        $lockStatus->created_at = Carbon::now()->subDay();
-        $lockStatus->save();
-
-        $this->withSession(['authId' => $user->auth_id])
-            ->post(route('lock.status', $lockStatus->content_id))
-            ->assertOk();
-
-        $lockStatus->refresh();
-
-        $this->assertEquals($lastUpdated, $lockStatus->updated_at);
+        $this->assertTrue($lock->created_at->equalTo($lockStatus->created_at));
+        $this->assertTrue($lock->updated_at->equalTo($lockStatus->updated_at));
     }
 
     public function testYouNeedToBeLoggedIn()
