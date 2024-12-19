@@ -84,6 +84,17 @@
                                 <span>{{ trans('messages.preferences') }}</span>
                             </a>
                         </li>
+                        @if (auth()->user()->debug_mode ?? false)
+                            <li>
+                                <a
+                                    href="{{ route('lti.playground') }}"
+                                    class="dropdown-item gap-2 d-flex"
+                                >
+                                    <x-icon name="dice-3-fill" />
+                                    <span>{{ trans('messages.lti-playground') }}</span>
+                                </a>
+                            </li>
+                        @endif
                         @can('admin')
                             <li>
                                 <a

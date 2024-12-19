@@ -23,7 +23,8 @@
         "socialiteproviders/auth0": "^4.2",
         "socialiteproviders/manager": "^4.7.0",
         "spatie/laravel-fractal": "^6.2.1",
-        "symfony/cache": "^7.1.9"
+        "symfony/cache": "^7.1.9",
+        "symfony/clock": "^7.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.2.2",

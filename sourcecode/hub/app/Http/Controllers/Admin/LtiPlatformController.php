@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StoreLtiPlatformRequest;
+use App\Http\Requests\UpdateLtiPlatformRequest;
 use App\Models\LtiPlatform;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 use function route;
+use function to_route;
 
 final class LtiPlatformController
 {
@@ -38,6 +40,22 @@ final class LtiPlatformController
         $request->session()->flash('created-lti-platform', $platform->id);
 
         return to_route('admin.lti-platforms.index');
+    }
+
+    public function edit(LtiPlatform $platform): View
+    {
+        return view('admin.lti-platforms.edit', [
+            'platform' => $platform,
+        ]);
+    }
+
+    public function update(LtiPlatform $platform, UpdateLtiPlatformRequest $request): RedirectResponse
+    {
+        $platform->fill($request->validated());
+        $platform->save();
+
+        return to_route('admin.lti-platforms.index')
+            ->with('alert', trans('messages.alert-lti-platform-updated'));
     }
 
     public function destroy(LtiPlatform $platform, Request $request): Response
