@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
+use App\Http\Requests\AddContextToContentRequest;
 use App\Http\Requests\ContentStatisticsRequest;
 use App\Http\Requests\ContentStatusRequest;
 use App\Http\Requests\DeepLinkingReturnRequest;
@@ -15,6 +16,7 @@ use App\Lti\ContentItemSelectionFactory;
 use App\Lti\LtiLaunchBuilder;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
@@ -145,9 +147,37 @@ class ContentController extends Controller
 
     public function roles(Content $content): View
     {
+        // TODO: fix annoying phpstan error
+        //@phpstan-ignore-next-line
+        $availableContexts = Context::all()
+            ->diff($content->contexts)
+            ->mapWithKeys(fn (Context $context) => [$context->id => $context->name]);
+
         return view('content.roles', [
             'content' => $content,
+            'available_contexts' => $availableContexts,
         ]);
+    }
+
+    public function addContext(Content $content, AddContextToContentRequest $request): RedirectResponse
+    {
+        $context = Context::where('id', $request->validated('context'))
+            ->firstOrFail();
+
+        $content->contexts()->attach($context, [
+            'role' => ContentRole::from($request->validated('role')),
+        ]);
+
+        return redirect()->back()
+            ->with('alert', trans('messages.context-added-to-content'));
+    }
+
+    public function removeContext(Content $content, Context $context): RedirectResponse
+    {
+        $content->contexts()->detach($context->id);
+
+        return redirect()->back()
+            ->with('alert', trans('messages.context-removed-from-content'));
     }
 
     public function create(): View
@@ -287,7 +317,7 @@ class ContentController extends Controller
             $content = new Content();
             $content->saveQuietly();
             $content->users()->save($this->getUser(), [
-                'role' => ContentUserRole::Owner,
+                'role' => ContentRole::Owner,
             ]);
             $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
 

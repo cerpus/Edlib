@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ContentRole;
 use App\Models\LtiPlatform;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -26,5 +27,10 @@ final class LtiPlatformFactory extends Factory
     public function name(string $name): self
     {
         return $this->state(['name' => $name]);
+    }
+
+    public function withContext(ContextFactory $context, ContentRole $role): self
+    {
+        return $this->hasAttached($context, ['role' => $role], 'contexts');
     }
 }
