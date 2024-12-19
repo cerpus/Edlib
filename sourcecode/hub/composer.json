@@ -29,6 +29,7 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.2.2",
         "cache/array-adapter": "^1.2",
+        "ekino/phpstan-banned-code": "^3.0",
         "fakerphp/faker": "^1.24.1",
         "larastan/larastan": "^3",
         "laravel/dusk": "^8.2.12",
