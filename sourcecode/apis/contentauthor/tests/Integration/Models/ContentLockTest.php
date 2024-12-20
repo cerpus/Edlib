@@ -7,7 +7,6 @@ use App\H5PContent;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 class ContentLockTest extends TestCase
@@ -63,12 +62,34 @@ class ContentLockTest extends TestCase
         $this->assertDatabaseEmpty('content_locks');
     }
 
-    #[TestWith([true], 'Current user has active lock')]
-    #[TestWith([false], 'Other user has active lock')]
-    public function testHasLock(bool $asLockOwner): void
+    public function testHasLockAsLockOwner(): void
     {
         $lockOwner = User::factory()->make();
-        $user = $asLockOwner ? $lockOwner : User::factory()->make();
+
+        $this->session([
+            'authId' => $lockOwner->auth_id,
+            'name' => $lockOwner->name,
+            'email' => $lockOwner->email,
+        ]);
+        $content = H5PContent::factory()->create();
+
+        $this->assertNull((new ContentLock())->hasLock($content->id));
+
+        ContentLock::factory()->create([
+            'content_id' => $content->id,
+            'auth_id' => $lockOwner->auth_id,
+            'email' => $lockOwner->email,
+            'name' => $lockOwner->name,
+        ]);
+
+        $activeLock = (new ContentLock())->hasLock($content->id);
+        $this->assertFalse($activeLock);
+    }
+
+    public function testHasLockAsNotLockOwner(): void
+    {
+        $lockOwner = User::factory()->make();
+        $user = User::factory()->make();
 
         $this->session([
             'authId' => $user->auth_id,
@@ -87,12 +108,7 @@ class ContentLockTest extends TestCase
         ]);
 
         $activeLock = (new ContentLock())->hasLock($content->id);
-
-        if ($asLockOwner) {
-            $this->assertFalse($activeLock);
-        } else {
-            $this->assertInstanceOf(ContentLock::class, $activeLock);
-            $this->assertSame($lockOwner->auth_id, $activeLock->auth_id);
-        }
+        $this->assertInstanceOf(ContentLock::class, $activeLock);
+        $this->assertSame($lockOwner->auth_id, $activeLock->auth_id);
     }
 }
