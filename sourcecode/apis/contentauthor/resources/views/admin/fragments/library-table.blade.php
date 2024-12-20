@@ -3,8 +3,8 @@
         <th>Machine name</th>
         <th>Title</th>
         @isset($showCount)
-            <th>#contents</th>
-            <th>#libdependencies</th>
+            <th><abbr title="Number of content using it as main content type">#contents</abbr></th>
+            <th><abbr title="Number of other content types or libraries that are referencing it">#libdependencies</abbr></th>
         @endif
         @isset($showSummary)
             <th>Summary</th>
@@ -74,7 +74,7 @@
                         <span class="fa fa-history"></span>
                     </button>
                 @endif
-                @if(empty($library['numLibraryDependencies']) && !empty($library['libraryId']))
+                @if(array_key_exists('canDelete', $library) && $library['canDelete'] === true)
                     <button
                             type="button"
                             class="btn btn-danger btn-xs h5p-action-button delete-btn"
