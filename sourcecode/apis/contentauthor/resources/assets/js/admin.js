@@ -102,8 +102,19 @@ function deleteLibrary(event) {
     const url = element.data('ajax-url')
 
     element.prop('disabled', true);
-    sendRequest(element, { method: 'DELETE', url }, null, function () {
-        alert('Library deleted');
-        window.location.reload();
-    });
+    sendRequest(
+        element,
+        {
+            method: 'DELETE',
+            url,
+        },
+        null,
+        () => {
+            alert('Library deleted');
+            window.location.reload();
+        },
+        (err) => {
+            alert(err.responseJSON.message ?? 'Library delete failed');
+        }
+    );
 }
