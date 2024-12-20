@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\InvalidH5pPackageException;
-use App\H5PContentLibrary;
 use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\H5POption;
