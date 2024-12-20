@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class Millionaire extends GameBase
 {

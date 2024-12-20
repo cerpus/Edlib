@@ -53,7 +53,7 @@ use stdClass;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use function app;
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 use function request;
 
 class H5PController extends Controller
