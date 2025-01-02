@@ -28,7 +28,8 @@
     </script>
 </head>
 <body>
-    {!! $embed !!}
+    <div class="h5p-content" data-content-id="{{ $id }}"></div>
+
     {!! $config !!}
 
     <script src="{{ mix('js/h5p-core-bundle.js') }}"></script>

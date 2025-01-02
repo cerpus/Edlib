@@ -327,12 +327,13 @@ class H5PControllerTest extends TestCase
             $this->app->make(CredentialStoreInterface::class),
         );
 
-        $result = $this->post('/h5p/' . $content->id, $request->toArray())->original;
+        $response = $this->post('/h5p/' . $content->id, $request->toArray());
+        $result = $response->original;
 
+        $this->assertStringContainsString('<div class="h5p-content" data-content-id="'.$content->id.'"></div>', $response->content());
         $this->assertInstanceOf(View::class, $result);
         $this->assertEquals($content->id, $result['id']);
         $this->assertFalse($result['preview']);
-        $this->assertStringContainsString('data-content-id="'.$content->id.'"', $result['embed']);
         $this->assertNotEmpty($result['jsScripts']);
         $this->assertNotEmpty($result['styles']);
         $this->assertArrayHasKey('inlineStyle', $result);
