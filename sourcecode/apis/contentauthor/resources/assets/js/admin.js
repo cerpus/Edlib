@@ -117,14 +117,25 @@ function deleteLibrary(event) {
     const activetab = element.data('ajax-activetab');
 
     element.prop('disabled', true);
-    sendRequest(element, { method: 'DELETE', url }, null, function () {
-        alert('Library deleted');
-        if (typeof activetab === 'string') {
-            const params = new URLSearchParams(location.search);
-            params.set('activetab', activetab);
-            window.location.search = params.toString();
-        } else {
-            window.location.reload();
+    sendRequest(
+        element,
+        {
+            method: 'DELETE',
+            url,
+        },
+        null,
+        () => {
+            alert('Library deleted');
+            if (typeof activetab === 'string') {
+                const params = new URLSearchParams(location.search);
+                params.set('activetab', activetab);
+                window.location.search = params.toString();
+            } else {
+                window.location.reload();
+            }
+        },
+        (err) => {
+            alert(err.responseJSON.message ?? 'Library delete failed');
         }
-    });
+    );
 }
