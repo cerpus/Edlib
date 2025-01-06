@@ -70,6 +70,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
+                    'canDelete' => H5PLibrary::canBeDeleted($library->id),
                 ];
 
                 if ($library->runnable) {
@@ -162,8 +163,8 @@ class LibraryUpgradeController extends Controller
 
     public function deleteLibrary(H5PLibrary $library): Response
     {
-        if ($library->contents()->exists()) {
-            throw new BadRequestHttpException('Cannot delete libraries with existing content');
+        if (!H5PLibrary::canBeDeleted($library->id)) {
+            throw new BadRequestHttpException('Cannot delete library used by content or other libraries');
         }
 
         $this->core->deleteLibrary((object) [
