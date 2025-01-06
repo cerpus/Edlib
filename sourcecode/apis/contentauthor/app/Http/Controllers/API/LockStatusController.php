@@ -8,7 +8,7 @@ use App\Libraries\DataObjects\ContentLockDataObject;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class LockStatusController extends Controller
 {

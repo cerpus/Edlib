@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class ArticleController extends Controller
 {

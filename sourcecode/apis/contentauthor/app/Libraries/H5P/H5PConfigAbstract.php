@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 abstract class H5PConfigAbstract implements ConfigInterface
 {

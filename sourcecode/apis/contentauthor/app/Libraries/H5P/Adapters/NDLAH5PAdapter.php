@@ -12,7 +12,7 @@ use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Carbon\Carbon;
 
 use function array_unique;
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -244,7 +244,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
      */
     public function overrideAdapterSettings()
     {
-        config(['app.deploymentEnvironment' => 'ndlaprod']);
         config(collect([
             'app.enable_licensing',
             'feature.licensing',
