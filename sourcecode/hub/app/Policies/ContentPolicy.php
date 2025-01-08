@@ -58,23 +58,17 @@ readonly class ContentPolicy
             return true;
         }
 
-        if ($content->hasUserWithMinimumRole($user, ContentRole::Editor)) {
+        $platform = $this->getLtiPlatform();
+
+        if (
+            $platform?->authorizes_edit &&
+            $this->request->session()->has('intent-to-edit.' . $content->id)
+        ) {
             return true;
         }
 
-        $platform = $this->getLtiPlatform();
-
-        if ($platform) {
-            if (
-                $platform->authorizes_edit &&
-                $this->request->session()->has('intent-to-edit.' . $content->id)
-            ) {
-                return true;
-            }
-
-            if ($this->hasContentRole(ContentRole::Editor, $content, $user, $platform)) {
-                return true;
-            }
+        if ($this->hasContentRole(ContentRole::Editor, $content, $user, $platform)) {
+            return true;
         }
 
         return false;
