@@ -35,20 +35,11 @@ readonly class ContentPolicy
             return true;
         }
 
-        $platform = $this->getLtiPlatform();
-        if ($platform) {
-            foreach ($content->contexts ?? [] as $context) {
-                if ($platform->hasContextWithMinimumRole($context, ContentRole::Reader)) {
-                    return true;
-                }
-            }
+        if ($this->hasContentRole(ContentRole::Reader, $content, $user)) {
+            return true;
         }
 
-        if (!$user) {
-            return false;
-        }
-
-        return $content->hasUserWithMinimumRole($user, ContentRole::Reader);
+        return false;
     }
 
     public function create(User $user): bool
@@ -67,6 +58,10 @@ readonly class ContentPolicy
             return true;
         }
 
+        if ($content->hasUserWithMinimumRole($user, ContentRole::Editor)) {
+            return true;
+        }
+
         $platform = $this->getLtiPlatform();
 
         if ($platform) {
@@ -77,14 +72,12 @@ readonly class ContentPolicy
                 return true;
             }
 
-            foreach ($content->contexts ?? [] as $context) {
-                if ($platform->hasContextWithMinimumRole($context, ContentRole::Editor)) {
-                    return true;
-                }
+            if ($this->hasContentRole(ContentRole::Editor, $content, $user, $platform)) {
+                return true;
             }
         }
 
-        return $content->hasUserWithMinimumRole($user, ContentRole::Editor);
+        return false;
     }
 
     public function copy(
@@ -94,16 +87,11 @@ readonly class ContentPolicy
     ): bool {
         $this->ensureVersionBelongsToContent($content, $version);
 
-        $platform = $this->getLtiPlatform();
-        if ($platform) {
-            foreach ($content->contexts ?? [] as $context) {
-                if ($platform->hasContextWithMinimumRole($context, ContentRole::Reader)) {
-                    return true;
-                }
-            }
+        if ($user->admin) {
+            return true;
         }
 
-        if ($content->hasUserWithMinimumRole($user, ContentRole::Reader)) {
+        if ($this->hasContentRole(ContentRole::Reader, $content, $user)) {
             return true;
         }
 
@@ -130,16 +118,11 @@ readonly class ContentPolicy
             return true;
         }
 
-        $platform = $this->getLtiPlatform();
-        if ($platform) {
-            foreach ($content->contexts ?? [] as $context) {
-                if ($platform->hasContextWithMinimumRole($context, ContentRole::Owner)) {
-                    return true;
-                }
-            }
+        if ($this->hasContentRole(ContentRole::Owner, $content, $user)) {
+            return true;
         }
 
-        return $content->hasUserWithMinimumRole($user, ContentRole::Owner);
+        return false;
     }
 
     public function use(User|null $user, Content $content, ContentVersion $version): bool
@@ -167,11 +150,11 @@ readonly class ContentPolicy
 
     public function manageRoles(User $user, Content $content): bool
     {
-        if ($content->hasUserWithMinimumRole($user, ContentRole::Owner)) {
+        if ($user->admin) {
             return true;
         }
 
-        return false;
+        return $this->hasContentRole(ContentRole::Owner, $content, $user);
     }
 
     private function ensureVersionBelongsToContent(Content $content, ContentVersion|null $version): void
@@ -179,6 +162,29 @@ readonly class ContentPolicy
         if ($version && !$version->content?->is($content)) {
             throw new LogicException('Version does not belong to content');
         }
+    }
+
+    private function hasContentRole(
+        ContentRole $role,
+        Content $content,
+        User|null $user = null,
+        LtiPlatform|null $platform = null,
+    ): bool {
+        if ($user && $content->hasUserWithMinimumRole($user, $role)) {
+            return true;
+        }
+
+        $platform ??= $this->getLtiPlatform();
+
+        if ($platform) {
+            foreach ($content->contexts as $context) {
+                if ($platform->hasContextWithMinimumRole($context, $role)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function getLtiPlatform(): LtiPlatform|null
