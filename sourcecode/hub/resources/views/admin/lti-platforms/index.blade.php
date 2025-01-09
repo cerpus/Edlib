@@ -43,6 +43,8 @@
                                 <dd class="lti-platform-card-enable-sso">{{ $platform->enable_sso ? trans('messages.yes') : trans('messages.no') }}</dd>
                                 <dt>{{ trans('messages.lti-platform-authorizes-edit') }}</dt>
                                 <dd class="lti-platform-card-authorizes-edit">{{ $platform->authorizes_edit ? trans('messages.yes') : trans('messages.no') }}</dd>
+                                <dt><a href="{{ route('admin.lti-platforms.contexts', [$platform]) }}">{{ trans('messages.contexts') }}</a></dt>
+                                <dd class="lti-platform-card-context-count">{{ count($platform->contexts) }}</dd>
                             </dl>
                         </div>
 

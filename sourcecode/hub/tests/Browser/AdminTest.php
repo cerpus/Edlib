@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Browser;
 
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -263,6 +264,38 @@ final class AdminTest extends DuskTestCase
                         ->assertSeeIn('@proxy-launch', 'No')
                         ->assertSeeIn('@send-email', 'No')
                         ->assertSeeIn('@send-name', 'No')
+                )
+        );
+    }
+
+    public function testCanAddContextToLtiPlatform(): void
+    {
+        LtiPlatform::factory()->create();
+        $context = Context::factory()->name('ndla_users')->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/admin')
+                ->clickLink('Manage LTI platforms')
+                ->within(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@context-count', '0')
+                        ->clickLink('Contexts')
+                )
+            // Dusk does not support selecting by the choice's label
+                ->select('context', $context->id)
+                ->press('Add')
+                ->assertSee('The context was added to the LTI platform')
+                ->visit('/admin')
+                ->clickLink('Manage LTI platforms')
+                ->within(
+                    new LtiPlatformCard(),
+                    fn (Browser $card) => $card
+                        ->assertSeeIn('@context-count', '1')
                 )
         );
     }

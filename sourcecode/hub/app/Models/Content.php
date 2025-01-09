@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
+use App\Events\ContentSaving;
 use App\Support\HasUlidsFromCreationDate;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
@@ -44,6 +45,7 @@ class Content extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
+        'saving' => ContentSaving::class,
         'forceDeleting' => ContentForceDeleting::class,
     ];
 
@@ -117,7 +119,7 @@ class Content extends Model
                 ]);
             }
 
-            $copy->users()->save($user, ['role' => ContentUserRole::Owner]);
+            $copy->users()->save($user, ['role' => ContentRole::Owner]);
             $copy->save();
 
             return $copy;
@@ -286,16 +288,32 @@ class Content extends Model
     }
 
     /**
-     * @return BelongsToMany<User, $this>
+     * @return BelongsToMany<Context, $this>
      */
-    public function usersWithTimestamps(): BelongsToMany
+    public function contexts(): BelongsToMany
     {
-        return $this->users()->withTimestamps();
+        return $this->belongsToMany(Context::class);
     }
 
     public function hasUser(User $user): bool
     {
         return $this->users->contains($user);
+    }
+
+    public function hasUserWithMinimumRole(User $user, ContentRole $role): bool
+    {
+        foreach ($this->users as $contentUser) {
+            if ($contentUser->is($user)) {
+                // @phpstan-ignore property.notFound
+                $contentUserRole = $contentUser->pivot->role;
+                assert($contentUserRole instanceof ContentRole);
+
+                // User cannot be added more than once, so we return here.
+                return $contentUserRole->grants($role);
+            }
+        }
+
+        return false;
     }
 
     /**

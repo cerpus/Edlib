@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enums\ContentUserRole;
+use App\Enums\ContentRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\Context;
 use App\Models\Tag;
 use App\Models\User;
 use DateTimeImmutable;
@@ -60,9 +61,14 @@ final class ContentFactory extends Factory
 
     public function withUser(
         User|UserFactory $user,
-        ContentUserRole|null $role = ContentUserRole::Owner,
+        ContentRole|null $role = ContentRole::Owner,
     ): self {
         return $this->hasAttached($user, ['role' => $role], 'users');
+    }
+
+    public function withContext(Context|ContextFactory $context): self
+    {
+        return $this->hasAttached($context, [], 'contexts');
     }
 
     public function withVersion(ContentVersionFactory|null $version = null): self

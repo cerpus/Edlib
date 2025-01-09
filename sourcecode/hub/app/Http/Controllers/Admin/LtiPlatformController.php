@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ContentRole;
+use App\Http\Requests\AddContextToLtiPlatformRequest;
 use App\Http\Requests\StoreLtiPlatformRequest;
 use App\Http\Requests\UpdateLtiPlatformRequest;
+use App\Models\Context;
 use App\Models\LtiPlatform;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use function redirect;
 use function route;
 use function to_route;
 
@@ -70,5 +74,33 @@ final class LtiPlatformController
         }
 
         return to_route('admin.lti-platforms.index');
+    }
+
+    public function contexts(LtiPlatform $platform): View
+    {
+        // @phpstan-ignore larastan.noUnnecessaryCollectionCall
+        $availableContexts = Context::all()
+            ->diff($platform->contexts)
+            ->mapWithKeys(fn (Context $context) => [$context->id => $context->name]);
+
+        return view('admin.lti-platforms.contexts', [
+            'available_contexts' => $availableContexts,
+            'platform' => $platform,
+        ]);
+    }
+
+    public function addContext(
+        LtiPlatform $platform,
+        AddContextToLtiPlatformRequest $request,
+    ): RedirectResponse {
+        $context = Context::where('id', $request->validated('context'))
+            ->firstOrFail();
+
+        $platform->contexts()->attach($context, [
+            'role' => ContentRole::from($request->validated('role')),
+        ]);
+
+        return redirect()->back()
+            ->with('alert', trans('messages.context-added-to-lti-platform'));
     }
 }
