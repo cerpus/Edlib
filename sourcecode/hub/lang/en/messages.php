@@ -221,4 +221,5 @@ return [
     'url-slug' => 'URL slug',
     'lti-playground' => 'LTI playground',
     'select-a-content-type' => 'Select a content type',
+    'add-lti-platform' => 'Add LTI platform',
 ];
