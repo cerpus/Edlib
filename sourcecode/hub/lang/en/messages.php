@@ -224,6 +224,7 @@ return [
     'url-slug' => 'URL slug',
     'lti-playground' => 'LTI playground',
     'select-a-content-type' => 'Select a content type',
+    'add-lti-platform' => 'Add LTI platform',
     'context' => 'Context',
     'context-help' => 'Contexts are used to grant implicit permissions for accessing content.',
     'context-name-help' => 'The name must be unique, and consist of characters from A-Z, 0-9, and underscores.',
