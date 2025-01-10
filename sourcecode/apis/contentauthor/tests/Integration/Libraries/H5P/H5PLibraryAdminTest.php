@@ -55,7 +55,7 @@ class H5PLibraryAdminTest extends TestCase
                 'params' => json_encode([
                     $libContent[0]->id => json_encode((object) [
                         'params' => 'new params',
-                        'metadata' => (object)[
+                        'metadata' => (object) [
                             'title' => 'title',
                             'authors' => [
                                 (object) [
@@ -113,10 +113,10 @@ class H5PLibraryAdminTest extends TestCase
         $ret = $libAdmin->upgradeMaxscore(
             [$libFoobar->id, $libQs->id],
             json_encode([
-                $contentFoobar[0]->id => (object)['score' => 2, 'success' => true],
-                $contentFoobar[1]->id => (object)['score' => 0, 'success' => false],
-                $contentQs[0]->id => (object)['score' => 3, 'success' => true],
-            ])
+                $contentFoobar[0]->id => (object) ['score' => 2, 'success' => true],
+                $contentFoobar[1]->id => (object) ['score' => 0, 'success' => false],
+                $contentQs[0]->id => (object) ['score' => 3, 'success' => true],
+            ]),
         );
 
         $this->assertEquals(2, $ret->left);

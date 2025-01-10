@@ -15,9 +15,7 @@ use function redirect;
 
 final readonly class LtiAdminAccess
 {
-    public function __construct(private Lti $lti)
-    {
-    }
+    public function __construct(private Lti $lti) {}
 
     public function __invoke(Request $request): RedirectResponse
     {

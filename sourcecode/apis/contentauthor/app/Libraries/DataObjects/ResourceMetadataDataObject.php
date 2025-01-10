@@ -15,6 +15,5 @@ readonly class ResourceMetadataDataObject
         public string|null $share = null,
         public string|null $reason = null,
         public array $tags = [],
-    ) {
-    }
+    ) {}
 }

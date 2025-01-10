@@ -58,7 +58,7 @@ class QuestionSetConverterTest extends TestCase
         $game = $questionsetConverter->convert(
             Millionaire::$machineName,
             $questionSet,
-            $resourceMetaObject
+            $resourceMetaObject,
         );
 
         $this->assertDatabaseHas('games', [
@@ -103,9 +103,9 @@ class QuestionSetConverterTest extends TestCase
                         [
                             'answerText' => 'AT 2',
                             'isCorrect' => false,
-                        ]
+                        ],
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -124,7 +124,7 @@ class QuestionSetConverterTest extends TestCase
         $game = $questionsetConverter->convert(
             Millionaire::$machineName,
             $questionSet,
-            $resourceMetaObject
+            $resourceMetaObject,
         );
 
         $this->assertDatabaseHas('games', [

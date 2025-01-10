@@ -52,7 +52,7 @@ class GamesAdminController extends Controller
         ]);
 
         collect($manager->listContents('zip://MILLIONAIRE/', deep: true))
-            ->filter(fn (StorageAttributes $file): bool => $file->isFile())
+            ->filter(fn(StorageAttributes $file): bool => $file->isFile())
             ->each(function (StorageAttributes $file) use ($manager, $version) {
                 $dest = preg_replace(
                     '@^zip://MILLIONAIRE/@i',
@@ -67,7 +67,7 @@ class GamesAdminController extends Controller
         $gameType = Gametype::ofGameType(
             $appManifest->getName(),
             $appManifest->getMajorVersion(),
-            $appManifest->getMinorVersion()
+            $appManifest->getMinorVersion(),
         )->first();
 
         $action = 'updated';
@@ -85,7 +85,7 @@ class GamesAdminController extends Controller
 
         return redirect('/admin/games')->with(
             'message',
-            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.'
+            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.',
         );
     }
 }

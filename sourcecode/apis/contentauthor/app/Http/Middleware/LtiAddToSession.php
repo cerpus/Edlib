@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiAddToSession
 {
-    public function __construct(private Lti $lti)
-    {
-    }
+    public function __construct(private Lti $lti) {}
 
     /**
      * @param (Closure(Request): Response) $next

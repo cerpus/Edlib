@@ -13,8 +13,7 @@ readonly class QuestionSetConvert
 {
     public function __construct(
         private GameHandler $gameHandler,
-    ) {
-    }
+    ) {}
 
     public function convert(string $convertTo, QuestionSet|array $questionSet, ResourceMetadataDataObject $metadata): Content
     {

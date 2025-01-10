@@ -81,7 +81,7 @@ class AdminArticleController extends Controller
         ];
 
         if (is_scalar($context)) {
-            $lines[] = (string)$context;
+            $lines[] = (string) $context;
         } else {
             if (is_array($context) && count($context) > 0) {
                 $lines[] = json_encode($context);

@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class LtiLocale
 {
-    public function __construct(private readonly Lti $lti)
-    {
-    }
+    public function __construct(private readonly Lti $lti) {}
 
     /**
      * Set locale based on lti param

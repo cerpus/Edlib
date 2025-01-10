@@ -46,7 +46,7 @@ class ArticleLockTest extends TestCase
             'authId' => $authId,
             'email' => $authEmail,
             'name' => $authName,
-            'verifiedEmails' => [$authEmail]
+            'verifiedEmails' => [$authEmail],
         ])
             ->get(route('article.edit', $article->id));
 

@@ -23,7 +23,7 @@ class LockStatusTest extends TestCase
         $h5p = H5PContent::factory()->create();
         $lockStatus = ContentLock::factory()->create([
             'content_id' => $h5p->id,
-            'updated_at' => Carbon::now()->subSeconds(30)
+            'updated_at' => Carbon::now()->subSeconds(30),
         ]);
         $user = User::factory()->make();
 
@@ -31,7 +31,7 @@ class LockStatusTest extends TestCase
             ->get(route('lock.status', $lockStatus->content_id))
             ->assertJson([
                 'isLocked' => true,
-                'editUrl' => null
+                'editUrl' => null,
             ]);
 
         $this->assertDatabaseCount('content_locks', 1);
@@ -80,7 +80,7 @@ class LockStatusTest extends TestCase
             'id' => $this->faker->uuid,
             'version_id' => $this->faker->uuid,
             'owner_id' => $user->auth_id,
-            'parent_id' => $originalArticle->id
+            'parent_id' => $originalArticle->id,
         ]);
         ContentVersion::factory()->create([
             'id' => $latestArticle->version_id,
@@ -91,7 +91,7 @@ class LockStatusTest extends TestCase
 
         $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
-            'updated_at' => Carbon::now()->subSeconds(91)
+            'updated_at' => Carbon::now()->subSeconds(91),
         ]);
 
         $this->withSession(['authId' => $user->auth_id])
@@ -140,7 +140,7 @@ class LockStatusTest extends TestCase
 
         $lockStatus = ContentLock::factory()->create([
             'content_id' => $originalArticle->id,
-            'updated_at' => Carbon::now()->subMinutes(40)
+            'updated_at' => Carbon::now()->subMinutes(40),
         ]);
         $this->get(route('lock.status', $lockStatus->content_id))
             ->assertStatus(Response::HTTP_FORBIDDEN);

@@ -16,8 +16,7 @@ final readonly class NdlaContentController
     public function __construct(
         private NdlaAudioClient $audioClient,
         private NdlaImageClient $imageClient,
-    ) {
-    }
+    ) {}
 
     public function browseAudio(Request $request): Response
     {
@@ -56,7 +55,7 @@ final readonly class NdlaContentController
                 'query' => $request->input('searchString'),
                 'language' => $request->input('language'),
                 'fallback' => $request->input('fallback'),
-            ]
+            ],
         ]);
 
         $images = $request->getBody()->getContents();

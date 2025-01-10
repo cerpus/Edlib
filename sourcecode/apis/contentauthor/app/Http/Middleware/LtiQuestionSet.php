@@ -12,9 +12,7 @@ use Validator;
 
 class LtiQuestionSet
 {
-    public function __construct(private readonly Lti $lti)
-    {
-    }
+    public function __construct(private readonly Lti $lti) {}
 
     /**
      * Extract Question Set data from a LTI request, validate, add order property and add to session.
@@ -42,7 +40,7 @@ class LtiQuestionSet
                 // The "only" consequence is that users will not have a pre-filled QuestionSet editor
                 Log::error(
                     "Validation of ext_question_set LTI param failed. Errors:",
-                    $validator->messages()->getMessages()
+                    $validator->messages()->getMessages(),
                 );
 
                 // In case we have a stale value from another request we just remove the key from the session

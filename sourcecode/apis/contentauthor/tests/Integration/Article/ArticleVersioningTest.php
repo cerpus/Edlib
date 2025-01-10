@@ -51,7 +51,7 @@ class ArticleVersioningTest extends TestCase
         $originalArticle = Article::factory()->create([
             'owner_id' => $authId,
             'license' => 'BY',
-            'is_draft' => false
+            'is_draft' => false,
         ]);
         $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
         $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);
@@ -66,8 +66,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -79,8 +79,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title . '1',
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -92,8 +92,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content . '1',
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -105,8 +105,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY-ND',
-                'collaborators' => 'c@d.com,a@b.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com',
+            ],
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
@@ -118,8 +118,8 @@ class ArticleVersioningTest extends TestCase
                 'title' => $originalArticle->title,
                 'content' => $originalArticle->content,
                 'license' => 'BY',
-                'collaborators' => 'c@d.com,a@b.com,e@f.com'
-            ]
+                'collaborators' => 'c@d.com,a@b.com,e@f.com',
+            ],
         );
         $this->assertFalse($originalArticle->requestShouldBecomeNewVersion($request));
     }
@@ -147,7 +147,7 @@ class ArticleVersioningTest extends TestCase
         $article->save();
 
         $article->collaborators()->save(
-            ArticleCollaborator::factory()->make(['email' => $collaborator->email])
+            ArticleCollaborator::factory()->make(['email' => $collaborator->email]),
         );
 
         $article->fresh();
@@ -159,8 +159,8 @@ class ArticleVersioningTest extends TestCase
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "New title",
@@ -185,8 +185,8 @@ class ArticleVersioningTest extends TestCase
             'email' => $copyist->email,
             'verifiedEmails' => [$copyist->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",
@@ -198,7 +198,7 @@ class ArticleVersioningTest extends TestCase
             'user_id' => $copyist->auth_id,
             'content_type' => Content::TYPE_ARTICLE,
             'version_purpose' => ContentVersion::PURPOSE_COPY,
-            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id
+            'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
         ]);
         $this->assertDatabaseHas('articles', [
             'title' => 'Another new title',
@@ -231,8 +231,8 @@ class ArticleVersioningTest extends TestCase
             'email' => $collaborator->email,
             'verifiedEmails' => [$collaborator->email],
         ])
-        ->get(route('article.edit', $article->id))
-        ->assertStatus(Response::HTTP_OK);
+            ->get(route('article.edit', $article->id))
+            ->assertStatus(Response::HTTP_OK);
 
         $this->put(route('article.update', $article->id), [
             'title' => "Another new title",

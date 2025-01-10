@@ -36,7 +36,7 @@ class ContentTypeControllerTest extends TestCase
         $content = H5PContent::factory()->create();
 
         $contentHandler = $this->createPartialMock(ContentTypeHandler::class, [
-            'storeQuestionset'
+            'storeQuestionset',
         ]);
         $contentHandler->method('storeQuestionset')->willReturn($content);
         app()->instance(ContentTypeHandler::class, $contentHandler);
@@ -64,9 +64,9 @@ class ContentTypeControllerTest extends TestCase
                             'text' => $options[2],
                             'correct' => true,
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $response = $this->postJson("api/v1/contenttypes/questionsets", $data);
@@ -74,7 +74,7 @@ class ContentTypeControllerTest extends TestCase
             ->assertSuccessful()
             ->assertExactJson([
                 'id' => $content->id,
-                'type' => QuestionSet::$machineName
+                'type' => QuestionSet::$machineName,
             ]);
     }
 
@@ -90,7 +90,7 @@ class ContentTypeControllerTest extends TestCase
                     'sharing' => [true],
                     'license' => [true],
                     'questions' => [true],
-                ]
+                ],
             ]);
     }
 

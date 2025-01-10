@@ -34,9 +34,9 @@ return [
         'h5pAdapter' => 'ndla',
         'video' => [
             'enable' => env("NDLA_H5P_VIDEO_STREAM_ENABLED", true),
-            'deleteVideoSourceAfterConvertToStream' => (bool)env("NDLA_H5P_VIDEO_ADAPTER_DELETEVIDEO", false),
+            'deleteVideoSourceAfterConvertToStream' => (bool) env("NDLA_H5P_VIDEO_ADAPTER_DELETEVIDEO", false),
             'pingDelay' => env("NDLA_H5P_VIDEO_DELAY", 10),
         ],
         'saveFrequency' => env('NDLA_H5P_SAVE_FREQUENCY', false),
-    ]
+    ],
 ];

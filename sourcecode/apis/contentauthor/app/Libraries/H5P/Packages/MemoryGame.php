@@ -23,9 +23,7 @@ class MemoryGame extends H5PBase
         // TODO: Implement getAnswers() method.
     }
 
-    public function populateSemanticsFromData($data)
-    {
-    }
+    public function populateSemanticsFromData($data) {}
 
     public function getPackageSemantics()
     {

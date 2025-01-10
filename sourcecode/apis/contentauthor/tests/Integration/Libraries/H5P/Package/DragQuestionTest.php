@@ -29,9 +29,9 @@ class DragQuestionTest extends TestCase
         $expectedSemantics = json_decode($library->semantics);
         $fullScreenObject = $expectedSemantics[5]->fields[8];
         $fullScreenObject->widget = 'showWhen';
-        $fullScreenObject->showWhen = (object)[
+        $fullScreenObject->showWhen = (object) [
             'detach' => true,
-            'rules' => []
+            'rules' => [],
         ];
         $expectedSemantics[5]->fields[8] = $fullScreenObject;
 

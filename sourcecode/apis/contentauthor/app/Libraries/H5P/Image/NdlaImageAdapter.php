@@ -24,8 +24,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     public function __construct(
         private readonly NdlaImageClient $client,
         private readonly CerpusStorageInterface $storage,
-    ) {
-    }
+    ) {}
 
     public function mapParams($params, $originalKeys = false)
     {
@@ -82,7 +81,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
         $source = $values['path'];
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
         $this->client->get($source, [
-            'sink' => $tempFile
+            'sink' => $tempFile,
         ]);
         $file = new File($tempFile);
         $extension = $file->guessExtension();

@@ -25,7 +25,7 @@ class CapabilityScoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'score' => 'required|numeric|in:0,1'
+            'score' => 'required|numeric|in:0,1',
         ];
     }
 

@@ -227,8 +227,8 @@ abstract class H5PConfigAbstract implements ConfigInterface
         }
 
         $customScripts = array_map(
-            fn ($script) => $this->getAssetUrl(null, $script),
-            $this->adapter->getCustomEditorScripts()
+            fn($script) => $this->getAssetUrl(null, $script),
+            $this->adapter->getCustomEditorScripts(),
         );
 
         return (object) [

@@ -18,7 +18,7 @@ class CollaboratorContextTest extends TestCase
         CollaboratorContext::factory()->create([
             'timestamp' => Carbon::createFromTimestamp($ts - 10),
             'system_id' => 'mysystem',
-            'context_id' => 'mycontext'
+            'context_id' => 'mycontext',
         ]);
 
         $this->assertTrue(CollaboratorContext::contextShouldUpdate('mysystem', 'mycontext', $ts)); // Timestamp is fresher than the one in DB
@@ -46,8 +46,8 @@ class CollaboratorContextTest extends TestCase
         $collaborators = json_decode(json_encode([
             [
                 'type' => 'user',
-                'authId' => '1234'
-            ]
+                'authId' => '1234',
+            ],
         ]));
 
         $resources = json_decode(json_encode([
@@ -56,15 +56,15 @@ class CollaboratorContextTest extends TestCase
                 "moduleId" => 8,
                 "activityId" => 39,
                 "contentAuthorId" => "2d09c8a1-bdb4-4de0-ac88-dcc9ba18b48e",
-                "coreId" => "2a095535-215f-4ee3-a331-b21539675d99"
+                "coreId" => "2a095535-215f-4ee3-a331-b21539675d99",
             ],
             [
                 "courseId" => 3,
                 "moduleId" => 8,
                 "activityId" => 40,
                 "contentAuthorId" => "4dd0989a-4c2f-4c88-9b06-6c0bd93a93d0",
-                "coreId" => "1a7b023a-6e05-4cc3-9aec-9d92c606c395"
-            ]
+                "coreId" => "1a7b023a-6e05-4cc3-9aec-9d92c606c395",
+            ],
         ]));
 
         CollaboratorContext::updateContext('mysystem', 'mycontext', $collaborators, $resources, Carbon::now()->timestamp);
@@ -82,8 +82,8 @@ class CollaboratorContextTest extends TestCase
         CollaboratorContext::factory()->create(
             [
                 'content_id' => $article->id,
-                'collaborator_id' => $userId
-            ]
+                'collaborator_id' => $userId,
+            ],
         );
 
         $this->assertTrue(CollaboratorContext::isUserCollaborator($userId, $article->id));

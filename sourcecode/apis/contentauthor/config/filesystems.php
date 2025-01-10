@@ -69,7 +69,7 @@ return [
 
         'h5pTmp' => [ // temporary folder for h5p
             'driver' => 'local',
-            'root' => '/tmp/h5p'
+            'root' => '/tmp/h5p',
         ],
 
         'h5p-presave' => [

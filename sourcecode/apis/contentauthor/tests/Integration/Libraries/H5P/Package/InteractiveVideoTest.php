@@ -24,16 +24,16 @@ class InteractiveVideoTest extends TestCase
         $this->assertFalse($interactiveVideo->validate());
 
         $interactiveVideo = new InteractiveVideo(json_encode([
-            'interactiveVideo' => "NotValid"
+            'interactiveVideo' => "NotValid",
         ]));
         $this->assertFalse($interactiveVideo->validate());
 
         $interactiveVideo = new InteractiveVideo(json_encode([
             'interactiveVideo' => [
                 'assets' => [
-                    'interactions' => "FOO"
-                ]
-            ]
+                    'interactions' => "FOO",
+                ],
+            ],
         ]));
         $this->assertTrue($interactiveVideo->validate());
     }
@@ -44,9 +44,9 @@ class InteractiveVideoTest extends TestCase
         $interactiveVideo = new InteractiveVideo(json_encode([
             'interactiveVideo' => [
                 'assets' => [
-                    'interactions' => null
-                ]
-            ]
+                    'interactions' => null,
+                ],
+            ],
         ]));
         $this->assertEmpty($interactiveVideo->getElements());
 
@@ -64,7 +64,7 @@ class InteractiveVideoTest extends TestCase
         $interactiveVideo = new InteractiveVideo(self::$elements['interactiveWithOneVideo']);
         $interactiveVideo->alterSource('videos/files-5a2f98d3cf06c.mp4', [
             'https://example.com/stream',
-            'video/streamps'
+            'video/streamps',
         ]);
         $existingStructure = json_decode(self::$elements['interactiveWithOneVideo']);
         $existingStructure->interactiveVideo->video->files[0]->path = 'https://example.com/stream';
@@ -79,10 +79,10 @@ class InteractiveVideoTest extends TestCase
         $interactiveVideo = new InteractiveVideo(self::$elements['interactiveWithNoVideo']);
         $interactiveVideo->alterSource('videos/files-5a2f98d3cf06c.mp4', [
             'https://example.com/stream',
-            'video/streamps'
+            'video/streamps',
         ]);
         $existingStructure = json_decode(self::$elements['interactiveWithNoVideo']);
-        $existingStructure->interactiveVideo->video->files = [(object)["path" => 'https://example.com/stream', 'mime' => 'video/streamps']];
+        $existingStructure->interactiveVideo->video->files = [(object) ["path" => 'https://example.com/stream', 'mime' => 'video/streamps']];
         $structure = $interactiveVideo->getPackageStructure();
         $this->assertJsonStringEqualsJsonString(json_encode($existingStructure), json_encode($structure));
     }

@@ -64,7 +64,7 @@ class ArticleControllerTest extends TestCase
             'share' => 'share',
             'license' => License::LICENSE_BY,
         ])
-        ->assertCreated();
+            ->assertCreated();
 
         $this->assertDatabaseHas('articles', [
             'title' => 'An article',

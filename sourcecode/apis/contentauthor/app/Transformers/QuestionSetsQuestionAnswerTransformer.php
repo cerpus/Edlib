@@ -27,7 +27,7 @@ class QuestionSetsQuestionAnswerTransformer extends TransformerAbstract
             'imageObject' => $answer->image,
             'imageUrl' => \ImageService::getHostingUrl($answer->image),
             'order' => $answer->order,
-            'correct' => (bool)$answer->correct,
+            'correct' => (bool) $answer->correct,
             //'links' => $this->links($answer)
         ];
     }

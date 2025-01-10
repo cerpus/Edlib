@@ -28,7 +28,7 @@ class ArticleFileVersionerTest extends TestCase
 <p><img src="/' . $articleId . '/tree.jpg" style="height:80px; width:454px" /></p>
 <p><img src="/' . $articleId . '/tree2.jpg" style="height:80px; width:454px" /></p>
 <p>&nbsp;</p>
-'
+',
         ]);
         $originalFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $this->originalArticle->id, 'tree.jpg');
         $fromFile = base_path('tests/files/tree.jpg');

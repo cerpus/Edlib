@@ -27,8 +27,8 @@ class QuestionSetTest extends TestCase
         $this->assertObjectHasProperty("randomQuestions", $generatedStructure);
         $this->assertObjectHasProperty("endGame", $generatedStructure);
         $this->assertObjectHasProperty("override", $generatedStructure);
-        $this->assertCount(9, array_keys((array)$generatedStructure));
+        $this->assertCount(9, array_keys((array) $generatedStructure));
 
-        $this->assertEquals((array)$structure, (array)$generatedStructure);
+        $this->assertEquals((array) $structure, (array) $generatedStructure);
     }
 }

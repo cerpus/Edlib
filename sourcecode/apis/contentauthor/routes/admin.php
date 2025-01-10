@@ -68,11 +68,11 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('/capability/{capability}/score', [CapabilityController::class, 'score'])->name('admin.capability.score');
         Route::post(
             '/capability/{capability}/description',
-            [CapabilityController::class, 'description']
+            [CapabilityController::class, 'description'],
         )->name('admin.capability.description');
         Route::get(
             '/capability/{capability}/translation',
-            [CapabilityController::class, 'translation']
+            [CapabilityController::class, 'translation'],
         )->name('admin.capability.translation');
 
         Route::get('games', [GamesAdminController::class, 'index'])->name('admin.games');
@@ -99,5 +99,5 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
         // Locks admin
         Route::get("locks", [LocksController::class, 'index'])->name("admin.locks");
         Route::delete("locks", [LocksController::class, 'destroy'])->name("admin.locks.delete");
-    }
+    },
 );

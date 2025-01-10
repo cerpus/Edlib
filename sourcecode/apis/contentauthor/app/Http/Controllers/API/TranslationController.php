@@ -11,13 +11,12 @@ final readonly class TranslationController
 {
     public function __construct(
         private TranslationServiceInterface $translator,
-    ) {
-    }
+    ) {}
 
     public function __invoke(ApiTranslationRequest $request): JsonResponse
     {
         $fieldsToTranslate = collect($request->validated('fields'))
-            ->mapWithKeys(fn ($item) => [$item['path'] => $item['value']])
+            ->mapWithKeys(fn($item) => [$item['path'] => $item['value']])
             ->toArray();
 
         $from = $request->validated('from_lang');

@@ -21,7 +21,7 @@ class H5PLibraryLanguage extends Model
     protected $fillable = [
         'library_id',
         'language_code',
-        'translation'
+        'translation',
     ];
 
     public $timestamps = false;

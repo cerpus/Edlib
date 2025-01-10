@@ -31,7 +31,7 @@ class LockStatusController extends Controller
         /** @var ContentLock $lock */
         $lock = ContentLock::notExpiredById($id);
         $lockData = ContentLockDataObject::create([
-            'isLocked' => (bool)$lock
+            'isLocked' => (bool) $lock,
         ]);
 
         if (!$lockData->isLocked) {

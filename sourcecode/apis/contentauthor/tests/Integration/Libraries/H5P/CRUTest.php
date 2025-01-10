@@ -42,7 +42,7 @@ class CRUTest extends TestCase
         $this->assertEquals('/tmp', env('TEST_FS_ROOT'));
 
         $dest = env('TEST_FS_ROOT') . '/tree.jpg';
-        $this->assertTrue(copy(__DIR__.'/../../../files/tree.jpg', $dest), "Unable to copy file to $dest");
+        $this->assertTrue(copy(__DIR__ . '/../../../files/tree.jpg', $dest), "Unable to copy file to $dest");
 
         $this->assertFileExists($dest, "File $dest does not exist");
         $this->assertTrue(unlink($dest), "Unable to remove file $dest");
@@ -85,7 +85,7 @@ class CRUTest extends TestCase
                 'col-emails' => 'a@b.com',
                 'license' => "PRIVATE",
                 'isDraft' => 0,
-                'maxScore' => 3
+                'maxScore' => 3,
             ])
             ->assertStatus(Response::HTTP_CREATED); // Redirects after save
 
@@ -112,14 +112,14 @@ class CRUTest extends TestCase
                 'title' => 'Tittel',
                 'action' => 'create',
                 'library' => 'H5P.Dialogcards 1.5',
-                'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[{"name": "' . $owner->name. '","role":"Author"}],"changes":[],"extraTitle":"Tittel","title":"Tittel"}}',
+                'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[{"name": "' . $owner->name . '","role":"Author"}],"changes":[],"extraTitle":"Tittel","title":"Tittel"}}',
                 'frame' => "1",
                 'copyright' => "1",
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com',
                 'license' => "PRIVATE",
                 'maxScore' => 2,
-                'isDraft' => 0
+                'isDraft' => 0,
             ]);
 
         $h5p->refresh();
@@ -154,7 +154,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
-                'isDraft' => 0
+                'isDraft' => 0,
             ]);
 
         $this->assertDatabaseCount('h5p_contents', 2);
@@ -189,7 +189,7 @@ class CRUTest extends TestCase
                 'col_email' => '',
                 'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 'license' => "PRIVATE",
-                'isDraft' => 0
+                'isDraft' => 0,
             ])
             ->assertStatus(Response::HTTP_OK);
 
@@ -223,7 +223,7 @@ class CRUTest extends TestCase
                 'parameters' => '{"params":{"description":"Do it now!\n","dialogs":[{"tips":{},"text":"<p>Question</p>\n","answer":"<p>Answer</p>\n"}],"behaviour":{"enableRetry":true,"disableBackwardsNavigation":false,"scaleTextNotCard":false,"randomCards":false},"answer":"Turn","next":"Next","prev":"Previous","retry":"Retry","progressText":"Card @card of @total","title":"<p>Ny tittel</p>\n"},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Tittel 4","title":"Tittel 4"}}',
                 'frame' => "1",
                 'copyright' => "1",
-                'isDraft' => 0
+                'isDraft' => 0,
                 //'col_email' => '',
                 //'col-emails' => 'a@b.com,d@e.com,f@g.com',
                 //'license' => "PRIVATE",
@@ -394,7 +394,7 @@ class CRUTest extends TestCase
 
         $this->setupH5PAdapter([
             'isUserPublishEnabled' => true,
-            'getAdapterName' => "UnitTest"
+            'getAdapterName' => "UnitTest",
         ]);
 
         $request = new Oauth1Request('POST', route('h5p.store'), [

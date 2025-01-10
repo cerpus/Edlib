@@ -14,9 +14,7 @@ use InvalidArgumentException;
  */
 class H5pPresave
 {
-    public function __construct(private readonly Cloud $fs)
-    {
-    }
+    public function __construct(private readonly Cloud $fs) {}
 
     public function hasScript(string $library): bool
     {
@@ -53,7 +51,7 @@ class H5pPresave
     public function getAllLibrariesWithScripts(): array
     {
         return collect($this->fs->directories())
-            ->filter(fn (string $dir): bool => $this->fs->exists("$dir/presave.js"))
+            ->filter(fn(string $dir): bool => $this->fs->exists("$dir/presave.js"))
             ->values()
             ->toArray();
     }

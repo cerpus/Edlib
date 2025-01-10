@@ -62,7 +62,7 @@ class CollaboratorContext extends Model
                     $item['type'] = $collaborator->type;
                     $item['collaborator_id'] = $collaborator->authId;
                     $item['content_id'] = $resource->contentAuthorId;
-                    $item['timestamp'] = Carbon::createFromTimestamp((int)$timestamp);
+                    $item['timestamp'] = Carbon::createFromTimestamp((int) $timestamp);
                     $data[] = $item;
                 }
             }

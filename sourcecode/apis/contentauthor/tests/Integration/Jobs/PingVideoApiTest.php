@@ -119,7 +119,7 @@ class PingVideoApiTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContent->id,
             'parameters' => json_encode($packageStructure),
-            'filtered' => ''
+            'filtered' => '',
         ]);
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }
@@ -163,10 +163,10 @@ class PingVideoApiTest extends TestCase
         $h5pContentParent->contentVideos()
             ->save(
                 H5PContentsVideo::factory()
-                ->create([
-                    'h5p_content_id' => $h5pContentParent->id,
-                    'source_file' => $videoSource,
-                ])
+                    ->create([
+                        'h5p_content_id' => $h5pContentParent->id,
+                        'source_file' => $videoSource,
+                    ]),
             );
 
         $packageStructureParent = json_decode($packageStructure);
@@ -212,7 +212,7 @@ class PingVideoApiTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContentChild->id,
             'parameters' => json_encode($packageStructureChild),
-            'filtered' => ''
+            'filtered' => '',
         ]);
 
         $this->disk->assertMissing('content/' . $h5pContentParent->id . '/' . $videoSource);
@@ -228,10 +228,10 @@ class PingVideoApiTest extends TestCase
         $content->contentVideos()
             ->save(
                 H5PContentsVideo::factory()
-                ->create([
-                    'h5p_content_id' => $content->id,
-                    'source_file' => $videoSource,
-                ])
+                    ->create([
+                        'h5p_content_id' => $content->id,
+                        'source_file' => $videoSource,
+                    ]),
             );
         return $content;
     }
@@ -310,7 +310,7 @@ class PingVideoApiTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContentGrandchild->id,
             'parameters' => json_encode($packageStructureGrandchild),
-            'filtered' => ''
+            'filtered' => '',
         ]);
 
         $this->assertEquals(2, $job->processedChildren);
@@ -319,14 +319,14 @@ class PingVideoApiTest extends TestCase
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContentChild->id,
             'parameters' => json_encode($packageStructureGrandchild),
-            'filtered' => ''
+            'filtered' => '',
         ]);
 
         unset($packageStructureGrandchild->interactiveVideo->unitTestValue);
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContentParent->id,
             'parameters' => json_encode($packageStructureGrandchild),
-            'filtered' => ''
+            'filtered' => '',
         ]);
 
         $this->disk->assertMissing('content/' . $h5pContentParent->id . '/' . $videoSource);
@@ -360,10 +360,10 @@ class PingVideoApiTest extends TestCase
         $h5pContentParent->contentVideos()
             ->save(
                 H5PContentsVideo::factory()
-                ->create([
-                    'h5p_content_id' => $h5pContentParent->id,
-                    'source_file' => $videoSource,
-                ])
+                    ->create([
+                        'h5p_content_id' => $h5pContentParent->id,
+                        'source_file' => $videoSource,
+                    ]),
             );
 
         $packageStructureChild = json_decode($packageStructure);
@@ -391,10 +391,10 @@ class PingVideoApiTest extends TestCase
         $h5pContentGrandchild->contentVideos()
             ->save(
                 H5PContentsVideo::factory()
-                ->create([
-                    'h5p_content_id' => $h5pContentGrandchild->id,
-                    'source_file' => $newFileId,
-                ])
+                    ->create([
+                        'h5p_content_id' => $h5pContentGrandchild->id,
+                        'source_file' => $newFileId,
+                    ]),
             );
 
         ContentVersion::factory()->create([
@@ -472,12 +472,12 @@ class PingVideoApiTest extends TestCase
         $job->handle($adapter);
 
         $packageStructure = json_decode($packageStructure);
-        $packageStructure->interactiveVideo->video->files = [(object)["path" => $streamUrl, 'mime' => $mimeType]];
+        $packageStructure->interactiveVideo->video->files = [(object) ["path" => $streamUrl, 'mime' => $mimeType]];
 
         $this->assertDatabaseHas('h5p_contents', [
             'id' => $h5pContent->id,
             'parameters' => json_encode($packageStructure),
-            'filtered' => ''
+            'filtered' => '',
         ]);
         $this->disk->assertMissing('content/' . $h5pContent->id . '/' . $videoSource);
     }

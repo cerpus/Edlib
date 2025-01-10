@@ -23,14 +23,14 @@ class QuestionnaireTest extends TestCase
         $this->assertFalse($questionnaire->validate());
 
         $questionnaire = new Questionnaire(json_encode([
-            'questionnaireElements' => "snafu"
+            'questionnaireElements' => "snafu",
         ]));
         $this->assertTrue($questionnaire->validate());
 
         $questionnaire = new Questionnaire(json_encode([
             'questionnaireElements' => [
-                'foo' => 'bar'
-            ]
+                'foo' => 'bar',
+            ],
         ]));
         $this->assertTrue($questionnaire->validate());
     }
@@ -39,7 +39,7 @@ class QuestionnaireTest extends TestCase
     public function getQuestions()
     {
         $questionnaire = new Questionnaire(json_encode([
-            'questionnaireElements' => null
+            'questionnaireElements' => null,
         ]));
         $this->assertEmpty($questionnaire->getElements());
 

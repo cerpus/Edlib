@@ -54,7 +54,7 @@ final class FrameworkTest extends TestCase
 
         $this->assertSame(
             'Some body',
-            $this->framework->fetchExternalData('http://www.example.com')
+            $this->framework->fetchExternalData('http://www.example.com'),
         );
     }
 

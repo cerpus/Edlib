@@ -337,7 +337,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
                             }
                             return 'url("../' . $cssRelPath . $matches[1] . '")';
                         },
-                        $assetContent
+                        $assetContent,
                     ) . "\n";
                     $filePath = ContentStorageSettings::CACHEDASSETS_CSS_PATH;
                 }
@@ -347,7 +347,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
             if (!$this->filesystem->put($outputfile, $content)) {
                 throw new Exception("Could not create cached asset");
             }
-            $files[$type] = [(object)[
+            $files[$type] = [(object) [
                 'path' => $outputfile,
                 'version' => '',
                 'url' => $this->filesystem->url($outputfile),
@@ -362,12 +362,12 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     {
         $files = [];
         foreach ([
-                     'scripts' => ContentStorageSettings::CACHEDASSETS_JS_PATH,
-                     'styles' => ContentStorageSettings::CACHEDASSETS_CSS_PATH,
-                 ] as $type => $path) {
+            'scripts' => ContentStorageSettings::CACHEDASSETS_JS_PATH,
+            'styles' => ContentStorageSettings::CACHEDASSETS_CSS_PATH,
+        ] as $type => $path) {
             $file = sprintf($path, $key);
             if ($this->filesystem->has($file)) {
-                $files[$type] = [(object)[
+                $files[$type] = [(object) [
                     'path' => $file,
                     'version' => '',
                     'url' => $this->filesystem->url($file),
@@ -384,9 +384,9 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
     {
         foreach ($keys as $hash) {
             foreach ([
-                         ContentStorageSettings::CACHEDASSETS_JS_PATH,
-                         ContentStorageSettings::CACHEDASSETS_CSS_PATH
-                     ] as $path) {
+                ContentStorageSettings::CACHEDASSETS_JS_PATH,
+                ContentStorageSettings::CACHEDASSETS_CSS_PATH,
+            ] as $path) {
                 $file = sprintf($path, $hash);
                 if ($this->filesystem->has($file)) {
                     $this->filesystem->delete($file);

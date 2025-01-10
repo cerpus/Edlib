@@ -18,7 +18,7 @@ class LinkInfoController extends Controller
     {
         $rawUrl = $url = $request->get("link");
         if (!empty($url)) {
-            if ((bool)preg_match('/^https?:\/\//i', $url) === false) {
+            if ((bool) preg_match('/^https?:\/\//i', $url) === false) {
                 $url = "http://" . $url;
             }
             try {

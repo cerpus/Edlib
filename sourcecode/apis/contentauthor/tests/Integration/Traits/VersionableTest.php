@@ -57,8 +57,8 @@ class VersionableTest extends TestCase
         $result = $versionable->getParentIds();
 
         $this->assertCount(2, $result);
-        $this->assertContains((string)$parent->content_id, $result);
-        $this->assertContains((string)$grandParent->content_id, $result);
+        $this->assertContains((string) $parent->content_id, $result);
+        $this->assertContains((string) $grandParent->content_id, $result);
     }
 
     public function test_getChildren(): void

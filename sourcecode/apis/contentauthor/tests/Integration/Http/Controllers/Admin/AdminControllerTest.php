@@ -97,8 +97,8 @@ class AdminControllerTest extends TestCase
             ->post(route('admin.maxscore.update', [
                 'libraries' => [$library->id],
                 'scores' => json_encode([
-                    $content->id => (object)['score' => 3, 'success' => true],
-                ])
+                    $content->id => (object) ['score' => 3, 'success' => true],
+                ]),
             ]))
             ->assertOk()
             ->decodeResponseJson();

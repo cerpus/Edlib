@@ -286,12 +286,12 @@ class Article extends Content implements VersionableObject
             $dom->loadHTML($content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
 
             collect($dom->getElementsByTagName('img'))
-                ->filter(fn (DOMElement $node) => $node->hasAttribute('src'))
-                ->each(fn (DOMElement $node) => $node->setAttribute(
+                ->filter(fn(DOMElement $node) => $node->hasAttribute('src'))
+                ->each(fn(DOMElement $node) => $node->setAttribute(
                     'src',
                     preg_replace_callback(
                         '@^/h5pstorage/article-uploads/(.*?)@',
-                        fn (array $matches) => $fs->url(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
+                        fn(array $matches) => $fs->url(ContentStorageSettings::ARTICLE_DIR . $matches[1]),
                         $node->getAttribute('src'),
                     ),
                 ));

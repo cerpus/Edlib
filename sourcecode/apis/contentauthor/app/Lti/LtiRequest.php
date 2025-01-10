@@ -42,7 +42,7 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
     {
         return $this->getUserFullName() ?: trim(
             ($this->getUserGivenName() ?? '') . ' ' .
-            ($this->getUserFamilyName() ?? '')
+            ($this->getUserFamilyName() ?? ''),
         ) ?: null;
     }
 
@@ -112,7 +112,7 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
             $this->getToolConsumerInfoProductFamilyCode(),
             $this->getExtContextId(),
             $this->getExtModuleId(),
-            $this->getExtActivityId()
+            $this->getExtActivityId(),
         ];
         return sha1(json_encode($keys));
     }

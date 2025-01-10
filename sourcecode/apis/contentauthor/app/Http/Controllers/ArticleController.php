@@ -67,7 +67,7 @@ class ArticleController extends Controller
                 'canPublish' => true,
                 'canList' => true,
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
+            ],
         )->toJson();
 
         $state = ArticleStateDataObject::create([
@@ -80,7 +80,7 @@ class ArticleController extends Controller
         ])->toJson();
 
         return view('article.create')->with(compact([
-            'emails', 'config', 'editorSetup', 'state'
+            'emails', 'config', 'editorSetup', 'state',
         ]));
     }
 
@@ -175,7 +175,7 @@ class ArticleController extends Controller
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
                 'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
-            ]
+            ],
         );
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([

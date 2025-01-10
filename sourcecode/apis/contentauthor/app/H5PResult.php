@@ -21,6 +21,6 @@ class H5PResult extends Model
         'opened',
         'finished',
         'time',
-        'context'
+        'context',
     ];
 }

@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         H5POption::observe(H5POptionObserver::class);
         ContentVersion::observe(ContentVersionsObserver::class);
 
-        TrimStrings::skipWhen(fn (Request $request) => $request->has('lti_message_type'));
+        TrimStrings::skipWhen(fn(Request $request) => $request->has('lti_message_type'));
     }
 
     /**
@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(CredentialStoreInterface::class, fn () => new Credentials(
+        $this->app->singleton(CredentialStoreInterface::class, fn() => new Credentials(
             config('app.consumer-key'),
             config('app.consumer-secret'),
         ));
@@ -55,6 +55,6 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->when(RequestId::class)
             ->needs(Logger::class)
-            ->give(fn () => Log::channel());
+            ->give(fn() => Log::channel());
     }
 }

@@ -25,7 +25,7 @@ class CapabilityEnableRequest extends FormRequest
     public function rules()
     {
         return [
-            'enabled' => 'required|numeric|in:0,1'
+            'enabled' => 'required|numeric|in:0,1',
         ];
     }
 

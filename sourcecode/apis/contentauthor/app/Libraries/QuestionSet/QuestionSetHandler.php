@@ -113,7 +113,7 @@ class QuestionSetHandler
 
             $storeAnswer = function ($answer, $newValues) {
                 $answer->answer_text = QuestionBankClient::stripMathContainer($newValues['answerText']);
-                $answer->correct = (bool)$newValues['isCorrect'];
+                $answer->correct = (bool) $newValues['isCorrect'];
                 $answer->image = !empty($newValues['image']['id']) ? $newValues['image']['id'] : null;
                 $answer->order = $newValues['order'];
                 $answer->save();

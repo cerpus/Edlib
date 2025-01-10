@@ -26,8 +26,7 @@ readonly class H5PExport
         private H5PContentValidator $validator,
         private bool $convertMediaToLocal,
         private array $externalProviders,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws JsonException
@@ -55,9 +54,9 @@ readonly class H5PExport
         // we don't use the so-called validator for purposes other than
         // resolving dependencies, as it likes to corrupt the data
 
-        $validatorParams = (object)[
+        $validatorParams = (object) [
             'library' => $content->library->getLibraryString(false),
-            'params' => json_decode($content->parameters)
+            'params' => json_decode($content->parameters),
         ];
         $this->validator->validateLibrary($validatorParams, (object) [
             'options' => [$validatorParams->library],
@@ -79,7 +78,7 @@ readonly class H5PExport
     {
         return $parameters->map(function (mixed $value) use ($content) {
             if (is_object($value) && property_exists($value, 'mime') && !empty($value->path) && !$this->isPathLocal($value->path)) {
-                $value = $this->applyExternalProviderHandling((array)$value, $content);
+                $value = $this->applyExternalProviderHandling((array) $value, $content);
             }
 
             if (is_array($value) || is_object($value)) {
@@ -94,9 +93,9 @@ readonly class H5PExport
     {
         $externalProvider = collect($this->externalProviders)
             ->first(
-                fn ($provider) =>
+                fn($provider) =>
                 $provider instanceof H5PExternalProviderInterface &&
-                $provider->isTargetType($values['mime'], $values['path'])
+                $provider->isTargetType($values['mime'], $values['path']),
             );
 
         if ($externalProvider instanceof H5PExternalProviderInterface) {

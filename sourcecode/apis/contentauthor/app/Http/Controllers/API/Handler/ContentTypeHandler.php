@@ -54,7 +54,7 @@ class ContentTypeHandler
                 'semantics' => $semantics,
                 'library' => $contentType->getLibraryWithVersion(),
                 'subContentId' => Uuid::uuid4(),
-                'metadata' => []
+                'metadata' => [],
             ];
         });
     }

@@ -37,7 +37,7 @@ class H5PBehaviorSettingsTest extends TestCase
     {
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
 
-        $this->packageStructure = (object)["missingBehavior" => true];
+        $this->packageStructure = (object) ["missingBehavior" => true];
         $this->applyBehaviorSettings($behaviorSettings);
 
         $this->assertJsonStringEqualsJsonString('{"missingBehavior":true}', $this->getPackageStructure(true));

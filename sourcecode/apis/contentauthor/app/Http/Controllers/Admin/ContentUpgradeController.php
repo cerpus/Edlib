@@ -15,8 +15,7 @@ final class ContentUpgradeController
     public function __construct(
         private readonly H5PCore $core,
         private readonly H5PFrameworkInterface $framework,
-    ) {
-    }
+    ) {}
 
     public function upgrade(H5PLibrary $library): View
     {
@@ -90,8 +89,8 @@ final class ContentUpgradeController
                 'buttonLabel' => 'Start upgrade',
                 'infoUrl' => route('admin.content-upgrade', ['id' => $library->id]),
                 'total' => $upgradableContentCount,
-                'token' => csrf_token()
-            ]
+                'token' => csrf_token(),
+            ],
         ];
     }
 }

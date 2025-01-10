@@ -227,7 +227,7 @@ class H5PControllerTest extends TestCase
 
         $this
             ->withSession(['authId' => $this->faker->uuid])
-            ->putJson('/h5p/'.$content->id, [
+            ->putJson('/h5p/' . $content->id, [
                 '_token' => csrf_token(),
                 ...$jsonData,
             ])
@@ -330,7 +330,7 @@ class H5PControllerTest extends TestCase
         $response = $this->post('/h5p/' . $content->id, $request->toArray());
         $result = $response->original;
 
-        $this->assertStringContainsString('<div class="h5p-content" data-content-id="'.$content->id.'"></div>', $response->content());
+        $this->assertStringContainsString('<div class="h5p-content" data-content-id="' . $content->id . '"></div>', $response->content());
         $this->assertInstanceOf(View::class, $result);
         $this->assertEquals($content->id, $result['id']);
         $this->assertFalse($result['preview']);

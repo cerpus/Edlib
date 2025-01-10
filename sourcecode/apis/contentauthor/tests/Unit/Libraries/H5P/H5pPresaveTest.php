@@ -19,11 +19,11 @@ final class H5pPresaveTest extends TestCase
 
     protected function setUp(): void
     {
-        $adapter = new LocalFilesystemAdapter(__DIR__.'/Stub/Presave');
+        $adapter = new LocalFilesystemAdapter(__DIR__ . '/Stub/Presave');
 
         $this->presave = new H5pPresave(
             new FilesystemAdapter(new Filesystem($adapter), $adapter, [
-                'url' => '/test'
+                'url' => '/test',
             ]),
         );
     }

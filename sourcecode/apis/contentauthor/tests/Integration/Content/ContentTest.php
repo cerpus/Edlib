@@ -51,6 +51,6 @@ class ContentTest extends TestCase
             ->assertTrue($h5p->isCollaborator());
 
         $this->withSession(['verifiedEmails' => ['test@example-1qw23er4.no']])
-        ->assertFalse($h5p->isCollaborator());
+            ->assertFalse($h5p->isCollaborator());
     }
 }

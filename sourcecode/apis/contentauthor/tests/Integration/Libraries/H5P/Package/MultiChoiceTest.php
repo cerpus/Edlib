@@ -30,9 +30,9 @@ class MultiChoiceTest extends TestCase
         $this->assertObjectHasProperty("confirmCheck", $generatedStructure);
         $this->assertObjectHasProperty("confirmRetry", $generatedStructure);
         $this->assertObjectHasProperty("question", $generatedStructure);
-        $this->assertCount(7, array_keys((array)$generatedStructure));
+        $this->assertCount(7, array_keys((array) $generatedStructure));
 
-        $this->assertEquals((array)$structure, (array)$generatedStructure);
+        $this->assertEquals((array) $structure, (array) $generatedStructure);
     }
 
     #[Test]
@@ -95,7 +95,7 @@ class MultiChoiceTest extends TestCase
         $semantics = $multiChoice->populateSemanticsFromData([
             'text' => $questionText,
             'answers' => $answers,
-            'image' => []
+            'image' => [],
         ]);
 
         $this->assertEquals($this->parameters['onequestionwiththreeanswers'], json_encode($semantics));

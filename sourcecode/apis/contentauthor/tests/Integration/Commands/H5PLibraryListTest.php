@@ -38,7 +38,7 @@ class H5PLibraryListTest extends TestCase
                     ['test.Table', '1.0.4', 'No'],
                     ['test.Text', '2.19.42', 'Yes'],
                     ['test.Video', '2.1.8', 'Yes'],
-                ]
+                ],
             );
     }
 
@@ -53,7 +53,7 @@ class H5PLibraryListTest extends TestCase
                     ['test.Audio', '1.10.4', 'Yes'],
                     ['test.Text', '2.19.42', 'Yes'],
                     ['test.Video', '2.1.8', 'Yes'],
-                ]
+                ],
             );
     }
 
@@ -65,7 +65,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Version', 'Content type'],
                 [
                     ['test.Video', '2.1.8', 'Yes'],
-                ]
+                ],
             );
     }
 
@@ -77,7 +77,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Version', 'Content type'],
                 [
                     ['test.Text', '2.19.42', 'Yes'],
-                ]
+                ],
             );
     }
 
@@ -90,7 +90,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
                 [
                     ['test.Image', '1.4.6', '1.23', 'Boaty McBoatface'],
-                ]
+                ],
             );
     }
 
@@ -105,7 +105,7 @@ class H5PLibraryListTest extends TestCase
                     ['test.Audio', '1.2.3', '1.24', 'Testy Tester'],
                     ['test.Image', '1.4.6', '1.23', 'Boaty McBoatface'],
                     ['test.Video', '2.1.10', '1.22', 'Boaty McBoatface'],
-                ]
+                ],
             );
     }
 
@@ -118,7 +118,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
                 [
                     ['test.Image', '1.4.6', '1.23', 'Boaty McBoatface'],
-                ]
+                ],
             );
     }
 
@@ -132,7 +132,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
                 [
                     ['test.Audio', '1.2.3', '1.24', 'Testy Tester'],
-                ]
+                ],
             );
     }
 
@@ -145,7 +145,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Installed', 'On h5p.org Hub'],
                 [
                     ['test.Video', '2.1.8', '2.1.10'],
-                ]
+                ],
             );
     }
 
@@ -159,7 +159,7 @@ class H5PLibraryListTest extends TestCase
                 [
                     ['test.Audio', '1.10.4', '1.2.3'],
                     ['test.Video', '2.1.8', '2.1.10'],
-                ]
+                ],
             );
     }
 
@@ -172,7 +172,7 @@ class H5PLibraryListTest extends TestCase
                 ['Name', 'Installed', 'On h5p.org Hub'],
                 [
                     ['test.Video', '2.1.8', '2.1.10'],
-                ]
+                ],
             );
     }
 

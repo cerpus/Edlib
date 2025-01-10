@@ -43,7 +43,7 @@ return [
             'table' => 'jobs',
             'queue' => 'default',
             'expire' => 3650,
-            'retry_after' => 3700
+            'retry_after' => 3700,
         ],
         'beanstalkd' => [
             'driver' => 'beanstalkd',
@@ -78,7 +78,7 @@ return [
             'connection' => 'default',
             'queue'  => 'default',
             'expire' => 3650,
-            'retry_after' => 3700
+            'retry_after' => 3700,
         ],
     ],
 

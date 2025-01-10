@@ -30,7 +30,7 @@ class HandleVersioningTest extends TestCase
             new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
-            []
+            [],
         );
 
         (new HandleVersioning())->handle($event);
@@ -72,7 +72,7 @@ class HandleVersioningTest extends TestCase
             new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
-            []
+            [],
         );
 
         (new HandleVersioning())->handle($event);
@@ -122,7 +122,7 @@ class HandleVersioningTest extends TestCase
             new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
-            []
+            [],
         );
 
         (new HandleVersioning())->handle($event);
@@ -164,7 +164,7 @@ class HandleVersioningTest extends TestCase
             new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
-            []
+            [],
         );
 
         (new HandleVersioning())->handle($event);

@@ -53,7 +53,7 @@ class EdlibLicenseStats extends Command
             ->groupBy('license')
             ->orderBy('license')
             ->get()
-            ->map(fn ($item) => [
+            ->map(fn($item) => [
                 'license' => $item->license,
                 'count' => $item->aggregate,
             ])

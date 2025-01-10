@@ -24,10 +24,10 @@ abstract class TestCase extends BaseTestCase
      */
     private static function getFakeMix(): Mix
     {
-        return self::$fakeMix ??= new class () extends Mix {
+        return self::$fakeMix ??= new class extends Mix {
             public function __invoke($path, $manifestDirectory = ''): HtmlString
             {
-                $path = rtrim($manifestDirectory, '/').'/'.ltrim($path, '/');
+                $path = rtrim($manifestDirectory, '/') . '/' . ltrim($path, '/');
 
                 return new HtmlString($path);
             }

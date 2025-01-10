@@ -15,7 +15,7 @@ class H5PContentsVideo extends Model
     protected $fillable = [
         'h5p_content_id',
         'video_id',
-        'source_file'
+        'source_file',
     ];
 
     /**

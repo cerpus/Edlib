@@ -13,9 +13,9 @@ final readonly class NynorskrobotenAdapter implements TranslationServiceInterfac
 {
     public function __construct(
         private Client $client,
-        #[SensitiveParameter] private string $apiToken,
-    ) {
-    }
+        #[SensitiveParameter]
+        private string $apiToken,
+    ) {}
 
     public function translate(string $toLanguage, H5PTranslationDataObject $data): H5PTranslationDataObject
     {

@@ -577,7 +577,7 @@ class TestH5PSeeder extends Seeder
                     'tutorial_url' => '',
                     'metadata_settings' => null,
                 ],
-            ]
+            ],
         );
     }
 
@@ -608,7 +608,7 @@ class TestH5PSeeder extends Seeder
                 ['library_id' => '284', 'required_library_id' => '34', 'dependency_type' => 'preloaded'],
                 ['library_id' => '202', 'required_library_id' => '35', 'dependency_type' => 'preloaded'],
                 ['library_id' => '202', 'required_library_id' => '220', 'dependency_type' => 'preloaded'],
-            ]
+            ],
         );
     }
 }
