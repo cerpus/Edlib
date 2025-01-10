@@ -189,7 +189,6 @@ final class AdminTest extends DuskTestCase
                 ->press('Add')
                 ->assertSee('LTI tool added')
                 ->clickLink('Create')
-                ->clickLink('The tool')
                 ->assertUrlIs('https://hub-test.edlib.test/content/create/the-tool')
                 ->assertPresent('.lti-launch')
         );
