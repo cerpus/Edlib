@@ -53,7 +53,7 @@ final readonly class NdlaContentController
         $request = $this->imageClient->request('GET', '/image-api/v3/images', [
             'query' => [
                 'page' => $request->input('page', 1),
-                'query' => $request->input('searchString'),
+                'query' => $request->input('searchstring'),
                 'language' => $request->input('language'),
                 'fallback' => $request->input('fallback'),
             ]
