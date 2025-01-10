@@ -90,7 +90,7 @@
                                 <a href="{{ route('admin.capability') }}">Capabilities</a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.update-libraries') }}">Update libraries</a>
+                                <a href="{{ route('admin.update-libraries') }}">Manage content types</a>
                             </li>
                             @if( resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->useMaxscore() )
                                 <li>

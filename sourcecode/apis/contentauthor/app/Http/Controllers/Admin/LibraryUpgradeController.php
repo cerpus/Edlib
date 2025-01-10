@@ -15,6 +15,7 @@ use H5PCore;
 use H5PFrameworkInterface;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -100,24 +101,26 @@ class LibraryUpgradeController extends Controller
         }
 
         $available = collect();
-        $hubCacheLibraries
-            ->each(function ($hubCache) use ($contentTypes, $available) {
-                $hasLast = $contentTypes->where('machineName', $hubCache->name)->firstWhere('isLast', true);
-                if (empty($hasLast)) {
-                    $available->push([
-                        'machineName' => $hubCache->name,
-                        'majorVersion' => $hubCache->major_version,
-                        'minorVersion' => $hubCache->minor_version,
-                        'title' => sprintf('%s (%d.%d.%d)', $hubCache->title, $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
-                        'summary' => $hubCache->summary,
-                        'external_link' => $hubCache->example,
-                        'numContent' => 0,
-                        'numLibraryDependencies' => 0,
-                        'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
-                        'isLast' => true,
-                    ]);
-                }
-            });
+        if (config('h5p.isHubEnabled')) {
+            $hubCacheLibraries
+                ->each(function ($hubCache) use ($contentTypes, $available) {
+                    $hasLast = $contentTypes->where('machineName', $hubCache->name)->firstWhere('isLast', true);
+                    if (empty($hasLast)) {
+                        $available->push([
+                            'machineName' => $hubCache->name,
+                            'majorVersion' => $hubCache->major_version,
+                            'minorVersion' => $hubCache->minor_version,
+                            'title' => sprintf('%s (%d.%d.%d)', $hubCache->title, $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
+                            'summary' => $hubCache->summary,
+                            'external_link' => $hubCache->example,
+                            'numContent' => 0,
+                            'numLibraryDependencies' => 0,
+                            'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
+                            'isLast' => true,
+                        ]);
+                    }
+                });
+        }
 
         return view('admin.library-upgrade.index', [
             'installedLibraries' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
@@ -150,15 +153,15 @@ class LibraryUpgradeController extends Controller
         }
 
         return response()
-            ->redirectToRoute('admin.update-libraries')
+            ->redirectToRoute('admin.update-libraries', ['activetab' => $request->input('activetab')])
             ->withErrors($errors);
     }
 
-    public function checkForUpdates(): RedirectResponse
+    public function checkForUpdates(Request $request): RedirectResponse
     {
         $this->core->updateContentTypeCache();
 
-        return response()->redirectToRoute('admin.update-libraries');
+        return response()->redirectToRoute('admin.update-libraries', ['activetab' => $request->input('activetab')]);
     }
 
     public function deleteLibrary(H5PLibrary $library): Response
