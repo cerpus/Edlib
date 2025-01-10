@@ -18,7 +18,7 @@ final readonly class LaunchCreateIfSingleTool
     {
         if (LtiTool::count() === 1) {
             $ltiTool = LtiTool::first();
-            if ($ltiTool->extras()->forAdmins(false)->count() === 0) {
+            if ($ltiTool !== null && $ltiTool->extras()->forAdmins(false)->count() === 0) {
                 return redirect(
                     route('content.launch-creator', $ltiTool)
                 );
