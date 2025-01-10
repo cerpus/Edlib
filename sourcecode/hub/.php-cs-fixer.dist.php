@@ -14,9 +14,8 @@ return (new PhpCsFixer\Config())
     ->setFinder($finder)
     // https://cs.symfony.com/doc/rules/index.html
     ->setRules([
-        '@PSR12' => true,
+        '@PER-CS2.0' => true,
         'array_push' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'declare_strict_types' => true,
         'native_function_casing' => true,
         'method_chaining_indentation' => true,

@@ -14,10 +14,10 @@ return (new PhpCsFixer\Config())
     ->setFinder($finder)
     // https://cs.symfony.com/doc/rules/index.html
     ->setRules([
-        '@PSR12' => true,
+        '@PER-CS2.0' => true,
         'array_push' => true,
-        'array_syntax' => ['syntax' => 'short'],
         'native_function_casing' => true,
+        'method_chaining_indentation' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,
         'no_multiple_statements_per_line' => true,
