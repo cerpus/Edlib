@@ -15,8 +15,7 @@ final readonly class SetRequestLocale
     public function __construct(
         private Application $application,
         private Locales $locales,
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {

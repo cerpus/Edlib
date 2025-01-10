@@ -35,7 +35,7 @@ final class SelectTest extends TestCase
             ->post('https://hub-test-ndla-legacy.edlib.test/select?locale=nb-no&canReturnResources=true')
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has('url')
                     ->where('url', function (string $url) {
                         $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
@@ -64,7 +64,7 @@ final class SelectTest extends TestCase
                         ], $user);
 
                         return true;
-                    })
+                    }),
             );
     }
 
@@ -90,7 +90,7 @@ final class SelectTest extends TestCase
             ])
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has('url')
                     ->where('url', function (string $url) use ($content) {
                         $this->assertStringStartsWith('https://hub-test-ndla-legacy.edlib.test/select?', $url);
@@ -103,7 +103,7 @@ final class SelectTest extends TestCase
                         $this->assertSame($content->id, $query['content_id']);
 
                         return true;
-                    })
+                    }),
             );
     }
 

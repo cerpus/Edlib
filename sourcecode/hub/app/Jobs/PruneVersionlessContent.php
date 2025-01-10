@@ -28,6 +28,6 @@ final class PruneVersionlessContent implements ShouldQueue, ShouldBeUnique
             ->whereDoesntHave('versions')
             ->whereDate('updated_at', '<', now()->subHours(24))
             ->lazy()
-            ->each(fn (Content $content) => $content->forceDelete());
+            ->each(fn(Content $content) => $content->forceDelete());
     }
 }

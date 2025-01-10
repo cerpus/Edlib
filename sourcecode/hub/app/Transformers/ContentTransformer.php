@@ -25,8 +25,7 @@ final class ContentTransformer extends TransformerAbstract
 
     public function __construct(
         private readonly ContentVersionTransformer $contentVersionTransformer,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>

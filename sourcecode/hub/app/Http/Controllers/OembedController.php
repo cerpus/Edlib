@@ -19,9 +19,7 @@ use const ENT_QUOTES;
 
 final readonly class OembedController
 {
-    public function __construct(private Serializer $serializer)
-    {
-    }
+    public function __construct(private Serializer $serializer) {}
 
     public function __invoke(OembedRequest $request): Response
     {

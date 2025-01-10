@@ -43,10 +43,10 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents')
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has('data')
                     ->count('data', 0)
-                    ->has('meta')
+                    ->has('meta'),
             );
     }
 
@@ -64,11 +64,11 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents')
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->count('data', 3)
                     ->has(
                         'data.0.versions.data.0',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->where('id', $version->id)
                             ->where('content_id', $version->content_id)
                             ->where('lti_tool_id', $version->lti_tool_id)
@@ -82,13 +82,13 @@ final class ContentTest extends TestCase
                             ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $version->lti_tool_id)
                             ->where('tags', ['data' => []])
                             ->where('min_score', '0.00')
-                            ->where('max_score', '0.00')
+                            ->where('max_score', '0.00'),
                     )
                     ->has(
                         'meta',
-                        fn (AssertableJson $json) => $json
-                            ->where('pagination.total', 3)
-                    )
+                        fn(AssertableJson $json) => $json
+                            ->where('pagination.total', 3),
+                    ),
             );
     }
 
@@ -110,10 +110,10 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents/by_tag/correct%3Atag')
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->count('data', 1)
                     ->where('data.0.id', $taggedContent->id)
-                    ->has('meta')
+                    ->has('meta'),
             );
     }
 
@@ -128,19 +128,19 @@ final class ContentTest extends TestCase
         $nextUrl = $this->getJson('/api/contents')
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has('data')
-                    ->whereType('meta.pagination.links.next', 'string')
+                    ->whereType('meta.pagination.links.next', 'string'),
             )
             ->json('meta.pagination.links.next');
 
         $this->getJson($nextUrl)
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has('data')
                     ->count('data', 1)
-                    ->has('meta')
+                    ->has('meta'),
             );
     }
 
@@ -151,13 +151,13 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents/' . $content->id)
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->where('id', $content->id)
                             ->etc(),
-                    )
+                    ),
             );
     }
 
@@ -172,17 +172,17 @@ final class ContentTest extends TestCase
                 [
                     'user' => $owner->id,
                     'role' => 'owner',
-                ]
+                ],
             ],
         ];
 
         $this->postJson('/api/contents', $data)
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->where('id', function (string $id) use ($data) {
                                 $idTimestamp = Ulid::fromString($id)
                                     ->getDateTime()
@@ -203,8 +203,8 @@ final class ContentTest extends TestCase
                                         'role' => 'owner',
                                     ],
                                 ],
-                            ])
-                    )
+                            ]),
+                    ),
             );
     }
 
@@ -230,10 +230,10 @@ final class ContentTest extends TestCase
         $this->postJson('/api/contents/' . $content->id . '/versions', $data)
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->has('id')
                             ->where('content_id', $content->id)
                             ->where('lti_tool_id', $data['lti_tool_id'])
@@ -255,8 +255,8 @@ final class ContentTest extends TestCase
                                 ],
                             ])
                             ->has('created_at')
-                            ->has('links.lti_tool')
-                    )
+                            ->has('links.lti_tool'),
+                    ),
             );
     }
 
@@ -268,13 +268,13 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents/' . $content->id . '/versions/' . $version->id)
             ->assertOk()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->where('id', $version->id)
-                            ->etc()
-                    )
+                            ->etc(),
+                    ),
             );
     }
 
@@ -293,10 +293,10 @@ final class ContentTest extends TestCase
         $this->postJson('/api/contents/' . $content->id . '/versions', $data)
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->has('id')
                             ->where('content_id', $content->id)
                             ->where('lti_tool_id', $data['lti_tool_id'])
@@ -310,8 +310,8 @@ final class ContentTest extends TestCase
                             ->has('min_score')
                             ->has('max_score')
                             ->where('tags', ['data' => []])
-                            ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $data['lti_tool_id'])
-                    )
+                            ->where('links.lti_tool', 'https://hub-test.edlib.test/api/lti-tools/' . $data['lti_tool_id']),
+                    ),
             );
     }
 
@@ -322,15 +322,15 @@ final class ContentTest extends TestCase
         ])
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->has('id')
                             ->where('deleted_at', '2024-08-01T00:00:00+00:00')
-                            ->etc()
+                            ->etc(),
                     )
-                    ->etc()
+                    ->etc(),
             )
             ->json();
 
@@ -354,10 +354,10 @@ final class ContentTest extends TestCase
         ])
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->has('id')
                             ->where('title', 'My deleted content')
                             ->etc(),

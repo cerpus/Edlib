@@ -94,11 +94,11 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->when(IconDownloader::class)
             ->needs(Cloud::class)
-            ->give(fn () => Storage::disk('uploads'));
+            ->give(fn() => Storage::disk('uploads'));
 
         $this->app->when(IconDownloader::class)
             ->needs(ClientInterface::class)
-            ->give(fn () => new Client([
+            ->give(fn() => new Client([
                 'headers' => [
                     'User-Agent' => sprintf(
                         'Edlib/3 (+%s)',
@@ -113,7 +113,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\Psr\Http\Client\ClientInterface::class, Client::class);
         $this->app->singleton(RequestFactoryInterface::class, RequestFactory::class);
         $this->app->singleton(Randomizer::class);
-        $this->app->singleton(CacheInterface::class, fn () => Cache::store());
+        $this->app->singleton(CacheInterface::class, fn() => Cache::store());
 
         $this->app->singleton(JwtDecoderInterface::class, JwtDecoder::class);
     }

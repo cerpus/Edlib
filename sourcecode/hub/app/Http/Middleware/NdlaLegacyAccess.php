@@ -12,9 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 final readonly class NdlaLegacyAccess
 {
-    public function __construct(private NdlaLegacyConfig $config)
-    {
-    }
+    public function __construct(private NdlaLegacyConfig $config) {}
 
     /**
      * @param (Closure(Request): Response) $next

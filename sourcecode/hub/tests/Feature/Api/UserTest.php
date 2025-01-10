@@ -76,7 +76,7 @@ final class UserTest extends TestCase
             ->withBasicAuth($user->getApiKey(), $user->getApiSecret())
             ->postJson('/api/users', [
                 'name' => 'Jason A. Pi',
-                'email' => 'jason@edlib.test'
+                'email' => 'jason@edlib.test',
             ])
             ->assertForbidden();
     }
@@ -91,14 +91,14 @@ final class UserTest extends TestCase
             ->withBasicAuth($user->getApiKey(), $user->getApiSecret())
             ->postJson('/api/users', [
                 'name' => 'Jason A. Pi',
-                'email' => 'jason@edlib.test'
+                'email' => 'jason@edlib.test',
             ])
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->has('id')
                             ->where('name', 'Jason A. Pi')
                             ->where('email', 'jason@edlib.test')
@@ -107,8 +107,8 @@ final class UserTest extends TestCase
                             ->where('debug_mode', false)
                             ->where('created_at', Carbon::now()->format('c'))
                             ->where('updated_at', Carbon::now()->format('c'))
-                            ->where('admin', false)
-                    )
+                            ->where('admin', false),
+                    ),
             );
     }
 
@@ -125,13 +125,13 @@ final class UserTest extends TestCase
             ])
             ->assertCreated()
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->has(
                         'data',
-                        fn (AssertableJson $json) => $json
+                        fn(AssertableJson $json) => $json
                             ->where('created_at', '2000-01-01T00:00:00+00:00')
-                            ->etc()
-                    )
+                            ->etc(),
+                    ),
             );
     }
 }

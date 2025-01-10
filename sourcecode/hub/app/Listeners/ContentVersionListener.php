@@ -19,8 +19,7 @@ final readonly class ContentVersionListener
         private IconDownloader $downloader,
         private Dispatcher $dispatcher,
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     public function handleDeletion(ContentVersionDeleting $event): void
     {

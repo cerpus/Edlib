@@ -6,6 +6,4 @@ namespace App\Exceptions;
 
 use Exception;
 
-class InvalidIconException extends Exception
-{
-}
+class InvalidIconException extends Exception {}

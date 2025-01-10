@@ -22,8 +22,7 @@ final readonly class JwtDecoder implements JwtDecoderInterface
         private ClientInterface $client,
         private RequestFactoryInterface $requestFactory,
         private CacheItemPoolInterface $cache,
-    ) {
-    }
+    ) {}
 
     public function getVerifiedPayload(
         string $bearerToken,
@@ -46,7 +45,7 @@ final readonly class JwtDecoder implements JwtDecoderInterface
 
     private function getKeyOrKeySet(
         string $publicKeyOrJwksUri,
-        int|null $cacheExpirySeconds
+        int|null $cacheExpirySeconds,
     ): CachedKeySet|Key {
         if (preg_match('@^https?://@i', $publicKeyOrJwksUri)) {
             return new CachedKeySet(

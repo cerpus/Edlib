@@ -15,9 +15,7 @@ use function app;
 
 final readonly class UserLocaleListener
 {
-    public function __construct(private Guard $guard, private Request $request)
-    {
-    }
+    public function __construct(private Guard $guard, private Request $request) {}
 
     /**
      * Update the current locale when logging in.

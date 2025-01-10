@@ -24,8 +24,7 @@ final readonly class SessionScope
         private Container $container,
         private SessionManager $sessionManager,
         private Randomizer $randomizer,
-    ) {
-    }
+    ) {}
 
     public function isScoped(Request $request): bool
     {

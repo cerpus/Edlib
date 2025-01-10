@@ -14,9 +14,7 @@ use function fractal;
 
 final readonly class UserController
 {
-    public function __construct(private UserTransformer $transformer)
-    {
-    }
+    public function __construct(private UserTransformer $transformer) {}
 
     public function show(User $user): JsonResponse
     {

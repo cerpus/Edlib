@@ -10,6 +10,5 @@ final readonly class LtiPlatformDeleting
 {
     public function __construct(
         public LtiPlatform $ltiPlatform,
-    ) {
-    }
+    ) {}
 }

@@ -45,7 +45,7 @@ class FilterForm extends Component
     {
         return $browser
             ->press('#filterToggleButton')
-            ->waitUsing(5, 100, fn () => $this->assertCollapsed($browser));
+            ->waitUsing(5, 100, fn() => $this->assertCollapsed($browser));
     }
 
     /**
@@ -143,8 +143,8 @@ class FilterForm extends Component
     {
         return $browser->with(
             $selector,
-            fn (Browser $dropdown) =>
-            $dropdown->with(new ChoicesJs(), $callback)
+            fn(Browser $dropdown) =>
+            $dropdown->with(new ChoicesJs(), $callback),
         );
     }
 

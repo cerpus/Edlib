@@ -13,8 +13,7 @@ final class LaunchContent
         private readonly string $url,
         private readonly ContentVersion $contentVersion,
         private LtiLaunchBuilder $launch,
-    ) {
-    }
+    ) {}
 
     public function getUrl(): string
     {

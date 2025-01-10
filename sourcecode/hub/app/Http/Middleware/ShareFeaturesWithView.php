@@ -15,8 +15,7 @@ final class ShareFeaturesWithView
     public function __construct(
         private readonly Features $features,
         private readonly View\Factory $view,
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {

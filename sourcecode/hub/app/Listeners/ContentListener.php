@@ -15,7 +15,7 @@ final readonly class ContentListener
 
         $event->content->versions()
             ->lazy()
-            ->each(fn (ContentVersion $version) => $version->delete());
+            ->each(fn(ContentVersion $version) => $version->delete());
 
         $event->content->contexts()->detach();
 

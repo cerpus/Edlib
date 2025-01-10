@@ -59,7 +59,7 @@ class LtiPlatform extends Model
             $ltiPlatform->key ??= Str::uuid()->toString();
 
             $ltiPlatform->secret ??= base64_encode(
-                app()->make(Randomizer::class)->getBytes(24)
+                app()->make(Randomizer::class)->getBytes(24),
             );
         });
     }

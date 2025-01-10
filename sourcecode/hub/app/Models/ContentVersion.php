@@ -239,9 +239,9 @@ class ContentVersion extends Model
     public function getSerializedTags(): array
     {
         return $this->tags->map(
-            fn (Tag $tag) => $tag->prefix !== ''
+            fn(Tag $tag) => $tag->prefix !== ''
             ? "{$tag->prefix}:{$tag->name}"
-            : $tag->name
+            : $tag->name,
         )
             ->toArray();
     }
@@ -299,7 +299,7 @@ class ContentVersion extends Model
                 },
                 function ($query) {
                     $query->where('published', true);
-                }
+                },
             )
             ->whereNull('contents.deleted_at')
             ->pluck('language_iso_639_3');
@@ -317,7 +317,7 @@ class ContentVersion extends Model
         $fallBack = app()->getFallbackLocale();
 
         return $locales
-            ->mapWithKeys(fn (string $locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
+            ->mapWithKeys(fn(string $locale) => [$locale => locale_get_display_name($locale, $displayLocale) ?: (locale_get_display_name($locale, $fallBack) ?: $locale)])
             ->sort();
     }
 

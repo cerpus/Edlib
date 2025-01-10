@@ -13,9 +13,7 @@ class ResetPasswordEmail extends Mailable
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public string $resetLink)
-    {
-    }
+    public function __construct(public string $resetLink) {}
 
     public function build(): Mailable
     {

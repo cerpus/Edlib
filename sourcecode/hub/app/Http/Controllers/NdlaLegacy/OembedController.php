@@ -21,8 +21,7 @@ final readonly class OembedController
     public function __construct(
         private NdlaLegacyConfig $config,
         private Serializer $serializer,
-    ) {
-    }
+    ) {}
 
     public function content(OembedRequest $request): Response
     {

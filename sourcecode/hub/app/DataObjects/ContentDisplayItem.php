@@ -26,6 +26,5 @@ readonly class ContentDisplayItem
         public string|null $shareUrl,
         public string|null $copyUrl,
         public string|null $deleteUrl,
-    ) {
-    }
+    ) {}
 }

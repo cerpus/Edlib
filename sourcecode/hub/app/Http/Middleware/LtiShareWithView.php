@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiShareWithView
 {
-    public function __construct(private ViewFactory $viewFactory)
-    {
-    }
+    public function __construct(private ViewFactory $viewFactory) {}
 
     public function handle(Request $request, Closure $next): Response
     {

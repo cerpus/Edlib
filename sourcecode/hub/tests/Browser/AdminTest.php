@@ -53,25 +53,25 @@ final class AdminTest extends DuskTestCase
         LtiPlatform::factory()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs(User::factory()->admin()->create()->email)
                 ->visit('/admin/lti-platforms')
                 ->resize(1920, 1920)
                 ->with(
                     'main .lti-platform-card',
-                    fn (Browser $main) => $main
-                        ->press('Remove')
+                    fn(Browser $main) => $main
+                        ->press('Remove'),
                 )
                 ->waitFor('#htmxConfirmModal')
                 ->with(
                     '#htmxConfirmModal',
-                    fn (Browser $modal) => $modal
+                    fn(Browser $modal) => $modal
                         ->assertSee('Are you sure you want to remove the LTI platform?')
-                        ->press('OK')
+                        ->press('OK'),
                 )
                 ->waitForReload()
                 ->assertNotPresent('.lti-platform-card')
-                ->assertSee('The LTI platform has been removed')
+                ->assertSee('The LTI platform has been removed'),
         );
     }
 
@@ -80,7 +80,7 @@ final class AdminTest extends DuskTestCase
         $user = User::factory()->admin()->name('Admin User')->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
@@ -103,10 +103,10 @@ final class AdminTest extends DuskTestCase
                 })
                 ->with(
                     new LtiPlatformCard(),
-                    fn (Browser $card) => $card
+                    fn(Browser $card) => $card
                         ->assertSeeIn('@enable-sso', 'Yes')
-                        ->assertSeeIn('@authorizes-edit', 'Yes')
-                )
+                        ->assertSeeIn('@authorizes-edit', 'Yes'),
+                ),
         );
     }
 
@@ -116,7 +116,7 @@ final class AdminTest extends DuskTestCase
         $user = User::factory()->admin()->name('Admin User')->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
@@ -130,10 +130,10 @@ final class AdminTest extends DuskTestCase
                 ->assertSee('LTI platform updated.')
                 ->within(
                     new LtiPlatformCard(),
-                    fn (Browser $card) => $card
+                    fn(Browser $card) => $card
                         ->assertSeeIn('@title', 'New name')
-                        ->assertSeeIn('@enable-sso', 'No')
-                )
+                        ->assertSeeIn('@enable-sso', 'No'),
+                ),
         );
     }
 
@@ -147,7 +147,7 @@ final class AdminTest extends DuskTestCase
             ->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs(User::factory()->admin()->create()->email)
                 ->assertAuthenticated()
                 ->visit('/admin/lti-tools/' . $tool->id . '/extras/add')
@@ -160,9 +160,9 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('LTI extra test')
                 ->withinFrame(
                     '.lti-launch',
-                    fn (Browser $frame) => $frame
-                        ->press('Resize to 640')
-                )
+                    fn(Browser $frame) => $frame
+                        ->press('Resize to 640'),
+                ),
         );
     }
 
@@ -172,7 +172,7 @@ final class AdminTest extends DuskTestCase
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) =>
+            fn(Browser $browser) =>
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
@@ -191,7 +191,7 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('Create')
                 ->clickLink('The tool')
                 ->assertUrlIs('https://hub-test.edlib.test/content/create/the-tool')
-                ->assertPresent('.lti-launch')
+                ->assertPresent('.lti-launch'),
         );
     }
 
@@ -201,7 +201,7 @@ final class AdminTest extends DuskTestCase
         $user = User::factory()->name('Ben Hammerhead')->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
@@ -214,7 +214,7 @@ final class AdminTest extends DuskTestCase
                 ->press('Update')
                 ->assertSee('LTI tool updated.')
                 ->visit('/content/create/the-new-slug')
-                ->assertPresent('.lti-launch')
+                ->assertPresent('.lti-launch'),
         );
     }
 
@@ -229,7 +229,7 @@ final class AdminTest extends DuskTestCase
             ->create();
 
         $this->browse(
-            fn (Browser $browser) =>
+            fn(Browser $browser) =>
             $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
@@ -239,11 +239,11 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('Manage LTI tools')
                 ->with(
                     new LtiToolCard(),
-                    fn (Browser $card) =>
+                    fn(Browser $card) =>
                     $card
                         ->assertSeeIn('@proxy-launch', 'Yes')
                         ->assertSeeIn('@send-email', 'Yes')
-                        ->assertSeeIn('@send-name', 'Yes')
+                        ->assertSeeIn('@send-name', 'Yes'),
                 )
                 ->clickLink('Edit')
                 ->assertChecked('proxy_launch')
@@ -259,12 +259,12 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('Manage LTI tools')
                 ->with(
                     new LtiToolCard(),
-                    fn (Browser $card) =>
+                    fn(Browser $card) =>
                     $card
                         ->assertSeeIn('@proxy-launch', 'No')
                         ->assertSeeIn('@send-email', 'No')
-                        ->assertSeeIn('@send-name', 'No')
-                )
+                        ->assertSeeIn('@send-name', 'No'),
+                ),
         );
     }
 
@@ -275,16 +275,16 @@ final class AdminTest extends DuskTestCase
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/admin')
                 ->clickLink('Manage LTI platforms')
                 ->within(
                     new LtiPlatformCard(),
-                    fn (Browser $card) => $card
+                    fn(Browser $card) => $card
                         ->assertSeeIn('@context-count', '0')
-                        ->clickLink('Contexts')
+                        ->clickLink('Contexts'),
                 )
             // Dusk does not support selecting by the choice's label
                 ->select('context', $context->id)
@@ -294,9 +294,9 @@ final class AdminTest extends DuskTestCase
                 ->clickLink('Manage LTI platforms')
                 ->within(
                     new LtiPlatformCard(),
-                    fn (Browser $card) => $card
-                        ->assertSeeIn('@context-count', '1')
-                )
+                    fn(Browser $card) => $card
+                        ->assertSeeIn('@context-count', '1'),
+                ),
         );
     }
 }

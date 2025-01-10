@@ -22,8 +22,7 @@ final readonly class NdlaLegacyConfig
         private ClientInterface|null $contentAuthorClient,
         private string|null $publicKeyOrJwksUri,
         private string|null $internalLtiPlatformKey,
-    ) {
-    }
+    ) {}
 
     public function isEnabled(): bool
     {

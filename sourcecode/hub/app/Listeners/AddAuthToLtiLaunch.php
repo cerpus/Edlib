@@ -12,9 +12,7 @@ use function preg_match;
 
 final readonly class AddAuthToLtiLaunch
 {
-    public function __construct(private Guard $guard)
-    {
-    }
+    public function __construct(private Guard $guard) {}
 
     public function handleLaunch(LaunchLti $event): void
     {

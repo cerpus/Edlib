@@ -11,9 +11,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 final readonly class ContentViewController
 {
-    public function __construct(private ContentViewTransformer $transformer)
-    {
-    }
+    public function __construct(private ContentViewTransformer $transformer) {}
 
     public function index(Content $apiContent): JsonResponse
     {

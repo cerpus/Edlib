@@ -20,8 +20,7 @@ final readonly class ContentItemSelectionFactory
     public function __construct(
         private ContentItemsSerializerInterface $contentItemsSerializer,
         private SignerInterface $signer,
-    ) {
-    }
+    ) {}
 
     /**
      * @param array<ContentItem> $items
@@ -41,7 +40,7 @@ final readonly class ContentItemSelectionFactory
             'content_items' => $serializedItems,
             'lti_message_type' => 'ContentItemSelection',
             'lti_version' => 'LTI-1p0',
-            ...($data !== null ? ['data' => $data] : [])
+            ...($data !== null ? ['data' => $data] : []),
         ]), $credentials);
     }
 }

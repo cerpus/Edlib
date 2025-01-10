@@ -8,7 +8,5 @@ use App\Models\ContentVersion;
 
 final readonly class ContentVersionSaving
 {
-    public function __construct(public ContentVersion $version)
-    {
-    }
+    public function __construct(public ContentVersion $version) {}
 }

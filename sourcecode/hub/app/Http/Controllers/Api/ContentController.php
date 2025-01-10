@@ -18,9 +18,7 @@ use function response;
 
 final readonly class ContentController
 {
-    public function __construct(private ContentTransformer $transformer)
-    {
-    }
+    public function __construct(private ContentTransformer $transformer) {}
 
     public function index(): JsonResponse
     {
@@ -62,7 +60,7 @@ final readonly class ContentController
 
             foreach ($request->getTags() as $tag) {
                 $content->tags()->attach(Tag::findOrCreateFromString($tag), [
-                    'verbatim_name' => Tag::extractVerbatimName($tag)
+                    'verbatim_name' => Tag::extractVerbatimName($tag),
                 ]);
             }
 

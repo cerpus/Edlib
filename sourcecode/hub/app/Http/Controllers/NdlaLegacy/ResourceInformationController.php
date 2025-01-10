@@ -20,9 +20,7 @@ use function abort;
  */
 final readonly class ResourceInformationController
 {
-    public function __construct(private NdlaLegacyConfig $config)
-    {
-    }
+    public function __construct(private NdlaLegacyConfig $config) {}
 
     public function __invoke(Content $edlib2UsageContent): JsonResponse
     {

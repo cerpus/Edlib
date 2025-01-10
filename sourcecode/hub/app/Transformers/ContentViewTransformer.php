@@ -20,8 +20,7 @@ final class ContentViewTransformer extends TransformerAbstract
 
     public function __construct(
         private readonly LtiPlatformTransformer $ltiPlatformTransformer,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>

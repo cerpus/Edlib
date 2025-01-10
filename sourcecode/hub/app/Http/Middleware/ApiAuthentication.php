@@ -13,9 +13,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 final readonly class ApiAuthentication
 {
-    public function __construct(private AuthManager $authManager)
-    {
-    }
+    public function __construct(private AuthManager $authManager) {}
 
     /**
      * @param (Closure(Request): Response) $next
