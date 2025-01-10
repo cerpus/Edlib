@@ -1227,41 +1227,44 @@ final class ContentTest extends DuskTestCase
 
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('/lti/playground')
-            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
-            ->type('key', $platform->key)
-            ->type('secret', $platform->secret)
-            ->type(
-                'parameters',
-                'content_item_return_url=about:blank' .
-                '&lti_message_type=ContentItemSelectionRequest' .
-                '&lis_person_contact_email_primary=person@example.com'
-            )
-            ->press('Launch')
-            ->withinFrame('iframe', function (Browser $iframe) {
-                $iframe
-                    ->clickLink('My content')
-                    ->with(new ContentCard(), fn(Browser $card) => $card
-                        ->press('@action-menu-toggle')
-                        ->clickLink('Details')
-                    )
-                    ->scrollIntoView('#shared-toggle')
-                    ->assertNotChecked('#shared-toggle')
-                    // The horrible Bootstrap toggles don't work with Dusk's
-                    // click/press/check methods.
-                    ->script('document.querySelector("#shared-toggle").click()');
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    'content_item_return_url=about:blank' .
+                    '&lti_message_type=ContentItemSelectionRequest' .
+                    '&lis_person_contact_email_primary=person@example.com'
+                )
+                ->press('Launch')
+                ->withinFrame('iframe', function (Browser $iframe) {
+                    $iframe
+                        ->clickLink('My content')
+                        ->with(
+                            new ContentCard(),
+                            fn (Browser $card) => $card
+                                ->press('@action-menu-toggle')
+                                ->clickLink('Details')
+                        )
+                        ->scrollIntoView('#shared-toggle')
+                        ->assertNotChecked('#shared-toggle')
+                        // The horrible Bootstrap toggles don't work with Dusk's
+                        // click/press/check methods.
+                        ->script('document.querySelector("#shared-toggle").click()');
 
-                $iframe
-                    ->clickLink('Content')
-                    ->scrollIntoView('#shared-toggle')
-                    ->assertChecked('#shared-toggle')
-                    ->clickLink('Roles')
-                    ->assertSeeIn('.content-contexts', 'existing_context')
-                    ->assertDontSeeIn('.content-contexts', 'should_not_exist');
-            })
+                    $iframe
+                        ->clickLink('Content')
+                        ->scrollIntoView('#shared-toggle')
+                        ->assertChecked('#shared-toggle')
+                        ->clickLink('Roles')
+                        ->assertSeeIn('.content-contexts', 'existing_context')
+                        ->assertDontSeeIn('.content-contexts', 'should_not_exist');
+                })
         );
     }
 }
