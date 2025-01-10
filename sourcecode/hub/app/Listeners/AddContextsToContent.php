@@ -8,7 +8,6 @@ use App\Events\ContentSaving;
 use App\Models\LtiPlatform;
 use Illuminate\Http\Request;
 
-// TODO: only apply upon creation
 final readonly class AddContextsToContent
 {
     public function __construct(private Request $request)
@@ -17,15 +16,17 @@ final readonly class AddContextsToContent
 
     public function handleSaving(ContentSaving $event): void
     {
+        if (!$event->content->wasRecentlyCreated) {
+            return;
+        }
+
         $platform = $this->getLaunchingLtiPlatform();
 
         if (!$platform) {
             return;
         }
 
-        foreach ($platform->contexts as $context) {
-            $event->content->contexts()->attach($context);
-        }
+        $event->content->contexts()->syncWithoutDetaching($platform->contexts);
     }
 
     private function getLaunchingLtiPlatform(): LtiPlatform|null
