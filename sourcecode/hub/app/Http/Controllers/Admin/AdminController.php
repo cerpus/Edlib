@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\RebuildContentIndex;
 use App\Models\LtiToolExtra;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -22,9 +23,9 @@ final class AdminController extends Controller
         ]);
     }
 
-    public function rebuildContentIndex(): RedirectResponse
+    public function rebuildContentIndex(Dispatcher $dispatcher): RedirectResponse
     {
-        RebuildContentIndex::dispatch();
+        $dispatcher->dispatch(new RebuildContentIndex());
 
         return back()
             ->with('alert', trans('messages.alert-rebuilding-content-index'));

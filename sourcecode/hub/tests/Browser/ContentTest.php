@@ -1228,7 +1228,7 @@ final class ContentTest extends DuskTestCase
         RebuildContentIndex::dispatchSync();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/lti/playground')
@@ -1239,7 +1239,7 @@ final class ContentTest extends DuskTestCase
                     'parameters',
                     'content_item_return_url=about:blank' .
                     '&lti_message_type=ContentItemSelectionRequest' .
-                    '&lis_person_contact_email_primary=person@example.com'
+                    '&lis_person_contact_email_primary=person@example.com',
                 )
                 ->press('Launch')
                 ->withinFrame('iframe', function (Browser $iframe) {
@@ -1247,9 +1247,9 @@ final class ContentTest extends DuskTestCase
                         ->clickLink('My content')
                         ->with(
                             new ContentCard(),
-                            fn (Browser $card) => $card
+                            fn(Browser $card) => $card
                                 ->press('@action-menu-toggle')
-                                ->clickLink('Details')
+                                ->clickLink('Details'),
                         )
                         ->scrollIntoView('#shared-toggle')
                         ->assertNotChecked('#shared-toggle')
@@ -1264,7 +1264,7 @@ final class ContentTest extends DuskTestCase
                         ->clickLink('Roles')
                         ->assertSeeIn('.content-contexts', 'existing_context')
                         ->assertDontSeeIn('.content-contexts', 'should_not_exist');
-                })
+                }),
         );
     }
 
@@ -1280,13 +1280,13 @@ final class ContentTest extends DuskTestCase
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
                 ->assertUrlIs('https://hub-test.edlib.test/content/create/only-tool')
-                ->assertPresent('.lti-launch')
+                ->assertPresent('.lti-launch'),
         );
     }
 
@@ -1303,19 +1303,19 @@ final class ContentTest extends DuskTestCase
                     ->state([
                         'name' => 'Tool Admin',
                         'admin' => true,
-                    ])
+                    ]),
             )
             ->create();
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
                 ->assertUrlIs('https://hub-test.edlib.test/content/create/only-tool')
-                ->assertPresent('.lti-launch')
+                ->assertPresent('.lti-launch'),
         );
     }
 
@@ -1333,13 +1333,13 @@ final class ContentTest extends DuskTestCase
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
                 ->assertSeeLink('First Tool')
-                ->assertSeeLink('Second Tool')
+                ->assertSeeLink('Second Tool'),
         );
     }
 
@@ -1354,18 +1354,18 @@ final class ContentTest extends DuskTestCase
                     ->state([
                         'name' => 'Tool Extra',
                         'admin' => false,
-                    ])
+                    ]),
             )
             ->create();
         $user = User::factory()->admin()->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->clickLink('Create')
                 ->assertSeeLink('Only Tool')
-                ->assertSeeLink('Tool Extra')
+                ->assertSeeLink('Tool Extra'),
         );
     }
 }
