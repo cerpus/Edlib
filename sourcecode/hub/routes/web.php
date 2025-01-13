@@ -17,7 +17,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
+use App\Http\Middleware\LaunchCreateIfSingleTool;
 use App\Http\Middleware\StartScopedLtiSession;
+use App\Models\Content;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -136,8 +138,8 @@ Route::controller(ContentController::class)->group(function () {
         ->scopeBindings();
 
     Route::get('/content/create', 'create')
-        ->middleware('auth')
-        ->can('create', \App\Models\Content::class)
+        ->middleware(['auth', LaunchCreateIfSingleTool::class])
+        ->can('create', Content::class)
         ->name('content.create');
 
     Route::post('/content/{content}/copy')
@@ -168,7 +170,7 @@ Route::controller(ContentController::class)->group(function () {
     Route::get('/content/create/{tool:slug}/{extra:slug?}', 'launchCreator')
         ->uses([ContentController::class, 'launchCreator'])
         ->name('content.launch-creator')
-        ->can('create', \App\Models\Content::class)
+        ->can('create', Content::class)
         ->can('launchCreator', ['tool', 'extra'])
         ->scopeBindings();
 });
@@ -180,7 +182,7 @@ Route::prefix('/lti/dl')->middleware([
     Route::post('/tool/{tool}/content/create')
         ->uses([ContentController::class, 'ltiStore'])
         ->name('content.lti-store')
-        ->can('create', \App\Models\Content::class)
+        ->can('create', Content::class)
         ->whereUlid('tool');
 
     Route::post('/tool/{tool}/content/{content}/version/{version}/update')

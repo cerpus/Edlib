@@ -13,6 +13,7 @@ use App\Models\ContentView;
 use App\Models\Context;
 use App\Models\LtiPlatform;
 use App\Models\LtiTool;
+use App\Models\LtiToolExtra;
 use App\Models\User;
 use Carbon\Carbon;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
@@ -1074,7 +1075,6 @@ final class ContentTest extends DuskTestCase
                     'iframe',
                     fn (Browser $frame) => $frame
                         ->clickLink('Create')
-                        ->clickLink('My tool')
                         ->withinFrame(
                             'iframe',
                             fn (Browser $tool) => $tool
@@ -1265,6 +1265,107 @@ final class ContentTest extends DuskTestCase
                         ->assertSeeIn('.content-contexts', 'existing_context')
                         ->assertDontSeeIn('.content-contexts', 'should_not_exist');
                 })
+        );
+    }
+
+    public function testDoesNotListToolsOnCreateIfOneTool(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        LtiTool::factory()
+            ->withName('Only Tool')
+            ->slug('only-tool')
+            ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('Create')
+                ->assertUrlIs('https://hub-test.edlib.test/content/create/only-tool')
+                ->assertPresent('.lti-launch')
+        );
+    }
+
+    public function testDoesNotListToolsOnCreateIfOneToolWithOnlyAdminExtra(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        LtiTool::factory()
+            ->withName('Only Tool')
+            ->slug('only-tool')
+            ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->extra(
+                LtiToolExtra::factory()
+                    ->state([
+                        'name' => 'Tool Admin',
+                        'admin' => true,
+                    ])
+            )
+            ->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('Create')
+                ->assertUrlIs('https://hub-test.edlib.test/content/create/only-tool')
+                ->assertPresent('.lti-launch')
+        );
+    }
+
+    public function testListToolsOnCreateIfMoreThanOneTool(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        LtiTool::factory()
+            ->withName('First Tool')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+        LtiTool::factory()
+            ->withName('Second Tool')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('/')
+                ->clickLink('Create')
+                ->assertSeeLink('First Tool')
+                ->assertSeeLink('Second Tool')
+        );
+    }
+
+    public function testListToolsOnCreateIfOneToolWithExtra(): void
+    {
+        $platform = LtiPlatform::factory()->create();
+        LtiTool::factory()
+            ->withName('Only Tool')
+            ->withCredentials($platform->getOauth1Credentials())
+            ->extra(
+                LtiToolExtra::factory()
+                    ->state([
+                        'name' => 'Tool Extra',
+                        'admin' => false,
+                    ])
+            )
+            ->create();
+        $user = User::factory()->admin()->create();
+
+        $this->browse(
+            fn (Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->clickLink('Create')
+                ->assertSeeLink('Only Tool')
+                ->assertSeeLink('Tool Extra')
         );
     }
 }
