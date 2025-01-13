@@ -65,7 +65,7 @@ class H5PLibraryList extends Command
                 'minor_version',
                 'patch_version',
                 'runnable',
-            ]
+            ],
         )
             ->when($this->option('library'), function ($query) {
                 $query->where(DB::raw('lower(name)'), '=', Str::lower($this->option('library')));
@@ -93,7 +93,7 @@ class H5PLibraryList extends Command
         if ($count > 0) {
             $this->table(
                 ['Name', 'Version', 'Content type'],
-                $libraries
+                $libraries,
             );
         }
 
@@ -109,14 +109,14 @@ class H5PLibraryList extends Command
         $this->printH5PCoreVersion();
 
         $libraries = H5PLibrariesHubCache::select([
-                'name',
-                'major_version',
-                'minor_version',
-                'patch_version',
-                'owner',
-                'h5p_major_version',
-                'h5p_minor_version',
-            ])
+            'name',
+            'major_version',
+            'minor_version',
+            'patch_version',
+            'owner',
+            'h5p_major_version',
+            'h5p_minor_version',
+        ])
             ->when($this->option('library'), function ($query) {
                 $query->where(DB::raw('lower(name)'), '=', Str::lower($this->option('library')));
             })
@@ -145,7 +145,7 @@ class H5PLibraryList extends Command
         if ($count > 0) {
             $this->table(
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
-                $libraries
+                $libraries,
             );
         }
 
@@ -202,7 +202,7 @@ class H5PLibraryList extends Command
                     $upgrades[] = [
                         $library->name,
                         sprintf('%d.%d.%d', $installed->major_version, $installed->minor_version, $installed->patch_version),
-                        "<fg=$color>".sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version).'</>',
+                        "<fg=$color>" . sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version) . '</>',
                     ];
                 }
             });
@@ -221,7 +221,7 @@ class H5PLibraryList extends Command
         if ($count > 0) {
             $this->table(
                 ['Name', 'Installed', 'On h5p.org Hub'],
-                $upgrades
+                $upgrades,
             );
         }
 

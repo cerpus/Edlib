@@ -36,13 +36,13 @@ class AdminController extends Controller
         $libraries = H5PLibrary::withCount([
             'contents' => function ($query) {
                 H5PContent::noMaxScoreScope($query);
-            }
+            },
         ])
             ->groupBy('id')
             ->having('contents_count', ">", 0)
             ->orderBy('name')
             ->get()
-            ->filter(fn (H5PLibrary $library) => $library->supportsMaxScore());
+            ->filter(fn(H5PLibrary $library) => $library->supportsMaxScore());
 
         $config = resolve(AdminConfig::class);
         $config->addPresaveScripts();

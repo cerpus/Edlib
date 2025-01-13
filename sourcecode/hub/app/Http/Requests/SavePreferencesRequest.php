@@ -31,7 +31,7 @@ final class SavePreferencesRequest extends FormRequest
     {
         return [
             'locale' => [
-                Rule::excludeIf(fn () => $this->session()->has('lti.launch_presentation_locale')),
+                Rule::excludeIf(fn() => $this->session()->has('lti.launch_presentation_locale')),
                 'required',
                 Rule::in($locales->all()),
             ],

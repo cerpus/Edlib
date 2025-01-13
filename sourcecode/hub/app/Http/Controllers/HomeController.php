@@ -19,7 +19,7 @@ final readonly class HomeController
         return response()->view('home', [
             'contents' => $request->getWithModel(
                 Content::findShared()->orderBy('created_at'),
-                limit: 6
+                limit: 6,
             ),
         ]);
     }

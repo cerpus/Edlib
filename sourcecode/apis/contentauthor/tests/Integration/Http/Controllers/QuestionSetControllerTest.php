@@ -204,25 +204,25 @@ class QuestionSetControllerTest extends TestCase
             'title' => "New title",
             'tags' => ['list', 'of', 'tags', 'goes', 'here'],
             'cards' => [
-                (object)[
+                (object) [
                     'id' => $question->id,
                     'order' => $question->order,
                     'canDelete' => false,
                     'image' => null,
                     'question' => ['text' => "Updated question"],
                     'answers' => [
-                        (object)[
+                        (object) [
                             'id' => $answer->id,
                             'answerText' => "Updated answer",
-                            'isCorrect' => (bool)$answer->correct,
+                            'isCorrect' => (bool) $answer->correct,
                             'showToggle' => false,
                             'canDelete' => false,
                             'image' => null,
-                            'order' => $answer->order
-                        ]
-                    ]
-                ]
-            ]
+                            'order' => $answer->order,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
         $questionsetController = app(QuestionSetController::class);
@@ -230,7 +230,7 @@ class QuestionSetControllerTest extends TestCase
 
         $this->assertDatabaseHas('question_sets', [
             'id' => $questionset->id,
-            'title' => "New title"
+            'title' => "New title",
         ])
             ->assertDatabaseHas('question_set_questions', [
                 'id' => $question->id,
@@ -243,32 +243,32 @@ class QuestionSetControllerTest extends TestCase
                 'order' => 0,
             ]);
 
-        $json['cards'][] = (object)[
+        $json['cards'][] = (object) [
             'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
-                (object)[
+                (object) [
                     'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
                     'canDelete' => false,
                     'image' => null,
-                    'order' => $answer->order
+                    'order' => $answer->order,
                 ],
-                (object)[
+                (object) [
                     'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
                     'canDelete' => false,
                     'image' => null,
-                    'order' => $answer->order
-                ]
-            ]
+                    'order' => $answer->order,
+                ],
+            ],
         ];
 
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
@@ -288,23 +288,23 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][0]->answers = [
-            (object)[
+            (object) [
                 'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
-                'isCorrect' => (bool)$answer->correct,
+                'isCorrect' => (bool) $answer->correct,
                 'showToggle' => false,
                 'canDelete' => false,
                 'image' => null,
-                'order' => 0
+                'order' => 0,
             ],
-            (object)[
+            (object) [
                 'id' => $answer->id,
                 'answerText' => "Updated answer",
-                'isCorrect' => (bool)$answer->correct,
+                'isCorrect' => (bool) $answer->correct,
                 'showToggle' => false,
                 'canDelete' => false,
                 'image' => null,
-                'order' => 1
+                'order' => 1,
             ],
         ];
 
@@ -333,7 +333,7 @@ class QuestionSetControllerTest extends TestCase
         ])
             ->assertDatabaseMissing('question_set_question_answers', [
                 'id' => $answer->id,
-                'answer_text' => "Updated answer"
+                'answer_text' => "Updated answer",
             ]);
 
         Event::assertDispatched(QuestionsetWasSaved::class);
@@ -369,7 +369,7 @@ class QuestionSetControllerTest extends TestCase
             'tags' => ['list', 'of', 'tags', 'goes', 'here'],
             'license' => 'BY',
             'cards' => [
-                (object)[
+                (object) [
                     'id' => $question->id,
                     'order' => $question->order,
                     'canDelete' => false,
@@ -378,18 +378,18 @@ class QuestionSetControllerTest extends TestCase
                         'text' => '<p>Albert Einstein formula: <span class="math_container">\(E=mc^2\)</span></p>',
                     ],
                     'answers' => [
-                        (object)[
+                        (object) [
                             'id' => $answer->id,
                             'answerText' => '<p>The well known Pythagorean theorem \(x^2 + y^2 = z^2\) was proved to be invalid for other exponents.<span class="math_container">\(x^n + y^n = z^n\)</span></p>',
-                            'isCorrect' => (bool)$answer->correct,
+                            'isCorrect' => (bool) $answer->correct,
                             'showToggle' => false,
                             'canDelete' => false,
                             'image' => null,
-                            'order' => $answer->order
-                        ]
-                    ]
-                ]
-            ]
+                            'order' => $answer->order,
+                        ],
+                    ],
+                ],
+            ],
         ];
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
         $questionsetController = app(QuestionSetController::class);
@@ -410,32 +410,32 @@ class QuestionSetControllerTest extends TestCase
                 'order' => 0,
             ]);
 
-        $json['cards'][] = (object)[
+        $json['cards'][] = (object) [
             'id' => $this->faker->uuid,
             'order' => ++$question->order,
             'canDelete' => false,
             'question' => ['text' => "New question"],
             'image' => null,
             'answers' => [
-                (object)[
+                (object) [
                     'id' => $this->faker->uuid,
                     'answerText' => "New correct answer",
                     'isCorrect' => true,
                     'showToggle' => false,
                     'canDelete' => false,
                     'image' => null,
-                    'order' => $answer->order
+                    'order' => $answer->order,
                 ],
-                (object)[
+                (object) [
                     'id' => $this->faker->uuid,
                     'answerText' => "New wrong answer",
                     'isCorrect' => false,
                     'showToggle' => false,
                     'canDelete' => false,
                     'image' => null,
-                    'order' => $answer->order
-                ]
-            ]
+                    'order' => $answer->order,
+                ],
+            ],
         ];
 
         $request = new ApiQuestionsetRequest([], ['questionSetJsonData' => json_encode($json)]);
@@ -455,23 +455,23 @@ class QuestionSetControllerTest extends TestCase
             ]);
 
         $json['cards'][0]->answers = [
-            (object)[
+            (object) [
                 'id' => $this->faker->uuid,
                 'answerText' => "Added answer",
-                'isCorrect' => (bool)$answer->correct,
+                'isCorrect' => (bool) $answer->correct,
                 'showToggle' => false,
                 'canDelete' => false,
                 'image' => null,
-                'order' => 0
+                'order' => 0,
             ],
-            (object)[
+            (object) [
                 'id' => $answer->id,
                 'answerText' => "Updated answer",
-                'isCorrect' => (bool)$answer->correct,
+                'isCorrect' => (bool) $answer->correct,
                 'showToggle' => false,
                 'canDelete' => false,
                 'image' => null,
-                'order' => 1
+                'order' => 1,
             ],
         ];
 
@@ -500,7 +500,7 @@ class QuestionSetControllerTest extends TestCase
         ])
             ->assertDatabaseMissing('question_set_question_answers', [
                 'id' => $answer->id,
-                'answer_text' => "Updated answer"
+                'answer_text' => "Updated answer",
             ]);
         Event::assertDispatched(QuestionsetWasSaved::class);
     }
@@ -518,7 +518,7 @@ class QuestionSetControllerTest extends TestCase
             'title' => "New title",
             'tags' => ['list', 'of', 'tags', 'goes', 'here'],
             'cards' => [
-                (object)[
+                (object) [
                     'order' => 1,
                     'canDelete' => false,
                     'image' => [],
@@ -527,17 +527,17 @@ class QuestionSetControllerTest extends TestCase
                         'image' => null,
                     ],
                     'answers' => [
-                        (object)[
+                        (object) [
                             'answerText' => "New answer",
                             'isCorrect' => true,
                             'showToggle' => false,
                             'canDelete' => false,
                             'image' => [],
-                            'order' => 1
-                        ]
-                    ]
-                ]
-            ]
+                            'order' => 1,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $authId = Str::uuid();
@@ -591,7 +591,7 @@ class QuestionSetControllerTest extends TestCase
             'title' => "New title",
             'tags' => ['list', 'of', 'tags', 'goes', 'here'],
             'cards' => [
-                (object)[
+                (object) [
                     'order' => 1,
                     'canDelete' => false,
                     'image' => [],
@@ -600,17 +600,17 @@ class QuestionSetControllerTest extends TestCase
                         'image' => null,
                     ],
                     'answers' => [
-                        (object)[
+                        (object) [
                             'answerText' => "New answer",
                             'isCorrect' => true,
                             'showToggle' => false,
                             'canDelete' => false,
                             'image' => [],
-                            'order' => 1
-                        ]
-                    ]
-                ]
-            ]
+                            'order' => 1,
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $request = new Oauth1Request('POST', route('questionset.store'), [

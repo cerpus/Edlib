@@ -244,13 +244,13 @@ final class UserTest extends DuskTestCase
         $this->assertNull($user->refresh()->password_reset_token);
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->visit('/')
                 ->clickLink('Log in')
                 ->clickLink('I forgot my password')
                 ->type('email', 'goldfish@fishbowl.example')
                 ->press('Submit')
-                ->assertSee('You should soon receive a password reset link.')
+                ->assertSee('You should soon receive a password reset link.'),
         );
 
         $this->assertNotNull($user->refresh()->password_reset_token);
@@ -260,13 +260,13 @@ final class UserTest extends DuskTestCase
     public function testPasswordResetDoesNotDistinguishBetweenExistingAndNonexistentEmails(): void
     {
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->visit('/')
                 ->clickLink('Log in')
                 ->clickLink('I forgot my password')
                 ->type('email', 'nope@nah.example')
                 ->press('Submit')
-                ->assertSee('You should soon receive a password reset link.')
+                ->assertSee('You should soon receive a password reset link.'),
         );
         // FIXME: we cannot test that a mail wasn't sent via Dusk
     }

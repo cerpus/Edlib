@@ -6,6 +6,4 @@ namespace App\Exceptions;
 
 use Exception;
 
-class GameTypeNotFoundException extends Exception
-{
-}
+class GameTypeNotFoundException extends Exception {}

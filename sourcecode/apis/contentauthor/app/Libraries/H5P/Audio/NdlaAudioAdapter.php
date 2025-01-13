@@ -15,8 +15,7 @@ final readonly class NdlaAudioAdapter implements H5PAudioInterface, H5PExternalP
         private NdlaAudioClient $client,
         private CerpusStorageInterface $storage,
         private string $url,
-    ) {
-    }
+    ) {}
 
     public function isTargetType($mimeType, $pathToFile): bool
     {
@@ -39,7 +38,7 @@ final readonly class NdlaAudioAdapter implements H5PAudioInterface, H5PExternalP
         $source = $values['path'];
         $tempFile = tempnam(sys_get_temp_dir(), 'h5p-');
         $this->client->get($source, [
-            'sink' => $tempFile
+            'sink' => $tempFile,
         ]);
         $file = new File($tempFile);
         $extension = $file->guessExtension();

@@ -81,7 +81,7 @@ final class LtiPlatformController
         // @phpstan-ignore larastan.noUnnecessaryCollectionCall
         $availableContexts = Context::all()
             ->diff($platform->contexts)
-            ->mapWithKeys(fn (Context $context) => [$context->id => $context->name]);
+            ->mapWithKeys(fn(Context $context) => [$context->id => $context->name]);
 
         return view('admin.lti-platforms.contexts', [
             'available_contexts' => $availableContexts,

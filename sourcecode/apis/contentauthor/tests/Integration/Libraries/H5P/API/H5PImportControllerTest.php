@@ -3,9 +3,9 @@
 namespace App\Libraries\H5P {
     function is_uploaded_file($filename)
     {
-        $prefix = realpath(__DIR__.'/../../../../files');
+        $prefix = realpath(__DIR__ . '/../../../../files');
 
-        return in_array($filename, array_map(fn ($name) => "$prefix/$name", [
+        return in_array($filename, array_map(fn($name) => "$prefix/$name", [
             'sample-blanks-1.6.h5p',
             'sample.h5p',
             'sample-with-image.h5p',
@@ -181,7 +181,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->assertNotNull($h5pContent);
             $this->assertJsonStringEqualsJsonString(
                 '{"media":{"type":{"params":{"contentName":"Image","file":{"path":"images\/file-5edde9091ebe0.jpg","mime":"image\/jpeg","copyright":{"license":"U"},"width":196,"height":358}},"library":"H5P.Image 1.1","metadata":{"contentType":"Image","license":"U","title":"Hjalmar"},"subContentId":"d4c10c9b-e792-4109-9d5b-d14175f61625"},"disableImageZooming":false},"answers":[{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p>Yes<\/p>\n"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p>No<\/p>\n"}],"overallFeedback":[{"from":0,"to":100}],"behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"type":"auto","singlePoint":false,"randomAnswers":true,"showSolutionsRequiresInput":true,"confirmCheckDialog":false,"confirmRetryDialog":false,"autoCheck":false,"passPercentage":100,"showScorePoints":true},"UI":{"checkAnswerButton":"Check","showSolutionButton":"Show solution","tryAgainButton":"Retry","tipsLabel":"Show tip","scoreBarLabel":"You got :num out of :total points","tipAvailable":"Tip available","feedbackAvailable":"Feedback available","readFeedback":"Read feedback","wrongAnswer":"Wrong answer","correctAnswer":"Correct answer","shouldCheck":"Should have been checked","shouldNotCheck":"Should not have been checked","noInput":"Please answer before viewing the solution"},"confirmCheck":{"header":"Finish ?","body":"Are you sure you wish to finish ?","cancelLabel":"Cancel","confirmLabel":"Finish"},"confirmRetry":{"header":"Retry ?","body":"Are you sure you wish to retry ?","cancelLabel":"Cancel","confirmLabel":"Confirm"},"question":"<p>Is phpunit awesome?<\/p>\n"}',
-                $h5pContent->parameters
+                $h5pContent->parameters,
             );
             $this->assertEquals('U', $h5pContent->metadata->license);
             $this->assertFalse($h5pContent->is_published);
@@ -243,7 +243,7 @@ namespace Tests\Integration\Libraries\H5P\API {
             $this->assertNotNull($h5pContent);
             $this->assertJsonStringEqualsJsonString(
                 '{"taskDescription":"Drag the words into the correct boxes","overallFeedback":[{"from":0,"to":100}],"checkAnswer":"Check","tryAgain":"Retry","showSolution":"Show solution","dropZoneIndex":"Drop Zone @index.","empty":"Drop Zone @index is empty.","contains":"Drop Zone @index contains draggable @draggable.","ariaDraggableIndex":"@index of @count draggables.","tipLabel":"Show tip","correctText":"Correct!","incorrectText":"Incorrect!","resetDropTitle":"Reset drop","resetDropDescription":"Are you sure you want to reset this drop zone?","grabbed":"Draggable is grabbed.","cancelledDragging":"Cancelled dragging.","correctAnswer":"Correct answer:","feedbackHeader":"Feedback","behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"instantFeedback":false},"scoreBarLabel":"You got :num out of :total points","textField":"*PhpUnit* is an *awesome* tool"}',
-                $h5pContent->parameters
+                $h5pContent->parameters,
             );
             $this->assertFalse($h5pContent->is_published);
             $this->assertTrue($h5pContent->isListed());

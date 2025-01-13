@@ -73,9 +73,9 @@ class EditorStorage implements \H5peditorStorage
                         'title' => $h5pLibrary->title,
                         'runnable' => $h5pLibrary->runnable,
                         'restricted' => $h5pLibrary->restricted === '1' ? true : false,
-                        'metadataSettings' => json_decode($h5pLibrary->metadata_settings)
+                        'metadataSettings' => json_decode($h5pLibrary->metadata_settings),
                     ];
-                    return (object)$library;
+                    return (object) $library;
                 })
                 ->toArray();
         }
@@ -106,7 +106,7 @@ class EditorStorage implements \H5peditorStorage
                         }
                         unset($library->major_version, $library->minor_version);
                         $library = $library->toArray();
-                        return (object)$library;
+                        return (object) $library;
                     });
             })
             ->flatten()
@@ -148,9 +148,9 @@ class EditorStorage implements \H5peditorStorage
             file_put_contents($path, $data);
         }
 
-        return (object)[
+        return (object) [
             'dir' => dirname($path),
-            'fileName' => basename($path)
+            'fileName' => basename($path),
         ];
     }
 

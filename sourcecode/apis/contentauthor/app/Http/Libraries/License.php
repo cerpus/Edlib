@@ -103,7 +103,7 @@ class License
             'ZERO',
             'PUBLIC DOMAIN MARK',
             'EDLIB LISENS',
-        ]
+        ],
     ];
 
     /**

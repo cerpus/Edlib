@@ -20,8 +20,7 @@ final readonly class LtiValidatedRequest
     public function __construct(
         private ValidatorInterface $oauth1Validator,
         private LtiPlatformCredentialStore $ltiPlatformCredentialStore,
-    ) {
-    }
+    ) {}
 
     /**
      * @param (Closure(Request): Response) $next

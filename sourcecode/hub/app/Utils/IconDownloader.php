@@ -40,8 +40,7 @@ final readonly class IconDownloader
     public function __construct(
         private ClientInterface $client,
         private Cloud $disk,
-    ) {
-    }
+    ) {}
 
     /**
      * Downloads the icon at the given URL, then uploads it to file storage

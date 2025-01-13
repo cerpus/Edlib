@@ -114,7 +114,7 @@ class PingVideoApi implements ShouldQueue
 
         // Back off.
         // Max delay should be $tries * pingDelay => 20 * 10 = 200 seconds using the default values.
-        $timeOut = (int)config('h5p.video.pingDelay');
+        $timeOut = (int) config('h5p.video.pingDelay');
         $attempts = $this->attempts() + 1;
         if ($attempts > 0) {
             $timeOut = $timeOut * $attempts;

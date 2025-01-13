@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class ScopedSession
 {
-    public function __construct(private SessionScope $scope)
-    {
-    }
+    public function __construct(private SessionScope $scope) {}
 
     /**
      * @param (Closure(Request): Response) $next

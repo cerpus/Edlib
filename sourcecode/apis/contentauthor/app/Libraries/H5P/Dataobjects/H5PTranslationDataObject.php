@@ -15,8 +15,7 @@ class H5PTranslationDataObject implements JsonSerializable
         private readonly array $fields,
         private readonly string $language,
         private readonly string|null $id = null,
-    ) {
-    }
+    ) {}
 
     public function getId(): string|null
     {

@@ -12,8 +12,7 @@ class LtiLaunch
         private readonly Request $request,
         private readonly int|null $width = null,
         private readonly int|null $height = null,
-    ) {
-    }
+    ) {}
 
     public function getRequest(): Request
     {

@@ -14,7 +14,7 @@ class AdminConfig implements ConfigInterface
     private $id;
 
     public function __construct(
-        private H5PCore $core
+        private H5PCore $core,
     ) {
         $this->h5pCore = $core;
         $this->fileStorage = $core->fs;
@@ -105,8 +105,8 @@ class AdminConfig implements ConfigInterface
                 'contents' => $contents,
                 'buttonLabel' => 'Upgrade', $library->title,
                 'total' => $contents,
-                'token' => csrf_token()
-            ]
+                'token' => csrf_token(),
+            ],
         ];
         return $settings;
     }

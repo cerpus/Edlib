@@ -24,8 +24,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         private readonly H5PAudioInterface $audioAdapter,
         private readonly H5PImageInterface $imageAdapter,
         private readonly H5PVideoInterface $videoAdapter,
-    ) {
-    }
+    ) {}
 
     public function alterParameters(
         string $parameters,
@@ -53,82 +52,82 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         }
 
         $field->font->size = [
-            (object)[
+            (object) [
                 'label' => '50%',
-                'css' => '0.5em'
+                'css' => '0.5em',
             ],
-            (object)[
+            (object) [
                 'label' => '56.25%',
-                'css' => '0.5625em'
+                'css' => '0.5625em',
             ],
-            (object)[
+            (object) [
                 'label' => '62.50%',
-                'css' => '0.625em'
+                'css' => '0.625em',
             ],
-            (object)[
+            (object) [
                 'label' => '68.75%',
-                'css' => '0.6875em'
+                'css' => '0.6875em',
             ],
-            (object)[
+            (object) [
                 'label' => '75%',
-                'css' => '0.75em'
+                'css' => '0.75em',
             ],
-            (object)[
+            (object) [
                 'label' => '87.50%',
-                'css' => '0.875em'
+                'css' => '0.875em',
             ],
-            (object)[
+            (object) [
                 'label' => '100%',
-                'css' => '1em'
+                'css' => '1em',
             ],
-            (object)[
+            (object) [
                 'label' => '112.50%',
-                'css' => '1.125em'
+                'css' => '1.125em',
             ],
-            (object)[
+            (object) [
                 'label' => '125%',
-                'css' => '1.25em'
+                'css' => '1.25em',
             ],
-            (object)[
+            (object) [
                 'label' => '137.50%',
-                'css' => '1.375em'
+                'css' => '1.375em',
             ],
-            (object)[
+            (object) [
                 'label' => '150%',
-                'css' => '1.5em'
+                'css' => '1.5em',
             ],
-            (object)[
+            (object) [
                 'label' => '162.50%',
-                'css' => '1.625em'
+                'css' => '1.625em',
             ],
-            (object)[
+            (object) [
                 'label' => '175%',
-                'css' => '1.75em'
+                'css' => '1.75em',
             ],
-            (object)[
+            (object) [
                 'label' => '225%',
-                'css' => '2.25em'
+                'css' => '2.25em',
             ],
-            (object)[
+            (object) [
                 'label' => '300%',
-                'css' => '3em'
+                'css' => '3em',
             ],
-            (object)[
+            (object) [
                 'label' => '450%',
-                'css' => '4.5em'
+                'css' => '4.5em',
             ],
-            (object)[
+            (object) [
                 'label' => '675%',
-                'css' => '6.75em'
+                'css' => '6.75em',
             ],
-            (object)[
+            (object) [
                 'label' => '1350%',
-                'css' => '13.5em'
+                'css' => '13.5em',
             ],
-            (object)[
+            (object) [
                 'label' => '3375%',
-                'css' => '33.75em'
-            ]
+                'css' => '33.75em',
+            ],
         ];
     }
 

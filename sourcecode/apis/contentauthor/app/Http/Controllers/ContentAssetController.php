@@ -7,9 +7,7 @@ use Illuminate\Http\RedirectResponse;
 
 final readonly class ContentAssetController
 {
-    public function __construct(private Cloud $fs)
-    {
-    }
+    public function __construct(private Cloud $fs) {}
 
     public function __invoke(string $path): RedirectResponse
     {

@@ -14,9 +14,7 @@ class RequestId
 {
     private const HEADER_NAME = 'X-Request-Id';
 
-    public function __construct(private readonly Logger $logger)
-    {
-    }
+    public function __construct(private readonly Logger $logger) {}
 
     /**
      * @param  \Illuminate\Http\Request $request

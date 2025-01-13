@@ -128,12 +128,12 @@ class ContentVersion extends Model
                 return $children->map(function ($item) {
                     return self::findLatestLeaf($item);
                 })
-                ->reduce(function ($latest, $leaf) {
-                    if ($latest === null) {
-                        return $leaf;
-                    }
-                    return $leaf->created_at->isAfter($latest->created_at) ? $leaf : $latest;
-                });
+                    ->reduce(function ($latest, $leaf) {
+                        if ($latest === null) {
+                            return $leaf;
+                        }
+                        return $leaf->created_at->isAfter($latest->created_at) ? $leaf : $latest;
+                    });
             }
         }
 

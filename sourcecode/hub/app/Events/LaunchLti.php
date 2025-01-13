@@ -13,8 +13,7 @@ final class LaunchLti
         private readonly string $url,
         private LtiLaunchBuilder $launch,
         private readonly LtiTool $tool,
-    ) {
-    }
+    ) {}
 
     public function getUrl(): string
     {

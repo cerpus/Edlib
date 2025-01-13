@@ -9,9 +9,7 @@ use Illuminate\View\View;
 
 class LinkController extends Controller
 {
-    public function __construct(private readonly Lti $lti)
-    {
-    }
+    public function __construct(private readonly Lti $lti) {}
 
     /**
      * Display the specified resource.

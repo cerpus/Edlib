@@ -62,9 +62,9 @@ class ContentTypeHandlerTest extends TestCase
                             'text' => $options[2],
                             'correct' => true,
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $content = $handler->storeQuestionset($data);
@@ -141,9 +141,9 @@ class ContentTypeHandlerTest extends TestCase
                             'text' => $options[2],
                             'correct' => true,
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $content = $handler->storeQuestionset($data);
@@ -193,7 +193,7 @@ class ContentTypeHandlerTest extends TestCase
         $questionset = Questionset::create([
             'authId' => $authId,
             'license' => "BY",
-            'title' => $title
+            'title' => $title,
         ]);
         $answers = collect([
             Answer::create([
@@ -212,7 +212,7 @@ class ContentTypeHandlerTest extends TestCase
 
         /** @var MultiChoiceQuestion $question */
         $question = MultiChoiceQuestion::create([
-            'text' => $questionText
+            'text' => $questionText,
         ]);
         $question->addAnswers($answers);
         $questionset->addQuestion($question);

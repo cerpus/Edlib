@@ -56,7 +56,7 @@ class GameUploadRequest extends FormRequest
             if (!$zipFile->has('MILLIONAIRE/appmanifest.json')) {
                 $validator->errors()->add(
                     'gameFile',
-                    "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive."
+                    "Missing file 'MILLIONAIRE/appmanifest.json' in zip archive.",
                 );
                 return;
             }
@@ -70,7 +70,7 @@ class GameUploadRequest extends FormRequest
             if (!property_exists($appManifest, 'description')) {
                 $validator->errors()->add(
                     'gameFile',
-                    "The appmanifest.json is missing the description property. The description property is used to read the version information."
+                    "The appmanifest.json is missing the description property. The description property is used to read the version information.",
                 );
             }
         });

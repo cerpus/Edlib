@@ -110,7 +110,7 @@ return [
             'port' => env('REDIS_PORT', env('EDLIBCOMMON_REDIS_PORT', '6379')),
             'password' => env('REDIS_PASSWORD'),
             'database' => env('REDIS_DB', '0'),
-            'read_write_timeout' => 0
+            'read_write_timeout' => 0,
         ],
 
         'cache' => [

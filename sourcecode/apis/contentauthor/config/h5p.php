@@ -20,7 +20,7 @@ return [
     'video' => [
         'adapter' => env('H5P_VIDEO_ADAPTER'),
         'enable' => env("H5P_VIDEO_STREAM_ENABLED", true),
-        'deleteVideoSourceAfterConvertToStream' => (bool)env("H5P_VIDEO_ADAPTER_DELETEVIDEO", true),
+        'deleteVideoSourceAfterConvertToStream' => (bool) env("H5P_VIDEO_ADAPTER_DELETEVIDEO", true),
         'pingDelay' => env("H5P_VIDEO_DELAY", 10),
     ],
     'singleContentUpgrade' => env('H5P_SINGLE_CONTENT_UPGRADE', true),

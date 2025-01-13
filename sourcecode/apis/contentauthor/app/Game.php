@@ -77,7 +77,7 @@ class Game extends Content implements VersionableObject
 
     public function getGameSettingsAttribute(string $gameSettings): Object
     {
-        return !empty($gameSettings) ? json_decode($gameSettings) : (object)[];
+        return !empty($gameSettings) ? json_decode($gameSettings) : (object) [];
     }
 
     /**

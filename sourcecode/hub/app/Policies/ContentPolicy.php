@@ -14,14 +14,12 @@ use LogicException;
 
 readonly class ContentPolicy
 {
-    public function __construct(private Request $request)
-    {
-    }
+    public function __construct(private Request $request) {}
 
     public function view(
         User|null $user,
         Content $content,
-        ContentVersion|null $version = null
+        ContentVersion|null $version = null,
     ): bool {
         $this->ensureVersionBelongsToContent($content, $version);
 

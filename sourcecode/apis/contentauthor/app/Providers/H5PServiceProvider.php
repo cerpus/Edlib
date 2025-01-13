@@ -56,9 +56,7 @@ class H5PServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-    }
+    public function boot() {}
 
     public function provides()
     {
@@ -83,7 +81,7 @@ class H5PServiceProvider extends ServiceProvider
         $this->app
             ->when(H5pPresave::class)
             ->needs(Cloud::class)
-            ->give(fn () => Storage::disk('h5p-presave'));
+            ->give(fn() => Storage::disk('h5p-presave'));
 
         $this->app->bind(H5PVideoInterface::class, match (config('h5p.video.adapter')) {
             'ndla' => NDLAVideoAdapter::class,
@@ -92,7 +90,7 @@ class H5PServiceProvider extends ServiceProvider
 
         $this->app->when(NDLAVideoAdapter::class)
             ->needs(Client::class)
-            ->give(fn () => Oauth2Client::getClient(OauthSetup::create([
+            ->give(fn() => Oauth2Client::getClient(OauthSetup::create([
                 'authUrl' => config('ndla.video.authUrl'),
                 'coreUrl' => config('ndla.video.url'),
                 'key' => config('ndla.video.key'),
@@ -108,7 +106,7 @@ class H5PServiceProvider extends ServiceProvider
             default => NullImageAdapter::class,
         });
 
-        $this->app->bind(NdlaImageClient::class, fn () => new NdlaImageClient([
+        $this->app->bind(NdlaImageClient::class, fn() => new NdlaImageClient([
             'base_uri' => config('ndla.image.url'),
         ]));
 
@@ -121,7 +119,7 @@ class H5PServiceProvider extends ServiceProvider
             ->needs('$url')
             ->giveConfig('ndla.audio.url');
 
-        $this->app->bind(NdlaAudioClient::class, fn () => new NdlaAudioClient([
+        $this->app->bind(NdlaAudioClient::class, fn() => new NdlaAudioClient([
             'base_uri' => config('ndla.image.url'),
         ]));
 
@@ -129,7 +127,7 @@ class H5PServiceProvider extends ServiceProvider
         $this->app->bind(H5PFileStorage::class, H5PCerpusStorage::class);
         $this->app->bind(CerpusStorageInterface::class, H5PCerpusStorage::class);
 
-        $this->app->singletonIf('H5PFilesystem', fn () => Storage::disk());
+        $this->app->singletonIf('H5PFilesystem', fn() => Storage::disk());
 
         $this->app->bind(NynorskrobotenAdapter::class, function () {
             $client = new Client([

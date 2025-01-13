@@ -38,22 +38,22 @@ class Gametype extends Model
     private $links = [
         [
             'rel' => 'manifest',
-            'href' => 'appmanifest.json'
+            'href' => 'appmanifest.json',
         ],
         [
             'rel' => 'apple-touch-icon',
             'href' => 'icons/icon-128.png',
-            'sizes' => '128x128'
+            'sizes' => '128x128',
         ],
         [
             'rel' => 'apple-touch-icon',
             'href' => 'icons/icon-256.png',
-            'sizes' => '256x256'
+            'sizes' => '256x256',
         ],
         [
             'rel' => 'icon',
             'href' => 'icons/icon-256.png',
-            'type' => 'image/png'
+            'type' => 'image/png',
         ],
     ];
 
@@ -137,7 +137,7 @@ class Gametype extends Model
         $fs = Storage::disk();
         $prefix = 'games/millionaire/' . $this->getVersion();
 
-        return collect($this->links)->map(fn (array $link): object => (object) [
+        return collect($this->links)->map(fn(array $link): object => (object) [
             ...$link,
             'href' => $fs->url("$prefix/{$link['href']}"),
         ])->toArray();
@@ -153,7 +153,7 @@ class Gametype extends Model
         $prefix = 'games/millionaire/' . $this->getVersion();
 
         return collect($this->css)
-            ->map(fn ($css) => $fs->url("$prefix/$css"))
+            ->map(fn($css) => $fs->url("$prefix/$css"))
             ->toArray();
     }
 
@@ -167,7 +167,7 @@ class Gametype extends Model
         $prefix = 'games/millionaire/' . $this->getVersion();
 
         return collect($this->scripts)
-            ->map(fn ($script) => $fs->url("$prefix/$script"))
+            ->map(fn($script) => $fs->url("$prefix/$script"))
             ->toArray();
     }
 }

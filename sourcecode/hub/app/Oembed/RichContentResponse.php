@@ -15,8 +15,7 @@ class RichContentResponse
         public readonly int $width,
         public readonly int $height,
         public readonly string|null $title = null,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, string|int>

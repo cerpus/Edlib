@@ -15,9 +15,7 @@ use Validator;
 
 class LtiBehaviorSettings
 {
-    public function __construct(private readonly Lti $lti)
-    {
-    }
+    public function __construct(private readonly Lti $lti) {}
 
     /*
      * Extract Behavior settings from a LTI request, validate and add to Session if valid

@@ -16,7 +16,7 @@ final class LtiPlaygroundTest extends DuskTestCase
         $user = User::factory()->name('Dee Bugg')->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/')
@@ -28,7 +28,7 @@ final class LtiPlaygroundTest extends DuskTestCase
                 ->press('Dee Bugg')
                 ->assertSeeLink('LTI playground')
                 ->clickLink('LTI playground')
-                ->assertTitleContains('LTI playground')
+                ->assertTitleContains('LTI playground'),
         );
     }
 
@@ -38,7 +38,7 @@ final class LtiPlaygroundTest extends DuskTestCase
         $user = User::factory()->name('El Tee-Aye')->create();
 
         $this->browse(
-            fn (Browser $browser) => $browser
+            fn(Browser $browser) => $browser
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/lti/playground')
@@ -48,9 +48,9 @@ final class LtiPlaygroundTest extends DuskTestCase
                 ->press('Launch')
                 ->withinFrame(
                     'iframe',
-                    fn (Browser $frame) => $frame
-                        ->assertSee('If you can see this, the LTI launch was successful')
-                )
+                    fn(Browser $frame) => $frame
+                        ->assertSee('If you can see this, the LTI launch was successful'),
+                ),
         );
     }
 }

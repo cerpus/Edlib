@@ -45,7 +45,7 @@ class EditorAjax implements \H5PEditorAjaxInterface
     public function getContentTypeCache($machineName = null)
     {
         if ($machineName) {
-            return (object)H5PLibrariesHubCache::where('name', $machineName)->first()->only(['id', 'is_recommended']);
+            return (object) H5PLibrariesHubCache::where('name', $machineName)->first()->only(['id', 'is_recommended']);
         }
 
         return H5PLibrariesHubCache::with('libraries.capability')

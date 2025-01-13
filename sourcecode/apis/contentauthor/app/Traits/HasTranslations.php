@@ -23,7 +23,7 @@ trait HasTranslations
         $content = self::whereIn('id', $translations)
             ->get()
             ->map(function ($content) {
-                return (object)['language' => $content->getLanguage(), 'content' => $content];
+                return (object) ['language' => $content->getLanguage(), 'content' => $content];
             })
             ->sortBy('language')
             ->toArray();
@@ -41,7 +41,7 @@ trait HasTranslations
                 'link_content_id' => null,
                 'content_type' => $this->getContentType(),
                 'language_code' => $this->getLanguage(),
-            ]
+            ],
         );
 
         return $result ? true : false;
@@ -59,7 +59,7 @@ trait HasTranslations
                 [
                     'content_type' => $this->getContentType(),
                     'language_code' => $this->getLanguage(),
-                ]
+                ],
             );
         }
 

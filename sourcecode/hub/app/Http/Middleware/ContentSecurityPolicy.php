@@ -19,8 +19,7 @@ final class ContentSecurityPolicy
     public function __construct(
         private readonly Vite $vite,
         private readonly UrlGenerator $urlGenerator,
-    ) {
-    }
+    ) {}
 
     /**
      * @param (Closure(Request): Response) $next

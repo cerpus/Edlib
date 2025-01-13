@@ -18,8 +18,7 @@ final readonly class Lti
         private ValidatorInterface $validator,
         private CredentialStoreInterface $credentialStore,
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * Get a validated LTI request from the Laravel request object.
@@ -35,7 +34,7 @@ final readonly class Lti
         }
 
         // undo empty string => null conversion
-        $params = array_map(fn ($v) => $v === null ? '' : $v, $request->all());
+        $params = array_map(fn($v) => $v === null ? '' : $v, $request->all());
 
         $ltiRequest = new LtiRequest($request->method(), $request->url(), $params);
 

@@ -25,8 +25,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         private readonly H5PAudioInterface $audioAdapter,
         private readonly H5PImageInterface $imageAdapter,
         private readonly H5PVideoInterface $videoAdapter,
-    ) {
-    }
+    ) {}
 
     public function alterParameters(
         string $parameters,
@@ -120,9 +119,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     /**
      * @return void
      */
-    public function overrideAdapterSettings()
-    {
-    }
+    public function overrideAdapterSettings() {}
 
     /**
      * @return bool

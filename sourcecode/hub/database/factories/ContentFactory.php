@@ -54,7 +54,7 @@ final class ContentFactory extends Factory
     {
         return $this->state([
             'deleted_at' => DateTimeImmutable::createFromInterface(
-                $deletedAt ?? $this->faker->dateTime
+                $deletedAt ?? $this->faker->dateTime,
             ),
         ]);
     }

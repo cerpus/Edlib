@@ -41,13 +41,13 @@ class ContentVersionRequest extends FormRequest
 
             'created_at' => [
                 'sometimes',
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 'date',
             ],
 
             'edited_by' => [
                 'sometimes',
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 Rule::exists(User::class, 'id'),
             ],
         ];

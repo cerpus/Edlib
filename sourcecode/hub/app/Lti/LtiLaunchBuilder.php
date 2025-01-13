@@ -42,8 +42,7 @@ class LtiLaunchBuilder
     public function __construct(
         private readonly SignerInterface $oauth1Signer,
         private readonly Dispatcher $dispatcher,
-    ) {
-    }
+    ) {}
 
     public function getClaim(string $name): string|null
     {

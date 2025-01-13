@@ -17,7 +17,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->name;
-        $email = Str::slug($name).'@example.com';
+        $email = Str::slug($name) . '@example.com';
 
         return [
             'name' => $name,

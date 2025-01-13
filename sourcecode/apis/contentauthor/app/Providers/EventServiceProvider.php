@@ -42,7 +42,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\GameWasSaved::class => [
             \App\Listeners\Game\HandlePrivacy::class,
             \App\Listeners\Game\HandleVersioning::class,
-//            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
+            //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],
     ];
 

@@ -8,7 +8,5 @@ use App\Models\Content;
 
 final readonly class ContentForceDeleting
 {
-    public function __construct(public Content $content)
-    {
-    }
+    public function __construct(public Content $content) {}
 }

@@ -28,8 +28,7 @@ final readonly class ReturnToCoreController
         private ContentItemsSerializerInterface $serializer,
         private SignerInterface $signer,
         private CredentialStoreInterface $credentials,
-    ) {
-    }
+    ) {}
 
     public function __invoke(Request $request): Response
     {
@@ -48,7 +47,7 @@ final readonly class ReturnToCoreController
             icon: $content->iconUrl ? new Image($content->iconUrl) : null,
             lineItem: $content->maxScore > 0 ?
                 (new LineItem(new ScoreConstraints(normalMaximum: $content->maxScore))) :
-                null
+                null,
         ))
             ->withLanguageIso639_3($content->languageIso639_3)
             ->withLicense($content->license)

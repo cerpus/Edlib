@@ -17,9 +17,7 @@ class ExportH5P implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(private readonly H5PContent $content)
-    {
-    }
+    public function __construct(private readonly H5PContent $content) {}
 
     public function handle(H5PExport $export): void
     {

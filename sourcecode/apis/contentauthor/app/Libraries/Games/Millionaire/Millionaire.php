@@ -44,8 +44,8 @@ class Millionaire extends GameBase
         } else {
             $questionsAndAnswers = $this->createGameSettingsFromArray($questions);
         }
-        $gameSettings = (object)[
-            'questionSet' => (object)['questions' => $questionsAndAnswers->toArray()],
+        $gameSettings = (object) [
+            'questionSet' => (object) ['questions' => $questionsAndAnswers->toArray()],
             'locale' => $parameters['language_code'] ?? 'nb-no',
         ];
         return $asObject !== true ? json_encode($gameSettings, flags: JSON_THROW_ON_ERROR) : $gameSettings;
@@ -62,10 +62,10 @@ class Millionaire extends GameBase
                     ->map(function (QuestionSetQuestionAnswer $answer) {
                         return [
                             'answer' => $answer->answer_text,
-                            'isCorrect' => (bool)$answer->correct,
+                            'isCorrect' => (bool) $answer->correct,
                         ];
                     })
-                    ->toArray()
+                    ->toArray(),
             ];
         });
     }
@@ -80,9 +80,9 @@ class Millionaire extends GameBase
                     'answers' => array_map(function ($answer) {
                         return [
                             'answer' => $answer['answerText'],
-                            'isCorrect' => (bool)$answer['isCorrect'],
+                            'isCorrect' => (bool) $answer['isCorrect'],
                         ];
-                    }, $question['answers'])
+                    }, $question['answers']),
                 ];
             });
     }
@@ -160,8 +160,8 @@ class Millionaire extends GameBase
         ])->toJson();
 
         $state = QuestionSetStateDataObject::create([
-            'links' => (object)[
-                "store" => route('questionset.store')
+            'links' => (object) [
+                "store" => route('questionset.store'),
             ],
             'questionSetJsonData' => $extQuestionSetData,
             'license' => License::getDefaultLicense(),
@@ -195,7 +195,7 @@ class Millionaire extends GameBase
                 'canPublish' => $game->canPublish($request),
                 'canList' => $game->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
+            ],
         );
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $game->id,

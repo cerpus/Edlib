@@ -2,6 +2,4 @@
 
 namespace App\Exceptions;
 
-class NoFilesException extends \Exception
-{
-}
+class NoFilesException extends \Exception {}

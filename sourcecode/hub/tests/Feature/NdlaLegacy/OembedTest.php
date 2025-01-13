@@ -34,13 +34,13 @@ final class OembedTest extends TestCase
             ->assertOk()
             ->assertHeader('Content-Type', 'application/json')
             ->assertJson(
-                fn (AssertableJson $json) => $json
+                fn(AssertableJson $json) => $json
                     ->where('type', 'rich')
                     ->where('width', 800)
                     ->where('height', 600)
                     ->where('title', 'My content')
                     ->where('version', '1.0')
-                    ->has('html')
+                    ->has('html'),
             );
     }
 }

@@ -229,7 +229,7 @@ class H5PLibrary extends Model
             $libraryData['machineName'] ?? $libraryData['name'],
             $libraryData['majorVersion'],
             $libraryData['minorVersion'],
-            $libraryData['patchVersion'] ?? ''
+            $libraryData['patchVersion'] ?? '',
         );
     }
 
@@ -334,7 +334,7 @@ class H5PLibrary extends Model
             ->whereNotNull('l1.add_to')
             ->get()
             ->map(function ($addon) {
-                return (array)$addon;
+                return (array) $addon;
             })
             ->toArray();
     }

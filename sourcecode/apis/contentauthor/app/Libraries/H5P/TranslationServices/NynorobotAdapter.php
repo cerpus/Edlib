@@ -25,8 +25,7 @@ final readonly class NynorobotAdapter implements TranslationServiceInterface
     public function __construct(
         private ClientInterface $client,
         private string $style,
-    ) {
-    }
+    ) {}
 
     public function getSupportedLanguages(): array|null
     {
@@ -52,7 +51,7 @@ final readonly class NynorobotAdapter implements TranslationServiceInterface
                         'headers' => [
                             'Content-Type' => 'text/html',
                         ],
-                    ]
+                    ],
                 ],
                 'query' => [
                     'stilmal' => $this->style,

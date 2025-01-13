@@ -174,15 +174,15 @@ class H5PController extends Controller
         ]);
 
         $state = H5PStateDataObject::create($displayOptions + [
-                'library' => $contenttype,
-                'license' => License::getDefaultLicense(),
-                'isPublished' => false,
-                'share' => config('h5p.defaultShareSetting'),
-                'language_iso_639_3' => $language,
-                'redirectToken' => $request->get('redirectToken'),
-                'route' => route('h5p.store'),
-                '_method' => "POST",
-            ])->toJson();
+            'library' => $contenttype,
+            'license' => License::getDefaultLicense(),
+            'isPublished' => false,
+            'share' => config('h5p.defaultShareSetting'),
+            'language_iso_639_3' => $language,
+            'redirectToken' => $request->get('redirectToken'),
+            'route' => route('h5p.store'),
+            '_method' => "POST",
+        ])->toJson();
 
         return view(
             'h5p.create',
@@ -195,7 +195,7 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]
+            ],
         );
     }
 
@@ -236,7 +236,7 @@ class H5PController extends Controller
             Log::error(__METHOD__ . ": H5P $id is empty. UserId: " . Session::get('authId', 'not-logged-in-user'), [
                 'user' => Session::get('authId', 'not-logged-in-user'),
                 'url' => request()->url(),
-                'request' => request()->all()
+                'request' => request()->all(),
             ]);
             abort(404, 'Resource not found');
         }
@@ -285,7 +285,7 @@ class H5PController extends Controller
         $displayOptions['download'] = $displayOptions['export'];
 
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
-            'id' => (string)$content['id'],
+            'id' => (string) $content['id'],
             'createdAt' => $h5pContent->created_at->toIso8601String(),
             'type' => $library->getTitleAndVersionString(),
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
@@ -338,7 +338,7 @@ class H5PController extends Controller
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
                 'configJs' => $adapter->getConfigJs(),
-            ]
+            ],
         );
     }
 
@@ -440,7 +440,7 @@ class H5PController extends Controller
     public function store(H5PStorageRequest $request): Response|JsonResponse
     {
         $request->merge([
-            "parameters" => self::addAuthorToParameters($request->get("parameters"))
+            "parameters" => self::addAuthorToParameters($request->get("parameters")),
         ]);
 
         $content = $this->persistContent($request, Session::get('authId'));
@@ -480,7 +480,7 @@ class H5PController extends Controller
 
         $this->store_content_shares(
             $content['id'],
-            $request->filled("col-emails") ? $request->request->get("col-emails") : ""
+            $request->filled("col-emails") ? $request->request->get("col-emails") : "",
         );
 
         $this->store_content_is_private($newH5pContent, $request);
@@ -536,7 +536,7 @@ class H5PController extends Controller
         $sql = 'UPDATE h5p_contents SET license=:license WHERE id=:id';
         $params = [
             ':id' => $id,
-            ':license' => $request->get('license')
+            ':license' => $request->get('license'),
         ];
         $statement = $db->prepare($sql);
         $statement->execute($params);
@@ -627,7 +627,7 @@ class H5PController extends Controller
         }
         if (!$request->filled('col-emails')) {
             $request->request->add([
-                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray())
+                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray()),
             ]);
         }
 

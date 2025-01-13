@@ -61,7 +61,7 @@ class ArticleCopyrightControllerTest extends TestCase
                         [
                             'name' => 'Luigi',
                             'role' => 'Writer',
-                        ]
+                        ],
                     ],
                 ],
                 'assets' => [],
@@ -143,7 +143,7 @@ class ArticleCopyrightControllerTest extends TestCase
                         ],
                     ],
                 ],
-            ]
+            ],
         ]);
     }
 }

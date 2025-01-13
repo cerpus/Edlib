@@ -41,7 +41,7 @@ class OpenEndedQuestionTest extends TestCase
     public function getElements()
     {
         $params['params'] = [
-            'question' => $this->faker->sentence
+            'question' => $this->faker->sentence,
         ];
         $openEndedQuesiton = new OpenEndedQuestion(json_encode($params));
         $elements = $openEndedQuesiton->getElements();

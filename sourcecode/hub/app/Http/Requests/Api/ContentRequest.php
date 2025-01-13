@@ -21,24 +21,24 @@ final class ContentRequest extends FormRequest
             'shared' => ['sometimes', 'boolean'],
 
             'created_at' => [
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 'sometimes',
                 'date',
             ],
 
             'deleted_at' => [
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 'sometimes',
                 'date',
             ],
 
             'roles.*.user' => [
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 Rule::exists(User::class, 'id'),
             ],
 
             'roles.*.role' => [
-                Rule::prohibitedIf(fn () => $gate->denies('admin')),
+                Rule::prohibitedIf(fn() => $gate->denies('admin')),
                 Rule::enum(ContentRole::class),
                 'required_with:roles.*.user',
             ],
@@ -54,7 +54,7 @@ final class ContentRequest extends FormRequest
     {
         $roles = $this->validated('roles', []);
 
-        return array_map(fn (array $role) => [
+        return array_map(fn(array $role) => [
             'user' => User::where('id', $role['user'])->firstOrFail(),
             'role' => ContentRole::from($role['role']),
         ], $roles);

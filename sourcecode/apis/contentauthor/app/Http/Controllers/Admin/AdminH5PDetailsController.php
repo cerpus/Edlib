@@ -40,7 +40,7 @@ class AdminH5PDetailsController extends Controller
             Storage::disk(),
             Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
-            $tmpLibraryRelative
+            $tmpLibraryRelative,
         );
         $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
         $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);
@@ -148,7 +148,7 @@ class AdminH5PDetailsController extends Controller
             'listAll' => $listAll,
             'latestCount' => $latestCount,
             'paginator' => (new LengthAwarePaginator($contents, $total, $pageSize))
-                ->withPath('/admin/libraries/'.$library->id.'/content')
+                ->withPath('/admin/libraries/' . $library->id . '/content')
                 ->appends(['listAll' => $listAll]),
         ]);
     }
@@ -183,7 +183,7 @@ class AdminH5PDetailsController extends Controller
             'haveTranslation' => $libLang !== null,
             'translationDb' => $libLang?->translation,
             'translationFile' => Storage::disk()->get(
-                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
             ),
         ]);
     }
@@ -230,7 +230,7 @@ class AdminH5PDetailsController extends Controller
             'haveTranslation' => $libLang !== null,
             'translationDb' => $libLang?->translation,
             'translationFile' => Storage::disk()->get(
-                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale)
+                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
             ),
             'messages' => $messages,
         ]);

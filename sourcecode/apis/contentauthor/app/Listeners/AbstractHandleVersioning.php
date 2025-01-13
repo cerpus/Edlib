@@ -12,7 +12,7 @@ abstract class AbstractHandleVersioning
 
     protected function handleSave(VersionableObject $object, $reason)
     {
-        $linearVersioning = (bool)config('feature.linear-versioning');
+        $linearVersioning = (bool) config('feature.linear-versioning');
         $parentVersionId = $this->getParentVersionId();
         if ($parentVersionId !== null) {
             if ($object->setParentVersionId($parentVersionId)) {

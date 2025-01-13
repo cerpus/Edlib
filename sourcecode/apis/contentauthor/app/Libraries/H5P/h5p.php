@@ -18,8 +18,7 @@ class h5p
         private H5PCore $core,
         private H5PStorage $storage,
         private H5pEditor $editor,
-    ) {
-    }
+    ) {}
 
     public function createView(ConfigInterface $config): H5PView
     {
@@ -44,7 +43,7 @@ class h5p
         } else {
             $content = [
                 'disable' => H5PCore::DISABLE_NONE,
-                'user_id' => $userId
+                'user_id' => $userId,
             ];
         }
 

@@ -37,7 +37,7 @@ trait H5PCommonAdapterTrait
             if ($this->isImageTarget($value)) {
                 $value = $this->imageAdapter->alterImageProperties($value, $settings);
             }
-            if ((bool)(array)$value && (is_array($value) || is_object($value))) {
+            if ((bool) (array) $value && (is_array($value) || is_object($value))) {
                 return $this->traverseParameters(collect($value), $settings);
             }
 
@@ -64,7 +64,7 @@ trait H5PCommonAdapterTrait
             [
                 'name' => 'NDLA',
                 'key' => 'ndla',
-            ]
+            ],
         ];
     }
 
@@ -97,7 +97,7 @@ trait H5PCommonAdapterTrait
             'li',
             'embed',
             '*(*)[class,data-*];',
-            'iframe *(*)[class,data-*,allow,allowfullscreen];'
+            'iframe *(*)[class,data-*,allow,allowfullscreen];',
         ]);
     }
 }

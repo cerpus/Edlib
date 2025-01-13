@@ -18,7 +18,7 @@ class UnlockTest extends TestCase
         $user = User::factory()->make();
         $lockStatus = ContentLock::factory()->create([
             'auth_id' => $user->auth_id,
-            'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30)
+            'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30),
         ]);
 
 
@@ -38,7 +38,7 @@ class UnlockTest extends TestCase
         $user = User::factory()->make();
         $lockStatus = ContentLock::factory()->create([
             'auth_id' => $user->auth_id,
-            'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30)
+            'updated_at' => Carbon::now()->subMinutes(45)->subSeconds(30),
         ]);
 
         $eve = User::factory()->make();

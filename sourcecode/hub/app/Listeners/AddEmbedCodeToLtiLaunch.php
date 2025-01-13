@@ -36,7 +36,7 @@ final readonly class AddEmbedCodeToLtiLaunch
         $event->setLaunch(
             $event->getLaunch()
                 ->withClaim('ext_edlib3_embed_code', $this->getEmbedCode($event))
-                ->withClaim('ext_edlib3_embed_resize_code', $this->getResizeCode($event))
+                ->withClaim('ext_edlib3_embed_resize_code', $this->getResizeCode($event)),
         );
     }
 

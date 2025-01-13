@@ -18,9 +18,7 @@ use function response;
 
 final readonly class ContentVersionController
 {
-    public function __construct(private ContentVersionTransformer $transformer)
-    {
-    }
+    public function __construct(private ContentVersionTransformer $transformer) {}
 
     public function show(Content $apiContent, ContentVersion $version): JsonResponse
     {
@@ -40,7 +38,7 @@ final readonly class ContentVersionController
 
             foreach ($request->getTags() as $tag) {
                 $version->tags()->attach(Tag::findOrCreateFromString($tag), [
-                    'verbatim_name' => Tag::extractVerbatimName($tag)
+                    'verbatim_name' => Tag::extractVerbatimName($tag),
                 ]);
             }
 

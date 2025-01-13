@@ -179,7 +179,7 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         $this->assertCount(3, $data['languages']);
         $libLang->pluck('language_code')->each(
-            fn ($langCode) => $this->assertContains($langCode, $data['languages'])
+            fn($langCode) => $this->assertContains($langCode, $data['languages']),
         );
     }
 
@@ -342,7 +342,7 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         Storage::put(
             sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
-            '{"data":"File translation"}'
+            '{"data":"File translation"}',
         );
 
         $response = $this->withSession(['user' => $user])
@@ -375,7 +375,7 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         Storage::put(
             sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
-            '{"data":"File translation"}'
+            '{"data":"File translation"}',
         );
 
         $response = $this->withSession(['user' => $user])
@@ -409,13 +409,13 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         Storage::put(
             sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
-            '{"data":"File translation"}'
+            '{"data":"File translation"}',
         );
 
         $response = $this->withSession(['user' => $user])
             ->post(
                 route('admin.library-translation', [$library, $translation->language_code]),
-                ['translation' => '{"data":"Updated DB translation"}']
+                ['translation' => '{"data":"Updated DB translation"}'],
             )
             ->assertOk()
             ->original;
@@ -456,13 +456,13 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         Storage::put(
             sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
-            '{"data":"File translation"}'
+            '{"data":"File translation"}',
         );
 
         $response = $this->withSession(['user' => $user])
             ->post(
                 route('admin.library-translation', [$library, 'nn']),
-                ['translation' => '{"data":"Updated DB translation"}']
+                ['translation' => '{"data":"Updated DB translation"}'],
             )
             ->assertOk()
             ->original;
@@ -498,18 +498,18 @@ class AdminH5PDetailsControllerTest extends TestCase
 
         Storage::put(
             sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $translation->language_code),
-            '{"data":"File translation"}'
+            '{"data":"File translation"}',
         );
 
         $file = UploadedFile::fake()->createWithContent(
             $translation->language_code . '.json',
-            $fileContents
+            $fileContents,
         );
 
         $response = $this->withSession(['user' => $user])
             ->post(
                 route('admin.library-translation', [$library, $translation->language_code]),
-                ['translationFile' => $file]
+                ['translationFile' => $file],
             )
             ->assertOk()
             ->original;

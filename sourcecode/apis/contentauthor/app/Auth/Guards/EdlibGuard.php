@@ -20,7 +20,7 @@ class EdlibGuard implements StatefulGuard
 
     public function check(): bool
     {
-        return (bool)$this->user();
+        return (bool) $this->user();
     }
 
     public function guest(): bool

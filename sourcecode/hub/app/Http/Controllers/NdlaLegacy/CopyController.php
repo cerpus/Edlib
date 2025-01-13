@@ -22,9 +22,7 @@ use function response;
  */
 final readonly class CopyController
 {
-    public function __construct(private NdlaLegacyConfig $config)
-    {
-    }
+    public function __construct(private NdlaLegacyConfig $config) {}
 
     public function __invoke(Request $request): JsonResponse
     {

@@ -30,7 +30,7 @@ final class CopyTest extends TestCase
 
         $this->withToken($jwt)
             ->postJson('https://hub-test-ndla-legacy.edlib.test/copy', [
-                'url' => 'https://hub-test-ndla-legacy.edlib.test/resource/f4d10eb4-a6af-4c18-9736-b16b70959c66'
+                'url' => 'https://hub-test-ndla-legacy.edlib.test/resource/f4d10eb4-a6af-4c18-9736-b16b70959c66',
             ])
             ->assertOk()
             ->assertJson(function (AssertableJson $json) use ($content) {

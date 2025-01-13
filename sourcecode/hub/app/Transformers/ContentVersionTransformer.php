@@ -24,8 +24,7 @@ final class ContentVersionTransformer extends TransformerAbstract
     public function __construct(
         private readonly LtiToolTransformer $ltiToolTransformer,
         private readonly TagTransformer $tagTransformer,
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -66,7 +65,7 @@ final class ContentVersionTransformer extends TransformerAbstract
     {
         return $this->collection(
             $contentVersion->tags,
-            $this->tagTransformer
+            $this->tagTransformer,
         );
     }
 }

@@ -138,7 +138,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertObjectHasProperty('cid-' . $content->id, $data->contents);
         $this->assertSame(
             "/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context=$context",
-            $data->ajax['contentUserData']
+            $data->ajax['contentUserData'],
         );
         $this->assertSame("https://www.edlib.test/s/resources/my-embed-id", $data->documentUrl);
 

@@ -20,7 +20,7 @@ class LocksController extends Controller
         foreach ($allLocks as $aLock) {
             $content = Content::findContentById($aLock->content_id);
             $type = (!$content instanceof H5PContent) ? Str::ucfirst($content->getContentType()) : Str::upper($content->getContentType());
-            $locks[] = (object)[
+            $locks[] = (object) [
                 'id' => $aLock->content_id,
                 'title' => sprintf("[%s] %s", $type, $content->title),
                 'name' => $aLock->name ?? '-',

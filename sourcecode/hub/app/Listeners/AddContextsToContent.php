@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 
 final readonly class AddContextsToContent
 {
-    public function __construct(private Request $request)
-    {
-    }
+    public function __construct(private Request $request) {}
 
     public function handleSaving(ContentSaving $event): void
     {

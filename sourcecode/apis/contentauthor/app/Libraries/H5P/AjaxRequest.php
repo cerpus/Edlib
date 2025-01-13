@@ -39,8 +39,7 @@ class AjaxRequest
         private readonly H5PCore $core,
         private readonly H5peditor $editor,
         private readonly ContentAuthorStorage $contentAuthorStorage,
-    ) {
-    }
+    ) {}
 
     public function getReturnType(): string|null
     {
@@ -114,7 +113,7 @@ class AjaxRequest
                 $request->get('language'),
                 app(CerpusStorageInterface::class)->getAjaxPath(),
                 null,
-                $request->get('default-language')
+                $request->get('default-language'),
             );
             $settings = $this->handleEditorBehaviorSettings($request, $name);
             if (!empty($settings['file']) && is_array($libraryData->css ?? null)) {
@@ -153,9 +152,9 @@ class AjaxRequest
             'recentlyUsed' => $this->editor->ajaxInterface->getAuthorsRecentlyUsedLibraries(),
             'apiVersion' => [
                 'major' => H5PCore::$coreApi['majorVersion'],
-                'minor' => H5PCore::$coreApi['minorVersion']
+                'minor' => H5PCore::$coreApi['minorVersion'],
             ],
-            'details' => $this->core->h5pF->getMessages('info')
+            'details' => $this->core->h5pF->getMessages('info'),
         ];
     }
 
@@ -239,10 +238,10 @@ class AjaxRequest
             exit;
         }
         $validator = new H5PContentValidator($this->core->h5pF, $this->core);
-        $validator->validateLibrary($libraryParameters, (object)['options' => [$libraryParameters->library]]);
+        $validator->validateLibrary($libraryParameters, (object) ['options' => [$libraryParameters->library]]);
         return [
             'success' => true,
-            'data' => $libraryParameters
+            'data' => $libraryParameters,
         ];
     }
 
@@ -302,7 +301,7 @@ class AjaxRequest
             Storage::disk(),
             Storage::disk('h5pTmp'),
             $tmpLibraryRelative,
-            $tmpLibraryRelative
+            $tmpLibraryRelative,
         );
         $tmpLibraries = $this->core->h5pF->getH5pPath($tmpLibrariesRelative);
         $tmpLibraryFolder = $this->core->h5pF->getH5pPath($tmpLibraryRelative);

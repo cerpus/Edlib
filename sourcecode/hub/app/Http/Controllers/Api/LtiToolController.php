@@ -13,9 +13,7 @@ use function fractal;
 
 final readonly class LtiToolController
 {
-    public function __construct(private LtiToolTransformer $transformer)
-    {
-    }
+    public function __construct(private LtiToolTransformer $transformer) {}
 
     public function index(): JsonResponse
     {

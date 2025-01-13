@@ -20,7 +20,7 @@ class ContentVersionsObserver
                     $contentVersion->content_type,
                     $contentVersion->content_id,
                     $parent->id,
-                    $latest->id
+                    $latest->id,
                 ));
             }
         }

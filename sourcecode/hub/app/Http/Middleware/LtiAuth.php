@@ -16,9 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiAuth
 {
-    public function __construct(private AuthManager $authManager)
-    {
-    }
+    public function __construct(private AuthManager $authManager) {}
 
     /**
      * @param (Closure(Request): Response) $next

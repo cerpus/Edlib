@@ -299,7 +299,7 @@ class H5PContent extends Content implements VersionableObject
     // Overrides Method from trait
     public function getPublicId(): string
     {
-        return "h5p-".$this->id;
+        return "h5p-" . $this->id;
     }
 
     public function getMaxScore(): int|null

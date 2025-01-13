@@ -54,7 +54,7 @@ class HandleQuestionbank
             $questionDataObject = QuestionDataObject::create([
                 'id' => $question->external_reference,
                 'text' => $question->question_text,
-                'questionSetId' => $this->questionset->external_reference
+                'questionSetId' => $this->questionset->external_reference,
             ]);
             $metadata = MetadataDataObject::create();
             if (!empty($this->tags)) {

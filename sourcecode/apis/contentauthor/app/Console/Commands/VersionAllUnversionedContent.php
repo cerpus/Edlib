@@ -52,7 +52,7 @@ class VersionAllUnversionedContent extends Command
                         $article->id,
                         Content::TYPE_ARTICLE,
                         $article->owner_id,
-                        $article->updated_at->timestamp
+                        $article->updated_at->timestamp,
                     );
                     if (!$this->option('dry-run')) {
                         DB::update('UPDATE articles SET version_id = ? WHERE id = ?', [
@@ -97,7 +97,7 @@ class VersionAllUnversionedContent extends Command
                 Carbon::createFromTimestamp($timestamp)->format('Y-m-d H:i:s.u'),
                 ContentVersion::PURPOSE_INITIAL,
                 $ownerId,
-                (bool)config('feature.linear-versioning'),
+                (bool) config('feature.linear-versioning'),
             ]);
 
             if (!$result) {

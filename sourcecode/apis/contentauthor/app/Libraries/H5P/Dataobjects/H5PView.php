@@ -10,8 +10,7 @@ class H5PView
         private array $scripts,
         private array $styles,
         private object $settings,
-    ) {
-    }
+    ) {}
 
     public function getScripts($objectsToArray = true): array
     {

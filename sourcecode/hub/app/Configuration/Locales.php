@@ -19,8 +19,7 @@ final class Locales
     public function __construct(
         private readonly Application $application,
         private readonly array $locales,
-    ) {
-    }
+    ) {}
 
     public function getBestAvailable(string $locale): string
     {
@@ -47,7 +46,7 @@ final class Locales
     public function getTranslatedMap(string $displayLocale): array
     {
         $displayNames = array_map(
-            fn ($locale) => locale_get_display_name($locale, $displayLocale)
+            fn($locale) => locale_get_display_name($locale, $displayLocale)
                 ?: $locale,
             $this->locales,
         );

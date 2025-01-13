@@ -51,10 +51,10 @@ class DragQuestion extends H5PBase
             })
             ->transform(function ($field) {
                 $field->widget = "showWhen";
-                $field->showWhen = (object)[
+                $field->showWhen = (object) [
                     'detach' => true,
                     'rules' => [
-                    ]
+                    ],
                 ];
                 return $field;
             })

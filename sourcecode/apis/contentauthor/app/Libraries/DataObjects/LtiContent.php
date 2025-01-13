@@ -27,6 +27,5 @@ final readonly class LtiContent
         public bool|null $shared = null,
         public array $tags = [],
         public int|null $maxScore = null,
-    ) {
-    }
+    ) {}
 }

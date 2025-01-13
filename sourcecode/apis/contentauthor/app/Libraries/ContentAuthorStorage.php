@@ -17,7 +17,7 @@ class ContentAuthorStorage
         FilesystemAdapter $destinationDisk,
         string $sourceFolder,
         string $destinationFolder,
-        array $ignoredFiles = []
+        array $ignoredFiles = [],
     ) {
         collect($sourceDisk->listContents($sourceFolder, true))
             ->filter(function (StorageAttributes $fileProperties) use ($ignoredFiles) {

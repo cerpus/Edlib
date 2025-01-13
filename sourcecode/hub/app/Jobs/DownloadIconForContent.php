@@ -25,9 +25,7 @@ final class DownloadIconForContent implements ShouldQueue, ShouldBeUnique
 
     public int $tries = 3;
 
-    public function __construct(private ContentVersion $contentVersion)
-    {
-    }
+    public function __construct(private ContentVersion $contentVersion) {}
 
     /**
      * @throws Throwable

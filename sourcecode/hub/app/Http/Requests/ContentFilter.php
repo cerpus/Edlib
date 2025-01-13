@@ -89,15 +89,15 @@ class ContentFilter extends FormRequest
 
         return $options
             ->map(
-                fn (int $value, string $key) =>
+                fn(int $value, string $key) =>
                 $key === ''
                 ? trans('messages.filter-language-all')
-                : (locale_get_display_name($key, $displayLocale) ?: (locale_get_display_name($key, $fallBack) ?: $key))
+                : (locale_get_display_name($key, $displayLocale) ?: (locale_get_display_name($key, $fallBack) ?: $key)),
             )
             ->when(
                 $withExpectedHits,
-                fn (Collection $items) =>
-                $items->map(fn (string $value, string $key) => sprintf('%s (%d)', $value, $options[$key] ?? 0))
+                fn(Collection $items) =>
+                $items->map(fn(string $value, string $key) => sprintf('%s (%d)', $value, $options[$key] ?? 0)),
             )
             ->sort()
             ->toArray();
@@ -167,7 +167,7 @@ class ContentFilter extends FormRequest
         }
 
         return $options
-            ->map(fn (int $value, string $key) => $withExpectedHits ? sprintf('%s (%d)', $key, $value) : $key)
+            ->map(fn(int $value, string $key) => $withExpectedHits ? sprintf('%s (%d)', $key, $value) : $key)
             ->sort()
             ->toArray();
     }
@@ -214,13 +214,13 @@ class ContentFilter extends FormRequest
         $query
             ->when(
                 $this->getLanguage(),
-                fn (Builder $query) => $query
-                    ->where('language_iso_639_3', $this->getLanguage())
+                fn(Builder $query) => $query
+                    ->where('language_iso_639_3', $this->getLanguage()),
             )
             ->when(
                 count($this->getContentTypes()) > 0,
-                fn (Builder $query) => $query
-                    ->whereIn('content_type', $this->getContentTypes())
+                fn(Builder $query) => $query
+                    ->whereIn('content_type', $this->getContentTypes()),
             )
         ;
 
@@ -289,8 +289,8 @@ class ContentFilter extends FormRequest
             $this->attachModel(
                 $paginator->getCollection()['hits'],
                 $forUser,
-                $showDrafts
-            )
+                $showDrafts,
+            ),
         );
     }
 
@@ -343,7 +343,7 @@ class ContentFilter extends FormRequest
                 viewsCount: $model->views_count,
                 contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
                 languageIso639_3: strtoupper($version->language_iso_639_3),
-                users: $model->users->map(fn ($user) => $user->name)->join(', '),
+                users: $model->users->map(fn($user) => $user->name)->join(', '),
                 detailsUrl: $showDrafts ? route('content.version-details', [$model, $version]) : route('content.details', [$model]),
                 previewUrl: route('content.preview', [$model, $version]),
                 useUrl: $canUse ? route('content.use', [$model, $version]) : null,

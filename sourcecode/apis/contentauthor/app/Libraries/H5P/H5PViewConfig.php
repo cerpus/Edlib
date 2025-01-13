@@ -76,7 +76,7 @@ class H5PViewConfig extends H5PConfigAbstract
         $displayOptions = config('h5p.overrideDisableSetting') === false ? $this->content['disable'] : config('h5p.overrideDisableSetting');
         $this->contentConfig['displayOptions'] = (object) $this->h5pCore->getDisplayOptionsForView(
             $displayOptions,
-            (int) $this->content['user_id']
+            (int) $this->content['user_id'],
         );
 
         $this->contentConfig['exportUrl'] = route('content-download', ['h5p' => $this->content['id']]);
@@ -96,11 +96,11 @@ class H5PViewConfig extends H5PConfigAbstract
             $this->contentConfig['embedCode'] = sprintf(
                 self::EMBED_TEMPLATE,
                 htmlspecialchars($this->config['documentUrl'], ENT_QUOTES),
-                htmlspecialchars($this->resourceLinkTitle ?? $this->content['title'] ?? '', ENT_QUOTES)
+                htmlspecialchars($this->resourceLinkTitle ?? $this->content['title'] ?? '', ENT_QUOTES),
             );
             $this->contentConfig['resizeCode'] = sprintf(
                 '<script src="%s"></script>',
-                htmlspecialchars(url('/h5p-php-library/js/h5p-resizer.js'))
+                htmlspecialchars(url('/h5p-php-library/js/h5p-resizer.js')),
             );
         }
 
@@ -182,7 +182,7 @@ class H5PViewConfig extends H5PConfigAbstract
     {
         $this->filterParams = $this->h5pCore->filterParameters($this->content);
         $assets = $this->h5pCore->getDependenciesFiles(
-            $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded")
+            $this->h5pCore->loadContentDependencies($this->content['id'], "preloaded"),
         );
         $this->assets['scripts'] = $assets['scripts'] ?? [];
         $this->assets['styles'] = $assets['styles'] ?? [];
@@ -203,7 +203,7 @@ class H5PViewConfig extends H5PConfigAbstract
         }, $this->adapter->getCustomViewCss());
 
         array_map(function ($script) {
-            $this->addAsset('scripts', (object)[
+            $this->addAsset('scripts', (object) [
                 'path' => $script,
                 'version' => null,
             ]);

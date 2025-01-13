@@ -64,7 +64,7 @@ class ContentController extends Controller
             'contents' => $request->paginateWithModel(
                 $query,
                 forUser: true,
-                showDrafts: true
+                showDrafts: true,
             ),
             'filter' => $request,
         ]);
@@ -150,7 +150,7 @@ class ContentController extends Controller
         // @phpstan-ignore larastan.noUnnecessaryCollectionCall
         $availableContexts = Context::all()
             ->diff($content->contexts)
-            ->mapWithKeys(fn (Context $context) => [$context->id => $context->name]);
+            ->mapWithKeys(fn(Context $context) => [$context->id => $context->name]);
 
         return view('content.roles', [
             'content' => $content,
@@ -424,9 +424,9 @@ class ContentController extends Controller
 
     public function layoutSwitch(): RedirectResponse
     {
-        match(Session::get('contentLayout', 'grid')) {
+        match (Session::get('contentLayout', 'grid')) {
             'grid' => Session::put('contentLayout', 'list'),
-            default => Session::put('contentLayout', 'grid')
+            default => Session::put('contentLayout', 'grid'),
         };
 
         return redirect()->back();

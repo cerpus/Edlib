@@ -150,7 +150,7 @@ trait Config
                 $prefix = "/h5p-editor-php-library/";
                 break;
         }
-        return $prefix.$script."?ver=".$this->getCacheBustingVersionString();
+        return $prefix . $script . "?ver=" . $this->getCacheBustingVersionString();
     }
 
     protected function addCoreAssets()
@@ -188,7 +188,7 @@ trait Config
 
     public function getContentUserDataUrl()
     {
-        return $this->preview !== true ? '/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context='.$this->context : '/api/progress?action=h5p_preview&c=1';
+        return $this->preview !== true ? '/api/progress?action=h5p_contents_user_data&content_id=:contentId&data_type=:dataType&sub_content_id=:subContentId&context=' . $this->context : '/api/progress?action=h5p_preview&c=1';
     }
 
     public function getSetFinishedUrl()
@@ -275,7 +275,7 @@ trait Config
         $config->crossoriginRegex = config('h5p.crossOriginRegexp');
         $config->locale = Session::get('locale', config('app.fallback_locale'));
         $config->localeConverted = LtiToH5PLanguage::convert($config->locale);
-        $config->pluginCacheBuster = '?v='.$this->getCacheBustingVersionString();
+        $config->pluginCacheBuster = '?v=' . $this->getCacheBustingVersionString();
         $config->libraryUrl = url('/h5p-php-library/js');
 
         $this->config = $config;
@@ -288,7 +288,7 @@ trait Config
     protected function getl10n()
     {
         return [
-            "H5P" => $this->h5pCore->getLocalization()
+            "H5P" => $this->h5pCore->getLocalization(),
         ];
     }
 

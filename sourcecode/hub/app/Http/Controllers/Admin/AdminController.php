@@ -18,7 +18,7 @@ final class AdminController extends Controller
     public function index(): View
     {
         return view('admin.index', [
-           'toolExtras' => LtiToolExtra::forAdmins()->get(),
+            'toolExtras' => LtiToolExtra::forAdmins()->get(),
         ]);
     }
 

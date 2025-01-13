@@ -64,8 +64,8 @@ class QuestionSetController extends Controller
         ])->toJson();
 
         $state = QuestionSetStateDataObject::create([
-            'links' => (object)[
-                "store" => route('questionset.store')
+            'links' => (object) [
+                "store" => route('questionset.store'),
             ],
             'questionSetJsonData' => $extQuestionSetData,
             'contentTypes' => $contenttypes,
@@ -103,7 +103,7 @@ class QuestionSetController extends Controller
     {
         $questionset = QuestionSet::findOrFail($id);
 
-        $links = (object)[
+        $links = (object) [
             "store" => route('questionset.store'),
             "self" => route('questionset.update', [
                 'questionset' => $questionset->id,
@@ -152,7 +152,7 @@ class QuestionSetController extends Controller
             'emails',
             'emails',
             'state',
-            'editorSetup'
+            'editorSetup',
         ]));
     }
 
@@ -165,7 +165,7 @@ class QuestionSetController extends Controller
         $questionSet = $questionsetHandler->update(
             $questionset,
             $questionsetData,
-            $request
+            $request,
         );
 
         $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));

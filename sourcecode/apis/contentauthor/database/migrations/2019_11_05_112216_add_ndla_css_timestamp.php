@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class () extends Migration {
+return new class extends Migration {
     public function up(): void
     {
         DB::table('h5p_options')->insert([
