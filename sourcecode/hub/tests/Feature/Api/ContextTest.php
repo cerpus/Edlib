@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Api;
+namespace Tests\Feature\Api;
 
 use App\Models\Context;
 use App\Models\User;
