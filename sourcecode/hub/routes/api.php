@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\ContentVersionController;
 use App\Http\Controllers\Api\ContentViewController;
+use App\Http\Controllers\Api\ContextController;
 use App\Http\Controllers\Api\LtiToolController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,24 @@ Route::whereUlid('content')->whereUlid('view')->name('api.contents.views.')->gro
         ->uses([ContentViewController::class, 'storeMultipleAccumulatedViews'])
         ->name('store-multiple-views-accumulated')
         ->can('edit', 'apiContent');
+});
+
+Route::whereUlid('context')->name('api.contexts.')->middleware(['can:admin'])->group(function () {
+    Route::get('/contexts')
+        ->uses([ContextController::class, 'index'])
+        ->name('index');
+
+    Route::get('/contexts/{context:name}')
+        ->uses([ContextController::class, 'show'])
+        ->name('show');
+
+    Route::post('/contexts')
+        ->uses([ContextController::class, 'store'])
+        ->name('create');
+
+    Route::delete('/contexts/{context:name}')
+        ->uses([ContextController::class, 'destroy'])
+        ->name('destroy');
 });
 
 Route::whereUlid('tool')->name('api.lti-tools.')->middleware(['can:admin'])->group(function () {

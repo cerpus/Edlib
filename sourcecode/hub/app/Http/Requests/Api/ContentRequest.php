@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Requests\Api;
 
 use App\Enums\ContentRole;
+use App\Models\Context;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use function array_map;
 
 final class ContentRequest extends FormRequest
 {
@@ -19,6 +21,10 @@ final class ContentRequest extends FormRequest
     {
         return [
             'shared' => ['sometimes', 'boolean'],
+
+            'contexts' => [
+                Rule::exists(Context::class, 'name'),
+            ],
 
             'created_at' => [
                 Rule::prohibitedIf(fn() => $gate->denies('admin')),
@@ -45,6 +51,17 @@ final class ContentRequest extends FormRequest
 
             'tags.*' => ['string'],
         ];
+    }
+
+    /**
+     * @return array<int, Context>
+     */
+    public function getContexts(): array
+    {
+        return array_map(
+            fn(string $name) => Context::where('name', $name)->firstOrFail(),
+            $this->validated('contexts', []),
+        );
     }
 
     /**
