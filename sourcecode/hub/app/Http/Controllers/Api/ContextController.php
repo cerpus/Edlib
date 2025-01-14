@@ -10,6 +10,7 @@ use App\Transformers\ContextTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+
 use function fractal;
 
 final readonly class ContextController
