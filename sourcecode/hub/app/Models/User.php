@@ -152,7 +152,7 @@ class User extends Model implements AuthenticatableContract
     protected function theme(): Attribute
     {
         return Attribute::make(
-            get: function(string|null $value) {
+            get: function (string|null $value) {
                 $themes = new Themes();
                 return in_array($value, $themes->all()) ? $value : $themes->getDefault();
             },
