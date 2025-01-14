@@ -20,6 +20,8 @@ class Context extends Model
 
     public const UPDATED_AT = null;
 
+    protected $perPage = 100;
+
     protected $fillable = [
         'name',
     ];
