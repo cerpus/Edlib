@@ -71,7 +71,7 @@ Route::whereUlid('content')->whereUlid('view')->name('api.contents.views.')->gro
         ->can('edit', 'apiContent');
 });
 
-Route::whereUlid('context')->name('api.contexts.')->middleware(['can:admin'])->group(function () {
+Route::where(['context' => '\w+'])->name('api.contexts.')->middleware(['can:admin'])->group(function () {
     Route::get('/contexts')
         ->uses([ContextController::class, 'index'])
         ->name('index');

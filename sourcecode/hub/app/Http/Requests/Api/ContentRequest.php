@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 use function array_map;
 
 final class ContentRequest extends FormRequest
