@@ -11,7 +11,7 @@ return new class extends Migration {
         DB::update(
             'UPDATE users SET theme = ? WHERE theme = ?',
             [
-                NULL,
+                null,
                 'light',
             ],
         );
