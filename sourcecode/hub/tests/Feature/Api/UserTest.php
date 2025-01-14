@@ -102,7 +102,7 @@ final class UserTest extends TestCase
                             ->has('id')
                             ->where('name', 'Jason A. Pi')
                             ->where('email', 'jason@edlib.test')
-                            ->where('theme', 'edlib')
+                            ->where('theme', null)
                             ->where('locale', 'en')
                             ->where('debug_mode', false)
                             ->where('created_at', Carbon::now()->format('c'))

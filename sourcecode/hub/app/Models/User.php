@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Configuration\Themes;
 use App\Events\UserSaved;
 use BadMethodCallException;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -143,19 +141,5 @@ class User extends Model implements AuthenticatableContract
             'email' => $details->getEmail(),
             "{$provider}_id" => $details->getId(),
         ]);
-    }
-
-    /**
-     * Accessor for 'theme` attribute
-     * @return Attribute<string, null> Selected theme, or default theme if unset or not a valid theme
-     */
-    protected function theme(): Attribute
-    {
-        return Attribute::make(
-            get: function (string|null $value) {
-                $themes = new Themes();
-                return in_array($value, $themes->all()) ? $value : $themes->getDefault();
-            },
-        );
     }
 }

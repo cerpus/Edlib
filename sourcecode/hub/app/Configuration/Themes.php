@@ -25,7 +25,9 @@ final readonly class Themes
             default => null,
         };
 
-        return is_array($name) ? array_shift($name) : $name;
+        assert(!is_array($name));
+
+        return $name;
     }
 
     public function getDefault(): string
