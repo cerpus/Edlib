@@ -13,25 +13,19 @@ final readonly class Themes
     {
         return [
             'edlib',
-            'light',
             'dark',
         ];
     }
 
-    public function getName(string $theme, string $locale): string|null
+    public function getName(string $theme): string|null
     {
-        return match ($theme) {
-            'edlib' => 'Edlib',
-            'light' => match ($locale) {
-                'nb', 'no' => 'Bootstrap lys',
-                default => 'Bootstrap Light',
-            },
-            'dark' => match ($locale) {
-                'nb', 'no' => 'Bootstrap mørk',
-                default => 'Bootstrap Dark',
-            },
+        $name = match ($theme) {
+            'edlib' => trans('messages.theme-edlib'),
+            'dark' => trans('messages.theme-dark'),
             default => null,
         };
+
+        return is_array($name) ? array_shift($name) : $name;
     }
 
     public function getDefault(): string
@@ -42,10 +36,10 @@ final readonly class Themes
     /**
      * @return array<string, string>
      */
-    public function getTranslatedMap(string $locale): array
+    public function getTranslatedMap(): array
     {
         return array_combine($this->all(), array_map(
-            fn(string $key) => $this->getName($key, $locale) ?? $key,
+            fn(string $key) => $this->getName($key) ?? $key,
             $this->all(),
         ));
     }

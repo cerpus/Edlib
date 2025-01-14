@@ -38,7 +38,6 @@
                     id="theme"
                     :options="$themes"
                     :selected="$user->theme"
-                    :emptyOption="trans('messages.default')"
                 />
             </div>
         </div>

@@ -236,4 +236,6 @@ return [
     'edit-lti-platform' => 'Edit LTI platform',
     'contexts-for-lti-platform' => 'Contexts for LTI platform ":platform"',
     'context-added' => 'The context was added.',
+    'theme-edlib' => 'Edlib light',
+    'theme-dark' => 'Edlib dark',
 ];
