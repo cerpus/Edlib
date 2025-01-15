@@ -66,6 +66,21 @@ final class ContextTest extends TestCase
             );
     }
 
+    public function testStoresContext(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $this->withBasicAuth($user->getApiKey(), $user->getApiSecret())
+            ->postJson('https://hub-test.edlib.test/api/contexts', [
+                'name' => 'my_new_context'
+            ])
+            ->assertCreated()
+            ->assertJson(fn(AssertableJson $json) => $json
+                ->has('data.id')
+                ->where('data.name', 'my_new_context')
+            );
+    }
+
     public function testDeletesContext(): void
     {
         $context = Context::factory()->name('to_be_gone')->create();

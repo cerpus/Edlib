@@ -43,7 +43,7 @@ final readonly class ContextController
 
         return fractal($context)
             ->transformWith($this->contextTransformer)
-            ->respond();
+            ->respond(Response::HTTP_CREATED);
     }
 
     public function destroy(Context $context): Response
