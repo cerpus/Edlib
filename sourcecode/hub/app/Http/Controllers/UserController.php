@@ -54,7 +54,7 @@ class UserController extends Controller
         return view('user.preferences', [
             'canChangeLocale' => !$request->session()->has('lti.launch_presentation_locale'),
             'locales' => $locales->getTranslatedMap(app()->getLocale()),
-            'themes' => $themes->getTranslatedMap(app()->getLocale()),
+            'themes' => $themes->getTranslatedMap(),
             'user' => $this->getUser(),
         ]);
     }
