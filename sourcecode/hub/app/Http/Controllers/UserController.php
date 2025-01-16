@@ -184,7 +184,7 @@ class UserController extends Controller
 
         if (!$user->checkVerificationDetails(
             $request->query->getString('hash'),
-            $request->query->getInt('time')
+            $request->query->getInt('time'),
         )) {
             abort(404);
         }

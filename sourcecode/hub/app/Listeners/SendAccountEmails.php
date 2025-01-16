@@ -11,9 +11,7 @@ use Illuminate\Contracts\Mail\Mailer;
 
 final readonly class SendAccountEmails
 {
-    public function __construct(private Mailer $mailer)
-    {
-    }
+    public function __construct(private Mailer $mailer) {}
 
     public function handleUserSaved(UserSaved $event): void
     {
