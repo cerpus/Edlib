@@ -85,10 +85,10 @@ class ContentVersion extends Model
     public function toLtiLinkItem(LtiPlatform $platform): EdlibLtiLinkItem
     {
         $iconUrl = $this->icon?->getUrl();
-        $custom = [];
+        $ownerEmail = null;
 
         if (Session::get('lti.ext_edlib3_include_owner_info') === '1' && $platform->authorizes_edit) {
-            $custom['owner'] = $this->content?->users->first(
+            $ownerEmail = $this->content?->users->first(
                 fn(User $user) => $user->getRelationValue('pivot')->role === ContentRole::Owner,
             )?->email;
         }
@@ -100,12 +100,12 @@ class ContentVersion extends Model
             lineItem: $this->max_score > 0
                 ? new LineItem(new ScoreConstraints(normalMaximum: (float) $this->max_score))
                 : null,
-            custom: $custom,
         ))
             ->withEdlibVersionId($this->id)
             ->withLanguageIso639_3($this->language_iso_639_3)
             ->withLicense($this->license)
             ->withTags($this->getSerializedTags())
+            ->withOwnerEmail($ownerEmail)
         ;
     }
 
