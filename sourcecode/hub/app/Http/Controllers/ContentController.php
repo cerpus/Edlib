@@ -242,14 +242,12 @@ class ContentController extends Controller
             ?? throw new BadMethodCallException('Not in LTI selection context');
         assert(is_string($returnUrl));
 
-        $credentials = LtiPlatform::where('key', $request->session()->get('lti.oauth_consumer_key'))
-            ->firstOrFail()
-            ->getOauth1Credentials();
+        $platform = LtiPlatform::where('key', $request->session()->get('lti.oauth_consumer_key'))->firstOrFail();
 
         $ltiRequest = $itemSelectionFactory->createItemSelection(
-            [$version->toLtiLinkItem()],
+            [$version->toLtiLinkItem($platform)],
             $returnUrl,
-            $credentials,
+            $platform->getOauth1Credentials(),
             $request->session()->get('lti.data'),
         );
 

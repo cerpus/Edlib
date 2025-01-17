@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ContentRole;
 use App\Events\ContentVersionDeleting;
 use App\Events\ContentVersionSaving;
 use App\Lti\ContentItemSelectionFactory;
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 use function app;
 use function assert;
@@ -80,9 +82,16 @@ class ContentVersion extends Model
         'saving' => ContentVersionSaving::class,
     ];
 
-    public function toLtiLinkItem(): EdlibLtiLinkItem
+    public function toLtiLinkItem(LtiPlatform $platform): EdlibLtiLinkItem
     {
         $iconUrl = $this->icon?->getUrl();
+        $ownerEmail = null;
+
+        if (Session::get('lti.ext_edlib3_include_owner_info') === '1' && $platform->authorizes_edit) {
+            $ownerEmail = $this->content?->users->first(
+                fn(User $user) => $user->getRelationValue('pivot')->role === ContentRole::Owner,
+            )?->email;
+        }
 
         return (new EdlibLtiLinkItem(
             title: $this->getTitle(),
@@ -96,6 +105,7 @@ class ContentVersion extends Model
             ->withLanguageIso639_3($this->language_iso_639_3)
             ->withLicense($this->license)
             ->withTags($this->getSerializedTags())
+            ->withOwnerEmail($ownerEmail)
         ;
     }
 
@@ -134,14 +144,17 @@ class ContentVersion extends Model
             ?? throw new BadMethodCallException('Not in LTI selection context');
         assert(is_string($returnUrl));
 
-        $credentials = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))
-            ->firstOrFail()
-            ->getOauth1Credentials();
-
+        $platform = LtiPlatform::where('key', session()->get('lti.oauth_consumer_key'))->firstOrFail();
         $data = session()->get('lti.data');
 
-        return app()->make(ContentItemSelectionFactory::class)
-            ->createItemSelection([$this->toLtiLinkItem()], $returnUrl, $credentials, $data);
+        return app()
+            ->make(ContentItemSelectionFactory::class)
+            ->createItemSelection(
+                [$this->toLtiLinkItem($platform)],
+                $returnUrl,
+                $platform->getOauth1Credentials(),
+                $data,
+            );
     }
 
     /**
