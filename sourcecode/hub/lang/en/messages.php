@@ -238,4 +238,7 @@ return [
     'context-added' => 'The context was added.',
     'theme-edlib' => 'Edlib light',
     'theme-dark' => 'Edlib dark',
+    'attach-context-to-contents' => 'Attach context to contents',
+    'attach-context-to-contents-warning' => 'This adds a context to all contents',
+    'start-job' => 'Start job',
 ];

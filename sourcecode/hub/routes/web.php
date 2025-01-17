@@ -266,6 +266,13 @@ Route::middleware('can:admin')->prefix('/admin')->group(function () {
         ->uses([ContextController::class, 'add'])
         ->name('admin.contexts.add');
 
+    Route::get('/attach-context-to-contents')
+        ->uses([ContextController::class, 'attachToContents'])
+        ->name('admin.attach-context-to-contents');
+
+    Route::post('/attach-context-to-contents')
+        ->uses([ContextController::class, 'performAttachToContents']);
+
     Route::prefix('/lti-platforms')->group(function () {
         Route::get('')
             ->uses([LtiPlatformController::class, 'index'])
