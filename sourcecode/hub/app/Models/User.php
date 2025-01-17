@@ -18,6 +18,9 @@ use RuntimeException;
 use SensitiveParameter;
 
 use function config;
+use function hash_equals;
+use function time;
+use function url;
 
 class User extends Model implements AuthenticatableContract
 {
@@ -35,6 +38,7 @@ class User extends Model implements AuthenticatableContract
     protected $casts = [
         'admin' => 'boolean',
         'debug_mode' => 'boolean',
+        'email_verified' => 'boolean',
     ];
 
     protected $fillable = [
@@ -67,7 +71,20 @@ class User extends Model implements AuthenticatableContract
         'locale' => 'en',
         'admin' => false,
         'debug_mode' => false,
+        // If false, emails are sent upon creating the user. Aside from the
+        // sign-up page, this is probably undesirable, so having it true is the
+        // safe default.
+        'email_verified' => true,
     ];
+
+    public function setEmailAttribute(string|null $email): void
+    {
+        $this->attributes['email'] = $email;
+
+        if ($this->exists && $email !== $this->getOriginal('email')) {
+            $this->attributes['email_verified'] = false;
+        }
+    }
 
     public function getApiKey(): string
     {
@@ -96,6 +113,21 @@ class User extends Model implements AuthenticatableContract
     {
         return 'Authorization: Basic ' .
             base64_encode($this->getApiKey() . ':' . $this->getApiSecret());
+    }
+
+    public function checkVerificationDetails(string $hash, int $time): bool
+    {
+        return hash_equals(hash('sha256', $time . '@' . $this->email), $hash);
+    }
+
+    public function makeVerificationLink(): string
+    {
+        $time = time();
+
+        return url()->temporarySignedRoute('user.verify-email', 3600, [
+            'hash' => hash('sha256', $time . '@' . $this->email),
+            'time' => time(),
+        ]);
     }
 
     public function getAuthIdentifierName(): string

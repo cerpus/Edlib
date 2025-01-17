@@ -1,41 +1,57 @@
 <x-layout>
     <x-slot:title>{{ trans('messages.my-account') }}</x-slot:title>
 
-    <x-form action="{{ route('user.update-account') }}">
-        <h5>{{ trans('messages.change-profile-name') }}</h5>
+    @if (!$user->email_verified)
+        <div class="alert alert-warning">
+            <p>{{ trans('messages.unverified-email-notice') }}</p>
 
-        <x-form.field
-            name="name"
-            type="text"
-            :label="trans('messages.name')"
-            :value="old('name', $user->name)"
-            required
-        />
+            <x-form action="{{ route('user.send-verification-email') }}">
+                <x-form.button class="btn btn-primary">{{ trans('messages.verify-my-email') }}</x-form.button>
+            </x-form>
+        </div>
+    @endif
 
-        <h5>{{ trans('messages.change-password') }}</h5>
+    <x-form action="{{ route('user.update-account') }}" class="mt-3">
+        <fieldset>
+            <legend>{{ trans('messages.change-profile-name') }}</legend>
 
-        <x-form.field
-            name="password"
-            type="password"
-            :label="trans('messages.password')"
-            autocomplete="new-password"
-        />
+            <x-form.field
+                name="name"
+                type="text"
+                :label="trans('messages.name')"
+                :value="old('name', $user->name)"
+                required
+            />
+        </fieldset>
 
-        <x-form.field
-            name="password_confirmation"
-            type="password"
-            :label="trans('messages.password-confirmation')"
-            autocomplete="new-password"
-        />
+        <fieldset>
+            <legend>{{ trans('messages.change-password') }}</legend>
 
-        <h5>{{ trans('messages.change-email') }}</h5>
+            <x-form.field
+                name="password"
+                type="password"
+                :label="trans('messages.password')"
+                autocomplete="new-password"
+            />
 
-        <x-form.field
-            name="email"
-            type="email"
-            :label="trans('messages.email-address')"
-            :value="old('email', $user->email)"
-        />
+            <x-form.field
+                name="password_confirmation"
+                type="password"
+                :label="trans('messages.password-confirmation')"
+                autocomplete="new-password"
+            />
+        </fieldset>
+
+        <fieldset>
+            <legend>{{ trans('messages.change-email') }}</legend>
+
+            <x-form.field
+                name="email"
+                type="email"
+                :label="trans('messages.email-address')"
+                :value="old('email', $user->email)"
+            />
+        </fieldset>
 
         <x-form.button class="btn-primary">
             {{ trans('messages.save') }}

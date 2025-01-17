@@ -221,6 +221,16 @@ Route::prefix('/lti')->middleware([
         ->middleware('lti.launch-type:ContentItemSelectionRequest');
 });
 
+Route::post('/send-verification-email')
+    ->uses([UserController::class, 'sendVerificationEmail'])
+    ->name('user.send-verification-email')
+    ->middleware(['auth']);
+
+Route::get('/verify-email')
+    ->uses([UserController::class, 'verifyEmail'])
+    ->name('user.verify-email')
+    ->middleware(['signed', 'auth']);
+
 Route::controller(UserController::class)->group(function () {
     Route::middleware('can:register')->group(function () {
         Route::get('/register', 'register')->name('register');

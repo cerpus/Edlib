@@ -12,7 +12,9 @@ use App\Http\Requests\SavePreferencesRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\ResetPasswordEmail;
+use App\Mail\VerifyEmailAddress;
 use App\Models\User;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +24,8 @@ use Illuminate\Support\Facades\Mail;
 
 use function app;
 use function assert;
+use function redirect;
+use function route;
 use function to_route;
 use function view;
 
@@ -41,6 +45,7 @@ class UserController extends Controller
         $user = new User();
         $user->name = $request->validated('name');
         $user->email = $request->validated('email');
+        $user->email_verified = false;
         $user->password = Hash::make($request->validated('password'));
         $user->save();
 
@@ -158,5 +163,36 @@ class UserController extends Controller
         return redirect()
             ->route('user.my-account')
             ->with('alert', trans('messages.alert-account-update'));
+    }
+
+    public function sendVerificationEmail(Mailer $mailer): RedirectResponse
+    {
+        $user = $this->getUser();
+
+        if ($user->email_verified) {
+            return redirect()->back();
+        }
+
+        $mailer->send(new VerifyEmailAddress($user));
+
+        return redirect()->back()->with('alert', trans('messages.verification-email-sent'));
+    }
+
+    public function verifyEmail(Request $request): RedirectResponse
+    {
+        $user = $this->getUser();
+
+        if (!$user->checkVerificationDetails(
+            $request->query->getString('hash'),
+            $request->query->getInt('time'),
+        )) {
+            abort(404);
+        }
+
+        $user->email_verified = true;
+        $user->save();
+
+        return redirect()->route('user.my-account')
+            ->with('alert', trans('messages.your-account-has-been-verified'));
     }
 }
