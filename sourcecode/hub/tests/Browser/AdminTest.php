@@ -26,9 +26,11 @@ final class AdminTest extends DuskTestCase
                 ->visit('/admin')
                 ->press('Rebuild content index')
                 ->waitFor('#htmxConfirmModal')
-                ->with('#htmxConfirmModal', fn(Browser $modal) => $modal
-                    ->assertSee('Are you sure you want to continue?')
-                    ->press('OK')
+                ->with(
+                    '#htmxConfirmModal',
+                    fn(Browser $modal) => $modal
+                        ->assertSee('Are you sure you want to continue?')
+                        ->press('OK'),
                 )
                 ->waitForReload()
                 ->assertPathIs('/admin')
