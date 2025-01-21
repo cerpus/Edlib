@@ -7,7 +7,7 @@ Edlib is an [open-source](https://github.com/cerpus/Edlib/blob/master/LICENSE) a
 * Insert content into a context within your learning system or point directly to the specific content using links. 
 * All resources are stored and available through a single repository for your learning content - neat and tidy.
 
-> The individual learner is at the center of everything we do, and our vision is to provide first-class open learning tools and content to as many of those individuals as possible. &mdash; Tommy W. Nordeng (co-founder of Cerpus)
+> The individual learner is at the center of everything we do, and our vision is to provide first-class open learning tools and content to as many of those individuals as possible. &mdash; Tommy W. Nordeng (co-founder of Edlib)
 
 
 ## Installation

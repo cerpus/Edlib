@@ -4,7 +4,7 @@ v1.0.1, March 2022
 
 ## Purpose
 
-At Cerpus, we believe education can make the world a better place. In adopting this Community Code of Conduct, as Cerpus employees, we are committed to fostering a welcoming environment for collaboration, creativity, and the free exchange of ideas for developing, maintaining, and using open-source educational software. We aim to empower all participants to actively engage and help build a friendly and safe Cerpus open-source developer community.
+At Edlib, we believe education can make the world a better place. In adopting this Community Code of Conduct, as Edlib employees, we are committed to fostering a welcoming environment for collaboration, creativity, and the free exchange of ideas for developing, maintaining, and using open-source educational software. We aim to empower all participants to actively engage and help build a friendly and safe Edlib open-source developer community.
 
 Whether publicly or privately, and whether in-person or online, we expect all members of this community to interact both professionally and without harassment toward others, regardless of race, color, creed, gender, gender identity, religion, marital status, domestic partner status, genetic information, age, national origin or ancestry, military or veteran status, sexual orientation, or either physical or mental disability.
 
@@ -37,5 +37,5 @@ Repository maintainers reserve the right to remove offensive content. You can co
 ## Consequences
 
 Violations of this Code of Conduct may result in:
-  * Disqualification from Cerpus Events and Conferences
-  * Being blocked from Cerpus's [GitHub Organization](https://github.com/cerpus)
+  * Disqualification from Edlib Events and Conferences
+  * Being blocked from Edlib's [GitHub Organization](https://github.com/cerpus)
