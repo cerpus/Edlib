@@ -1,0 +1,58 @@
+# Installing self-signed root certificates on Windows
+
+This will guide you through installing Edlib's self-signed certificates.
+
+:::note
+
+This is just for development. Edlib requires real certificates in production.
+
+:::
+
+1. Open Edge. Go to **Settings**.
+
+   ![](../../static/img/windows-certificates-1.png)
+
+2. Click **Privacy, search, and services** in the left-hand pane, then scroll
+   down to Security, and choose **Manage certificates**.
+
+   ![](../../static/img/windows-certificates-2.png)
+
+3. Select the **Trusted Root Certification Authorities** tab, then hit
+   **Import**.
+
+   ![](../../static/img/windows-certificates-3.png)
+
+4. Click **Next** after being greeted by the wizard.
+
+   ![](../../static/img/windows-certificates-4.png)
+
+5. Hit **Browse**, pick the `root.crt` file in
+   `data/caddy/data/caddy/pki/authorities/local`. Click **Next**.
+
+   ![](../../static/img/windows-certificates-5.png)
+
+6. Do not change any setting on the Certificate Store step. Click
+   **Next**.
+
+   ![](../../static/img/windows-certificates-6.png)
+
+7. Thank the wizard and click **Finish**.
+
+   ![](../../static/img/windows-certificates-7.png)
+
+8. A security warning will pop up, asking if you're really sure you
+   want to do the thing you just did. Hit **Yes**.
+
+   ![](../../static/img/windows-certificates-8.png)
+
+9. A dialogue pops up, telling you the import was successful. Click
+   **OK**.
+
+   ![](../../static/img/windows-certificates-9.png)
+
+10. Verify the "Caddy Local Authority" certificate is in the list.
+
+   ![](../../static/img/windows-certificates-10.png)
+
+11. Restart Edge or any other web browser you have running. Navigating to
+    <https://hub.edlib.test> or <https://hub.localhost> should now work.
