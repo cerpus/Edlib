@@ -4,6 +4,9 @@ on:
       environment:
         required: true
         type: string
+      environment_name:
+        required: true
+        type: string
       name:
         required: true
         type: string
@@ -16,8 +19,8 @@ on:
 
 jobs:
   deploy:
-    name: Deploy {{ inputs.name }} to {{ inputs.environment }}
-    concurrency: deploy-ca-${{ matrix.environment }}
+    name: Deploy ${{ inputs.name }} to ${{ inputs.environment }}
+    concurrency: deploy-${{ inputs.name }}-${{ inputs.environment }}
     runs-on: ubuntu-24.04
 
     steps:
@@ -32,5 +35,5 @@ jobs:
      - name: Re-deploy docker-compose on Elastic Beanstalk
        run: |
          aws elasticbeanstalk update-environment \
-          --environment-name ${{ inputs.environment }} \
+          --environment-name ${{ inputs.environment_name }} \
           --version-label ${{ inputs.version }} 

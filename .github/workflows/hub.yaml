@@ -250,33 +250,21 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy-eb:
-    name: Deploy hub to test environments
+    name: Deploy hub
     if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: [build_test_publish]
+    environment: ${{ matrix.environment }}
     strategy:
       matrix:
         environment:
           - test
           - ndla_staging
-    environment: ${{ matrix.environment }}
-    concurrency: deploy-hub-${{ matrix.environment }}
-    runs-on: ubuntu-22.04
-    permissions:
-      id-token: write
-      contents: read
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      name: Hub
+      environment: ${{ matrix.environment }}
+      environment_name: ${{ vars.HUB_ENVIRONMENT_NAME }}
+      version: ${{ vars.HUB_APPLICATION_VERSION }}
+    secrets:
+      aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
-    steps:
-     - name: Checkout
-       uses: actions/checkout@v4
-
-     - name: Configure AWS Credentials
-       uses: aws-actions/configure-aws-credentials@v4
-       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        aws-region: eu-west-1
-        role-duration-seconds: 3600
-        role-session-name: GithubCerpusDevDeploy
-     
-     - name: Re-deploy docker-compose on Elastic Beanstalk
-       run: |
-        aws elasticbeanstalk update-environment --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }} --version-label ${{ vars.HUB_APPLICATION_VERSION }}

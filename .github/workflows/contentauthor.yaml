@@ -232,6 +232,7 @@ jobs:
     name: Deploy CA
     if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: [build_test_publish]
+    environment: ${{ matrix.environment }}
     strategy:
       matrix:
         environment:
