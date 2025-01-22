@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+    secrets:
+      aws_role_to_assume:
+        required: true
+
+  jobs:
+    deploy:
+      name: Deploy {{ inputs.name }} to {{ inputs.environment }}
+      concurrency: deploy-ca-${{ matrix.environment }}
+      runs-on: ubuntu-24.04
+
+      steps:
+       - name: Configure AWS Credentials
+         uses: aws-actions/configure-aws-credentials@v4
+         with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.aws_role_to_assume }}
+          role-duration-seconds: 3600
+          role-session-name: GithubCerpusDevDeploy
+       
+       - name: Re-deploy docker-compose on Elastic Beanstalk
+         run: |
+           aws elasticbeanstalk update-environment \
+            --environment-name ${{ inputs.environment }} \
+            --version-label ${{ inputs.version }} 
