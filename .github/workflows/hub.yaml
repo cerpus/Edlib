@@ -259,7 +259,7 @@ jobs:
         environment:
           - test
           - ndla_staging
-    uses: ./.github/workflows/deploy.yaml
+    use: ./.github/workflows/deploy.yaml
     with:
       name: Hub
       environment: ${{ matrix.environment }}
