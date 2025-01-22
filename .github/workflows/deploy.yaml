@@ -14,8 +14,8 @@ on:
       aws_role_to_assume:
         required: true
 
-  jobs:
-    deploy:
+  deploy:
+    jobs:
       name: Deploy {{ inputs.name }} to {{ inputs.environment }}
       concurrency: deploy-ca-${{ matrix.environment }}
       runs-on: ubuntu-24.04
