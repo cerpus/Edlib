@@ -8,6 +8,7 @@ use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use function is_string;
 
 class AddLtiToolExtra extends Command
 {
@@ -27,11 +28,14 @@ class AddLtiToolExtra extends Command
             ->firstOrFail();
 
         DB::transaction(function () use ($tool) {
+            $slug = $this->option('slug');
             $extra = new LtiToolExtra();
             $extra->name = $this->argument('name');
             $extra->lti_launch_url = $this->argument('url');
             $extra->admin = $this->option('admin');
-            $extra->slug = $this->option('slug');
+            if (is_string($slug)) {
+                $extra->slug = $slug;
+            }
             $extra->lti_tool_id = $tool->id;
             $extra->save();
         });

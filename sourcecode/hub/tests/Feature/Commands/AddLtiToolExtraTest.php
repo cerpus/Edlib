@@ -28,7 +28,7 @@ class AddLtiToolExtraTest extends TestCase
         $extra = LtiToolExtra::where('slug', 'ca-admin')->firstOrFail();
         assert($extra instanceof LtiToolExtra);
 
-        $this->assertTrue($extra->tool->is($tool));
+        $this->assertTrue($extra->tool?->is($tool));
         $this->assertSame('CA admin', $extra->name);
         $this->assertSame('https://ca.edlib.test/lti/admin', $extra->lti_launch_url);
         $this->assertSame('ca-admin', $extra->slug);
