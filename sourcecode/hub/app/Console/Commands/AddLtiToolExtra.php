@@ -8,6 +8,7 @@ use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+
 use function is_string;
 
 class AddLtiToolExtra extends Command
