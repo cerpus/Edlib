@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Feature\Commands;
+namespace Tests\Feature\Commands;
 
 use App\Models\LtiTool;
 use App\Models\LtiToolExtra;
