@@ -323,8 +323,8 @@ final class AdminTest extends DuskTestCase
                     fn(Browser $table) => $table
                         ->assertSee('admin@edlib.test')
                         ->assertSee('nimda@bilde.test')
-                        ->assertDontSee('luser@example.com')
-                )
+                        ->assertDontSee('luser@example.com'),
+                ),
         );
     }
 
@@ -341,7 +341,7 @@ final class AdminTest extends DuskTestCase
                 ->assertDontSeeIn('main table', 'nimda@bilde.test')
                 ->type('email', 'nimda@bilde.test')
                 ->press('Add')
-                ->assertSeeIn('main table', 'nimda@bilde.test')
+                ->assertSeeIn('main table', 'nimda@bilde.test'),
         );
     }
 
@@ -354,11 +354,13 @@ final class AdminTest extends DuskTestCase
                 ->loginAs('admin@edlib.test')
                 ->assertAuthenticated()
                 ->visit('/admin/admins')
-                ->with('main table', fn(Browser $table) => $table
-                    ->assertSee('admin@edlib.test')
-                    ->press('Remove')
+                ->with(
+                    'main table',
+                    fn(Browser $table) => $table
+                        ->assertSee('admin@edlib.test')
+                        ->press('Remove'),
                 )
-                ->assertTitleContains('Forbidden')
+                ->assertTitleContains('Forbidden'),
         );
     }
 }
