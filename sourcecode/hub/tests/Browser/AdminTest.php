@@ -306,4 +306,59 @@ final class AdminTest extends DuskTestCase
                 ),
         );
     }
+
+    public function testListsAdmins(): void
+    {
+        User::factory()->withEmail('admin@edlib.test')->admin()->create();
+        User::factory()->withEmail('nimda@bilde.test')->admin()->create();
+        User::factory()->withEmail('luser@example.com')->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('admin@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/admin/admins')
+                ->with(
+                    'main table',
+                    fn(Browser $table) => $table
+                        ->assertSee('admin@edlib.test')
+                        ->assertSee('nimda@bilde.test')
+                        ->assertDontSee('luser@example.com')
+                )
+        );
+    }
+
+    public function testAddsAdmins(): void
+    {
+        User::factory()->withEmail('admin@edlib.test')->admin()->create();
+        User::factory()->withEmail('nimda@bilde.test')->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('admin@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/admin/admins')
+                ->assertDontSeeIn('main table', 'nimda@bilde.test')
+                ->type('email', 'nimda@bilde.test')
+                ->press('Add')
+                ->assertSeeIn('main table', 'nimda@bilde.test')
+        );
+    }
+
+    public function testRemovesAdmins(): void
+    {
+        User::factory()->withEmail('admin@edlib.test')->admin()->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('admin@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/admin/admins')
+                ->with('main table', fn(Browser $table) => $table
+                    ->assertSee('admin@edlib.test')
+                    ->press('Remove')
+                )
+                ->assertTitleContains('Forbidden')
+        );
+    }
 }
