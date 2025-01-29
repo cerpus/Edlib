@@ -195,7 +195,7 @@ final class UserTest extends DuskTestCase
                 // The login should be invalid if the email didn't normalize.
                 // In that case, we wouldn't be able to see these.
                 ->assertSee('Account updated successfully')
-                ->assertInputValue('email', 'e.mel@edlib.test')
+                ->assertInputValue('email', 'e.mel@edlib.test'),
         );
     }
 

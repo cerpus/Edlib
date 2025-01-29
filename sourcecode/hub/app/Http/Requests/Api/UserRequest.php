@@ -9,6 +9,7 @@ use App\Configuration\Themes;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 use function is_string;
 use function strtolower;
 
