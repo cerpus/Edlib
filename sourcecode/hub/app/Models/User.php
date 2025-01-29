@@ -69,6 +69,11 @@ class User extends Model implements AuthenticatableContract
         'debug_mode' => false,
     ];
 
+    public function setEmailAttribute(string $email): void
+    {
+        $this->attributes['email'] = strtolower($email);
+    }
+
     public function getApiKey(): string
     {
         return $this->id;
