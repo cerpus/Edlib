@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\DataObjects\ContentDisplayItem;
 use App\Models\Content;
+use App\Support\SessionScope;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -347,7 +348,7 @@ class ContentFilter extends FormRequest
                 previewUrl: route('content.preview', [$model, $version]),
                 useUrl: $canUse ? route('content.use', [$model, $version]) : null,
                 editUrl: $canEdit ? route('content.edit', [$model, $version]) : null,
-                shareUrl: $canView ? route('content.share', [$model]) : null,
+                shareUrl: $canView ? route('content.share', [$model, SessionScope::TOKEN_PARAM => null]) : null,
                 copyUrl: $canCopy ? route('content.copy', [$model]) : null,
                 deleteUrl: $canDelete ? route('content.delete', [$model]) : null,
             );
