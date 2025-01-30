@@ -241,4 +241,9 @@ return [
     'verify-my-email' => 'Verify my email',
     'verification-email-sent' => 'A verification email has been sent to the address associated with your account.',
     'your-account-has-been-verified' => 'Your account has been verified.',
+    'attach-context-to-contents' => 'Attach context to contents',
+    'attach-context-to-contents-warning' => 'This adds a context to all contents',
+    'start-job' => 'Start job',
+    'danger-zone' => 'Danger zone',
+    'confirm-reindex' => 'Reindexing will make content listings unavailable until the process has completed. Are you sure you want to continue?',
 ];

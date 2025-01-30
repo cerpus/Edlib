@@ -29,6 +29,16 @@ support this, content selected via the default endpoint just replaces the previo
 
   Make the 'Use Content' button in item selections return a link to the current version of a resource.
 
+* `ext_edlib3_include_owner_info`
+
+  If enabled, and the LTI Platform has setting `The platform authorizes edit access` enabled, the e-mail address of
+  the content owner will be included in the response. Set to `"1"` to enable, not enabled by default.
+
+* `ext_edlib3_copy_before_save`
+
+  For edit requests. Instructs Edlib to create a copy of the content and save the changes to the copy.
+  Set to `"1"` to enable, not enabled by default.
+
 ## Extended LTI parameters sent to LTI tools by the Hub
 
 * `ext_edlib3_embed_resize_code`

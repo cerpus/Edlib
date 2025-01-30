@@ -1,13 +1,12 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__)
-    ->path('app')
-    ->path('bootstrap/app.php')
-    ->path('config')
-    ->path('database')
-    ->path('routes')
-    ->path('tests')
+    ->in(__DIR__ . '/app/')
+    ->in(__DIR__ . '/bootstrap/')->exclude('cache')->name('/app.php')
+    ->in(__DIR__ . '/config/')
+    ->in(__DIR__ . '/database/')
+    ->in(__DIR__ . '/routes/')
+    ->in(__DIR__ . '/tests/')
 ;
 
 return (new PhpCsFixer\Config())

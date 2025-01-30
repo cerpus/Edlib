@@ -21,11 +21,24 @@
         </li>
 
         <li>
-            <x-form action="{{ route('admin.rebuild-content-index') }}">
-                <button class="btn btn-link p-0">{{ trans('messages.rebuild-content-index') }}</button>
-            </x-form>
+            <a href="{{ route('admin.attach-context-to-contents') }}">
+                {{ trans('messages.attach-context-to-contents') }}
+            </a>
         </li>
     </ul>
+
+    <h3>{{ trans('messages.danger-zone') }}</h3>
+
+    <x-form
+        action="{{ route('admin.rebuild-content-index') }}"
+        class="mb-3"
+        hx-post="{{ route('admin.rebuild-content-index') }}"
+        hx-confirm="{{ trans('messages.confirm-reindex') }}"
+    >
+        <button class="btn btn-danger">
+            {{ trans('messages.rebuild-content-index') }}
+        </button>
+    </x-form>
 
     <h3>Admin tools</h3>
 

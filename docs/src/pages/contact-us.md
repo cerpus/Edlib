@@ -22,7 +22,6 @@ Connect with one of our offices (in Norway).
 ### Alsvåg Office
 
 **Cerpus Learning Garden**<br/>
-
 Alsvågveien 688<br/>
 8432 Alsvåg<br/>
 Norway<br/>
