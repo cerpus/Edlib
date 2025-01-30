@@ -152,11 +152,11 @@ readonly class ContentPolicy
     private function ensureVersionBelongsToContent(Content $content, ContentVersion|null $version): void
     {
         if ($version && (
-                $version->content_id !== $content->id ||
+            $version->content_id !== $content->id ||
                 $version->exists === false ||
                 $content->exists === false ||
                 $version->getConnectionName() !== $content->getConnectionName()
-            )
+        )
         ) {
             throw new LogicException('Version does not belong to content');
         }
