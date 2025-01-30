@@ -314,7 +314,8 @@ class ContentFilter extends FormRequest
         $eagerLoad = ['users'];
         if ($showDrafts) {
             $eagerLoad[] = 'latestVersion';
-        } else {
+        }
+        if (!$showDrafts || $forUser) {
             $eagerLoad[] = 'latestPublishedVersion';
         }
 
@@ -331,7 +332,7 @@ class ContentFilter extends FormRequest
                 ?? throw new NotFoundHttpException();
 
             $canUse = Gate::allows('use', [$model, $version]);
-            $canEdit = Gate::allows('edit', $model);
+            $canEdit = Gate::allows('edit', [$model, $version]);
             $canView = Gate::allows('view', $model);
             $canDelete = $forUser && Gate::allows('delete', $model);
             $canCopy = Gate::allows('copy', $model);
@@ -349,7 +350,7 @@ class ContentFilter extends FormRequest
                 useUrl: $canUse ? route('content.use', [$model, $version]) : null,
                 editUrl: $canEdit ? route('content.edit', [$model, $version]) : null,
                 shareUrl: $canView ? route('content.share', [$model, SessionScope::TOKEN_PARAM => null]) : null,
-                copyUrl: $canCopy ? route('content.copy', [$model, $version]) : null,
+                copyUrl: $canCopy ? route('content.copy', [$model]) : null,
                 deleteUrl: $canDelete ? route('content.delete', [$model]) : null,
             );
         });
