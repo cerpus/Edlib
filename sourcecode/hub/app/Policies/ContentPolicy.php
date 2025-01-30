@@ -129,10 +129,6 @@ readonly class ContentPolicy
             return false;
         }
 
-        if (!$version->content?->is($content)) {
-            return false;
-        }
-
         if (!$version->published) {
             return false;
         }
