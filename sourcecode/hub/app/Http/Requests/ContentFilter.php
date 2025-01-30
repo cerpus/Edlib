@@ -314,7 +314,8 @@ class ContentFilter extends FormRequest
         $eagerLoad = ['users'];
         if ($showDrafts) {
             $eagerLoad[] = 'latestVersion';
-        } else {
+        }
+        if (!$showDrafts || $forUser) {
             $eagerLoad[] = 'latestPublishedVersion';
         }
 
