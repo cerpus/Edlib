@@ -1,17 +1,15 @@
-@props(['content', 'titlePreviews' => false])
+@props(['content'])
 
 <article class="card content-list-item shadow-sm">
     <div class="card-body">
         <div class="row">
             <a
-                href="{{ $content->detailsUrl }}"
+                href="{{ $content->previewUrl }}"
                 class="col text-decoration-none link-body-emphasis"
-                @if ($titlePreviews)
-                    hx-get="{{ $content->previewUrl }}"
-                    hx-target="#previewModal"
-                    data-bs-toggle="modal"
-                    data-bs-target="#previewModal"
-                @endif
+                hx-get="{{ $content->previewUrl }}"
+                hx-target="#previewModal"
+                data-bs-toggle="modal"
+                data-bs-target="#previewModal"
             >
                 <h5 class="text-line-clamp clamp-3-lines fw-bold" aria-label="{{ trans('messages.title') }}">
                     {{ $content->title }}
@@ -40,6 +38,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center justify-content-end border-0 action-buttons">
-        <x-content.action-buttons :$content :show-preview="!$titlePreviews" />
+        <x-content.action-buttons :$content />
     </div>
 </article>
