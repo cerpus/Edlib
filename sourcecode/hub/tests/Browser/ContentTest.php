@@ -1086,13 +1086,13 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                                ->press('Send')
-                        )
+                                ->press('Send'),
+                        ),
                 )
                 ->withinFrame(
                     'iframe[name="launch_frame"]',
                     fn(Browser $launch) => $launch
-                        ->waitForText('My new content')
+                        ->waitForText('My new content'),
                 )
                 ->visit('/content/mine')
                 ->with(
