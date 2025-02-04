@@ -198,11 +198,6 @@ class ContentFilter extends FormRequest
         return $this->session()->get('contentLayout', 'grid');
     }
 
-    public function isTitlePreview(): bool
-    {
-        return $this->session()->has('lti');
-    }
-
     /**
      * @param Builder<Content> $query
      * @return Builder<Content>
