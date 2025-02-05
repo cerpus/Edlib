@@ -4,7 +4,7 @@
     <div class="card-body">
         <div class="row">
             <a
-                href="{{ $content->previewUrl }}"
+                href="{{ $content->detailsUrl }}"
                 class="col text-decoration-none link-body-emphasis"
                 hx-get="{{ $content->previewUrl }}"
                 hx-target="#previewModal"

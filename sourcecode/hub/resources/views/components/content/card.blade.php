@@ -3,7 +3,7 @@
 <article class="card content-card">
     <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
-            href="{{ $content->previewUrl }}"
+            href="{{ $content->detailsUrl }}"
             class="text-decoration-none link-body-emphasis"
             hx-get="{{ $content->previewUrl }}"
             hx-target="#previewModal"

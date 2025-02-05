@@ -1,10 +1,3 @@
-@props([
-    'shareUrl' => null,
-    'detailsUrl' => null,
-    'copyUrl' => null,
-    'deleteUrl' => null,
-])
-
 <div class="dropup">
     <button
         type="button"
@@ -16,7 +9,7 @@
         <x-icon name="three-dots-vertical" />
     </button>
     <ul class="dropdown-menu dropdown-menu-end">
-        @if($shareUrl)
+        @isset($shareUrl)
             <li>
                 <a
                     href="{{ $shareUrl }}"
@@ -30,18 +23,18 @@
                     {{ trans('messages.share') }}
                 </a>
             </li>
-        @endif
+        @endisset
 
-        @if($detailsUrl)
+        @isset($detailsUrl)
             <li>
                 <a href="{{ $detailsUrl }}" class="dropdown-item">
                     <x-icon name="info-lg" class="me-2" />
                     {{ trans('messages.details') }}
                 </a>
             </li>
-        @endif
+        @endisset
 
-        @if($copyUrl)
+        @isset($copyUrl)
             <li>
                 <x-form action="{{ $copyUrl }}">
                     <button class="dropdown-item">
@@ -50,9 +43,9 @@
                     </button>
                 </x-form>
             </li>
-        @endif
+        @endisset
 
-        @if($deleteUrl)
+        @isset($deleteUrl)
             <li>
                 <button
                     class="dropdown-item"
@@ -65,6 +58,6 @@
                     {{ trans('messages.delete') }}
                 </button>
             </li>
-        @endif
+        @endisset
     </ul>
 </div>
