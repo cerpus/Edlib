@@ -12,7 +12,7 @@
                 data-bs-target="#previewModal"
             @endif
         >
-            <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal">
+            <div class="content-card-header-updated text-truncate fw-normal">
                 {{ trans('messages.edited') }}:
                 <time
                     datetime="{{ $content->createdAt?->toIso8601String() }}"
@@ -24,11 +24,11 @@
             </div>
         </a>
         @if(!$content->isPublished)
-            <div class="badge text-bg-primary position-absolute end-0 top-0 d-none d-md-inline-block">
+            <div class="badge text-bg-primary fw-normal position-absolute end-0 top-0 draft-badge">
                 {{ trans('messages.draft') }}
             </div>
         @endif
-        <div class="badge position-absolute end-0 top-100 content-card-preview-badge d-none d-md-inline-block">
+        <div class="badge position-absolute end-0 top-100 content-card-preview-badge">
             <x-icon name="eye"/>
             <span class="content-card-views" title="{{ trans('messages.number-of-views') }}">
                 {{ $content->viewsCount }}
@@ -40,7 +40,12 @@
             <div class="col-auto small content-type">
                 {{ $content->contentType }}
             </div>
-            <div class="col-auto badge text-bg-primary">
+            <div
+                class="col-auto badge text-bg-primary fw-normal"
+                @if($content->languageDisplayName !== false)
+                    title="{{$content->languageDisplayName}}"
+                @endif
+            >
                 {{ $content->languageIso639_3 }}
             </div>
         </div>
