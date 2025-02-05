@@ -37,7 +37,7 @@ final readonly class OembedController
         $data = $this->serializer->serialize(new RichContentResponse(
             html: view('ndla-legacy.oembed', [
                 'id' => $id,
-                'src' => route('content.embed', [$content]),
+                'src' => route('ndla-legacy.resource', [$id]),
                 'title' => $content->getTitle(),
             ])->render(),
             width: 800,
