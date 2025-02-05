@@ -26,6 +26,7 @@
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="DUSK_DRIVER_URL" value="http://chromedriver:9515"/>
+        <env name="EDLIB_LEGACY_DOMAIN" value="www.edlib.test"/>
         <env name="SESSION_DRIVER" value="array"/>
     </php>
 </phpunit>
