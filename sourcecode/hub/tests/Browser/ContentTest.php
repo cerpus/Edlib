@@ -894,7 +894,7 @@ final class ContentTest extends DuskTestCase
                 ->type('secret', $platform->secret)
                 ->type(
                     'parameters',
-                    'content_item_return_url=about:blank' .
+                    'content_item_return_url=https://hub-test.edlib.test/lti/dl' .
                     '&lti_message_type=ContentItemSelectionRequest' .
                     "&lis_person_contact_email_primary={$user->email}",
                 )
@@ -924,11 +924,12 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                                ->press('Send'),
-                        ),
+                                ->press('Send')
+                        )
+                        ->withinFrame('iframe[name="launch_frame"]', fn(Browser $result) => $result
+                            ->waitFor('#content'),
+                        )
                 )
-                // FIXME: There must be something that can be checked for success/completion of Send?
-                ->pause(500)
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
                 ->assertDontSee('The original content'),
@@ -967,7 +968,7 @@ final class ContentTest extends DuskTestCase
                 ->type('secret', $platform->secret)
                 ->type(
                     'parameters',
-                    'content_item_return_url=about:blank' .
+                    'content_item_return_url=https://hub-test.edlib.test/lti/dl' .
                     '&ext_edlib3_copy_before_save=1' .
                     '&lti_message_type=ContentItemSelectionRequest' .
                     "&lis_person_contact_email_primary={$user->email}",
@@ -999,10 +1000,11 @@ final class ContentTest extends DuskTestCase
                     }
                     EOJSON)
                                 ->press('Send'),
-                        ),
+                        )
+                        ->withinFrame('iframe[name="launch_frame"]', fn(Browser $result) => $result
+                            ->waitFor('#content'),
+                        )
                 )
-                // FIXME: There must be something that can be checked for success/completion of Send?
-                ->pause(500)
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
                 ->assertSeeLink('The original content'),
