@@ -12,7 +12,7 @@ use Tests\DuskTestCase;
 
 final class UserTest extends DuskTestCase
 {
-    public function testUserCanSignUp(): void
+    public function testUsersCanSignUpAndBeNotVerified(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/register')
@@ -22,7 +22,11 @@ final class UserTest extends DuskTestCase
                 ->type('password', 'scaramouche')
                 ->type('password_confirmation', 'scaramouche')
                 ->press('Sign up')
-                ->assertAuthenticated();
+                ->assertAuthenticated()
+                ->visit('/')
+                ->press('Freddie Mercury')
+                ->clickLink('My Account')
+                ->assertSee('Your email address is unverified.');
         });
     }
 

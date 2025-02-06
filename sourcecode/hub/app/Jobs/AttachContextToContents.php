@@ -7,10 +7,12 @@ namespace App\Jobs;
 use App\Models\Content;
 use App\Models\Context;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AttachContextToContents
+class AttachContextToContents implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable;
     use Queueable;
