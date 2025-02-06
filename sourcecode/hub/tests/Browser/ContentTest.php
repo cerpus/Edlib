@@ -924,11 +924,13 @@ final class ContentTest extends DuskTestCase
                         ]
                     }
                     EOJSON)
-                                ->press('Send')
+                                ->press('Send'),
                         )
-                        ->withinFrame('iframe[name="launch_frame"]', fn(Browser $result) => $result
-                            ->waitFor('#content'),
-                        )
+                        ->withinFrame(
+                            'iframe[name="launch_frame"]',
+                            fn(Browser $result) => $result
+                                ->waitFor('#content'),
+                        ),
                 )
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
@@ -1001,9 +1003,11 @@ final class ContentTest extends DuskTestCase
                     EOJSON)
                                 ->press('Send'),
                         )
-                        ->withinFrame('iframe[name="launch_frame"]', fn(Browser $result) => $result
-                            ->waitFor('#content'),
-                        )
+                        ->withinFrame(
+                            'iframe[name="launch_frame"]',
+                            fn(Browser $result) => $result
+                                ->waitFor('#content'),
+                        ),
                 )
                 ->visit('/content/mine')
                 ->assertSeeLink('The updated content')
