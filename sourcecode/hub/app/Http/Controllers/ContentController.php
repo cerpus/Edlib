@@ -116,7 +116,7 @@ class ContentController extends Controller
 
         return view('content.embed', [
             'content' => $content,
-            'version' => $content->latestPublishedVersion,
+            'version' => $version,
             'launch' => $launch,
         ]);
     }
