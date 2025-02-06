@@ -7,4 +7,5 @@ return [
     "to" => "to",
     "of" => "of",
     "results" => "results",
+    "page" => "Page",
 ];

@@ -1,4 +1,8 @@
 .content-list-item {
-    min-width: 450px;
+    min-width: 450px; // Same as min-with of main-container
     overflow-wrap: anywhere;
+}
+
+.main-container-list {
+    min-width: 450px; //Same as min-with of content-list-item
 }
