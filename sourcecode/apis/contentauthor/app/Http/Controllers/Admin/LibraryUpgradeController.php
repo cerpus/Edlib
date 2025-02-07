@@ -61,6 +61,7 @@ class LibraryUpgradeController extends Controller
             reset($versions);
             foreach ($versions as $library) {
                 $usage = $this->h5pFramework->getLibraryUsage($library->id);
+
                 $item = [
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
@@ -71,7 +72,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
-                    'canDelete' => H5PLibrary::canBeDeleted($library->id),
+                    'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage),
                 ];
 
                 if ($library->runnable) {
