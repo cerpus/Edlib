@@ -25,6 +25,12 @@
                 {{ trans('messages.attach-context-to-contents') }}
             </a>
         </li>
+
+        <li>
+            <a href="{{ route('admin.admins.index') }}">
+                {{ trans('messages.admins') }}
+            </a>
+        </li>
     </ul>
 
     <h3>{{ trans('messages.danger-zone') }}</h3>

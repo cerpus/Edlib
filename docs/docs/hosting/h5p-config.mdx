@@ -1,0 +1,56 @@
+---
+sidebar_position: 4
+---
+
+# H5P configuration
+
+These are environment variables in Content Author that can be configured to change the behaviour of H5Ps and the editor.
+
+## H5P_OVERRIDE_DISABLE_SETTING
+Show or hide the footer when displaying the H5P. The footer contains buttons for 'Embed', 'Reuse', 'Rights of use'
+and link to h5p.org. The display of the individual buttons may depend on other settings.
+```text title=.env
+H5P_OVERRIDE_DISABLE_SETTING=false
+```
+```text title="Allowed values"
+true  => Footer is not displayed
+false => Footer is displayed
+```
+
+## H5P_DEFAULT_EXPORT_OPTION
+Show or hide the 'Reuse' button in the footer. The reuse button enables download of the content, including the
+libraries it uses, as an `.h5p` file. For details on the `.h5p` file type see the
+[specification on h5p.org](https://h5p.org/documentation/developers/h5p-specification).
+```text title=.env
+H5P_DEFAULT_EXPORT_OPTION=2
+```
+```text title="Allowed values"
+0 => Reuse button is hidden
+1 => Controlled by author, default is display
+2 => Controlled by author, default is hide
+3 => Reuse button is displayed
+4 => Controlled by permissions. Currently, permission is always denied, i.e. the button is hidden.
+```
+
+## H5P_SHOW_DISPLAY_OPTIONS
+Show the 'Display options' section in the editor. The section allows the author to set the visibility of the footer,
+and visibility of the 'Rights of use' and 'Reuse' buttons in the footer.
+```text title=.env
+H5P_SHOW_DISPLAY_OPTIONS=false
+```
+```text title="Allowed values"
+true  => Show section in the editor
+false => Section is not displayed
+```
+
+## H5P_DEFAULT_SHARE_SETTING
+Set the default value of the sharing option in the editor. Regardless of this setting the author can toggle the
+setting on or off. For more about sharing see the [Shared content](../support/userGuides/shared-content)
+section in the User Guides.
+```text title=.env
+H5P_DEFAULT_SHARE_SETTING=private
+```
+```text title="Allowed values"
+private => Sharing is default disabled
+share   => Sharing is default enabled
+```

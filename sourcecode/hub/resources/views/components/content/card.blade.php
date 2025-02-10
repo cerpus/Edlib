@@ -1,16 +1,14 @@
-@props(['content', 'titlePreviews' => false])
+@props(['content'])
 
 <article class="card content-card">
     <header class="card-header content-card-header border-bottom-0 fw-bold position-relative">
         <a
             href="{{ $content->detailsUrl }}"
             class="text-decoration-none link-body-emphasis"
-            @if ($titlePreviews)
-                hx-get="{{ $content->previewUrl }}"
-                hx-target="#previewModal"
-                data-bs-toggle="modal"
-                data-bs-target="#previewModal"
-            @endif
+            hx-get="{{ $content->previewUrl }}"
+            hx-target="#previewModal"
+            data-bs-toggle="modal"
+            data-bs-target="#previewModal"
         >
             <div class="content-card-header-updated text-truncate fw-normal">
                 {{ trans('messages.edited') }}:
@@ -54,6 +52,6 @@
         </div>
     </div>
     <div class="card-footer d-flex align-items-center bg-transparent border-0 action-buttons">
-        <x-content.action-buttons :$content :show-preview="!$titlePreviews" />
+        <x-content.action-buttons :$content />
     </div>
 </article>
