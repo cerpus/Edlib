@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Rules\VerifiedUserEmail;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class GrantAdminRequest extends FormRequest
 {
     /**
      * @return array<mixed>
      */
-    public function rules(): array
+    public function rules(VerifiedUserEmail $verifiedUserEmail): array
     {
         return [
-            'email' => ['required', 'email', Rule::exists(User::class, 'email')],
+            'email' => ['required', 'email', $verifiedUserEmail],
         ];
     }
 }

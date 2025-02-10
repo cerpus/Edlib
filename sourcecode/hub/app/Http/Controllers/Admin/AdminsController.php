@@ -27,7 +27,9 @@ final readonly class AdminsController
     {
         $email = $request->validated('email');
 
-        $user = User::where('email', $email)->firstOrFail();
+        $user = User::where('email', $email)
+            ->where('email_verified', true)
+            ->firstOrFail();
         $user->admin = true;
         $user->save();
 

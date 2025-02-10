@@ -345,6 +345,39 @@ final class AdminTest extends DuskTestCase
         );
     }
 
+    public function testEmailOfAddedAdminMustBelongToExistingUser(): void
+    {
+        User::factory()->withEmail('admin@edlib.test')->admin()->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('admin@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/admin/admins')
+                ->type('email', 'nimda@bilde.test')
+                ->press('Add')
+                ->assertDontSeeIn('main table', 'nimda@bilde.test')
+                ->assertSeeIn('.invalid-feedback', 'No user with that email address')
+        );
+    }
+
+    public function testEmailOfAddedAdminMustBeVerified(): void
+    {
+        User::factory()->withEmail('admin@edlib.test')->admin()->create();
+        User::factory()->withEmail('nimda@bilde.test', verified: false)->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('admin@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/admin/admins')
+                ->type('email', 'nimda@bilde.test')
+                ->press('Add')
+                ->assertDontSeeIn('main table', 'nimda@bilde.test')
+                ->assertSeeIn('.invalid-feedback', 'User does not have a verified email address')
+        );
+    }
+
     public function testRemovesAdmins(): void
     {
         User::factory()->withEmail('admin@edlib.test')->admin()->create();
