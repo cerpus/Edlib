@@ -3,10 +3,10 @@
 @unless ($contents->isEmpty())
     @if ($filter->getLayout() === 'grid')
         <x-content.grid-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.grid :$contents :titlePreviews="$filter->isTitlePreview()" />
+        <x-content.grid :$contents />
     @else
         <x-content.list-header :layout="$filter->getLayout()" :total="$contents->total()" />
-        <x-content.list :$contents :titlePreviews="$filter->isTitlePreview()" />
+        <x-content.list :$contents />
     @endif
 
     <div hx-boost="true" hx-target="#content" class="mt-3">
