@@ -357,7 +357,7 @@ final class AdminTest extends DuskTestCase
                 ->type('email', 'nimda@bilde.test')
                 ->press('Add')
                 ->assertDontSeeIn('main table', 'nimda@bilde.test')
-                ->assertSeeIn('.invalid-feedback', 'No user with that email address')
+                ->assertSeeIn('.invalid-feedback', 'No user with that email address'),
         );
     }
 
@@ -374,7 +374,7 @@ final class AdminTest extends DuskTestCase
                 ->type('email', 'nimda@bilde.test')
                 ->press('Add')
                 ->assertDontSeeIn('main table', 'nimda@bilde.test')
-                ->assertSeeIn('.invalid-feedback', 'User does not have a verified email address')
+                ->assertSeeIn('.invalid-feedback', 'User does not have a verified email address'),
         );
     }
 
