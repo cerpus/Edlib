@@ -370,14 +370,14 @@ class H5PLibrary extends Model
         return $icon ?? url('/graphical/h5p_logo.svg');
     }
 
-    public static function canBeDeleted(int $libraryId, array|null $usage = null): bool
+    public static function canBeDeleted(int $libraryId, int|null $usageCount = null): bool
     {
-        if ($usage === null || array_key_exists('libraries', $usage) === false) {
+        if ($usageCount === null) {
             $h5pFramework = app(H5PFrameworkInterface::class);
             // Number of references by other content types/libraries. Only counts content using library as main content type, so we skip that
-            $usage = $h5pFramework->getLibraryUsage($libraryId, skipContent: true);
+            $usageCount = $h5pFramework->getLibraryUsage($libraryId, skipContent: true)['libraries'];
         }
 
-        return $usage['libraries'] === 0 && H5PContentLibrary::where('library_id', $libraryId)->doesntExist();
+        return $usageCount === 0 && H5PContentLibrary::where('library_id', $libraryId)->doesntExist();
     }
 }
