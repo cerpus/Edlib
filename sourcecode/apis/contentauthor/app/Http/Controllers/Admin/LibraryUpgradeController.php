@@ -72,7 +72,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgrade' => null,
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
-                    'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage),
+                    'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage['libraries']),
                 ];
 
                 if ($library->runnable) {
