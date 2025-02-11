@@ -110,8 +110,6 @@ return [
     'send-email-to-lti-tool' => 'Send epostadresse på :site-bruker til verktøy',
     'content-selection' => 'Valg av innhold',
     'launch-settings' => 'Oppstartsinnstillinger',
-    'proxy-launch-to-lti-tool' => 'Returner :site-URLer til verktøy',
-    'proxy-launch-to-lti-tool-help' => 'Om aktivert, vil innholdet bli vist gjennom :site. Ellers er plattformen påkrevd å ha utvekslet nøkler med verktøyet på forhånd.',
     'yes' => 'Ja',
     'no' => 'Nei',
     'continue' => 'Fortsett',

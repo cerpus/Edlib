@@ -25,7 +25,6 @@ final class LtiToolCard extends Component
     public function elements(): array
     {
         return [
-            '@proxy-launch' => '.lti-tool-card-proxy-launch',
             '@send-email' => '.lti-tool-card-send-email',
             '@send-name' => '.lti-tool-card-send-name',
         ];
