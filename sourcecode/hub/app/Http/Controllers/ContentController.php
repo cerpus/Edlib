@@ -463,4 +463,9 @@ class ContentController extends Controller
             ],
         ]);
     }
+
+    public function redirectFromEdlib2Id(Content $edlib2Content): RedirectResponse
+    {
+        return redirect()->route('content.embed', [$edlib2Content]);
+    }
 }
