@@ -214,7 +214,7 @@ class LibraryUpgradeController extends Controller
     private function libraryUpdateMessage(string $newVersion, bool|null $isPatch): string
     {
         $msg = 'Download and install version ' . $newVersion;
-        return $msg . match($isPatch) {
+        return $msg . match ($isPatch) {
             true => "\r\nNew version will replace installed version.",
             false => "\r\nNew version will be installed in addition to existing versions.",
             default => '',
