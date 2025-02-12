@@ -9,6 +9,7 @@ use App\H5PLibrariesHubCache;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 class H5PLibraryInstall extends Command
 {
@@ -39,16 +40,16 @@ class H5PLibraryInstall extends Command
             $this->warn("Use of h5p.org hub is not enabled. To enable set 'H5P_IS_HUB_ENABLED=true'");
             $this->newLine();
 
-            return Command::FAILURE;
+            return SymfonyCommand::FAILURE;
         }
 
         $cacheUpdate = $this->call('h5p:library-hub-cache', ['--force' => $this->option('force-cache')]);
 
-        if ($cacheUpdate !== Command::SUCCESS) {
+        if ($cacheUpdate !== SymfonyCommand::SUCCESS) {
             return $cacheUpdate;
         }
 
-        return $this->install() ? Command::SUCCESS : Command::FAILURE;
+        return $this->install() ? SymfonyCommand::SUCCESS : SymfonyCommand::FAILURE;
     }
 
     /**
@@ -82,7 +83,12 @@ class H5PLibraryInstall extends Command
                 $success = false;
                 $this->error('Failed');
                 if (isset($result['message'])) {
-                    $this->error('      ' . $result['message']);
+                    $this->error("\t" . $result['message']);
+                }
+                if (isset($result['details'])) {
+                    foreach ($result['details'] as $detail) {
+                        $this->error("\t" . $detail);
+                    }
                 }
             }
         }

@@ -61,25 +61,38 @@ function installLibrary(event) {
     const action = element.data('ajax-action');
     const library = element.data('name');
     const activetab = element.data('ajax-activetab');
+    const errorMessage = element.data('error-message');
 
-    element.prop('disabled', true);
-    sendRequest(element, url, {
-        action: action,
-        machineName: library,
-    }, function (response) {
-        if (response.success === true) {
-            alert('Library installed');
-            if (typeof activetab === 'string') {
-                const params = new URLSearchParams(location.search);
-                params.set('activetab', activetab);
-                window.location.search = params.toString();
+    if (errorMessage) {
+        alert(library + '\r\n' + errorMessage);
+    } else {
+        element.prop('disabled', true);
+        sendRequest(element, url, {
+            action: action,
+            machineName: library,
+        }, function (response) {
+            if (response.success === true) {
+                alert('Library installed');
+                if (typeof activetab === 'string') {
+                    const params = new URLSearchParams(location.search);
+                    params.set('activetab', activetab);
+                    window.location.search = params.toString();
+                } else {
+                    window.location.reload();
+                }
             } else {
-                window.location.reload();
+                console.log(response);
+                let message = '';
+                if (response.message) {
+                    message = response.message;
+                }
+                if (response.details) {
+                    message += '\r\n' + response.details.join('\r\n');
+                }
+                alert('Library installation failed' + '\r\n' + message);
             }
-        } else {
-            console.log(response);
-        }
-    });
+        });
+    }
 }
 
 function rebuildLibrary(event) {
