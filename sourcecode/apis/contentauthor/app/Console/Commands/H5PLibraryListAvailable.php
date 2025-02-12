@@ -72,10 +72,18 @@ class H5PLibraryListAvailable extends Command
             ->orderBy('name')
             ->get()
             ->map(function ($cache) {
+                $cMjL = $cache->h5p_major_version > H5PCore::$coreApi['majorVersion'];
+                $cMjE = $cache->h5p_major_version === H5PCore::$coreApi['majorVersion'];
+                $cMiL = $cache->h5p_minor_version > H5PCore::$coreApi['minorVersion'];
+
+                $coreVersion = sprintf('%d.%d', $cache->h5p_major_version, $cache->h5p_minor_version);
+                if ($cMjL || ($cMjE && $cMiL)) { // Requires newer H5P Core version
+                    $coreVersion = "<fg=red>" . $coreVersion . '</>';
+                }
                 return [
                     $cache->name,
                     sprintf('%d.%d.%d', $cache->major_version, $cache->minor_version, $cache->patch_version),
-                    sprintf('%d.%d', $cache->h5p_major_version, $cache->h5p_minor_version),
+                    $coreVersion,
                     $cache->owner,
                 ];
             })
