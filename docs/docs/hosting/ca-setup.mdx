@@ -70,26 +70,9 @@ types**, you can download and install H5P content types.
 Content Author can also be set up in the Hub via the CLI. This can be used to
 automate the process.
 
-Replace the values with the ones corresponding for your instance, and run in
-the Hub:
+### Preinstalling H5P libraries
 
 ```bash
-KEY="my LTI consumer key"
-SECRET="my LTI consumer secret"
-CA="contentauthor.example.com"
-
-echo -ne "$KEY\n$SECRET\n" | php artisan edlib:add-lti-tool 'Content Author' \
-    "https://$CA/lti-content/create" \
-    --send-name \
-    --send-email \
-    --edlib-editable \
-    --slug=content-author
-
-php artisan edlib:add-lti-tool-extra content-author 'CA admin' \
-    "https://$CA/lti/admin" \
-    --slug=ca-admin \
-    --admin
-
 php artisan h5p:library-hub-cache
 
 php artisan h5p:library-install \
@@ -118,4 +101,27 @@ php artisan h5p:library-install \
     H5P.Summary \
     H5P.Timeline \
     H5P.TrueFalse
+```
+
+### Adding Content Author to the Hub
+
+Replace the values with the ones corresponding for your instance, and run in
+the Hub (**not Content Author**):
+
+```bash
+KEY="my LTI consumer key"
+SECRET="my LTI consumer secret"
+CA="contentauthor.example.com"
+
+echo -ne "$KEY\n$SECRET\n" | php artisan edlib:add-lti-tool 'Content Author' \
+    "https://$CA/lti-content/create" \
+    --send-name \
+    --send-email \
+    --edlib-editable \
+    --slug=content-author
+
+php artisan edlib:add-lti-tool-extra content-author 'CA admin' \
+    "https://$CA/lti/admin" \
+    --slug=ca-admin \
+    --admin
 ```
