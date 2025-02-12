@@ -8,4 +8,6 @@ return [
     'forgot-password' => (bool) env('FEATURE_RESET_PASSWORD_ENABLED', true),
 
     'noindex' => (bool) env('FEATURE_NOINDEX', false),
+
+    'social-users-are-verified' => (bool) env('FEATURE_SOCIAL_USERS_ARE_VERIFIED', false),
 ];

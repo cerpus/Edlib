@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Configuration\Features;
 use App\Events\UserSaved;
 use BadMethodCallException;
 use Database\Factories\UserFactory;
@@ -153,25 +154,31 @@ class User extends Model implements AuthenticatableContract
             throw new InvalidArgumentException('Unknown social provider');
         }
 
+        $features = app()->make(Features::class);
+
         $user = self::firstWhere("{$provider}_id", $details->getId());
 
-        if ($user) {
-            return $user;
+        if (!$user) {
+            $user = self::firstWhere('email', $details->getEmail());
         }
-
-        $user = self::firstWhere('email', $details->getEmail());
 
         if ($user) {
             $user->forceFill(["{$provider}_id" => $details->getId()]);
             $user->save();
-
-            return $user;
+        } else {
+            $user = self::forceCreate([
+                'name' => $details->getName(),
+                'email' => $details->getEmail(),
+                "{$provider}_id" => $details->getId(),
+                'email_verified' => $features->socialUsersAreVerified(),
+            ]);
         }
 
-        return self::forceCreate([
-            'name' => $details->getName(),
-            'email' => $details->getEmail(),
-            "{$provider}_id" => $details->getId(),
-        ]);
+        if (!$user->email_verified && $features->socialUsersAreVerified()) {
+            $user->email_verified = true;
+            $user->save();
+        }
+
+        return $user;
     }
 }

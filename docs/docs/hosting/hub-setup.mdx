@@ -31,3 +31,15 @@ In `sourcecode/hub`, or the `hub` Docker container:
 ```sh
 php artisan edlib:create-admin-user your@email.example
 ```
+
+## Configuration settings
+
+### `FEATURE_SOCIAL_USERS_ARE_VERIFIED`
+
+If enabled, users logging in from "social login providers" (i.e. Facebook) will
+automatically have their email addresses verified upon next login, without
+having to go through the email verification process.
+
+:::caution
+Only enable this if you trust a login provider completely.
+:::

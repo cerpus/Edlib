@@ -28,4 +28,9 @@ final readonly class Features
     {
         return $this->enabled('noindex');
     }
+
+    public function socialUsersAreVerified(): bool
+    {
+        return $this->enabled('social-users-are-verified');
+    }
 }
