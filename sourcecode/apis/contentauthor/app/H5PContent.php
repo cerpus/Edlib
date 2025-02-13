@@ -39,7 +39,7 @@ use function route;
  * @property int $bulk_calculated
  *
  * @property Collection<Collaborator> $collaborators
- * @property H5PLibrary $library
+ * @property H5PLibrary|null $library
  *
  * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()
