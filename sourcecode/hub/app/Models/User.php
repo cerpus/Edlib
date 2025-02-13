@@ -78,9 +78,9 @@ class User extends Model implements AuthenticatableContract
         'email_verified' => true,
     ];
 
-    public function setEmailAttribute(string|null $email): void
+    public function setEmailAttribute(string $email): void
     {
-        $this->attributes['email'] = $email;
+        $this->attributes['email'] = strtolower($email);
 
         if ($this->exists && $email !== $this->getOriginal('email')) {
             $this->attributes['email_verified'] = false;

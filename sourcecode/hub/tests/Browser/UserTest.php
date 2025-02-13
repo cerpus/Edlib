@@ -47,6 +47,22 @@ final class UserTest extends DuskTestCase
         });
     }
 
+    public function testEmailIsNormalizedUponRegistration(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/register')
+                ->assertGuest()
+                ->type('name', 'E. Mel')
+                ->type('email', 'E.MEL@EDLIB.TEST')
+                ->type('password', 'my password')
+                ->type('password_confirmation', 'my password')
+                ->press('Sign up')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->assertInputValue('email', 'e.mel@edlib.test');
+        });
+    }
+
     public function testUserCanChangeLanguage(): void
     {
         User::factory()->create([
@@ -167,6 +183,24 @@ final class UserTest extends DuskTestCase
                 ->press('Log in')
                 ->assertAuthenticated();
         });
+    }
+
+    public function testEmailIsNormalizedUponChanging(): void
+    {
+        User::factory()->withEmail('e.mel@edlib.test')->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs('e.mel@edlib.test')
+                ->assertAuthenticated()
+                ->visit('/my-account')
+                ->type('email', 'E.MEL@EDLIB.TEST')
+                ->press('Save')
+                // The login should be invalid if the email didn't normalize.
+                // In that case, we wouldn't be able to see these.
+                ->assertSee('Account updated successfully')
+                ->assertInputValue('email', 'e.mel@edlib.test'),
+        );
     }
 
     public function testUserCanDisconnectFacebookAndGoogleIDWithPassword(): void

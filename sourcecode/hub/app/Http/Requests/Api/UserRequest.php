@@ -10,8 +10,22 @@ use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+use function is_string;
+use function strtolower;
+
 class UserRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $email = $this->input('email');
+
+        if (is_string($email)) {
+            $this->merge([
+                'email' => strtolower($email),
+            ]);
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */

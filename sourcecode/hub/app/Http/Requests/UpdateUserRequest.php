@@ -7,8 +7,22 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
+use function is_string;
+use function strtolower;
+
 class UpdateUserRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $email = $this->input('email');
+
+        if (is_string($email)) {
+            $this->merge([
+                'email' => strtolower($email),
+            ]);
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */
