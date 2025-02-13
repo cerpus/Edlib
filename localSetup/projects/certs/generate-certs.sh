@@ -7,8 +7,7 @@ CERTS_DIR=/etc/ssl/private
 DOMAINS="\
 DNS:localhost, \
 DNS:${EDLIB_ROOT_DOMAIN:-edlib.test}, \
-DNS:*.${EDLIB_ROOT_DOMAIN:-edlib.test}, \
-DNS:npm.components.${EDLIB_ROOT_DOMAIN:-edlib.test} \
+DNS:*.${EDLIB_ROOT_DOMAIN:-edlib.test} \
 "
 
 mkdir -p "$CA_DIR" "$CERTS_DIR"

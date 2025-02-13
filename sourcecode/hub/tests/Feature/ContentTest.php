@@ -84,6 +84,17 @@ final class ContentTest extends TestCase
             ->assertRedirect('https://hub-test.edlib.test/content/' . $content->id . '/embed');
     }
 
+    public function testRedirectsFromLegacyResourceUrls(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->tag('edlib2_id:a3dcbd28-bf37-4123-ac5e-ba2f72a8f420')
+            ->create();
+
+        $this->get('http://www.edlib.test/s/resources/a3dcbd28-bf37-4123-ac5e-ba2f72a8f420')
+            ->assertRedirect('http://hub-test.edlib.test/content/' . $content->id . '/embed');
+    }
+
     public function testCannotPreviewUnpublishedContent(): void
     {
         $content = Content::factory()

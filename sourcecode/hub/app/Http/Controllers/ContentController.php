@@ -116,7 +116,7 @@ class ContentController extends Controller
 
         return view('content.embed', [
             'content' => $content,
-            'version' => $content->latestPublishedVersion,
+            'version' => $version,
             'launch' => $launch,
         ]);
     }
@@ -462,5 +462,10 @@ class ContentController extends Controller
                 'formats' => $request->getDateFormatsForResolution(),
             ],
         ]);
+    }
+
+    public function redirectFromEdlib2Id(Content $edlib2Content): RedirectResponse
+    {
+        return redirect()->route('content.embed', [$edlib2Content]);
     }
 }

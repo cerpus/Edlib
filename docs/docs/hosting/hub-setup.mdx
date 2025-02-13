@@ -1,0 +1,45 @@
+---
+sidebar_position: 2
+---
+
+# Hub setup
+
+## Setting an app key
+
+`APP_KEY` must be set to a secret, unguessable value. The value must be 32
+random bytes, encoded as base64, and prefixed with `base64:`. You can generate
+such a value with:
+
+```bash
+echo "base64:$(openssl rand -base64 32)"
+```
+
+The configuration should look like:
+
+```text title=".env"
+APP_KEY=base64:long-base64-encoded-string-here
+```
+
+:::danger
+Failing to set this could result in a total compromise of your Edlib instance.
+:::
+
+## Creating an admin account
+
+In `sourcecode/hub`, or the `hub` Docker container:
+
+```sh
+php artisan edlib:create-admin-user your@email.example
+```
+
+## Configuration settings
+
+### `FEATURE_SOCIAL_USERS_ARE_VERIFIED`
+
+If enabled, users logging in from "social login providers" (i.e. Facebook) will
+automatically have their email addresses verified upon next login, without
+having to go through the email verification process.
+
+:::caution
+Only enable this if you trust a login provider completely.
+:::

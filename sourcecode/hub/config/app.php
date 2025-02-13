@@ -21,6 +21,8 @@ return [
 
     'contact-url' => env('APP_CONTACT_URL', ''),
 
+    'edlib-legacy-domain' => env('EDLIB_LEGACY_DOMAIN'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

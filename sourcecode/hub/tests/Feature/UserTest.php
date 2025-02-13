@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Stub\SocialiteUser;
 use Tests\TestCase;
 
+use function config;
 use function json_decode;
 
 use const JSON_THROW_ON_ERROR;
@@ -72,6 +73,7 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'name' => 'Not From Details',
             'email' => 'something@different',
+            'email_verified' => false,
             'google_id' => $details->getId(),
         ]);
 
@@ -81,6 +83,7 @@ class UserTest extends TestCase
         $this->assertSame($details->getId(), $found->google_id);
         $this->assertSame('Not From Details', $found->name);
         $this->assertSame('something@different', $found->email);
+        $this->assertFalse($found->email_verified);
     }
 
     public function testFindsSocialAccountByEmail(): void
@@ -90,6 +93,7 @@ class UserTest extends TestCase
         $user = User::factory()->create([
             'name' => 'Not From Details',
             'email' => $details->getEmail(),
+            'email_verified' => false,
             'facebook_id' => 'non-matching',
         ]);
 
@@ -99,6 +103,7 @@ class UserTest extends TestCase
         $this->assertSame($details->getId(), $found->facebook_id);
         $this->assertSame('Not From Details', $found->name);
         $this->assertSame($details->getEmail(), $found->email);
+        $this->assertFalse($found->email_verified);
     }
 
     public function testCreatesSocialAccount(): void
@@ -111,5 +116,35 @@ class UserTest extends TestCase
         $this->assertSame($details->getId(), $created->auth0_id);
         $this->assertSame($details->getName(), $created->name);
         $this->assertSame($details->getEmail(), $created->email);
+        $this->assertFalse($created->email_verified);
+    }
+
+    public function testCreatedSocialAccountIsVerifiedWithSettingEnabled(): void
+    {
+        config(['features.social-users-are-verified' => true]);
+
+        $details = new SocialiteUser();
+
+        $created = User::fromSocial('auth0', $details);
+
+        $this->assertTrue($created->email_verified);
+    }
+
+    public function testFoundSocialAccountIsVerifiedWithSettingEnabled(): void
+    {
+        config(['features.social-users-are-verified' => true]);
+
+        $details = new SocialiteUser();
+
+        User::factory()->create([
+            'auth0_id' => $details->getId(),
+            'email' => $details->getEmail(),
+            'email_verified' => false,
+        ]);
+
+        $found = User::fromSocial('auth0', $details);
+
+        $this->assertFalse($found->wasRecentlyCreated);
+        $this->assertTrue($found->email_verified);
     }
 }
