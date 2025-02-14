@@ -73,6 +73,9 @@ class LibraryUpgradeController extends Controller
                     'isLast' => $library->id === $lastVersion->id,
                     'libraryId' => $library->id,
                     'canDelete' => H5PLibrary::canBeDeleted($library->id, $usage['libraries']),
+                    'hubUpgradeIsPatch' => null,
+                    'hubUpgradeError' => '',
+                    'hubUpgradeMessage' => '',
                 ];
 
                 if ($library->runnable) {
@@ -86,12 +89,16 @@ class LibraryUpgradeController extends Controller
 
                     $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
                     if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
+                        $item['hubUpgradeIsPatch'] = false;
                         $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
                         if (empty($newVersion)) {
+                            $item['hubUpgradeIsPatch'] = true;
                             $newVersion = $isPatchUpdate($hasHubCache);
                         }
                         if (!empty($newVersion)) {
                             $item['hubUpgrade'] = array_shift($newVersion);
+                            $item['hubUpgradeMessage'] = $this->libraryUpdateMessage($item['hubUpgrade'], $item['hubUpgradeIsPatch']);
+                            $item['hubUpgradeError'] = $this->libraryUpdateErrorMessage($hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version, $item['hubUpgrade']);
                         }
                     }
                     $contentTypes->push($item);
@@ -118,6 +125,9 @@ class LibraryUpgradeController extends Controller
                             'numLibraryDependencies' => 0,
                             'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                             'isLast' => true,
+                            'hubUpgradeIsPatch' => null,
+                            'hubUpgradeError' => $this->libraryUpdateErrorMessage($hubCache->h5p_major_version, $hubCache->h5p_minor_version),
+                            'hubUpgradeMessage' => $this->libraryUpdateMessage(sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version), null),
                         ]);
                     }
                 });
@@ -183,5 +193,31 @@ class LibraryUpgradeController extends Controller
         }
 
         return response()->noContent();
+    }
+
+    private function libraryUpdateErrorMessage(int $coreMajor, int $coreMinor, string|null $libraryVersion = null): string|null
+    {
+        $message = null;
+        $installedCoreMajor = H5PCore::$coreApi['majorVersion'];
+        $installedCoreMinor = H5PCore::$coreApi['minorVersion'];
+
+        if ($installedCoreMajor < $coreMajor || ($installedCoreMajor === $coreMajor && $installedCoreMinor < $coreMinor)) {
+            $message = 'H5P Core version ' . $coreMajor . '.' . $coreMinor . ' is required.';
+            if ($libraryVersion !== null) {
+                $message = 'New version ' . $libraryVersion . " cannot be installed,\r\n" . $message;
+            }
+        }
+
+        return $message;
+    }
+
+    private function libraryUpdateMessage(string $newVersion, bool|null $isPatch): string
+    {
+        $msg = 'Download and install version ' . $newVersion;
+        return $msg . match ($isPatch) {
+            true => "\r\nNew version will replace installed version.",
+            false => "\r\nNew version will be installed in addition to existing versions.",
+            default => '',
+        };
     }
 }

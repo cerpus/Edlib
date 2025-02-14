@@ -58,6 +58,9 @@
                                 <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                </p>
                                 <div class="panel-body row">
                                     @include('admin.fragments.library-table', [
                                         'libraries' => $installedContentTypes,
@@ -92,6 +95,9 @@
                                 <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
                                 <p>Any content in the file will not be imported, only content types and libraries.</p>
                                 <p>
+                                    Content type and libraries must be compatible with H5P Core version {{ join('.', H5PCore::$coreApi) }}
+                                </p>
+                                <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 @include('admin.library-upgrade.upload-content-type', [
@@ -117,6 +123,9 @@
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
+                                </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
                                 </p>
                                 <div class="panel-body row">
                                     @include('admin.fragments.library-table', [
