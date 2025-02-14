@@ -29,8 +29,6 @@ class H5PContentInfo extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -112,7 +110,7 @@ class H5PContentInfo extends Command
             ->orderBy('dependency_type')
             ->orderBy('weight')
             ->get()
-            ->map(function(H5PContentLibrary $cLib) {
+            ->map(function (H5PContentLibrary $cLib) {
                 $library = $cLib->library;
                 return [
                     'id' => $cLib->library_id,
@@ -134,7 +132,7 @@ class H5PContentInfo extends Command
             "H5P content for <fg=cyan>%s - %s (%s)</>",
             $content->id,
             $content->title,
-            $content->library ? $content->library->getLibraryString(true) : '<fg=red>-- Not found --</>'
+            $content->library ? $content->library->getLibraryString(true) : '<fg=red>-- Not found --</>',
         ));
         $this->line($content->parameters);
     }

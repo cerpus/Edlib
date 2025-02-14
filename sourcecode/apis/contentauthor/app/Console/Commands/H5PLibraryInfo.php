@@ -28,8 +28,6 @@ class H5PLibraryInfo extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -83,7 +81,7 @@ class H5PLibraryInfo extends Command
         ];
 
         $this->newLine();
-        $this->info("Details for library $library->id - ". $library->getLibraryString(true));
+        $this->info("Details for library $library->id - " . $library->getLibraryString(true));
         $this->table([], $output, 'symfony-style-guide');
     }
 
@@ -106,7 +104,8 @@ class H5PLibraryInfo extends Command
                     'leaf' => $item->getVersion()?->isLeaf() ? 'Yes' : 'No',
                 ];
             })
-            ->when(!$this->option('all'),
+            ->when(
+                !$this->option('all'),
                 fn(Collection|null $items) => $items !== null ? $items->filter(fn(array $item) => $item['leaf'] === 'Yes') : false,
             );
 
@@ -123,7 +122,7 @@ class H5PLibraryInfo extends Command
 
             $this->table(
                 ['Id', 'Title', 'Created', 'Updated', 'Published', 'Leaf node'],
-                $content
+                $content,
             );
         } else {
             $this->warn("No content found");

@@ -38,7 +38,8 @@ class H5PContentCheck extends Command
                 'title',
                 'library_id',
                 DB::raw("CASE WHEN is_published = 1 THEN 'Y' ELSE 'N' END AS published"),
-            ])
+            ],
+        )
             ->doesntHave('library')
             ->get();
 
@@ -66,7 +67,8 @@ class H5PContentCheck extends Command
                 DB::raw("CASE WHEN is_published = 1 THEN 'Y' ELSE 'N' END AS published"),
                 'library_id',
                 'h5p_libraries.name',
-            ])
+            ],
+        )
             ->join('h5p_libraries', 'h5p_libraries.id', '=', 'library_id')
             ->where('h5p_libraries.runnable', '=', 0)
             ->get();
@@ -79,7 +81,7 @@ class H5PContentCheck extends Command
         if ($this->option('details')) {
             $this->table(
                 ['Id', 'Title', 'Is published', 'Library id', 'library name'],
-                $content
+                $content,
             );
         } else {
             $this->warn($content->implode('id', ', '));
@@ -95,7 +97,8 @@ class H5PContentCheck extends Command
                 'h5p_contents.title',
                 DB::raw("CASE WHEN is_published = 1 THEN 'Y' ELSE 'N' END AS published"),
                 'h5p_contents_libraries.library_id',
-            ])
+            ],
+        )
             ->join('h5p_contents_libraries', 'h5p_contents_libraries.content_id', '=', 'h5p_contents.id')
             ->leftJoin('h5p_libraries', 'h5p_libraries.id', '=', 'h5p_contents_libraries.library_id')
             ->whereNull('h5p_libraries.id')
@@ -109,7 +112,7 @@ class H5PContentCheck extends Command
         if ($this->option('details')) {
             $this->table(
                 ['Id', 'Title', 'Is published', 'Library id'],
-                $content
+                $content,
             );
         } else {
             $this->warn($content->implode('id', ', '));
@@ -124,9 +127,10 @@ class H5PContentCheck extends Command
                 'id',
                 'title',
                 DB::raw("CASE WHEN is_published = 1 THEN 'Y' ELSE 'N' END AS published"),
-            ])
+            ],
+        )
             ->whereNull('license')
-            ->orWhere('license' , '=' , '')
+            ->orWhere('license', '=', '')
             ->get();
 
         if ($content->isEmpty()) {
@@ -137,7 +141,7 @@ class H5PContentCheck extends Command
         if ($this->option('details')) {
             $this->table(
                 ['Id', 'Title', 'Is published'],
-                $content
+                $content,
             );
         } else {
             $this->warn($content->implode('id', ', '));
