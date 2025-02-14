@@ -37,12 +37,6 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    cd Edlib
    ```
 
-2. Setup .env
-    ```bash
-    cp sourcecode/hub/.env.example sourcecode/hub/.env
-    cp sourcecode/apis/contentauthor/.env.example sourcecode/apis/contentauthor/.env
-    ```
-
 2. Start Edlib via Docker Compose
 
    ```bash
@@ -67,17 +61,6 @@ The Docker Compose setup exists only for development purposes. Deployments of th
 
 4. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
    system. The exact procedure will vary depending on your operating system.
-
-5. Generate app key
-    ```bash
-    docker compose exec hub php artisan key:generate
-    docker compose exec contentauthor-fpm php artisan key:generate
-    ```
-
-6. Run migration for Content author
-    ```bash
-    docker compose exec contentauthor-fpm php artisan migrate
-    ```
 
 ## What's next?
 
