@@ -37,6 +37,12 @@ The Docker Compose setup exists only for development purposes. Deployments of th
    cd Edlib
    ```
 
+2. Setup .env
+    ```bash
+    cp sourcecode/hub/.env.example sourcecode/hub/.env
+    cp sourcecode/apis/contentauthor/.env.example sourcecode/apis/contentauthor/.env
+    ```
+
 2. Start Edlib via Docker Compose
 
    ```bash
@@ -62,6 +68,17 @@ The Docker Compose setup exists only for development purposes. Deployments of th
 4. Install the root certificate generated in `data/nginx/ca/cacert.pem` on your
    system. The exact procedure will vary depending on your operating system.
 
+5. Generate app key
+    ```bash
+    docker compose exec hub php artisan key:generate
+    docker compose exec contentauthor-fpm php artisan key:generate
+    ```
+
+6. Run migration for Content author
+    ```bash
+    docker compose exec contentauthor-fpm php artisan migrate
+    ```
+
 ## What's next?
 
 To access the Edlib 3 hub, navigate to: https://hub.edlib.test/
@@ -72,8 +89,7 @@ You can create an admin user account by running:
 docker compose exec hub php artisan edlib:create-admin-user <email>
 ```
 
-To enable Content Author, you must add it as an LTI tool from the admin portal:
-
+To enable Content Author, you must add it as an LTI tool from the admin portal. View [this page](../hosting/ca-setup.mdx#adding-content-author-to-the-hub) for more info:
 * LTI version: `1.1`
 * Launch URL: `https://ca.edlib.test/lti-content/create`
 * Consumer key: `h5p`
