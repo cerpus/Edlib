@@ -19,19 +19,15 @@
                                 <td>{{ $content->id }}</td>
                             </tr>
                             <tr>
-                                <th>Folium id</th>
-                                <td>{{ $resource?->id ?? '' }}</td>
-                            </tr>
-                            <tr>
                                 <th>Title</th>
                                 <td>{{ $content->title }}</td>
                             </tr>
                             <tr>
-                                <th>Created (Content author)</th>
+                                <th>Created</th>
                                 <td>{{ $content->created_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
-                                <th>Updated (Content author)</th>
+                                <th>Updated</th>
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
@@ -61,10 +57,6 @@
                             <tr>
                                 <th>Published</th>
                                 <td>{{ $content->isPublished() ? 'Yes' : 'No' }}</td>
-                            </tr>
-                            <tr>
-                                <th>Listed</th>
-                                <td>{{ $content->isListed() ? 'Yes' : 'No' }}</td>
                             </tr>
                             <tr>
                                 <th>Has lock</th>
