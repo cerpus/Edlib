@@ -54,11 +54,11 @@ class H5PLibraryInfo extends Command
             $library = H5PLibrary::find($libraryId);
             if ($library) {
                 $this->libraryInfo($library);
-                if ($this->option('contents') || $this->option('all')) {
-                    $this->listContents($library);
-                }
             } else {
                 $this->error('Library with id ' . $libraryId . ' was not found');
+            }
+            if ($this->option('contents') || $this->option('all')) {
+                $this->listContents($libraryId);
             }
         }
 
@@ -87,11 +87,11 @@ class H5PLibraryInfo extends Command
         $this->table([], $output, 'symfony-style-guide');
     }
 
-    private function listContents(H5PLibrary $library): void
+    private function listContents(int $libraryId): void
     {
         $total = 0;
 
-        $content = H5PContent::where('library_id', '=', $library->id)
+        $content = H5PContent::where('library_id', '=', $libraryId)
             ->orderBy('updated_at', 'desc')
             ->orderBy('id')
             ->get()

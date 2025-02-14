@@ -16,6 +16,8 @@ class H5PContentInfo extends Command
      * @var string
      */
     protected $signature = 'h5p:content-info {id* : Content id}
+                            {--d|dump      : Dump raw data as JSON}
+                            {--c|content   : Basic info and the H5P content}
                             {--l|libraries : List libraries used}';
 
     /**
@@ -32,8 +34,9 @@ class H5PContentInfo extends Command
      */
     public function handle(): int
     {
-        $this->newLine();
-        $this->line('<fg=cyan>Leaf nodes are content that do not have any children with version purpose <fg=yellow>"Update"</> or <fg=yellow>"Upgrade"</></>');
+        if (!$this->option('content') && !$this->option('dump')) {
+            $this->line('<fg=cyan>Leaf nodes are content that do not have any children with version purpose <fg=yellow>"Update"</> or <fg=yellow>"Upgrade"</></>');
+        }
 
         foreach ($this->argument('id') as $contentId) {
             $this->newLine();
@@ -51,7 +54,14 @@ class H5PContentInfo extends Command
                 return SymfonyCommand::FAILURE;
             }
 
-            $this->contentInfo($content);
+            if ($this->option('dump')) {
+                $this->info('Row dump for content ' . $content->id);
+                $this->line(json_encode($content->attributesToArray()));
+            } elseif ($this->option('content')) {
+                $this->contentOutput($content);
+            } else {
+                $this->contentInfo($content);
+            }
 
             if ($this->option('libraries')) {
                 $this->libraryInfo($content);
@@ -73,8 +83,9 @@ class H5PContentInfo extends Command
             ['Created', $content->created_at->format('Y-m-d H:i:s e')],
             ['Updated', $content->updated_at->format('Y-m-d H:i:s e')],
             ['Library Id', $content->library_id],
-            ['Library', $content->library?->getLibraryString(true)],
+            ['Library', $content->library ? $content->library->getLibraryString(true) : '<fg=red>-- Not found --</>'],
             ['Language', $this->langName($content->language_iso_639_3)],
+            ['License', $content->license],
             ['Published', $content->is_published ? 'Yes' : 'No'],
             ['Max score', $this->maxScore($content->max_score)],
             ['Bulk calculated', $this->bulkCalculation($content->bulk_calculated)],
@@ -87,28 +98,45 @@ class H5PContentInfo extends Command
             ['Children content ids', $children?->implode('content_id', ', ')],
         ];
 
+        if (config('feature.allow-mode-switch')) {
+            $output[] = ['Create mode', $content->content_create_mode];
+        }
+
         $this->info('Details for content ' . $content->id);
         $this->table([], $output, 'symfony-style-guide');
     }
 
     private function libraryInfo(H5PContent $content): void
     {
-        $libraries = $content
-            ->contentLibraries()
+        $libraries = H5PContentLibrary::where('content_id', $content->id)
             ->orderBy('dependency_type')
             ->orderBy('weight')
             ->get()
-            ->map(fn(H5PContentLibrary|null $library) => [
-                'id' => $library->library_id,
-                'title' => $library->library ? $library->library->getLibraryString(true) : '-- Not installed --',
-                'lib_type' => $library->library ? ($library->library->runnable ? 'Content type' : 'Library') : '',
-                'dep_type' => $library->dependency_type,
-            ])
+            ->map(function(H5PContentLibrary $cLib) {
+                $library = $cLib->library;
+                return [
+                    'id' => $cLib->library_id,
+                    'title' => $library ? $library->getLibraryString(true) : '<fg=red>-- Not found --</>',
+                    'lib_type' => $library ? ($library->runnable ? 'Content type' : 'Library') : '',
+                    'dep_type' => $cLib->dependency_type,
+                ];
+            })
         ;
 
         $this->newLine();
         $this->info('Libraries for content ' . $content->id);
         $this->table(['id', 'Title', 'Library type', 'Depencdency type'], $libraries);
+    }
+
+    private function contentOutput(H5PContent $content): void
+    {
+        $this->info(sprintf(
+            "H5P content for <fg=cyan>%s - %s (%s)</>",
+            $content->id,
+            $content->title,
+            $content->library ? $content->library->getLibraryString(true) : '<fg=red>-- Not found --</>'
+        ));
+        $this->line($content->parameters);
     }
 
     private function parentContentId(string $id): string|null
