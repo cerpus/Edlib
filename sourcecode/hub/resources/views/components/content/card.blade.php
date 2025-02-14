@@ -38,7 +38,12 @@
             <div class="col-auto small content-type">
                 {{ $content->contentType }}
             </div>
-            <div class="col-auto badge text-bg-primary">
+            <div
+                class="col-auto badge text-bg-primary fw-normal"
+                @if($content->languageDisplayName !== false)
+                    title="{{$content->languageDisplayName}}"
+                @endif
+            >
                 {{ $content->languageIso639_3 }}
             </div>
         </div>
