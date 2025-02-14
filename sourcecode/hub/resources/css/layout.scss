@@ -194,3 +194,13 @@
     border-top-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+
+[data-bs-theme="dark"] {
+    .choices {
+        &[data-type*=select-one] {
+            .choices__button {
+                background-image: $choices-icon-cross;
+            }
+        }
+    }
+}
