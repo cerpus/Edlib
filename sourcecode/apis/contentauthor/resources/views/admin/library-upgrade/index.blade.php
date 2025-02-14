@@ -47,7 +47,7 @@
                             >
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4>Local cache of content types available from h5.org</h4>
+                                        <h4>Local cache of content types available from h5p.org</h4>
                                     </div>
                                     @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabContentTypes'])
                                 </div>
@@ -113,7 +113,7 @@
                             >
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4>Local cache of content types available from h5.org</h4>
+                                        <h4>Local cache of content types available from h5p.org</h4>
                                     </div>
                                     @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabInstall'])
                                 </div>
