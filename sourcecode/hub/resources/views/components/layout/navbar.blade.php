@@ -9,7 +9,7 @@
             ></span>
         </a>
 
-        <ul class="nav nav-underline navbar-nav flex-grow-1 justify-content-center">
+        <ul class="nav nav-underline navbar-nav flex-grow-1 flex-nowrap justify-content-center">
             <li class="nav-item">
                 <a
                     href="{{ route('content.index') }}"

@@ -20,7 +20,10 @@
                 {{ trans('messages.language') }}
             </div>
             <div class="col-2 fw-bold" aria-hidden="true">
-                {{ trans('messages.views') }}
+                <x-icon name="eye" class="d-md-none" title="{{ trans('messages.number-of-views') }}" />
+                <span class="d-none d-md-inline">
+                    {{ trans('messages.views') }}
+                </span>
             </div>
         </div>
 

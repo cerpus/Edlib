@@ -1,6 +1,6 @@
 @props(['current'])
 
-<div class="d-sm-block position-absolute end-0 layout-toggle">
+<div class="position-absolute end-0 layout-toggle">
     <x-form method="POST" action="{{ route('content.layout') }}">
         <x-form.button
             class="fs-5 py-1 px-2 btn-outline-secondary border-0"
