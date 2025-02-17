@@ -9,8 +9,6 @@ use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 
 use function array_unique;
 use function json_decode;
