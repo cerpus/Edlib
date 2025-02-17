@@ -33,7 +33,7 @@ class ContentTest extends TestCase
             'parent_id' => $parentVersion->id,
         ]);
 
-        NdlaIdMapper::create([
+        NdlaIdMapper::forceCreate([
             'ndla_id' => $this->faker->uuid,
             'ca_id' => $parentArticle->id,
             'type' => 'testing',
