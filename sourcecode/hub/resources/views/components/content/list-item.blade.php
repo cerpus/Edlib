@@ -7,9 +7,9 @@
                 href="{{ $content->detailsUrl }}"
                 class="col text-decoration-none link-body-emphasis"
                 hx-get="{{ $content->previewUrl }}"
-                hx-target="#previewModal"
+                hx-target="#modal-container"
                 data-bs-toggle="modal"
-                data-bs-target="#previewModal"
+                data-bs-target="#modal-container"
             >
                 <h5 class="text-line-clamp clamp-3-lines fw-bold" aria-label="{{ trans('messages.title') }}">
                     {{ $content->title }}

@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
+<div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg preview-modal">
     <div class="modal-content">
         <div class="modal-header border-0">
             <h4 class="modal-title">{{ $version->getTitle() }}</h4>

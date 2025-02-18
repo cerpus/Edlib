@@ -6,9 +6,9 @@
             href="{{ $content->detailsUrl }}"
             class="text-decoration-none link-body-emphasis"
             hx-get="{{ $content->previewUrl }}"
-            hx-target="#previewModal"
+            hx-target="#modal-container"
             data-bs-toggle="modal"
-            data-bs-target="#previewModal"
+            data-bs-target="#modal-container"
         >
             <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal">
                 {{ trans('messages.edited') }}:

@@ -300,8 +300,8 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitForEvent('htmx:after-swap')
-                ->assertVisible('#previewModal .lti-launch'),
+                ->waitFor('.preview-modal')
+                ->assertVisible('.preview-modal .lti-launch'),
         );
     }
 
@@ -330,7 +330,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $launch) => $launch
                         ->waitFor('article.content-card')
                         ->with(new ContentCard(), fn(Browser $card) => $card->click('@title'))
-                        ->waitFor('#previewModal .modal-dialog')
+                        ->waitFor('.preview-modal')
                         ->with(
                             new PreviewModal(),
                             fn(Browser $modal) => $modal
@@ -356,7 +356,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitFor('#previewModal .modal-dialog')
+                ->waitFor('.preview-modal')
                 ->with(
                     new PreviewModal(),
                     fn(Browser $modal) => $modal

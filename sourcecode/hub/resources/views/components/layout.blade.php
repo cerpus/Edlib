@@ -126,15 +126,15 @@
         {{-- Replacement confirmation modal for htmx:confirm event --}}
         <x-htmx-confirm-modal />
 
-        {{-- Skeleton for preview modal --}}
-        <div class="modal" id="previewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+        {{-- Skeleton for modals --}}
+        <div class="modal modal-blur modal-fade" id="modal-container" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
             </div>
         </div>
         <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
-            const previewModal = document.querySelector('#previewModal');
-            previewModal.addEventListener('hidden.bs.modal', () => {
-                previewModal.firstChild.remove();
+            const modalContainer = document.querySelector('#modal-container');
+            modalContainer.addEventListener('hidden.bs.modal', () => {
+                modalContainer.firstChild.remove();
             });
         </script>
     </body>
