@@ -29,11 +29,11 @@
                 @if ($version->published)
                     <a
                         href="{{ route('content.share', [$content]) }}"
-                        class="btn btn-secondary d-flex gap-2 share-button"
-                        role="button"
-                        data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-                        data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
-                        target="_blank"
+                        class="btn btn-secondary d-flex gap-2"
+                        hx-get="{{ route('content.share-dialog', [$content]) }}"
+                        hx-target="#modal-container"
+                        hx-swap="beforeend"
+                        data-modal="true"
                     >
                         <x-icon name="share" />
                         {{ trans('messages.share') }}
