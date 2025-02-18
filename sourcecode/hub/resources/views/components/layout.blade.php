@@ -126,11 +126,8 @@
         {{-- Replacement confirmation modal for htmx:confirm event --}}
         <x-htmx-confirm-modal />
 
-        {{-- Skeleton for modals --}}
-        <div class="modal modal-blur modal-fade" id="modal-container" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-lg">
-            </div>
-        </div>
+        <div id="modal-container"></div>
+
         <script nonce="{{ \Illuminate\Support\Facades\Vite::cspNonce() }}">
             const modalContainer = document.querySelector('#modal-container');
             modalContainer.addEventListener('hidden.bs.modal', () => {

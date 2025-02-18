@@ -7,8 +7,8 @@
             class="text-decoration-none link-body-emphasis"
             hx-get="{{ $content->previewUrl }}"
             hx-target="#modal-container"
-            data-bs-toggle="modal"
-            data-bs-target="#modal-container"
+            hx-swap="beforeend"
+            data-modal="true"
         >
             <div class="content-card-header-updated text-truncate d-none d-md-block fw-normal">
                 {{ trans('messages.edited') }}:

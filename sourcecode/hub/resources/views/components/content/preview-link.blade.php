@@ -3,6 +3,6 @@
     'href' => $detailsUrl ?: route('content.version-details', [$content, $version]),
     'hx-get' => $previewUrl ?: route('content.preview', [$content, $version]),
     'hx-target' => '#modal-container',
-    'data-bs-toggle' => 'modal',
-    'data-bs-target' => '#modal-container',
+    'hx-swap' => 'beforeend',
+    'data-modal' => 'true',
 ]) }}>{{ $slot }}</a>
