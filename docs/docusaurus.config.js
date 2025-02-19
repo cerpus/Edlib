@@ -66,6 +66,7 @@ module.exports = {
         {to: '/docs/support/faq', label: 'Support', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
+        {to: '/pricing', label: 'Pricing', position: 'left'},
         {
           href: 'https://github.com/cerpus/Edlib',
           label: 'GitHub',

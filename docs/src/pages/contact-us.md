@@ -12,6 +12,7 @@ Want to get in touch? It would be great to hear from you. Here's how you can rea
 
 **Edlib AS**<br/>
 
+Pricing enquiries: <post@edlib.com><br/>
 General enquiries: <post@edlib.com><br/>
 Support: <support@edlib.com><br/>
 
