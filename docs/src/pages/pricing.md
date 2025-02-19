@@ -45,5 +45,4 @@ Our Support Package ensures you receive prompt assistance with quicker response 
 ---
 
 ### Need a Custom Quote?
-
-If you need something tailored specifically for your company, don't hesitate to reach out. We're happy to discuss your needs and provide a custom package that suits your business.
+If you need something tailored specifically for your company, don’t hesitate to reach out. Our team have a long built experience of developing educational solutions in cooperation with customers to support their needs. We’re happy to discuss your needs and provide a custom package that suits your business.
