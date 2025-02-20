@@ -748,28 +748,26 @@ final class ContentTest extends DuskTestCase
 
     public function testSharingCopiesUrl(): void
     {
-        $this->markTestSkipped("Chromedriver has decided it doesn't want to");
-
         $content = Content::factory()->withPublishedVersion()->create();
 
         $this->browse(function (Browser $browser) use ($content) {
+            $browser
+                ->visit('/content/' . $content->id)
+                ->clickLink('Share')
+                ->waitFor('.share-dialog')
+                ->click('.copy-to-clipboard')
+                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
+                ->acceptDialog();
+
             $devTools = (new ChromeDevToolsDriver($browser->driver));
             $devTools->execute('Browser.grantPermissions', [
                 'permissions' => ['clipboardReadWrite'],
             ]);
 
-            $browser
-                ->visit('/content/' . $content->id)
-                ->clickLink('Share')
-                ->waitFor('.share-dialog')
-                ->within('.share-dialog', fn(Browser $modal) => $modal->press('Copy'))
-                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
-                ->acceptDialog()
-                ->assertPathIs('/content/' . $content->id)
-                ->assertScript(
-                    'navigator.clipboard.readText()',
-                    'https://hub-test.edlib.test/c/' . $content->id,
-                );
+            $browser->assertScript(
+                'navigator.clipboard.readText()',
+                'https://hub-test.edlib.test/c/' . $content->id,
+            );
         });
     }
 
