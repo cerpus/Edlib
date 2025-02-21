@@ -1381,4 +1381,31 @@ final class ContentTest extends DuskTestCase
                 ->assertSeeLink('Tool Extra'),
         );
     }
+
+    public function testCanListContentWhenSearchAndDatabaseMismatch(): void
+    {
+        $content = Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->title('This is my soon-to-be-gone content')
+                    ->published()
+            )
+            ->shared()
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(fn(Browser $browser) => $browser
+            ->visit('https://hub-test.edlib.test/content')
+            ->assertSeeIn('.content-card', 'This is my soon-to-be-gone content')
+        );
+
+        $content->deleteQuietly();
+
+        $this->browse(fn(Browser $browser) => $browser
+            ->visit('https://hub-test.edlib.test/content')
+            ->assertTitleContains('Explore')
+            ->assertDontSee('.content-card')
+        );
+    }
 }
