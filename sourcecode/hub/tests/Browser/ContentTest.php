@@ -1388,24 +1388,26 @@ final class ContentTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->title('This is my soon-to-be-gone content')
-                    ->published()
+                    ->published(),
             )
             ->shared()
             ->create();
 
         RebuildContentIndex::dispatchSync();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->visit('https://hub-test.edlib.test/content')
-            ->assertSeeIn('.content-card', 'This is my soon-to-be-gone content')
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertSeeIn('.content-card', 'This is my soon-to-be-gone content'),
         );
 
         $content->deleteQuietly();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->visit('https://hub-test.edlib.test/content')
-            ->assertTitleContains('Explore')
-            ->assertDontSee('.content-card')
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertTitleContains('Explore')
+                ->assertDontSee('.content-card'),
         );
     }
 }
