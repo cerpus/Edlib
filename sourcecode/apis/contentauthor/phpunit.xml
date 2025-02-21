@@ -49,5 +49,6 @@
         <server name="H5P_VIDEO_ADAPTER" value="null"/>
         <server name="H5P_IMAGE_ADAPTER" value="null"/>
         <server name="H5P_AUDIO_ADAPTER" value="null"/>
+        <server name="H5P_DEVELOPMENT_MODE" value="false"/>
     </php>
 </phpunit>

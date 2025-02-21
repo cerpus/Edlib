@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 import HtmlEditor from './HtmlEditor';
+import Cke5Editor from './Cke5Editor';
 import { default as convertSemantics } from './CkEditorConfigFromSemantics';
+import { default as semanticsToCke5Config } from './Cke5ConfigFromSemantics';
 import { useEditorSetupContext } from '../../../contexts/EditorSetupContext';
 
 const prettifyPath = (path, glue = ' > ') =>
@@ -46,6 +48,8 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
 
         return elm.innerText;
     }
+
+    const cke5Config = semanticsToCke5Config(editorSemantics);
 
     return (
         <div
@@ -97,6 +101,18 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                             language: editorLanguage,
                         }}
                         name={prettifyPath(path, ' ')}
+                    />
+                )}
+                {inputType === 'html' && (
+                    <Cke5Editor
+                        value={value}
+                        onChange={value => {
+                            onChange(value);
+                            setViewOldValue(true);
+                        }}
+                        config={cke5Config}
+                        name={prettifyPath(path, '_')}
+                        language={editorLanguage}
                     />
                 )}
             </div>

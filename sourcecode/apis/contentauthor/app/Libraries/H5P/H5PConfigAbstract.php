@@ -54,7 +54,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
                 'contentUserData' => Uuid::uuid4()->toString(),
             ],
             'saveFreq' => config('h5p.saveFrequency'),
-            'siteUrl' => $url,
             'l10n' => $this->getL10n(),
             'loadedJs' => [],
             'loadedCss' => [],
@@ -68,7 +67,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
             'locale' => $locale,
             'localeConverted' => LtiToH5PLanguage::convert($locale),
             'pluginCacheBuster' => '?v=' . self::CACHE_BUSTER_STRING,
-            'libraryUrl' => url('/h5p-php-library/js'),
+            'libraryUrl' => '/h5p-php-library/js',
         ];
     }
 
@@ -88,6 +87,14 @@ abstract class H5PConfigAbstract implements ConfigInterface
                 'name' => $name,
                 'mail' => $this->userEmail ?? false,
             ];
+        }
+
+        if (!empty($this->userId)) {
+            $this->config['postUserStatistics'] = true;
+            unset($this->config['siteUrl']);
+        } else {
+            $this->config['postUserStatistics'] = false;
+            $this->config['siteUrl'] = request()->getSchemeAndHttpHost() . request()->getBasePath();
         }
 
         $this->addInheritorConfig();
@@ -113,7 +120,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
     public function setUserId(string|bool|null $id): static
     {
         $this->userId = $id;
-        $this->config['postUserStatistics'] = !empty($this->userId);
 
         return $this;
     }

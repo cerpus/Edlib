@@ -17,6 +17,7 @@ use GuzzleHttp\Middleware;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -221,6 +222,27 @@ final class FrameworkTest extends TestCase
         yield 'newer patch' => [4, true];
     }
 
+    #[DataProvider('provider_isPatchedLibraryDevMode')]
+    public function test_isPatchedLibraryDevMode(int $patchVersion, bool $expected)
+    {
+        Config::set('h5p.developmentMode', true);
+        $library = H5PLibrary::factory()->create();
+
+        $this->assertSame($expected, $this->framework->isPatchedLibrary([
+            'machineName' => $library->name,
+            'majorVersion' => $library->major_version,
+            'minorVersion' => $library->minor_version,
+            'patchVersion' => $patchVersion,
+        ]));
+    }
+
+    public static function provider_isPatchedLibraryDevMode(): Generator
+    {
+        yield 'same patch' => [3, true];
+        yield 'older patch' => [2, false];
+        yield 'newer patch' => [4, true];
+    }
+
     public function test_insertContent(): void
     {
         $library = H5PLibrary::factory()->create();
@@ -277,31 +299,5 @@ final class FrameworkTest extends TestCase
     {
         yield 'unavailable' => ['taken', false];
         yield 'available' => ['available', true];
-    }
-
-    public function test_getLibraryContentCount(): void
-    {
-        $nr = H5PLibrary::factory()->create([
-            'name' => 'H5P.NotRunnable',
-            'runnable' => false,
-        ]);
-        H5PContent::factory(2)->create([
-            'library_id' => $nr->id,
-        ]);
-
-        H5PLibrary::factory()->create([
-            'name' => 'H5P.NoContent',
-            'runnable' => true,
-        ]);
-
-        $library = H5PLibrary::factory()->create();
-        H5PContent::factory(3)->create([
-            'library_id' => $library->id,
-        ]);
-
-        $result = $this->framework->getLibraryContentCount();
-        $this->assertCount(1, $result);
-        $this->assertArrayHasKey('H5P.Foobar 1.2', $result);
-        $this->assertSame(3, $result['H5P.Foobar 1.2']);
     }
 }

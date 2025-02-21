@@ -51,84 +51,15 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $field->font = new \stdClass();
         }
 
-        $field->font->size = [
-            (object) [
-                'label' => '50%',
-                'css' => '0.5em',
-            ],
-            (object) [
-                'label' => '56.25%',
-                'css' => '0.5625em',
-            ],
-            (object) [
-                'label' => '62.50%',
-                'css' => '0.625em',
-            ],
-            (object) [
-                'label' => '68.75%',
-                'css' => '0.6875em',
-            ],
-            (object) [
-                'label' => '75%',
-                'css' => '0.75em',
-            ],
-            (object) [
-                'label' => '87.50%',
-                'css' => '0.875em',
-            ],
-            (object) [
-                'label' => '100%',
-                'css' => '1em',
-            ],
-            (object) [
-                'label' => '112.50%',
-                'css' => '1.125em',
-            ],
-            (object) [
-                'label' => '125%',
-                'css' => '1.25em',
-            ],
-            (object) [
-                'label' => '137.50%',
-                'css' => '1.375em',
-            ],
-            (object) [
-                'label' => '150%',
-                'css' => '1.5em',
-            ],
-            (object) [
-                'label' => '162.50%',
-                'css' => '1.625em',
-            ],
-            (object) [
-                'label' => '175%',
-                'css' => '1.75em',
-            ],
-            (object) [
-                'label' => '225%',
-                'css' => '2.25em',
-            ],
-            (object) [
-                'label' => '300%',
-                'css' => '3em',
-            ],
-            (object) [
-                'label' => '450%',
-                'css' => '4.5em',
-            ],
-            (object) [
-                'label' => '675%',
-                'css' => '6.75em',
-            ],
-            (object) [
-                'label' => '1350%',
-                'css' => '13.5em',
-            ],
-            (object) [
-                'label' => '3375%',
-                'css' => '33.75em',
-            ],
-        ];
+        $field->font->size = collect([
+            '50%', '56.25%', '62.50%', '68.75%', '75%', '87.50%', '100%', '112.50%', '125%', '137.50%',
+            '150%', '162.50%', '175%', '225%', '300%', '450%', '675%', '1350%', '3375%',
+        ])
+            ->map(fn (string $size) => (object)[
+                'label' => $size,
+                'css' => $size,
+            ])
+            ->toArray();
     }
 
 

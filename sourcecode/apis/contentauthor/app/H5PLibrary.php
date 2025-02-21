@@ -306,7 +306,7 @@ class H5PLibrary extends Model
             ->isNotEmpty();
     }
 
-    public function getAddons()
+    public static function getAddons()
     {
         return DB::table("h5p_libraries as l1")
             ->leftJoin('h5p_libraries as l2', function ($join) {
