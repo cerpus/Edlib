@@ -339,6 +339,7 @@ class ContentFilter extends FormRequest
                 viewsCount: $model->views_count,
                 contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
                 languageIso639_3: strtoupper($version->language_iso_639_3),
+                languageDisplayName: locale_get_display_language($version->language_iso_639_3, app()->getLocale()),
                 users: $model->users->map(fn($user) => $user->name)->join(', '),
                 detailsUrl: $showDrafts ? route('content.version-details', [$model, $version]) : route('content.details', [$model]),
                 previewUrl: route('content.preview', [$model, $version]),
