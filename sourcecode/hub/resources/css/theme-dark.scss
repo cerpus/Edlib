@@ -1,4 +1,6 @@
 [data-bs-theme="dark"] {
+    --logo-color: rgba(255, 255, 255, 0.9);
+
     @import 'billboard.js/dist/theme/dark';
 
     .choices {
