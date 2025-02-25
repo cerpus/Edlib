@@ -1,10 +1,11 @@
 <a
-    href="{{ $url }}"
-    class="btn btn-secondary btn-sm me-1 content-share-button"
-    data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-    data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
-    role="button"
+    href="{{ $content->shareUrl }}"
+    class="btn btn-secondary btn-sm me-1"
     target="_blank"
+    hx-get="{{ $content->shareDialogUrl }}"
+    hx-target="#modal-container"
+    hx-swap="beforeend"
+    data-modal="true"
 >
     {{ trans('messages.share') }}
 </a>

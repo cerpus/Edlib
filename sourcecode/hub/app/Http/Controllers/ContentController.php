@@ -109,6 +109,17 @@ class ContentController extends Controller
         ]);
     }
 
+    public function shareDialog(Content $content, Request $request): View
+    {
+        if (!$request->header('HX-Request')) {
+            abort(400);
+        }
+
+        return view('content.hx-share-dialog', [
+            'content' => $content,
+        ]);
+    }
+
     public function embed(Content $content, ContentVersion|null $version = null): View
     {
         $version ??= $content->latestPublishedVersion()->firstOrFail();

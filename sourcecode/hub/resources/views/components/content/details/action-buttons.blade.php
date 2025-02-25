@@ -37,8 +37,10 @@
         class="btn btn-secondary d-flex gap-2 text-nowrap share-button"
         href="{{ route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) }}"
         target="_blank"
-        data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-        data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
+        hx-get="{{ route('content.share-dialog', [$content]) }}"
+        hx-target="#modal-container"
+        hx-swap="beforeend"
+        data-modal="true"
     >
         <x-icon name="share" />
         <span class="flex-grow-1">{{ trans('messages.share') }}</span>

@@ -2,6 +2,7 @@ import 'bootstrap';
 import 'htmx.org';
 import { findIframeByWindow } from './helpers';
 import './clipboard';
+import './modal.js';
 import './resize';
 import './xApi';
 import './dateHelper';

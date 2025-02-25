@@ -81,6 +81,12 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::get('/content/{content}/share-dialog')
+        ->uses([ContentController::class, 'shareDialog'])
+        ->name('content.share-dialog')
+        ->whereUlid('content')
+        ->can('view', 'content');
+
     Route::get('/content/{content}/history')
         ->name('content.history')
         ->uses([ContentController::class, 'history'])
