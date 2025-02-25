@@ -27,29 +27,32 @@ final class EdlibLegacyTest extends DuskTestCase
                 ContentVersion::factory()
                     ->withLaunchUrl('https://hub-test.edlib.test/lti/samples/presentation')
                     ->tool(LtiTool::factory()->withCredentials($internalPlatform->getOauth1Credentials()))
-                    ->published()
+                    ->published(),
             )
             ->tag('edlib2_usage_id:eda9e9c4-d64a-4cb5-9f4a-c50d0f0e5f17')
             ->create();
 
         $user = User::factory()->admin()->create();
 
-        $this->browse(fn (Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('https://hub-test.edlib.test/lti/playground')
-            ->type('launch_url', $launchUrl)
-            ->type('key', $externalPlatform->key)
-            ->type('secret', $externalPlatform->secret)
-            ->type(
-                'parameters',
-                'lti_message_type=basic-lti-launch-request' .
-                "&lis_person_contact_email_primary={$user->email}",
-            )
-            ->press('Launch')
-            ->withinFrame('iframe', fn(Browser $frame) => $frame
-                ->assertSee('If you can see this, the LTI launch was successful')
-            )
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('https://hub-test.edlib.test/lti/playground')
+                ->type('launch_url', $launchUrl)
+                ->type('key', $externalPlatform->key)
+                ->type('secret', $externalPlatform->secret)
+                ->type(
+                    'parameters',
+                    'lti_message_type=basic-lti-launch-request' .
+                    "&lis_person_contact_email_primary={$user->email}",
+                )
+                ->press('Launch')
+                ->withinFrame(
+                    'iframe',
+                    fn(Browser $frame) => $frame
+                        ->assertSee('If you can see this, the LTI launch was successful'),
+                ),
         );
     }
 }
