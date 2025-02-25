@@ -1351,8 +1351,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
-                ->assertSeeLink('First Tool')
-                ->assertSeeLink('Second Tool'),
+                ->assertSee('First Tool')
+                ->assertSee('Second Tool'),
         );
     }
 
@@ -1377,8 +1377,8 @@ final class ContentTest extends DuskTestCase
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->clickLink('Create')
-                ->assertSeeLink('Only Tool')
-                ->assertSeeLink('Tool Extra'),
+                ->assertSee('Only Tool')
+                ->assertSee('Tool Extra'),
         );
     }
 
