@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Content;
 use Illuminate\Http\RedirectResponse;
+
 use function redirect;
 use function route;
 
