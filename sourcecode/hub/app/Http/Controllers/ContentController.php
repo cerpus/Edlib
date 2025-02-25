@@ -188,7 +188,7 @@ class ContentController extends Controller
         foreach ($tools as $type) {
             $info[] = LtiCreateInfo::fromLtiTool($type);
 
-            foreach($type->extras()->forAdmins(false)->get() as $extra) {
+            foreach ($type->extras()->forAdmins(false)->get() as $extra) {
                 $info[] = LtiCreateInfo::fromLtiToolExtra($type, $extra);
             }
         }
