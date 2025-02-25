@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Content;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function redirect;
-use function route;
 
 final readonly class EdlibLegacyController
 {
@@ -17,11 +18,16 @@ final readonly class EdlibLegacyController
         return redirect()->route('content.embed', [$edlib2Content]);
     }
 
-    public function redirectLtiLaunch(Content $edlib2UsageContent): RedirectResponse
+    public function redirectLtiLaunch(Content $edlib2UsageContent): View
     {
-        return new RedirectResponse(
-            route('content.embed', [$edlib2UsageContent]),
-            status: 307,
-        );
+        $version = $edlib2UsageContent->latestPublishedVersion?->first()
+            ?? throw new NotFoundHttpException();
+        $ltiRequest = $version->toLtiLaunch()->getRequest();
+
+        return view('lti.redirect', [
+            'url' => $ltiRequest->getUrl(),
+            'method' => $ltiRequest->getMethod(),
+            'parameters' => $ltiRequest->toArray(),
+        ]);
     }
 }
