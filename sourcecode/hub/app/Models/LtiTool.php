@@ -31,7 +31,6 @@ class LtiTool extends Model
         'lti_version' => LtiVersion::Lti1_1,
         'send_name' => false,
         'send_email' => false,
-        'proxy_launch' => false,
         'edit_mode' => LtiToolEditMode::Replace,
     ];
 
@@ -40,7 +39,6 @@ class LtiTool extends Model
         'edit_mode' => LtiToolEditMode::class,
         'send_name' => 'boolean',
         'send_email' => 'boolean',
-        'proxy_launch' => 'boolean',
     ];
 
     protected $hidden = [
@@ -54,7 +52,6 @@ class LtiTool extends Model
         'consumer_secret',
         'send_name',
         'send_email',
-        'proxy_launch',
         'edit_mode',
         'slug',
     ];

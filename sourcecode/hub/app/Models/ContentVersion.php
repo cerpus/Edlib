@@ -163,11 +163,6 @@ class ContentVersion extends Model
     public function getExternalLaunchUrl(): string
     {
         $content = $this->content ?? throw new DomainException('No content for version');
-        $tool = $this->tool ?? throw new DomainException('No tool for LTI resource');
-
-        if (!$tool->proxy_launch) {
-            return $this->lti_launch_url;
-        }
 
         if (session('lti.ext_edlib3_return_exact_version')) {
             return route('lti.content-version', [

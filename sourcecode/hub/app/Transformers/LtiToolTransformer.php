@@ -19,9 +19,9 @@ final class LtiToolTransformer extends TransformerAbstract
             'consumer_key' => $tool->consumer_key,
             'deep_linking_url' => $tool->creator_launch_url,
             'edit_mode' => $tool->edit_mode->value,
-            'proxies_lti_launches' => $tool->proxy_launch,
             'send_email' => $tool->send_email,
             'send_name' => $tool->send_name,
+            'proxies_lti_launches' => true, // deprecated
             'links' => [
                 'self' => route('api.lti-tools.show', [$tool]),
             ],

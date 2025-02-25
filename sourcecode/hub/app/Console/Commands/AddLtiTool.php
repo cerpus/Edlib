@@ -34,7 +34,6 @@ class AddLtiTool extends Command
         $tool->consumer_secret = $this->secret('Secret');
         $tool->send_name = $this->option('send-name');
         $tool->send_email = $this->option('send-email');
-        $tool->proxy_launch = true;
 
         if ($this->option('slug')) {
             $tool->slug = $this->option('slug');

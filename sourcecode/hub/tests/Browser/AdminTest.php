@@ -232,7 +232,6 @@ final class AdminTest extends DuskTestCase
             ->withName('The Tool')
             ->sendName()
             ->sendEmail()
-            ->proxyLaunch()
             ->create();
 
         $this->browse(
@@ -248,13 +247,10 @@ final class AdminTest extends DuskTestCase
                     new LtiToolCard(),
                     fn(Browser $card) =>
                     $card
-                        ->assertSeeIn('@proxy-launch', 'Yes')
                         ->assertSeeIn('@send-email', 'Yes')
                         ->assertSeeIn('@send-name', 'Yes'),
                 )
                 ->clickLink('Edit')
-                ->assertChecked('proxy_launch')
-                ->uncheck('proxy_launch')
                 ->assertChecked('send_name')
                 ->uncheck('send_name')
                 ->assertChecked('send_email')
@@ -268,7 +264,6 @@ final class AdminTest extends DuskTestCase
                     new LtiToolCard(),
                     fn(Browser $card) =>
                     $card
-                        ->assertSeeIn('@proxy-launch', 'No')
                         ->assertSeeIn('@send-email', 'No')
                         ->assertSeeIn('@send-name', 'No'),
                 ),

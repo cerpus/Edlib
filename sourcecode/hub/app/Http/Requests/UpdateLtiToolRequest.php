@@ -24,7 +24,6 @@ final class UpdateLtiToolRequest extends FormRequest
 
         $parameters->set('send_name', $parameters->getBoolean('send_name', false));
         $parameters->set('send_email', $parameters->getBoolean('send_email', false));
-        $parameters->set('proxy_launch', $parameters->getBoolean('proxy_launch', false));
     }
 
     /**
@@ -40,7 +39,6 @@ final class UpdateLtiToolRequest extends FormRequest
             'edit_mode' => ['required', Rule::enum(LtiToolEditMode::class)],
             'send_name' => ['boolean'],
             'send_email' => ['boolean'],
-            'proxy_launch' => ['boolean'],
             'slug' => ['sometimes', 'string', 'max:50', 'regex:/^[a-z0-9-_]+$/'],
         ];
     }

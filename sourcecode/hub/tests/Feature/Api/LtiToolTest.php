@@ -38,7 +38,7 @@ final class LtiToolTest extends TestCase
                             ->missing('consumer_secret')
                             ->where('deep_linking_url', $tool->creator_launch_url)
                             ->where('edit_mode', $tool->edit_mode->value)
-                            ->where('proxies_lti_launches', $tool->proxy_launch)
+                            ->where('proxies_lti_launches', true)
                             ->where('send_name', $tool->send_name)
                             ->where('send_email', $tool->send_email)
                             ->where('links.self', 'https://hub-test.edlib.test/api/lti-tools/' . $tool->id),

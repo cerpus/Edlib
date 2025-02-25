@@ -47,10 +47,6 @@
                                 <th scope="row">{{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}</th>
                                 <td class="lti-tool-card-send-email">{{ $tool->send_email ? trans('messages.yes') : trans('messages.no') }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">{{ trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')]) }}</th>
-                                <td class="lti-tool-card-proxy-launch">{{ $tool->proxy_launch ? trans('messages.yes') : trans('messages.no') }}</td>
-                            </tr>
                         </tbody>
                     </table>
 

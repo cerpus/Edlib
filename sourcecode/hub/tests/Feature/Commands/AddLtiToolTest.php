@@ -33,7 +33,6 @@ class AddLtiToolTest extends TestCase
         $this->assertSame('https://ca.edlib.test/lti-content/create', $tool->creator_launch_url);
         $this->assertTrue($tool->send_name);
         $this->assertTrue($tool->send_email);
-        $this->assertTrue($tool->proxy_launch);
         $this->assertSame('h5p', $tool->consumer_key);
         $this->assertSame('secret2', $tool->consumer_secret);
         $this->assertSame(LtiToolEditMode::DeepLinkingRequestToContentUrl, $tool->edit_mode);
