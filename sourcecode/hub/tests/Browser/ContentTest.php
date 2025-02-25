@@ -581,13 +581,14 @@ final class ContentTest extends DuskTestCase
             ->launchUrl('https://hub-test.edlib.test/lti/dl')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
-        LtiTool::factory()
+        $ltiTool = LtiTool::factory()
             ->slug('sample-tool')
             ->withName('Sample tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
+        $url = route('content.launch-creator', [$ltiTool]);
 
         $this->browse(
             fn(Browser $browser) => $browser
@@ -600,7 +601,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $e3Frame) => $e3Frame
                         ->clickLink('Create')
                         ->waitForText('Select a content type')
-                        ->clickLink('Sample tool')
+                        ->click('a[href^="' . $url . '"]')
                         ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',

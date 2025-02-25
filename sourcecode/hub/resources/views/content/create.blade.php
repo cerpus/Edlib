@@ -6,7 +6,7 @@
     <div class="row">
         @foreach ($types as $type)
             <div class="col-md-4">
-                <div class="card">
+                <div class="card mb-3">
                     @if($type->imageUrl == null)
                         <div class="card-img-top lti-tool-image empty d-flex justify-content-center align-items-center">
                             <h1>{{ $type->name }}</h1>
@@ -24,7 +24,7 @@
     </div>
 
     @can('admin')
-        <p class="mt-2">
+        <p>
             <a href="{{ route('admin.lti-tools.index') }}" class="btn btn-outline-secondary">
                 {{ trans('messages.manage-lti-tools') }}
             </a>
