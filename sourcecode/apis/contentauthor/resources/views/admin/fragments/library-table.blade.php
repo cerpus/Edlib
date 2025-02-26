@@ -51,14 +51,20 @@
                 @elseif ($library['hubUpgrade'] !== null)
                     <button
                         type="button"
-                        class="btn btn-success btn-xs install-btn h5p-action-button"
-                        data-name="{{$library['machineName']}}"
-                        data-ajax-url="{{route('admin.ajax')}}"
-                        data-ajax-action="{{H5PEditorEndpoints::LIBRARY_INSTALL}}"
+                        @class([
+                            'btn btn-xs install-btn h5p-action-button',
+                            'btn-success' => $library['hubUpgradeIsPatch'] !== true,
+                            'btn-warning' => $library['hubUpgradeIsPatch'] === true,
+                            'btn-danger' => $library['hubUpgradeError'] !== null,
+                        ])
+                        data-name="{{ $library['machineName'] }}"
+                        data-ajax-url="{{ route('admin.ajax') }}"
+                        data-ajax-action="{{ H5PEditorEndpoints::LIBRARY_INSTALL }}"
+                        data-error-message="{{ $library['hubUpgradeError'] }}"
                         @isset($activetab)
                             data-ajax-activetab="{{$activetab}}"
                         @endisset
-                        title="Download and install version {{ $library['hubUpgrade'] }}"
+                        title="{{ $library['hubUpgradeError'] ?? $library['hubUpgradeMessage'] }}"
                     >
                         <span class="fa fa-cloud-download"></span>
                     </button>
@@ -68,7 +74,7 @@
                 @if(!empty($library['libraryId']))
                     <button
                         type="button"
-                        class="btn btn-warning btn-xs rebuild-btn h5p-action-button"
+                        class="btn btn-default btn-xs rebuild-btn h5p-action-button"
                         data-libraryId="{{$library['libraryId']}}"
                         data-ajax-url="{{route('admin.ajax')}}"
                         data-ajax-action="{{\App\Libraries\H5P\AjaxRequest::LIBRARY_REBUILD}}"

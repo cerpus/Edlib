@@ -22,12 +22,26 @@ services:
       context: sourcecode/hub
       target: dev
     depends_on:
-      certs: { condition: service_completed_successfully }
       chromedriver: { condition: service_started }
+      hub-startup: { condition: service_completed_successfully }
       meilisearch: { condition: service_healthy }
       postgres: { condition: service_healthy }
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
+    volumes:
+      - ./sourcecode/hub:/srv/www/hub
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+    working_dir: /srv/www/hub
+
+  hub-startup:
+    build:
+      context: sourcecode/hub
+      target: dev
+    command: [startup-dev.sh]
+    depends_on:
+      certs: { condition: service_completed_successfully }
+      meilisearch: { condition: service_healthy }
+      postgres: { condition: service_healthy }
     volumes:
       - ./sourcecode/hub:/srv/www/hub
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
@@ -53,7 +67,7 @@ services:
       context: ./sourcecode/apis/contentauthor
       target: dev
     depends_on:
-      certs: { condition: service_completed_successfully }
+      contentauthor-startup: { condition: service_completed_successfully }
       mysql: { condition: service_healthy }
       redis: { condition: service_healthy }
     healthcheck:
@@ -70,7 +84,9 @@ services:
       target: dev
     command: [sh, -c, 'while true; do php artisan schedule:run -q; sleep 60; done']
     depends_on:
-      contentauthor-fpm: { condition: service_healthy }
+      contentauthor-startup: { condition: service_completed_successfully }
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
       - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
@@ -83,7 +99,23 @@ services:
       target: dev
     command: [php, artisan, queue:work, -v]
     depends_on:
-      contentauthor-fpm: { condition: service_healthy }
+      contentauthor-startup: { condition: service_completed_successfully }
+      mysql: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    volumes:
+      - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
+      - ./sourcecode/apis/contentauthor:/srv/www/contentauthor
+    working_dir: /srv/www/contentauthor
+
+  contentauthor-startup:
+    build:
+      context: ./sourcecode/apis/contentauthor
+      dockerfile: Dockerfile
+      target: dev
+    command: [startup-dev.sh]
+    depends_on:
+      certs: { condition: service_completed_successfully }
+      mysql: { condition: service_healthy }
       redis: { condition: service_healthy }
     volumes:
       - ./data/nginx/ca:/usr/local/share/ca-certificates:ro
@@ -126,7 +158,6 @@ services:
     networks:
       default:
         aliases:
-          - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
@@ -134,6 +165,10 @@ services:
           - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          # legacy domains, needed for browser tests
+          - core.cerpus-course.com
+          - api.edlib.com
+          - www.edlib.com
 
 
   # ==================

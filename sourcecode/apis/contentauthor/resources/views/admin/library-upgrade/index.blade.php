@@ -47,7 +47,7 @@
                             >
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4>Local cache of content types available from h5.org</h4>
+                                        <h4>Local cache of content types available from h5p.org</h4>
                                     </div>
                                     @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabContentTypes'])
                                 </div>
@@ -57,6 +57,9 @@
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
+                                </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
                                 </p>
                                 <div class="panel-body row">
                                     @include('admin.fragments.library-table', [
@@ -92,6 +95,9 @@
                                 <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
                                 <p>Any content in the file will not be imported, only content types and libraries.</p>
                                 <p>
+                                    Content type and libraries must be compatible with H5P Core version {{ join('.', H5PCore::$coreApi) }}
+                                </p>
+                                <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 @include('admin.library-upgrade.upload-content-type', [
@@ -107,7 +113,7 @@
                             >
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4>Local cache of content types available from h5.org</h4>
+                                        <h4>Local cache of content types available from h5p.org</h4>
                                     </div>
                                     @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabInstall'])
                                 </div>
@@ -117,6 +123,9 @@
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
+                                </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
                                 </p>
                                 <div class="panel-body row">
                                     @include('admin.fragments.library-table', [

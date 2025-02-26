@@ -49,4 +49,13 @@ final class AdminTest extends TestCase
             ->get('/content/create/the-tool/the-extra')
             ->assertForbidden();
     }
+
+    public function testCannotAccessAdminsAsNonAdmin(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/admin/admins')
+            ->assertForbidden();
+    }
 }

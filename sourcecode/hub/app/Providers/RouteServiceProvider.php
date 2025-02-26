@@ -51,6 +51,11 @@ class RouteServiceProvider extends ServiceProvider
             ])->limit(1)->firstOrFail();
         });
 
+        Route::bind('edlib2Content', fn(string $value) => Content::ofTag([
+            'prefix' => 'edlib2_id',
+            'name' => $value,
+        ])->limit(1)->firstOrFail());
+
         $this->configureRateLimiting();
 
         $this->routes(function (NdlaLegacyConfig $ndlaLegacy) {
@@ -62,6 +67,9 @@ class RouteServiceProvider extends ServiceProvider
             // must exist on all domains
             Route::middleware('stateless')
                 ->get('/up', HealthController::class);
+
+            Route::middleware('stateless')
+                ->group(base_path('routes/edlib-legacy.php'));
 
             Route::middleware('ndla-legacy')
                 ->domain($ndlaLegacy->isEnabled() ? $ndlaLegacy->getDomain() : 'invalid.')

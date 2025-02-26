@@ -7,6 +7,9 @@ server {
     hub-test.${EDLIB_ROOT_DOMAIN}
     hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN}
     hub-vite-hmr.${EDLIB_ROOT_DOMAIN}
+    api.edlib.com
+    www.edlib.com
+    core.cerpus-course.com
     ~^edlib-hub[a-z0-9-]+\.ngrok\.dev$
   ;
 
@@ -36,12 +39,16 @@ server {
   }
 }
 
+# Hub instance for browser tests
 server {
   include includes/https.conf;
 
   server_name
     hub-test.${EDLIB_ROOT_DOMAIN}
     hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN}
+    api.edlib.com
+    www.edlib.com
+    core.cerpus-course.com
   ;
 
   root /srv/www/hub/public;

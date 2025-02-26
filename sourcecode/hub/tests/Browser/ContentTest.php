@@ -65,7 +65,7 @@ final class ContentTest extends DuskTestCase
                 new ContentCard(),
                 fn(Browser $card) => $card
                     ->assertSeeIn('@views', '0')
-                    ->click('@title'),
+                    ->click('@details-button'),
             )
             ->visit('/content')
             ->with(
@@ -298,12 +298,7 @@ final class ContentTest extends DuskTestCase
                 ->with(
                     new ContentCard(),
                     fn(Browser $card) => $card
-                        ->click('@action-menu-toggle')
-                        ->with(
-                            '@action-menu',
-                            fn(Browser $menu) => $menu
-                                ->clickLink('Preview'),
-                        ),
+                        ->click('@title'),
                 )
                 ->waitForEvent('htmx:after-swap')
                 ->assertVisible('#previewModal .lti-launch'),
@@ -359,12 +354,7 @@ final class ContentTest extends DuskTestCase
                 ->with(
                     new ContentCard(),
                     fn(Browser $card) => $card
-                        ->click('@action-menu-toggle')
-                        ->with(
-                            '@action-menu',
-                            fn(Browser $menu) => $menu
-                                ->clickLink('Preview'),
-                        ),
+                        ->click('@title'),
                 )
                 ->waitFor('#previewModal .modal-dialog')
                 ->with(
@@ -591,13 +581,14 @@ final class ContentTest extends DuskTestCase
             ->launchUrl('https://hub-test.edlib.test/lti/dl')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
-        LtiTool::factory()
+        $ltiTool = LtiTool::factory()
             ->slug('sample-tool')
             ->withName('Sample tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
+        $url = route('content.launch-creator', [$ltiTool]);
 
         $this->browse(
             fn(Browser $browser) => $browser
@@ -610,7 +601,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $e3Frame) => $e3Frame
                         ->clickLink('Create')
                         ->waitForText('Select a content type')
-                        ->clickLink('Sample tool')
+                        ->click('a[href^="' . $url . '"]')
                         ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
@@ -663,7 +654,7 @@ final class ContentTest extends DuskTestCase
                     new ContentCard(),
                     fn(Browser $card) => $card
                         ->assertSeeIn('@title', $content->getTitle())
-                        ->click('@title'),
+                        ->click('@details-button'),
                 )
                 ->click('#shared-toggle')
                 ->waitForEvent('htmx:afterRequest')
@@ -712,17 +703,11 @@ final class ContentTest extends DuskTestCase
                     new ContentCard(),
                     fn(Browser $card) => $card
                         ->assertSeeIn('@title', $content->getTitle())
-                        ->click('@action-menu-toggle')
-                        ->with(
-                            '@action-menu',
-                            fn(Browser $menu) => $menu
-                                ->press('Copy'),
-                        ),
+                        ->click('@copy-button'),
                 )
                 ->assertTitleContains($content->getTitle() . ' (copy)')
                 ->assertSee('You are viewing an unpublished draft version')
                 ->assertSeeIn('aside table', 'H5P.CoursePresentation')
-                ->pause(500) // FIXME: indexing should be synchronous in tests
                 ->visit('/content/mine')
                 ->with(
                     new ContentCard(),
@@ -910,7 +895,7 @@ final class ContentTest extends DuskTestCase
                 ->type('secret', $platform->secret)
                 ->type(
                     'parameters',
-                    'content_item_return_url=about:blank' .
+                    'content_item_return_url=https://hub-test.edlib.test/lti/dl' .
                     '&lti_message_type=ContentItemSelectionRequest' .
                     "&lis_person_contact_email_primary={$user->email}",
                 )
@@ -922,6 +907,7 @@ final class ContentTest extends DuskTestCase
                         ->clickLink('The original content')
                         ->waitForLink('Edit content')
                         ->clickLink('Edit content')
+                        ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
                             fn(Browser $editor) => $editor
@@ -940,6 +926,11 @@ final class ContentTest extends DuskTestCase
                     }
                     EOJSON)
                                 ->press('Send'),
+                        )
+                        ->withinFrame(
+                            'iframe[name="launch_frame"]',
+                            fn(Browser $result) => $result
+                                ->waitFor('#content'),
                         ),
                 )
                 ->visit('/content/mine')
@@ -980,7 +971,7 @@ final class ContentTest extends DuskTestCase
                 ->type('secret', $platform->secret)
                 ->type(
                     'parameters',
-                    'content_item_return_url=about:blank' .
+                    'content_item_return_url=https://hub-test.edlib.test/lti/dl' .
                     '&ext_edlib3_copy_before_save=1' .
                     '&lti_message_type=ContentItemSelectionRequest' .
                     "&lis_person_contact_email_primary={$user->email}",
@@ -993,6 +984,7 @@ final class ContentTest extends DuskTestCase
                         ->clickLink('The original content')
                         ->waitForLink('Edit content')
                         ->clickLink('Edit content')
+                        ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
                             fn(Browser $editor) => $editor
@@ -1011,6 +1003,11 @@ final class ContentTest extends DuskTestCase
                     }
                     EOJSON)
                                 ->press('Send'),
+                        )
+                        ->withinFrame(
+                            'iframe[name="launch_frame"]',
+                            fn(Browser $result) => $result
+                                ->waitFor('#content'),
                         ),
                 )
                 ->visit('/content/mine')
@@ -1037,7 +1034,12 @@ final class ContentTest extends DuskTestCase
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->visit('/content/mine')
-                ->clickLink('my beautiful content')
+                ->with(
+                    new ContentCard(),
+                    fn(Browser $card) => $card
+                        ->assertSeeIn('@title', 'my beautiful content')
+                        ->click('@details-button'),
+                )
                 ->clickLink('Roles')
             // Dusk doesn't support selecting the actual visual text
                 ->select('[name="context"]', $context->id)
@@ -1094,8 +1096,18 @@ final class ContentTest extends DuskTestCase
                                 ->press('Send'),
                         ),
                 )
+                ->withinFrame(
+                    'iframe[name="launch_frame"]',
+                    fn(Browser $launch) => $launch
+                        ->waitForText('My new content'),
+                )
                 ->visit('/content/mine')
-                ->clickLink('My new content')
+                ->with(
+                    new ContentCard(),
+                    fn(Browser $card) => $card
+                        ->assertSeeIn('@title', 'My new content')
+                        ->click('@details-button'),
+                )
                 ->clickLink('Roles')
                 ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'ndla_people'),
         );
@@ -1146,8 +1158,7 @@ final class ContentTest extends DuskTestCase
                         ->with(
                             new ContentCard(),
                             fn(Browser $card) => $card
-                                ->press('@action-menu-toggle')
-                                ->assertPresent('@edit-link'),
+                                ->assertPresent('@edit-button'),
                         ),
                 ),
         );
@@ -1245,12 +1256,14 @@ final class ContentTest extends DuskTestCase
                 ->withinFrame('iframe', function (Browser $iframe) {
                     $iframe
                         ->clickLink('My content')
+                        ->waitForText('1 content found')
                         ->with(
                             new ContentCard(),
                             fn(Browser $card) => $card
                                 ->press('@action-menu-toggle')
                                 ->clickLink('Details'),
                         )
+                        ->waitForText('Share the content with others')
                         ->scrollIntoView('#shared-toggle')
                         ->assertNotChecked('#shared-toggle')
                         // The horrible Bootstrap toggles don't work with Dusk's
@@ -1262,6 +1275,7 @@ final class ContentTest extends DuskTestCase
                         ->scrollIntoView('#shared-toggle')
                         ->assertChecked('#shared-toggle')
                         ->clickLink('Roles')
+                        ->waitForText('Contexts')
                         ->assertSeeIn('.content-contexts', 'existing_context')
                         ->assertDontSeeIn('.content-contexts', 'should_not_exist');
                 }),
@@ -1338,8 +1352,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
-                ->assertSeeLink('First Tool')
-                ->assertSeeLink('Second Tool'),
+                ->assertSee('First Tool')
+                ->assertSee('Second Tool'),
         );
     }
 
@@ -1364,8 +1378,37 @@ final class ContentTest extends DuskTestCase
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->clickLink('Create')
-                ->assertSeeLink('Only Tool')
-                ->assertSeeLink('Tool Extra'),
+                ->assertSee('Only Tool')
+                ->assertSee('Tool Extra'),
+        );
+    }
+
+    public function testCanListContentWhenSearchAndDatabaseMismatch(): void
+    {
+        $content = Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->title('This is my soon-to-be-gone content')
+                    ->published(),
+            )
+            ->shared()
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertSeeIn('.content-card', 'This is my soon-to-be-gone content'),
+        );
+
+        $content->deleteQuietly();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertTitleContains('Explore')
+                ->assertDontSee('.content-card'),
         );
     }
 }

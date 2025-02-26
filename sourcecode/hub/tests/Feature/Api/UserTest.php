@@ -134,4 +134,26 @@ final class UserTest extends TestCase
                     ),
             );
     }
+
+    public function testEmailIsNormalizedBeforeSaving(): void
+    {
+        $user = User::factory()->admin()->create();
+
+        $this
+            ->withBasicAuth($user->getApiKey(), $user->getApiSecret())
+            ->postJson('/api/users', [
+                'name' => 'E. Mel',
+                'email' => 'E.MEL@EDLIB.TEST',
+            ])
+            ->assertCreated()
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn(AssertableJson $json) => $json
+                            ->where('email', 'e.mel@edlib.test')
+                            ->etc(),
+                    ),
+            );
+    }
 }

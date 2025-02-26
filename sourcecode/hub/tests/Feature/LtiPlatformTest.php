@@ -122,4 +122,33 @@ final class LtiPlatformTest extends TestCase
         $this->assertSame('chandler@bing.com', $request->get('lis_person_contact_email_primary'));
         $this->assertSame($user->id, $request->get('user_id'));
     }
+
+    public function testLaunchDoesNotContainUnverifiedEmail(): void
+    {
+        $user = User::factory()
+            ->name('Chanandler Bong')
+            ->withEmail('chandler@bing.com', verified: false)
+            ->create();
+
+        $this->actingAs($user);
+
+        $tool = LtiTool::factory()->create([
+            'send_name' => true,
+            'send_email' => true,
+        ]);
+
+        $request = $this->app->make(LtiLaunchBuilder::class)
+            ->toItemSelectionLaunch(
+                $tool,
+                'https://example.com/',
+                'https://return.example.com/',
+            )
+            ->getRequest();
+
+        $this->assertSame('Chanandler Bong', $request->get('lis_person_name_full'));
+        $this->assertSame('Bong', $request->get('lis_person_name_family'));
+        $this->assertSame('Chanandler', $request->get('lis_person_name_given'));
+        $this->assertFalse($request->has('lis_person_contact_email_primary'));
+        $this->assertSame($user->id, $request->get('user_id'));
+    }
 }

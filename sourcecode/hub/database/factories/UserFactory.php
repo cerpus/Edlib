@@ -22,6 +22,7 @@ class UserFactory extends Factory
         return [
             'name' => $name,
             'email' => $email,
+            'email_verified' => true,
             'password' => Hash::make($this->faker->password),
             'admin' => false,
             'locale' => 'en',
@@ -34,9 +35,12 @@ class UserFactory extends Factory
         return $this->state(['name' => $name]);
     }
 
-    public function withEmail(string $email): static
+    public function withEmail(string $email, bool $verified = true): static
     {
-        return $this->state(['email' => $email]);
+        return $this->state([
+            'email' => $email,
+            'email_verified' => $verified,
+        ]);
     }
 
     public function withPasswordResetToken(): static

@@ -47,7 +47,7 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.check-library');
         Route::get('libraries/{library}/content', [AdminH5PDetailsController::class, 'contentForLibrary'])
             ->name('admin.content-library');
-        Route::get('content/{content}/details', [AdminH5PDetailsController::class, 'contentHistory'])
+        Route::get('content/{content}/details/{version?}', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
         Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
             ->name('admin.library-translation');
