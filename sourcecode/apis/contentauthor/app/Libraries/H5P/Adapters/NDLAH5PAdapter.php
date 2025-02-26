@@ -280,26 +280,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return true; // Private by default. Corresponds to is_private = true
     }
 
-    public function emptyArticleImportLog($sessionKey = 'message'): void
-    {
-        session()->flash($sessionKey, 'Article Import Log NOT Emptied.');
-    }
-
-    public function resetNdlaIdTracking($sessionKey = 'message'): void
-    {
-        session()->flash($sessionKey, 'NDLA ID tracking NOT Reset.');
-    }
-
-    public function showArticleImportExportFunctionality(): bool
-    {
-        return false;
-    }
-
-    public function runPresaveCommand(): void
-    {
-        session()->flash('message', 'Presave command NOT run.');
-    }
-
     public function useEmbedLink(): int
     {
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;

@@ -13,7 +13,6 @@ class VerifyCsrfToken extends Middleware
         'ajax',
         'api/progress',
         'admin/content/upgrade*',
-        'api/v1/import',
         'content/upgrade',
         'lti-content/*',
         'h5p/create',

@@ -126,16 +126,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminController.php
 
 		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:emptyArticleImportLog\\(\\) invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
-
-		-
-			message: "#^Method App\\\\Libraries\\\\H5P\\\\Interfaces\\\\H5PAdapterInterface\\:\\:resetNdlaIdTracking\\(\\) invoked with 0 parameters, 1 required\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/ImportExportSettingsController.php
-
-		-
 			message: "#^Function collect invoked with 2 parameters, 0\\-1 required\\.$#"
 			count: 1
 			path: app/Http/Controllers/ArticleController.php
@@ -460,11 +450,6 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: app/Libraries/H5P/Helper/H5PPackageProvider.php
-
-		-
-			message: "#^PHPDoc tag @return with type bool is incompatible with native type void\\.$#"
-			count: 2
-			path: app/Libraries/H5P/Interfaces/H5PAdapterInterface.php
 
 		-
 			message: "#^Anonymous function has an unused use \\$slide\\.$#"

@@ -9,8 +9,6 @@ use App\Libraries\H5P\Interfaces\H5PImageInterface;
 use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 
 use function array_unique;
 use function json_decode;
@@ -127,32 +125,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getDefaultImportPrivacy()
     {
         return false; // Shared by default. Corresponds to is_private = false
-    }
-
-    public function emptyArticleImportLog($sessionKey = 'message'): void
-    {
-        DB::table('ndla_article_import_statuses')->truncate();
-
-        session()->flash($sessionKey, 'Article Import Log Emptied.');
-    }
-
-    public function resetNdlaIdTracking($sessionKey = 'message'): void
-    {
-        DB::table('ndla_id_mappers')->truncate();
-
-        session()->flash($sessionKey, 'NDLA ID tracking reset.');
-    }
-
-    public function showArticleImportExportFunctionality(): bool
-    {
-        return true;
-    }
-
-    public function runPresaveCommand(): void
-    {
-        Artisan::call('h5p:addPresave');
-
-        session()->flash('message', 'Presave command run.');
     }
 
     public function useEmbedLink(): int
