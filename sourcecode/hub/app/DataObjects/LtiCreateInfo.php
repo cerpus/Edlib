@@ -39,6 +39,10 @@ class LtiCreateInfo
             return asset('images/lti-tools/h5p.jpg');
         }
 
+        if (str_contains(strtolower($name), 'h5p')) {
+            return asset('images/lti-tools/h5p.jpg');
+        }
+
         if (str_contains(strtolower($name), 'millionaire')) {
             return asset('images/lti-tools/millionaire.png');
         }
