@@ -259,6 +259,7 @@ jobs:
         environment:
           - test
           - ndla_staging
+          - ndla_test
     use: ./.github/workflows/deploy.yaml
     with:
       name: Hub
@@ -267,4 +268,3 @@ jobs:
       version: ${{ vars.HUB_APPLICATION_VERSION }}
     secrets:
       aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-

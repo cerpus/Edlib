@@ -238,6 +238,7 @@ jobs:
         environment:
           - test
           - ndla_staging
+          - ndla_test
     uses: ./.github/workflows/deploy.yaml
     with:
       name: Content Author

@@ -31,9 +31,9 @@ jobs:
         role-to-assume: ${{ secrets.aws_role_to_assume }}
         role-duration-seconds: 3600
         role-session-name: GithubCerpusDevDeploy
-     
+
      - name: Re-deploy docker-compose on Elastic Beanstalk
        run: |
          aws elasticbeanstalk update-environment \
           --environment-name ${{ inputs.environment_name }} \
-          --version-label ${{ inputs.version }} 
+          --version-label ${{ inputs.version }}
