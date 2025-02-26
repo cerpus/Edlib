@@ -581,13 +581,14 @@ final class ContentTest extends DuskTestCase
             ->launchUrl('https://hub-test.edlib.test/lti/dl')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
-        LtiTool::factory()
+        $ltiTool = LtiTool::factory()
             ->slug('sample-tool')
             ->withName('Sample tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
+        $url = route('content.launch-creator', [$ltiTool]);
 
         $this->browse(
             fn(Browser $browser) => $browser
@@ -600,7 +601,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $e3Frame) => $e3Frame
                         ->clickLink('Create')
                         ->waitForText('Select a content type')
-                        ->clickLink('Sample tool')
+                        ->click('a[href^="' . $url . '"]')
                         ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
@@ -1351,8 +1352,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
-                ->assertSeeLink('First Tool')
-                ->assertSeeLink('Second Tool'),
+                ->assertSee('First Tool')
+                ->assertSee('Second Tool'),
         );
     }
 
@@ -1377,8 +1378,8 @@ final class ContentTest extends DuskTestCase
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->clickLink('Create')
-                ->assertSeeLink('Only Tool')
-                ->assertSeeLink('Tool Extra'),
+                ->assertSee('Only Tool')
+                ->assertSee('Tool Extra'),
         );
     }
 

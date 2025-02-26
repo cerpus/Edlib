@@ -225,3 +225,13 @@
         }
     }
 }
+
+.lti-tool-image {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+
+    &.empty {
+        background-color: #A3CBBB;
+    }
+}
