@@ -69,7 +69,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->get('/up', HealthController::class);
 
             Route::middleware('stateless')
-                ->domain(config('app.edlib-legacy-domain', 'invalid.'))
                 ->group(base_path('routes/edlib-legacy.php'));
 
             Route::middleware('ndla-legacy')
