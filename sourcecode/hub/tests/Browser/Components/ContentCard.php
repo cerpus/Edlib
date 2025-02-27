@@ -27,10 +27,10 @@ class ContentCard extends Component
         return [
             '@title' => '.content-card-title',
             '@content-type' => '.content-type',
-            '@use-button' => '.content-use-button',
+            '@use-button' => '.use-button',
             '@edit-button' => '.content-edit-button',
             '@details-button' => '.content-details-button',
-            '@share-button' => '.content-share-button',
+            '@share-button' => '.share-button',
             '@copy-button' => '.content-copy-button',
             '@edit-link' => '.content-edit-link',
             '@views' => '.content-card-views',

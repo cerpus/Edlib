@@ -12,7 +12,7 @@ class PreviewModal extends Component
 {
     #[Override] public function selector(): string
     {
-        return '#previewModal';
+        return '.preview-modal';
     }
 
     #[Override] public function assert(Browser $browser): void

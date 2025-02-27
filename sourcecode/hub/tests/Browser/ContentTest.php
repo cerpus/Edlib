@@ -300,8 +300,8 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitForEvent('htmx:after-swap')
-                ->assertVisible('#previewModal .lti-launch'),
+                ->waitFor('.preview-modal')
+                ->assertVisible('.preview-modal .lti-launch'),
         );
     }
 
@@ -330,7 +330,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $launch) => $launch
                         ->waitFor('article.content-card')
                         ->with(new ContentCard(), fn(Browser $card) => $card->click('@title'))
-                        ->waitFor('#previewModal .modal-dialog')
+                        ->waitFor('.preview-modal')
                         ->with(
                             new PreviewModal(),
                             fn(Browser $modal) => $modal
@@ -356,7 +356,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitFor('#previewModal .modal-dialog')
+                ->waitFor('.preview-modal')
                 ->with(
                     new PreviewModal(),
                     fn(Browser $modal) => $modal
@@ -752,21 +752,23 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()->withPublishedVersion()->create();
 
         $this->browse(function (Browser $browser) use ($content) {
+            $browser
+                ->visit('/content/' . $content->id)
+                ->clickLink('Share')
+                ->waitFor('.share-dialog')
+                ->click('.copy-to-clipboard')
+                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
+                ->acceptDialog();
+
             $devTools = (new ChromeDevToolsDriver($browser->driver));
             $devTools->execute('Browser.grantPermissions', [
                 'permissions' => ['clipboardReadWrite'],
             ]);
 
-            $browser
-                ->visit('/content/' . $content->id)
-                ->clickLink('Share')
-                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
-                ->acceptDialog()
-                ->assertPathIs('/content/' . $content->id)
-                ->assertScript(
-                    'navigator.clipboard.readText()',
-                    'https://hub-test.edlib.test/c/' . $content->id,
-                );
+            $browser->assertScript(
+                'navigator.clipboard.readText()',
+                'https://hub-test.edlib.test/c/' . $content->id,
+            );
         });
     }
 

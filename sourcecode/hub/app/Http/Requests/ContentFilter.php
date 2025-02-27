@@ -350,6 +350,7 @@ class ContentFilter extends FormRequest
                     useUrl: $canUse ? route('content.use', [$content, $version]) : null,
                     editUrl: $canEdit ? route('content.edit', [$content, $version]) : null,
                     shareUrl: $canView ? route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) : null,
+                    shareDialogUrl: $canView ? route('content.share-dialog', [$content]) : null,
                     copyUrl: $canCopy ? route('content.copy', [$content]) : null,
                     deleteUrl: $canDelete ? route('content.delete', [$content]) : null,
                 );

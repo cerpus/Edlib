@@ -14,10 +14,10 @@
                 <a
                     href="{{ $shareUrl }}"
                     class="dropdown-item share-button"
-                    data-share-success-message="{{ trans('messages.share-copied-url-success') }}"
-                    data-share-failure-message="{{ trans('messages.share-copied-url-failed') }}"
-                    role="button"
-                    target="_blank"
+                    hx-get="{{ $shareDialogUrl }}"
+                    hx-target="#modal-container"
+                    hx-swap="beforeend"
+                    data-modal="true"
                 >
                     <x-icon name="share" class="me-2" />
                     {{ trans('messages.share') }}
