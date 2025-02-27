@@ -11,44 +11,4 @@ interface H5PFrameworkInterface {
      *   FALSE otherwise
      */
     public function isPatchedLibrary($library);
-
-    /**
-     * Store data about a library
-     *
-     * Also fills in the libraryId in the libraryData object if the object is new
-     *
-     * @param array{
-     *     libraryId: int|null       The id of the library if it is an existing library
-     *     title: string             The library's name
-     *     machineName: string       The library machineName
-     *     majorVersion: int         The library's majorVersion
-     *     minorVersion: int         The library's minorVersion
-     *     patchVersion: int         The library's patchVersion
-     *     runnable: bool            1 if the library is a content type, 0 otherwise
-     *     metadataSettings: array{
-     *         disable: int,                 1 if the library should not support setting metadata (copyright etc)
-     *         disableExtraTitleField: int   1 if the library don't need the extra title field
-     *     }
-     *     fullscreen: int           (optional) 1 if the library supports fullscreen, 0 otherwise
-     *     embedTypes: array|string  (optional) list of supported embed types
-     *     preloadedJs: array{       (optional)
-     *         path: string          path to a js file relative to the library root folder
-     *     }
-     *     preloadedCss: array{      (optional)
-     *         path: string          path to css file relative to the library root folder
-     *     }
-     *     dropLibraryCss: array{    (optional)
-     *         machineName: string   machine name for the librarys that are to drop their css
-     *     }
-     *     semantics: string         (optional) Json describing the content structure for the library
-     *     language: array{          (optional)
-     *         languageCode: string  Translation in json format
-     *     }
-     *     addTo: string             (optional) Json
-     *     hasIcon: int              (optional) 1 if the library has icon, 0 else
-     * } $libraryData
-     *
-     * @param bool $new
-     */
-    public function saveLibraryData(&$libraryData, $new = true): void;
 }
