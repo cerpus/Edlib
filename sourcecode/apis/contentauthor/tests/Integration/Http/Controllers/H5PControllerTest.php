@@ -375,10 +375,10 @@ class H5PControllerTest extends TestCase
         $this->assertStringContainsString('Some resource title', $contents->embedCode);
 
         // Adapter specific
-        $this->assertContains('//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG', $result['jsScripts']);
+        $this->assertContains('//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js', $result['jsScripts']);
 
         if ($adapterMode === "ndla") {
-            $this->assertContains('/js/h5p/wiris/view.js', $result['jsScripts']);
+            $this->assertContains('//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js', $result['jsScripts']);
             $this->assertContains('/js/h5peditor-custom.js', $result['jsScripts']);
 
             $this->assertContains('/css/ndlah5p-iframe-legacy.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
