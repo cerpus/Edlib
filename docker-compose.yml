@@ -158,7 +158,6 @@ services:
     networks:
       default:
         aliases:
-          - api.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - ca.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test.${EDLIB_ROOT_DOMAIN:-edlib.test}
@@ -166,6 +165,10 @@ services:
           - hub-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - hub-test-ndla-legacy.${EDLIB_ROOT_DOMAIN:-edlib.test}
           - nynorobot.${EDLIB_ROOT_DOMAIN:-edlib.test}
+          # legacy domains, needed for browser tests
+          - core.cerpus-course.com
+          - api.edlib.com
+          - www.edlib.com
 
 
   # ==================

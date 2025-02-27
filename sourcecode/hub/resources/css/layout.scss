@@ -1,6 +1,6 @@
 .edlib-logo {
-    mask-image: url('/resources/images/logo.svg');
-    background-color: var(--bs-body-color);
+    mask-image: url('/resources/images/logo_black_2025.svg');
+    background-color: var(--logo-color);
     mask-size: cover;
     display: inline-block;
 
@@ -10,8 +10,8 @@
         height: calc(357.5px*(80/851));
 
         @include media-breakpoint-up(md) {
-            width: calc(851px*(60/357.5));
-            height: 60px;
+            width: calc(851px*(50/357.5));
+            height: 50px;
         }
     }
 
@@ -223,5 +223,15 @@
                 color: var(--bs-highlight-color);
             }
         }
+    }
+}
+
+.lti-tool-image {
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+
+    &.empty {
+        background-color: #A3CBBB;
     }
 }
