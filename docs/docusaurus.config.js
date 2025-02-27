@@ -158,8 +158,8 @@ module.exports = {
     [
       '@docusaurus/preset-classic',
       {
-        gtag: {
-          trackingID: 'G-9C6GCP15R9',
+        googleTagManager: {
+          containerId: 'GTM-KNJNCK6D',
         },
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
