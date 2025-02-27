@@ -22,6 +22,7 @@ jobs:
     name: Deploy ${{ inputs.name }} to ${{ inputs.environment }}
     concurrency: deploy-${{ inputs.name }}-${{ inputs.environment }}
     runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
 
     steps:
      - name: Configure AWS Credentials
