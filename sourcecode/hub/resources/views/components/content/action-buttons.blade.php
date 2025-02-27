@@ -28,6 +28,6 @@
         :deleteUrl="$content->deleteUrl"
     />
 @else
-    <x-content.action-buttons.share :content="$content" />
+    <x-content.action-buttons.share :$content />
     <x-content.action-buttons.details :url="$content->detailsUrl" />
 @endif
