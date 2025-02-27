@@ -51,7 +51,7 @@ const Cke5Editor = ({ value, onChange, name, config, language }) => {
     }, [isLayoutReady]);
 
     return (
-        <div className="html-editor--container">
+        <div className="cke5-editor__container">
             <div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
                 <div className="editor-container__editor">
                     <div ref={editorRef}>

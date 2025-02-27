@@ -306,6 +306,26 @@ parameters:
 			path: app/Libraries/H5P/EditorStorage.php
 
 		-
+			message: "#^Called 'Model\\:\\:make\\(\\)' which performs unnecessary work, use 'new Model\\(\\)'\\.$#"
+			count: 3
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:getLibraryId\\(\\) should return int but returns false\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
+			message: "#^Method App\\\\Libraries\\\\H5P\\\\Framework\\:\\:hasPermission\\(\\) should return bool but return statement is missing\\.$#"
+			count: 1
+			path: app/Libraries/H5P/Framework.php
+
+		-
 			message: "#^Method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),mixed\\>\\:\\:put\\(\\) invoked with 1 parameter, 2 required\\.$#"
 			count: 1
 			path: app/Libraries/H5P/H5PImport.php

@@ -19,10 +19,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use H5PCore;
-use H5PFileStorage;
-use H5PFrameworkInterface;
-use H5PMetadata;
-use H5PPermission;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -30,11 +26,10 @@ use Illuminate\Support\Stringable;
 use InvalidArgumentException;
 use PDO;
 use Psr\Http\Message\ResponseInterface;
-use Session;
 use Symfony\Component\Process\Exception\RuntimeException;
 use TypeError;
 
-class Framework implements H5PFrameworkInterface, Result
+class Framework implements \H5PFrameworkInterface, Result
 {
     /** @var array<string> */
     private array $errorMessages = [];
@@ -43,21 +38,21 @@ class Framework implements H5PFrameworkInterface, Result
     private array $infoMessages = [];
 
     public function __construct(
-        private readonly ClientInterface $httpClient,
-        private readonly PDO $db,
-        private readonly Filesystem $disk,
+        private ClientInterface $httpClient,
+        private PDO $db,
+        private Filesystem $disk,
     ) {}
 
     // Implements result Interface
-    public function handleResult($userId, $contentId, $score, $maxScore, $opened, $closed, $time, $context): bool
+    public function handleResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context)
     {
         if ($this->hasResult($userId, $contentId, $context)) {
-            return $this->updateResult($userId, $contentId, $score, $maxScore, $opened, $closed, $time, $context);
+            return $this->updateResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context);
         }
-        return $this->insertResult($userId, $contentId, $score, $maxScore, $opened, $closed, $time, $context);
+        return $this->insertResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context);
     }
 
-    private function updateResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context): bool
+    private function updateResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context)
     {
         $sql = "update h5p_results set score=:score, max_score=:maxScore, opened=:opened, finished=:finished, time=:time where user_id=:userId and content_id=:contentId";
         $params = [
@@ -72,10 +67,11 @@ class Framework implements H5PFrameworkInterface, Result
         $this->getContextSql($sql, $params, $context);
 
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($params);
+        $result = $stmt->execute($params);
+        return $result;
     }
 
-    private function insertResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context): bool
+    private function insertResult($userId, $contentId, $score, $maxScore, $opened, $finished, $time, $context)
     {
         $sql = "insert into h5p_results (user_id, content_id, score, max_score, opened, finished, time, context) values (:userId, :contentId, :score, :maxScore, :opened, :finished, :time, :context)";
         $params = [
@@ -90,10 +86,11 @@ class Framework implements H5PFrameworkInterface, Result
         ];
 
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($params);
+        $result = $stmt->execute($params);
+        return $result;
     }
 
-    private function getContextSql(&$sql, &$params, $context): void
+    private function getContextSql(&$sql, &$params, $context)
     {
         if (!is_null($context)) {
             $sql .= " and context = :context";
@@ -103,7 +100,7 @@ class Framework implements H5PFrameworkInterface, Result
         }
     }
 
-    private function hasResult($userId, $contentId, $context): bool
+    private function hasResult($userId, $contentId, $context)
     {
         $sql = "select id from h5p_results where user_id=:userId and content_id=:contentId ";
         $params = [
@@ -170,7 +167,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param string $machineName
      * @param string $tutorialUrl
      */
-    public function setLibraryTutorialUrl($machineName, $tutorialUrl): void
+    public function setLibraryTutorialUrl($machineName, $tutorialUrl)
     {
         $sql = "update h5p_libraries set tutorial_url = ? where name= ?";
         $params = [$tutorialUrl, $machineName];
@@ -214,7 +211,7 @@ class Framework implements H5PFrameworkInterface, Result
     /**
      * @inheritDoc
      */
-    public function t($message, $replacements = []): string
+    public function t($message, $replacements = [])
     {
         $key = 'h5p.' . $message;
         $translated = trans($key);
@@ -231,7 +228,7 @@ class Framework implements H5PFrameworkInterface, Result
         return $translated;
     }
 
-    public function getH5pPath(string $path): string
+    public function getH5pPath(string $path)
     {
         return $this->disk->path($path);
     }
@@ -243,7 +240,7 @@ class Framework implements H5PFrameworkInterface, Result
      *   Path to the folder where the last uploaded h5p for this session is located.
      * TODO: Implement this for real....
      */
-    public function getUploadedH5pFolderPath(): string
+    public function getUploadedH5pFolderPath()
     {
         static $dir;
 
@@ -259,7 +256,7 @@ class Framework implements H5PFrameworkInterface, Result
      *
      * @return string  Path to the last uploaded h5p
      */
-    public function getUploadedH5pPath(): string
+    public function getUploadedH5pPath()
     {
         static $path;
         if (is_null($path)) {
@@ -277,7 +274,7 @@ class Framework implements H5PFrameworkInterface, Result
      *   Associative array containg one entry per machine name.
      *   For each machineName there is a list of libraries(with different versions)
      */
-    public function loadLibraries(): array
+    public function loadLibraries()
     {
         return H5PLibrary::select(['id', 'name', 'title', 'major_version', 'minor_version', 'patch_version', 'runnable', 'restricted'])
             ->orderBy('major_version')
@@ -315,10 +312,10 @@ class Framework implements H5PFrameworkInterface, Result
      *   The librarys major version
      * @param int $minorVersion
      *   The librarys minor version
-     * @return int|false
+     * @return int
      *   The id of the specified library or FALSE
      */
-    public function getLibraryId($machineName, $majorVersion = null, $minorVersion = null): int|false
+    public function getLibraryId($machineName, $majorVersion = null, $minorVersion = null)
     {
         $library = H5PLibrary::select('id')
             ->where('name', $machineName)
@@ -338,7 +335,7 @@ class Framework implements H5PFrameworkInterface, Result
      *
      * The default extension list is part of h5p, but admins should be allowed to modify it
      *
-     * @param bool $isLibrary
+     * @param boolean $isLibrary
      *   TRUE if this is the whitelist for a library. FALSE if it is the whitelist
      *   for the content folder we are getting
      * @param string $defaultContentWhitelist
@@ -346,7 +343,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param string $defaultLibraryWhitelist
      *   A string of file extensions separated by whitespace
      */
-    public function getWhitelist($isLibrary, $defaultContentWhitelist, $defaultLibraryWhitelist): string
+    public function getWhitelist($isLibrary, $defaultContentWhitelist, $defaultLibraryWhitelist)
     {
         // TODO: Get this value from a settings page.
         $whitelist = $defaultContentWhitelist;
@@ -393,14 +390,14 @@ class Framework implements H5PFrameworkInterface, Result
     /**
      * Is the current user allowed to update libraries?
      *
-     * @return bool
+     * @return boolean
      *  TRUE if the user is allowed to update libraries
      *  FALSE if the user is not allowed to update libraries
      *  This is not accessible if logged out anyways
      */
-    public function mayUpdateLibraries(): bool
+    public function mayUpdateLibraries()
     {
-        return Session::get("isAdmin", false) || Request::is('admin/*') || Request::is("api/v1/h5p/import");
+        return \Session::get("isAdmin", false) || Request::is('admin/*') || Request::is("api/v1/h5p/import");
     }
 
     /**
@@ -408,7 +405,7 @@ class Framework implements H5PFrameworkInterface, Result
      *
      * Also fills in the libraryId in the libraryData object if the object is new
      */
-    public function saveLibraryData(&$libraryData, $new = true): void
+    public function saveLibraryData(&$libraryData, $new = true)
     {
         /** @var array $libraryData */
         $preloadedJs = $this->pathsToCsv($libraryData, 'preloadedJs', 'path');
@@ -480,13 +477,14 @@ class Framework implements H5PFrameworkInterface, Result
      * @param int $contentMainId
      *   Main id for the content if this is a system that supports versioning
      */
-    public function insertContent($content, $contentMainId = null): int|string
+    public function insertContent($content, $contentMainId = null)
     {
         /** @var H5PAdapterInterface $adapter */
         $adapter = app(H5PAdapterInterface::class);
-        $metadata = H5PMetadata::toDBArray($content['metadata'] ?? [], true);
+        $metadataRaw = (array) $content['metadata'] ?? [];
+        $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
-        $H5PContent = new H5PContent();
+        $H5PContent = H5PContent::make();
         $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
         $H5PContent->parameters = $content['params'];
         $H5PContent->filtered = '';
@@ -501,13 +499,14 @@ class Framework implements H5PFrameworkInterface, Result
         $H5PContent->is_private = (bool) ($content['is_private'] ?? true);
         $H5PContent->is_draft =  $content['is_draft'] ?? 1;
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
-        $H5PContent->save();
 
+        $H5PContent->save();
         unset($metadata['title']);
 
         if (!empty($metadata)) {
             $metadata['content_id'] = $H5PContent->id;
-            $H5PContentMetadata = new H5PContentsMetadata($metadata);
+            /** @var H5PContentsMetadata $H5PContentMetadata */
+            $H5PContentMetadata = H5PContentsMetadata::make($metadata);
             $H5PContentMetadata->save();
         }
 
@@ -530,7 +529,8 @@ class Framework implements H5PFrameworkInterface, Result
      */
     public function updateContent($content, $contentMainId = null)
     {
-        $metadata = H5PMetadata::toDBArray($content['metadata'] ?? [], true);
+        $metadataRaw = (array) $content['metadata'];
+        $metadata = \H5PMetadata::toDBArray($metadataRaw, true);
 
         $H5PContent = H5PContent::find($content['id']);
         $H5PContent->title = !empty($metadata['title']) ? $metadata['title'] : $content['title'];
@@ -544,8 +544,8 @@ class Framework implements H5PFrameworkInterface, Result
         $H5PContent->is_published = $content['is_published'];
         $H5PContent->is_draft = $content['is_draft'];
         $H5PContent->language_iso_639_3 = $content['language_iso_639_3'] ?? null;
-        $H5PContent->update();
 
+        $H5PContent->update();
         unset($metadata['title']);
 
         if (!empty($metadata)) {
@@ -865,7 +865,7 @@ class Framework implements H5PFrameworkInterface, Result
         $libraryModel = H5PLibrary::findOrFail($library->id);
         $libraryModel->deleteOrFail();
 
-        app(H5PFileStorage::class)->deleteLibrary($libraryModel->getLibraryH5PFriendly());
+        app(\H5PFileStorage::class)->deleteLibrary($libraryModel->getLibraryH5PFriendly());
     }
 
     /**
@@ -1126,7 +1126,7 @@ class Framework implements H5PFrameworkInterface, Result
         return 0;
     }
 
-    public function saveCachedAssets($key, $libraries): void
+    public function saveCachedAssets($key, $libraries)
     {
         foreach ($libraries as $library) {
             H5PLibrariesCachedAssets::create([
@@ -1146,12 +1146,8 @@ class Framework implements H5PFrameworkInterface, Result
     }
 
     /**
-     * Get a key value list of library version and count of content created
-     * using that library.
-     *
+     * Get the amount of content items associated to a library
      * @return array
-     *  Array containing library, major and minor version - content count
-     *  e.g. "H5P.CoursePresentation 1.6" => "14"
      */
     public function getLibraryContentCount(): array
     {
@@ -1165,12 +1161,20 @@ class Framework implements H5PFrameworkInterface, Result
     public function afterExportCreated($content, $filename)
     {}
 
-    public function hasPermission($permission, $id = null): bool
+    public function hasPermission($permission, $id = null)
     {
-        return match ($permission) {
-            H5PPermission::INSTALL_RECOMMENDED, H5PPermission::UPDATE_LIBRARIES => Request::is('admin/*'),
-            default => false,
-        };
+        switch ($permission) {
+            case \H5PPermission::DOWNLOAD_H5P:
+            case \H5PPermission::EMBED_H5P:
+                return false;
+
+            case \H5PPermission::CREATE_RESTRICTED:
+                return false;
+
+            case \H5PPermission::INSTALL_RECOMMENDED:
+            case \H5PPermission::UPDATE_LIBRARIES:
+                return Request::is('admin/*');
+        }
     }
 
     /**
@@ -1179,7 +1183,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param string $fileName
      * @return string URL to file
      */
-    public function getLibraryFileUrl($libraryFolderName, $fileName): string
+    public function getLibraryFileUrl($libraryFolderName, $fileName)
     {
         $storageInterface = app(CerpusStorageInterface::class);
 
@@ -1198,7 +1202,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param object $contentTypeCache Json with an array called 'libraries'
      *  containing the new content type cache that should replace the old one.
      */
-    public function replaceContentTypeCache($contentTypeCache): void
+    public function replaceContentTypeCache($contentTypeCache)
     {
         DB::transaction(function () use ($contentTypeCache) {
             H5PLibrariesHubCache::where('owner', '<>', 'Cerpus')->delete();
@@ -1236,9 +1240,9 @@ class Framework implements H5PFrameworkInterface, Result
      *
      * @return array
      */
-    public function loadAddons(): array
+    public function loadAddons()
     {
-        return H5PLibrary::getAddons();
+        return H5PLibrary::make()->getAddons();
     }
 
     /**
@@ -1247,7 +1251,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param array $libraries
      * @return array
      */
-    public function getLibraryConfig($libraries = null): array
+    public function getLibraryConfig($libraries = null)
     {
         return [];
     }
@@ -1258,7 +1262,7 @@ class Framework implements H5PFrameworkInterface, Result
      * @param array $library
      * @return boolean
      */
-    public function libraryHasUpgrade($library): bool
+    public function libraryHasUpgrade($library)
     {
         $h5pLibrary = H5PLibrary::fromLibrary($library)->first();
         return !is_null($h5pLibrary) && $h5pLibrary->isUpgradable();
@@ -1269,19 +1273,19 @@ class Framework implements H5PFrameworkInterface, Result
         // H5P Content Hub is not in use
     }
 
-    public function getContentHubMetadataCache($lang = 'en'): Stringable
+    public function getContentHubMetadataCache($lang = 'en')
     {
         // H5P Content Hub is not in use
         return new Stringable();
     }
 
-    public function getContentHubMetadataChecked($lang = 'en'): string|null
+    public function getContentHubMetadataChecked($lang = 'en')
     {
         // H5P Content Hub is not in use
         return now()->toRfc7231String();
     }
 
-    public function setContentHubMetadataChecked($time, $lang = 'en'): bool
+    public function setContentHubMetadataChecked($time, $lang = 'en')
     {
         // H5P Content Hub is not in use
         return true;

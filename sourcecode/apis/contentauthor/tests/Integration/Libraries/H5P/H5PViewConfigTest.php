@@ -168,7 +168,7 @@ class H5PViewConfigTest extends TestCase
         $this->assertTrue($contentData->displayOptions->embed);
         $this->assertFalse($contentData->displayOptions->copyright);
         $this->assertTrue($contentData->displayOptions->icon);
-        $this->assertFalse($contentData->displayOptions->copy);
+        $this->assertNull($contentData->displayOptions->copy);
 
         $this->assertFalse($contentData->contentUserData['state']);
     }
