@@ -466,15 +466,20 @@ ns.Html.prototype.appendTo = function ($wrapper) {
 
     ns.bindImportantDescriptionEvents(this, this.field.name, this.parent);
 
-    const locale = H5PIntegration.locale ?? 'en';
-    const language = ['nb', 'nn'].includes(locale) ? 'no' : locale;
-    const translation = require('ckeditor5/translations/' + language + '.js');
-
     this.ckEditorConfig = {
         licenseKey: 'GPL',
-        translations: [translation ? translation.default : []],
         ...this.getCKEditorConfig(),
     };
+
+    try {
+        if (H5PIntegration.locale) {
+            const language = ['nb', 'nn'].includes(H5PIntegration.locale) ? 'no' : H5PIntegration.locale;
+            const translation = require('ckeditor5/translations/' + language + '.js');
+            this.ckEditorConfig.translations = translation.default ?? [];
+        }
+    } catch {
+        // Will default to 'en'
+    }
 
     this.$input.focus(function () {
         // Remove placeholder

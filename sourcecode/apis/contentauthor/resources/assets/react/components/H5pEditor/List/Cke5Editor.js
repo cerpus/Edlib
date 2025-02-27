@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
-export default function HtmlEditor({ value, onChange, name, config, language }) {
+const Cke5Editor = ({ value, onChange, name, config, language }) => {
     const LICENSE_KEY = 'GPL';
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
@@ -71,7 +71,7 @@ export default function HtmlEditor({ value, onChange, name, config, language }) 
     );
 }
 
-HtmlEditor.propTypes = {
+Cke5Editor.propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func,
     name: PropTypes.string,
@@ -79,9 +79,11 @@ HtmlEditor.propTypes = {
     language: PropTypes.string,
 };
 
-HtmlEditor.defaultProps = {
+Cke5Editor.defaultProps = {
     value: '',
     onChange: () => {},
     config: {},
     language: 'en',
 };
+
+export default Cke5Editor;
