@@ -1147,7 +1147,6 @@ class Framework implements \H5PFrameworkInterface, Result
 
     /**
      * Get the amount of content items associated to a library
-     * @return array
      */
     public function getLibraryContentCount(): array
     {
@@ -1158,8 +1157,7 @@ class Framework implements \H5PFrameworkInterface, Result
     /**
      * Will trigger after the export file is created.
      */
-    public function afterExportCreated($content, $filename)
-    {}
+    public function afterExportCreated($content, $filename) {}
 
     public function hasPermission($permission, $id = null)
     {

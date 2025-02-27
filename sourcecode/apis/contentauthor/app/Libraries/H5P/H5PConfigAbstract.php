@@ -319,7 +319,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     {
         return array_merge(
             [
-                (string) mix("js/h5pmetadata.js")
+                (string) mix("js/h5pmetadata.js"),
             ],
             $this->adapter->getCustomEditorScripts(),
         );

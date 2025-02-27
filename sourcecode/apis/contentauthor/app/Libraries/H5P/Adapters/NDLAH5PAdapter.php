@@ -55,7 +55,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             '50%', '56.25%', '62.50%', '68.75%', '75%', '87.50%', '100%', '112.50%', '125%', '137.50%',
             '150%', '162.50%', '175%', '225%', '300%', '450%', '675%', '1350%', '3375%',
         ])
-            ->map(fn (string $size) => (object)[
+            ->map(fn(string $size) => (object) [
                 'label' => $size,
                 'css' => $size,
             ])
@@ -87,12 +87,12 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ],
             'textPartLanguages' =>
                 collect(['en', 'no', 'nn', 'sme', 'sma'])
-                ->map(fn (string $language) => [
-                    'title' => locale_get_display_name($language, app()->getLocale()),
-                    'languageCode' => $language,
-                ])
-                ->sortBy('title')
-                ->values(),
+                    ->map(fn(string $language) => [
+                        'title' => locale_get_display_name($language, app()->getLocale()),
+                        'languageCode' => $language,
+                    ])
+                    ->sortBy('title')
+                    ->values(),
         ];
     }
 
