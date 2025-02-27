@@ -31,6 +31,7 @@ import {
     TextPartLanguage,
     Underline,
 } from 'ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 
 const defaultTags = ['strong', 'em', 'del', 'h2', 'h3', 'a', 'ul', 'ol', 'table', 'hr'];
 
@@ -40,13 +41,6 @@ const defaultTags = ['strong', 'em', 'del', 'h2', 'h3', 'a', 'ul', 'ol', 'table'
  * @param {string} button
  * @return {boolean}
  */
-function inButtons (button) {
-    return (
-        H5PIntegration.editor !== undefined &&
-        H5PIntegration.editor.wysiwygButtons !== undefined &&
-        H5PIntegration.editor.wysiwygButtons.indexOf(button) !== -1
-    );
-}
 
 export default ({ font, tags: wantedTags, enterMode }) => {
     const tags = new Set(wantedTags ?? defaultTags);
@@ -57,10 +51,18 @@ export default ({ font, tags: wantedTags, enterMode }) => {
         toolbar: {
             items: [],
         },
+        language: {},
     };
 
     const hasTag = tag => tags.has(tag);
     const hasTags = check => check.some(hasTag);
+    const inButtons = button => {
+        return (
+            H5PIntegration.editor !== undefined &&
+            H5PIntegration.editor.wysiwygButtons !== undefined &&
+            H5PIntegration.editor.wysiwygButtons.includes(button)
+        );
+    }
 
     tags.add('br');
 
@@ -141,6 +143,9 @@ export default ({ font, tags: wantedTags, enterMode }) => {
         tags.add('span');
         paragraph.push('textPartLanguage');
         paragraphPlugins.push(TextPartLanguage);
+        if (H5PIntegration?.editor?.textPartLanguages) {
+            config.language.textPartLanguage = H5PIntegration.editor.textPartLanguages;
+        }
     }
     if (paragraph.length > 0) {
         config.plugins.push(...paragraphPlugins);
@@ -400,6 +405,16 @@ export default ({ font, tags: wantedTags, enterMode }) => {
         if (colors.length) {
             config.toolbar.items.push(...colors);
         }
+    }
+
+    if (inButtons('mathtype')) {
+        config.toolbar.items.push('|', 'MathType', 'ChemType');
+        config.plugins.push(MathType);
+        config.mathTypeParameters = {
+            editorParameters: {
+                language: 'en',
+            },
+        };
     }
 
     if (enterMode === 'p') {

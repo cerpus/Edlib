@@ -28,6 +28,7 @@
     "@ndla/licenses": "^7.1.3",
     "@ndla/ui": "^44.0.12",
     "@ndla/video-search": "^4.1.15",
+    "@wiris/mathtype-ckeditor5": "^8.12.0",
     "ajv": "^6.12.3",
     "axios": "^1.3.5",
     "bootstrap-sass": "^3.3.7",

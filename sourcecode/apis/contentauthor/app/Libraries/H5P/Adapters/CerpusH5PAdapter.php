@@ -73,7 +73,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         $scripts = [];
 
         if (config('h5p.include-mathjax') === true) {
-            $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG';
+            $scripts[] = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js';
         }
 
         return array_unique([
@@ -83,7 +83,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
             ...$this->videoAdapter->getViewScripts(),
         ]);
     }
-
 
     public function getCustomViewCss(): array
     {
@@ -202,5 +201,10 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     public function getAdapterName(): string
     {
         return 'cerpus';
+    }
+
+    public function filterEditorScripts(): array
+    {
+        return [];
     }
 }

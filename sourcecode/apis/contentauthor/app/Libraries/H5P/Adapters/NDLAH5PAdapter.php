@@ -81,19 +81,31 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getEditorSettings(): array
     {
         return [
-            'wirisPath' => 'https://www.wiris.net/client/plugins/ckeditor/plugin.js',
+            'wysiwygButtons' => [
+                'language',
+                'mathtype',
+            ],
+            'textPartLanguages' =>
+                collect(['en', 'no', 'nn', 'sme', 'sma'])
+                ->map(fn (string $language) => [
+                    'title' => locale_get_display_name($language, app()->getLocale()),
+                    'languageCode' => $language,
+                ])
+                ->sortBy('title')
+                ->values(),
         ];
     }
 
 
     public function getCustomEditorScripts(): array
     {
-        $js[] = "/js/h5p/wiris/h5peditor-html-wiris-addon.js";
-        $js[] = (string) mix('js/h5peditor-image-popup.js');
-        $js[] = (string) mix('js/h5peditor-custom.js');
-
         return array_unique([
-            ...$js,
+            // Custom HTML component to enable CKEDitor 5 plugins TextPartLanguage, MathType and ChemType
+            (string) mix('js/ndla-h5peditor-html.js'),
+            // Custom image editor/cropper
+            (string) mix('js/h5peditor-image-popup.js'),
+            // H5P.getCrossOrigin override
+            (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getEditorScripts(),
             ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
@@ -108,8 +120,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomViewScripts(): array
     {
         return [
-            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
-            '/js/h5p/wiris/view.js',
+            '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js',
             (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
@@ -272,5 +283,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getAdapterName(): string
     {
         return 'ndla';
+    }
+
+    public function filterEditorScripts(): array
+    {
+        return [
+            // Remove default HTML component. Custom version added in getCustomEditorScripts()
+            'ckeditor/ckeditor.js',
+            'scripts/h5peditor-html.js',
+        ];
     }
 }

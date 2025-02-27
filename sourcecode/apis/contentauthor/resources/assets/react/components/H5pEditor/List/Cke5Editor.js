@@ -2,7 +2,7 @@ import 'ckeditor5/ckeditor5.css';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { ClassicEditor, SourceEditing, FindAndReplace } from 'ckeditor5';
+import { ClassicEditor, SourceEditing } from 'ckeditor5';
 
 export default function HtmlEditor({ value, onChange, name, config, language }) {
     const LICENSE_KEY = 'GPL';
@@ -30,8 +30,8 @@ export default function HtmlEditor({ value, onChange, name, config, language }) 
         }
 
         // Add some extra tools
-        config.toolbar.items.unshift('sourceEditing', 'findAndReplace', '|');
-        config.plugins.push(SourceEditing, FindAndReplace);
+        config.toolbar.items.unshift('sourceEditing', '|');
+        config.plugins.push(SourceEditing);
 
         return {
             name: name,
