@@ -201,7 +201,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: /tmp/coverage.xml
           flags: hub
-          context: sourcecode/apis/contentauthor
+          context: sourcecode/hub
 
       - name: Gather Docker metadata for PHP image
         id: php_meta
