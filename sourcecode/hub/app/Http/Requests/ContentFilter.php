@@ -337,6 +337,9 @@ class ContentFilter extends FormRequest
                 $canDelete = $forUser && Gate::allows('delete', $content);
                 $canCopy = Gate::allows('copy', $content);
 
+                $languageName = locale_get_display_language($version->language_iso_639_3, app()->getLocale());
+                $languageName = (!empty($languageName) && $languageName !== $version->language_iso_639_3) ? $languageName : null;
+
                 return new ContentDisplayItem(
                     title: $version->title,
                     createdAt: $version->created_at?->toImmutable(),
@@ -344,6 +347,7 @@ class ContentFilter extends FormRequest
                     viewsCount: $content->views_count,
                     contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
                     languageIso639_3: strtoupper($version->language_iso_639_3),
+                    languageDisplayName: $languageName,
                     users: $content->users->map(fn($user) => $user->name)->join(', '),
                     detailsUrl: $showDrafts ? route('content.version-details', [$content, $version]) : route('content.details', [$content]),
                     previewUrl: route('content.preview', [$content, $version]),

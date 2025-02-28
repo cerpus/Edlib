@@ -20,7 +20,7 @@
                 {{ $content->users }}
             </div>
             <div class="col-2" aria-label="{{ trans('messages.language') }}">
-                {{ $content->languageIso639_3 }}
+                {{ $content->languageDisplayName ?: $content->languageIso639_3 }}
             </div>
             <div class="col-2" aria-label="{{ trans('messages.views') }}">
                 {{ $content->viewsCount }}
