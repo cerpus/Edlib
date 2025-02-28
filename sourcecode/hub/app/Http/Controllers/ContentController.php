@@ -243,6 +243,14 @@ class ContentController extends Controller
         ]);
     }
 
+    public function publish(Content $content, ContentVersion $version, Request $request): Response
+    {
+        $version->published = true;
+        $version->save();
+
+        return redirect()->back()->with('alert', trans('messages.content-published-notice'));
+    }
+
     public function updateStatus(Content $content, ContentStatusRequest $request): Response
     {
         $content->shared = $request->contentIsShared();

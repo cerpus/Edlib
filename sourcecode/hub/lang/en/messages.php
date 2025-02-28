@@ -245,4 +245,6 @@ return [
     'danger-zone' => 'Danger zone',
     'confirm-reindex' => 'Reindexing will make content listings unavailable until the process has completed. Are you sure you want to continue?',
     'admins' => 'Admins',
+    'publish' => 'Publish',
+    'content-published-notice' => 'The content has been published.',
 ];
