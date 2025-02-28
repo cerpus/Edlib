@@ -41,4 +41,7 @@ return [
 
     // one of 'null', 'nynorskroboten', 'nynorobot'
     'translator' => env('H5P_TRANSLATOR', env('H5P_NYNORSK_ADAPTER', 'null')),
+    'ckeditor' => [
+        'textPartLanguages' => env("H5P_CKEDITOR_TEXT_PART_LANGUAGES", 'en,nb,nn'),
+    ],
 ];

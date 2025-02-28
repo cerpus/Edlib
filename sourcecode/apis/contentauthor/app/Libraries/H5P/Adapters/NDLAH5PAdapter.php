@@ -86,7 +86,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
                 'mathtype',
             ],
             'textPartLanguages' =>
-                collect(['en', 'no', 'nn', 'sme', 'sma'])
+                collect(explode(',', config('h5p.ckeditor.textPartLanguages', '')))
                     ->map(fn(string $language) => [
                         'title' => locale_get_display_name($language, app()->getLocale()),
                         'languageCode' => $language,
