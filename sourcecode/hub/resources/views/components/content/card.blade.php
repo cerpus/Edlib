@@ -40,9 +40,9 @@
             </div>
             <div
                 class="col-auto badge text-bg-primary fw-normal"
-                @if($content->languageDisplayName !== false)
+                @isset($content->languageDisplayName))
                     title="{{$content->languageDisplayName}}"
-                @endif
+                @endisset
             >
                 {{ $content->languageIso639_3 }}
             </div>
