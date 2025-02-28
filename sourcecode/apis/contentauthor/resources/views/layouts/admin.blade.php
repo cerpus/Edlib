@@ -42,27 +42,14 @@
                             <li>
                                 <a href="{{ route('admin.locks') }}">Manage Edit Locks</a>
                             </li>
-
+                            <li>
+                                <a href="{{ route('admin.presave.index') }}">Presave</a>
+                            </li>
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
                         </ul>
                     </li>
-                    @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                NDLA Import <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
-                                    <li>
-                                        <a href="{{ route('admin.importexport.index') }}">Import / Export Settings</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
                     @if( config('h5p.isHubEnabled') !== true )
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"

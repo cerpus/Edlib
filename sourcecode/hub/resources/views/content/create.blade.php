@@ -3,20 +3,25 @@
 
     <p>{{ trans('messages.select-a-content-type') }}</p>
 
-    <ul>
+    <div class="row">
         @foreach ($types as $type)
-            <li>
-                <a href="{{ route('content.launch-creator', [$type]) }}">{{ $type->name }}</a>
-                <ul>
-                    @foreach ($type->extras()->forAdmins(false)->get() as $extra)
-                        <li>
-                            <a href="{{ route('content.launch-creator', [$type, $extra]) }}">{{ $extra->name }}</a>
-                        </li>
-                    @endforeach
-                </ul>
-            </li>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    @if($type->imageUrl == null)
+                        <div class="card-img-top lti-tool-image empty d-flex justify-content-center align-items-center">
+                            <h1>{{ $type->name }}</h1>
+                        </div>
+                    @else
+                        <img class="card-img-top lti-tool-image" src="{{ $type->imageUrl }}" alt="type image">
+                    @endif
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $type->name }}</h5>
+                        <a href="{{ $type->url }}" class="btn btn-primary">Create</a>
+                    </div>
+                </div>
+            </div>
         @endforeach
-    </ul>
+    </div>
 
     @can('admin')
         <p>

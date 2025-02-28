@@ -68,9 +68,9 @@ Overall coverage [![codecov](https://codecov.io/github/cerpus/Edlib/branch/maste
 
 The code coverage report is currently covering the PHP parts of the Edlib code for the following parts of Edlib:
 
-- The Hub: N/A - pending setup.
+- The Hub: [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8&flag=hub)](https://codecov.io/github/cerpus/Edlib)
 
-- Content Author: [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8)](https://codecov.io/github/cerpus/Edlib)
+- Content Author: [![codecov](https://codecov.io/github/cerpus/Edlib/branch/master/graph/badge.svg?token=E3ZWIO0XR8&flag=contentauthor)](https://codecov.io/github/cerpus/Edlib)
 
 
 

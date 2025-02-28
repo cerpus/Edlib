@@ -186,13 +186,22 @@ jobs:
 
       - name: Run tests
         run: |
-          docker run --rm --net=host \
+          docker run --rm -v "/tmp:/reports" --net=host \
             -e MEILISEARCH_HOST=http://localhost:7700 \
             -e DB_HOST=127.0.0.1 \
             -e DB_DATABASE=postgres \
-            hub-test vendor/bin/phpunit --exclude-testsuite Browser
+            hub-test vendor/bin/phpunit \
+              --exclude-testsuite Browser \
+              --coverage-clover /reports/coverage.xml
 
-      # TODO: insert codecov stuff here when repo is opened
+      - name: Upload coverage to Codecov
+        if: github.event_name == 'push' && github.ref != 'refs/heads/master'
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: /tmp/coverage.xml
+          flags: hub
+          context: sourcecode/hub
 
       - name: Gather Docker metadata for PHP image
         id: php_meta

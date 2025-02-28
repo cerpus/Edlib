@@ -1,8 +1,11 @@
 component_management:
   individual_components:
-    - component_id: "contentauthor"
+    - component_id: contentauthor
       paths:
         - "sourcecode/apis/contentauthor/**"
+    - component_id: hub
+      paths:
+        - "sourcecode/hub/**"
 
 comment:
   layout: "header, diff, flags, components"  # show component info in the PR comment

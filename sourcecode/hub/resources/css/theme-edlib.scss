@@ -1,7 +1,7 @@
-// The Edlib theme
 [data-bs-theme="edlib"] {
     --bs-body-color: #{$gray-700}; //Default text color
     --bs-border-color: #{$gray-400}; //Default border color for input, buttons, etc
+    --logo-color: rgba(0, 0, 0, 0.75);
     --bs-highlight-bg: #e7f2ed;
 
     $component-active-color: var(--bs-body-color);
@@ -178,4 +178,3 @@
         }
     }
 }
-

@@ -10,10 +10,10 @@ use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
-use App\Http\Controllers\Admin\ImportExportSettingsController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
+use App\Http\Controllers\Admin\PresaveController;
 use App\Http\Controllers\Admin\VersioningController;
 use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +47,7 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.check-library');
         Route::get('libraries/{library}/content', [AdminH5PDetailsController::class, 'contentForLibrary'])
             ->name('admin.content-library');
-        Route::get('content/{content}/details', [AdminH5PDetailsController::class, 'contentHistory'])
+        Route::get('content/{content}/details/{version?}', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
         Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
             ->name('admin.library-translation');
@@ -87,11 +87,8 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
         Route::get('article/maxscore/log', [AdminArticleController::class, 'download'])->name('admin.article.maxscore.download');
         Route::get('article/maxscore/failed', [AdminArticleController::class, 'viewFailedCalculations'])->name('admin.article.maxscore.failed');
 
-        // Settings for import export
-        Route::get('ndla-import-export/settings', [ImportExportSettingsController::class, 'index'])->name('admin.importexport.index');
-        Route::post('ndla-import-export/settings/reset-tracking', [ImportExportSettingsController::class, 'resetTracking'])->name('admin.importexport.reset-tracking');
-        Route::post('ndla-import-export/settings/empty-article-import-log', [ImportExportSettingsController::class, 'emptyArticleImportLog'])->name('admin.importexport.empty-article-import-log');
-        Route::post('ndla-import-export/settings/run-presave', [ImportExportSettingsController::class, 'runPresave'])->name('admin.importexport.run-presave');
+        Route::get('presave', [PresaveController::class, 'index'])->name('admin.presave.index');
+        Route::post('presave/run-presave', [PresaveController::class, 'runPresave'])->name('admin.presave.run-presave');
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');

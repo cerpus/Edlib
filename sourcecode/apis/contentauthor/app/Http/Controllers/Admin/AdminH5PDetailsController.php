@@ -153,19 +153,20 @@ class AdminH5PDetailsController extends Controller
         ]);
     }
 
-    public function contentHistory(H5PContent $content): View
+    public function contentHistory(H5PContent $content, ContentVersion $version = null): View
     {
         $versions = collect();
         $history = [];
-
-        if ($content->version_id) {
+        if ($version !== null && $content->id === $version->content_id) {
+            $history = $this->getVersions($version, $versions);
+        } elseif ($content->version_id) {
             $data = $content->getVersion();
             $history = $data ? $this->getVersions($data, $versions) : [];
         }
 
         return view('admin.library-upgrade.content-details', [
             'content' => $content,
-            'latestVersion' => !isset($history[$content->id]['children']),
+            'requestedVersion' => $version,
             'history' => $history,
             'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
         ]);
@@ -240,24 +241,11 @@ class AdminH5PDetailsController extends Controller
     {
         $versionArray = $versionData->toArray();
         $versionArray['versionDate'] = $versionData->created_at;
-        $content = $versionData->getContent();
-        if (!empty($content)) {
-            $library = $content->library;
-            $versionArray['content'] = [
-                'title' => $content->title,
-                'created' => $content->created_at->format('Y-m-d H:i:s e'),
-                'update' => $content->updated_at->format('Y-m-d H:i:s e'),
-                'version_id' => $content->version_id,
-                'license' => $content->license,
-                'language' => $content->language_iso_639_3,
-                'library_id' => $library->id,
-                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
-            ];
-        }
+        $versionArray['content'] = $this->getContentInfo($versionData);
         $parent = $versionData->previousVersion;
         if (!empty($parent)) {
             $this->getVersions($parent, $stack, false);
-            $versionArray['parent'] = $parent->content_id;
+            $versionArray['parent'] = $parent->id;
         }
         $children = $versionData->nextVersions;
         if ($children->isNotEmpty()) {
@@ -266,13 +254,37 @@ class AdminH5PDetailsController extends Controller
                 if ($getChildren) {
                     $this->getVersions($child, $stack, false);
                 }
-                $versionArray['children'][] = $child->content_id;
+                $versionArray['children'][] = [
+                    'id' => $child->id,
+                    'content_id' => $child->content_id,
+                    'versionDate' => $child->created_at,
+                    'version_purpose' => $child->version_purpose,
+                    'content' => $this->getContentInfo($versionData),
+                ];
             }
         }
-        if (!$stack->has($versionData->content_id)) {
-            $stack->put($versionData->content_id, $versionArray);
+        if (!$stack->has($versionData->id)) {
+            $stack->put($versionData->id, $versionArray);
         }
 
         return $stack;
+    }
+
+    private function getContentInfo(ContentVersion $version): array
+    {
+        $content = $version->getContent();
+
+        if (!empty($content)) {
+            $library = $content->library;
+            return [
+                'title' => $content->title,
+                'license' => $content->license,
+                'language' => $content->language_iso_639_3,
+                'library_id' => $library->id,
+                'library' => sprintf('%s %d.%d.%d', $library->name, $library->major_version, $library->minor_version, $library->patch_version),
+            ];
+        }
+
+        return [];
     }
 }

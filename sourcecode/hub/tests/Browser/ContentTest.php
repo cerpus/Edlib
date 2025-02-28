@@ -300,8 +300,8 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitForEvent('htmx:after-swap')
-                ->assertVisible('#previewModal .lti-launch'),
+                ->waitFor('.preview-modal')
+                ->assertVisible('.preview-modal .lti-launch'),
         );
     }
 
@@ -330,7 +330,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $launch) => $launch
                         ->waitFor('article.content-card')
                         ->with(new ContentCard(), fn(Browser $card) => $card->click('@title'))
-                        ->waitFor('#previewModal .modal-dialog')
+                        ->waitFor('.preview-modal')
                         ->with(
                             new PreviewModal(),
                             fn(Browser $modal) => $modal
@@ -356,7 +356,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $card) => $card
                         ->click('@title'),
                 )
-                ->waitFor('#previewModal .modal-dialog')
+                ->waitFor('.preview-modal')
                 ->with(
                     new PreviewModal(),
                     fn(Browser $modal) => $modal
@@ -581,13 +581,14 @@ final class ContentTest extends DuskTestCase
             ->launchUrl('https://hub-test.edlib.test/lti/dl')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
-        LtiTool::factory()
+        $ltiTool = LtiTool::factory()
             ->slug('sample-tool')
             ->withName('Sample tool')
             ->withCredentials($platform->getOauth1Credentials())
             ->launchUrl('https://hub-test.edlib.test/lti/samples/deep-link')
             ->state(['send_name' => true, 'send_email' => true])
             ->create();
+        $url = route('content.launch-creator', [$ltiTool]);
 
         $this->browse(
             fn(Browser $browser) => $browser
@@ -600,7 +601,7 @@ final class ContentTest extends DuskTestCase
                     fn(Browser $e3Frame) => $e3Frame
                         ->clickLink('Create')
                         ->waitForText('Select a content type')
-                        ->clickLink('Sample tool')
+                        ->click('a[href^="' . $url . '"]')
                         ->waitFor('iframe.lti-launch')
                         ->withinFrame(
                             '.lti-launch',
@@ -751,21 +752,23 @@ final class ContentTest extends DuskTestCase
         $content = Content::factory()->withPublishedVersion()->create();
 
         $this->browse(function (Browser $browser) use ($content) {
+            $browser
+                ->visit('/content/' . $content->id)
+                ->clickLink('Share')
+                ->waitFor('.share-dialog')
+                ->click('.copy-to-clipboard')
+                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
+                ->acceptDialog();
+
             $devTools = (new ChromeDevToolsDriver($browser->driver));
             $devTools->execute('Browser.grantPermissions', [
                 'permissions' => ['clipboardReadWrite'],
             ]);
 
-            $browser
-                ->visit('/content/' . $content->id)
-                ->clickLink('Share')
-                ->assertDialogOpened('The address for sharing has been copied to your clipboard.')
-                ->acceptDialog()
-                ->assertPathIs('/content/' . $content->id)
-                ->assertScript(
-                    'navigator.clipboard.readText()',
-                    'https://hub-test.edlib.test/c/' . $content->id,
-                );
+            $browser->assertScript(
+                'navigator.clipboard.readText()',
+                'https://hub-test.edlib.test/c/' . $content->id,
+            );
         });
     }
 
@@ -1351,8 +1354,8 @@ final class ContentTest extends DuskTestCase
                 ->assertAuthenticated()
                 ->visit('/')
                 ->clickLink('Create')
-                ->assertSeeLink('First Tool')
-                ->assertSeeLink('Second Tool'),
+                ->assertSee('First Tool')
+                ->assertSee('Second Tool'),
         );
     }
 
@@ -1377,8 +1380,37 @@ final class ContentTest extends DuskTestCase
                 ->loginAs($user->email)
                 ->assertAuthenticated()
                 ->clickLink('Create')
-                ->assertSeeLink('Only Tool')
-                ->assertSeeLink('Tool Extra'),
+                ->assertSee('Only Tool')
+                ->assertSee('Tool Extra'),
+        );
+    }
+
+    public function testCanListContentWhenSearchAndDatabaseMismatch(): void
+    {
+        $content = Content::factory()
+            ->withVersion(
+                ContentVersion::factory()
+                    ->title('This is my soon-to-be-gone content')
+                    ->published(),
+            )
+            ->shared()
+            ->create();
+
+        RebuildContentIndex::dispatchSync();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertSeeIn('.content-card', 'This is my soon-to-be-gone content'),
+        );
+
+        $content->deleteQuietly();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit('https://hub-test.edlib.test/content')
+                ->assertTitleContains('Explore')
+                ->assertDontSee('.content-card'),
         );
     }
 }

@@ -27,7 +27,7 @@
         "symfony/clock": "^7.2"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.2.2",
+        "barryvdh/laravel-ide-helper": "^3.3",
         "cache/array-adapter": "^1.2",
         "ekino/phpstan-banned-code": "^3.0",
         "fakerphp/faker": "^1.24.1",

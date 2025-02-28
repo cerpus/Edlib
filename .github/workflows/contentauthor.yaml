@@ -170,6 +170,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: contentauthor
           files: /tmp/coverage.xml
           context: sourcecode/apis/contentauthor
 

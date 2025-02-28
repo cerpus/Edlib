@@ -314,44 +314,50 @@ class ContentFilter extends FormRequest
             $eagerLoad[] = 'latestPublishedVersion';
         }
 
-        $models = Content::whereIn('id', $hits->pluck('id'))
+        $contents = Content::whereIn('id', $hits->pluck('id'))
             ->with($eagerLoad)
             ->withCount(['views'])
             ->get()
             ->keyBy('id');
 
-        return $hits->map(function (array $item) use ($models, $forUser, $showDrafts) {
-            $model = $models[$item['id']]
-                ?? throw new NotFoundHttpException();
-            $version = ($showDrafts ? $model->latestVersion : $model->latestPublishedVersion)
-                ?? throw new NotFoundHttpException();
+        return $hits
+            ->map(fn(array $item) => [
+                ...$item,
+                'content' => $contents[$item['id']] ?? null,
+            ])
+            ->filter(fn(array $item) => $item['content'] !== null)
+            ->map(function (array $item) use ($forUser, $showDrafts) {
+                $content = $item['content'];
+                $version = ($showDrafts ? $content->latestVersion : $content->latestPublishedVersion)
+                    ?? throw new NotFoundHttpException();
 
-            $canUse = Gate::allows('use', [$model, $version]);
-            $canEdit = Gate::allows('edit', [$model, $version]);
-            $canView = Gate::allows('view', $model);
-            $canDelete = $forUser && Gate::allows('delete', $model);
-            $canCopy = Gate::allows('copy', $model);
+                $canUse = Gate::allows('use', [$content, $version]);
+                $canEdit = Gate::allows('edit', [$content, $version]);
+                $canView = Gate::allows('view', $content);
+                $canDelete = $forUser && Gate::allows('delete', $content);
+                $canCopy = Gate::allows('copy', $content);
 
-            $languageName = locale_get_display_language($version->language_iso_639_3, app()->getLocale());
-            $languageName = (!empty($languageName) && $languageName !== $version->language_iso_639_3) ? $languageName : null;
+                $languageName = locale_get_display_language($version->language_iso_639_3, app()->getLocale());
+                $languageName = (!empty($languageName) && $languageName !== $version->language_iso_639_3) ? $languageName : null;
 
-            return new ContentDisplayItem(
-                title: $version->title,
-                createdAt: $version->created_at?->toImmutable(),
-                isPublished: $version->published,
-                viewsCount: $model->views_count,
-                contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
-                languageIso639_3: strtoupper($version->language_iso_639_3),
-                languageDisplayName: $languageName,
-                users: $model->users->map(fn($user) => $user->name)->join(', '),
-                detailsUrl: $showDrafts ? route('content.version-details', [$model, $version]) : route('content.details', [$model]),
-                previewUrl: route('content.preview', [$model, $version]),
-                useUrl: $canUse ? route('content.use', [$model, $version]) : null,
-                editUrl: $canEdit ? route('content.edit', [$model, $version]) : null,
-                shareUrl: $canView ? route('content.share', [$model, SessionScope::TOKEN_PARAM => null]) : null,
-                copyUrl: $canCopy ? route('content.copy', [$model]) : null,
-                deleteUrl: $canDelete ? route('content.delete', [$model]) : null,
-            );
-        });
+                return new ContentDisplayItem(
+                    title: $version->title,
+                    createdAt: $version->created_at?->toImmutable(),
+                    isPublished: $version->published,
+                    viewsCount: $content->views_count,
+                    contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
+                    languageIso639_3: strtoupper($version->language_iso_639_3),
+                    languageDisplayName: $languageName,
+                    users: $content->users->map(fn($user) => $user->name)->join(', '),
+                    detailsUrl: $showDrafts ? route('content.version-details', [$content, $version]) : route('content.details', [$content]),
+                    previewUrl: route('content.preview', [$content, $version]),
+                    useUrl: $canUse ? route('content.use', [$content, $version]) : null,
+                    editUrl: $canEdit ? route('content.edit', [$content, $version]) : null,
+                    shareUrl: $canView ? route('content.share', [$content, SessionScope::TOKEN_PARAM => null]) : null,
+                    shareDialogUrl: $canView ? route('content.share-dialog', [$content]) : null,
+                    copyUrl: $canCopy ? route('content.copy', [$content]) : null,
+                    deleteUrl: $canDelete ? route('content.delete', [$content]) : null,
+                );
+            });
     }
 }

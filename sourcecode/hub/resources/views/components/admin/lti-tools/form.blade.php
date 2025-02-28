@@ -48,18 +48,6 @@
     />
 
     <fieldset>
-        <legend>{{ trans('messages.launch-settings') }}</legend>
-
-        <x-form.field
-            name="proxy_launch"
-            type="checkbox"
-            :label="trans('messages.proxy-launch-to-lti-tool', ['site' => config('app.name')])"
-            :text="trans('messages.proxy-launch-to-lti-tool-help', ['site' => config('app.name')])"
-            :checked="$tool?->proxy_launch"
-        />
-    </fieldset>
-
-    <fieldset>
         <legend>{{ trans('messages.edit-mode') }}</legend>
 
         <x-form.field

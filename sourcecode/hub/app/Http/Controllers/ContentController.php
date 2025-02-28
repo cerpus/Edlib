@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\DataObjects\LtiCreateInfo;
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Enums\LtiToolEditMode;
@@ -109,6 +110,17 @@ class ContentController extends Controller
         ]);
     }
 
+    public function shareDialog(Content $content, Request $request): View
+    {
+        if (!$request->header('HX-Request')) {
+            abort(400);
+        }
+
+        return view('content.hx-share-dialog', [
+            'content' => $content,
+        ]);
+    }
+
     public function embed(Content $content, ContentVersion|null $version = null): View
     {
         $version ??= $content->latestPublishedVersion()->firstOrFail();
@@ -181,8 +193,19 @@ class ContentController extends Controller
     {
         $tools = LtiTool::all();
 
+        /** @var LtiCreateInfo[] $info */
+        $info = [];
+
+        foreach ($tools as $type) {
+            $info[] = LtiCreateInfo::fromLtiTool($type);
+
+            foreach ($type->extras()->forAdmins(false)->get() as $extra) {
+                $info[] = LtiCreateInfo::fromLtiToolExtra($type, $extra);
+            }
+        }
+
         return view('content.create', [
-            'types' => $tools,
+            'types' => $info,
         ]);
     }
 
@@ -462,10 +485,5 @@ class ContentController extends Controller
                 'formats' => $request->getDateFormatsForResolution(),
             ],
         ]);
-    }
-
-    public function redirectFromEdlib2Id(Content $edlib2Content): RedirectResponse
-    {
-        return redirect()->route('content.embed', [$edlib2Content]);
     }
 }
