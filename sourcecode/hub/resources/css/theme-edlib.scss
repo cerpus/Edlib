@@ -167,6 +167,12 @@
         }
     }
 
+    .lti-tool-image {
+        &.empty {
+            background-color: #A3CBBB;
+        }
+    }
+
     // Underline for menu items in contrast mode
     @media (forced-colors: active) {
         .nav-underline .nav-link {

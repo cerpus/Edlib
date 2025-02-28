@@ -14,4 +14,10 @@
     .btn-outline-secondary {
         @include button-outline-variant($gray-500, $gray-900, $gray-200, $gray-100, $gray-900);
     }
+
+    .lti-tool-image {
+        &.empty {
+            background-color: #075035;
+        }
+    }
 }
