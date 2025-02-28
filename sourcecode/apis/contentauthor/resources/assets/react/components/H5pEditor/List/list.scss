@@ -36,6 +36,28 @@
       width: 100%;
       padding: 10px;
     }
+
+    .cke5-editor__container {
+        .ck-content {
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .ck-font-size-dropdown .ck-dropdown__panel,
+        .ck-text-fragment-language-dropdown .ck-dropdown__panel,
+        .ck-color-ui-dropdown .ck-dropdown__panel,
+        {
+            max-height: 20em;
+            overflow-y: scroll;
+            max-width: 50em;
+            left: unset;
+            right: 0;
+        }
+
+        .ck-fontsize-option .ck-button__label {
+            line-height: normal !important;
+        }
+    }
   }
 
   .info-text {
