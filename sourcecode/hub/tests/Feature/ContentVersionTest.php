@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\ContentVersion;
-use App\Models\LtiTool;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
@@ -30,28 +29,9 @@ final class ContentVersionTest extends TestCase
         $this->assertSame($expected, $v->givesScore());
     }
 
-    /** @param array<mixed> $session */
-    #[TestWith([[]])]
-    #[TestWith([['lti' => ['ext_edlib3_return_exact_version' => '1']]])]
-    public function testLaunchUrlIsUnproxiedWhenProxyingIsDisabled(array $session): void
+    public function testLaunchUrlIsExactVersionWhenSettingExistsInSession(): void
     {
         $version = ContentVersion::factory()
-            ->tool(LtiTool::factory()->proxyLaunch(false))
-            ->withLaunchUrl('https://example.com/launch')
-            ->create();
-
-        $this->withSession($session);
-
-        $this->assertSame(
-            'https://example.com/launch',
-            $version->getExternalLaunchUrl(),
-        );
-    }
-
-    public function testLaunchUrlIsExactVersionWhenProxiedAndSettingExistsInSession(): void
-    {
-        $version = ContentVersion::factory()
-            ->tool(LtiTool::factory()->proxyLaunch(true))
             ->withLaunchUrl('https://example.com/launch')
             ->create();
 
@@ -69,10 +49,9 @@ final class ContentVersionTest extends TestCase
         );
     }
 
-    public function testLaunchUrlIsLatestVersionOfContentByDefaultWhenProxyingIsEnabled(): void
+    public function testLaunchUrlIsLatestVersionOfContentByDefault(): void
     {
         $version = ContentVersion::factory()
-            ->tool(LtiTool::factory()->proxyLaunch(true))
             ->withLaunchUrl('https://example.com/launch')
             ->create();
 
