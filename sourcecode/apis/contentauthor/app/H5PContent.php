@@ -64,7 +64,6 @@ class H5PContent extends Content implements VersionableObject
 
     protected $casts = [
         'library_id' => "int",
-        'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
 

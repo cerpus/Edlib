@@ -62,7 +62,6 @@ class CRUTest extends TestCase
         $this->setUpH5PLibrary();
         $this->createUnitTestDirectories();
         $this->setupH5PAdapter([
-            'isUserPublishEnabled' => false,
             'getAdapterName' => "UnitTest",
         ]);
 
@@ -92,7 +91,7 @@ class CRUTest extends TestCase
         $this->assertDatabaseCount('h5p_contents', 1);
         $h5p = H5PContent::find(1);
         $this->assertCount(1, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
         $firstVersion = $h5p->version_id;
         $this->assertDatabaseHas('content_versions', [
             'id' => $firstVersion,
@@ -125,7 +124,7 @@ class CRUTest extends TestCase
         $h5p->refresh();
         $this->assertDatabaseCount('h5p_contents', 1);
         $this->assertCount(2, $h5p->collaborators);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
 
         $this->assertDatabaseCount('content_versions', 2);
         $secondVersion = $h5p->version_id;
@@ -160,8 +159,8 @@ class CRUTest extends TestCase
         $this->assertDatabaseCount('h5p_contents', 2);
         $this->assertCount(2, H5PContent::find(1)->collaborators); // Original still has two collaborators
         $this->assertCount(3, H5PContent::find(2)->collaborators); // New has three collaborators
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel', 'is_published' => 1]);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2', 'is_published' => 1]);
+        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'Tittel']);
+        $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'Tittel 2']);
 
         $this->assertDatabaseCount('content_versions', 3);
         $thirdVersion = H5PContent::find(2)->version_id;
@@ -380,153 +379,5 @@ class CRUTest extends TestCase
         $this->assertEquals(90, $second->library_id);
         $this->assertJsonStringEqualsJsonString('{"simpleTest":"SimpleTest","original":false,"upgraded":"Hell yess!"}', $second->parameters);
         Event::assertDispatched(H5PWasSaved::class);
-    }
-
-    #[Test]
-    public function enabledUserPublishActionAndLTISupport()
-    {
-        Event::fake();
-        $this->seed(TestH5PSeeder::class);
-
-        $owner = User::factory()->make();
-        $this->setUpH5PLibrary();
-        $this->createUnitTestDirectories();
-
-        $this->setupH5PAdapter([
-            'isUserPublishEnabled' => true,
-            'getAdapterName' => "UnitTest",
-        ]);
-
-        $request = new Oauth1Request('POST', route('h5p.store'), [
-            'title' => 'New resource',
-            'action' => 'create',
-            'library' => 'H5P.MarkTheWords 1.6',
-            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-            'frame' => "1",
-            'copyright' => "1",
-            'col_email' => '',
-            'col-emails' => '',
-            'license' => "PRIVATE",
-            'lti_message_type' => $this->faker->word,
-            'redirectToken' => $this->faker->unique()->uuid,
-            'isPublished' => 0,
-            'isDraft' => 0,
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->post(route('h5p.store'), $request->toArray())
-            ->assertStatus(Response::HTTP_CREATED);
-
-        $request = new Oauth1Request('POST', route('h5p.store'), [
-            'title' => 'New resource 2',
-            'action' => 'create',
-            'library' => 'H5P.MarkTheWords 1.6',
-            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-            'frame' => "1",
-            'copyright' => "1",
-            'col_email' => '',
-            'col-emails' => '',
-            'license' => "PRIVATE",
-            'lti_message_type' => $this->faker->word,
-            'redirectToken' => $this->faker->unique()->uuid,
-            'isPublished' => 1,
-            'isDraft' => 0,
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->post(route('h5p.store'), $request->toArray())
-            ->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 1, 'title' => 'New resource', 'is_published' => 0]);
-        $this->assertDatabaseHas('h5p_contents', ['id' => 2, 'title' => 'New resource 2', 'is_published' => 1]);
-        Event::assertDispatched(H5PWasSaved::class);
-    }
-
-    #[Test]
-    public function enabledUserPublishActionAndLTISupport_invalidPublishFlag_thenFails()
-    {
-        $owner = User::factory()->make();
-        $this->createUnitTestDirectories();
-
-        $this->setupH5PAdapter([
-            'isUserPublishEnabled' => true,
-        ]);
-
-        $request = new Oauth1Request('POST', route('h5p.store'), [
-            'title' => 'New resource',
-            'action' => 'create',
-            'library' => 'H5P.MarkTheWords 1.6',
-            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-            'license' => "PRIVATE",
-            'lti_message_type' => $this->faker->word,
-            'redirectToken' => $this->faker->unique()->uuid,
-            'isPublished' => 'invalidValue',
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->postJson(route('h5p.store'), $request->toArray())
-            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    #[Test]
-    public function disabledUserPublishAction_invalidPublishFlag_thenFails()
-    {
-        $owner = User::factory()->make();
-        $this->createUnitTestDirectories();
-
-        $this->setupH5PAdapter([
-            'isUserPublishEnabled' => false,
-        ]);
-
-        $request = new Oauth1Request('POST', route('h5p.store'), [
-            'title' => 'New resource',
-            'action' => 'create',
-            'library' => 'H5P.MarkTheWords 1.6',
-            'parameters' => '{"params":{"simpleTest":"SimpleTest"},"metadata":{}}',
-            'license' => "PRIVATE",
-            'lti_message_type' => $this->faker->word,
-            'redirectToken' => $this->faker->unique()->uuid,
-            'isPublished' => 'invalidValue',
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession([
-            'authId' => $owner->auth_id,
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'verifiedEmails' => [$owner->email],
-        ])
-            ->postJson(route('h5p.store'), $request->toArray())
-            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertCount(0, H5PContent::all());
     }
 }

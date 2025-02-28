@@ -20,7 +20,6 @@ class H5PInfo
                 'latestMinorVersion' => $libraryInfo->minor_version,
                 'upgradable' => $content->library->isUpgradable(),
             ],
-            'published'    => $content['is_published'],
         ];
     }
 }
