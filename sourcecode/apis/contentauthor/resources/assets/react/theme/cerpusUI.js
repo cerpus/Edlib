@@ -32,7 +32,7 @@ const CerpusUI = ({ children }) => {
                             dark: '#21456A',
                         },
                         secondary: {
-                            main: '#82E066',
+                            main: '#000000cc',
                             dark: '#1D7105',
                         },
                         tertiary: {
