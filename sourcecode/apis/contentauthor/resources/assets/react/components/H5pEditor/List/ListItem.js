@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
 import Cke5Editor from './Cke5Editor';
-import { default as semanticsToCke5Config } from './Cke5ConfigFromSemantics';
+import getConfig from './Cke5ConfigFromSemantics';
 import { useEditorSetupContext } from '../../../contexts/EditorSetupContext';
 
 const prettifyPath = (path, glue = ' > ') =>
@@ -92,7 +92,7 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                             onChange(value);
                             setViewOldValue(true);
                         }}
-                        config={semanticsToCke5Config(editorSemantics)}
+                        config={getConfig(editorSemantics)}
                         name={prettifyPath(path, '_')}
                         language={editorLanguage}
                     />

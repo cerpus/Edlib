@@ -39,7 +39,7 @@ const defaultTags = ['strong', 'em', 'del', 'h2', 'h3', 'a', 'ul', 'ol', 'table'
  * Check if the provided button is enabled by config.
  *
  * @param {string} button
- * @return {boolean}
+ * @return {{extraPlugins: [], plugins: [], alignment: {options: string[]}, toolbar: {items: string[]}, language: {}}}
  */
 
 export default ({ font, tags: wantedTags, enterMode }) => {
