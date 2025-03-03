@@ -15,8 +15,8 @@ class FileFactory extends Factory
     {
         return [
             'article_id' => $this->faker->uuid,
-            'name' => $this->faker->uuid.'.jpg',
-            'original_name' => $this->faker->slug(3).'.'.$this->faker->fileExtension(),
+            'name' => $this->faker->uuid . '.jpg',
+            'original_name' => $this->faker->slug(3) . '.' . $this->faker->fileExtension(),
             'remember_token' => Str::random(10),
         ];
     }

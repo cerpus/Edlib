@@ -20,14 +20,6 @@ class CreateAdministratorsTable extends Migration
             $table->string('remember_token', 100)->nullable();
             $table->timestamps();
         });
-
-        Schema::table('administrators', function (Blueprint $table) {
-            $admin = new \App\Administrator();
-            $admin->username = 'admin';
-            $admin->password = md5(time());
-            $admin->name = 'SleepingOwl Administrator';
-            $admin->save();
-        });
     }
 
 

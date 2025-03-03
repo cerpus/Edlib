@@ -25,10 +25,6 @@ class ContentStorageSettings
     public const LIBRARY_JSONFILE_PATH = self::LIBRARY_PATH . "/library.json";
     public const LIBRARY_VERSION_PREFIX = '?ver=%s.%s.%s';
 
-    public const GAMES_DIR = 'games/';
-    public const GAMES_PATH = self::GAMES_DIR . '%s';
-    public const GAMES_FILE = self::GAMES_PATH . '/%s';
-
     public const ARTICLE_DIR = 'article-uploads/';
     public const ARTICLE_PATH = self::ARTICLE_DIR . '%s';
     public const ARTICLE_FILE = self::ARTICLE_PATH . '/%s';

@@ -41,7 +41,19 @@
     }
 
     .answerContainer {
-        padding: 8px;
+        padding: 10px;
+
+        &.withDeleteBtn {
+            margin-top: 15px;
+        }
+    }
+
+    .togglerSwitch {
+        margin: 10px 0 -10px 0;
+
+        .labelSelected {
+            font-weight: bold;
+        }
     }
 
     &.H5PQuizAddedAlternative {

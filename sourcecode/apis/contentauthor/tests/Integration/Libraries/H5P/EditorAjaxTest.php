@@ -54,7 +54,7 @@ class EditorAjaxTest extends TestCase
                 $libFoo->getLibraryString(false),
                 $libTest->getLibraryString(false),
             ],
-            'nb'
+            'nb',
         );
 
         $this->assertIsArray($translations);

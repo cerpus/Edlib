@@ -56,7 +56,7 @@ class H5PProgressTest extends TestCase
         $h5pprogress = $this->getH5PProgress();
         $this->assertEquals(
             $expectedResult,
-            $h5pprogress->storeProgress(Request::create('', parameters: ['action' => "h5p_contents_user_data"]))
+            $h5pprogress->storeProgress(Request::create('', parameters: ['action' => "h5p_contents_user_data"])),
         );
     }
 
@@ -67,7 +67,7 @@ class H5PProgressTest extends TestCase
             1,
             'state',
             0,
-            null
+            null,
         ]);
         $this->assertTrue($shouldUpdate);
 
@@ -75,7 +75,7 @@ class H5PProgressTest extends TestCase
             1,
             'state',
             0,
-            'myContext'
+            'myContext',
         ]);
         $this->assertFalse($shouldUpdate);
 
@@ -83,7 +83,7 @@ class H5PProgressTest extends TestCase
             2,
             'state',
             0,
-            'context_1'
+            'context_1',
         ]);
         $this->assertTrue($shouldUpdate);
 
@@ -91,7 +91,7 @@ class H5PProgressTest extends TestCase
             2,
             'state',
             0,
-            'context_different'
+            'context_different',
         ]);
         $this->assertFalse($shouldUpdate);
 
@@ -99,7 +99,7 @@ class H5PProgressTest extends TestCase
             3,
             'state',
             0,
-            null
+            null,
         ]);
         $this->assertFalse($shouldUpdate);
 
@@ -107,7 +107,7 @@ class H5PProgressTest extends TestCase
             3,
             'state',
             0,
-            'Context'
+            'Context',
         ]);
         $this->assertFalse($shouldUpdate);
     }
@@ -128,11 +128,11 @@ class H5PProgressTest extends TestCase
                 'sub_content_id' => 0,
                 'data' => json_encode([
                     "test" => "ok",
-                    "all" => "good"
+                    "all" => "good",
                 ]),
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Inserting"]));
@@ -154,11 +154,11 @@ class H5PProgressTest extends TestCase
                 'data' => json_encode([
                     "test" => "ok",
                     "all" => "good",
-                    "second" => "run"
+                    "second" => "run",
                 ]),
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Updating"]));
@@ -171,7 +171,7 @@ class H5PProgressTest extends TestCase
             'data' => json_encode([
                 "test" => "ok",
                 "all" => "good",
-                "second" => "run"
+                "second" => "run",
             ]),
             'preload' => '1',
             'invalidate' => '0',
@@ -187,11 +187,11 @@ class H5PProgressTest extends TestCase
                 'sub_content_id' => 0,
                 'data' => json_encode([
                     "second_user" => "GO",
-                    "arrived" => "soon"
+                    "arrived" => "soon",
                 ]),
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Inserting"]));
@@ -201,7 +201,7 @@ class H5PProgressTest extends TestCase
             'user_id' => $user2,
             'data' => json_encode([
                 "second_user" => "GO",
-                "arrived" => "soon"
+                "arrived" => "soon",
             ]),
         ]);
 
@@ -212,11 +212,11 @@ class H5PProgressTest extends TestCase
                 'sub_content_id' => 0,
                 'data' => json_encode([
                     "second_user" => "GO",
-                    "arrived" => "safely"
+                    "arrived" => "safely",
                 ]),
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Updating"]));
@@ -226,8 +226,8 @@ class H5PProgressTest extends TestCase
             'user_id' => $user2,
             'data' => json_encode([
                 "second_user" => "GO",
-                "arrived" => "safely"
-            ])
+                "arrived" => "safely",
+            ]),
         ]);
 
 
@@ -238,8 +238,8 @@ class H5PProgressTest extends TestCase
                 'sub_content_id' => 0,
                 'data' => '0',
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Deleting."]));
@@ -256,8 +256,8 @@ class H5PProgressTest extends TestCase
                 'sub_content_id' => 0,
                 'data' => '0',
                 'preload' => '1',
-                'invalidate' => '0'
-            ]
+                'invalidate' => '0',
+            ],
         ]);
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Deleting."]));
         $this->assertequals(0, $h5pprogressuser2->countprogresses($courseid1));
@@ -280,8 +280,8 @@ class H5PProgressTest extends TestCase
                 ]),
                 'preload' => '1',
                 'invalidate' => '0',
-                'context' => 'context_1'
-            ]
+                'context' => 'context_1',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Inserting"]));
@@ -295,7 +295,7 @@ class H5PProgressTest extends TestCase
             ]),
             'preload' => 1,
             'invalidate' => 0,
-            'context' => 'context_1'
+            'context' => 'context_1',
         ]);
 
         $response = self::callmethod($h5pprogressuser, "storeusercontentdata", [
@@ -308,8 +308,8 @@ class H5PProgressTest extends TestCase
                 ]),
                 'preload' => '1',
                 'invalidate' => '0',
-                'context' => null
-            ]
+                'context' => null,
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Updating"]));
@@ -323,7 +323,7 @@ class H5PProgressTest extends TestCase
             ]),
             'preload' => 1,
             'invalidate' => 0,
-            'context' => null
+            'context' => null,
         ]);
 
         $response = self::callmethod($h5pprogressuser, "storeusercontentdata", [
@@ -336,8 +336,8 @@ class H5PProgressTest extends TestCase
                 ]),
                 'preload' => '1',
                 'invalidate' => '0',
-                'context' => 'context_1'
-            ]
+                'context' => 'context_1',
+            ],
         ]);
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Updating"]));
         $this->assertDatabaseHas("h5p_contents_user_data", [
@@ -363,8 +363,8 @@ class H5PProgressTest extends TestCase
                 ]),
                 'preload' => '1',
                 'invalidate' => '0',
-                'context' => null
-            ]
+                'context' => null,
+            ],
         ]);
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Inserting"]));
         $this->assertDatabaseHas("h5p_contents_user_data", [
@@ -395,8 +395,8 @@ class H5PProgressTest extends TestCase
                 'data' => '0',
                 'preload' => '1',
                 'invalidate' => '0',
-                'context' => 'context_1'
-            ]
+                'context' => 'context_1',
+            ],
         ]);
 
         $this->assertJson(json_encode($response), json_encode(["success" => true, "message" => "Deleting"]));
@@ -405,13 +405,13 @@ class H5PProgressTest extends TestCase
             'content_id' => $contentId,
             'user_id' => $userId,
             'data_id' => 'state',
-            'context' => 'context_1'
+            'context' => 'context_1',
         ]);
         $this->assertDatabaseHas("h5p_contents_user_data", [
             'content_id' => $contentId,
             'user_id' => $userId,
             'data_id' => 'state',
-            'context' => null
+            'context' => null,
         ]);
     }
 
@@ -449,21 +449,21 @@ class H5PProgressTest extends TestCase
             'content_id' => 2000000000,
             'sub_content_id' => 0,
             'data_type' => 'state',
-            'context' => null
+            'context' => null,
         ])));
 
         $this->assertEquals("['hello', 'everyone']", $progress->getProgress(Request::create('', parameters: [
             'content_id' => 2,
             'sub_content_id' => 0,
             'data_type' => 'state',
-            'context' => null
+            'context' => null,
         ])));
 
         $this->assertEquals("['hello', 'there']", $progress->getProgress(Request::create('', parameters: [
             'content_id' => 2,
             'sub_content_id' => 0,
             'data_type' => 'state',
-            'context' => 'context_1'
+            'context' => 'context_1',
         ])));
     }
 
@@ -481,14 +481,14 @@ class H5PProgressTest extends TestCase
                 'maxScore' => 4,
                 'opened' => 11111,
                 'finished' => 2222,
-            ]
+            ],
         ]);
         $this->assertTrue($response);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 1,
             'score' => 2,
             'max_score' => 4,
-            'context' => null
+            'context' => null,
         ]);
 
         $response = self::callmethod($progress, "processFinished", [
@@ -498,14 +498,14 @@ class H5PProgressTest extends TestCase
                 'maxScore' => 4,
                 'opened' => 11111,
                 'finished' => 2222,
-            ]
+            ],
         ]);
         $this->assertTrue($response);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 1,
             'score' => 3,
             'max_score' => 4,
-            'context' => null
+            'context' => null,
         ]);
 
         $response = self::callmethod($progress, "processFinished", [
@@ -515,21 +515,21 @@ class H5PProgressTest extends TestCase
                 'maxScore' => 4,
                 'opened' => 11111,
                 'finished' => 2222,
-                'context' => "myContext_1"
-            ]
+                'context' => "myContext_1",
+            ],
         ]);
         $this->assertTrue($response);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 1,
             'score' => 4,
             'max_score' => 4,
-            'context' => "myContext_1"
+            'context' => "myContext_1",
         ]);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 1,
             'score' => 3,
             'max_score' => 4,
-            'context' => null
+            'context' => null,
         ]);
 
         $response = self::callmethod($progress, "processFinished", [
@@ -539,15 +539,15 @@ class H5PProgressTest extends TestCase
                 'maxScore' => 2,
                 'opened' => 11111,
                 'finished' => 2222,
-                'context' => "myContext_2"
-            ]
+                'context' => "myContext_2",
+            ],
         ]);
         $this->assertTrue($response);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 2,
             'score' => 1,
             'max_score' => 2,
-            'context' => "myContext_2"
+            'context' => "myContext_2",
         ]);
 
         $response = self::callmethod($progress, "processFinished", [
@@ -557,21 +557,21 @@ class H5PProgressTest extends TestCase
                 'maxScore' => 2,
                 'opened' => 11111,
                 'finished' => 2222,
-                'context' => "myContext_2"
-            ]
+                'context' => "myContext_2",
+            ],
         ]);
         $this->assertTrue($response);
         $this->assertDatabaseHas("h5p_results", [
             'content_id' => 2,
             'score' => 2,
             'max_score' => 2,
-            'context' => "myContext_2"
+            'context' => "myContext_2",
         ]);
         $this->assertDatabaseMissing("h5p_results", [
             'content_id' => 2,
             'score' => 1,
             'max_score' => 2,
-            'context' => "myContext_2"
+            'context' => "myContext_2",
         ]);
     }
 }

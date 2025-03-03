@@ -32,7 +32,7 @@ class H5PContentsMetadata extends Model
     protected $table = 'h5p_contents_metadata';
 
     /**
-     * @return BelongsTo<H5PContent, self>
+     * @return BelongsTo<H5PContent, $this>
      */
     public function content(): BelongsTo
     {

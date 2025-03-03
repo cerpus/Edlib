@@ -41,7 +41,7 @@ class Attribution
      */
     public function addOriginator(string $name, string $role): void
     {
-        $this->originators[] = (object)[
+        $this->originators[] = (object) [
             'name' => $name,
             'role' => ucfirst(strtolower($role)),
         ];

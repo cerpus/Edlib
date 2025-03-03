@@ -25,7 +25,7 @@ class TestProgressSeeder extends Seeder
                 'preload' => 1,
                 'invalidate' => 1,
                 'updated_at' => Carbon::now(),
-                'context' => null
+                'context' => null,
             ],
             [
                 'content_id' => 1,
@@ -36,7 +36,7 @@ class TestProgressSeeder extends Seeder
                 'preload' => 1,
                 'invalidate' => 1,
                 'updated_at' => Carbon::now(),
-                'context' => null
+                'context' => null,
             ],
             [
                 'content_id' => 2,
@@ -47,7 +47,7 @@ class TestProgressSeeder extends Seeder
                 'preload' => 1,
                 'invalidate' => 1,
                 'updated_at' => Carbon::now(),
-                'context' => null
+                'context' => null,
             ],
             [
                 'content_id' => 2,
@@ -58,7 +58,7 @@ class TestProgressSeeder extends Seeder
                 'preload' => 1,
                 'invalidate' => 1,
                 'updated_at' => Carbon::now(),
-                'context' => 'context_1'
+                'context' => 'context_1',
             ],
             [
                 'content_id' => 2,
@@ -69,8 +69,8 @@ class TestProgressSeeder extends Seeder
                 'preload' => 1,
                 'invalidate' => 1,
                 'updated_at' => Carbon::now(),
-                'context' => 'context_2'
-            ]
+                'context' => 'context_2',
+            ],
         ]);
     }
 }

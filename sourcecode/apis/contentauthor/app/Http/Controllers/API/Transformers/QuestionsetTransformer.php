@@ -19,8 +19,8 @@ class QuestionsetTransformer extends TransformerAbstract
             'title' => $questionset->title,
             'numberOfQuestions' => $questionset->questionCount,
             'links' => [
-                'self' => route('api.get.questionset', ['questionsetId' => $questionset->id])
-            ]
+                'self' => route('api.get.questionset', ['questionsetId' => $questionset->id]),
+            ],
         ];
     }
 

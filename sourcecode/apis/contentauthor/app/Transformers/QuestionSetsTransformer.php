@@ -16,7 +16,7 @@ class QuestionSetsTransformer extends TransformerAbstract
     ];
 
     protected array $availableIncludes = [
-        'questions'
+        'questions',
     ];
 
     public function transform(QuestionSet $questionSet): array

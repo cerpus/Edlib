@@ -36,7 +36,7 @@ class Column extends H5PBase
 
     public function alterSource($sourceFile, array $newSource)
     {
-        $contents = collect((array)$this->getContent());
+        $contents = collect((array) $this->getContent());
         if ($contents->isEmpty()) {
             return true;
         }

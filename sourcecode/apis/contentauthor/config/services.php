@@ -39,6 +39,6 @@ return [
         'base_uri' => env('NYNOROBOT_BASE_URI'),
         'key' => env('NYNOROBOT_KEY'),
         'secret' => env('NYNOROBOT_SECRET'),
-        'style' => NynorobotAdapter::STYLE_MODERATE,
+        'style' => NynorobotAdapter::STYLE_INTERNAL_4,
     ],
 ];

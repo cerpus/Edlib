@@ -6,7 +6,16 @@ import Sidebar from '../Sidebar';
 
 const QuestionContentContainer = () => {
     const {
-        state: { links, contentTypes, questionset },
+        state: {
+            links,
+            contentTypes,
+            questionset,
+            numberOfDefaultQuestions,
+            numberOfDefaultAnswers,
+            canAddRemoveQuestion,
+            canAddRemoveAnswer,
+            lockedPresentation,
+        },
         state: formState,
         dispatch,
     } = useForm();
@@ -80,6 +89,11 @@ const QuestionContentContainer = () => {
                 contentTypes={contentTypes}
                 questionset={questionset}
                 onSave={onSave}
+                numberOfDefaultQuestions={numberOfDefaultQuestions}
+                numberOfDefaultAnswers={numberOfDefaultAnswers}
+                canAddRemoveQuestion={canAddRemoveQuestion}
+                canAddRemoveAnswer={canAddRemoveAnswer}
+                lockedPresentation={lockedPresentation}
             />
         </EditorContainer>
     );

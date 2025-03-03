@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $id
  * @property string $answer_text
  * @property int $correct
+ * @property string|null $image
+ * @property int $order
  */
 
 class QuestionSetQuestionAnswer extends Model

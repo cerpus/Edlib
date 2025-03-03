@@ -25,9 +25,11 @@ const QuestionContainerLayout = props => {
         editMode,
         searchTitle,
         placeholder,
+        header,
     } = props;
     return (
         <div className="questionSetSurface">
+            {header}
             <div>
                 <TextField
                     className="placeholder"

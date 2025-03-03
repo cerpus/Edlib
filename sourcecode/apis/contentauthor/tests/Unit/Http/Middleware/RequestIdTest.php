@@ -29,7 +29,7 @@ final class RequestIdTest extends TestCase
     public function testAddsRequestHeaders(): void
     {
         $request = new Request();
-        $this->middleware->handle($request, fn () => true);
+        $this->middleware->handle($request, fn() => true);
 
         $this->assertIsString($request->header('X-Request-Id'));
         $this->assertTrue(Uuid::isValid($request->header('X-Request-Id')));
@@ -38,7 +38,7 @@ final class RequestIdTest extends TestCase
     public function testAddsResponseHeaders(): void
     {
         $response = new Response();
-        $this->middleware->handle(new Request(), fn () => $response);
+        $this->middleware->handle(new Request(), fn() => $response);
 
         $this->assertIsString($response->headers->get('X-Request-Id'));
         $this->assertTrue(Uuid::isValid($response->headers->get('X-Request-Id')));

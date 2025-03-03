@@ -2,10 +2,14 @@
 
 namespace App;
 
-use App\Libraries\DataObjects\ContentTypeDataObject;
+use App\Exceptions\GameTypeNotFoundException;
+use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
 use App\Traits\Collaboratable;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,8 +28,9 @@ use function route;
  *
  * @property Gametype $gameType
  *
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Builder make(array $attributes = [])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class Game extends Content implements VersionableObject
 {
@@ -34,8 +39,9 @@ class Game extends Content implements VersionableObject
     use HasUuids;
 
     public string $editRouteName = 'game.edit';
+
     /**
-     * @throws \Exception
+     * @throws GameTypeNotFoundException
      */
     protected function getRequestContent(Request $request)
     {
@@ -62,7 +68,7 @@ class Game extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<Gametype, self>
+     * @return BelongsTo<Gametype, $this>
      */
     public function gameType(): BelongsTo
     {
@@ -71,20 +77,19 @@ class Game extends Content implements VersionableObject
 
     public function getGameSettingsAttribute(string $gameSettings): Object
     {
-        return !empty($gameSettings) ? json_decode($gameSettings) : (object)[];
+        return !empty($gameSettings) ? json_decode($gameSettings) : (object) [];
     }
 
-
     /**
-     * @throws \Exception
+     * @throws GameTypeNotFoundException
      */
-    public function getGameTypeHandler(): Libraries\Games\Contracts\GameTypeContract
+    public function getGameTypeHandler(): GameTypeContract
     {
         return GameHandler::makeGameTypeFromId($this->gametype);
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function makeCopy(string|null $owner = null): Game
     {
@@ -93,7 +98,7 @@ class Game extends Content implements VersionableObject
             $game->owner = $owner;
         }
         if ($game->save() !== true) {
-            throw new \Exception(trans('game.could-not-make-copy-of-game', ["title" => $this->title]));
+            throw new Exception(trans('game.could-not-make-copy-of-game', ["title" => $this->title]));
         }
 
         return $game;
@@ -135,8 +140,20 @@ class Game extends Content implements VersionableObject
         return 'Game';
     }
 
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
+    protected function getTags(): array
     {
-        return new ContentTypeDataObject('Game', $contentType, 'Millionaire mini game', "mui:VideogameAsset");
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
+    }
+
+    public function getMaxScore(): int|null
+    {
+        try {
+            $handler = $this->getGameTypeHandler();
+            return $handler->getMaxScore();
+        } catch (GameTypeNotFoundException) {
+            return null;
+        }
     }
 }

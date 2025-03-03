@@ -12,7 +12,7 @@
                             <i class="glyphicon glyphicon-edit"></i> Capabilities
                         </a>
                         <a class="col-md-4 well well-lg" href="{{ route('admin.update-libraries') }}">
-                            <i class="glyphicon glyphicon-upload"></i> Update H5P Libraries
+                            <i class="glyphicon glyphicon-upload"></i> Manage H5P content types
                         </a>
                         <a class="col-md-4 well well-lg" href="{{ route('admin.games') }}">
                             <i class="glyphicon glyphicon-upload"></i> Update games

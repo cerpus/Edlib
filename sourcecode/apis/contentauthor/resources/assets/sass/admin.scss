@@ -6,6 +6,8 @@
 
 $questionset-primary-color: #465c6c;
 
+@import "navtabs";
+
 .versioncontent {
   margin-top: 20px;
 }
@@ -24,4 +26,8 @@ $questionset-primary-color: #465c6c;
 .h5p-action-button {
     min-width: 25px;
     display: inline-block;
+}
+
+.rebuild-btn {
+    border-color: $brand-primary;
 }

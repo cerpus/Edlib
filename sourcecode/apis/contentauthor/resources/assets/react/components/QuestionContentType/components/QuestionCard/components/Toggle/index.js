@@ -3,6 +3,7 @@ import './Toggle.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Switch from '@material-ui/core/Switch';
+import clsx from 'clsx';
 
 function Toggle(props) {
     const {
@@ -14,13 +15,17 @@ function Toggle(props) {
 
     return (
         <div className="togglerSwitch">
-            {leftLabel}
+            <span className={clsx({'labelSelected': !isCorrect})}>
+                {leftLabel}
+            </span>
             <Switch
                 onChange={onToggle}
                 checked={isCorrect}
                 color="default"
             />
-            {rightLabel}
+            <span className={clsx({'labelSelected': isCorrect})}>
+                {rightLabel}
+            </span>
         </div>
     );
 }

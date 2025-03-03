@@ -10,6 +10,7 @@ use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
 use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\View\View;
 use Tests\TestCase;
 
@@ -49,12 +50,9 @@ class ArticleControllerTest extends TestCase
 
     public function testStore(): void
     {
+        Event::fake();
         $this->withSession([
             'authId' => Uuid::uuid(),
-        ]);
-
-        $this->expectsEvents([
-            ArticleWasSaved::class,
         ]);
 
         $response = $this->post(route('article.store'), [
@@ -66,7 +64,7 @@ class ArticleControllerTest extends TestCase
             'share' => 'share',
             'license' => License::LICENSE_BY,
         ])
-        ->assertCreated();
+            ->assertCreated();
 
         $this->assertDatabaseHas('articles', [
             'title' => 'An article',
@@ -78,5 +76,7 @@ class ArticleControllerTest extends TestCase
         $response->assertJson([
             'url' => route('article.edit', $article->id),
         ]);
+
+        Event::assertDispatched(ArticleWasSaved::class);
     }
 }

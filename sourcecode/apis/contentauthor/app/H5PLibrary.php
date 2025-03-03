@@ -80,7 +80,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasOne<H5PLibraryCapability>
+     * @return HasOne<H5PLibraryCapability, $this>
      */
     public function capability(): HasOne
     {
@@ -88,7 +88,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasOne<LibraryDescription>
+     * @return HasOne<LibraryDescription, $this>
      */
     public function description(): HasOne
     {
@@ -96,7 +96,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PContent>
+     * @return HasMany<H5PContent, $this>
      */
     public function contents(): HasMany
     {
@@ -109,7 +109,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PLibraryLanguage>
+     * @return HasMany<H5PLibraryLanguage, $this>
      */
     public function languages(): HasMany
     {
@@ -117,7 +117,7 @@ class H5PLibrary extends Model
     }
 
     /**
-     * @return HasMany<H5PLibraryLibrary>
+     * @return HasMany<H5PLibraryLibrary, $this>
      */
     public function libraries(): HasMany
     {
@@ -229,7 +229,7 @@ class H5PLibrary extends Model
             $libraryData['machineName'] ?? $libraryData['name'],
             $libraryData['majorVersion'],
             $libraryData['minorVersion'],
-            $libraryData['patchVersion'] ?? ''
+            $libraryData['patchVersion'] ?? '',
         );
     }
 
@@ -328,12 +328,13 @@ class H5PLibrary extends Model
                 'l1.patch_version as patchVersion',
                 'l1.preloaded_js as preloadedJs',
                 'l1.preloaded_css as preloadedCss',
+                'l1.patch_version_in_folder_name as patchVersionInFolderName',
             ])
             ->whereNull('l2.name')
             ->whereNotNull('l1.add_to')
             ->get()
             ->map(function ($addon) {
-                return (array)$addon;
+                return (array) $addon;
             })
             ->toArray();
     }
@@ -367,5 +368,16 @@ class H5PLibrary extends Model
         }
 
         return $icon ?? url('/graphical/h5p_logo.svg');
+    }
+
+    public static function canBeDeleted(int $libraryId, int|null $usageCount = null): bool
+    {
+        if ($usageCount === null) {
+            $h5pFramework = app(H5PFrameworkInterface::class);
+            // Number of references by other content types/libraries. Only counts content using library as main content type, so we skip that
+            $usageCount = $h5pFramework->getLibraryUsage($libraryId, skipContent: true)['libraries'];
+        }
+
+        return $usageCount === 0 && H5PContentLibrary::where('library_id', $libraryId)->doesntExist();
     }
 }

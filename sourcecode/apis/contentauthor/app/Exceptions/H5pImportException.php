@@ -6,6 +6,4 @@ namespace App\Exceptions;
 
 use Exception;
 
-class H5pImportException extends Exception
-{
-}
+class H5pImportException extends Exception {}

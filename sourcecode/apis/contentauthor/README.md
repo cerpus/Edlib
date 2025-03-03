@@ -1,50 +1,6 @@
-# Installing
-
-Install NodeJs, gulp and composer.
-
-```
-¦> npm install
-¦> composer install
-```
-
-Now, you need to create a symlink from the h5p-php-library to your public dir
-
-You need to expose the core H5P libraries from the composer package:
-
-```
-¦> ln -s vendor/h5p/h5p-core public/h5p-php-library
-|> ln -s vendor/h5p/h5p-editor public/h5p-editor-php-library
-```
-
-To expose the permanent file storage
-
-```
-¦> mkdir h5pstorage
-¦> ln -s h5pstorage <laravel-install-dir>/public/h5pstorage
-¦> gulp
-```
-
 # Configuration
 
 Take a look in the `.env.example` file. It should contain all possible configuration keys. Not all are neccessary. We try to default to 'sane' defaults.
-
-## Configure Article Storage
-
-The default is to use the `public/h5pstorage` directory. It should not be neccessary to configure this unless you have a more production / scaled-up setup like using Amazon S3 for storage for instance.
-
-In `.env`
-
-```
-UPLOAD_STORAGE_DRIVER=<local>
-```
-
-UPLOAD_STORAGE_DRIVER: the driver to be used, defaults to local
-
-# Running scheduled tasks
-
-Content author will take care of running scheduled tasks when required provided the `php artisan schedule:run` task is run periodically.
-
-The Docker image contains a cron job that fires this task every minute. See `docker/laravel.schedule`.
 
 # Locking content for edit
 

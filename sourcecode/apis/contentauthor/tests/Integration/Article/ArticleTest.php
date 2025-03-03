@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Article;
 
-use App\ApiModels\User;
 use App\Article;
 use App\Events\ArticleWasSaved;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -14,17 +13,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Tests\Helpers\LtiHelper;
 use Tests\TestCase;
-use Tests\Helpers\MockAuthApi;
-use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
 
 class ArticleTest extends TestCase
 {
+    use LtiHelper;
     use RefreshDatabase;
-    use MockVersioningTrait;
-    use MockResourceApi;
-    use MockAuthApi;
 
     public function testRewriteUploadUrls(): void
     {
@@ -33,7 +28,7 @@ class ArticleTest extends TestCase
         ]);
 
         $this->assertSame(
-            "<p>This is an image: <img src=\"http://localhost/content/assets/article-uploads/foo.jpg\"></p>\n",
+            "<p>This is an image: <img src=\"http://localhost/h5pstorage/article-uploads/foo.jpg\"></p>\n",
             $article->render(),
         );
     }
@@ -60,33 +55,15 @@ class ArticleTest extends TestCase
         // We don't really care that the output looks like this, but it's nice
         // to know if it suddenly changes after an update or such anyway.
         $this->assertSame(
-            "<div>Foo<b></b><p>bar</p></div>\n",
+            "<div>Foo<b></b></div><p>bar</p>\n",
             $article->render(),
         );
     }
 
-    public function testEditArticleAccessDenied()
-    {
-        $this->setUpResourceApi();
-        $authId = Str::uuid();
-        $someOtherId = Str::uuid();
-
-        $article = Article::factory()->create([
-            'owner_id' => $authId,
-            'license' => 'BY-NC-ND',
-        ]);
-
-        $this->withSession(['authId' => $someOtherId])
-            ->get(route('article.edit', $article->id))
-            ->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testCreateArticle()
     {
+        Event::fake();
         $this->withoutMiddleware(VerifyCsrfToken::class);
-        $this->expectsEvents([
-            ArticleWasSaved::class,
-        ]);
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
@@ -100,7 +77,9 @@ class ArticleTest extends TestCase
                 'content' => "Content",
                 'license' => 'PRIVATE',
             ]);
+
         $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+        Event::assertDispatched(ArticleWasSaved::class);
     }
 
     public function testCreateArticleWithMathContent()
@@ -132,7 +111,6 @@ class ArticleTest extends TestCase
 
     public function testCreateAndEditArticleWithIframeContent()
     {
-        $this->setupVersion(['getVersion' => false]);
         Event::fake();
         $authId = Str::uuid();
 
@@ -175,10 +153,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
         Event::fake();
         $authId = Str::uuid();
         $article = Article::factory()->create([
@@ -218,11 +192,6 @@ class ArticleTest extends TestCase
 
     public function testEditArticleWithDraftEnabled()
     {
-        $this->setupVersion(['getVersion' => false]);
-        $this->setupAuthApi([
-            'getUser' => new User("1", "this", "that", "this@that.com")
-        ]);
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
         $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
@@ -313,14 +282,16 @@ class ArticleTest extends TestCase
 
     public function testViewArticle()
     {
-        $this->setupVersion(['getVersion' => false]);
-
         $article = Article::factory()->create([
             'is_published' => 1,
             'license' => 'BY',
         ]);
 
-        $this->get(route('article.show', $article->id))
+        $url = "http://localhost/article/$article->id";
+        $this->post($url, $this->getSignedLtiParams($url, [
+            'lti_message_type' => 'basic-lti-launch-request',
+        ]))
+            ->assertOk()
             ->assertSee($article->title)
             ->assertSee($article->render(), false);
     }
@@ -328,7 +299,7 @@ class ArticleTest extends TestCase
     public function testMustBeLoggedInToCreateArticle()
     {
         $this->get(route('article.create'))
-            ->assertForbidden();
+            ->assertUnauthorized();
     }
 
     public function testRewriteUrls()

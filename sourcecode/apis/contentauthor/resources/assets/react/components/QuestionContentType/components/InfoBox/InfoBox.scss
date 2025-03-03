@@ -39,4 +39,33 @@
         text-transform: initial;
         background-color: $gray-lighter;
     }
+
+    .recheck {
+        border-color: $questionset-primary-color;
+        text-transform: initial;
+        background-color: transparent;
+    }
+
+    &.headerbox {
+        flex-wrap: nowrap;
+        align-items: center;
+
+        .infotext {
+            font-size: 2em;
+            flex: 1 1 100%;
+            text-align: center;
+
+            @include respond-to('tabletAndUp') {
+                flex: 1 1 100%;
+            }
+        }
+
+        .infoactions {
+            flex: 0 0 0.01px;
+
+            @include respond-to('tabletAndUp') {
+                flex: 0 0 0.01px;
+            }
+        }
+    }
 }

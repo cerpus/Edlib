@@ -5,11 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Content;
 use App\ContentLock;
 use App\Libraries\DataObjects\ContentLockDataObject;
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class LockStatusController extends Controller
 {
@@ -32,7 +31,7 @@ class LockStatusController extends Controller
         /** @var ContentLock $lock */
         $lock = ContentLock::notExpiredById($id);
         $lockData = ContentLockDataObject::create([
-            'isLocked' => (bool)$lock
+            'isLocked' => (bool) $lock,
         ]);
 
         if (!$lockData->isLocked) {
@@ -56,9 +55,8 @@ class LockStatusController extends Controller
 
         /** @var ContentLock $lock */
         $lock = ContentLock::notExpiredById($id);
-        if ($lock && $lock->auth_id === $userId && Carbon::now()->subHours(config('feature.lock-max-hours'))->lessThan($lock->created_at)) {
-            $lock->updated_at = Carbon::now();
-            $lock->save();
+        if ($lock && $lock->auth_id === $userId && $lock->created_at->addHours(config('feature.lock-max-hours'))->isFuture()) {
+            $lock->touch();
         }
     }
 }

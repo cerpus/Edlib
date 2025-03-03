@@ -1,0 +1,87 @@
+---
+sidebar_position: 2
+---
+
+# Content Types
+
+Edlib can be extended with additional content types. Content types in Edlib are provided by standard LTI tools. If it
+supports LTI 1.0/1.1/1.2 and Deep Linking 1.0, it will work with Edlib. Content Author, the bundled content type
+provider, is one such tool.
+
+Edlib extends LTI to add functionality that wasn't anticipated by the authors of the LTI spec, but will also work with
+strictly compliant LTI tools.
+
+If you are not familiar with LTI, you should review the following specifications:
+
+* [LTI 1.1 implementation guide](https://www.imsglobal.org/specs/ltiv1p1/implementation-guide)
+* [LTI Deep Linking specification 1.0](https://www.imsglobal.org/specs/lticiv1p0/specification) (known previously as
+  Content-Item Message)
+
+## Editing content
+
+Editing isn't a feature described by the LTI Deep Linking (LTI-DL) specification. Edlib gets around this by optionally
+sending an LTI-DL request to the item URL, instead of the standard endpoint for content selection. For tools that don't
+support this, content selected via the default endpoint just replaces the previously selected content.
+
+## Extended LTI parameters sent to the Hub by the LTI platform
+
+* `ext_edlib3_return_exact_version=1`
+
+  Make the 'Use Content' button in item selections return a link to the current version of a resource.
+
+* `ext_edlib3_include_owner_info`
+
+  If enabled, and the LTI Platform has setting `The platform authorizes edit access` enabled, the e-mail address of
+  the content owner will be included in the response. Set to `"1"` to enable, not enabled by default.
+
+* `ext_edlib3_copy_before_save`
+
+  For edit requests. Instructs Edlib to create a copy of the content and save the changes to the copy.
+  Set to `"1"` to enable, not enabled by default.
+
+## Extended LTI parameters sent to LTI tools by the Hub
+
+* `ext_edlib3_embed_resize_code`
+
+  The HTML code for letting the tool know how to embed the content. This will be an `<iframe>` element.
+  
+* `ext_edlib3_embed_resize_code`
+
+  The HTML code for including a script to resize the embedded content. This will be a `<script>` element.
+
+## Resizing
+
+Content can request that the Hub resize its iframe height. To do this, the content should send a message like so:
+
+```javascript
+window.parent.postMessage({
+    action: 'resize',
+    scrollHeight: 640,
+}, '*');
+```
+
+## LTI Deep-Linking 1.0 extensions
+
+The following attributes can be used with items of the `LtiLinkItem` type to communicate extra information that isn't
+part of the LTI Deep-Linking spec:
+
+* `license`
+    * `@id`: `https://spec.edlib.com/lti/vocab#license`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+
+* `languageIso639_3`
+    * `@id`: `https://spec.edlib.com/lti/vocab#languageIso639_3`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+
+* `published`
+    * `@id`: `https://spec.edlib.com/lti/vocab#published`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
+
+* `shared`
+    * `@id`: `https://spec.edlib.com/lti/vocab#shared`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#boolean`
+
+* `tag`
+    * `@id`: `https://spec.edlib.com/lti/vocab#tag`
+    * `@type`: `http://www.w3.org/2001/XMLSchema#normalizedString`
+    * Can be either a list of strings, or just a string.

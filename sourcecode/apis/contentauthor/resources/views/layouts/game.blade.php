@@ -5,13 +5,12 @@
     <title>@yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" type="text/css" href="{{mix('css/game.css')}}">
+    <meta name="robots" content="noindex,indexifembedded">
     <base href="@yield('basePath', "/")">
 @stack('css')
 @stack('linked')
 </head>
 <body>
-@include('fragments.draft-editor')
 @yield('content')
 @stack('js')
 

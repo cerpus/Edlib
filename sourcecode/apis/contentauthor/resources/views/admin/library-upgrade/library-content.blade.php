@@ -37,7 +37,6 @@
                                     <th>Language</th>
                                     <th>License</th>
                                     <th>Published</th>
-                                    <th>Listed</th>
                                     <th>Has lock</th>
                                     <th>Latest</th>
                                 </tr>
@@ -51,7 +50,6 @@
                                             <td>{{ $content['item']->language_iso_639_3 }}</td>
                                             <td>{{ $content['item']->license }}</td>
                                             <td>{{ $content['item']->isPublished() ? 1 : 0 }}</td>
-                                            <td>{{ $content['item']->isListed() ? 1 : 0 }}</td>
                                             <td>{{ $content['item']->hasLock() ? 1 : 0 }}</td>
                                             <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>
                                         </tr>

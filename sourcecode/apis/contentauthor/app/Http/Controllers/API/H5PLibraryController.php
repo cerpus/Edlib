@@ -15,7 +15,7 @@ class H5PLibraryController extends Controller
 
         if (!$library) {
             throw ValidationException::withMessages([
-                "id" => "invalid id"
+                "id" => "invalid id",
             ]);
         }
 

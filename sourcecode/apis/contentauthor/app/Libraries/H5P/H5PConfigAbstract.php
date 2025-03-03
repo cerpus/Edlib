@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Libraries\H5P;
 
-use App\Libraries\H5P\Helper\UrlHelper;
 use App\Libraries\H5P\Interfaces\ConfigInterface;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use Illuminate\Support\Facades\Session;
 use Iso639p3;
 use Ramsey\Uuid\Uuid;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 abstract class H5PConfigAbstract implements ConfigInterface
 {
@@ -36,7 +35,7 @@ abstract class H5PConfigAbstract implements ConfigInterface
     ) {
         $this->adapter->setConfig($this);
 
-        $url = UrlHelper::getCurrentBaseUrl();
+        $url = request()->getSchemeAndHttpHost() . request()->getBasePath();
         $locale = Session::get('locale', config('app.fallback_locale'));
 
         $this->config = [
@@ -228,8 +227,8 @@ abstract class H5PConfigAbstract implements ConfigInterface
         }
 
         $customScripts = array_map(
-            fn ($script) => $this->getAssetUrl(null, $script),
-            $this->adapter->getCustomEditorScripts()
+            fn($script) => $this->getAssetUrl(null, $script),
+            $this->adapter->getCustomEditorScripts(),
         );
 
         return (object) [

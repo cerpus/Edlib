@@ -7,13 +7,14 @@ use App\Libraries\H5P\H5PCreateConfig;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PCreateConfigTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function test_getConfig(string $adapterMode): void
     {
         Config::set('ndla-mode.h5p.audio.url', 'https://audio.url');
@@ -25,33 +26,33 @@ class H5PCreateConfigTest extends TestCase
         $data = $config->getConfig();
 
         // Check that the common attributes are present
-        $this->assertObjectHasAttribute('baseUrl', $data);
-        $this->assertObjectHasAttribute('url', $data);
-        $this->assertObjectHasAttribute('postUserStatistics', $data);
-        $this->assertObjectHasAttribute('ajaxPath', $data);
+        $this->assertObjectHasProperty('baseUrl', $data);
+        $this->assertObjectHasProperty('url', $data);
+        $this->assertObjectHasProperty('postUserStatistics', $data);
+        $this->assertObjectHasProperty('ajaxPath', $data);
         if (config('h5p.saveFrequency') === false) {
-            $this->assertObjectNotHasAttribute('user', $data);
+            $this->assertObjectNotHasProperty('user', $data);
         } else {
-            $this->assertObjectHasAttribute('user', $data);
+            $this->assertObjectHasProperty('user', $data);
         }
-        $this->assertObjectHasAttribute('canGiveScore', $data);
-        $this->assertObjectHasAttribute('hubIsEnabled', $data);
-        $this->assertObjectHasAttribute('ajax', $data);
-        $this->assertObjectHasAttribute('tokens', $data);
-        $this->assertObjectHasAttribute('saveFreq', $data);
-        $this->assertObjectHasAttribute('siteUrl', $data);
-        $this->assertObjectHasAttribute('l10n', $data);
-        $this->assertObjectHasAttribute('baseUrl', $data);
-        $this->assertObjectHasAttribute('loadedJs', $data);
-        $this->assertObjectHasAttribute('loadedCss', $data);
-        $this->assertObjectHasAttribute('core', $data);
-        $this->assertObjectHasAttribute('contents', $data);
-        $this->assertObjectHasAttribute('crossorigin', $data);
-        $this->assertObjectHasAttribute('crossoriginRegex', $data);
-        $this->assertObjectHasAttribute('locale', $data);
-        $this->assertObjectHasAttribute('localeConverted', $data);
-        $this->assertObjectHasAttribute('pluginCacheBuster', $data);
-        $this->assertObjectHasAttribute('libraryUrl', $data);
+        $this->assertObjectHasProperty('canGiveScore', $data);
+        $this->assertObjectHasProperty('hubIsEnabled', $data);
+        $this->assertObjectHasProperty('ajax', $data);
+        $this->assertObjectHasProperty('tokens', $data);
+        $this->assertObjectHasProperty('saveFreq', $data);
+        $this->assertObjectHasProperty('siteUrl', $data);
+        $this->assertObjectHasProperty('l10n', $data);
+        $this->assertObjectHasProperty('baseUrl', $data);
+        $this->assertObjectHasProperty('loadedJs', $data);
+        $this->assertObjectHasProperty('loadedCss', $data);
+        $this->assertObjectHasProperty('core', $data);
+        $this->assertObjectHasProperty('contents', $data);
+        $this->assertObjectHasProperty('crossorigin', $data);
+        $this->assertObjectHasProperty('crossoriginRegex', $data);
+        $this->assertObjectHasProperty('locale', $data);
+        $this->assertObjectHasProperty('localeConverted', $data);
+        $this->assertObjectHasProperty('pluginCacheBuster', $data);
+        $this->assertObjectHasProperty('libraryUrl', $data);
 
         // Attributes altered or set
         $this->assertSame('/api/progress?action=h5p_preview&c=1', $data->ajax['contentUserData']);
@@ -76,30 +77,18 @@ class H5PCreateConfigTest extends TestCase
 
         // Adapter specific
         if ($adapterMode === 'ndla') {
-            $this->assertContains('/css/ndlah5p-editor.css', $data->editor->assets->css);
             $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);
-            $this->assertContains('/css/ndlah5p-youtube.css', $data->editor->assets->css);
-
             $this->assertContains('/js/h5p/wiris/h5peditor-html-wiris-addon.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/ndla-contentbrowser.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-image-popup.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-custom.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/h5p/ndlah5p-youtube.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
 
             $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
-            $this->assertSame('https://audio.url/audio-api/v1/audio', $data->audioBrowserDetailsUrl);
-            $this->assertSame('https://ndla-image.url/image-api/v3/images', $data->imageBrowserDetailsUrl);
         } elseif ($adapterMode === 'cerpus') {
-            $this->assertContains('/js/videos/streamps.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertContains('/js/videos/brightcove.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-            $this->assertObjectNotHasAttribute('wirisPath', $data->editor);
-            $this->assertObjectNotHasAttribute('audioBrowserDetailsUrl', $data);
-            $this->assertObjectNotHasAttribute('imageBrowserDetailsUrl', $data);
+            $this->assertObjectNotHasProperty('wirisPath', $data->editor);
         }
     }
 
-    public function provider_adapterMode(): \Generator
+    public static function provider_adapterMode(): \Generator
     {
         yield 'cerpusMode' => ['cerpus'];
         yield 'ndlaMode' => ['ndla'];

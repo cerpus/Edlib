@@ -1,5 +1,0 @@
-{
-    "require": {
-        "laravel/vapor-cli": "^1.61"
-    }
-}

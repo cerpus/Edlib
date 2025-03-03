@@ -16,7 +16,7 @@ class H5PContentsVideoFactory extends Factory
             'id' => $this->faker->numberBetween(),
             'h5p_content_id' => $this->faker->numberBetween(),
             'video_id' => $this->faker->uuid,
-            'source_file' => 'videos/tmp_'.str_replace("-", "", substr($this->faker->uuid, rand(0, 15), 20)).'.mp4',
+            'source_file' => 'videos/tmp_' . str_replace("-", "", substr($this->faker->uuid, rand(0, 15), 20)) . '.mp4',
         ];
     }
 }

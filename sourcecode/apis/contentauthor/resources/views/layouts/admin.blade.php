@@ -40,36 +40,16 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('admin-users.index') }}">Admin users</a>
-                            </li>
-
-                            <li>
                                 <a href="{{ route('admin.locks') }}">Manage Edit Locks</a>
                             </li>
-
+                            <li>
+                                <a href="{{ route('admin.presave.index') }}">Presave</a>
+                            </li>
                             <li>
                                 <a href="{{ route('admin.support.versioning') }}">Versioning</a>
                             </li>
-                            <li>
-                                <a href="{{ route('admin.video.ndla.replaceref') }}">Replace ref with videoid</a>
-                            </li>
                         </ul>
                     </li>
-                    @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                NDLA Import <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                @if(resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->showArticleImportExportFunctionality())
-                                    <li>
-                                        <a href="{{ route('admin.importexport.index') }}">Import / Export Settings</a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </li>
-                    @endif
                     @if( config('h5p.isHubEnabled') !== true )
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -97,7 +77,7 @@
                                 <a href="{{ route('admin.capability') }}">Capabilities</a>
                             </li>
                             <li>
-                                <a href="{{ route('admin.update-libraries') }}">Update libraries</a>
+                                <a href="{{ route('admin.update-libraries') }}">Manage content types</a>
                             </li>
                             @if( resolve(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->useMaxscore() )
                                 <li>
@@ -123,7 +103,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('logout') }}"
+                                <a href="#"
                                    onclick="
                                         event.preventDefault();
                                         document.getElementById('logout-form').submit();">

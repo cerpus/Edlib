@@ -4,97 +4,98 @@ namespace Tests\Integration\Http\Libraries;
 
 use App\Http\Libraries\License;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class LicenseTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @dataProvider licenseProvider */
+    #[DataProvider('licenseProvider')]
     public function testIsLicenseSupported($data): void
     {
         $this->assertSame($data['isSupported'], License::isLicenseSupported($data['license']));
     }
 
-    /** @dataProvider licenseProvider */
+    #[DataProvider('licenseProvider')]
     public function testIsContentCopyable($data): void
     {
         $this->assertSame($data['isCopyable'], License::isContentCopyable($data['license']));
     }
 
-    public function licenseProvider(): array
+    public static function licenseProvider(): array
     {
         return [
             'PRIVATE' => [[
-                 'license' => 'PRIVATE',
-                 'isSupported' => true,
-                 'isCopyable' => false,
-             ]],
+                'license' => 'PRIVATE',
+                'isSupported' => true,
+                'isCopyable' => false,
+            ]],
             'CC0' => [[
-                 'license' => 'CC0',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'CC0',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'PDM' => [[
-                 'license' => 'PDM',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'PDM',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'BY' => [[
-                 'license' => 'BY',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'BY',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'BY-SA' => [[
-                 'license' => 'BY-SA',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'BY-SA',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'BY-NC' => [[
-                 'license' => 'BY-NC',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'BY-NC',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'BY-ND' => [[
-                 'license' => 'BY-ND',
-                 'isSupported' => true,
-                 'isCopyable' => false,
-             ]],
+                'license' => 'BY-ND',
+                'isSupported' => true,
+                'isCopyable' => false,
+            ]],
             'BY-NC-SA' => [[
-                 'license' => 'BY-NC-SA',
-                 'isSupported' => true,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'BY-NC-SA',
+                'isSupported' => true,
+                'isCopyable' => true,
+            ]],
             'BY-NC-ND' => [[
-                 'license' => 'BY-NC-ND',
-                 'isSupported' => true,
-                 'isCopyable' => false,
-             ]],
+                'license' => 'BY-NC-ND',
+                'isSupported' => true,
+                'isCopyable' => false,
+            ]],
             'EDLL' => [[
-                 'license' => 'EDLL',
-                 'isSupported' => true,
-                 'isCopyable' => false,
-             ]],
+                'license' => 'EDLL',
+                'isSupported' => true,
+                'isCopyable' => false,
+            ]],
             'LICENSE' => [[
-                 'license' => 'LICENSE',
-                 'isSupported' => false,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'LICENSE',
+                'isSupported' => false,
+                'isCopyable' => true,
+            ]],
             'CC1' => [[
-                 'license' => 'CC1',
-                 'isSupported' => false,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'CC1',
+                'isSupported' => false,
+                'isCopyable' => true,
+            ]],
             'SA-BY' => [[
-                 'license' => 'SA-BY',
-                 'isSupported' => false,
-                 'isCopyable' => true,
-             ]],
+                'license' => 'SA-BY',
+                'isSupported' => false,
+                'isCopyable' => true,
+            ]],
             '_empty_' => [[
-                 'license' => '',
-                 'isSupported' => false,
-                 'isCopyable' => true,
-             ]],
+                'license' => '',
+                'isSupported' => false,
+                'isCopyable' => true,
+            ]],
         ];
     }
 

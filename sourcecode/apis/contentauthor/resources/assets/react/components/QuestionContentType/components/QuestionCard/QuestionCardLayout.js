@@ -5,11 +5,17 @@ import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { FormattedMessage, useIntl } from 'react-intl';
+import clsx from 'clsx';
 
 import AnswerListComponent from './components/AnswerList';
-import { Question } from './components/Question';
+import { Question as QuestionComponent } from './components/Question';
 import Draggable from '../Draggable';
+import { Answer, Card, Question } from '../utils';
 
+/**
+ * @param {{question: Question, answers: Answer[], card: Card}} props
+ * @return {Element}
+ */
 function QuestionCardLayout(props) {
     const {
         cardNumber,
@@ -22,26 +28,32 @@ function QuestionCardLayout(props) {
         isDraggable,
         card,
         showAddAnswerButton = true,
+        questionEditorConfig,
+        answerEditorConfig,
     } = props;
 
     const { formatMessage }  = useIntl();
     let layout = (
         <Fragment>
             <div className="questionCard">
-                <span className="cardNumber">{cardNumber}</span>
-                <Question
+                <span className="cardNumber">{cardNumber.toString().padStart(2, ' ')}</span>
+                <QuestionComponent
+                    question={question}
                     collectQuestion={collectData}
                     text={question.text}
                     image={question.image}
                     useImage={card.useImage}
                     richText={question.richText}
+                    editorConfig={questionEditorConfig}
                 />
                 <AnswerListComponent
                     collectAnswers={collectData}
                     answers={answers}
                     showAddAnswer={showAddAnswerButton}
+                    className={clsx({'withDeleteBtn': card.canDelete && typeof deleteCard === 'function'})}
+                    editorConfig={answerEditorConfig}
                 />
-                {typeof deleteCard === 'function' && (
+                {card.canDelete && typeof deleteCard === 'function' &&  (
                     <button
                         className="deleteButton"
                         onClick={deleteCard}
@@ -51,17 +63,17 @@ function QuestionCardLayout(props) {
                     </button>
                 )}
             </div>
-            {addToSet &&
-            <button
-                className={'selectQuestionButton' + (selected ? ' addedToList' : '')}
-                onClick={addToSet}
-            >
-                <AddCircleIcon />
-                <FormattedMessage
-                    id={selected ? 'QUESTIONCARD.ADDED_BUTTON_LABEL' : 'QUESTIONCARD.ADD_BUTTON_LABEL'}
-                />
-            </button>
-            }
+            {addToSet && (
+                <button
+                    className={'selectQuestionButton' + (selected ? ' addedToList' : '')}
+                    onClick={addToSet}
+                >
+                    <AddCircleIcon />
+                    <FormattedMessage
+                        id={selected ? 'QUESTIONCARD.ADDED_BUTTON_LABEL' : 'QUESTIONCARD.ADD_BUTTON_LABEL'}
+                    />
+                </button>
+            )}
         </Fragment>
     );
 
@@ -80,15 +92,17 @@ function QuestionCardLayout(props) {
 
 QuestionCardLayout.propTypes = {
     cardNumber: PropTypes.number,
-    question: PropTypes.object,
-    answers: PropTypes.array,
+    question: PropTypes.instanceOf(Question),
+    answers: PropTypes.arrayOf(PropTypes.instanceOf(Answer)),
     deleteCard: PropTypes.func,
     collectData: PropTypes.func,
     selected: PropTypes.bool,
     addToSet: PropTypes.func,
     isDraggable: PropTypes.bool,
-    card: PropTypes.object,
+    card: PropTypes.instanceOf(Card),
     showAddAnswerButton: PropTypes.bool,
+    questionEditorConfig: PropTypes.object,
+    answerEditorConfig: PropTypes.object,
 };
 
 export default QuestionCardLayout;

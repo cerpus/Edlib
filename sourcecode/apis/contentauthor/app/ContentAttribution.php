@@ -11,7 +11,7 @@ class ContentAttribution extends Model
 
     protected $fillable = [
         'content_id',
-        'attribution'
+        'attribution',
     ];
 
     public function getAttributionAttribute($value): Attribution

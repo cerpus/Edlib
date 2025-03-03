@@ -17,7 +17,7 @@ class ContentTypeController extends Controller
         $content = $contentTypeHandler->storeQuestionset($request->json()->all());
         return response()->json([
             'id' => $content['id'],
-            'type' => QuestionSet::$machineName
+            'type' => QuestionSet::$machineName,
         ], Response::HTTP_OK);
     }
 }

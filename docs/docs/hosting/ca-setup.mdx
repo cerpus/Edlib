@@ -1,0 +1,126 @@
+---
+sidebar_position: 3
+---
+
+# Content Author setup
+
+## Setting an app key
+
+`APP_KEY` must be set to a secret, unguessable value. The value must be 32
+random bytes, encoded as base64, and prefixed with `base64:`. You can generate
+such a value with:
+
+```bash
+echo "base64:$(openssl rand -base64 32)"
+```
+
+The configuration should look like:
+
+```text title=".env"
+APP_KEY=base64:long-base64-encoded-string-here
+```
+
+:::danger
+Failing to set this could result in a total compromise of your Edlib instance.
+:::
+
+## LTI key and secret
+
+You must set Content Author's `LTI_CONSUMER_KEY` and `LTI_CONSUMER_SECRET`
+environment variables to random, unguessable values.
+
+:::danger
+Failing to set this could result in a total compromise of your Edlib instance.
+:::
+
+## Adding Content Author to the Hub
+
+In the Hub, navigate to **Admin home** → **Manage LTI tools** → **Add LTI
+tool**. Fill in the following and save:
+
+- **Name**: `Content Author` (you can set this to anything)
+- **URL slug**: `content-author` (you can set this to anything)
+- **LTI launch URL**: `https://contentauthor.example.com/lti-content/create`
+  (replace with your CA instance)
+- **Key**: The value of `LTI_CONSUMER_KEY`
+- **Secret**: The value of `LTI_CONSUMER_SECRET`
+- Tick the following:
+    - **Deep Linking request to content URL**
+    - **Send full name of user to tool**
+    - **Send email address of user to tool**
+
+To gain access to Content Author's admin portal, add an "extra endpoint" on the
+tool you just added:
+
+- **Name**: `CA admin` (you can set this to anything)
+- **URL slug**: `ca-admin` (you can set this to anything)
+- **LTI launch URL**: `https://contentauthor.example.com/lti/admin`
+- Tick **Admin tool**
+
+## Adding content types
+
+From the Hub, navigate to **Admin home**, then click **CA admin**.
+
+You should see Content Author's admin portal. From **Manage H5P content
+types**, you can download and install H5P content types.
+
+## CLI
+
+Content Author can also be set up in the Hub via the CLI. This can be used to
+automate the process.
+
+### Preinstalling H5P libraries
+
+```bash
+php artisan h5p:library-hub-cache
+
+php artisan h5p:library-install \
+    H5P.Accordion \
+    H5P.Audio \
+    H5P.AudioRecorder \
+    H5P.Blanks \
+    H5P.CoursePresentation \
+    H5P.Dialogcards \
+    H5P.DocumentationTool \
+    H5P.DragQuestion \
+    H5P.DragText \
+    H5P.Flashcards \
+    H5P.GuessTheAnswer \
+    H5P.IFrameEmbed \
+    H5P.ImageHotspotQuestion \
+    H5P.ImageHotspots \
+    H5P.InteractiveVideo \
+    H5P.MarkTheWords \
+    H5P.MemoryGame \
+    H5P.MultiChoice \
+    H5P.MultiMediaChoice \
+    H5P.QuestionSet \
+    H5P.Questionnaire \
+    H5P.SingleChoiceSet \
+    H5P.Summary \
+    H5P.Timeline \
+    H5P.TrueFalse
+```
+
+### Adding Content Author to the Hub
+
+Replace the values with the ones corresponding for your instance, and run in
+the Hub (**not Content Author**):
+
+```bash
+KEY="my LTI consumer key"
+SECRET="my LTI consumer secret"
+CA="contentauthor.example.com"
+
+echo -ne "$KEY\n$SECRET\n" | php artisan edlib:add-lti-tool 'Content Author' \
+    "https://$CA/lti-content/create" \
+    --send-name \
+    --send-email \
+    --edlib-editable \
+    --slug=content-author
+
+php artisan edlib:add-lti-tool-extra content-author 'CA admin' \
+    "https://$CA/lti/admin" \
+    --slug=ca-admin \
+    --admin
+```

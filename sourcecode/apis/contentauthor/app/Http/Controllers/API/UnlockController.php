@@ -43,7 +43,7 @@ class UnlockController extends Controller
 
         return response()->json([
             'status' => $status,
-            'code' => (int)$code,
+            'code' => (int) $code,
         ], $code);
     }
 }

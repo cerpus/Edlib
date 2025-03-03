@@ -3,6 +3,7 @@
 namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\InteractiveVideo;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class InteractiveVideoTest extends TestCase
@@ -13,9 +14,7 @@ class InteractiveVideoTest extends TestCase
         'interactiveWithNoVideo' => '{"interactiveVideo":{"video":{"startScreenOptions":{"title":"Interactive Video","hideStartTitle":false,"copyright":""},"textTracks":[{"label":"Subtitles","kind":"subtitles","srcLang":"en"}]},"assets":{"interactions":[],"bookmarks":[]},"summary":{"task":{"library":"H5P.Summary 1.8","params":{"intro":"Choose the correct statement.","summaries":[{"subContentId":"2715e2a9-93cb-467a-a807-82d0623e93aa","tip":""}],"overallFeedback":[{"from":0,"to":100}],"solvedLabel":"Progress:","scoreLabel":"Wrong answers:","resultLabel":"Your result","labelCorrect":"Correct.","labelIncorrect":"Incorrect! Please try again.","labelCorrectAnswers":"Correct answers."},"subContentId":"6d04aa0d-5317-442b-8981-bd8cb4bc195e"},"displayAt":3}},"override":{"autoplay":false,"loop":false,"showBookmarksmenuOnLoad":false,"showRewind10":false,"preventSkipping":false,"deactivateSound":false},"l10n":{"interaction":"Interaction","play":"Play","pause":"Pause","mute":"Mute","unmute":"Unmute","quality":"Video Quality","captions":"Captions","close":"Close","fullscreen":"Fullscreen","exitFullscreen":"Exit Fullscreen","summary":"Summary","bookmarks":"Bookmarks","defaultAdaptivitySeekLabel":"Continue","continueWithVideo":"Continue with video","playbackRate":"Playback Rate","rewind10":"Rewind 10 Seconds","navDisabled":"Navigation is disabled","sndDisabled":"Sound is disabled","requiresCompletionWarning":"You need to answer all the questions correctly before continuing.","back":"Back","hours":"Hours","minutes":"Minutes","seconds":"Seconds","currentTime":"Current time:","totalTime":"Total time:","navigationHotkeyInstructions":"Use key k for starting and stopping video at any time","singleInteractionAnnouncement":"Interaction appeared:","multipleInteractionsAnnouncement":"Multiple interactions appeared.","videoPausedAnnouncement":"Video is paused"}}',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateStructure()
     {
         $interactiveVideo = new InteractiveVideo("InvalidJson");
@@ -25,31 +24,29 @@ class InteractiveVideoTest extends TestCase
         $this->assertFalse($interactiveVideo->validate());
 
         $interactiveVideo = new InteractiveVideo(json_encode([
-            'interactiveVideo' => "NotValid"
+            'interactiveVideo' => "NotValid",
         ]));
         $this->assertFalse($interactiveVideo->validate());
 
         $interactiveVideo = new InteractiveVideo(json_encode([
             'interactiveVideo' => [
                 'assets' => [
-                    'interactions' => "FOO"
-                ]
-            ]
+                    'interactions' => "FOO",
+                ],
+            ],
         ]));
         $this->assertTrue($interactiveVideo->validate());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getQuestions()
     {
         $interactiveVideo = new InteractiveVideo(json_encode([
             'interactiveVideo' => [
                 'assets' => [
-                    'interactions' => null
-                ]
-            ]
+                    'interactions' => null,
+                ],
+            ],
         ]));
         $this->assertEmpty($interactiveVideo->getElements());
 
@@ -61,15 +58,13 @@ class InteractiveVideoTest extends TestCase
         $this->assertEquals("Hvorfor Kiss eller AC/DC?", $compontentElements[0]['elements'][0]['question']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alterSources()
     {
         $interactiveVideo = new InteractiveVideo(self::$elements['interactiveWithOneVideo']);
         $interactiveVideo->alterSource('videos/files-5a2f98d3cf06c.mp4', [
             'https://example.com/stream',
-            'video/streamps'
+            'video/streamps',
         ]);
         $existingStructure = json_decode(self::$elements['interactiveWithOneVideo']);
         $existingStructure->interactiveVideo->video->files[0]->path = 'https://example.com/stream';
@@ -78,18 +73,16 @@ class InteractiveVideoTest extends TestCase
         $this->assertJsonStringEqualsJsonString(json_encode($existingStructure), json_encode($structure));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alterSourcesWithNoVideos()
     {
         $interactiveVideo = new InteractiveVideo(self::$elements['interactiveWithNoVideo']);
         $interactiveVideo->alterSource('videos/files-5a2f98d3cf06c.mp4', [
             'https://example.com/stream',
-            'video/streamps'
+            'video/streamps',
         ]);
         $existingStructure = json_decode(self::$elements['interactiveWithNoVideo']);
-        $existingStructure->interactiveVideo->video->files = [(object)["path" => 'https://example.com/stream', 'mime' => 'video/streamps']];
+        $existingStructure->interactiveVideo->video->files = [(object) ["path" => 'https://example.com/stream', 'mime' => 'video/streamps']];
         $structure = $interactiveVideo->getPackageStructure();
         $this->assertJsonStringEqualsJsonString(json_encode($existingStructure), json_encode($structure));
     }

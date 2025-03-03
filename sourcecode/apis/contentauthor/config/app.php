@@ -140,10 +140,6 @@ return [
         App\Providers\H5PServiceProvider::class,
 
 
-        Collective\Html\HtmlServiceProvider::class,
-
-        Cerpus\VersionClient\Providers\VersioningServiceProvider::class,
-
         Cerpus\QuestionBankClient\Providers\QuestionBankClientServiceProvider::class,
         Cerpus\ImageServiceClient\Providers\ImageServiceClientServiceProvider::class,
 
@@ -195,8 +191,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Form' => Collective\Html\FormFacade::class,
-        'HTML' => Collective\Html\HtmlFacade::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'QuestionBank' => \Cerpus\QuestionBankClient\QuestionBankClient::class,
         'ImageService' => \Cerpus\ImageServiceClient\ImageServiceClient::class,
@@ -213,10 +207,9 @@ return [
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
 
-    'consumer-key' => env('H5P_CONSUMER_KEY', 'h5p'),
-    'consumer-secret' => env('H5P_CONSUMER_SECRET', 'changeme'),
+    'consumer-key' => env('LTI_CONSUMER_KEY', env('H5P_CONSUMER_KEY')),
+    'consumer-secret' => env('LTI_CONSUMER_SECRET', env('H5P_CONSUMER_SECRET')),
 
     'displayPropertiesBox' => env('DISPLAY_PROPERTIES_BOX', true),
-    'deploymentEnvironment' => env('DEPLOYMENT_ENVIRONMENT'),
-    'cdnPrefix' => env('CDN_WITH_PREFIX', '')
+    'cdnPrefix' => env('CDN_WITH_PREFIX', ''),
 ];

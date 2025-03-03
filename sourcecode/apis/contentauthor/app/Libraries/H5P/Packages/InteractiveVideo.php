@@ -13,7 +13,7 @@ class InteractiveVideo extends H5PBase
 
     public function getElements(): array
     {
-        $interactions = collect((array)$this->getInteractions());
+        $interactions = collect((array) $this->getInteractions());
         if ($interactions->isEmpty()) {
             return [];
         }
@@ -41,7 +41,7 @@ class InteractiveVideo extends H5PBase
 
         return [
             'elements' => $elements,
-            'composedComponent' => $this->isComposedComponent()
+            'composedComponent' => $this->isComposedComponent(),
         ];
     }
 
@@ -90,7 +90,7 @@ class InteractiveVideo extends H5PBase
     {
         $files = $this->getSources();
         if (empty($files) && !empty($sourceFile) && !empty($newSource) && count($newSource) === 2) {
-            $files = [(object)["path" => $sourceFile . "#tmp"]];
+            $files = [(object) ["path" => $sourceFile . "#tmp"]];
         }
 
         if (empty($files)) {

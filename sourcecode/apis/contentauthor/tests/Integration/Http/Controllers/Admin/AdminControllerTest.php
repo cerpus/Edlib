@@ -2,10 +2,7 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
-use App\ApiModels\User;
-use App\Apis\AuthApiService;
 use App\ContentLock;
-use App\Events\ResourceSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
@@ -17,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -95,13 +93,12 @@ class AdminControllerTest extends TestCase
             'bulk_calculated' => H5PLibraryAdmin::BULK_UNTOUCHED,
         ]);
 
-        $this->expectsEvents(ResourceSaved::class);
         $ret = $this->withSession(['user' => new GenericUser(['roles' => ['superadmin']])])
             ->post(route('admin.maxscore.update', [
                 'libraries' => [$library->id],
                 'scores' => json_encode([
-                    $content->id => (object)['score' => 3, 'success' => true],
-                ])
+                    $content->id => (object) ['score' => 3, 'success' => true],
+                ]),
             ]))
             ->assertOk()
             ->decodeResponseJson();
@@ -117,7 +114,7 @@ class AdminControllerTest extends TestCase
         ]);
     }
 
-    /** @dataProvider provider_index */
+    #[DataProvider('provider_index')]
     public function test_index(int $lockCount): void
     {
         ContentLock::factory($lockCount)->create();
@@ -128,7 +125,7 @@ class AdminControllerTest extends TestCase
         $this->assertEquals($lockCount, $data['editLockCount']);
     }
 
-    public function provider_index(): Generator
+    public static function provider_index(): Generator
     {
         yield [0];
         yield [3];
@@ -136,15 +133,7 @@ class AdminControllerTest extends TestCase
 
     public function test_viewFailedCalculations(): void
     {
-        $authMock = $this->createMock(AuthApiService::class);
-        $this->instance(AuthApiService::class, $authMock);
-
         $userId = $this->faker->uuid;
-        $user = new User($userId, 'Emily', 'QuackFaster', 'eq@duckburg.quack');
-
-        $authMock->expects($this->once())
-            ->method('getUser')
-            ->willReturn($user);
 
         $library = H5PLibrary::factory()->create();
 
@@ -173,7 +162,5 @@ class AdminControllerTest extends TestCase
 
         $resource = $data['resources']->first();
         $this->assertSame($failedResource->id, $resource->id);
-
-        $this->assertStringContainsString($user->getEmail(), $resource->ownerName);
     }
 }

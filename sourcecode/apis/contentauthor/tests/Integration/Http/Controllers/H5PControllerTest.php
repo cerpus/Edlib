@@ -2,8 +2,6 @@
 
 namespace Tests\Integration\Http\Controllers;
 
-use App\ApiModels\User;
-use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PContentLibrary;
 use App\H5PContentsMetadata;
@@ -29,16 +27,15 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use LogicException;
-use Tests\Helpers\MockAuthApi;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class H5PControllerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockAuthApi;
     use WithFaker;
 
-    /** @dataProvider provider_testCreate */
+    #[DataProvider('provider_testCreate')]
     public function testCreate(string $adapterMode, ?string $contentType): void
     {
         $this->session([
@@ -67,7 +64,6 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['config']);
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
-        $this->assertArrayHasKey('emails', $data);
         $this->assertArrayHasKey('libName', $data);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
@@ -108,16 +104,9 @@ class H5PControllerTest extends TestCase
         $this->assertNull($state['libraryid']);
         $this->assertSame('nob', $state['language_iso_639_3']);
         $this->assertEquals(config('license.default-license'), $state['license']);
-
-        // Adapter specific
-        if ($adapterMode === 'ndla') {
-            $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
-            $this->assertSame([], $data['configJs']);
-        }
     }
 
-    public function provider_testCreate(): Generator
+    public static function provider_testCreate(): Generator
     {
         yield 'cerpus-withoutContentType' => ['cerpus', null];
         yield 'ndla-withoutContentType' => ['ndla', null];
@@ -125,19 +114,16 @@ class H5PControllerTest extends TestCase
         yield 'ndla-withContentType' => ['ndla', 'H5P.Toolbar 1.2'];
     }
 
-    /** @dataProvider provider_adapterMode */
+    #[DataProvider('provider_adapterMode')]
     public function testEdit(string $adapterMode): void
     {
         Session::put('adapterMode', $adapterMode);
-        $user = new User($this->faker->uuid, 'Emily', 'Quackfaster', 'emily.quackfaster@duckburg.quack');
-        $this->setupAuthApi([
-            'getUser' => $user,
-        ]);
+        $userId = $this->faker->uuid;
         $this->session([
-            'authId' => $this->faker->uuid(),
+            'authId' => $userId,
             'name' => 'Emily Quackfaster',
             'userName' => 'QuackMaster',
-            'email' => $user->getEmail(),
+            'email' => $this->faker->email,
             'locale' => 'nn-no',
         ]);
         $request = Request::create('lti-content/create', 'POST', [
@@ -154,7 +140,7 @@ class H5PControllerTest extends TestCase
         ]);
 
         $h5pContent = H5PContent::factory()->create([
-            'user_id' => $user->getId(),
+            'user_id' => $this->faker->uuid,
             'library_id' => $lib->id,
             'license' => License::LICENSE_CC,
             'language_iso_639_3' => 'nob',
@@ -162,7 +148,7 @@ class H5PControllerTest extends TestCase
 
         H5PContentsUserData::factory()->create([
             'content_id' => $h5pContent->id,
-            'user_id' => $user->getId(),
+            'user_id' => $userId,
             'data' => $this->faker->sentence,
         ]);
 
@@ -172,13 +158,6 @@ class H5PControllerTest extends TestCase
         ]);
 
         H5PContentLibrary::factory()->create(['content_id' => $h5pContent->id, 'library_id' => $upgradeLib->id]);
-
-        if ($adapterMode === 'cerpus') {
-            H5PCollaborator::factory()->create([
-                'h5p_id' => $h5pContent->id,
-                'email' => 'dd@duckburg.quack',
-            ]);
-        }
 
         $articleController = app(H5PController::class);
         $result = $articleController->edit($request, $h5pContent->id);
@@ -195,7 +174,6 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($data['jsScript']);
         $this->assertNotEmpty($data['styles']);
         $this->assertNotEmpty($data['libName']);
-        $this->assertSame($adapterMode === 'cerpus' ? 'dd@duckburg.quack' : '', $data['emails']);
         $this->assertNotEmpty($data['hasUserProgress']);
         $this->assertNotEmpty($data['editorSetup']);
         $this->assertNotEmpty($data['state']);
@@ -219,7 +197,7 @@ class H5PControllerTest extends TestCase
 
         $editorSetup = json_decode($data['editorSetup'], true, flags: JSON_THROW_ON_ERROR);
         $this->assertEquals($lib->title . ' 1.6.3', $editorSetup['contentProperties']['type']);
-        $this->assertEquals('Emily Quackfaster', $editorSetup['contentProperties']['ownerName']);
+        $this->assertSame(null, $editorSetup['contentProperties']['ownerName']);
         $this->assertSame($upgradeLib->id, $editorSetup['libraryUpgradeList'][0]['id']);
         $this->assertSame('nb', $editorSetup['h5pLanguage']);
 
@@ -230,37 +208,26 @@ class H5PControllerTest extends TestCase
         $this->assertNotEmpty($state['parameters']);
         $this->assertNotEmpty($state['redirectToken']);
         $this->assertNotEmpty($state['title']);
-
-        // Adapter specific
-        if ($adapterMode === 'ndla') {
-            $this->assertContains('/js/react-contentbrowser.js', $result['configJs']);
-        } elseif ($adapterMode === 'cerpus') {
-            $this->assertSame([], $data['configJs']);
-        }
     }
 
-    /**
-     * @dataProvider invalidRequestsProvider
-     */
+    #[DataProvider('invalidRequestsProvider')]
     public function testStoreRequiresParameters(array $jsonData, array $errorFields): void
     {
         $this
-            ->withAuthenticated($this->makeAuthUser())
+            ->withSession(['authId' => $this->faker->uuid])
             ->postJson('/h5p', ['_token' => csrf_token(), ...$jsonData])
             ->assertUnprocessable()
             ->assertJsonValidationErrors($errorFields);
     }
 
-    /**
-     * @dataProvider invalidRequestsProvider
-     */
+    #[DataProvider('invalidRequestsProvider')]
     public function testUpdateRequiresParameters(array $jsonData, array $errorFields): void
     {
         $content = H5PContent::factory()->create();
 
         $this
-            ->withAuthenticated($this->makeAuthUser())
-            ->putJson('/h5p/'.$content->id, [
+            ->withSession(['authId' => $this->faker->uuid])
+            ->putJson('/h5p/' . $content->id, [
                 '_token' => csrf_token(),
                 ...$jsonData,
             ])
@@ -268,7 +235,7 @@ class H5PControllerTest extends TestCase
             ->assertJsonValidationErrors($errorFields);
     }
 
-    public function invalidRequestsProvider(): iterable
+    public static function invalidRequestsProvider(): iterable
     {
         yield [[], ['title', 'parameters', 'library']];
         yield [[
@@ -281,8 +248,8 @@ class H5PControllerTest extends TestCase
         yield [['language_iso_639_3' => 'eeee'], ['language_iso_639_3']];
     }
 
-    /** @dataProvider provider_adapterMode */
-    public function testDoShow(string $adapterMode): void
+    #[DataProvider('provider_adapterMode')]
+    public function testShow(string $adapterMode): void
     {
         $this->app->singleton(H5PAdapterInterface::class, match ($adapterMode) {
             'cerpus' => CerpusH5PAdapter::class,
@@ -290,7 +257,7 @@ class H5PControllerTest extends TestCase
             default => throw new LogicException('Invalid adapter'),
         });
 
-        Storage::fake('test');
+        Storage::fake('test', ['url' => 'http://localhost/h5pstorage']);
         $resourceId = $this->faker->uuid;
 
         $depH5PVideo = H5PLibrary::factory()->create(['name' => 'H5P.Video', 'major_version' => 2, 'minor_version' => 9]);
@@ -360,55 +327,55 @@ class H5PControllerTest extends TestCase
             $this->app->make(CredentialStoreInterface::class),
         );
 
-        $result = $this->post('/h5p/' . $content->id, $request->toArray())->original;
+        $response = $this->post('/h5p/' . $content->id, $request->toArray());
+        $result = $response->original;
 
+        $this->assertStringContainsString('<div class="h5p-content" data-content-id="' . $content->id . '"></div>', $response->content());
         $this->assertInstanceOf(View::class, $result);
         $this->assertEquals($content->id, $result['id']);
         $this->assertFalse($result['preview']);
-        $this->assertStringContainsString('data-content-id="'.$content->id.'"', $result['embed']);
         $this->assertNotEmpty($result['jsScripts']);
         $this->assertNotEmpty($result['styles']);
         $this->assertArrayHasKey('inlineStyle', $result);
-        $assetJs = Str::after($result['jsScripts'][0], '/content/assets/');
-        $assetCss = Str::after($result['styles'][0], '/content/assets/');
+        $assetJs = Str::after($result['jsScripts'][0], '/h5pstorage/');
+        $assetCss = Str::after($result['styles'][0], '/h5pstorage/');
         Storage::assertExists($assetJs);
         Storage::assertExists($assetCss);
         $this->assertStringContainsString('Here be JS content', Storage::get($assetJs));
         $this->assertStringContainsString('Here be CSS content', Storage::get($assetCss));
 
         $config = json_decode(substr($result['config'], 25, -9), flags: JSON_THROW_ON_ERROR);
-        $this->assertObjectHasAttribute('baseUrl', $config);
-        $this->assertObjectHasAttribute('url', $config);
+        $this->assertObjectHasProperty('baseUrl', $config);
+        $this->assertObjectHasProperty('url', $config);
         if (config('h5p.saveFrequency') === false) {
-            $this->assertObjectNotHasAttribute('user', $config);
+            $this->assertObjectNotHasProperty('user', $config);
         } else {
-            $this->assertObjectHasAttribute('user', $config);
+            $this->assertObjectHasProperty('user', $config);
         }
-        $this->assertObjectHasAttribute('tokens', $config);
-        $this->assertObjectHasAttribute('siteUrl', $config);
-        $this->assertObjectHasAttribute('l10n', $config);
-        $this->assertObjectHasAttribute('loadedJs', $config);
-        $this->assertObjectHasAttribute('loadedCss', $config);
-        $this->assertObjectHasAttribute('pluginCacheBuster', $config);
-        $this->assertObjectHasAttribute('libraryUrl', $config);
+        $this->assertObjectHasProperty('tokens', $config);
+        $this->assertObjectHasProperty('siteUrl', $config);
+        $this->assertObjectHasProperty('l10n', $config);
+        $this->assertObjectHasProperty('loadedJs', $config);
+        $this->assertObjectHasProperty('loadedCss', $config);
+        $this->assertObjectHasProperty('pluginCacheBuster', $config);
+        $this->assertObjectHasProperty('libraryUrl', $config);
         $this->assertEquals('/ajax?action=', $config->ajaxPath);
         $this->assertTrue($config->canGiveScore);
         $this->assertStringEndsWith("/s/resources/$resourceId", $config->documentUrl);
 
         $contents = $config->contents->{"cid-$content->id"};
         $this->assertEquals('H5P.Foobar 1.18', $contents->library);
-        $this->assertObjectHasAttribute('jsonContent', $contents);
-        $this->assertObjectHasAttribute('exportUrl', $contents);
-        $this->assertObjectHasAttribute('embedCode', $contents);
-        $this->assertObjectHasAttribute('resizeCode', $contents);
-        $this->assertObjectHasAttribute('displayOptions', $contents);
-        $this->assertObjectHasAttribute('contentUserData', $contents);
+        $this->assertObjectHasProperty('jsonContent', $contents);
+        $this->assertObjectHasProperty('exportUrl', $contents);
+        $this->assertObjectHasProperty('embedCode', $contents);
+        $this->assertObjectHasProperty('resizeCode', $contents);
+        $this->assertObjectHasProperty('displayOptions', $contents);
+        $this->assertObjectHasProperty('contentUserData', $contents);
         $this->assertStringContainsString("/s/resources/$resourceId", $contents->embedCode);
         $this->assertStringContainsString('Some resource title', $contents->embedCode);
 
         // Adapter specific
         $this->assertContains('//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG', $result['jsScripts']);
-        $this->assertContains('/js/videos/brightcove.js', $result['jsScripts']);
 
         if ($adapterMode === "ndla") {
             $this->assertContains('/js/h5p/wiris/view.js', $result['jsScripts']);
@@ -416,12 +383,10 @@ class H5PControllerTest extends TestCase
 
             $this->assertContains('/css/ndlah5p-iframe-legacy.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
             $this->assertContains('/css/ndlah5p-iframe.css?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $result['styles']);
-        } elseif ($adapterMode === "cerpus") {
-            $this->assertContains('/js/videos/streamps.js', $result['jsScripts']);
         }
     }
 
-    public function provider_adapterMode(): Generator
+    public static function provider_adapterMode(): Generator
     {
         yield 'cerpus' => ['cerpus'];
         yield 'ndla' => ['ndla'];

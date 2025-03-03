@@ -22,7 +22,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Powered by H5P',
+    title: 'Support for H5P',
     Svg: require('../../static/img/powerful.svg').default,
     description: (
       <>
