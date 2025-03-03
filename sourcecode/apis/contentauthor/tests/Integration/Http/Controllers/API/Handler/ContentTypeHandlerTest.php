@@ -106,7 +106,6 @@ class ContentTypeHandlerTest extends TestCase
     public function createNewQuestionSetFromArrayWithUserPublish_validData_thenSuccess()
     {
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -122,7 +121,6 @@ class ContentTypeHandlerTest extends TestCase
             'authId' => $authId,
             'license' => "BY",
             'sharing' => 'private',
-            'published' => 0,
             'title' => $title,
             'questions' => [
                 [
@@ -152,7 +150,6 @@ class ContentTypeHandlerTest extends TestCase
             'title' => $title,
             'user_id' => $authId,
             'is_private' => true,
-            'is_published' => 0,
             'max_score' => null,
             'bulk_calculated' => 0,
         ]);
@@ -171,7 +168,6 @@ class ContentTypeHandlerTest extends TestCase
             'is_private' => true,
             'max_score' => null,
             'bulk_calculated' => 0,
-            'is_published' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
         $this->assertDatabaseHas('content_versions', [

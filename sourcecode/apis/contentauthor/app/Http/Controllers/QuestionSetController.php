@@ -9,7 +9,6 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\QuestionSet\QuestionSetHandler;
 use App\QuestionSet;
 use App\SessionKeys;
@@ -56,8 +55,6 @@ class QuestionSetController extends Controller
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
         $editorSetup = EditorConfigObject::create([
-            'userPublishEnabled' => true,
-            'canPublish' => true,
             'canList' => true,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
@@ -115,12 +112,7 @@ class QuestionSetController extends Controller
         $contenttypes = $this->getQuestionsetContentTypes();
         $emails = $questionset->getCollaboratorEmails();
 
-        /** @var H5PAdapterInterface $adapter */
-        $adapter = app(H5PAdapterInterface::class);
-
         $editorSetup = EditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => $questionset->canPublish($request),
             'canList' => $questionset->canList($request),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
@@ -137,7 +129,6 @@ class QuestionSetController extends Controller
             'id' => $questionset->id,
             'title' => $questionset->title,
             'license' => $questionset->license,
-            'isPublished' => $questionset->isPublished(),
             'isDraft' => $questionset->isDraft(),
             'share' => !$questionset->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),

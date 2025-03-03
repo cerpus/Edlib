@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Content;
 use App\H5PContent;
-use App\Rules\canPublishContent;
 use App\Rules\LicenseContent;
 use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,15 +27,9 @@ class H5PStorageRequest extends FormRequest
             'language_iso_639_3' => 'nullable|string|min:3|max:3',
             'isNewLanguageVariant' => 'nullable|boolean',
             'isDraft' => 'required|boolean',
-            'isPublished' => [
-                Rule::requiredIf(Content::isUserPublishEnabled()),
-                'boolean',
-                new canPublishContent($content, $this, 'publish'),
-            ],
             'share' => [
                 'sometimes',
                 new shareContent(),
-                new canPublishContent($content, $this, 'list'),
             ],
             'license' => [
                 Rule::requiredIf($this->input('share') === 'share'),

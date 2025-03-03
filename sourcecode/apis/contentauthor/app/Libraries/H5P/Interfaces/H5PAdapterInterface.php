@@ -69,9 +69,6 @@ interface H5PAdapterInterface
     /** @return void */
     public function setConfig(ConfigInterface $config);
 
-    public function isUserPublishEnabled(): bool;
-
-
     public function enableEverybodyIsCollaborators(): bool;
 
     public function useMaxScore(): bool;

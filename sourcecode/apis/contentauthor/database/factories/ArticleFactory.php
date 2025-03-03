@@ -38,20 +38,6 @@ class ArticleFactory extends Factory
         });
     }
 
-    public function published(): self
-    {
-        return $this->state(fn() => [
-            'is_published' => true,
-        ]);
-    }
-
-    public function unpublished(): self
-    {
-        return $this->state(fn() => [
-            'is_published' => false,
-        ]);
-    }
-
     public function listed(): self
     {
         return $this->state(fn() => [

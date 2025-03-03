@@ -31,11 +31,6 @@ class H5PImportController extends Controller
         }
 
         $h5pContent = H5PContent::find($response->h5pId);
-        if ($request->input('disablePublishMetadata', true) === true) {
-            config([
-                'feature.enableUserPublish' => false,
-            ]);
-        }
 
         event(new H5PWasSaved($h5pContent, $request, ContentVersion::PURPOSE_IMPORT));
 

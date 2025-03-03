@@ -26,9 +26,7 @@ class QuestionSetConverterTest extends TestCase
     {
         Event::fake();
 
-        $questionSet = QuestionSet::factory()->create([
-            'is_published' => false,
-        ]);
+        $questionSet = QuestionSet::factory()->create();
         /** @var QuestionSetQuestion $question */
         $question = $questionSet->questions()->save(QuestionSetQuestion::factory()->make());
         /** @var QuestionSetQuestionAnswer $a1 */
@@ -85,7 +83,6 @@ class QuestionSetConverterTest extends TestCase
 
         $questionSet = [
             'owner' => $this->faker->uuid,
-            'is_published' => false,
             'title' => $this->faker->sentence,
             'external_reference' => null,
             'language_code' => $this->faker->languageCode,

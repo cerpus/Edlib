@@ -51,7 +51,6 @@ final readonly class ReturnToCoreController
         ))
             ->withLanguageIso639_3($content->languageIso639_3)
             ->withLicense($content->license)
-            ->withPublished($content->published)
             ->withShared($content->shared)
             ->withTags($content->tags)
         ;
