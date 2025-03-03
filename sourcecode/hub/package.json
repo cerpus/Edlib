@@ -17,7 +17,7 @@
         "billboard.js": "^3.14.2",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
-        "choices.js": "^11.0.2",
+        "choices.js": "^11.0.6",
         "date-fns": "^4.1.0",
         "htmx.org": "^2.0.3",
         "swagger-ui": "^5.18.2"
