@@ -1422,20 +1422,21 @@ final class ContentTest extends DuskTestCase
             ->withVersion(
                 ContentVersion::factory()
                     ->title('To be published')
-                    ->unpublished()
+                    ->unpublished(),
             )
             ->withUser($owner)
             ->create();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->loginAs($owner->email)
-            ->assertAuthenticated()
-            ->visit('https://hub-test.edlib.test/content/' . $content->id . '/version/' . $content->latestVersion?->id)
-            ->assertTitleContains('To be published')
-            ->assertSee('You are viewing an unpublished draft version.')
-            ->press('Publish')
-            ->assertTitleContains('To be published')
-            ->assertDontSee('You are viewing an unpublished draft version.')
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs($owner->email)
+                ->assertAuthenticated()
+                ->visit('https://hub-test.edlib.test/content/' . $content->id . '/version/' . $content->latestVersion?->id)
+                ->assertTitleContains('To be published')
+                ->assertSee('You are viewing an unpublished draft version.')
+                ->press('Publish')
+                ->assertTitleContains('To be published')
+                ->assertDontSee('You are viewing an unpublished draft version.'),
         );
     }
 }
