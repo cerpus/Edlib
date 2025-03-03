@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Article;
-use App\Content;
 use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
@@ -14,7 +13,6 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\Lti\Lti;
 use App\SessionKeys;

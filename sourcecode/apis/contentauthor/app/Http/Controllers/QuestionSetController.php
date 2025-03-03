@@ -9,7 +9,6 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\QuestionSet\QuestionSetHandler;
 use App\QuestionSet;
 use App\SessionKeys;
