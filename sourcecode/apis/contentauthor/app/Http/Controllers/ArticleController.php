@@ -145,6 +145,7 @@ class ArticleController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $ltiRequest = $this->lti->getRequest($request);
         $article = Article::findOrFail($id);
 
         $origin = $article->getAttribution()->getOrigin();
@@ -196,6 +197,7 @@ class ArticleController extends Controller
             'title' => $article->title,
             'content' => $article->render(),
             'license' => $article->license,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $article->isDraft(),
             'share' => !$article->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),

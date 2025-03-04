@@ -180,4 +180,14 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
         $value = $this->param('ext_ca_enable_unsaved_warning');
         return $value !== null ? $value !== '0' : null;
     }
+
+    public function getPublished(): bool|null
+    {
+        $value = $this->param('ext_edlib3_published');
+        if ($value !== null) {
+            $value = filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        }
+
+        return $value;
+    }
 }

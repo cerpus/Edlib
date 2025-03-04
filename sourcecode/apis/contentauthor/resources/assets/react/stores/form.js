@@ -1,6 +1,16 @@
 
 const form = (state, action) => {
     switch (action.type) {
+        case actions.setPublish: {
+            const {
+                published,
+            } = action.payload;
+
+            return {
+                ...state,
+                isPublished: published,
+            };
+        }
         case actions.setTitle: {
             const { title } = action.payload;
             return {
@@ -93,6 +103,7 @@ const form = (state, action) => {
 };
 
 const actions = {
+    setPublish: 'SET_PUBLISH',
     setTitle: 'SET_TITLE',
     setLicense: 'SET_LICENSE',
     setSharing: 'SET_SHARING',

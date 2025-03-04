@@ -23,6 +23,7 @@ final readonly class LtiContent
         public string|null $languageIso639_3 = null,
         public string|null $license = null,
         public string|null $iconUrl = null,
+        public bool|null $published = null,
         public bool|null $shared = null,
         public array $tags = [],
         public int|null $maxScore = null,

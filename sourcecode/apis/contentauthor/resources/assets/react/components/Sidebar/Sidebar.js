@@ -113,6 +113,11 @@ const Sidebar = ({
                         />
                     )}
                     <AlertBox />
+                    <Publish
+                        label={intl.formatMessage({
+                            id: 'SHARINGCOMPONENT.ISPUBLISHED',
+                        })}
+                    />
                     {components.map((box, index) => (
                         <Accordion key={index}>
                             <AccordionSummary

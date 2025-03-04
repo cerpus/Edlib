@@ -10,6 +10,7 @@ use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\QuestionSet\QuestionSetHandler;
+use App\Lti\Lti;
 use App\QuestionSet;
 use App\SessionKeys;
 use App\Traits\FractalTransformer;
@@ -29,7 +30,7 @@ class QuestionSetController extends Controller
     use ReturnToCore;
     use FractalTransformer;
 
-    public function __construct()
+    public function __construct(private readonly Lti $lti)
     {
         $this->middleware('lti.question-set')->only(['create']);
     }
@@ -98,6 +99,7 @@ class QuestionSetController extends Controller
 
     public function edit(Request $request, $id): View
     {
+        $ltiRequest = $this->lti->getRequest($request);
         $questionset = QuestionSet::findOrFail($id);
 
         $links = (object) [
@@ -129,6 +131,7 @@ class QuestionSetController extends Controller
             'id' => $questionset->id,
             'title' => $questionset->title,
             'license' => $questionset->license,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $questionset->isDraft(),
             'share' => !$questionset->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),

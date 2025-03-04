@@ -310,6 +310,7 @@ class H5PController extends Controller
             'language_iso_639_3' => $contentLanguage,
             'title' => $h5pContent->title,
             'license' => $h5pContent->license ?: License::getDefaultLicense(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $h5pContent->isDraft(),
             'share' => !$h5pContent->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -379,6 +380,7 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $newH5pContent->toLtiContent(
+                    published: $request->validated('isPublished'),
                     shared: ($share = $request->validated('share'))
                         ? $share === 'share'
                         : null,
@@ -442,6 +444,7 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $content->toLtiContent(
+                    published: $request->validated('isPublished'),
                     shared: ($share = $request->validated('share'))
                         ? $share === 'share'
                         : null,
