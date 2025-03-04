@@ -152,8 +152,6 @@ class Millionaire extends GameBase
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
         $editorSetup = EditorConfigObject::create([
-            'userPublishEnabled' => true,
-            'canPublish' => true,
             'canList' => true,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
@@ -191,8 +189,6 @@ class Millionaire extends GameBase
 
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => Game::isUserPublishEnabled(),
-                'canPublish' => $game->canPublish($request),
                 'canList' => $game->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             ],
@@ -207,7 +203,6 @@ class Millionaire extends GameBase
             'id' => $game->id,
             'title' => $game->title,
             'license' => $game->license,
-            'isPublished' => $game->isPublished(),
             'share' => !$game->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('game.update', ['game' => $game->id]),

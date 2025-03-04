@@ -91,9 +91,6 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
-        'isPublished' => [
-            'cant-publish' => "You don't have access to publish this resource",
-        ],
     ],
 
     /*

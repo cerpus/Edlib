@@ -11,8 +11,6 @@ class EditorConfigObject
 {
     use CreateTrait;
 
-    public $userPublishEnabled;
-    public $canPublish;
     public $canList;
     public $useLicense = false;
 

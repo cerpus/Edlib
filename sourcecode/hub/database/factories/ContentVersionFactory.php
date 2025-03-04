@@ -46,14 +46,14 @@ final class ContentVersionFactory extends Factory
         return $this->for($tool, 'tool');
     }
 
-    public function published(): self
+    public function published(bool $published = true): self
     {
-        return $this->state(['published' => true]);
+        return $this->state(['published' => $published]);
     }
 
-    public function unpublished(): self
+    public function unpublished(bool $unpublished = true): self
     {
-        return $this->state(['published' => false]);
+        return $this->state(['published' => !$unpublished]);
     }
 
     public function withTag(TagFactory|Tag|string $tag, string|null $verbatimName = null): self

@@ -7,9 +7,6 @@ return [
         'array' => ':attribute må innehalde :sixe gjenstandar.',
     ],
     'custom' => [
-        'isPublished' => [
-            'cant-publish' => "Du har ikkje tilgang til å publisere dette innhaldet.",
-        ],
         'attribute-name' => [
             /*
     |--------------------------------------------------------------------------

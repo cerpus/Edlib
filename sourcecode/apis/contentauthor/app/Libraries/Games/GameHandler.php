@@ -25,7 +25,6 @@ class GameHandler
         $game->language_code = $gametype->convertLanguageCode($values['language_code'] ?? App::getLocale());
         $game->owner = $values['authId'];
         $game->game_settings = $gametype->createGameSettings($values);
-        $game->is_published = $values['is_published'];
         $game->license = $values['license'];
 
         $game->save();
@@ -74,7 +73,6 @@ class GameHandler
 
         $game->title = $request->get('title');
         $game->game_settings = $gametype->createGameSettings($request->all());
-        $game->is_published = $game::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $game->license = $request->input('license');
 
         $game->save();

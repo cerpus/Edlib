@@ -179,4 +179,6 @@ return [
     'select-a-content-type' => 'Velg en innholdstype',
     'theme-edlib' => 'Edlib lys',
     'theme-dark' => 'Edlib mørk',
+    'publish' => 'Publiser',
+    'content-published-notice' => 'Innholdet har blitt publisert.',
 ];

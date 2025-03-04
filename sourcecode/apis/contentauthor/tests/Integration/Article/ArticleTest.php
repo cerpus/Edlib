@@ -67,7 +67,6 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -78,7 +77,7 @@ class ArticleTest extends TestCase
                 'license' => 'PRIVATE',
             ]);
 
-        $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+        $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content']);
         Event::assertDispatched(ArticleWasSaved::class);
     }
 
@@ -89,7 +88,6 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -104,7 +102,6 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => '<section class="ndla-section"><math display="block"><mrow><mmultiscripts><mi>F</mi><mn>3</mn><none><mprescripts><mn>2</mn><none></mmultiscripts></mrow></math></section>',
-            'is_published' => 1,
             'license' => 'PRIVATE',
         ]);
     }
@@ -115,7 +112,6 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -123,7 +119,6 @@ class ArticleTest extends TestCase
             ->post(route('article.store'), [
                 'title' => "Title",
                 'content' => '<section class=" ndla-section"><header class=" ndla-header"><h1 class=" ndla-h1">Overskrift </h1></header></section><section class="ndla-introduction ndla-section">Innhold</section><section class=" ndla-section"><iframe src="https://www.youtube.com/embed/RAbVTreF3lA" width="560" height="315" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" class="oerlearningorg_resource ndla-iframe"></iframe></section>',
-                'is_published' => 1,
                 'license' => 'PRIVATE',
             ])
             ->assertStatus(Response::HTTP_CREATED);
@@ -131,14 +126,12 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => '<section class="ndla-section"><header class="ndla-header"><h1 class="ndla-h1">Overskrift </h1></header></section><section class="ndla-introduction ndla-section">Innhold</section><section class="ndla-section"><iframe src="https://www.youtube.com/embed/RAbVTreF3lA" width="560" height="315" allowfullscreen class="oerlearningorg_resource ndla-iframe"></iframe></section>',
-            'is_published' => 1,
             'license' => 'PRIVATE',
         ]);
 
         $this->put(route('article.update', Article::first()), [
             'title' => "Updated title",
             'content' => '<section class=" ndla-section"><header class=" ndla-header"><h1 class="ndla-h1">Mer om forenkling av rasjonale uttrykk </h1></header></section><section class="ndla-introduction ndla-section">Hvordan skal vi trekke sammen (addere og subtrahere) rasjonale uttrykk som også inneholder andregradsuttrykk?</section><section class="ndla-section"><iframe src="https://www.youtube.com/embed/RAbVTreF3lA" width="560" height="315" allowfullscreen class="oerlearningorg_resource ndla-iframe"></iframe></section>',
-            'is_published' => 1,
             'license' => 'BY-NC-ND',
         ])
             ->assertStatus(Response::HTTP_CREATED);
@@ -146,7 +139,6 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Updated title',
             'content' => '<section class="ndla-section"><header class="ndla-header"><h1 class="ndla-h1">Mer om forenkling av rasjonale uttrykk </h1></header></section><section class="ndla-introduction ndla-section">Hvordan skal vi trekke sammen (addere og subtrahere) rasjonale uttrykk som også inneholder andregradsuttrykk?</section><section class="ndla-section"><iframe src="https://www.youtube.com/embed/RAbVTreF3lA" width="560" height="315" allowfullscreen class="oerlearningorg_resource ndla-iframe"></iframe></section>',
-            'is_published' => 1,
             'license' => 'BY-NC-ND',
         ]);
     }
@@ -157,12 +149,10 @@ class ArticleTest extends TestCase
         $authId = Str::uuid();
         $article = Article::factory()->create([
             'owner_id' => $authId,
-            'is_published' => 1,
             'license' => 'BY',
         ]);
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -175,14 +165,12 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => 'Content',
-            'is_published' => 1,
             'license' => 'BY-NC',
         ]);
 
         /** @var Article $newArticle */
         $newArticle = Article::where('title', "Title")
             ->where('content', "Content")
-            ->where('is_published', 1)
             ->first();
 
         $this->get(route('article.show', $newArticle->id))
@@ -193,7 +181,6 @@ class ArticleTest extends TestCase
     public function testEditArticleWithDraftEnabled()
     {
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -202,7 +189,6 @@ class ArticleTest extends TestCase
             'content' => "New content",
             'requestToken' => Str::uuid(),
             'lti_message_type' => "ltirequest",
-            'isPublished' => 0,
             'license' => 'BY',
         ]);
         $request = $this->app->make(SignerInterface::class)->sign(
@@ -219,7 +205,6 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'New article',
             'content' => 'New content',
-            'is_published' => 0,
             'license' => 'BY',
         ]);
 
@@ -231,7 +216,6 @@ class ArticleTest extends TestCase
             'content' => "Content",
             'requestToken' => Str::uuid(),
             'lti_message_type' => "ltirequest",
-            'isPublished' => 0,
             'license' => 'BY-ND',
         ]);
         $request = $this->app->make(SignerInterface::class)->sign(
@@ -246,7 +230,6 @@ class ArticleTest extends TestCase
         $this->assertDatabaseHas('articles', [
             'title' => 'Title',
             'content' => 'Content',
-            'is_published' => 0,
             'license' => 'BY-ND',
         ]);
 
@@ -258,7 +241,6 @@ class ArticleTest extends TestCase
             'content' => "Content",
             'requestToken' => Str::uuid(),
             'lti_message_type' => "ltirequest",
-            'isPublished' => 1,
         ]);
         $request = $this->app->make(SignerInterface::class)->sign(
             $request,
@@ -268,12 +250,11 @@ class ArticleTest extends TestCase
         $this->withSession(['authId' => $authId])
             ->put(route('article.update', $article->id), $request->toArray())
             ->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content', 'is_published' => 1]);
+        $this->assertDatabaseHas('articles', ['title' => 'Title', 'content' => 'Content']);
 
         /** @var Article $article */
         $article = Article::where('title', 'Title')
             ->where('content', "Content")
-            ->where('is_published', 1)
             ->first();
         $this->get(route('article.show', $article->id))
             ->assertSee($article->title)
@@ -283,7 +264,6 @@ class ArticleTest extends TestCase
     public function testViewArticle()
     {
         $article = Article::factory()->create([
-            'is_published' => 1,
             'license' => 'BY',
         ]);
 
