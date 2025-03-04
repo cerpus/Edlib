@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { FormattedMessage } from 'react-intl';
-import HtmlEditor from './HtmlEditor';
-import { default as convertSemantics } from './CkEditorConfigFromSemantics';
+import Cke5Editor from './Cke5Editor';
+import getConfig from './Cke5ConfigFromSemantics';
 import { useEditorSetupContext } from '../../../contexts/EditorSetupContext';
 
 const prettifyPath = (path, glue = ' > ') =>
@@ -86,17 +86,15 @@ const ListItem = ({ path, value, onChange, type, widget, startValue, shouldInden
                     />
                 )}
                 {inputType === 'html' && (
-                    <HtmlEditor
+                    <Cke5Editor
                         value={value}
                         onChange={value => {
                             onChange(value);
                             setViewOldValue(true);
                         }}
-                        config={{
-                            ...convertSemantics(editorSemantics),
-                            language: editorLanguage,
-                        }}
-                        name={prettifyPath(path, ' ')}
+                        config={getConfig(editorSemantics)}
+                        name={prettifyPath(path, '_')}
+                        language={editorLanguage}
                     />
                 )}
             </div>

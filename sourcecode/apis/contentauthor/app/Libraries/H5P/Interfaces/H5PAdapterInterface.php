@@ -81,4 +81,6 @@ interface H5PAdapterInterface
     public function getConfigJs(): array;
 
     public function getCustomEditorStyles(): array;
+
+    public function filterEditorScripts(): array;
 }

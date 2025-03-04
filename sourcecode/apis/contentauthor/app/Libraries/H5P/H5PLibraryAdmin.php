@@ -239,11 +239,12 @@ class H5PLibraryAdmin
             throw new \Exception('Error, could not library semantics!');
         }
 
-
         if (isset($dev_lib)) {
-            $upgrades_script_path = $upgrades_script_url = $dev_lib['path'] . '/upgrades.js';
+            $upgrades_script_path = $dev_lib['path'] . '/upgrades.js';
         } else {
-            $upgrades_script_path = $core->fs->getUpgradeScript($library->name, $library->version->major, $library->version->minor);
+            $lib = $core->h5pF->loadLibrary($library->name, $library->version->major, $library->version->minor);
+            $libraryName = H5PCore::libraryToFolderName($lib);
+            $upgrades_script_path = $core->fs->getUpgradeScript($libraryName, $library->version->major, $library->version->minor);
         }
 
         if (!empty($upgrades_script_path)) {

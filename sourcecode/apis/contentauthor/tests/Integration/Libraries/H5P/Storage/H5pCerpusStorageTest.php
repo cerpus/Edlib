@@ -33,7 +33,7 @@ class H5pCerpusStorageTest extends TestCase
             new NullVideoAdapter(),
         );
 
-        $path = $cerpusStorage->getUpgradeScript($library->name, $library->major_version, $library->minor_version);
+        $path = $cerpusStorage->getUpgradeScript($library->getFolderName(), $library->major_version, $library->minor_version);
 
         $this->assertStringContainsString($file, $path);
     }
