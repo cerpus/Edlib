@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Lti;
 
 use App\Events\LaunchContent;
+use App\Events\LaunchItemSelection;
 use App\Events\LaunchLti;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
@@ -113,6 +114,7 @@ class LtiLaunchBuilder
         LtiTool $tool,
         string $url,
         string $itemReturnUrl,
+        ContentVersion|null $version = null,
     ): LtiLaunch {
         $launch = $this
             ->withForwardedClaims()
@@ -122,6 +124,9 @@ class LtiLaunchBuilder
             ->withClaim('lti_message_type', 'ContentItemSelectionRequest');
 
         $event = new LaunchLti($url, $launch, $tool);
+        $this->dispatcher->dispatch($event);
+
+        $event = new LaunchItemSelection($event->getLaunch(), $version);
         $this->dispatcher->dispatch($event);
 
         $request = new Oauth1Request('POST', $url, $event->getLaunch()->claims);

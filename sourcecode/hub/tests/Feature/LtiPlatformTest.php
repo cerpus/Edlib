@@ -6,10 +6,13 @@ namespace Tests\Feature;
 
 use App\Events\LaunchLti;
 use App\Lti\LtiLaunchBuilder;
+use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
 /**
@@ -17,6 +20,7 @@ use Tests\TestCase;
  */
 final class LtiPlatformTest extends TestCase
 {
+    use WithFaker;
     use RefreshDatabase;
 
     public function testBuildingItemSelectionLaunchDispatchesEvent(): void
@@ -150,5 +154,38 @@ final class LtiPlatformTest extends TestCase
         $this->assertSame('Chanandler', $request->get('lis_person_name_given'));
         $this->assertFalse($request->has('lis_person_contact_email_primary'));
         $this->assertSame($user->id, $request->get('user_id'));
+    }
+
+    #[TestWith(['1', true])]
+    #[TestWith(['0', false])]
+    public function testClaimsContainPublishedFlagWhenEditing(
+        string $flagValue,
+        bool $published,
+    ): void {
+        $version = ContentVersion::factory()->published($published)->create();
+
+        $request = $this->app->make(LtiLaunchBuilder::class)
+            ->toItemSelectionLaunch(
+                $version->tool ?? $this->fail(),
+                $this->faker->url,
+                $this->faker->url,
+                $version,
+            )
+            ->getRequest();
+
+        $this->assertSame($flagValue, $request->get('ext_edlib3_published'));
+    }
+
+    public function testClaimsDoNotContainPublishedFlagWhenNotEditing(): void
+    {
+        $request = $this->app->make(LtiLaunchBuilder::class)
+            ->toItemSelectionLaunch(
+                LtiTool::factory()->create(),
+                $this->faker->url,
+                $this->faker->url,
+            )
+            ->getRequest();
+
+        $this->assertFalse($request->has('ext_edlib3_published'));
     }
 }

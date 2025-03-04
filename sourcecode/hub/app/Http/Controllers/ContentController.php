@@ -234,6 +234,7 @@ class ContentController extends Controller
             $tool,
             $launchUrl,
             route('content.lti-update', [$tool, $content, $version]),
+            $version,
         );
 
         return view('content.edit', [
