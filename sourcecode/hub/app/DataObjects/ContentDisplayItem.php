@@ -18,6 +18,7 @@ readonly class ContentDisplayItem
         public int $viewsCount,
         public string $contentType,
         public string $languageIso639_3,
+        public string|null $languageDisplayName,
         public array|string $users,
         public string|null $detailsUrl,
         public string|null $previewUrl,
