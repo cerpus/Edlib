@@ -18,7 +18,7 @@ class AddPublishFlagToLtiLaunch
 
         $event->setLaunch(
             $event->getLaunch()
-                ->withClaim('ext_edlib3_published', $version->published ? '1' : '0')
+                ->withClaim('ext_edlib3_published', $version->published ? '1' : '0'),
         );
     }
 }
