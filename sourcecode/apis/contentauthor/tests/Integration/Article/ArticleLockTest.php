@@ -20,15 +20,14 @@ class ArticleLockTest extends TestCase
 
     public function testArticleHasLockWhenUserEdits()
     {
-        $this->withoutMiddleware();
-
         $authId = Str::uuid();
         $authName = $this->faker->name;
         $authEmail = $this->faker->email;
         $article = Article::factory()->create(['owner_id' => $authId]);
 
         $this->withSession(['authId' => $authId, 'email' => $authEmail, 'name' => $authName, 'verifiedEmails' => [$authEmail]])
-            ->get(route('article.edit', $article->id));
+            ->get(route('article.edit', $article->id))
+            ->assertOk();
         $this->assertDatabaseHas('content_locks', ['content_id' => $article->id, 'email' => $authEmail, 'name' => $authName]);
     }
 

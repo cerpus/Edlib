@@ -60,7 +60,6 @@ class ArticleControllerTest extends TestCase
             'content' => 'Something',
             'origin' => null,
             'originators' => null,
-            'isPublished' => false,
             'share' => 'share',
             'license' => License::LICENSE_BY,
         ])

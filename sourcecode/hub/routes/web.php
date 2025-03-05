@@ -69,6 +69,13 @@ Route::controller(ContentController::class)->group(function () {
         ->whereUlid('content')
         ->can('view', 'content');
 
+    Route::patch('/content/{content}/version/{version}/publish')
+        ->name('content.publish-version')
+        ->uses([ContentController::class, 'publish'])
+        ->whereUlid(['content', 'version'])
+        ->can('edit', ['content'])
+        ->scopeBindings();
+
     Route::patch('/content/{content}/status')
         ->uses([ContentController::class, 'updateStatus'])
         ->name('content.update-status')

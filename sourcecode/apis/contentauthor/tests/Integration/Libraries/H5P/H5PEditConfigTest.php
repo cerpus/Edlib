@@ -101,7 +101,6 @@ class H5PEditConfigTest extends TestCase
         $library = H5PLibrary::factory()->create();
         $content = H5PContent::factory()->create([
             'library_id' => $library->id,
-            'is_published' => true,
             'is_draft' => false,
             'max_score' => 42,
             'language_iso_639_3' => 'nob',

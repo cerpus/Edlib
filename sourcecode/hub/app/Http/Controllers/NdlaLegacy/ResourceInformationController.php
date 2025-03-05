@@ -11,6 +11,10 @@ use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use function abort;
+use function is_array;
+use function json_decode;
+
+use const JSON_THROW_ON_ERROR;
 
 /**
  * Get H5P info.
@@ -24,10 +28,9 @@ final readonly class ResourceInformationController
 
     public function __invoke(Content $edlib2UsageContent): JsonResponse
     {
-        $launchUrl = $edlib2UsageContent->latestVersion?->lti_launch_url;
-        assert($launchUrl !== null);
+        $version = $edlib2UsageContent->latestVersion ?? abort(404);
 
-        $caId = $this->config->extractH5pIdFromUrl($launchUrl);
+        $caId = $this->config->extractH5pIdFromUrl($version->lti_launch_url);
         if ($caId === null) {
             abort(404, 'Not an H5P');
         }
@@ -42,7 +45,15 @@ final readonly class ResourceInformationController
             throw new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        return JsonResponse::fromJsonString($json, headers: [
+        $data = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
+        assert(is_array($data));
+
+        return new JsonResponse([
+            ...$data,
+
+            // amend info from CA to have the hub's publish flag
+            'published' => $version->published,
+        ], headers: [
             'Content-Type' => 'application/json',
         ]);
     }

@@ -89,8 +89,5 @@ return [
     */
             'rule-name' => '맞춤 메시지',
         ],
-        'isPublished' => [
-            'cant-publish' => "이 자료를 게시할 수 있는 액세스 권한이 없습니다.",
-        ],
     ],
 ];
