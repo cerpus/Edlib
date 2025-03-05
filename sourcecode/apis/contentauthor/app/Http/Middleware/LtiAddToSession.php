@@ -31,6 +31,7 @@ final readonly class LtiAddToSession
                 Session::put('authId', $ltiRequest->getUserId());
                 Session::put('name', $ltiRequest->getUserName());
                 Session::put('email', $ltiRequest->getUserEmail() ?? 'noemail');
+                Session::put('isAdmin', $ltiRequest->isAdministrator());
             }
 
             $allowedLicenses = implode(',', [
