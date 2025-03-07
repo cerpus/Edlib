@@ -1,2 +1,85 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$string of method Illuminate\\Console\\Command\:\:line\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/AddLtiTool.php
+
+		-
+			message: '#^Property App\\Models\\LtiToolExtra\:\:\$lti_tool_id \(string\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Console/Commands/AddLtiToolExtra.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\ContentVersion\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Http/Controllers/NdlaLegacy/SelectController.php
+
+		-
+			message: '#^Parameter \#2 \$value of method App\\Lti\\LtiLaunchBuilder\:\:withClaim\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Listeners/AddAuthToLtiLaunch.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Tag\> is not subtype of native type Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: app/Models/Content.php
+
+		-
+			message: '#^Property App\\Models\\ContentView\:\:\$lti_platform_id \(string\|null\) does not accept int\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Models/Content.php
+
+		-
+			message: '#^Parameter \#1 \$edlibVersionId of method Cerpus\\EdlibResourceKit\\Lti\\Edlib\\DeepLinking\\EdlibLtiLinkItem\:\:withEdlibVersionId\(\) expects string\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/ContentVersion.php
+
+		-
+			message: '#^Property App\\Models\\LtiTool\:\:\$slug \(string\) does not accept int\|string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Models/LtiTool.php
+
+		-
+			message: '#^Property App\\Models\\LtiToolExtra\:\:\$slug \(string\) does not accept int\|string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Models/LtiToolExtra.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:getApiKey\(\) should return string but returns int\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Parameter \#2 \$value of method Laravel\\Dusk\\Browser\:\:select\(\) expects array\|string\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Browser/AdminTest.php
+
+		-
+			message: '#^Parameter \#2 \$value of method Laravel\\Dusk\\Browser\:\:select\(\) expects array\|string\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Browser/ContentTest.php
+
+		-
+			message: '#^Parameter \#2 \$string of method PHPUnit\\Framework\\Assert\:\:assertStringStartsWith\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Feature/ContentTest.php
+
+		-
+			message: '#^Parameter \$internalLtiPlatformKey of class App\\Configuration\\NdlaLegacyConfig constructor expects string\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/NdlaLegacy/ResourceInformationTest.php
