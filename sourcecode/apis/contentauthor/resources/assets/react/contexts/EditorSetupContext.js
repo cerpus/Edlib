@@ -4,7 +4,6 @@ const EditorSetupContext = React.createContext({
     adapterList: [],
     adapterName: null,
     canList: false,
-    canPublish: false,
     contentProperties: null,
     creatorName: null,
     editorLanguage: '',
@@ -17,14 +16,12 @@ const EditorSetupContext = React.createContext({
     showDisplayOptions: false,
     supportedTranslations: [],
     useLicense: false,
-    userPublishEnabled: false,
 });
 
 export const EditorSetupProvider = ({
                                         adapterList,
                                         adapterName,
                                         canList,
-                                        canPublish,
                                         contentProperties,
                                         creatorName,
                                         editorLanguage,
@@ -37,7 +34,6 @@ export const EditorSetupProvider = ({
                                         showDisplayOptions,
                                         supportedTranslations,
                                         useLicense,
-                                        userPublishEnabled,
                                         children,
 }) => {
     return (
@@ -46,7 +42,6 @@ export const EditorSetupProvider = ({
                 adapterList,
                 adapterName,
                 canList,
-                canPublish,
                 contentProperties,
                 creatorName,
                 editorLanguage,
@@ -59,7 +54,6 @@ export const EditorSetupProvider = ({
                 showDisplayOptions,
                 supportedTranslations,
                 useLicense,
-                userPublishEnabled,
            }}
         >
             {children}

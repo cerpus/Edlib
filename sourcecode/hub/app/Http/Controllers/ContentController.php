@@ -234,6 +234,7 @@ class ContentController extends Controller
             $tool,
             $launchUrl,
             route('content.lti-update', [$tool, $content, $version]),
+            $version,
         );
 
         return view('content.edit', [
@@ -241,6 +242,14 @@ class ContentController extends Controller
             'version' => $version,
             'launch' => $launch,
         ]);
+    }
+
+    public function publish(Content $content, ContentVersion $version, Request $request): Response
+    {
+        $version->published = true;
+        $version->save();
+
+        return redirect()->back()->with('alert', trans('messages.content-published-notice'));
     }
 
     public function updateStatus(Content $content, ContentStatusRequest $request): Response

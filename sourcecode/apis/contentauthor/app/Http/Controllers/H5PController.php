@@ -160,8 +160,6 @@ class H5PController extends Controller
         $ltiRequest = $this->lti->getRequest(request());
 
         $editorSetup = H5PEditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => true,
             'canList' => true,
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
@@ -258,8 +256,6 @@ class H5PController extends Controller
         $ltiRequest = Session::get('lti_requests.' . $redirectToken);
 
         $editorSetup = H5PEditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => $h5pContent->canPublish($request),
             'canList' => $h5pContent->canList($request),
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
@@ -314,7 +310,7 @@ class H5PController extends Controller
             'language_iso_639_3' => $contentLanguage,
             'title' => $h5pContent->title,
             'license' => $h5pContent->license ?: License::getDefaultLicense(),
-            'isPublished' => $h5pContent->isPublished(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $h5pContent->isDraft(),
             'share' => !$h5pContent->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -384,9 +380,7 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $newH5pContent->toLtiContent(
-                    published: H5PContent::isUserPublishEnabled()
-                        ? $request->validated('isPublished')
-                        : null,
+                    published: $request->validated('isPublished'),
                     shared: ($share = $request->validated('share'))
                         ? $share === 'share'
                         : null,
@@ -450,9 +444,7 @@ class H5PController extends Controller
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(
                 $content->toLtiContent(
-                    published: H5PContent::isUserPublishEnabled()
-                        ? $request->validated('isPublished')
-                        : null,
+                    published: $request->validated('isPublished'),
                     shared: ($share = $request->validated('share'))
                         ? $share === 'share'
                         : null,

@@ -15,9 +15,6 @@ use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
-use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
-use Cerpus\EdlibResourceKit\Oauth1\Request as Oauth1Request;
-use Cerpus\EdlibResourceKit\Oauth1\SignerInterface;
 use Faker\Provider\Uuid;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,7 +85,6 @@ class QuestionSetControllerTest extends TestCase
         $requestData = [
             'title' => 'Something',
             'tags' => ['list', 'of', 'tags', 'goes', 'here'],
-            'isPublished' => false,
             'license' => License::LICENSE_BY_NC_SA,
             'selectedPresentation' => Millionaire::$machineName,
             'cards' => json_decode('[{"order":1,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":2,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":3,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":4,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":5,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":6,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":7,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":8,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":9,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":10,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":11,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":12,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":13,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":14,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]},{"order":15,"question":{"text":"Updated question","image":{"id":""}},"answers":[{"answerText":"First answer","isCorrect":true,"image":null},{"answerText":"Next answer","isCorrect":false,"image":null},{"answerText":"Another answer","isCorrect":false,"image":null},{"answerText":"Last answer","isCorrect":false,"image":null}]}]', true),
@@ -510,7 +506,6 @@ class QuestionSetControllerTest extends TestCase
         Event::fake();
 
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(false);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
@@ -553,7 +548,6 @@ class QuestionSetControllerTest extends TestCase
         $this->assertDatabaseHas('question_sets', [
             'title' => "New title",
             "tags" => "list,of,tags,goes,here",
-            "is_published" => 1,
             'license' => 'BY',
         ]);
 
@@ -572,118 +566,8 @@ class QuestionSetControllerTest extends TestCase
         $this->assertDatabaseHas('question_sets', [
             'title' => "Updated title",
             "tags" => "list,of,tags,goes,here",
-            "is_published" => 1,
             'license' => 'BY',
         ]);
-        Event::assertDispatched(QuestionsetWasSaved::class);
-    }
-
-    public function testUpdateFullRequestWithDraftEnabled()
-    {
-        Event::fake();
-
-        $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
-        $testAdapter->method('getAdapterName')->willReturn("UnitTest");
-        app()->instance(H5PAdapterInterface::class, $testAdapter);
-
-        $json = [
-            'title' => "New title",
-            'tags' => ['list', 'of', 'tags', 'goes', 'here'],
-            'cards' => [
-                (object) [
-                    'order' => 1,
-                    'canDelete' => false,
-                    'image' => [],
-                    'question' => [
-                        'text' => "New question",
-                        'image' => null,
-                    ],
-                    'answers' => [
-                        (object) [
-                            'answerText' => "New answer",
-                            'isCorrect' => true,
-                            'showToggle' => false,
-                            'canDelete' => false,
-                            'image' => [],
-                            'order' => 1,
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $request = new Oauth1Request('POST', route('questionset.store'), [
-            'license' => "BY",
-            'questionSetJsonData' => json_encode($json),
-            'share' => 'PRIVATE',
-            'lti_message_type' => "ltirequest",
-            'isPublished' => 0,
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $authId = Str::uuid();
-        $this->withSession(["authId" => $authId])
-            ->post(route('questionset.store'), $request->toArray())
-            ->assertStatus(Response::HTTP_CREATED);
-        $this->assertDatabaseHas('question_sets', [
-            'title' => "New title",
-            "tags" => "list,of,tags,goes,here",
-            "is_published" => 0,
-        ]);
-
-        /** @var QuestionSet $storedQuestionSet */
-        $storedQuestionSet = QuestionSet::where('title', 'New title')->first();
-
-        $json['title'] = "Updated title";
-
-        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
-            'license' => "BY",
-            'questionSetJsonData' => json_encode($json),
-            'share' => 'PRIVATE',
-            'lti_message_type' => "ltirequest",
-            'isPublished' => 1,
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
-            ->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseHas('question_sets', [
-            'title' => "Updated title",
-            "tags" => "list,of,tags,goes,here",
-            "is_published" => 1,
-        ]);
-
-        $request = new Oauth1Request('PUT', route('questionset.update', $storedQuestionSet->id), [
-            'license' => "BY",
-            'questionSetJsonData' => json_encode($json),
-            'share' => 'PRIVATE',
-            'lti_message_type' => "ltirequest",
-            'isPublished' => 0,
-        ]);
-        $request = $this->app->make(SignerInterface::class)->sign(
-            $request,
-            $this->app->make(CredentialStoreInterface::class),
-        );
-
-        $this->withSession(["authId" => $authId])
-            ->put(route('questionset.update', $storedQuestionSet->id), $request->toArray())
-            ->assertStatus(Response::HTTP_OK);
-
-        $this->assertDatabaseHas('question_sets', [
-            'title' => "Updated title",
-            "tags" => "list,of,tags,goes,here",
-            "is_published" => 0,
-        ]);
-        $this->assertCount(1, QuestionSet::all());
         Event::assertDispatched(QuestionsetWasSaved::class);
     }
 }

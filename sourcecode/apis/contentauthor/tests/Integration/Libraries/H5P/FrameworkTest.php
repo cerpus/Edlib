@@ -232,7 +232,6 @@ final class FrameworkTest extends TestCase
             'slug' => 'slugger',
             'user_id' => $this->faker->uuid,
             'max_score' => 42,
-            'is_published' => false,
             'is_private' => false,
             'is_draft' => false,
             'language_iso_639_3' => 'nob',
@@ -257,7 +256,6 @@ final class FrameworkTest extends TestCase
         $this->assertSame($input['embed_type'], $content->embed_type);
         $this->assertSame($input['max_score'], $content->max_score);
         $this->assertSame($input['slug'], $content->slug);
-        $this->assertSame($input['is_published'], $content->is_published);
         $this->assertSame($input['is_draft'], $content->is_draft);
 
         $this->assertSame($input['metadata']['license'], $content->metadata->license);

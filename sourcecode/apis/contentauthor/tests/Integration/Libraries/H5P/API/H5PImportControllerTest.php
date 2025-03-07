@@ -59,10 +59,9 @@ namespace Tests\Integration\Libraries\H5P\API {
             H5PLibrary::factory()->create();
         }
 
-        private function setupAdapter($isUserPublishEnabled, $isPublic)
+        private function setupAdapter($isPublic)
         {
             $testAdapter = $this->createStub(H5PAdapterInterface::class);
-            $testAdapter->method('isUserPublishEnabled')->willReturn($isUserPublishEnabled);
             $testAdapter->method('getAdapterName')->willReturn("UnitTest");
             $testAdapter->method('getDefaultImportPrivacy')->willReturn($isPublic);
             app()->instance(H5PAdapterInterface::class, $testAdapter);
@@ -73,7 +72,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5P()
         {
             $this->_setUp();
-            $this->setupAdapter(false, false);
+            $this->setupAdapter(isPublic: false);
 
             collect([
                 [
@@ -123,7 +122,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                         ->first();
                     $this->assertJsonStringEqualsJsonString($expectedParameterStructure, $h5pContent->parameters);
                     $this->assertEquals('U', $h5pContent->metadata->license);
-                    $this->assertTrue($h5pContent->is_published);
                     $this->assertFalse($h5pContent->isListed());
                     $this->assertDatabaseHas('content_versions', [
                         'id' => $h5pContent->version_id,
@@ -143,7 +141,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5PWithImage()
         {
             $this->_setUp();
-            $this->setupAdapter(false, true);
+            $this->setupAdapter(isPublic: true);
 
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
@@ -184,7 +182,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                 $h5pContent->parameters,
             );
             $this->assertEquals('U', $h5pContent->metadata->license);
-            $this->assertFalse($h5pContent->is_published);
             $this->assertTrue($h5pContent->isListed());
 
             $imagePath = 'content/%s/images/file-5edde9091ebe0.jpg';
@@ -207,7 +204,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5PWithMetadata()
         {
             $this->_setUp();
-            $this->setupAdapter(true, false);
+            $this->setupAdapter(isPublic: false);
 
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
@@ -245,7 +242,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                 '{"taskDescription":"Drag the words into the correct boxes","overallFeedback":[{"from":0,"to":100}],"checkAnswer":"Check","tryAgain":"Retry","showSolution":"Show solution","dropZoneIndex":"Drop Zone @index.","empty":"Drop Zone @index is empty.","contains":"Drop Zone @index contains draggable @draggable.","ariaDraggableIndex":"@index of @count draggables.","tipLabel":"Show tip","correctText":"Correct!","incorrectText":"Incorrect!","resetDropTitle":"Reset drop","resetDropDescription":"Are you sure you want to reset this drop zone?","grabbed":"Draggable is grabbed.","cancelledDragging":"Cancelled dragging.","correctAnswer":"Correct answer:","feedbackHeader":"Feedback","behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"instantFeedback":false},"scoreBarLabel":"You got :num out of :total points","textField":"*PhpUnit* is an *awesome* tool"}',
                 $h5pContent->parameters,
             );
-            $this->assertFalse($h5pContent->is_published);
             $this->assertTrue($h5pContent->isListed());
 
             $this->assertDatabaseHas('h5p_contents_metadata', [
@@ -298,21 +294,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                 ])
                 ->assertStatus(Response::HTTP_BAD_REQUEST)
                 ->assertJson(['message' => 'The file you uploaded is not a valid HTML5 Package (We are unable to unzip it)']);
-        }
-
-        public function testFailsOnInvalidDisablePublishMetadataFlag(): void
-        {
-            $file = new File('tree.jpg', fopen(base_path('tests/files/tree.jpg'), 'r'));
-            $user = User::factory()->make();
-
-            $this
-                ->postJson(route('api.import.h5p'), [
-                    'h5p' => $file,
-                    'userId' => $user->auth_id,
-                    'disablePublishMetadata' => 'invalid',
-                ])
-                ->assertUnprocessable()
-                ->assertJsonValidationErrors(['disablePublishMetadata']);
         }
 
         public function testFailsOnInvalidIsPublicFlag(): void
