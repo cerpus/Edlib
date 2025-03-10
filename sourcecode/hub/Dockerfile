@@ -98,6 +98,8 @@ RUN set -eux; \
 
 VOLUME /app/storage
 
+COPY docker/php/fpm-prod.conf "/usr/local/etc/php-fpm.d/zz-fpm-prod.conf"
+
 
 FROM prod AS test
 
