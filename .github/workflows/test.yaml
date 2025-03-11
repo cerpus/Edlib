@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/hub.yaml"
+      - "sourcecode/hub/**"
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/hub.yaml'
+      - 'sourcecode/hub/**'
+  workflow_dispatch:
+    inputs:
+      versionToRelease:
+        description: 'A version to release'
+        required: true
+        type: string
+      deploy:
+        description: 'A version to release'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  workingDirectory: sourcecode/apis/contentauthor
+  shouldPublishImage: ${{ inputs.versionToRelease && !inputs.deploy && '1' || '0' }}
+  shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
+
+defaults:
+  run:
+    working-directory: sourcecode/hub
+
+concurrency:
+  group: hub-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  get_variables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the ref
+        id: get_ref
+        run: |
+          echo "shouldPublishImage"
+          echo "${{ env.shouldPublishImage }}"
+          echo "shouldDeploy"
+          echo "${{ env.shouldDeploy }}"
