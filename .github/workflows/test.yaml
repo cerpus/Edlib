@@ -15,7 +15,7 @@ on:
     paths:
       - '.github/workflows/hub.yaml'
       - 'sourcecode/hub/**'
-  workflow_dispatch:
+  workflow_call:
     inputs:
       versionToRelease:
         description: 'A version to release'
