@@ -5,6 +5,8 @@
     'frameborder' => '0',
     'width' => $width,
     'height' => $height,
+    'allowfullscreen' => 'allowfullscreen',
+    'allow' => 'fullscreen *; geolocation *; microphone *; camera *; midi *; encrypted-media *',
 ])->class([
     'lti-launch',
     'd-block',
