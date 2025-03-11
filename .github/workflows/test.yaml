@@ -31,9 +31,9 @@ env:
   shouldPublishImage: ${{ inputs.version && !inputs.deploy && '1' || '0' }}
   shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
 
-defaults:
-  run:
-    working-directory: ./sourcecode/hub
+#defaults:
+#  run:
+#    working-directory: ./sourcecode/hub
 
 concurrency:
   group: hub-${{ github.head_ref || github.run_id }}
@@ -46,6 +46,8 @@ jobs:
       - name: Get the ref
         id: get_ref
         run: |
+          pwd
+          ls -l
           echo "shouldPublishImage"
           echo "${{ env.shouldPublishImage }}"
           echo "shouldDeploy"
