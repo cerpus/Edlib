@@ -24,6 +24,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     public function __construct(
         private readonly NdlaImageClient $client,
         private readonly CerpusStorageInterface $storage,
+        private readonly string $url,
     ) {}
 
     public function mapParams($params, $originalKeys = false)
@@ -54,7 +55,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
 
     private function getImageUrl($path, $requestParameters)
     {
-        return config('ndla.image.url') . $path . "?" . http_build_query($requestParameters);
+        return $this->url . $path . "?" . http_build_query($requestParameters);
     }
 
     public function isTargetType($mimeType, $pathToFile): bool
@@ -64,7 +65,7 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
 
     private function isSameDomain($pathToFile): bool
     {
-        return str_starts_with($pathToFile, config('h5p.image.url'));
+        return str_starts_with($pathToFile, $this->url);
     }
 
     private function isImageMime($mime): bool
@@ -130,14 +131,9 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
         return $imageProperties;
     }
 
-    public static function getClientDetailsUrl(): ?string
+    public function getClientDetailsUrl(): ?string
     {
-        $url = config('ndla.image.url');
-        if ($url !== null) {
-            return $url . '/image-api/v3/images';
-        }
-
-        return null;
+        return $this->url . '/image-api/v3/images';
     }
 
     public function getViewCss(): array
