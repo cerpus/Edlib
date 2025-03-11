@@ -40,9 +40,6 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/test.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
-    secrets:
-      AWS_DOCKER_REGISTRY_ACCESS_KEY_ID: ${{ secrets.AWS_DOCKER_REGISTRY_ACCESS_KEY_ID }}
-      AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY: ${{ secrets.AWS_DOCKER_REGISTRY_SECRET_ACCESS_KEY }}
 
   building_done:
     runs-on: ubuntu-latest
