@@ -40,6 +40,7 @@ jobs:
     uses: cerpus/Edlib/.github/workflows/test.yaml@master
     with:
       versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: true
 
   building_done:
     runs-on: ubuntu-latest
