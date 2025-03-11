@@ -11,6 +11,11 @@ Route::domain('www.edlib.com')
     ->uses([EdlibLegacyController::class, 'redirectFromEdlib2Id'])
     ->whereUuid('edlib2Content');
 
+Route::domain('www.h5p.ndla.no')
+    ->get('/s/resources/{edlib2Content}')
+    ->uses([EdlibLegacyController::class, 'redirectFromEdlib2Id'])
+    ->whereUuid('edlib2Content');
+
 Route::middleware([LtiValidatedRequest::class . ':platform'])->group(function () {
     Route::domain('core.cerpus-course.com')
         ->post('/lti/launch/{edlib2UsageContent}')

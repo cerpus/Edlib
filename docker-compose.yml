@@ -168,7 +168,6 @@ services:
           # legacy domains, needed for browser tests
           - core.cerpus-course.com
           - api.edlib.com
-          - www.edlib.com
 
 
   # ==================
