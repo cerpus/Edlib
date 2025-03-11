@@ -106,6 +106,10 @@ class H5PServiceProvider extends ServiceProvider
             default => NullImageAdapter::class,
         });
 
+        $this->app->when(NdlaImageAdapter::class)
+            ->needs('$url')
+            ->giveConfig('ndla.image.url');
+
         $this->app->bind(NdlaImageClient::class, fn() => new NdlaImageClient([
             'base_uri' => config('ndla.image.url'),
         ]));
@@ -120,7 +124,7 @@ class H5PServiceProvider extends ServiceProvider
             ->giveConfig('ndla.audio.url');
 
         $this->app->bind(NdlaAudioClient::class, fn() => new NdlaAudioClient([
-            'base_uri' => config('ndla.image.url'),
+            'base_uri' => config('ndla.audio.url'),
         ]));
 
         $this->app->bind(H5PCerpusStorage::class);
