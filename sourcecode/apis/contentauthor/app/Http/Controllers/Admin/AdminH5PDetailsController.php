@@ -11,6 +11,7 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
+use DB;
 use ErrorException;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
@@ -107,7 +108,12 @@ class AdminH5PDetailsController extends Controller
             'usedBy' => H5PLibraryLibrary::where('required_library_id', $library->id)->get(),
             'info' => $validator->h5pF->getMessages('info'),
             'error' => $validator->h5pF->getMessages('error'),
-            'languages' => H5PLibraryLanguage::select('language_code')->where('library_id', $library->id)->pluck('language_code'),
+            'languages' => H5PLibraryLanguage::select('language_code')
+                ->where('library_id', $library->id)
+                ->pluck('language_code')
+                ->push('en') // 'en' translation is rarely in a file,
+                ->unique() // but just in case it is.
+                ->sort()
         ]);
     }
 
@@ -182,18 +188,27 @@ class AdminH5PDetailsController extends Controller
             ->where('language_code', $locale)
             ->first();
 
+        $contentCount = DB::table('content_versions')
+            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
+            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('cv.content_id')
+                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+            })
+            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->where('h5p_contents.library_id', $library->id)
+            ->where('h5p_contents_metadata.default_language', $locale);
+
         return view('admin.library-upgrade.translation', [
             'library' => $library,
             'languageCode' => $locale,
-            'haveTranslation' => $libLang !== null,
             'translationDb' => $libLang?->translation,
             'translationFile' => Storage::disk()->get(
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
             ),
-            'contentCount' => H5PContent::where('library_id', $library->id)
-                ->whereHas('metadata', function (Builder $query) use ($locale) {
-                    $query->where('default_language', $locale);
-                })->count(),
+            'contentCount' => $contentCount->first()->total,
         ]);
     }
 
@@ -229,6 +244,19 @@ class AdminH5PDetailsController extends Controller
             }
         }
 
+        $contentCount = DB::table('content_versions')
+            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
+            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('cv.content_id')
+                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+            })
+            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->where('h5p_contents.library_id', $library->id)
+            ->where('h5p_contents_metadata.default_language', $locale);
+
         $libLang = H5PLibraryLanguage::where('library_id', $library->id)
             ->where('language_code', $locale)
             ->first();
@@ -242,10 +270,7 @@ class AdminH5PDetailsController extends Controller
                 sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
             ),
             'messages' => $messages,
-            'contentCount' => H5PContent::where('library_id', $library->id)
-                ->whereHas('metadata', function (Builder $query) use ($locale) {
-                    $query->where('default_language', $locale);
-                })->count(),
+            'contentCount' => $contentCount->first()->total,
         ]);
     }
 
@@ -255,10 +280,22 @@ class AdminH5PDetailsController extends Controller
         $adminConfig->getConfig();
         $adminConfig->addContentLanguageScripts();
 
-        $config = [
+        $contentCount = DB::table('content_versions')
+            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
+            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('cv.content_id')
+                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+            })
+            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->where('h5p_contents.library_id', $library->id)
+            ->where('h5p_contents_metadata.default_language', $locale);
+
+        $jsConfig = [
             'ajaxPath' => $adminConfig->config->ajaxPath,
             'endpoint' => route('admin.library-transation-content-update', [$library, $locale]),
-            'token' => csrf_token(),
             'libraryId' => $library->id,
             'library' => $library->getLibraryString(false),
             'locale' => $locale,
@@ -267,12 +304,8 @@ class AdminH5PDetailsController extends Controller
         return view('admin.content-language-update', [
             'library' => $library,
             'languageCode' => $locale,
-            'contentCount' => H5PContent::where('library_id', $library->id)
-                ->whereHas('metadata', function (Builder $query) use ($locale) {
-                    $query->where('default_language', $locale);
-                })
-                ->count(),
-            'config' => $config,
+            'contentCount' => $contentCount->first()->total,
+            'jsConfig' => $jsConfig,
             'scripts' => $adminConfig->getScriptAssets(),
             'styles' => $adminConfig->getStyleAssets(),
         ]);

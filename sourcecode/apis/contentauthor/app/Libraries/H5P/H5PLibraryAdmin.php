@@ -2,19 +2,19 @@
 
 namespace App\Libraries\H5P;
 
+use App\ContentVersion;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
 use App\H5PLibrary;
 use App\Libraries\H5P\Packages\QuestionSet;
+use DB;
 use H5PCore;
 use H5PFrameworkInterface;
 use H5PStorage;
 use H5PValidator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -259,30 +259,75 @@ class H5PLibraryAdmin
     {
         $libraryId = $request->post('libraryId');
         $locale = $request->post('locale');
-        $params = collect(json_decode($request->post('params', '[]'), flags: JSON_THROW_ON_ERROR));
+        $params = collect($request->post('processed'));
+        $failed = 0;
+        $unchanged = 0;
+        $updated = 0;
+        $errors = [];
 
-        $out = (object) [
-            'token' => csrf_token(),
-            'skipped' => json_decode($request->post('skipped', '[]'), flags: JSON_THROW_ON_ERROR),
+        $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$errors) {
+            if ($item === false) {
+                // Failed on client side
+                $failed++;
+            } else {
+                try {
+                    /** @var H5PContent $original */
+                    $original = H5PContent::findOrFail($id);
+                    $version = ContentVersion::latestLeaf($original->version_id);
+
+                    if ($original->version_id !== $version->id) {
+                        // This should not be necessary, see to-do below
+                        $unchanged++;
+                        $errors[] = 'Content ' . $id . ' is not latest version, skipping';
+                    } else {
+                        // UTF content is treated different by JS and PHP JSON encoding, so re-encode to match database
+                        $parameters = json_encode(json_decode($item, flags: JSON_THROW_ON_ERROR), flags: JSON_THROW_ON_ERROR);
+                        if ($parameters === $original->parameters) {
+                            $unchanged++;
+                        } else {
+                            // Save and inform Hub
+                            $updated++;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $failed++;
+                    $errors[] = $e->getMessage();
+                }
+            }
+            return [];
+        });
+
+        if ($unchanged > 0 || $updated > 0 || $failed > 0) {
+            $errors[] = sprintf('Content updated/unchanged/failed: %d / %d / %d', $updated, $unchanged, $failed);
+        }
+        $response = (object) [
             'params' => [],
             'left' => 0,
+            'errors' => $errors,
         ];
-        if ($params->count() > 0) {
-            Log::info(json_encode($params->first()));
-        }
-        $contentQuery = H5PContent::select(['id', 'parameters'])
-            ->where('library_id', $libraryId)
-            ->where('id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
-            ->whereHas('metadata', function (Builder $query) use ($locale) {
-                $query->where('default_language', $locale);
-            })
-            ->whereNotIn('id', $out->skipped)
-            ->orderBy('id');
 
-        $out->left = $contentQuery->count() - count($out->skipped);
-        if ($out->left > 0) {
-            $contents = $contentQuery->limit(2)->get();
-            $out->params = $contents->map(function (H5PContent $content) {
+        // Todo: Only get leaf content
+        $contentQuery = DB::table('content_versions')
+            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
+            ->where(function ($query) {
+                $query
+                    ->whereNull('cv.content_id')
+                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
+            })
+            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
+            ->where('h5p_contents.library_id', $libraryId)
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->where('h5p_contents_metadata.default_language', $locale)
+            ->where('content_versions.content_id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
+            ->orderBy('h5p_contents.id');
+
+        $response->left = $contentQuery->select(DB::raw('count(distinct(h5p_contents.id)) as total'))->first()->total;
+        if ($response->left > 0) {
+            $contents = $contentQuery
+                ->select(DB::raw('distinct(h5p_contents.id) as id, h5p_contents.parameters'))
+                ->limit(25)
+                ->get();
+            $response->params = $contents->map(function ($content) {
                 return [
                     'id' => $content->id,
                     'params' => $content->parameters,
@@ -290,6 +335,6 @@ class H5PLibraryAdmin
             });
         }
 
-        return $out;
+        return $response;
     }
 }

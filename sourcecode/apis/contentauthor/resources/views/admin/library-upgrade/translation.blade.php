@@ -9,9 +9,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            {{Iso639p3::englishName($languageCode)}}
-                            <abbr>(<b>{{ $languageCode }}</b>)</abbr>
-                            translation for {{ $library->getLibraryString(true) }}
+                            {{ $library->getLibraryString(true) }} - <b>{{Iso639p3::englishName($languageCode)}}</b> (<code>{{ $languageCode }}</code>) translation
                         </h3>
                     </div>
                     <div class="panel-body row">
@@ -43,7 +41,20 @@
                                 <h4>Content</h4>
                             </div>
                             <div class="panel-body row">
-                                This language has <a href="{{ route('admin.library-transation-content', [$library->id, $languageCode]) }}">{{ $contentCount }} content</a>
+                                Content for this language: {{ $contentCount }}
+                            </div>
+                            <div class="panel-body row">
+                                <a
+                                    @class([
+                                        'btn btn-danger',
+                                        'disabled' => $contentCount === 0,
+                                    ])
+                                    role="button"
+                                    href="{{ route('admin.library-transation-content', [$library->id, $languageCode]) }}"
+                                    @disabled($contentCount === 0)
+                                >
+                                    Refresh translations in the content
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -53,7 +64,7 @@
                                 <h4>Upload new translation</h4>
                             </div>
                             <div class="panel-body row">
-                                @if($haveTranslation)
+                                @if($translationFile)
                                     Maximum filesize is 50kB
                                     <form method="post" accept-charset="utf-8" enctype="multipart/form-data" >
                                         @csrf
@@ -73,7 +84,19 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="panel-body row">
+                        @if ($translationDb && $translationFile)
+                            @if (json_decode($translationDb, true) !== json_decode($translationFile, true))
+                                <div class="alert alert-warning">
+                                    Translation in database differ from that on file
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Translations are the same
+                                </div>
+                            @endif
+                        @endif
                         <table class="table table-striped">
                             <tr>
                                 <th>Database (Max 51200 characters)</th>
@@ -81,7 +104,7 @@
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
-                                    @if($haveTranslation)
+                                    @if($translationDb)
                                         <form method="post" accept-charset="utf-8">
                                             @csrf
                                             <textarea

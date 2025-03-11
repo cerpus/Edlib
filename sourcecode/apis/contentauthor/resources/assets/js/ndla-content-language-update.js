@@ -1,288 +1,288 @@
-/**
- * Update the translations stored in the content
- */
 const H5PEditor = window.H5PEditor = window.H5PEditor || {};
 const ns = H5PEditor;
-contentLanguageConfig = window.contentLanguageConfig || {};
 
-ns.getAjaxUrl = function (action, parameters) {
-    let url = contentLanguageConfig.ajaxPath + action;
+// Prevent library JS and CSS from being loaded
+H5P.jsLoaded = H5P.cssLoaded = function (path) {
+    return true;
+}
 
-    if (parameters !== undefined) {
-        let separator = url.indexOf('?') === -1 ? '?' : '&';
-        for (const property in parameters) {
-            if (parameters.hasOwnProperty(property)) {
-                url += separator + property + '=' + parameters[property];
-                separator = '&';
+ns.updateableFields = {};
+
+/**
+ * @typedef TranlationRefreshConfig
+ * @type {Object}
+ * @property {string} ajaxPath      Where libraries and translations can be loaded from
+ * @property {string} library       Name of the main library/content type in format "machinename majorversion.minorversion" e.g. "H5P.FooBar 1.42"
+ * @property {string} locale        Locale that the translations are in
+*/
+
+/**
+ * Updates the translations in content semantics that are shown in the "Text overrides and translations"
+ * section in the editor
+ *
+ * @param {TranlationRefreshConfig} config
+ * @param {Object} parameters The content
+ * @param {function} [updateStatus] Optional, function called to write to the log
+ * @return {Promise<Object>}
+ * @constructor
+ */
+ns.ContentTranslationRefresh = async function (config, parameters, updateStatus) {
+    if (!config.library) {
+        throw Error('Missing config setting "library"');
+    }
+    if (!config.locale) {
+        throw Error('Missing config setting "locale"');
+    }
+
+    if (!ns.getAjaxUrl) {
+        if (!config.ajaxPath) {
+            throw Error('Missing config setting "ajaxPath"');
+        }
+
+        ns.getAjaxUrl = function (action, parameters) {
+            let url = config.ajaxPath + action;
+            const urLParams = new URLSearchParams();
+
+            if (parameters !== undefined) {
+                for (const property in parameters) {
+                    if (parameters.hasOwnProperty(property)) {
+                        urLParams.append(property, parameters[property]);
+                    }
+                }
+                if (urLParams.size > 0) {
+                    url += url.indexOf('?') === -1 ? '?' : '&';
+                    url += urLParams.toString();
+                }
             }
+
+            return url;
+        };
+    }
+
+    // Libraries required by content but not loaded
+    ns.librariesToLoad = [];
+
+    // Include translation when loading library
+    ns.contentLanguage = ns.defaultLanguage = config.locale;
+
+    // The main library a.k.a. the content type
+    if (typeof ns.libraryCache[config.library] === "undefined") {
+        ns.librariesToLoad.push(config.library);
+    }
+
+    // Check if other libraries are required
+    getSubContentLibraries(parameters);
+
+    if (ns.librariesToLoad.length > 0) {
+        writeInfo('Loading libraries: ' + ns.librariesToLoad.join(', '));
+    }
+
+    const libs = await Promise.allSettled(
+        ns.librariesToLoad.map(library => loadLibrary(library))
+    ).then(results => {
+        const success = [];
+        const failed = [];
+
+        results.forEach(result => {
+            if (result.status === 'fulfilled') {
+                success.push(result.value);
+            } else if (result.status === 'rejected') {
+                failed.push(result.reason);
+            }
+        });
+        if (failed.length > 0) {
+            throw Error('Failed to load libraries: ' + failed.join(', '));
+        }
+
+        return success;
+    });
+
+    if (await loadTranslations(config.locale)) {
+        libs.forEach(({library, semantics}) => {
+            if (ns.librariesToLoad.includes(library)) {
+                ns.librariesToLoad.splice(ns.librariesToLoad.indexOf(library), 1);
+            }
+            if (!ns.renderableCommonFields[library] || !ns.renderableCommonFields[library].fields) {
+                processSemanticsChunk(library, semantics);
+            }
+        });
+        updateCommonFields(parameters, config.library);
+
+        return parameters;
+    }
+
+    /**
+     * Write a info message in the log
+     *
+     * @param {string} msg The message
+     */
+    function writeInfo(msg) {
+        if (updateStatus) {
+            updateStatus('    ' + msg);
+        } else {
+            console.log(msg);
         }
     }
 
-    return url;
-};
-
-// CSS is not used, so prevent CSS from being loaded
-H5P.cssLoaded = function (path) {
-    return true;
-}
-
-// Don't need to load the JS either
-H5P.jsLoaded = function (path) {
-    return true;
-}
-
-// Libraries that we must load
-ns.librariesToLoad = [];
-ns.updateableFields = {};
-
-ns.ContentTranslationRefresh = async function (params, library, lang) {
-    if (typeof ns.libraryCache[library] === "undefined") {
-        ns.librariesToLoad.push(library);
-    }
-    // console.log(JSON.stringify(params));
-    getSubContentLibraries(params, lang);
-
-    // Load language when loading library
-    ns.contentLanguage = lang;
-    ns.defaultLanguage = lang;
-
-    const libs = await Promise.all(
-        ns.librariesToLoad.map(library => {
-            return loadLibrary(library, lang);
-        })
-    );
-    if (await loadTranslations(lang)) {
-        libs.forEach(({library: machineName, semantics}) => {
-            if (!ns.renderableCommonFields[machineName] || !ns.renderableCommonFields[machineName].fields) {
-                processSemanticsChunk(semantics, machineName);
-            }
-        });
-        updateCommonFields(params, library);
-        console.log(JSON.stringify(params));
-        return params;
-    }
-
+    /**
+     * Load library. Uses `ns.loadLibrary' in 'vendor/h5p/h5p-editor/js/h5peditor.js'
+     *
+     * @param {string} library The library to load in format "machinename majorversion.minorversion" e.g. "H5P.FooBar 1.42"
+     * @return {Promise<Object>}
+     */
     async function loadLibrary (library) {
         return new Promise((resolve, reject) => {
-            // The loadLibrary() doesn't callback on error, so we give it 30s to reply
-            const timeout = setTimeout(() => reject(library), 30 * 1000);
+            if (ns.libraryCache[library] === 0) {
+                reject(library);
+            }
+            // The loadLibrary() doesn't callback on error, so we give it 10s to reply
+            const timeout = setTimeout(
+                () => reject(library),
+                10 * 1000
+            );
             ns.loadLibrary(library, semantics => {
                 clearTimeout(timeout);
                 resolve({
-                    library,
-                    semantics
+                    library: library,
+                    semantics: semantics,
                 });
             });
         });
     }
 
     /**
-     * Recursively traverse params and check if any additional libraries are used
-     * Based on ns.Form.prototype.setSubContentDefaultLanguage in vendor/h5p/h5p-editor/js/h5peditor-form.js
+     * Recursively traverse content and check if any additional libraries are used
+     * Based on 'ns.Form.prototype.setSubContentDefaultLanguage' in 'vendor/h5p/h5p-editor/js/h5peditor-form.js'
      *
-     * @param {Object|Array} params Parameters
-     * @param {string} lang Default language that will be set
-     *
-     * @return {Object|Array} Parameters with default language set for sub-content
+     * @param {Object|Array} parameters The content
+     * @return {void}
      */
-    function getSubContentLibraries (params, lang) {
-        if (!params) {
-            return params;
+    function getSubContentLibraries (parameters) {
+        if (!parameters) {
+            return;
         }
 
-        if (Array.isArray(params)) {
-            for (let i = 0; i < params.length; i++) {
-                getSubContentLibraries(params[i], lang);
+        if (Array.isArray(parameters)) {
+            for (let i = 0; i < parameters.length; i++) {
+                getSubContentLibraries(parameters[i]);
             }
-        } else if (typeof params === 'object') {
-            if (params.library && !ns.libraryCache[params.library] && !ns.librariesToLoad.includes(params.library)) {
-                ns.librariesToLoad.push(params.library);
+        } else if (typeof parameters === 'object') {
+            if (parameters.library && !ns.libraryCache[parameters.library] && !ns.librariesToLoad.includes(parameters.library)) {
+                ns.librariesToLoad.push(parameters.library);
             }
 
-            for (const parameter of Object.keys(params)) {
-                getSubContentLibraries(params[parameter], lang);
+            for (const parameter of Object.keys(parameters)) {
+                getSubContentLibraries(parameters[parameter]);
             }
         }
     }
 
     /**
-     * Verify that we have the translations for the libraries, load them if not
-     * Based on loadTranslations in vendor/h5p/h5p-editor/js/h5peditor-form.js
+     * Verify that we have the translation for the loaded libraries, if not request from server
+     * Based on 'loadTranslations' in 'vendor/h5p/h5p-editor/js/h5peditor-form.js'
      *
-     * @param {string} lang
+     * @param {string} lang Lnaguage to load
      * @return {Promise<boolean>}
      */
     async function loadTranslations(lang) {
-        const loadLibs = [];
-        for (let li in ns.libraryCache) {
-            if (ns.libraryCache[li] === 0 || ns.libraryCache[li].translation[lang] === undefined) {
-                loadLibs.push(li);
-            }
-        }
+        return new Promise((resolve, reject) => {
+            const loadLibs = [];
 
-        if (loadLibs.length) {
-            try {
-                await fetch(
-                    ns.getAjaxUrl('translations', { language: lang }),
-                    {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': "application/json",
-                        },
-                        body: JSON.stringify({
-                            libraries: loadLibs,
-                        }),
-                    }
-                ).then(response => response.json()
-                ).then(data => {
-                    for (let lib in data.data) {
-                        ns.libraryCache[lib].translation[lang] = JSON.parse(data.data[lib]).semantics;
-                    }
+            for (let li in ns.libraryCache) {
+                if (ns.libraryCache[li].translation[lang] === undefined) {
+                    loadLibs.push(li);
+                }
+            }
+
+            if (loadLibs.length) {
+                writeInfo('Loading translations for ' + loadLibs.join(', '));
+                $.ajax({
+                    type: "POST",
+                    url: ns.getAjaxUrl('translations', { language: lang }),
+                    data: {
+                        libraries: loadLibs,
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        for (let lib in res.data) {
+                            loadLibs.splice(loadLibs.indexOf(lib), 1);
+                            ns.libraryCache[lib].translation[lang] = JSON.parse(res.data[lib]).semantics;
+                        }
+                        if (loadLibs.length === 0) {
+                            resolve(true);
+                        } else {
+                            reject('Failed to load language for: ' + loadLibs.join(', '));
+                        }
+                    },
+                    error: function (jqXHR) {
+                        console.log(jqXHR);
+                        reject('Failed loading translations: (' + jqXHR.status + ') ' + jqXHR?.responseJSON?.message);
+                    },
                 });
-            } catch (e) {
-                console.log(e);
-                return false;
+            } else {
+                resolve(true);
             }
-        }
-
-        return true;
+        });
     }
 
     /**
-     * Recursive processing of the semantics chunks.
-     * Based on ns.processSemanticsChunk in vendor/h5p/h5p-editor/js/h5peditor.js
+     * Recursive processing of the semantics for the libaries, only lookin for 'renderableCommonFields'
+     * Updates `ns.rendereableCommonFields' with the fields found
+     * Based on 'ns.processSemanticsChunk' in 'vendor/h5p/h5p-editor/js/h5peditor.js'
      *
-     * @param {object} semanticsChunk
-     * @param {string} machineName Machine name of library that is being processed
-     * @returns {undefined}
+     * @param {string} library Name of library that is being processed in format "machinename majorversion.minorversion" e.g. "H5P.FooBar 1.42"
+     * @param {Object} semantics Semantics for the library
+     * @returns void
      */
-    function processSemanticsChunk (semanticsChunk, machineName) {
-        for (let i = 0; i < semanticsChunk.length; i++) {
-            const field = semanticsChunk[i];
+    function processSemanticsChunk (library, semantics) {
+        for (let i = 0; i < semantics.length; i++) {
+            const field = semantics[i];
 
             // Find common fields
             if (field.common !== undefined && field.common) {
-                ns.renderableCommonFields[machineName] = ns.renderableCommonFields[machineName] || {};
-                ns.renderableCommonFields[machineName].fields = ns.renderableCommonFields[machineName].fields || [];
+                ns.renderableCommonFields[library] = ns.renderableCommonFields[library] || {};
+                ns.renderableCommonFields[library].fields = ns.renderableCommonFields[library].fields || [];
 
                 // Add renderable if it doesn't exist
-                ns.renderableCommonFields[machineName].fields.push({
+                ns.renderableCommonFields[library].fields.push({
                     field: field,
-                    parent: machineName,
+                    parent: library,
                 });
             } else if (field.type && field.type === "group") {
-                processSemanticsChunk(field.fields, machineName);
+                processSemanticsChunk(library, field.fields);
             }
         }
     }
 
-
-    function updateCommonFields (params, library) {
-        for (const propName of Object.keys(params)) {
-            if (typeof params[propName] === "object" && params[propName].library) {
-                updateCommonFields(params[propName], params[propName].library);
+    /**
+     * Recursive function that modifies 'parameters' and updates the common fields translations
+     *
+     * @param {Object} parameters The content
+     * @param {string} library Name of the main library i.e. the content type in format "machinename majorversion.minorversion" e.g. "H5P.FooBar 1.42"
+     * @return {void}
+     */
+    function updateCommonFields (parameters, library) {
+        for (const propName of Object.keys(parameters)) {
+            if (typeof parameters[propName] === "object" && parameters[propName].library) {
+                updateCommonFields(parameters[propName], parameters[propName].library);
             } else if (ns.renderableCommonFields[library]) {
                 ns.renderableCommonFields[library].fields.forEach(fields => {
                     if (fields.field.name && propName === fields.field.name) {
                         if (fields.field.fields) {
                             // it contains multiple fields
                             fields.field.fields.forEach(field => {
-                                params[fields.field.name][field.name] = field.default;
+                                parameters[fields.field.name][field.name] = field.default;
                             });
                         } else {
                             // it's a single field
-                            params[fields.field.name] = fields.field.default;
+                            parameters[fields.field.name] = fields.field.default;
                         }
                     }
                 });
             }
-            if (typeof params[propName] === 'object') {
-                updateCommonFields(params[propName], library);
+            if (typeof parameters[propName] === 'object') {
+                updateCommonFields(parameters[propName], library);
             }
         }
     }
-
-    // /**
-    //  * Got through the collected fields and update the translation
-    //  * Based on updateCommonFields in vendor/h5p/h5p-editor/js/h5peditor-form.js
-    //  *
-    //  * @param {object} params
-    //  */
-    // function updateCommonFields (params) {
-    //     for (let lib in ns.libraryCache) {
-    //         if (ns.renderableCommonFields[lib] && ns.renderableCommonFields[lib].fields) {
-    //             for (let j = 0; j < ns.renderableCommonFields[lib].fields.length; j++) {
-    //                 const fields = ns.renderableCommonFields[lib].fields[j];
-    //                 setSubLibraryCommonFields(params, fields, lib);
-    //             }
-    //         }
-    //     }
-    // }
-    //
-    // /**
-    //  * Go through the params and replace the translations for the given field(s)
-    //  *
-    //  * @param {object} params
-    //  * @param {object} fields
-    //  * @param {string} currentLibrary
-    //  */
-    // function setSubLibraryCommonFields (params, fields, currentLibrary) {
-    //     for(const propName of Object.keys(params)) {
-    //         if (propName === 'library' && params[propName] !== currentLibrary) {
-    //             // found subcontent using a different library
-    //             currentLibrary = params[propName];
-    //         }
-    //         // Check if this is the right place before digging deeper, some fields are groups
-    //         if (currentLibrary === fields.parent && params[fields.field.name]) {
-    //             // the correct property found, update the translation(s)
-    //             if (fields.field.fields) {
-    //                 // it contains multiple fields
-    //                 fields.field.fields.forEach(field => {
-    //                     params[fields.field.name][field.name] = field.default;
-    //                 });
-    //             } else if (params[fields.field.name]) {
-    //                 // it's a single field
-    //                 params[fields.field.name] = fields.field.default;
-    //             }
-    //         } else if (params[propName] !== null && typeof params[propName] === "object") {
-    //             // Dig deeper
-    //             setSubLibraryCommonFields(params[propName], fields, currentLibrary);
-    //         }
-    //     }
-    // }
 }
-
-//595
-// let params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.082592121982211,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Nynorsk<\\/p>\\n\"},\"subContentId\":\"527602d8-ea22-472a-a843-86a6b87ae439\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Nynorsk\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Bokm\u00e5l<\\/p>\\n\"},\"subContentId\":\"5fcff721-b2d5-47ee-8d53-ca6b6accd8e4\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Bokm\u00e5l\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":55.90851334180432,\"y\":25.12562814070352,\"width\":6.353240152477763,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>English<\\/p>\\n\"},\"subContentId\":\"b008b0a6-5d31-4b4b-9b3c-b8052efe2910\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"English\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":5.082592121982211,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/bnyHQFFe.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"f897c96b-4863-4581-96b2-ea19c1f08fc1\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel nn\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"defaultLanguage\":\"nb\",\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel nn\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Toista audio\",\"pauseAudio\":\"Keskeyt\u00e4 audio\",\"contentName\":\"\u00c4\u00e4ni\",\"audioNotSupported\":\"Selaimesi ei tue t\u00e4t\u00e4 \u00e4\u00e4nt\u00e4.\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/lk5cn8qd.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"6bccbfc1-6f68-4dd6-ac5b-43627886d656\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Sivu\",\"score\":\"Pisteet\",\"yourScore\":\"Pisteesi\",\"maxScore\":\"Maksimipisteet\",\"total\":\"Yhteens\u00e4\",\"totalScore\":\"Kokonaispisteet\",\"showSolutions\":\"N\u00e4yt\u00e4 oikeat vastaukset\",\"retry\":\"Yrit\u00e4 uudelleen\",\"exportAnswers\":\"Vie teksti\u00e4\",\"hideKeywords\":\"Piilota sis\u00e4llysluettelo\",\"showKeywords\":\"N\u00e4yt\u00e4 sis\u00e4llysluettelo\",\"fullscreen\":\"Koko ruutu\",\"exitFullscreen\":\"Poistu kokoruudun tilasta\",\"prevSlide\":\"Edellinen sivu\",\"nextSlide\":\"Seuraava sivu\",\"currentSlide\":\"Nykyinen sivu\",\"lastSlide\":\"Viimeinen sivu\",\"solutionModeTitle\":\"Palaa yhteenvetosivulle\",\"solutionModeText\":\"Palaa yhteenvetosivulle\",\"summaryMultipleTaskText\":\"Useita teht\u00e4vi\u00e4\",\"scoreMessage\":\"Tulos:\",\"shareFacebook\":\"Jaa Facebookissa\",\"shareTwitter\":\"Jaa Twitteriss\u00e4\",\"shareGoogle\":\"Jaa Google+ palvelussa\",\"summary\":\"Yhteenveto\",\"solutionsButtonTitle\":\"N\u00e4yt\u00e4 kommentit\",\"printTitle\":\"Tulosta\",\"printIngress\":\"Miten haluat tulostaa t\u00e4m\u00e4n esityksen?\",\"printAllSlides\":\"Tulosta kaikki sivut\",\"printCurrentSlide\":\"Tulosta nykyinen sivu\",\"noTitle\":\"Ei otsikkoa\",\"accessibilitySlideNavigationExplanation\":\"K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"accessibilityCanvasLabel\":\"Piirtoalue. K\u00e4yt\u00e4 vasenta tai oikeaa nuolin\u00e4pp\u00e4int\u00e4 siirty\u00e4ksesi eteen- tai taaksep\u00e4in t\u00e4ss\u00e4 esityksess\u00e4 silloin kun dia on valittuna.\",\"containsNotCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suorittamattoman interaktion\",\"containsCompleted\":\"@slideName sis\u00e4lt\u00e4\u00e4 suoritetun interaktion\",\"slideCount\":\"Dia @index kautta @total\",\"containsOnlyCorrect\":\"@slideName sis\u00e4lt\u00e4\u00e4 vain oikeita vastauksia\",\"containsIncorrectAnswers\":\"@slideName sis\u00e4lt\u00e4\u00e4 v\u00e4\u00e4ri\u00e4 vastauksia\",\"shareResult\":\"Jaa tuloksesi sosiaaliseen mediaan\",\"accessibilityTotalScore\":\"Sait @score pistett\u00e4 @maxScore pisteest\u00e4\",\"accessibilityEnteredFullscreen\":\"Koko n\u00e4yt\u00f6n tila k\u00e4yt\u00f6ss\u00e4\",\"accessibilityExitedFullscreen\":\"Koko n\u00e4yt\u00f6n tilasta poistuttu\",\"confirmDialogHeader\":\"Submit your answers\",\"confirmDialogText\":\"This will submit your results, do you want to continue?\",\"confirmDialogConfirmText\":\"Submit and see results\",\"accessibilityProgressBarLabel\":\"Choose slide to display\",\"slideshowNavigationLabel\":\"Slideshow navigation\"}}";
-// params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.082592121982211,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Nynorsk<\\/p>\\n\"},\"subContentId\":\"527602d8-ea22-472a-a843-86a6b87ae439\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Nynorsk\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":22.613065326633166,\"width\":7.6238881829733165,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Bokm\u00e5l<\\/p>\\n\"},\"subContentId\":\"5fcff721-b2d5-47ee-8d53-ca6b6accd8e4\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Bokm\u00e5l\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":55.90851334180432,\"y\":25.12562814070352,\"width\":6.353240152477763,\"height\":7.5376884422110555,\"action\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>English<\\/p>\\n\"},\"subContentId\":\"b008b0a6-5d31-4b4b-9b3c-b8052efe2910\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"English\",\"defaultLanguage\":\"nb\",\"authors\":[],\"changes\":[]}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":5.082592121982211,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Play audio\",\"pauseAudio\":\"Pause audio\",\"contentName\":\"Audio\",\"audioNotSupported\":\"Your browser does not support this audio\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/bnyHQFFe.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"f897c96b-4863-4581-96b2-ea19c1f08fc1\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel nn\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"defaultLanguage\":\"nb\",\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel nn\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":30.495552731893266,\"y\":32.663316582914575,\"width\":6.353240152477763,\"height\":12.56281407035176,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"minimalistic\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Play audio\",\"pauseAudio\":\"Pause audio\",\"contentName\":\"Audio\",\"audioNotSupported\":\"Your browser does not support this audio\",\"files\":[{\"path\":\"https:\\/\\/api.ndla.no\\/audio\\/files\\/lk5cn8qd.mp3\",\"mime\":\"audio\\/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"6bccbfc1-6f68-4dd6-ac5b-43627886d656\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"U\",\"title\":\"Test Marc Van Opstal eksempel\",\"authors\":[{\"name\":\"Mark Knopfler\",\"role\":\"Licensee\"}],\"changes\":[],\"extraTitle\":\"Test Marc Van Opstal eksempel\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Slide\",\"score\":\"Score\",\"yourScore\":\"Your Score\",\"maxScore\":\"Max Score\",\"total\":\"Total\",\"totalScore\":\"Total Score\",\"showSolutions\":\"Show solutions\",\"retry\":\"Retry\",\"exportAnswers\":\"Export text\",\"hideKeywords\":\"Hide sidebar navigation menu\",\"showKeywords\":\"Show sidebar navigation menu\",\"fullscreen\":\"Fullscreen\",\"exitFullscreen\":\"Exit fullscreen\",\"prevSlide\":\"Previous slide\",\"nextSlide\":\"Next slide\",\"currentSlide\":\"Current slide\",\"lastSlide\":\"Last slide\",\"solutionModeTitle\":\"Exit solution mode\",\"solutionModeText\":\"Solution Mode\",\"summaryMultipleTaskText\":\"Multiple tasks\",\"scoreMessage\":\"You achieved:\",\"shareFacebook\":\"Share on Facebook\",\"shareTwitter\":\"Share on Twitter\",\"shareGoogle\":\"Share on Google+\",\"summary\":\"Summary\",\"solutionsButtonTitle\":\"Show comments\",\"printTitle\":\"Print\",\"printIngress\":\"How would you like to print this presentation?\",\"printAllSlides\":\"Print all slides\",\"printCurrentSlide\":\"Print current slide\",\"noTitle\":\"No title\",\"accessibilitySlideNavigationExplanation\":\"Use left and right arrow to change slide in that direction whenever canvas is selected.\",\"accessibilityCanvasLabel\":\"Presentation canvas. Use left and right arrow to move between slides.\",\"containsNotCompleted\":\"@slideName contains not completed interaction\",\"containsCompleted\":\"@slideName contains completed interaction\",\"slideCount\":\"Slide @index of @total\",\"containsOnlyCorrect\":\"@slideName only has correct answers\",\"containsIncorrectAnswers\":\"@slideName has incorrect answers\",\"shareResult\":\"Share Result\",\"accessibilityTotalScore\":\"You got @score of @maxScore points in total\",\"accessibilityEnteredFullscreen\":\"Entered fullscreen\",\"accessibilityExitedFullscreen\":\"Exited fullscreen\",\"confirmDialogHeader\":\"Submit your answers\",\"confirmDialogText\":\"This will submit your results, do you want to continue?\",\"confirmDialogConfirmText\":\"Submit and see results\",\"accessibilityProgressBarLabel\":\"Choose slide to display\",\"slideshowNavigationLabel\":\"Slideshow navigation\"}}";
-// let library = 'H5P.CoursePresentation 1.24';
-// let lang = 'nb';
-
-let params = "{\"presentation\":{\"slides\":[{\"elements\":[{\"x\":5.194805194805195,\"y\":20.565552699228794,\"width\":31.058418089168098,\"height\":40,\"action\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"decorative\":false,\"contentName\":\"Image\",\"file\":{\"path\":\"https://api.ndla.no/image-api/raw/sy70a01c.jpg?\",\"mime\":\"image/jpeg\",\"width\":1000,\"height\":652,\"copyright\":{\"license\":\"U\"}},\"alt\":\"d\"},\"subContentId\":\"a0f572d0-2a1e-41ad-9dbb-3dc74442ba7f\",\"metadata\":{\"contentType\":\"Image\",\"license\":\"CC BY-NC-SA\",\"title\":\"Liten, gul bil\",\"authors\":[{\"name\":\"Torbjørn Tandberg\",\"role\":\"Licensee\"},{\"name\":\"Samfoto\",\"role\":\"Licensee\"},{\"name\":\"NTB scanpix\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"licenseVersion\":\"4.0\",\"source\":\"http://www.scanpix.no\",\"changes\":[],\"extraTitle\":\"Liten, gul bil\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":24.675324675324675,\"y\":28.243444730077124,\"width\":48.05194805194805,\"height\":55.526992287917739,\"action\":{\"library\":\"H5P.Video 1.6\",\"params\":{\"visuals\":{\"fit\":true,\"controls\":true},\"playback\":{\"autoplay\":false,\"loop\":false},\"l10n\":{\"name\":\"Video\",\"loading\":\"Videospilleren laster...\",\"noPlayers\":\"Fant ingen videoavspillere som støtter gjeldene format.\",\"noSources\":\"Videoavspilleren mangler kilde.\",\"aborted\":\"Avspillingen ble avbrutt.\",\"networkFailure\":\"Nettverksfeil\",\"cannotDecode\":\"Kan ikke dekode videokilde.\",\"formatNotSupported\":\"Videoformatet støttes ikke.\",\"mediaEncrypted\":\"Kilden er kryptert.\",\"unknownError\":\"Ukjent feil.\",\"invalidYtId\":\"Ugyldig YouTube ID.\",\"unknownYtId\":\"Finner ikke videoen med gitt YouTube ID.\",\"restrictedYt\":\"Eieren av denne videoen tillater ikke at den bygges inn på andre nettsider.\"},\"sources\":[{\"path\":\"https://bc/0/5796109504001\",\"mime\":\"video/Brightcove\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"cdf2c063-7b06-4330-abb1-3fe6c1e90f7d\",\"metadata\":{\"contentType\":\"Video\",\"license\":\"CC BY-SA\",\"title\":\"Pris for refleksdesign\",\"authors\":[{\"name\":\"Leverandør: NRK\",\"role\":\"Licensee\"},{\"name\":\"Redaksjonelt: The Sub-frequency Cooperation Society, Rudi Moustafa\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"licenseVersion\":\"4.0\",\"changes\":[],\"extraTitle\":\"Pris for refleksdesign\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"},{\"x\":42.857142857142857,\"y\":7.712082262210797,\"width\":48.05194805194805,\"height\":10.282776349614397,\"action\":{\"library\":\"H5P.Audio 1.5\",\"params\":{\"fitToWrapper\":true,\"playerMode\":\"full\",\"controls\":true,\"autoplay\":false,\"playAudio\":\"Spill lyd\",\"pauseAudio\":\"Pause lyd\",\"contentName\":\"Lyd\",\"audioNotSupported\":\"Nettleseren din støtter ikke denne lydkilden\",\"files\":[{\"path\":\"https://api.ndla.no/audio/files/lYX7YIfc.mp3\",\"mime\":\"audio/mp3\",\"copyright\":{\"license\":\"U\"}}]},\"subContentId\":\"eeec9c14-e381-473a-99ed-5b7d3331a2d0\",\"metadata\":{\"contentType\":\"Audio\",\"license\":\"CC BY-SA\",\"title\":\"Lydopptak bil\",\"authors\":[{\"name\":\"Stina Åshildsdatter Grolid\",\"role\":\"Originator\"}],\"licenseVersion\":\"4.0\",\"changes\":[],\"extraTitle\":\"Lydopptak bil\"}},\"alwaysDisplayComments\":false,\"backgroundOpacity\":0,\"displayAsButton\":false,\"buttonSize\":\"big\",\"goToSlideType\":\"specified\",\"invisible\":false,\"solution\":\"\"}],\"slideBackgroundSelector\":{}}],\"keywordListEnabled\":true,\"globalBackgroundSelector\":{},\"keywordListAlwaysShow\":false,\"keywordListAutoHide\":false,\"keywordListOpacity\":90},\"override\":{\"activeSurface\":false,\"hideSummarySlide\":false,\"summarySlideSolutionButton\":true,\"summarySlideRetryButton\":true,\"enablePrintButton\":false,\"social\":{\"showFacebookShare\":false,\"facebookShare\":{\"url\":\"@currentpageurl\",\"quote\":\"I scored @score out of @maxScore on a task at @currentpageurl.\"},\"showTwitterShare\":false,\"twitterShare\":{\"statement\":\"I scored @score out of @maxScore on a task at @currentpageurl.\",\"url\":\"@currentpageurl\",\"hashtags\":\"h5p, course\"},\"showGoogleShare\":false,\"googleShareUrl\":\"@currentpageurl\"}},\"l10n\":{\"slide\":\"Side\",\"score\":\"Poengsum\",\"yourScore\":\"Din poengsum\",\"maxScore\":\"Maksimal poengsum\",\"total\":\"Total\",\"totalScore\":\"Total poengsum\",\"showSolutions\":\"Vis svar\",\"retry\":\"Prøv igjen\",\"exportAnswers\":\"Eksporter tekst\",\"hideKeywords\":\"Skjul nøkkelordliste\",\"showKeywords\":\"Vis nøkkelordliste\",\"fullscreen\":\"Fullskjerm\",\"exitFullscreen\":\"Avslutt fullskjerm\",\"prevSlide\":\"Forrige slide\",\"nextSlide\":\"Neste slide\",\"currentSlide\":\"Denne side\",\"lastSlide\":\"Siste side\",\"solutionModeTitle\":\"Avslutt fasitmodus\",\"solutionModeText\":\"Fasitmodus\",\"summaryMultipleTaskText\":\"Flere oppgaver\",\"scoreMessage\":\"Du klarte:\",\"shareFacebook\":\"Del på Facebook\",\"shareTwitter\":\"Del på Twitter\",\"shareGoogle\":\"Del på Google+\",\"summary\":\"Oppsummering\",\"solutionsButtonTitle\":\"Vis kommentarer\",\"printTitle\":\"Skriv ut\",\"printIngress\":\"Hvordan vil du skrive ut denne presentasjonen?\",\"printAllSlides\":\"Skriv ut alle sider\",\"printCurrentSlide\":\"Skriv ut nåværende side\",\"noTitle\":\"Ingen tittel\",\"accessibilitySlideNavigationExplanation\":\"Bruk pil mot venstre eller høyre for å navigere.\",\"accessibilityCanvasLabel\":\"Bruk piltast mot høyre eller venstre for å navigere mellom sider.\",\"accessibilityProgressBarLabel\":\"Vis sida\",\"containsNotCompleted\":\"@slideName er ikke fullført.\",\"containsCompleted\":\"@slideName er fullført.\",\"slideCount\":\"Side @index av @total\",\"containsOnlyCorrect\":\"Alle svara på @slideName er riktige.\",\"containsIncorrectAnswers\":\"Ett eller flere svar på @slideName er feil.\",\"shareResult\":\"Del resultater\",\"accessibilityTotalScore\":\"Du fikk til sammen @score av @maxScore poeng.\",\"accessibilityEnteredFullscreen\":\"Åpnet i fullskjerm\",\"accessibilityExitedFullscreen\":\"Avsluttet fullskjerm\",\"confirmDialogHeader\":\"Send inn svar.\",\"confirmDialogText\":\"Du er i ferd med å sende inn svara dine. Vil du fortsette?\",\"confirmDialogConfirmText\":\"Send inn og se resultat\",\"slideshowNavigationLabel\":\"Sidenavigering\"}}";
-let library = 'H5P.CoursePresentation 1.25';
-let lang = 'nb';
-
-//596
-// params = "{\"media\":{\"disableImageZooming\":false,\"type\":{\"params\":{\"decorative\":false,\"contentName\":\"Image\",\"file\":{\"path\":\"https:\\/\\/api.test.ndla.no\\/image-api\\/raw\\/sye64b87.jpg\",\"mime\":\"image\\/jpeg\",\"externalId\":\"17845\",\"metadataUrl\":\"https:\\/\\/api.test.ndla.no\\/image-api\\/v3\\/images\\/17845\",\"alt\":\" \",\"title\":\"\",\"width\":1000,\"height\":672},\"alt\":\"wd\",\"title\":\"dds\"},\"library\":\"H5P.Image 1.1\",\"metadata\":{\"contentType\":\"Image\",\"license\":\"CC BY-NC\",\"title\":\"Untitled Image\",\"authors\":[{\"name\":\"Susana Vera\",\"role\":\"Licensee\",\"readonly\":true},{\"name\":\"Reuters\",\"role\":\"Licensee\",\"readonly\":true},{\"name\":\"NTB scanpix\",\"role\":\"Licensee\",\"readonly\":true}],\"changes\":[],\"licenseVersion\":\"4.0\",\"licenseExtras\":\"\",\"authorComments\":\"\",\"source\":\"http:\\/\\/www.scanpix.no\"},\"subContentId\":\"0b962c9f-2bfa-40a8-9b94-8dec057a1ad8\"}},\"text\":\"<ul>\\n\\t<li>Fill in the missing words<\\/li>\\n<\\/ul>\\n\",\"overallFeedback\":[{\"from\":0,\"to\":100}],\"showSolutions\":\"Vis svar\",\"tryAgain\":\"Pr\u00f8v igjen\",\"checkAnswer\":\"Sjekk\",\"submitAnswer\":\"Submit\",\"notFilledOut\":\"Please fill in all blanks to view solution\",\"answerIsCorrect\":\"&#039;:ans&#039; er korrekt\",\"answerIsWrong\":\"&#039;:ans&#039; er feil\",\"answeredCorrectly\":\"Svar rett\",\"answeredIncorrectly\":\"Svar feil\",\"solutionLabel\":\"Svar:\",\"inputLabel\":\"Felt @num av @total\",\"inputHasTipLabel\":\"Tips tilgjengelig\",\"tipLabel\":\"Tips\",\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"enableCheckButton\":true,\"autoCheck\":false,\"caseSensitive\":true,\"showSolutionsRequiresInput\":true,\"separateLines\":false,\"confirmCheckDialog\":false,\"confirmRetryDialog\":false,\"acceptSpellingErrors\":false},\"scoreBarLabel\":\"You got :num out of :total points\",\"a11yCheck\":\"Check the answers. The responses will be marked as correct, incorrect, or unanswered.\",\"a11yShowSolution\":\"Show the solution. The task will be marked with its correct solution.\",\"a11yRetry\":\"Retry the task. Reset all responses and start the task over again.\",\"a11yCheckingModeHeader\":\"Checking mode\",\"confirmCheck\":{\"header\":\"Ferdig ?\",\"body\":\"Er du sikker p\u00e5 at du er ferdig?\",\"cancelLabel\":\"Avbryt\",\"confirmLabel\":\"Bekreft\"},\"confirmRetry\":{\"header\":\"Pr\u00f8v igjen ?\",\"body\":\"Er du sikker p\u00e5 at du vil pr\u00f8ve igjen?\",\"cancelLabel\":\"Avbryt\",\"confirmLabel\":\"Bekreft\"},\"questions\":[\"<p>Mandag er den *f\u00f8rste* dagen i uken<\\/p>\\n\"]}";
-// library = 'H5P.Blanks 1.14';
-
-//341
-// params = "{\"introPage\":{\"showIntroPage\":true,\"startButtonText\":\"Start\",\"introduction\":\"\",\"title\":\"Sorter avfall\",\"backgroundImage\":{\"path\":\"images\\/3cfd3956e668070adac5a844016ab9fe.jpg\",\"mime\":\"image\\/jpeg\",\"width\":800,\"height\":373,\"copyright\":{\"title\":\"Knappecellebatteri\",\"license\":\"U\",\"source\":\"https:\\/\\/commons.wikimedia.org\\/wiki\\/File:LR44_Button_Cell_Battery.jpg\",\"author\":\"Ubcule\"}}},\"progressType\":\"dots\",\"passPercentage\":50,\"questions\":[{\"library\":\"H5P.DragQuestion 1.13\",\"params\":{\"question\":{\"settings\":{\"size\":{\"width\":720,\"height\":420}},\"task\":{\"elements\":[{\"dropZones\":[],\"x\":1.3888888888888888,\"width\":19.625,\"multiple\":false,\"y\":0,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<h2>Sorter avfallet<\\/h2>\\n\\n<p>Plasser avfallet p\u00e5 rett gjenvinningsplass.<\\/p>\\n\\n<p>&nbsp;<\\/p>\\n\"},\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"6df34500-0215-49ec-9441-6f95f022a3af\"},\"height\":5.8125},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":37.5,\"width\":6.59375,\"multiple\":false,\"y\":80.95238095238095,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/toymykner.png\",\"mime\":\"image\\/png\",\"width\":774,\"height\":421,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Hvit plastflaske med rosa kork ved siden av. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"T\u00f8ymykner\"},\"metadata\":{\"title\":\"T\u00f8ymykner\",\"authors\":[{\"name\":\"Ralph Aichinger\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/sooperkuh\\/4512633606\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"bfe1f4dc-ce6b-4516-8a75-08af305b27ee\"},\"height\":3.31875},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":33.333333333333336,\"width\":5.1649928263989,\"multiple\":false,\"y\":59.52380952380952,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/aviser_0.png\",\"mime\":\"image\\/png\",\"width\":588,\"height\":535,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Aviser. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Aviser\"},\"metadata\":{\"title\":\"Aviser\",\"authors\":[{\"name\":\"Eivind Z. Molvar\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/eivind1983\\/4704630872\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"0d848239-2aea-45d3-bf2d-c77952a75e1c\"},\"height\":4.9487083577357},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":59.72222222222222,\"width\":3.4218077474892,\"multiple\":false,\"y\":66.66666666666666,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/vinflaske.png\",\"mime\":\"image\\/png\",\"width\":149,\"height\":400,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Gr\u00f8nn glassflaske. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Vinflaske av glass\"},\"metadata\":{\"title\":\"Vinflaske\",\"authors\":[{\"name\":\"Greg Roberts\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/robertsfw\\/5588730756\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"90b2e548-443e-4b5b-a654-369ba7402ac5\"},\"height\":7.1018651362984},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":50,\"width\":3.7446197991392,\"multiple\":false,\"y\":61.904761904761905,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/Cd_spindel.png\",\"mime\":\"image\\/png\",\"width\":663,\"height\":768,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Bokse til oppbevaring av CD-er. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"CD spindel\"},\"metadata\":{\"title\":\"CD spindel\",\"authors\":[{\"name\":\"How can I recycle this\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/recyclethis\\/185807554\\/in\\/photostream\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"9a3ef2e2-6c7c-4767-80de-9375fb82678b\"},\"height\":4.3041600319029},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":88.88888888888889,\"width\":2.6666666666667,\"multiple\":false,\"y\":59.52380952380952,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/plastflaske.png\",\"mime\":\"image\\/png\",\"width\":276,\"height\":709,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Gjennomsiktig plastflaske med bl\u00e5 kork. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Plastflaske\"},\"metadata\":{\"title\":\"Plastflaske\",\"authors\":[{\"name\":\"How can I recycle this\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/recyclethis\\/167934943\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"fa361fee-e9bb-4c78-8e72-3fe700f3358b\"},\"height\":6},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":1.3888888888888888,\"width\":6.53125,\"multiple\":false,\"y\":64.28571428571428,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/plastposer.png\",\"mime\":\"image\\/png\",\"width\":1024,\"height\":867,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Sammenkr\u00f8llede plastposer. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Plastposer\"},\"metadata\":{\"title\":\"Plastpose\",\"authors\":[{\"name\":\"How can I recycle this\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/recyclethis\\/167934944\\/in\\/photostream\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"76022600-591c-47ea-8ea6-af747715b8c3\"},\"height\":5.440625},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":75,\"width\":6.46875,\"multiple\":false,\"y\":73.80952380952381,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/cardboard-box-220256_1280.jpg\",\"mime\":\"image\\/jpeg\",\"width\":1280,\"height\":985,\"copyright\":{\"license\":\"U\"}},\"alt\":\"\u00c5pen pappeske. Illustrasjon.\",\"title\":\"Pappeske\",\"contentName\":\"Image\",\"decorative\":false},\"metadata\":{\"title\":\"Pappeske\",\"authors\":[{\"name\":\"Ukjent\",\"role\":\"Author\"}],\"source\":\"https:\\/\\/pixabay.com\\/no\\/pappeske-papp-boksen-kartong-220256\\/\",\"license\":\"U\",\"contentType\":\"Image\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"a1f50a7f-bea1-45a2-afdb-9a00790d9ca2\"},\"height\":5.47975},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":69.44444444444444,\"width\":2.6666666666667,\"multiple\":false,\"y\":61.904761904761905,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/brusboks.png\",\"mime\":\"image\\/png\",\"width\":381,\"height\":649,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Coca Cola-brusboks. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Brusboks\"},\"metadata\":{\"title\":\"Brusboks\",\"authors\":[{\"name\":\"Allen\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/allencheng\\/264714352\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"e5b3fa30-7031-42b6-a358-3604429413d6\"},\"height\":4},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":16.666666666666668,\"width\":5.78125,\"multiple\":false,\"y\":83.33333333333333,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/hermetikk_01.png\",\"mime\":\"image\\/png\",\"width\":324,\"height\":193,\"copyright\":{\"license\":\"U\"}},\"alt\":\"\u00c5pnet hermetikkboks. Foto.\",\"contentName\":\"Image\",\"decorative\":false,\"title\":\"Hermetikk\"},\"metadata\":{\"title\":\"Hermetikk\",\"authors\":[{\"name\":\"Judy Breck\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/goldenswamp\\/2790586184\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"37856af7-e0f4-44d8-8df0-87461ce89e55\"},\"height\":3.20625},{\"dropZones\":[\"0\",\"1\",\"2\",\"3\",\"4\"],\"x\":19.444444444444443,\"width\":3.13125,\"multiple\":false,\"y\":61.904761904761905,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"file\":{\"path\":\"images\\/melkekartong.png\",\"mime\":\"image\\/png\",\"width\":1620,\"height\":2448,\"copyright\":{\"license\":\"U\"}},\"alt\":\"Melkekartong. Foto.\",\"title\":\"Melkekartong\",\"contentName\":\"Image\",\"decorative\":false},\"metadata\":{\"title\":\"Melkekartong\",\"authors\":[{\"name\":\"Creative tools\",\"role\":\"Author\"}],\"source\":\"http:\\/\\/www.flickr.com\\/photos\\/creative_tools\\/4305440559\\/\",\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\"},\"subContentId\":\"cab38267-1a6d-4181-b642-f8832b660c4b\"},\"height\":4.7316666666667},{\"x\":79.16666666666667,\"y\":23.80952380952381,\"width\":8.75,\"height\":8.75,\"dropZones\":[],\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"contentName\":\"Image\",\"alt\":\"Hvit pappeske p\u00e5 lysebl\u00e5 bakgrunn. Det nasjonale ikonet for pappemballasje. Piktogram.\",\"file\":{\"path\":\"images\\/de78cf5a8ae2323a3c7fba59dd9703ec.svg\",\"mime\":\"image\\/svg+xml\",\"width\":150,\"height\":150,\"copyright\":{\"license\":\"U\"}},\"decorative\":false},\"metadata\":{\"contentType\":\"Image\",\"license\":\"C\",\"title\":\"Pappemballasje\",\"authors\":[{\"name\":\"Gr\u00f8nt Punkt Norge\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"defaultLanguage\":\"nb\",\"source\":\"https:\\/\\/www.grontpunkt.no\\/medlemskap\\/emballasjemerking\\/kartong-papp-og-papir\\/\"},\"subContentId\":\"c6320c10-d2ec-45e1-ba60-90cd6266a982\"},\"backgroundOpacity\":100,\"multiple\":false},{\"x\":40.27777777777778,\"y\":23.80952380952381,\"width\":8.75,\"height\":8.75,\"dropZones\":[],\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"contentName\":\"Image\",\"alt\":\"Helhvit flaske p\u00e5 gr\u00f8nn bakgrunn. Det nasjonale sorteringsikonet for glassemballasje. Piktogram.\",\"file\":{\"path\":\"images\\/7d893261f6daba339b099b1f45171db4.svg\",\"mime\":\"image\\/svg+xml\",\"width\":150,\"height\":150,\"copyright\":{\"license\":\"U\"}},\"decorative\":false},\"metadata\":{\"contentType\":\"Image\",\"license\":\"C\",\"title\":\"Glassemballasje\",\"authors\":[{\"name\":\"Gr\u00f8nt Punkt Norge\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"defaultLanguage\":\"nb\",\"source\":\"https:\\/\\/www.grontpunkt.no\\/medlemskap\\/emballasjemerking\\/glass\\/\"},\"subContentId\":\"3f71c1da-8380-4a62-8f3b-05fb64435ec2\"},\"backgroundOpacity\":100,\"multiple\":false},{\"x\":20.833333333333332,\"y\":23.80952380952381,\"width\":8.75,\"height\":8.75,\"dropZones\":[],\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"contentName\":\"Image\",\"alt\":\"Hvitt ark p\u00e5 lysebl\u00e5 bakgrunn. Det nasjonale symbolet for papiravfall. Piktogram.\",\"file\":{\"path\":\"images\\/0dbc7c16c77ed2f801a1defb245a0613.svg\",\"mime\":\"image\\/svg+xml\",\"width\":150,\"height\":150,\"copyright\":{\"license\":\"U\"}},\"decorative\":false},\"metadata\":{\"contentType\":\"Image\",\"license\":\"C\",\"title\":\"Papiravfall\",\"authors\":[{\"name\":\"Gr\u00f8nt Punkt Norge\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"defaultLanguage\":\"nb\",\"source\":\"https:\\/\\/www.grontpunkt.no\\/medlemskap\\/emballasjemerking\\/kartong-papp-og-papir\\/\"},\"subContentId\":\"6f0e2444-a83d-4d27-8e9c-b4f862147e10\"},\"backgroundOpacity\":100,\"multiple\":false},{\"x\":1.3888888888888888,\"y\":23.80952380952381,\"width\":8.75,\"height\":8.75,\"dropZones\":[],\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"contentName\":\"Image\",\"alt\":\"Hvit plastflaske p\u00e5 lilla bakgrunn. Det nasjonale ikonet for plastemballasje. Piktogram.\",\"file\":{\"path\":\"images\\/d855e10ec0246c480527e81d47390255.svg\",\"mime\":\"image\\/svg+xml\",\"width\":150,\"height\":150,\"copyright\":{\"license\":\"U\"}},\"decorative\":false},\"metadata\":{\"contentType\":\"Image\",\"license\":\"C\",\"title\":\"Plastemballasje\",\"authors\":[{\"name\":\"Gr\u00f8nt Punkt Norge\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"defaultLanguage\":\"nb\",\"source\":\"https:\\/\\/www.grontpunkt.no\\/medlemskap\\/emballasjemerking\\/plast\\/\"},\"subContentId\":\"bdd7319e-c286-4209-b307-c31e6b08b0df\"},\"backgroundOpacity\":100,\"multiple\":false},{\"x\":59.72222222222222,\"y\":23.80952380952381,\"width\":8.75,\"height\":8.75,\"dropZones\":[],\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"contentName\":\"Image\",\"alt\":\"Hvit hermetikkboks p\u00e5 gr\u00e5 bakgrunn. Det nasjonale symbolet for metallemballasje. Piktogram.\",\"file\":{\"path\":\"images\\/7f8b0bbf39dc903ba68f4d288eab2812.svg\",\"mime\":\"image\\/svg+xml\",\"width\":150,\"height\":150,\"copyright\":{\"license\":\"U\"}},\"decorative\":false},\"metadata\":{\"contentType\":\"Image\",\"license\":\"C\",\"title\":\"Metallemballasje\",\"authors\":[{\"name\":\"Gr\u00f8nt Punkt Norge\",\"role\":\"Licensee\"}],\"licenseExtras\":\"\",\"authorComments\":\"\",\"defaultLanguage\":\"nb\",\"source\":\"https:\\/\\/www.grontpunkt.no\\/medlemskap\\/emballasjemerking\\/metall\\/\"},\"subContentId\":\"07d4b443-73c5-4bf2-9f17-8e9cd21d0e2d\"},\"backgroundOpacity\":100,\"multiple\":false}],\"dropZones\":[{\"single\":false,\"correctElements\":[\"4\",\"1\",\"5\",\"6\"],\"x\":1.3888888888888888,\"width\":8.75,\"y\":23.80952380952381,\"backgroundOpacity\":0,\"label\":\"Drop Zone 1\",\"showLabel\":false,\"height\":8.75,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false},{\"single\":false,\"correctElements\":[\"2\"],\"x\":20.833333333333332,\"width\":8.75,\"y\":23.80952380952381,\"backgroundOpacity\":0,\"label\":\"Drop Zone 2\",\"showLabel\":false,\"height\":8.75,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false},{\"single\":false,\"correctElements\":[\"3\",\"10\",\"10\"],\"x\":40.27777777777778,\"width\":8.75,\"y\":23.80952380952381,\"backgroundOpacity\":0,\"label\":\"Drop Zone 3\",\"showLabel\":false,\"height\":8.75,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false},{\"single\":false,\"correctElements\":[\"9\",\"8\",\"7\",\"7\",\"7\",\"10\"],\"x\":59.72222222222222,\"width\":8.75,\"y\":23.80952380952381,\"backgroundOpacity\":0,\"label\":\"Drop Zone 4\",\"showLabel\":false,\"height\":8.75,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false},{\"single\":false,\"correctElements\":[\"7\",\"10\"],\"x\":79,\"width\":8.75,\"y\":23.959532012971888,\"backgroundOpacity\":0,\"label\":\"Drop Zone 5\",\"showLabel\":false,\"height\":8.75,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false}]}},\"tryAgain\":\"Pr\u00f8v igjen\",\"behaviour\":{\"singlePoint\":false,\"enableRetry\":true,\"showSolutionsRequiresInput\":true,\"showTitle\":false,\"enableCheckButton\":true,\"applyPenalties\":false,\"enableScoreExplanation\":true,\"dropZoneHighlighting\":\"dragging\",\"autoAlignSpacing\":2,\"enableFullScreen\":false,\"showScorePoints\":true},\"scoreShow\":\"Sjekk\",\"overallFeedback\":[{\"from\":0,\"to\":100,\"feedback\":\"@score av @total poeng\"}],\"scoreExplanation\":\"Korrekt svar gir 1 poeng\",\"grabbablePrefix\":\"Grabbable {num} of {total}.\",\"grabbableSuffix\":\"Placed in dropzone {num}.\",\"dropzonePrefix\":\"Dropzone {num} of {total}.\",\"noDropzone\":\"No dropzone.\",\"tipLabel\":\"Show tip.\",\"tipAvailable\":\"Tips tilgjengelig\",\"correctAnswer\":\"Rett svar\",\"wrongAnswer\":\"Feil svar\",\"feedbackHeader\":\"Tilbakemelding\",\"scoreBarLabel\":\"You got :num out of :total points\",\"scoreExplanationButtonLabel\":\"Show score explanation\",\"localize\":{\"fullscreen\":\"Fullskjerm\",\"exitFullscreen\":\"Forlat fullskjerm\"},\"a11yCheck\":\"Check the answers. The responses will be marked as correct, incorrect, or unanswered.\",\"a11yRetry\":\"Retry the task. Reset all responses and start the task over again.\",\"submit\":\"Submit\"},\"metadata\":{\"title\":\"Avfallssortering \u2013 Dra og slipp\",\"authors\":[{\"name\":\"Amendor AS\",\"role\":\"Author\"}],\"license\":\"CC BY-SA\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"nb\",\"contentType\":\"Drag and Drop\",\"changes\":[],\"extraTitle\":\"Avfallssortering \u2013 Dra og slipp\"},\"subContentId\":\"f21754ad-21fc-4106-ad81-48342aeb42fb\"},{\"library\":\"H5P.DragQuestion 1.13\",\"params\":{\"question\":{\"settings\":{\"size\":{\"width\":720,\"height\":350}},\"task\":{\"elements\":[{\"dropZones\":[],\"x\":2.8687544851721,\"width\":36.75,\"multiple\":false,\"y\":5.8968059083967,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<h2>Sorter avfallet<\\/h2>\\n\\n<p>Plasser avfallet i riktig s\u00f8ppelbeholder<\\/p>\\n\\n<p>&nbsp;<\\/p>\\n\"},\"subContentId\":\"21af0bef-526c-4930-8ed5-4aa63682e3cf\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":3.1125},{\"dropZones\":[],\"x\":5.7388809182209,\"width\":19.44375,\"multiple\":false,\"y\":29.498525073746,\"backgroundOpacity\":0,\"type\":{\"library\":\"H5P.Image 1.1\",\"params\":{\"alt\":\"Farlig avfall\",\"contentName\":\"Image\",\"decorative\":false,\"file\":{\"path\":\"images\\/57635cd21e13c1414e1895da2a95acc6.png\",\"mime\":\"image\\/png\",\"width\":826,\"height\":601,\"copyright\":{\"license\":\"U\"}}},\"metadata\":{\"title\":\"Farlig avfall\",\"authors\":[{\"name\":\"Amendor AS\",\"role\":\"Licensee\"}],\"license\":\"CC BY-SA\",\"contentType\":\"Image\",\"licenseExtras\":\"\",\"authorComments\":\"\",\"licenseVersion\":\"4.0\"},\"subContentId\":\"420a7859-ad88-421c-8a77-c6fec7914d71\"},\"height\":14.147328995157388},{\"dropZones\":[\"0\",\"1\"],\"x\":83.213773314204,\"width\":3.3333333333333,\"multiple\":false,\"y\":58.997050147493,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Aske<\\/p>\"},\"subContentId\":\"6e1572d4-fc51-43ce-80d3-dfb5a1e1e89c\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":54.519368723099,\"width\":2.6666666666667,\"multiple\":false,\"y\":58.997050147493,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Sot<\\/p>\"},\"subContentId\":\"a6e68a67-f2cb-440d-a973-990b30cabe57\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":78.909612625538,\"width\":5.3333333333333,\"multiple\":false,\"y\":23.598820058997,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Fyrstikker<\\/p>\"},\"subContentId\":\"3dc02dde-89df-4eea-970f-2938842f9135\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":54.519368723099,\"width\":10,\"multiple\":false,\"y\":23.598820058997,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Spann med maling<\\/p>\"},\"subContentId\":\"cbc987ce-177c-49cf-99a6-b2a9eb6a8bce\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":54.519368723099,\"width\":4.6666666666667,\"multiple\":false,\"y\":70.796460176991,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Limtube<\\/p>\"},\"subContentId\":\"ea971aab-2713-455d-aae9-f9098afee1e5\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":54.519368723099,\"width\":10,\"multiple\":false,\"y\":35.398230088496,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Klut med l\u00f8semidler<\\/p>\"},\"subContentId\":\"8684b8cd-bc65-4453-9979-e81d79c34221\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":80.344332855093,\"width\":4.6666666666667,\"multiple\":false,\"y\":47.197640117994,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Batterier<\\/p>\"},\"subContentId\":\"e72eb85d-7e37-46e1-95e6-92609badbe37\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":63.12769010043,\"width\":8,\"multiple\":false,\"y\":58.997050147493,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Gassbeholder<\\/p>\\n\"},\"subContentId\":\"ed6cbaae-04c8-4b08-aeac-4f864b30ee11\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":78.909612625538,\"width\":5.3333333333333,\"multiple\":false,\"y\":35.398230088496,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Kjemikaler<\\/p>\\n\"},\"subContentId\":\"5ba34ee3-14d1-473f-b2ac-1b63cb5bd0f2\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":67.431850789096,\"width\":8,\"multiple\":false,\"y\":70.796460176991,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Elektrisk avfall<\\/p>\"},\"subContentId\":\"4ca62f06-0f43-4dbd-be26-a26fc8bd19d3\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333},{\"dropZones\":[\"0\",\"1\"],\"x\":54.519368723099,\"width\":10.666666666667,\"multiple\":false,\"y\":47.197640117994,\"backgroundOpacity\":100,\"type\":{\"library\":\"H5P.AdvancedText 1.1\",\"params\":{\"text\":\"<p>Papir med oljerester<\\/p>\"},\"subContentId\":\"fb0ffeff-7918-475c-80d5-2a2f0ee8dbaa\",\"metadata\":{\"contentType\":\"Text\",\"license\":\"U\",\"title\":\"Untitled Text\"}},\"height\":1.3333333333333}],\"dropZones\":[{\"single\":false,\"correctElements\":[\"2\",\"3\",\"4\",\"2\",\"3\",\"4\",\"7\",\"12\"],\"x\":2.3622047244094486,\"width\":12,\"y\":26.72064777327935,\"backgroundOpacity\":0,\"label\":\"Drop Zone 1\",\"showLabel\":false,\"height\":16,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false},{\"single\":false,\"correctElements\":[\"8\",\"9\",\"10\",\"8\",\"9\",\"10\",\"5\",\"11\",\"6\"],\"x\":28.687544851721,\"width\":11.333333333333,\"y\":26.535626587785,\"backgroundOpacity\":0,\"label\":\"Drop Zone 2\",\"showLabel\":false,\"height\":16,\"tipsAndFeedback\":{\"tip\":\"\",\"feedbackOnCorrect\":\"\",\"feedbackOnIncorrect\":\"\"},\"autoAlign\":false}]}},\"tryAgain\":\"Pr\u00f8v igjen\",\"behaviour\":{\"singlePoint\":false,\"enableRetry\":true,\"showSolutionsRequiresInput\":true,\"showTitle\":false,\"enableCheckButton\":true,\"applyPenalties\":false,\"enableScoreExplanation\":true,\"dropZoneHighlighting\":\"dragging\",\"autoAlignSpacing\":2,\"enableFullScreen\":false,\"showScorePoints\":true},\"scoreShow\":\"Sjekk\",\"overallFeedback\":[{\"from\":0,\"to\":100,\"feedback\":\"@score av @total poeng\"}],\"scoreExplanation\":\"Korrekt svar gir 1 poeng\",\"grabbablePrefix\":\"Grabbable {num} of {total}.\",\"grabbableSuffix\":\"Placed in dropzone {num}.\",\"dropzonePrefix\":\"Dropzone {num} of {total}.\",\"noDropzone\":\"No dropzone.\",\"tipLabel\":\"Show tip.\",\"tipAvailable\":\"Tips tilgjengelig\",\"correctAnswer\":\"Rett svar\",\"wrongAnswer\":\"Feil svar\",\"feedbackHeader\":\"Tilbakemelding\",\"scoreBarLabel\":\"You got :num out of :total points\",\"scoreExplanationButtonLabel\":\"Show score explanation\",\"localize\":{\"fullscreen\":\"Fullskjerm\",\"exitFullscreen\":\"Forlat fullskjerm\"},\"a11yCheck\":\"Check the answers. The responses will be marked as correct, incorrect, or unanswered.\",\"a11yRetry\":\"Retry the task. Reset all responses and start the task over again.\",\"submit\":\"Submit\"},\"metadata\":{\"title\":\"Dra og slipp\",\"authors\":[{\"name\":\"Amendor AS\",\"role\":\"Author\"}],\"license\":\"CC BY-SA\",\"licenseVersion\":\"4.0\",\"defaultLanguage\":\"en\",\"contentType\":\"Drag and Drop\",\"changes\":[],\"extraTitle\":\"Dra og slipp\"},\"subContentId\":\"5d80d8a9-32a8-48ca-b03e-e5a9c4d3e0da\"}],\"disableBackwardsNavigation\":false,\"randomQuestions\":false,\"endGame\":{\"showResultPage\":true,\"showSolutionButton\":true,\"showRetryButton\":true,\"noResultMessage\":\"Ferdig\",\"message\":\"Resultat:\",\"overallFeedback\":[{\"from\":0,\"to\":100}],\"solutionButtonText\":\"Vis svar\",\"retryButtonText\":\"Pr\u00f8v igjen\",\"finishButtonText\":\"Bekreft\",\"showAnimations\":false,\"skippable\":false,\"skipButtonText\":\"Hopp over\"},\"override\":{\"checkButton\":true},\"texts\":{\"prevButton\":\"Forrige sp\u00f8rsm\u00e5l\",\"nextButton\":\"Neste sp\u00f8rsm\u00e5l\",\"finishButton\":\"Avslutt\",\"textualProgress\":\"Deloppgave @current av @total\",\"jumpToQuestion\":\"Sp\u00f8rsm\u00e5l %d av %total\",\"questionLabel\":\"Sp\u00f8rsm\u00e5l\",\"readSpeakerProgress\":\"Deloppgave @current av @total\",\"unansweredText\":\"Ikke svart\",\"answeredText\":\"Svar avgitt\",\"currentQuestionText\":\"Aktivt sp\u00f8rsm\u00e5l\"}}";
-// library = 'H5P.QuestionSet 1.17';
-
-// params = "{\"introPage\":{\"showIntroPage\":false,\"startButtonText\":\"Start Quiz\",\"introduction\":\"\"},\"progressType\":\"dots\",\"passPercentage\":50,\"questions\":[{\"params\":{\"answers\":[{\"correct\":1,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>\\\\(  \\\\sqrt[3]{8}=2  \\\\)<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>\\\\(  \\\\frac{4}{2}=1  \\\\)<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>\\\\(  \\\\sqrt[3]{9}=3  \\\\)<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>\\\\(  5^2\\\\ =\\\\ 10  \\\\)<\\/p><br>\\n\"}],\"UI\":{\"checkAnswerButton\":\"Check\",\"showSolutionButton\":\"Show solution\",\"tryAgainButton\":\"Retry\",\"tipsLabel\":\"Show tip\",\"scoreBarLabel\":\"Score\",\"tipAvailable\":\"Tip available\",\"feedbackAvailable\":\"Feedback available\",\"readFeedback\":\"Read feedback\",\"wrongAnswer\":\"Wrong answer\",\"correctAnswer\":\"Correct answer\",\"feedback\":\"You got @score of @total points\",\"shouldCheck\":\"Should have been checked\",\"shouldNotCheck\":\"Should not have been checked\",\"noInput\":\"Please answer before viewing the solution\"},\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"type\":\"auto\",\"singlePoint\":false,\"randomAnswers\":true,\"showSolutionsRequiresInput\":true,\"disableImageZooming\":false,\"confirmCheckDialog\":false,\"confirmRetryDialog\":false,\"autoCheck\":false,\"passPercentage\":100},\"confirmCheck\":{\"header\":\"Finish ?\",\"body\":\"Are you sure you wish to finish ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Finish\"},\"confirmRetry\":{\"header\":\"Retry ?\",\"body\":\"Are you sure you wish to retry ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Confirm\"},\"question\":\"<p>Select the correct equation<\\/p><br>\\n\",\"media\":{\"params\":{}}},\"library\":\"H5P.MultiChoice 1.9\",\"subContentId\":\"ed0b90ed-78cd-4b7d-b3ae-68122cacb4ef\",\"metadata\":{\"contentType\":\"Multiple Choice\",\"license\":\"U\",\"title\":\"Untitled Multiple Choice\",\"authors\":[],\"changes\":[],\"extraTitle\":\"Untitled Multiple Choice\"}},{\"params\":{\"answers\":[{\"correct\":1,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>art<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>rt<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>41w32eq<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>araef<\\/p><br>\\n\"}],\"UI\":{\"checkAnswerButton\":\"Check\",\"showSolutionButton\":\"Show solution\",\"tryAgainButton\":\"Retry\",\"tipsLabel\":\"Show tip\",\"scoreBarLabel\":\"Score\",\"tipAvailable\":\"Tip available\",\"feedbackAvailable\":\"Feedback available\",\"readFeedback\":\"Read feedback\",\"wrongAnswer\":\"Wrong answer\",\"correctAnswer\":\"Correct answer\",\"feedback\":\"You got @score of @total points\",\"shouldCheck\":\"Should have been checked\",\"shouldNotCheck\":\"Should not have been checked\",\"noInput\":\"Please answer before viewing the solution\"},\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"type\":\"auto\",\"singlePoint\":false,\"randomAnswers\":true,\"showSolutionsRequiresInput\":true,\"disableImageZooming\":false,\"confirmCheckDialog\":false,\"confirmRetryDialog\":false,\"autoCheck\":false,\"passPercentage\":100},\"confirmCheck\":{\"header\":\"Finish ?\",\"body\":\"Are you sure you wish to finish ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Finish\"},\"confirmRetry\":{\"header\":\"Retry ?\",\"body\":\"Are you sure you wish to retry ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Confirm\"},\"question\":\"<p>abvc<\\/p><br>\\n\",\"media\":{\"params\":{}}},\"library\":\"H5P.MultiChoice 1.9\",\"subContentId\":\"f36b27dc-b052-4108-853e-a5138dcbb923\",\"metadata\":{\"contentType\":\"Multiple Choice\",\"license\":\"U\",\"title\":\"Untitled Multiple Choice\",\"authors\":[],\"changes\":[],\"extraTitle\":\"Untitled Multiple Choice\"}},{\"params\":{\"answers\":[{\"correct\":1,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>erwer<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>rtert<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>23faer<\\/p><br>\\n\"},{\"correct\":0,\"tipsAndFeedback\":{\"tip\":\"\",\"chosenFeedback\":\"\",\"notChosenFeedback\":\"\"},\"text\":\"<p>3rqe34<\\/p><br>\\n\"}],\"UI\":{\"checkAnswerButton\":\"Check\",\"showSolutionButton\":\"Show solution\",\"tryAgainButton\":\"Retry\",\"tipsLabel\":\"Show tip\",\"scoreBarLabel\":\"Score\",\"tipAvailable\":\"Tip available\",\"feedbackAvailable\":\"Feedback available\",\"readFeedback\":\"Read feedback\",\"wrongAnswer\":\"Wrong answer\",\"correctAnswer\":\"Correct answer\",\"feedback\":\"You got @score of @total points\",\"shouldCheck\":\"Should have been checked\",\"shouldNotCheck\":\"Should not have been checked\",\"noInput\":\"Please answer before viewing the solution\"},\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"type\":\"auto\",\"singlePoint\":false,\"randomAnswers\":true,\"showSolutionsRequiresInput\":true,\"disableImageZooming\":false,\"confirmCheckDialog\":false,\"confirmRetryDialog\":false,\"autoCheck\":false,\"passPercentage\":100},\"confirmCheck\":{\"header\":\"Finish ?\",\"body\":\"Are you sure you wish to finish ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Finish\"},\"confirmRetry\":{\"header\":\"Retry ?\",\"body\":\"Are you sure you wish to retry ?\",\"cancelLabel\":\"Cancel\",\"confirmLabel\":\"Confirm\"},\"question\":\"<p>qwqw<\\/p><br>\\n\",\"media\":{\"params\":{}}},\"library\":\"H5P.MultiChoice 1.9\",\"subContentId\":\"6974bd59-a431-47af-ba00-95a1fb2b5e46\",\"metadata\":{\"contentType\":\"Multiple Choice\",\"license\":\"U\",\"title\":\"Untitled Multiple Choice\",\"authors\":[],\"changes\":[],\"extraTitle\":\"Untitled Multiple Choice\"}}],\"texts\":{\"prevButton\":\"Previous question\",\"nextButton\":\"Next question\",\"finishButton\":\"Finish\",\"textualProgress\":\"Question: @current of @total questions\",\"jumpToQuestion\":\"Question %d of %total\",\"questionLabel\":\"Question\",\"readSpeakerProgress\":\"Question @current of @total\",\"unansweredText\":\"Unanswered\",\"answeredText\":\"Answered\",\"currentQuestionText\":\"Current question\"},\"disableBackwardsNavigation\":false,\"randomQuestions\":false,\"endGame\":{\"showResultPage\":true,\"noResultMessage\":\"Finished\",\"message\":\"Your result:\",\"scoreString\":\"You got @score of @total points\",\"successGreeting\":\"Congratulations!\",\"successComment\":\"You did very well!\",\"failGreeting\":\"You did not pass this time.\",\"failComment\":\"Have another try!\",\"solutionButtonText\":\"Show solution\",\"retryButtonText\":\"Retry\",\"finishButtonText\":\"Finish\",\"showAnimations\":false,\"skippable\":false,\"skipButtonText\":\"Skip video\"},\"override\":{}}";
-// library = 'H5P.QuestionSet 1.12';
-
-//594
-// params = "{\"sourceLanguage\":\"en\",\"targetLanguage\":\"nb\",\"overallFeedback\":[{\"from\":0,\"to\":100}],\"behaviour\":{\"enableRetry\":true,\"enableSolutionsButton\":true,\"autoCheck\":false,\"caseSensitive\":true,\"showSolutionsRequiresInput\":true,\"acceptSpellingErrors\":false,\"randomize\":true,\"showTips\":false,\"answerMode\":\"fillIn\",\"enableSwitchAnswerModeButton\":false,\"enableSwitchWordsButton\":false},\"l10n\":{\"noValidWords\":\"Ingen gyldige ord funnet. Kontroller orda dine og pr\u00f8v igjen.\",\"fillInLabel\":\"Bla bla\",\"dragTextLabel\":\"Dra tekst\",\"answerModeLabel\":\"Endre svarmodus\",\"languageModeLabel\":\"Bytt spr\u00e5k\",\"changedAnswerModeAria\":\"Endra svarmodus til @option\",\"languageModeAria\":\"Bytt spr\u00e5k fra @sourceLanguage til @targetLanguage\",\"changedLanguageModeAria\":\"Spr\u00e5k bytta fra @sourceLanguage til @targetLanguage\",\"next\":\"Neste\",\"finish\":\"Fullf\u00f8r\",\"restart\":\"Start p\u00e5 nytt\",\"scoreLabel\":\"Resultat\",\"scoreBarLabel\":\"Du fikk @score av @maxScore poeng.\",\"pageNumberLabel\":\"Side @page av @totalPages\",\"feedbackText\":\"Resultatet ditt\",\"lang_en\":\"Engelsk\",\"lang_fr\":\"Fransk\",\"lang_de\":\"Tysk\",\"lang_nb\":\"Norsk (bokm\u00e5l)\",\"lang_nn\":\"Norsk (nynorsk)\",\"lang_es\":\"Spansk\"},\"blanksl10n\":{\"showSolutions\":\"Vis svar\",\"tryAgain\":\"Pr\u00f8v igjen\",\"checkAnswer\":\"Sjekk\",\"submitAnswer\":\"Send inn\",\"notFilledOut\":\"Du m\u00e5 fylle ut alle felt for \u00e5 kunne se svara.\",\"answerIsCorrect\":\"':ans' er riktig\",\"answerIsWrong\":\"':ans' er feil\",\"answeredCorrectly\":\"Riktig svar\",\"answeredIncorrectly\":\"Feil svar\",\"solutionLabel\":\"Riktig svar:\",\"inputLabel\":\"Tomt felt @num av @total\",\"inputHasTipLabel\":\"Tips tilgjengelig\",\"tipLabel\":\"Tips\",\"scoreBarLabel\":\"Du fikk :num av :total poeng.\",\"a11yCheck\":\"Sjekk svar. Svara blir merket som riktig, feil eller ubesvart.\",\"a11yShowSolution\":\"Vis svar. Oppgaven blir merket med riktige svar.\",\"a11yRetry\":\"Pr\u00f8v igjen. Alle svar blir nullstilt, og oppgaven starter p\u00e5 nytt.\",\"a11yCheckingModeHeader\":\"Sjekk-modus aktivert\"},\"dragtextl10n\":{\"checkAnswer\":\"Sjekk\",\"submitAnswer\":\"Send inn\",\"tryAgain\":\"Pr\u00f8v igjen\",\"showSolution\":\"Vis svar\",\"dropZoneIndex\":\"Slippsone @index.\",\"empty\":\"Slippsone @index er tom.\",\"contains\":\"Slippsone @index inneholder flyttbart element @draggable.\",\"ariaDraggableIndex\":\"@index av @count flyttbare elementer\",\"tipLabel\":\"Vis tips\",\"correctText\":\"Riktig!\",\"incorrectText\":\"Feil\",\"resetDropTitle\":\"Nullstill flyttbart element\",\"resetDropDescription\":\"Er du sikker p\u00e5 at du vil nullstille denne slippsonen?\",\"grabbed\":\"Flyttbart element er tatt tak i.\",\"cancelledDragging\":\"Flytting avbrutt.\",\"correctAnswer\":\"Riktig svar:\",\"feedbackHeader\":\"Tilbakemelding\",\"scoreBarLabel\":\"Du fikk :num av :total poeng.\",\"a11yCheck\":\"Sjekk svar. Svara blir merka som riktig, feil eller ubesvart.\",\"a11yShowSolution\":\"Vis svar. Oppgaven blir merka med riktige svar.\",\"a11yRetry\":\"Pr\u00f8v igjen. Alle svar blir nullstilt, og oppgaven starter p\u00e5 nytt.\"},\"words\":\"water\\/sea:w___r,vann\\/hav:v__n\",\"description\":\"Usikker\"}";
-// library = 'H5P.VocabularyDrill 1.0';
-
-//504
-// params = '{"media":{"disableImageZooming":false,"type":{"params":{}}},"answers":[{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>=</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mfenced><mrow><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>d</mi><mo stretchy=\"false\">→</mo></mover></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mi>s</mi><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mi>t</mi><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><mfenced><mrow><mi>s</mi><mo>·</mo><mi>t</mi></mrow></mfenced><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mn>2</mn></msup><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>+</mo><mn>2</mn><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><msup><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>-</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mn>2</mn></msup><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>-</mo><mn>2</mn><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":true,"tipsAndFeedback":{"tip":"","chosenFeedback":"","notChosenFeedback":""},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>+</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>-</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>=</mo><msup><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup><mo>-</mo><msup><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mn>2</mn></msup></math></p>\n"},{"correct":false,"tipsAndFeedback":{"tip":"","chosenFeedback":"<p>Husk at det som står på venstre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math>, mens det som står på høyre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math>.</p>\n","notChosenFeedback":"<p>Denne regelen gjelder ikke fordi det som står på venstre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></math>, mens det som står på høyre side er en vektor som er parallell med <math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover></math>.</p>\n"},"text":"<p><math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mfenced><mrow><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover><mo>=</mo><mover><mi>a</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mfenced><mrow><mover><mi>b</mi><mo stretchy=\"false\">→</mo></mover><mo>·</mo><mover><mi>c</mi><mo stretchy=\"false\">→</mo></mover></mrow></mfenced></math></p>\n"}],"overallFeedback":[{"from":0,"to":100}],"behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"type":"auto","singlePoint":false,"randomAnswers":true,"showSolutionsRequiresInput":true,"confirmCheckDialog":false,"confirmRetryDialog":false,"autoCheck":false,"passPercentage":100,"showScorePoints":true},"UI":{"checkAnswerButton":"Sjekk","submitAnswerButton":"Submit","showSolutionButton":"Vis svar","tryAgainButton":"Prøv igjen","tipsLabel":"Vis tips","scoreBarLabel":"Du fikk :num av :total points","tipAvailable":"Tips tilgjengelig","feedbackAvailable":"Tilbakemelding tilgjengelig","readFeedback":"Read feedback","wrongAnswer":"Feil svar","correctAnswer":"Correct answer","shouldCheck":"Skulle ha vært krysset av","shouldNotCheck":"Skulle ikke ha vært krysset av","noInput":"Du må svare på denne før du kan se løsningen","a11yCheck":"Check the answers. The responses will be marked as correct, incorrect, or unanswered.","a11yShowSolution":"Show the solution. The task will be marked with its correct solution.","a11yRetry":"Retry the task. Reset all responses and start the task over again."},"confirmCheck":{"header":"Finish ?","body":"Er du sikker på at du er ferdig?","cancelLabel":"Avbryt","confirmLabel":"Bekreft"},"confirmRetry":{"header":"Prøv igjen?","body":"Er du sikker på at du vil prøve igjen?","cancelLabel":"Avbryt","confirmLabel":"Bekreft"},"question":"<p>Hvilke av regnereglene for vektorer er riktige? Forklar <em>hvorfor</em> sammenhengene som er feil, er feil.</p>\n"}';
-// library = "H5P.MultiChoice 1.16";
-
-new ns.ContentTranslationRefresh(
-    JSON.parse(params),
-    library,
-    lang
-);

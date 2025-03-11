@@ -31,6 +31,10 @@
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
+                                <th>Is leaf</th>
+                                <td>{{ ($requestedVersion?->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}</td>
+                            </tr>
+                            <tr>
                                 <th>Latest version id</th>
                                 <td>
                                     @if($requestedVersion && $requestedVersion->id !== $content->version_id)
