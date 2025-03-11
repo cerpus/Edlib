@@ -11,18 +11,18 @@ use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
-use DB;
-use ErrorException;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\H5PLibraryAdmin;
+use DB;
+use ErrorException;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -184,32 +184,7 @@ class AdminH5PDetailsController extends Controller
 
     public function libraryTranslation(H5PLibrary $library, string $locale): View
     {
-        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
-            ->where('language_code', $locale)
-            ->first();
-
-        $contentCount = DB::table('content_versions')
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
-            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
-            ->where(function ($query) {
-                $query
-                    ->whereNull('cv.content_id')
-                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-            })
-            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->where('h5p_contents.library_id', $library->id)
-            ->where('h5p_contents_metadata.default_language', $locale);
-
-        return view('admin.library-upgrade.translation', [
-            'library' => $library,
-            'languageCode' => $locale,
-            'translationDb' => $libLang?->translation,
-            'translationFile' => Storage::disk()->get(
-                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
-            ),
-            'contentCount' => $contentCount->first()->total,
-        ]);
+        return view('admin.library-upgrade.translation', $this->libraryTranslationData($library, $locale));
     }
 
     public function libraryTranslationUpdate(AdminTranslationUpdateRequest $request, H5PLibrary $library, string $locale): View
@@ -244,7 +219,19 @@ class AdminH5PDetailsController extends Controller
             }
         }
 
-        $contentCount = DB::table('content_versions')
+        $data = $this->libraryTranslationData($library, $locale);
+        $data['messages'] = $messages;
+
+        return view('admin.library-upgrade.translation', $data);
+    }
+
+    private function libraryTranslationData(H5PLibrary $library, string $locale): array
+    {
+        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
+            ->where('language_code', $locale)
+            ->first();
+
+        $updatableCount = DB::table('content_versions')
             ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
             ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
             ->where(function ($query) {
@@ -257,21 +244,27 @@ class AdminH5PDetailsController extends Controller
             ->where('h5p_contents.library_id', $library->id)
             ->where('h5p_contents_metadata.default_language', $locale);
 
-        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
-            ->where('language_code', $locale)
-            ->first();
+        $totalCount = DB::table('h5p_contents')
+            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
+            ->where('h5p_contents.library_id', $library->id)
+            ->where('h5p_contents_metadata.default_language', $locale)
+            ->count();
 
-        return view('admin.library-upgrade.translation', [
+        $filename = sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale);
+        if (Storage::exists($filename)) {
+            $fileTranslation = Storage::disk()->get($filename);
+            $fileModified = Carbon::createFromTimestamp(Storage::disk()->lastModified($filename));
+        }
+
+        return [
             'library' => $library,
             'languageCode' => $locale,
-            'haveTranslation' => $libLang !== null,
-            'translationDb' => $libLang?->translation,
-            'translationFile' => Storage::disk()->get(
-                sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale),
-            ),
-            'messages' => $messages,
-            'contentCount' => $contentCount->first()->total,
-        ]);
+            'translationDb' => $libLang,
+            'translationFile' => $fileTranslation ?? null,
+            'fileModified' => $fileModified ?? null,
+            'totalCount' => $totalCount,
+            'updatableCount' => $updatableCount->first()->total,
+        ];
     }
 
     public function contentTranslationUpdate(H5PLibrary $library, string $locale): View

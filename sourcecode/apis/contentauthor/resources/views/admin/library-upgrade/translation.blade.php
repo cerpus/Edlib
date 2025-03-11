@@ -9,7 +9,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            {{ $library->getLibraryString(true) }} - <b>{{Iso639p3::englishName($languageCode)}}</b> (<code>{{ $languageCode }}</code>) translation
+                            <b>{{ $library->getLibraryString(true) }} - {{locale_get_display_language($languageCode)}}</b> (<code>{{ $languageCode }}</code>)
                         </h3>
                     </div>
                     <div class="panel-body row">
@@ -32,7 +32,7 @@
                         </div>
                     @elseif (isset($messages))
                         <div class="alert alert-success">
-                            {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s e') }}: Database updated
+                            {{ $translationDb->updated_at->format('Y-m-d H:i:s e') }}: Database updated
                         </div>
                     @endif
                     <div class="panel-body row">
@@ -41,17 +41,22 @@
                                 <h4>Content</h4>
                             </div>
                             <div class="panel-body row">
-                                Content for this language: {{ $contentCount }}
+                                <p>
+                                    Total content: {{ $totalCount }}
+                                </p>
+                                <p>
+                                    Updatable content: {{ $updatableCount }}
+                                </p>
                             </div>
                             <div class="panel-body row">
                                 <a
                                     @class([
                                         'btn btn-danger',
-                                        'disabled' => $contentCount === 0,
+                                        'disabled' => $updatableCount === 0,
                                     ])
                                     role="button"
                                     href="{{ route('admin.library-transation-content', [$library->id, $languageCode]) }}"
-                                    @disabled($contentCount === 0)
+                                    @disabled($updatableCount === 0)
                                 >
                                     Refresh translations in the content
                                 </a>
@@ -87,7 +92,7 @@
 
                     <div class="panel-body row">
                         @if ($translationDb && $translationFile)
-                            @if (json_decode($translationDb, true) !== json_decode($translationFile, true))
+                            @if (json_decode($translationDb->translation, true) !== json_decode($translationFile, true))
                                 <div class="alert alert-warning">
                                     Translation in database differ from that on file
                                 </div>
@@ -99,8 +104,18 @@
                         @endif
                         <table class="table table-striped">
                             <tr>
-                                <th>Database (Max 51200 characters)</th>
-                                <th>File (read only)</th>
+                                <th>
+                                    Database (Max 51200 characters)
+                                    @if($translationDb && $translationDb->updated_at)
+                                        <br>Modified {{ $translationDb->updated_at->format('Y-m-d H:i:s e') }}
+                                    @endif
+                                </th>
+                                <th>
+                                    File (read only)
+                                    @if($fileModified)
+                                        <br>Modified {{ $fileModified->format('Y-m-d H:i:s e') }}
+                                    @endif
+                                </th>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
@@ -113,7 +128,7 @@
                                                 required
                                                 maxlength="51200"
                                                 style="width:100%;height:70vh;white-space:pre;"
-                                            >{{$translationDb}}</textarea>
+                                            >{{$translationDb->translation}}</textarea>
                                             <br>
                                             <button type="submit" class="btn btn-primary btn-lg">
                                                 Save

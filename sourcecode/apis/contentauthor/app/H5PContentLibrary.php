@@ -17,7 +17,7 @@ class H5PContentLibrary extends Model
     public $timestamps = false;
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {
