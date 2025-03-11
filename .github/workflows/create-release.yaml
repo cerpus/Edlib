@@ -37,9 +37,9 @@ jobs:
   # ---------- APIS -----------------
   build_image_hub:
     needs: get_variables
-    uses: cerpus/Edlib/.github/workflows/test.yaml@master
+    uses: ./.github/workflows/test.yaml
     with:
-      versionToRelease: ${{ needs.get_variables.outputs.releaseRef }}
+      version: ${{ needs.get_variables.outputs.releaseRef }}
       deploy: true
 
   building_done:

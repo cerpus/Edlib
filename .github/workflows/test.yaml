@@ -17,7 +17,7 @@ on:
       - 'sourcecode/hub/**'
   workflow_call:
     inputs:
-      versionToRelease:
+      version:
         description: 'A version to release'
         required: true
         type: string
@@ -28,12 +28,12 @@ on:
         default: false
 
 env:
-  shouldPublishImage: ${{ inputs.versionToRelease && !inputs.deploy && '1' || '0' }}
+  shouldPublishImage: ${{ inputs.version && !inputs.deploy && '1' || '0' }}
   shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
 
-#defaults:
-#  run:
-#    working-directory: sourcecode/hub
+defaults:
+  run:
+    working-directory: ./sourcecode/hub
 
 concurrency:
   group: hub-${{ github.head_ref || github.run_id }}
