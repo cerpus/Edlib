@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
-use App\ApiModels\User;
-use App\Apis\AuthApiService;
 use App\Article;
 use App\Http\Controllers\Admin\AdminArticleController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,16 +18,6 @@ class AdminArticleControllerTest extends TestCase
 
     public function test_viewFailedCalculations(): void
     {
-        $authMock = $this->createMock(AuthApiService::class);
-        $this->instance(AuthApiService::class, $authMock);
-
-        $userId = $this->faker->uuid;
-        $user = new User($userId, 'Emily', 'QuackFaster', 'eq@duckburg.quack');
-
-        $authMock->expects($this->once())
-            ->method('getUser')
-            ->willReturn($user);
-
         Article::factory()->create([
             'bulk_calculated' => Article::BULK_UPDATED,
         ]);
@@ -45,7 +33,5 @@ class AdminArticleControllerTest extends TestCase
 
         $resource = $data['resources']->first();
         $this->assertSame($failedResource->id, $resource->id);
-
-        $this->assertStringContainsString($user->getEmail(), $resource->ownerName);
     }
 }

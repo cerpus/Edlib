@@ -4,6 +4,7 @@ namespace App\Libraries\Games\Millionaire;
 
 use App\Game;
 use App\Gametype;
+use App\Http\Libraries\License;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
@@ -11,11 +12,15 @@ use App\Libraries\Games\GameBase;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
+use App\SessionKeys;
 use App\Transformers\QuestionSetsTransformer;
-use Cerpus\ImageServiceClient\DataObjects\ImageParamsObject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
+
+use function config;
 
 class Millionaire extends GameBase
 {
@@ -31,19 +36,19 @@ class Millionaire extends GameBase
         return $gameType->id;
     }
 
-    public function createGameSettings($parameters, $asObject = false)
+    public function createGameSettings(array $parameters, bool $asObject = false): object|string
     {
         $questions = $parameters['cards'];
         if (is_object($questions) && get_class($questions) === QuestionSet::class) {
             $questionsAndAnswers = $this->createGameSettingsFromQuestionset($questions);
         } else {
-            $questionsAndAnswers = $this->createGameSettingsFromForm($questions);
+            $questionsAndAnswers = $this->createGameSettingsFromArray($questions);
         }
-        $gameSettings = (object)[
-            'questionSet' => (object)['questions' => $questionsAndAnswers->toArray()],
-            'locale' => 'nb-no',
+        $gameSettings = (object) [
+            'questionSet' => (object) ['questions' => $questionsAndAnswers->toArray()],
+            'locale' => $parameters['language_code'] ?? 'nb-no',
         ];
-        return $asObject !== true ? json_encode($gameSettings) : $gameSettings;
+        return $asObject !== true ? json_encode($gameSettings, flags: JSON_THROW_ON_ERROR) : $gameSettings;
     }
 
     private function createGameSettingsFromQuestionset(QuestionSet $questionSet): Collection
@@ -57,93 +62,70 @@ class Millionaire extends GameBase
                     ->map(function (QuestionSetQuestionAnswer $answer) {
                         return [
                             'answer' => $answer->answer_text,
-                            'isCorrect' => (bool)$answer->correct,
+                            'isCorrect' => (bool) $answer->correct,
                         ];
                     })
-                    ->toArray()
+                    ->toArray(),
             ];
         });
     }
 
-    private function createGameSettingsFromForm($questions): Collection
+    private function createGameSettingsFromArray(array $questions): Collection
     {
         return collect($questions)
             ->map(function ($question) {
                 return [
                     'questionText' => $question['question']['text'],
-                    'image' => $question['question']['image']['id'],
+                    'image' => null,
                     'answers' => array_map(function ($answer) {
                         return [
                             'answer' => $answer['answerText'],
-                            'isCorrect' => (bool)$answer['isCorrect'],
+                            'isCorrect' => (bool) $answer['isCorrect'],
                         ];
-                    }, $question['answers'])
+                    }, $question['answers']),
                 ];
             });
     }
 
-    public function view(Game $game, $context, $preview)
+    public function view(Game $game): View
     {
         $game->load('gameType');
 
         return view('games.millionaire.show', [
             'title' => $game->title,
             'gameSettings' => json_encode($this->alterGameSettings($game->game_settings)),
-            'scripts' => $game->gameType->getAssets('scripts'),
-            'linked' => $game->gameType->getAssets('links'),
-            'css' => $game->gameType->getAssets('css'),
-            'basePath' => $game->gameType->getPublicFolder(),
-            'context' => $context,
+            'scripts' => $game->gameType->getScripts(),
+            'linked' => $game->gameType->getLinks(),
+            'css' => $game->gameType->getCss(),
+            'basePath' => $game->gameType->getBasePath(),
             'language' => $game->language_code,
-            'inDraftState' => !$game->isPublished(),
-            'preview' => $preview,
             'resourceType' => sprintf($game::RESOURCE_TYPE_CSS, $game->getContentType()),
         ]);
     }
 
     public function alterGameSettings($gameSettings)
     {
-        $questions = collect($gameSettings->questionSet->questions);
-        $images = $questions
-            ->pluck('image')
-            ->filter(function ($image) {
-                return !empty($image) && !filter_var($image, FILTER_VALIDATE_URL);
-            })
-            ->flatMap(function ($image) {
-                return [
-                    $image => [
-                        'params' => ImageParamsObject::create([
-                            'maxWidth' => 425,
-                            'maxHeight' => 290
-                        ])
-                    ]
-                ];
+        $gameSettings->questionSet->questions = collect($gameSettings->questionSet->questions)
+            ->map(function ($question) {
+                $question->image = null;
+                $question->questionText = html_entity_decode(strip_tags($question->questionText));
+                $question->answers = collect($question->answers)
+                    ->map(function ($answer) {
+                        $answer->answer = html_entity_decode(strip_tags($answer->answer));
+                        $answer->image = null;
+                        return $answer;
+                    })
+                    ->shuffle()
+                    ->all();
+                return $question;
             });
-        $imageUrls = \ImageService::getHostingUrls($images->toArray());
-        $questions->transform(function ($question) use ($imageUrls) {
-            if (!empty($question->image) && array_key_exists($question->image, $imageUrls)) {
-                $question->image = $imageUrls[$question->image];
-            } else {
-                $question->image = "";
-            }
-            $question->questionText = html_entity_decode(strip_tags($question->questionText));
-            $question->answers = collect($question->answers)
-                ->map(function ($answer) {
-                    $answer->answer = html_entity_decode(strip_tags($answer->answer));
-                    return $answer;
-                })
-                ->shuffle()
-                ->all();
-            return $question;
-        });
-        $gameSettings->questionSet->questions = $questions;
 
         return $gameSettings;
     }
 
-    public static function customValidation($data)
+    public static function customValidation($dataToBeValidated)
     {
-        $errors = collect($data['cards'])
+        $errors = collect($dataToBeValidated['cards'])
             ->map(function ($card) {
                 return collect($card['answers'])
                     ->filter(function ($answer) {
@@ -164,32 +146,63 @@ class Millionaire extends GameBase
         return $errors;
     }
 
-    public function edit(Game $game, Request $request)
+    public function create(Request $request): View
+    {
+        $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET);
+        Session::forget(SessionKeys::EXT_QUESTION_SET);
+
+        $editorSetup = EditorConfigObject::create([
+            'canList' => true,
+            'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
+            'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
+        ])->toJson();
+
+        $state = QuestionSetStateDataObject::create([
+            'links' => (object) [
+                "store" => route('questionset.store'),
+            ],
+            'questionSetJsonData' => $extQuestionSetData,
+            'license' => License::getDefaultLicense(),
+            'isPublished' => false,
+            'share' => config('h5p.defaultShareSetting'),
+            'redirectToken' => $request->input('redirectToken'),
+            'route' => route('questionset.store'),
+            '_method' => "POST",
+            'numberOfDefaultQuestions' => 15,
+            'numberOfDefaultAnswers' => 4,
+            'canAddRemoveQuestion' => false,
+            'canAddRemoveAnswer' => false,
+            'lockedPresentation' => Millionaire::$machineName,
+        ])->toJson();
+
+        return view('games.create', [
+            'emails' => '',
+            'editorSetup' => $editorSetup,
+            'state' => $state,
+        ]);
+    }
+
+    public function edit(Game $game, Request $request): View
     {
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
 
-        $ownerName = $game->getOwnerName($game->owner);
-
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => Game::isUserPublishEnabled(),
-                'canPublish' => $game->canPublish($request),
                 'canList' => $game->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
-            ]
+            ],
         );
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $game->id,
             'createdAt' => $game->created_at->toIso8601String(),
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         $state = QuestionSetStateDataObject::create([
             'id' => $game->id,
             'title' => $game->title,
             'license' => $game->license,
-            'isPublished' => $game->isPublished(),
             'share' => !$game->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('game.update', ['game' => $game->id]),
@@ -197,10 +210,13 @@ class Millionaire extends GameBase
             'questionset' => $gameData,
             'editmode' => true,
             'presentation' => $game->gametype()->first()->name,
+            'canAddRemoveCard' => false,
+            'canAddRemoveAnswer' => false,
+            'lockedPresentation' => Millionaire::$machineName,
         ]);
 
 
-        return view('games.millionaire.edit', [
+        return view('games.edit', [
             'game' => $game,
             'editorSetup' => $editorSetup->toJson(),
             'state' => $state->toJson(),
@@ -208,28 +224,29 @@ class Millionaire extends GameBase
         ]);
     }
 
-    private function convertDataToQuestionSet(Game $game)
+    private function convertDataToQuestionSet(Game $game): array
     {
-        $questionSet = QuestionSet::make();
+        $questionSet = new QuestionSet();
         $questionSet->title = $game->title;
         $questionSet->questions = collect($game->game_settings->questionSet->questions)
             ->map(function ($question, $index) {
-                $questionSetQuestion = QuestionSetQuestion::make();
+                $questionSetQuestion = new QuestionSetQuestion();
                 $questionSetQuestion->question_text = $question->questionText;
-                $questionSetQuestion->image = $question->image;
                 $questionSetQuestion->id = Uuid::uuid4();
                 $questionSetQuestion->order = $index;
 
-                $questionSetQuestion->answers = array_map(function ($answer) {
-                    $questionSetAnswer = QuestionSetQuestionAnswer::make();
-                    $questionSetAnswer->correct = $answer->isCorrect;
-                    $questionSetAnswer->answer_text = $answer->answer;
-                    $questionSetAnswer->id = Uuid::uuid4();
-                    return $questionSetAnswer;
-                }, $question->answers);
+                $questionSetQuestion->answers = collect($question->answers)
+                    ->map(function ($answer) {
+                        $questionSetAnswer = new QuestionSetQuestionAnswer();
+                        $questionSetAnswer->correct = $answer->isCorrect;
+                        $questionSetAnswer->answer_text = $answer->answer;
+                        $questionSetAnswer->id = Uuid::uuid4();
+                        return $questionSetAnswer;
+                    });
 
                 return $questionSetQuestion;
             });
+
         return $this->buildItem($questionSet, new QuestionSetsTransformer());
     }
 }

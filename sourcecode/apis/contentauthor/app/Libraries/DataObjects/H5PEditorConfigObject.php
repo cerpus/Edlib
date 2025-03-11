@@ -13,13 +13,17 @@ class H5PEditorConfigObject extends EditorConfigObject
 
     public $libraryUpgradeList = [];
 
-    public $autoTranslateTo;
     public $adapterName;
     public $adapterList;
-    public $hideNewVariant = false;
     public $showDisplayOptions = false;
     public $h5pLanguage;
     public $creatorName;
+    public bool $enableUnsavedWarning = true; // Enable onUnload warning if unsaved changes
+
+    /**
+     * @var array<string, non-empty-list<string>>|null
+     */
+    public array|null $supportedTranslations = [];
 
     public function toJson(): string
     {

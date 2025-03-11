@@ -6,15 +6,14 @@ use App\Libraries\DataObjects\BehaviorSettingsDataObject;
 use App\Libraries\H5P\Packages\CoursePresentation;
 use App\Libraries\H5P\Packages\MultiChoice;
 use App\Traits\H5PBehaviorSettings;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class H5PBehaviorSettingsTest extends TestCase
 {
     use H5PBehaviorSettings;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function disableRetry_validStructures()
     {
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
@@ -33,22 +32,18 @@ class H5PBehaviorSettingsTest extends TestCase
         $this->assertTrue($this->packageStructure->behaviour->enableRetry);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function disableRetry_invalidStructures()
     {
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
 
-        $this->packageStructure = (object)["missingBehavior" => true];
+        $this->packageStructure = (object) ["missingBehavior" => true];
         $this->applyBehaviorSettings($behaviorSettings);
 
         $this->assertJsonStringEqualsJsonString('{"missingBehavior":true}', $this->getPackageStructure(true));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function showSummary_validStructures()
     {
         $behaviorSettings = BehaviorSettingsDataObject::create();

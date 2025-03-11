@@ -3,7 +3,6 @@
 namespace App\Libraries\H5P;
 
 use App\H5PContent;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Interfaces\H5PExternalProviderInterface;
 use H5PContentValidator;
 use H5PCore;
@@ -20,18 +19,14 @@ use const JSON_THROW_ON_ERROR;
 readonly class H5PExport
 {
     /**
-     * @var array<mixed, H5PExternalProviderInterface>
+     * @param array<array-key, object> $externalProviders
      */
-    private array $externalProviders;
-
     public function __construct(
         private H5PDefaultExport $export,
-        H5PAdapterInterface $adapter,
         private H5PContentValidator $validator,
         private bool $convertMediaToLocal,
-    ) {
-        $this->externalProviders = $adapter->getExternalProviders();
-    }
+        private array $externalProviders,
+    ) {}
 
     /**
      * @throws JsonException
@@ -59,9 +54,9 @@ readonly class H5PExport
         // we don't use the so-called validator for purposes other than
         // resolving dependencies, as it likes to corrupt the data
 
-        $validatorParams = (object)[
+        $validatorParams = (object) [
             'library' => $content->library->getLibraryString(false),
-            'params' => json_decode($content->parameters)
+            'params' => json_decode($content->parameters),
         ];
         $this->validator->validateLibrary($validatorParams, (object) [
             'options' => [$validatorParams->library],
@@ -83,7 +78,7 @@ readonly class H5PExport
     {
         return $parameters->map(function (mixed $value) use ($content) {
             if (is_object($value) && property_exists($value, 'mime') && !empty($value->path) && !$this->isPathLocal($value->path)) {
-                $value = $this->applyExternalProviderHandling((array)$value, $content);
+                $value = $this->applyExternalProviderHandling((array) $value, $content);
             }
 
             if (is_array($value) || is_object($value)) {
@@ -97,7 +92,11 @@ readonly class H5PExport
     private function applyExternalProviderHandling(array $values, H5PContent $content): array
     {
         $externalProvider = collect($this->externalProviders)
-            ->first(fn ($provider) => $provider->isTargetType($values['mime'], $values['path']));
+            ->first(
+                fn($provider) =>
+                $provider instanceof H5PExternalProviderInterface &&
+                $provider->isTargetType($values['mime'], $values['path']),
+            );
 
         if ($externalProvider instanceof H5PExternalProviderInterface) {
             $fileDetails = $externalProvider->storeContent($values, $content);

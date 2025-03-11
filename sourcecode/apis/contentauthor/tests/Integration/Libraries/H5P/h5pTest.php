@@ -9,6 +9,7 @@ use H5PCore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\Test;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Tests\Helpers\TestHelpers;
@@ -67,7 +68,7 @@ class h5pTest extends TestCase
     {
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($this->editorFilesDirectory, RecursiveDirectoryIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST
+            RecursiveIteratorIterator::CHILD_FIRST,
         );
 
         foreach ($files as $fileinfo) {
@@ -102,15 +103,13 @@ class h5pTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithOutVersioningContent()
     {
         $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
-            'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
+            'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}',
         ]);
 
         $this->createUnitTestDirectories();
@@ -125,7 +124,7 @@ class h5pTest extends TestCase
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -138,7 +137,7 @@ class h5pTest extends TestCase
             'library' => "H5P.Flashcards 1.1",
             'title' => "Updated Test Title",
             'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}',
-            'isDraft' => false
+            'isDraft' => false,
         ]);
 
         $core = app(H5PCore::class);
@@ -149,7 +148,7 @@ class h5pTest extends TestCase
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -164,15 +163,13 @@ class h5pTest extends TestCase
         $this->assertDatabaseHas("h5p_contents_metadata", ["id" => 1, 'content_id' => 1, 'license' => "BY"]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createWithVersioningContent()
     {
         $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "My Test Title",
-            'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
+            'parameters' => '{"params":{"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Hvor er ørreten?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"U","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}',
         ]);
 
         $this->createUnitTestDirectories();
@@ -187,7 +184,7 @@ class h5pTest extends TestCase
         $this->assertFileExists("{$this->getContentDirectory()}/{$content['id']}/images/image-5805bff7c5330.jpg");
         $this->assertJson($content['params'], "Params not set correct");
         $contentParamsDecoded = json_decode($content['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Hvor er ørreten?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);
@@ -198,7 +195,7 @@ class h5pTest extends TestCase
         $request = Request::create('', parameters: [
             'library' => "H5P.Flashcards 1.1",
             'title' => "Updated Test Title",
-            'parameters' => '{"params": {"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}'
+            'parameters' => '{"params": {"cards":[{"image":{"path":"images/image-5805bff7c5330.jpg","mime":"image/jpeg","copyright":{"license":"U"},"width":3840,"height":2160},"text":"Kan du se hvor ørreten er?","answer":"Her!","tip":""}],"progressText":"Card @card of @total","next":"Next","previous":"Previous","checkAnswerText":"Check","showSolutionsRequiresInput":true},"metadata":{"license":"BY","authors":[],"changes":[],"extraTitle":"Deltittel","title":"Deltittel"}}',
         ]);
 
         $core = app(H5PCore::class);
@@ -210,7 +207,7 @@ class h5pTest extends TestCase
         $this->assertEquals("Updated Test Title", $updatedContent['title']);
         $this->assertEquals("createContentUserId", $updatedContent['user_id']);
         $contentParamsDecoded = json_decode($updatedContent['params']);
-        $this->assertObjectHasAttribute("cards", $contentParamsDecoded);
+        $this->assertObjectHasProperty("cards", $contentParamsDecoded);
         $this->assertNotEmpty($contentParamsDecoded->cards);
         $this->assertEquals("Kan du se hvor ørreten er?", $contentParamsDecoded->cards[0]->text);
         $this->assertEquals("Her!", $contentParamsDecoded->cards[0]->answer);

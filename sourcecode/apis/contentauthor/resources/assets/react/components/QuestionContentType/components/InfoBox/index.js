@@ -2,6 +2,7 @@ import './InfoBox.scss';
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import Button from '@material-ui/core/Button';
 import Undo from '@material-ui/icons/Undo';
 
@@ -14,9 +15,12 @@ function InfoBox(props) {
         backButtonText,
         generateButtonText,
         processingForm,
+        type,
     } = props;
     return (
-        <div className="infobox">
+        <div
+            className={clsx("infobox", {'headerbox': type === 'header'})}
+        >
             <div className="infotext">
                 {infoText}
             </div>
@@ -26,24 +30,28 @@ function InfoBox(props) {
                     alt="image"
                     className="infoicon"
                 />
-                <Button
-                    variant="contained"
-                    onClick={onGenerateClick}
-                    className="generate"
-                    disabled={processingForm}
-                >
-                    {generateButtonText}
-                </Button>
-                <Button
-                    variant="outlined"
-                    onClick={onBackClick}
-                    className="goback"
-                    color="inherit"
-                    fullWidth={true}
-                >
-                    <Undo />
-                    {backButtonText}
-                </Button>
+                {onGenerateClick && (
+                    <Button
+                        variant="contained"
+                        onClick={onGenerateClick}
+                        className="generate"
+                        disabled={processingForm}
+                    >
+                        {generateButtonText}
+                    </Button>
+                )}
+                {onBackClick && (
+                    <Button
+                        variant="outlined"
+                        onClick={onBackClick}
+                        className="goback"
+                        color="inherit"
+                        fullWidth={true}
+                    >
+                        <Undo />
+                        {backButtonText}
+                    </Button>
+                )}
             </div>
         </div>
     );
@@ -58,10 +66,12 @@ InfoBox.propTypes = {
     generateButtonText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     processingForm: PropTypes.bool,
     onChangeProcessing: PropTypes.func,
+    type: PropTypes.oneOf(['info', 'header']),
 };
 
 InfoBox.defaultProps = {
     processingForm: false,
+    type: 'info',
 };
 
 export default InfoBox;

@@ -2,13 +2,10 @@
 
 namespace App\Listeners\Questionset;
 
-use App\ACL\ArticleAccess;
 use App\Events\QuestionsetWasSaved;
 
 class HandlePrivacy
 {
-    use ArticleAccess;
-
     public function handle(QuestionsetWasSaved $event)
     {
         /** @var \App\QuestionSet $questionset */

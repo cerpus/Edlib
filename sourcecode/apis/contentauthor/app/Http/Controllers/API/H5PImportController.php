@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\ContentVersion;
 use App\Events\H5PWasSaved;
 use App\Exceptions\H5pImportException;
 use App\H5PContent;
@@ -9,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\H5PImportRequest;
 use App\Libraries\H5P\H5PImport;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use Cerpus\VersionClient\VersionData;
 use H5PStorage;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,13 +31,8 @@ class H5PImportController extends Controller
         }
 
         $h5pContent = H5PContent::find($response->h5pId);
-        if ($request->input('disablePublishMetadata', true) === true) {
-            config([
-                'feature.enableUserPublish' => false,
-            ]);
-        }
 
-        event(new H5PWasSaved($h5pContent, $request, VersionData::IMPORT));
+        event(new H5PWasSaved($h5pContent, $request, ContentVersion::PURPOSE_IMPORT));
 
         return response()->json($response->toArray())->setStatusCode(Response::HTTP_CREATED);
     }

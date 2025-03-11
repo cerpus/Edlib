@@ -15,11 +15,11 @@ class H5PContentsVideo extends Model
     protected $fillable = [
         'h5p_content_id',
         'video_id',
-        'source_file'
+        'source_file',
     ];
 
     /**
-     * @return BelongsTo<H5PContent, self>
+     * @return BelongsTo<H5PContent, $this>
      */
     public function content(): BelongsTo
     {

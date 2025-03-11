@@ -19,7 +19,7 @@ class ImagePair extends H5PBase
     public function alterRetryButton()
     {
         if (is_object($this->packageStructure) && property_exists($this->packageStructure, 'behaviour')) {
-            $this->packageStructure->behaviour = (bool)$this->behaviorSettings->enableRetry;
+            $this->packageStructure->behaviour = (bool) $this->behaviorSettings->enableRetry;
         }
     }
 

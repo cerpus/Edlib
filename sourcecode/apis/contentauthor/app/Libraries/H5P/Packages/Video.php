@@ -35,7 +35,7 @@ class Video extends H5PBase
     {
         $files = $this->getSources();
         if (empty($files) && !empty($sourceFile) && !empty($newSource)) {
-            $files = [(object)["path" => $sourceFile . "#tmp"]];
+            $files = [(object) ["path" => $sourceFile . "#tmp"]];
         }
 
         if (empty($files)) {

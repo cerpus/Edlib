@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Libraries\DataObjects\ContentStorageSettings;
-use Illuminate\Support\Facades\Storage;
-use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
-use ZipArchive;
 use App\Gametype;
-use League\Flysystem\Filesystem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameUploadRequest;
 use App\Libraries\Games\Millionaire\AppManifest;
+use Illuminate\Support\Facades\Storage;
+use League\Flysystem\Config;
+use League\Flysystem\Filesystem;
+use League\Flysystem\MountManager;
+use League\Flysystem\StorageAttributes;
+use League\Flysystem\Visibility;
+use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
+
+use const JSON_THROW_ON_ERROR;
 
 class GamesAdminController extends Controller
 {
@@ -28,32 +32,42 @@ class GamesAdminController extends Controller
     public function store(GameUploadRequest $request)
     {
         $gameFile = $request->file('gameFile');
-        $zipFile = new Filesystem(new ZipArchiveAdapter(new FilesystemZipArchiveProvider($gameFile->path())));
+        $zipFile = new Filesystem(
+            new ZipArchiveAdapter(
+                new FilesystemZipArchiveProvider($gameFile->path()),
+            ),
+        );
 
-        $appManifest = new AppManifest(json_decode($zipFile->read('MILLIONAIRE/appmanifest.json')));
-
+        $appManifest = new AppManifest(json_decode(
+            $zipFile->read('MILLIONAIRE/appmanifest.json'),
+            flags: JSON_THROW_ON_ERROR,
+        ));
         $version = $appManifest->getVersion();
-        $extractPath = '/tmp/millionaire/' . $version;
 
-        $zip = new ZipArchive();
-        if ($zip->open($gameFile->path())) {
-            $zip->extractTo($extractPath);
-            $zip->close();
-        }
+        $manager = new MountManager([
+            'zip' => $zipFile,
+            'uploads' => Storage::disk()->getDriver(),
+        ], [
+            Config::OPTION_VISIBILITY => Visibility::PUBLIC,
+        ]);
 
-        $extractedFiles = Storage::disk('tmp')->allFiles('millionaire/' . $version);
+        collect($manager->listContents('zip://MILLIONAIRE/', deep: true))
+            ->filter(fn(StorageAttributes $file): bool => $file->isFile())
+            ->each(function (StorageAttributes $file) use ($manager, $version) {
+                $dest = preg_replace(
+                    '@^zip://MILLIONAIRE/@i',
+                    'uploads://games/millionaire/' . $version . '/',
+                    $file->path(),
+                );
 
-        // Copy files to game uploads disk
-        collect($extractedFiles)->each(function ($file) {
-            $path = sprintf(ContentStorageSettings::GAMES_PATH, $file);
-            Storage::disk()->put($path, Storage::disk('tmp')->get($file));
-        });
+                $manager->copy($file->path(), $dest);
+            });
 
         // update database
         $gameType = Gametype::ofGameType(
             $appManifest->getName(),
             $appManifest->getMajorVersion(),
-            $appManifest->getMinorVersion()
+            $appManifest->getMinorVersion(),
         )->first();
 
         $action = 'updated';
@@ -69,12 +83,9 @@ class GamesAdminController extends Controller
         $gameType->save();
         $gameType->touch();
 
-        // Clean up temp files
-        Storage::disk('tmp')->deleteDirectory('millionaire/' . $version);
-
         return redirect('/admin/games')->with(
             'message',
-            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.'
+            $gameType->title . ' v' . $appManifest->getVersion() . ' successfully ' . $action . '.',
         );
     }
 }

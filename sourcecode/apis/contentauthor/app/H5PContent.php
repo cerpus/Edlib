@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Libraries\H5PFileVersioner;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
 use App\Libraries\H5P\Packages\QuestionSet;
@@ -45,8 +44,9 @@ use function route;
  * @see H5PContent::noMaxScoreScope()
  * @method static Builder noMaxScore()
  * @method self replicate(array $except = null)
- * @method static self find($id, $columns = ['*'])
- * @method static self findOrFail($id, $columns = ['*'])
+ * @method static self|Builder make(array $attributes = [])
+ * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
+ * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
 class H5PContent extends Content implements VersionableObject
 {
@@ -64,12 +64,11 @@ class H5PContent extends Content implements VersionableObject
 
     protected $casts = [
         'library_id' => "int",
-        'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
 
     /**
-     * @return HasMany<H5PCollaborator>
+     * @return HasMany<H5PCollaborator, $this>
      */
     public function collaborators(): HasMany
     {
@@ -77,7 +76,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return BelongsTo<H5PLibrary, self>
+     * @return BelongsTo<H5PLibrary, $this>
      */
     public function library(): BelongsTo
     {
@@ -85,7 +84,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsUserData>
+     * @return HasMany<H5PContentsUserData, $this>
      */
     public function contentUserData(): HasMany
     {
@@ -93,7 +92,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentLibrary>
+     * @return HasMany<H5PContentLibrary, $this>
      */
     public function contentLibraries(): HasMany
     {
@@ -101,7 +100,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasOne<H5PContentsMetadata>
+     * @return HasOne<H5PContentsMetadata, $this>
      */
     public function metadata(): HasOne
     {
@@ -200,7 +199,7 @@ class H5PContent extends Content implements VersionableObject
     }
 
     /**
-     * @return HasMany<H5PContentsVideo>
+     * @return HasMany<H5PContentsVideo, $this>
      */
     public function contentVideos(): HasMany
     {
@@ -299,7 +298,7 @@ class H5PContent extends Content implements VersionableObject
     // Overrides Method from trait
     public function getPublicId(): string
     {
-        return "h5p-".$this->id;
+        return "h5p-" . $this->id;
     }
 
     public function getMaxScore(): int|null
@@ -323,21 +322,6 @@ class H5PContent extends Content implements VersionableObject
         return $authors[0]->name;
     }
 
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        $library = H5PLibrary::fromMachineName($contentType)
-            ->orderBy('major_version', 'desc')
-            ->orderBy('minor_version', 'desc')
-            ->orderBy('patch_version', 'desc')
-            ->first();
-
-        if (!$library) {
-            return null;
-        }
-
-        return new ContentTypeDataObject("H5P", $contentType, $library->title, $library->getIconUrl());
-    }
-
     public function getUrl(): string
     {
         return route('h5p.show', [$this->id]);
@@ -346,5 +330,17 @@ class H5PContent extends Content implements VersionableObject
     public function getMachineName(): string
     {
         return $this->library()->firstOrFail()->name;
+    }
+
+    protected function getIconUrl(): string
+    {
+        return $this->library()->firstOrFail()->getIconUrl();
+    }
+
+    protected function getTags(): array
+    {
+        return [
+            'h5p:' . $this->getMachineName(),
+        ];
     }
 }

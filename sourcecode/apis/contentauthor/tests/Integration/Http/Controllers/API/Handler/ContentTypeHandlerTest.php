@@ -2,46 +2,36 @@
 
 namespace Tests\Integration\Http\Controllers\API\Handler;
 
+use App\Content;
 use App\Http\Controllers\API\Handler\ContentTypeHandler;
 use App\Libraries\DataObjects\Answer;
 use App\Libraries\DataObjects\MultiChoiceQuestion;
 use App\Libraries\DataObjects\Questionset;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\H5P\Packages\MultiChoice;
-use Cerpus\VersionClient\VersionData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\Helpers\MockResourceApi;
-use Tests\Helpers\MockVersioningTrait;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
 class ContentTypeHandlerTest extends TestCase
 {
     use RefreshDatabase;
-    use MockVersioningTrait;
     use WithFaker;
-    use MockResourceApi;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->seed(TestH5PSeeder::class);
-        $versionData = new VersionData();
-        $this->setupVersion([
-            'createVersion' => $versionData->populate((object) ['id' => $this->faker->uuid]),
-        ]);
     }
 
     /**
-     * @test
-     *
      * Uses a manually created array for values to test older structures
      */
+    #[Test]
     public function createNewQuestionSetFromArray_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
-
         $handler = new ContentTypeHandler();
         $this->isInstanceOf(ContentTypeHandler::class);
 
@@ -72,9 +62,9 @@ class ContentTypeHandlerTest extends TestCase
                             'text' => $options[2],
                             'correct' => true,
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $content = $handler->storeQuestionset($data);
@@ -87,6 +77,10 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
 
         $data['sharing'] = true;
         $content = $handler->storeQuestionset($data);
@@ -99,23 +93,22 @@ class ContentTypeHandlerTest extends TestCase
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
     }
 
     /**
-     * @test
-     *
      * Uses a manually created array for values to test older structures
      */
+    #[Test]
     public function createNewQuestionSetFromArrayWithUserPublish_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
-
         $testAdapter = $this->createStub(H5PAdapterInterface::class);
-        $testAdapter->method('isUserPublishEnabled')->willReturn(true);
         $testAdapter->method('getAdapterName')->willReturn("UnitTest");
         app()->instance(H5PAdapterInterface::class, $testAdapter);
 
-
         $handler = new ContentTypeHandler();
         $this->isInstanceOf(ContentTypeHandler::class);
 
@@ -128,7 +121,6 @@ class ContentTypeHandlerTest extends TestCase
             'authId' => $authId,
             'license' => "BY",
             'sharing' => 'private',
-            'published' => 0,
             'title' => $title,
             'questions' => [
                 [
@@ -147,9 +139,9 @@ class ContentTypeHandlerTest extends TestCase
                             'text' => $options[2],
                             'correct' => true,
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $content = $handler->storeQuestionset($data);
@@ -158,11 +150,14 @@ class ContentTypeHandlerTest extends TestCase
             'title' => $title,
             'user_id' => $authId,
             'is_private' => true,
-            'is_published' => 0,
             'max_score' => null,
             'bulk_calculated' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
 
         $data['sharing'] = true;
         $content = $handler->storeQuestionset($data);
@@ -173,18 +168,17 @@ class ContentTypeHandlerTest extends TestCase
             'is_private' => true,
             'max_score' => null,
             'bulk_calculated' => 0,
-            'is_published' => 0,
         ]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
     }
 
-
-    /**
-     * @test
-     */
+    #[Test]
     public function createNewQuestionSetFromClient_validData_thenSuccess()
     {
-        $this->setUpResourceApi();
         $handler = new ContentTypeHandler();
 
         $authId = $this->faker->uuid;
@@ -195,7 +189,7 @@ class ContentTypeHandlerTest extends TestCase
         $questionset = Questionset::create([
             'authId' => $authId,
             'license' => "BY",
-            'title' => $title
+            'title' => $title,
         ]);
         $answers = collect([
             Answer::create([
@@ -214,7 +208,7 @@ class ContentTypeHandlerTest extends TestCase
 
         /** @var MultiChoiceQuestion $question */
         $question = MultiChoiceQuestion::create([
-            'text' => $questionText
+            'text' => $questionText,
         ]);
         $question->addAnswers($answers);
         $questionset->addQuestion($question);
@@ -223,11 +217,19 @@ class ContentTypeHandlerTest extends TestCase
         $this->assertNotEmpty($content);
         $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => true, 'max_score' => 2]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
 
         $questionset->setSharing(true);
         $content = $handler->storeQuestionset($questionset->toArray());
         $this->assertNotEmpty($content);
         $this->assertDatabaseHas('h5p_contents', ["title" => $title, 'user_id' => $authId, 'is_private' => false, 'max_score' => 2]);
         $this->assertArrayHasKey("id", $content);
+        $this->assertDatabaseHas('content_versions', [
+            'content_id' => $content->id,
+            'content_type' => Content::TYPE_H5P,
+        ]);
     }
 }

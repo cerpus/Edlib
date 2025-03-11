@@ -24,7 +24,7 @@ class H5PPackage
                     /** @var PackageInterface $package */
                     $package = H5PPackageProvider::make($library->name, $content->parameters);
                     if ($package->canExtractAnswers() === true) {
-                        return (object)[
+                        return (object) [
                             'package' => $package,
                             'answers' => $userData->getData(),
                             'context' => $userData->context,
@@ -39,7 +39,7 @@ class H5PPackage
                 $content->package->setAnswers($content->answers);
                 return [
                     'elements' => $content->package->getElements(),
-                    'context' => $content->context
+                    'context' => $content->context,
                 ];
             })->toArray();
     }

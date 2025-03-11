@@ -5,18 +5,19 @@ namespace App\Libraries\H5P\TranslationServices;
 use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use GuzzleHttp\Client;
+use SensitiveParameter;
 
 use const JSON_THROW_ON_ERROR;
 
-class NynorskrobotenAdapter implements TranslationServiceInterface
+final readonly class NynorskrobotenAdapter implements TranslationServiceInterface
 {
     public function __construct(
-        private readonly Client $client,
-        private readonly string $apiToken,
-    ) {
-    }
+        private Client $client,
+        #[SensitiveParameter]
+        private string $apiToken,
+    ) {}
 
-    public function getTranslations(H5PTranslationDataObject $data): H5PTranslationDataObject
+    public function translate(string $toLanguage, H5PTranslationDataObject $data): H5PTranslationDataObject
     {
         $response = $this->client->post('translate', [
             'json' => $this->convertSourceToObject($data),
@@ -37,6 +38,13 @@ class NynorskrobotenAdapter implements TranslationServiceInterface
             'guid' => $data->getId() ?? '',
             'fileType' => 'htmlp',
             'document' => $data->getFields(),
+        ];
+    }
+
+    public function getSupportedLanguages(): array|null
+    {
+        return [
+            'nob' => ['nno'],
         ];
     }
 }

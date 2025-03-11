@@ -2,13 +2,10 @@
 
 namespace App\Listeners\Article;
 
-use App\ACL\ArticleAccess;
 use App\Events\ArticleWasSaved;
 
 class HandlePrivacy
 {
-    use ArticleAccess;
-
     public function handle(ArticleWasSaved $event)
     {
         /** @var \App\Article $article */

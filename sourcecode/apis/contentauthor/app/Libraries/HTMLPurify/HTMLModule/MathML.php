@@ -51,14 +51,14 @@ class MathML extends HTMLPurifier_HTMLModule
             'wrs:linecolor' => 'CDATA',
             'wrs:baseline' => 'CDATA',
             'wrs:reserved' => 'CDATA',
-            'wrs:decimalseparators' => 'CDATA'
+            'wrs:decimalseparators' => 'CDATA',
             // TODO: Add xmlns:wrs
         ];
 
         $proprietary_att_dsi = [
             'xmlns:dsi' => 'Bool#http://www.dessci.com/mathml',
             'dsi:background' => 'CDATA',
-            'dsi:color' => 'CDATA'
+            'dsi:color' => 'CDATA',
         ];
 
         /*****************************************************************
@@ -77,7 +77,7 @@ class MathML extends HTMLPurifier_HTMLModule
 
         $E['DefEncAtt'] = [
             'encoding' => 'CDATA',
-            'definitionurl' => 'CDATA'
+            'definitionurl' => 'CDATA',
         ];
 
         $E['CommonAtt'] = array_merge(
@@ -95,14 +95,14 @@ class MathML extends HTMLPurifier_HTMLModule
                 'other' => 'CDATA',
             ],
             $proprietary_att_wrs,
-            $proprietary_att_dsi
+            $proprietary_att_dsi,
         );
 
         // These two sets of attrs appear commonly together.
         // For conciseness and efficiency we merge them here once:
         $CDEAtt = array_merge(
             $E['CommonAtt'],
-            $E['DefEncAtt']
+            $E['DefEncAtt'],
         );
 
         $this->addElement(
@@ -114,9 +114,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CDEAtt,
                 [
                     'type' => 'CDATA',
-                    'base' => 'CDATA'
-                ]
-            )
+                    'base' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -127,9 +127,9 @@ class MathML extends HTMLPurifier_HTMLModule
             array_merge(
                 $CDEAtt,
                 [
-                    'type' => 'CDATA'
-                ]
-            )
+                    'type' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -141,9 +141,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CDEAtt,
                 [
                     'type' => 'CDATA',
-                    'cd' => 'CDATA'
-                ]
-            )
+                    'cd' => 'CDATA',
+                ],
+            ),
         );
 
         $E['SymbolName'] = '#PCDATA';
@@ -238,7 +238,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: ' . $E['apply.content'],
             [],
-            $E['CommonAtt']
+            $E['CommonAtt'],
         );
 
         $this->addElement(
@@ -246,7 +246,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: ' . $E['apply.content'],
             [],
-            $E['CommonAtt']
+            $E['CommonAtt'],
         );
 
         $this->addElement(
@@ -256,8 +256,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $E['CommonAtt'],
-                ['src' => 'CDATA']
-            )
+                ['src' => 'CDATA'],
+            ),
         );
 
         $this->addElement(
@@ -265,7 +265,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (csymbol,(' . $E['ContExp'] . ')*)',
             [],
-            $E['CommonAtt']
+            $E['CommonAtt'],
         );
 
         $this->addElement(
@@ -274,7 +274,7 @@ class MathML extends HTMLPurifier_HTMLModule
             // The * is not in the DTD but we add it to allow empty tag
             'Custom: (#PCDATA)*',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -283,7 +283,7 @@ class MathML extends HTMLPurifier_HTMLModule
             // The * is not in the DTD but we add it to allow empty tag
             'Custom: (#PCDATA)*',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -291,7 +291,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: ((degree,(ci|semantics))|((ci|semantics),(degree)?))',
             [],
-            $E['CommonAtt']
+            $E['CommonAtt'],
         );
 
         $this->addElement(
@@ -299,7 +299,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -307,7 +307,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -315,7 +315,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -323,7 +323,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -331,7 +331,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -339,7 +339,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -347,7 +347,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -355,7 +355,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -363,7 +363,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (piece|otherwise)*',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -371,7 +371,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: ((' . $E['ContExp'] . '),(' . $E['ContExp'] . '))',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -379,7 +379,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -387,7 +387,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')*',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -395,7 +395,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ContExp'] . ')',
             [],
-            []
+            [],
         );
 
         $this->addElement(
@@ -408,10 +408,10 @@ class MathML extends HTMLPurifier_HTMLModule
                     'type' => 'CDATA',
                     'scope' => 'CDATA',
                     'nargs' => 'CDATA',
-                    'occurrence' => 'Enum#prefix,infix,function-model'
+                    'occurrence' => 'Enum#prefix,infix,function-model',
                 ],
-                $E['DefEncAtt']
-            )
+                $E['DefEncAtt'],
+            ),
         );
 
         $this->addElement(
@@ -421,8 +421,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CDEAtt,
-                ['closure' => 'CDATA']
-            )
+                ['closure' => 'CDATA'],
+            ),
         );
 
         $this->addElement(
@@ -430,7 +430,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -438,7 +438,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -446,7 +446,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -454,7 +454,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -462,7 +462,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -470,7 +470,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -478,7 +478,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -486,7 +486,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -495,7 +495,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'Custom: ((' . $E['BvarQ'] . '),(' . $E['DomainQ'] . '),(' .
             $E['ContExp'] . '))',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -503,7 +503,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -511,7 +511,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -519,7 +519,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -527,7 +527,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -535,7 +535,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -543,7 +543,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -551,7 +551,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -559,7 +559,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -567,7 +567,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -575,7 +575,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -583,7 +583,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -591,7 +591,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -599,7 +599,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -607,7 +607,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -615,7 +615,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -623,7 +623,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -631,7 +631,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -639,7 +639,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -647,7 +647,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -655,7 +655,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -663,7 +663,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -671,7 +671,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -679,7 +679,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -687,7 +687,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -695,7 +695,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -703,7 +703,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -711,7 +711,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -719,7 +719,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -727,7 +727,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -735,7 +735,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -743,7 +743,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -751,7 +751,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -759,7 +759,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -767,7 +767,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -775,7 +775,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -783,7 +783,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -791,7 +791,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -799,7 +799,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -809,8 +809,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CDEAtt,
-                ['type' => 'CDATA']
-            )
+                ['type' => 'CDATA'],
+            ),
         );
 
         $this->addElement(
@@ -818,7 +818,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -826,7 +826,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -834,7 +834,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -842,7 +842,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -850,7 +850,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -858,7 +858,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -866,7 +866,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -877,8 +877,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CDEAtt,
-                ['type' => 'CDATA']
-            )
+                ['type' => 'CDATA'],
+            ),
         );
 
         $this->addElement(
@@ -889,8 +889,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CDEAtt,
-                ['order' => 'Enum#numeric,lexicographic']
-            )
+                ['order' => 'Enum#numeric,lexicographic'],
+            ),
         );
 
         $this->addElement(
@@ -898,7 +898,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -906,7 +906,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -914,7 +914,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -922,7 +922,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -930,7 +930,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -938,7 +938,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -946,7 +946,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -954,7 +954,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -962,7 +962,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -970,7 +970,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -978,7 +978,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -986,7 +986,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -994,7 +994,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1002,7 +1002,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1010,7 +1010,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1018,7 +1018,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1026,7 +1026,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1034,7 +1034,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1042,7 +1042,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1050,7 +1050,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1058,7 +1058,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1066,7 +1066,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1074,7 +1074,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1082,7 +1082,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1090,7 +1090,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1098,7 +1098,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1106,7 +1106,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1114,7 +1114,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1122,7 +1122,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1130,7 +1130,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1138,7 +1138,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1146,7 +1146,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1154,7 +1154,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1162,7 +1162,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1170,7 +1170,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1178,7 +1178,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1186,7 +1186,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1194,7 +1194,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1202,7 +1202,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1210,7 +1210,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1218,7 +1218,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1226,7 +1226,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1234,7 +1234,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1243,7 +1243,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'Custom: ((' . $E['BvarQ'] . '),(' . $E['DomainQ'] . '),(' .
             $E['ContExp'] . ')*)',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1252,7 +1252,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'Custom: ((' . $E['BvarQ'] . '),(' . $E['DomainQ'] . '),(' .
             $E['ContExp'] . ')*)',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1261,7 +1261,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'Custom: ((' . $E['BvarQ'] . '),(' . $E['DomainQ'] . '),(' .
             $E['ContExp'] . ')*)',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1269,7 +1269,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1277,7 +1277,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1285,7 +1285,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1293,7 +1293,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1301,7 +1301,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1309,7 +1309,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1317,7 +1317,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1325,7 +1325,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1333,7 +1333,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1341,7 +1341,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1349,7 +1349,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1357,7 +1357,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1365,7 +1365,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1373,7 +1373,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1381,7 +1381,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1389,7 +1389,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1397,7 +1397,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1405,7 +1405,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1413,7 +1413,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1421,7 +1421,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $this->addElement(
@@ -1429,7 +1429,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CDEAtt
+            $CDEAtt,
         );
 
         $E['MathExpression'] = $E['ContExp'] .
@@ -1463,7 +1463,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'fontstyle' => 'Enum#normal,italic',
             'fontsize' => $E['length'],
             'color' => $E['color'],
-            'background' => 'CDATA'
+            'background' => 'CDATA',
         ];
         $E['TokenAtt'] = array_merge(
             [
@@ -1473,24 +1473,24 @@ class MathML extends HTMLPurifier_HTMLModule
                     ',sans-serif-bold-italic,monospace,initial,tailed,looped' .
                     ',stretched',
                 'mathsize' => 'CDATA',
-                'dir' => 'Enum#ltr,rtl'
+                'dir' => 'Enum#ltr,rtl',
             ],
-            $E['DeprecatedTokenAtt']
+            $E['DeprecatedTokenAtt'],
         );
         $E['CommonPresAtt'] = [
             'mathcolor' => $E['color'],
-            'mathbackground' => 'CDATA'
+            'mathbackground' => 'CDATA',
         ];
 
         // These sets of attrs appear commonly together.
         // For conciseness and efficiency we merge them here once:
         $CCPAtt = array_merge(
             $E['CommonAtt'],
-            $E['CommonPresAtt']
+            $E['CommonPresAtt'],
         );
         $CCPTAtt = array_merge(
             $CCPAtt,
-            $E['TokenAtt']
+            $E['TokenAtt'],
         );
 
         $this->addElement(
@@ -1498,7 +1498,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['token.content'] . ')*',
             [],
-            $CCPTAtt
+            $CCPTAtt,
         );
 
         $this->addElement(
@@ -1506,7 +1506,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['token.content'] . ')*',
             [],
-            $CCPTAtt
+            $CCPTAtt,
         );
 
         $this->addElement(
@@ -1543,9 +1543,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'indentshiftfirst' => 'CDATA',
                     'indentalignlast' => 'Enum#left,center,right,auto,id' .
                         ',indentalign',
-                    'indentshiftlast' => 'CDATA'
-                ]
-            )
+                    'indentshiftlast' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1553,7 +1553,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['token.content'] . ')*',
             [],
-            $CCPTAtt
+            $CCPTAtt,
         );
 
         $this->addElement(
@@ -1578,8 +1578,8 @@ class MathML extends HTMLPurifier_HTMLModule
                     'indentalignlast' => 'Enum#left,center,right,auto,id' .
                         ',indentalign',
                     'indentshiftlast' => 'CDATA',
-                ]
-            )
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1591,9 +1591,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CCPTAtt,
                 [
                     'lquote' => 'CDATA',
-                    'rquote' => 'CDATA'
-                ]
-            )
+                    'rquote' => 'CDATA',
+                ],
+            ),
         );
 
         $E['mglyph.deprecatedattributes'] = array_merge(
@@ -1604,9 +1604,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     ',sans-serif,bold-sans-serif,sans-serif-italic' .
                     ',sans-serif-bold-italic,monospace,initial,tailed,looped' .
                     ',stretched',
-                'mathsize' => 'CDATA'
+                'mathsize' => 'CDATA',
             ],
-            $E['DeprecatedTokenAtt']
+            $E['DeprecatedTokenAtt'],
         );
 
         $E['mglyph.attributes'] = array_merge(
@@ -1616,8 +1616,8 @@ class MathML extends HTMLPurifier_HTMLModule
                 'width' => $E['length'],
                 'height' => $E['length'],
                 'valign' => $E['length'],
-                'alt' => 'CDATA'
-            ]
+                'alt' => 'CDATA',
+            ],
         );
 
         $this->addElement(
@@ -1627,8 +1627,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $E['mglyph.attributes'],
-                $E['mglyph.deprecatedattributes']
-            )
+                $E['mglyph.deprecatedattributes'],
+            ),
         );
 
         $this->addElement(
@@ -1643,9 +1643,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'length' => $E['unsigned-integer'],
                     'leftoverhang' => $E['length'],
                     'rightoverhang' => $E['length'],
-                    'mslinethickness' => 'CDATA'
-                ]
-            )
+                    'mslinethickness' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1653,7 +1653,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $this->addElement(
@@ -1661,7 +1661,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Empty',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $this->addElement(
@@ -1671,8 +1671,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['edge' => 'Enum#left,right']
-            )
+                ['edge' => 'Enum#left,right'],
+            ),
         );
 
         $this->addElement(
@@ -1682,8 +1682,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['groupalign' => 'Enum#left,right,right,decimalpoint']
-            )
+                ['groupalign' => 'Enum#left,right,right,decimalpoint'],
+            ),
         );
 
         $this->addElement(
@@ -1693,8 +1693,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['dir' => 'Enum#ltr,rtl']
-            )
+                ['dir' => 'Enum#ltr,rtl'],
+            ),
         );
 
         $this->addElement(
@@ -1709,9 +1709,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'linethickness' => 'CDATA',
                     'numalign' => 'Enum#left,center,right',
                     'denomalign' => 'Enum#left,center,right',
-                    'bevelled' => 'Enum#true,false'
-                ]
-            )
+                    'bevelled' => 'Enum#true,false',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1719,7 +1719,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ImpliedMrow'] . ')',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $this->addElement(
@@ -1728,7 +1728,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'Custom: ((' . $E['MathExpression'] . '),(' .
             $E['MathExpression'] . '))',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $E['mstyle.deprecatedattributes'] = array_merge(
@@ -1740,8 +1740,8 @@ class MathML extends HTMLPurifier_HTMLModule
                 'mediummathspace' => $E['length'],
                 'thickmathspace' => $E['length'],
                 'verythickmathspace' => $E['length'],
-                'veryverythickmathspace' => $E['length']
-            ]
+                'veryverythickmathspace' => $E['length'],
+            ],
         );
 
         $E['mstyle.generalattributes'] = [
@@ -1824,7 +1824,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'superscriptshift' => $E['length'],
             'symmetric' => 'Enum#true,false',
             'valign' => $E['length'],
-            'width' => $E['length']
+            'width' => $E['length'],
         ];
 
         $E['mstyle.specificattributes'] = [
@@ -1833,7 +1833,7 @@ class MathML extends HTMLPurifier_HTMLModule
             'scriptsizemultiplier' => $E['number'],
             'scriptminsize' => $E['length'],
             'infixlinebreakstyle' => 'Enum#before,after,duplicate',
-            'decimalpoint' => $E['character']
+            'decimalpoint' => $E['character'],
         ];
 
         $this->addElement(
@@ -1845,8 +1845,8 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CCPAtt,
                 $E['mstyle.specificattributes'],
                 $E['mstyle.generalattributes'],
-                $E['mstyle.deprecatedattributes']
-            )
+                $E['mstyle.deprecatedattributes'],
+            ),
         );
 
         $this->addElement(
@@ -1854,7 +1854,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ImpliedMrow'] . ')',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $this->addElement(
@@ -1870,8 +1870,8 @@ class MathML extends HTMLPurifier_HTMLModule
                     'width' => $E['mpadded-length'],
                     'lspace' => $E['mpadded-length'],
                     'voffset' => $E['mpadded-length'],
-                ]
-            )
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1879,7 +1879,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['ImpliedMrow'] . ')',
             [],
-            $CCPAtt
+            $CCPAtt,
         );
 
         $this->addElement(
@@ -1892,9 +1892,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 [
                     'open' => 'CDATA',
                     'close' => 'CDATA',
-                    'separators' => 'CDATA'
-                ]
-            )
+                    'separators' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1904,8 +1904,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['notation' => 'CDATA' ]
-            )
+                ['notation' => 'CDATA' ],
+            ),
         );
 
         $this->addElement(
@@ -1916,8 +1916,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['subscriptshift' => $E['length']]
-            )
+                ['subscriptshift' => $E['length']],
+            ),
         );
 
         $this->addElement(
@@ -1928,16 +1928,16 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['superscriptshift' => $E['length']]
-            )
+                ['superscriptshift' => $E['length']],
+            ),
         );
 
         $E['msubsup.attributes'] = array_merge(
             $CCPAtt,
             [
                 'subscriptshift' => $E['length'],
-                'superscriptshift' => $E['length']
-            ]
+                'superscriptshift' => $E['length'],
+            ],
         );
 
         $this->addElement(
@@ -1947,7 +1947,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $E['MathExpression'] . '),(' .
             $E['MathExpression'] . '))',
             [],
-            $E['msubsup.attributes']
+            $E['msubsup.attributes'],
         );
 
         $this->addElement(
@@ -1960,9 +1960,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CCPAtt,
                 [
                     'accentunder' => 'Enum#true,false',
-                    'align' => 'Enum#left,right,center'
-                ]
-            )
+                    'align' => 'Enum#left,right,center',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1975,9 +1975,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CCPAtt,
                 [
                     'accent' => 'Enum#true,false',
-                    'align' => 'Enum#left,right,center'
-                ]
-            )
+                    'align' => 'Enum#left,right,center',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -1992,9 +1992,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 [
                     'accent' => 'Enum#true,false',
                     'accentunder' => 'Enum#true,false',
-                    'align' => 'Enum#left,right,center'
-                ]
-            )
+                    'align' => 'Enum#left,right,center',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -2004,7 +2004,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $E['MultiscriptExpression'] . ')*,(mprescripts,(' .
             $E['MultiscriptExpression'] . ')*)?)',
             [],
-            $E['msubsup.attributes']
+            $E['msubsup.attributes'],
         );
 
         $this->addElement(
@@ -2032,9 +2032,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'equalcolumns' => 'Enum#true,false',
                     'displaystyle' => 'Enum#true,false',
                     'side' => 'Enum#left,right,leftoverlap,rightoverlap',
-                    'minlabelspacing' => $E['length']
-                ]
-            )
+                    'minlabelspacing' => $E['length'],
+                ],
+            ),
         );
 
         $E['mtr.attributes'] = array_merge(
@@ -2042,8 +2042,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [
                 'rowalign' => 'Enum#top,bottom,center,baseline,axis',
                 'columnalign' => 'CDATA',
-                'groupalign' => 'CDATA'
-            ]
+                'groupalign' => 'CDATA',
+            ],
         );
 
         $this->addElement(
@@ -2051,7 +2051,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['TableCellExpression'] . ')+',
             [],
-            $E['mtr.attributes']
+            $E['mtr.attributes'],
         );
 
         $this->addElement(
@@ -2059,7 +2059,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['TableCellExpression'] . ')+',
             [],
-            $E['mtr.attributes']
+            $E['mtr.attributes'],
         );
 
         $this->addElement(
@@ -2074,9 +2074,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'columnspan' => $E['positive-integer'],
                     'rowalign' => 'Enum#top,bottom,center,baseline,axis',
                     'columnalign' => $E['columnalignstyle'],
-                    'groupalign' => 'CDATA'
-                ]
-            )
+                    'groupalign' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -2090,17 +2090,17 @@ class MathML extends HTMLPurifier_HTMLModule
                     'align' => 'CDATA',
                     'stackalign' => 'Enum#left,center,right,decimalpoint',
                     'charalign' => 'Enum#left,center,right',
-                    'charspacing' => 'CDATA'
-                ]
-            )
+                    'charspacing' => 'CDATA',
+                ],
+            ),
         );
 
         $E['msgroup.attributes'] = array_merge(
             $CCPAtt,
             [
                 'position' => $E['integer'],
-                'shift' => $E['integer']
-            ]
+                'shift' => $E['integer'],
+            ],
         );
 
         $this->addElement(
@@ -2111,8 +2111,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $E['msgroup.attributes'],
-                ['longdivstyle' => 'CDATA']
-            )
+                ['longdivstyle' => 'CDATA'],
+            ),
         );
 
         $this->addElement(
@@ -2120,7 +2120,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: (' . $E['MstackExpression'] . ')*',
             [],
-            $E['msgroup.attributes']
+            $E['msgroup.attributes'],
         );
 
         $this->addElement(
@@ -2130,8 +2130,8 @@ class MathML extends HTMLPurifier_HTMLModule
             [],
             array_merge(
                 $CCPAtt,
-                ['position' => $E['integer']]
-            )
+                ['position' => $E['integer']],
+            ),
         );
 
         $this->addElement(
@@ -2145,9 +2145,9 @@ class MathML extends HTMLPurifier_HTMLModule
                     'position' => $E['integer'],
                     'location' => 'Enum#w,nw,n,ne,e,se,s,sw',
                     'crossout' => 'CDATA',
-                    'scriptsizemultiplier' => $E['number']
-                ]
-            )
+                    'scriptsizemultiplier' => $E['number'],
+                ],
+            ),
         );
 
         $this->addElement(
@@ -2159,9 +2159,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CCPAtt,
                 [
                     'location' => 'Enum#w,nw,n,ne,e,se,s,sw',
-                    'crossout' => 'CDATA'
-                ]
-            )
+                    'crossout' => 'CDATA',
+                ],
+            ),
         );
 
         $this->addElement(
@@ -2174,13 +2174,13 @@ class MathML extends HTMLPurifier_HTMLModule
                 [
                     'actiontype*' => 'CDATA',
                     'selection' => $E['positive-integer'],
-                ]
-            )
+                ],
+            ),
         );
 
         $E['math.deprecatedattributes'] = [
             'mode' => 'CDATA',
-            'macros' => 'CDATA'
+            'macros' => 'CDATA',
         ];
 
         $this->addElement(
@@ -2208,18 +2208,18 @@ class MathML extends HTMLPurifier_HTMLModule
                 $E['math.deprecatedattributes'],
                 $E['CommonPresAtt'],
                 $E['mstyle.specificattributes'],
-                $E['mstyle.generalattributes']
-            )
+                $E['mstyle.generalattributes'],
+            ),
         );
 
         $E['annotation.attributes'] = array_merge(
             $E['CommonAtt'],
             [
                 'cd' => 'CDATA',
-                'name' => 'CDATA'
+                'name' => 'CDATA',
             ],
             $E['DefEncAtt'],
-            ['src' => 'CDATA']
+            ['src' => 'CDATA'],
         );
 
         $this->addElement(
@@ -2228,7 +2228,7 @@ class MathML extends HTMLPurifier_HTMLModule
             // The * is not in the DTD but we add it to allow empty tag
             'Custom: (#PCDATA)*',
             [],
-            $E['annotation.attributes']
+            $E['annotation.attributes'],
         );
 
         $this->addElement(
@@ -2236,7 +2236,7 @@ class MathML extends HTMLPurifier_HTMLModule
             $default_display,
             'Custom: ((' . $E['MathExpression'] . ')*)',
             [],
-            $E['annotation.attributes']
+            $E['annotation.attributes'],
         );
 
         $this->addElement(
@@ -2249,9 +2249,9 @@ class MathML extends HTMLPurifier_HTMLModule
                 $CDEAtt,
                 [
                     'cd' => 'CDATA',
-                    'name' => 'CDATA'
-                ]
-            )
+                    'name' => 'CDATA',
+                ],
+            ),
         );
     }
 }

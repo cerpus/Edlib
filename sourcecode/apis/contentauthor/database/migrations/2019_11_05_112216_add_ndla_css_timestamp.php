@@ -1,35 +1,27 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use App\H5POption;
+declare(strict_types=1);
 
-class AddNdlaCssTimestamp extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+use Carbon\Carbon;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration {
+    public function up(): void
     {
-        H5POption::updateOrCreate([
-            'option_name' => H5POption::NDLA_CUSTOM_CSS_TIMESTAMP
-        ], [
-            'option_value' => \Carbon\Carbon::now()->toAtomString(),
-            'autoload' => 0,
+        DB::table('h5p_options')->insert([
+            [
+                'option_name' => 'NDLA_CUSTOM_CSS_TIMESTAMP',
+                'option_value' => Carbon::now()->toAtomString(),
+                'autoload' => 0,
+            ],
         ]);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
-        $ndlaCustomCssTimestamp = H5POption::where('option_name', H5POption::NDLA_CUSTOM_CSS_TIMESTAMP)->first();
-        if ($ndlaCustomCssTimestamp) {
-            $ndlaCustomCssTimestamp->delete();
-        }
+        DB::table('h5p_options')
+            ->where('option_name', 'NDLA_CUSTOM_CSS_TIMESTAMP')
+            ->delete();
     }
-}
+};

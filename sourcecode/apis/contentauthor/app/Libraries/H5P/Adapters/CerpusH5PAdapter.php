@@ -4,24 +4,38 @@ namespace App\Libraries\H5P\Adapters;
 
 use App\Libraries\H5P\Dataobjects\H5PAlterParametersSettingsDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
+use App\Libraries\H5P\Interfaces\H5PAudioInterface;
+use App\Libraries\H5P\Interfaces\H5PImageInterface;
+use App\Libraries\H5P\Interfaces\H5PVideoInterface;
 use App\Libraries\H5P\Traits\H5PCommonAdapterTrait;
 use Cerpus\QuestionBankClient\QuestionBankClient;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
+
+use function array_unique;
+use function json_decode;
+
+use const JSON_THROW_ON_ERROR;
 
 class CerpusH5PAdapter implements H5PAdapterInterface
 {
     use H5PCommonAdapterTrait;
 
-    /**
-     * Alter parameters before added to the H5PIntegrationObject
-     *
-     * @param string $parameters
-     * @return string
-     */
-    public function alterParameters($parameters, H5PAlterParametersSettingsDataObject $settings = null)
-    {
-        return QuestionBankClient::convertMathToInlineDisplay($parameters);
+    public function __construct(
+        private readonly H5PAudioInterface $audioAdapter,
+        private readonly H5PImageInterface $imageAdapter,
+        private readonly H5PVideoInterface $videoAdapter,
+    ) {}
+
+    public function alterParameters(
+        string $parameters,
+        H5PAlterParametersSettingsDataObject $settings = new H5PAlterParametersSettingsDataObject(),
+    ): string {
+        if ($parameters === '') {
+            return '';
+        }
+
+        $parameters = QuestionBankClient::convertMathToInlineDisplay($parameters);
+
+        return $this->traverseParameters(collect(json_decode($parameters, flags: JSON_THROW_ON_ERROR)), $settings)->toJson();
     }
 
     public function getEditorExtraTags($field): array
@@ -29,49 +43,54 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return self::getCoreExtraTags();
     }
 
-
     public function getEditorCss(): array
     {
-        return [];
+        return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
+            ...$this->imageAdapter->getEditorCss(),
+            ...$this->videoAdapter->getEditorCss(),
+        ]);
     }
-
 
     public function getEditorSettings(): array
     {
         return [];
     }
 
-
     public function getCustomEditorScripts(): array
     {
-        return ['/js/videos/streamps.js', '/js/videos/brightcove.js'];
+        return array_unique([
+            ...$this->audioAdapter->getEditorScripts(),
+            ...$this->imageAdapter->getEditorScripts(),
+            ...$this->videoAdapter->getEditorScripts(),
+        ]);
     }
-
 
     public function getCustomViewScripts(): array
     {
         $scripts = [];
-        $libraries = $this->config->h5pCore->loadContentDependencies($this->config->id, "preloaded");
-        if ($this->hasVideoLibrary($libraries, 1, 3) === true) {
-            $scripts[] = '/js/videos/streamps.js';
-        }
-
-        if ($this->hasCerpusVideoLibrary($libraries, 1, 0) === true) {
-            $scripts[] = '/js/videos/brightcove.js';
-        }
 
         if (config('h5p.include-mathjax') === true) {
             $scripts[] = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG';
         }
-        return $scripts;
+
+        return array_unique([
+            ...$scripts,
+            ...$this->audioAdapter->getViewScripts(),
+            ...$this->imageAdapter->getViewScripts(),
+            ...$this->videoAdapter->getViewScripts(),
+        ]);
     }
 
 
     public function getCustomViewCss(): array
     {
-        return [];
+        return array_unique([
+            ...$this->audioAdapter->getViewCss(),
+            ...$this->imageAdapter->getViewCss(),
+            ...$this->videoAdapter->getViewCss(),
+        ]);
     }
-
 
     public function alterLibrarySemantics(&$semantics, $machineName, $majorVersion, $minorVersion)
     {
@@ -98,9 +117,7 @@ class CerpusH5PAdapter implements H5PAdapterInterface
     /**
      * @return void
      */
-    public function overrideAdapterSettings()
-    {
-    }
+    public function overrideAdapterSettings() {}
 
     /**
      * @return bool
@@ -110,56 +127,14 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return false; // Shared by default. Corresponds to is_private = false
     }
 
-    public function emptyArticleImportLog($sessionKey = 'message'): void
-    {
-        DB::table('ndla_article_import_statuses')->truncate();
-
-        session()->flash($sessionKey, 'Article Import Log Emptied.');
-    }
-
-    public function resetNdlaIdTracking($sessionKey = 'message'): void
-    {
-        DB::table('ndla_id_mappers')->truncate();
-
-        session()->flash($sessionKey, 'NDLA ID tracking reset.');
-    }
-
-    public function showArticleImportExportFunctionality(): bool
-    {
-        return true;
-    }
-
-    public function runPresaveCommand(): void
-    {
-        Artisan::call('h5p:addPresave');
-
-        session()->flash('message', 'Presave command run.');
-    }
-
     public function useEmbedLink(): int
     {
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
-    public function isUserPublishEnabled(): bool
-    {
-        $isEnabled = config("feature.enableUserPublish");
-        return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
-    }
-
-    public function getExternalProviders(): array
-    {
-        return [];
-    }
-
     public function useMaxScore(): bool
     {
         return true;
-    }
-
-    public function autoTranslateTo(): ?string
-    {
-        return null;
     }
 
     public function addTrackingScripts(): ?string
@@ -174,12 +149,20 @@ class CerpusH5PAdapter implements H5PAdapterInterface
 
     public function getConfigJs(): array
     {
-        return [];
+        return array_unique([
+            ...$this->audioAdapter->getConfigJs(),
+            ...$this->imageAdapter->getConfigJs(),
+            ...$this->videoAdapter->getConfigJs(),
+        ]);
     }
 
     public function getCustomEditorStyles(): array
     {
-        return [];
+        return array_unique([
+            ...$this->audioAdapter->getEditorCss(),
+            ...$this->imageAdapter->getEditorCss(),
+            ...$this->videoAdapter->getEditorCss(),
+        ]);
     }
 
     public function getAdapterName(): string

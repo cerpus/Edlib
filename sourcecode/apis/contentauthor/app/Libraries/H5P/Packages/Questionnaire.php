@@ -12,7 +12,7 @@ class Questionnaire extends H5PBase
 
     public function getElements(): array
     {
-        $questions = collect((array)$this->packageStructure->questionnaireElements);
+        $questions = collect((array) $this->packageStructure->questionnaireElements);
         if ($questions->isEmpty()) {
             return [];
         }

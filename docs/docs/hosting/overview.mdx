@@ -1,0 +1,48 @@
+---
+sidebar_position: 1
+---
+
+# Hosting overview
+
+## Requirements
+
+All services must have [cron](https://laravel.com/docs/11.x/scheduling) and [message queue
+handlers](https://laravel.com/docs/11.x/queues) set up.
+
+### Hub
+
+* PHP 8.3
+* Meilisearch
+* PostgreSQL
+* SMTP server for outgoing mail
+* Redis
+* S3 file hosting (optional)
+
+### Content Author
+
+* PHP 8.3
+* MariaDB (MySQL will potentially work, but is untested)
+* Redis
+* S3 file hosting (optional)
+
+## Hosting with Docker Compose
+
+:::warning
+
+The `docker-compose.yml` file in the Edlib repository is for development **only**, and not suitable for hosting a public
+Edlib instance.
+
+:::
+
+A template of a Docker Compose setup suitable for production is available at
+<https://github.com/cerpus/edlib-docker-example>. This setup automates some of the first-time setup to make it easy to
+get started.
+
+It is recommended to have some experience with Docker Compose before using this.
+
+## Traditional PHP hosting
+
+Edlib is comprised of two [Laravel](https://laravel.com/) services, and can run anywhere Laravel applications run. Note
+that the services have different for PHP versions.
+
+For most purposes, [the Laravel documentation on deployment](https://laravel.com/docs/11.x/deployment) applies to Edlib.

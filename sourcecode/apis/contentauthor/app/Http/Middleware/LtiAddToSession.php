@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiAddToSession
 {
-    public function __construct(private Lti $lti)
-    {
-    }
+    public function __construct(private Lti $lti) {}
 
     /**
      * @param (Closure(Request): Response) $next
@@ -33,6 +31,7 @@ final readonly class LtiAddToSession
                 Session::put('authId', $ltiRequest->getUserId());
                 Session::put('name', $ltiRequest->getUserName());
                 Session::put('email', $ltiRequest->getUserEmail() ?? 'noemail');
+                Session::put('isAdmin', $ltiRequest->isAdministrator());
             }
 
             $allowedLicenses = implode(',', [

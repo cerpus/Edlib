@@ -1,72 +1,32 @@
 version: 2
+
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "monthly"
+      interval: monthly
+    labels: [dependencies]
 
-# -----------------------------------------------------
-# ------------ sourcecode/apis repos ------------------
-# -----------------------------------------------------
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/apis/auth"
+  - package-ecosystem: composer
+    directory: /sourcecode/hub
     schedule:
-      interval: "monthly"
-  - package-ecosystem: "composer"
-    directory: "/sourcecode/apis/common"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "composer"
-    directory: "/sourcecode/apis/contentauthor"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/apis/lti"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/apis/resources"
-    schedule:
-      interval: "monthly"
-    ignore:
-      - dependency-name: "@elastic/elasticsearch" # newer versions of this client doesn't support elasticsearch in AWS
+      interval: weekly
+    labels: [dependencies]
 
-# -----------------------------------------------------
-# ---------- sourcecode/npm repos ---------------------
-# -----------------------------------------------------
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/npm/components"
+  - package-ecosystem: npm
+    directory: /sourcecode/hub
     schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/npm/nodeUtils"
-    schedule:
-      interval: "monthly"
+      interval: weekly
+    labels: [dependencies]
 
-# -----------------------------------------------------
-# ---------- sourcecode/proxies repos -----------------
-# -----------------------------------------------------
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/admin"
+  - package-ecosystem: composer
+    directory: /sourcecode/apis/contentauthor
     schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/auth"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/lti"
-    schedule:
-      interval: "monthly"
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/proxies/resource"
-    schedule:
-      interval: "monthly"
+      interval: weekly
+    labels: [dependencies]
 
-# -----------------------------------------------------
-# ----------------- www repos -------------------------
-# -----------------------------------------------------
-  - package-ecosystem: "npm"
-    directory: "/sourcecode/www"
+  - package-ecosystem: npm
+    directory: /sourcecode/apis/contentauthor
     schedule:
-      interval: "monthly"
+      interval: weekly
+    labels: [dependencies]

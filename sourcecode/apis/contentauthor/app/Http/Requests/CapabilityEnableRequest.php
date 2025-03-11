@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
-class CapabilityEnableRequest extends Request
+class CapabilityEnableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +25,7 @@ class CapabilityEnableRequest extends Request
     public function rules()
     {
         return [
-            'enabled' => 'required|numeric|in:0,1'
+            'enabled' => 'required|numeric|in:0,1',
         ];
     }
 

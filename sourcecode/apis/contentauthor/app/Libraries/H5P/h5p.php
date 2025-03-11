@@ -18,8 +18,7 @@ class h5p
         private H5PCore $core,
         private H5PStorage $storage,
         private H5pEditor $editor,
-    ) {
-    }
+    ) {}
 
     public function createView(ConfigInterface $config): H5PView
     {
@@ -44,7 +43,7 @@ class h5p
         } else {
             $content = [
                 'disable' => H5PCore::DISABLE_NONE,
-                'user_id' => $userId
+                'user_id' => $userId,
             ];
         }
 
@@ -65,7 +64,6 @@ class h5p
         $content['title'] = $request->get("title");
         $content['params'] = $request->get('parameters');
         $content['is_draft'] = $request->input('isDraft');
-        $content['is_published'] = Content::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $content['language_iso_639_3'] = $request->get('language_iso_639_3');
         $content['license'] = $request->get('license');
 

@@ -7,21 +7,23 @@ use App\Libraries\H5P\Dataobjects\H5PTranslationDataObject;
 use App\Libraries\H5P\Interfaces\TranslationServiceInterface;
 use Illuminate\Http\JsonResponse;
 
-final class TranslationController
+final readonly class TranslationController
 {
     public function __construct(
-        private readonly TranslationServiceInterface $translationService,
-    ) {
-    }
+        private TranslationServiceInterface $translator,
+    ) {}
 
     public function __invoke(ApiTranslationRequest $request): JsonResponse
     {
         $fieldsToTranslate = collect($request->validated('fields'))
-            ->mapWithKeys(fn ($item) => [$item['path'] => $item['value']])
+            ->mapWithKeys(fn($item) => [$item['path'] => $item['value']])
             ->toArray();
 
-        $input = new H5PTranslationDataObject($fieldsToTranslate);
-        $translated = $this->translationService->getTranslations($input);
+        $from = $request->validated('from_lang');
+        $to = $request->validated('to_lang');
+
+        $input = new H5PTranslationDataObject($fieldsToTranslate, $from);
+        $translated = $this->translator->translate($to, $input);
 
         return response()->json($translated);
     }

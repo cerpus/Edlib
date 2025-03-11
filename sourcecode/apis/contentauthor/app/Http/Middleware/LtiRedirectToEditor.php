@@ -14,9 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final readonly class LtiRedirectToEditor
 {
-    public function __construct(private Lti $lti)
-    {
-    }
+    public function __construct(private Lti $lti) {}
 
     public function handle(Request $request, Closure $next): Response
     {

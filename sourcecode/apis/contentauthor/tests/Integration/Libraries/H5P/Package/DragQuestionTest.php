@@ -5,6 +5,7 @@ namespace Tests\Integration\Libraries\H5P\Package;
 use App\H5PLibrary;
 use App\Libraries\H5P\Packages\DragQuestion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Seeds\TestH5PSeeder;
 use Tests\TestCase;
 
@@ -12,9 +13,7 @@ class DragQuestionTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function alterSemantics()
     {
         $this->seed(TestH5PSeeder::class);
@@ -30,9 +29,9 @@ class DragQuestionTest extends TestCase
         $expectedSemantics = json_decode($library->semantics);
         $fullScreenObject = $expectedSemantics[5]->fields[8];
         $fullScreenObject->widget = 'showWhen';
-        $fullScreenObject->showWhen = (object)[
+        $fullScreenObject->showWhen = (object) [
             'detach' => true,
-            'rules' => []
+            'rules' => [],
         ];
         $expectedSemantics[5]->fields[8] = $fullScreenObject;
 

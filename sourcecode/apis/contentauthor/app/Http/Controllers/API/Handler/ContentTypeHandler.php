@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\Handler;
 
-use App\Content;
 use App\H5PContent;
 use App\Http\Requests\H5PStorageRequest;
 use App\Libraries\H5P\Helper\H5PPackageProvider;
@@ -35,7 +34,6 @@ class ContentTypeHandler
             'share' => $questionsetData['sharing'] === true || $questionsetData['sharing'] === "share" ? "share" : "private",
             'license' => $questionsetData['license'],
             'max_score' => array_key_exists('score', $questionsetData) ? $questionsetData['score'] : null,
-            'isPublished' => Content::isUserPublishEnabled() && array_key_exists('published', $questionsetData) ? $questionsetData['published'] : 1,
         ];
 
         $request = new H5PStorageRequest();
@@ -54,7 +52,7 @@ class ContentTypeHandler
                 'semantics' => $semantics,
                 'library' => $contentType->getLibraryWithVersion(),
                 'subContentId' => Uuid::uuid4(),
-                'metadata' => []
+                'metadata' => [],
             ];
         });
     }

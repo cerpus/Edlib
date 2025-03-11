@@ -10,12 +10,15 @@ class AnswerList extends Component {
         answers: PropTypes.array,
         collectAnswers: PropTypes.func,
         showAddAnswer: PropTypes.bool,
+        className: PropTypes.string,
+        editorConfig: PropTypes.object,
     };
 
     static defaultProps = {
         answers: [],
         showAddAnswer: true,
         collectAnswers: null,
+        className: '',
     };
 
     constructor(props) {
@@ -65,7 +68,9 @@ class AnswerList extends Component {
                 showAddAnswer={this.props.showAddAnswer}
                 addAnswer={this.props.collectAnswers ? this.handleAddAnswer : null}
                 addAnswerLabel={<FormattedMessage id="ANSWERLIST.ADD_BUTTON" />}
-                deleteAnswer={this.props.collectAnswers ? this.handleDeleteAnswer : null}
+                deleteAnswer={this.props.collectAnswers && this.props.answers.length > 1 ? this.handleDeleteAnswer : null}
+                className={this.props.className}
+                editorConfig={this.props.editorConfig}
             />
         );
     }

@@ -13,14 +13,12 @@
                             <th>Title</th>
                             <th>Library</th>
                             <th>Created</th>
-                            <th>Owner</th>
                         @forelse($resources as $resource)
                             <tr>
                                 <td>{{$resource->id}}</td>
                                 <td>{{$resource->title}}</td>
                                 <td>{{sprintf('%s (%s %d.%d.%d)', $resource->library->title, $resource->library->name, $resource->library->major_version, $resource->library->minor_version, $resource->library->patch_version)}}</td>
                                 <td>{{$resource->created_at}}</td>
-                                <td>{{$resource->ownerName}}</td>
                             </tr>
                         @empty
                             No H5Ps found

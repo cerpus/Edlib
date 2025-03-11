@@ -60,19 +60,39 @@ function installLibrary(event) {
     const url = element.data('ajax-url')
     const action = element.data('ajax-action');
     const library = element.data('name');
+    const activetab = element.data('ajax-activetab');
+    const errorMessage = element.data('error-message');
 
-    element.prop('disabled', true);
-    sendRequest(element, url, {
-        action: action,
-        machineName: library,
-    }, function (response) {
-        if (response.success === true) {
-            alert('Library installed');
-            window.location.reload();
-        } else {
-            console.log(response);
-        }
-    });
+    if (errorMessage) {
+        alert(library + '\r\n' + errorMessage);
+    } else {
+        element.prop('disabled', true);
+        sendRequest(element, url, {
+            action: action,
+            machineName: library,
+        }, function (response) {
+            if (response.success === true) {
+                alert('Library installed');
+                if (typeof activetab === 'string') {
+                    const params = new URLSearchParams(location.search);
+                    params.set('activetab', activetab);
+                    window.location.search = params.toString();
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                console.log(response);
+                let message = '';
+                if (response.message) {
+                    message = response.message;
+                }
+                if (response.details) {
+                    message += '\r\n' + response.details.join('\r\n');
+                }
+                alert('Library installation failed' + '\r\n' + message);
+            }
+        });
+    }
 }
 
 function rebuildLibrary(event) {
@@ -80,6 +100,7 @@ function rebuildLibrary(event) {
     const url = element.data('ajax-url')
     const action = element.data('ajax-action');
     const libraryId = element.data('libraryid');
+    const activetab = element.data('ajax-activetab');
 
     element.prop('disabled', true);
     sendRequest(element, url, {
@@ -88,7 +109,13 @@ function rebuildLibrary(event) {
     }, function (response) {
         if (response.success === true) {
             alert(response.message);
-            window.location.reload();
+            if (typeof activetab === 'string') {
+                const params = new URLSearchParams(location.search);
+                params.set('activetab', activetab);
+                window.location.search = params.toString();
+            } else {
+                window.location.reload();
+            }
         } else {
             console.log(response);
         }
@@ -100,10 +127,28 @@ function deleteLibrary(event) {
 
     const element = $(event.currentTarget);
     const url = element.data('ajax-url')
+    const activetab = element.data('ajax-activetab');
 
     element.prop('disabled', true);
-    sendRequest(element, { method: 'DELETE', url }, null, function () {
-        alert('Library deleted');
-        window.location.reload();
-    });
+    sendRequest(
+        element,
+        {
+            method: 'DELETE',
+            url,
+        },
+        null,
+        () => {
+            alert('Library deleted');
+            if (typeof activetab === 'string') {
+                const params = new URLSearchParams(location.search);
+                params.set('activetab', activetab);
+                window.location.search = params.toString();
+            } else {
+                window.location.reload();
+            }
+        },
+        (err) => {
+            alert(err.responseJSON.message ?? 'Library delete failed');
+        }
+    );
 }

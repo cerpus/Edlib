@@ -2,7 +2,6 @@
 
 namespace App\Libraries\H5P;
 
-use App\Events\ResourceSaved;
 use App\Exceptions\InvalidH5pPackageException;
 use App\H5PContent;
 use App\H5PContentsMetadata;
@@ -29,8 +28,7 @@ class H5PLibraryAdmin
         private H5PFrameworkInterface $framework,
         private H5PStorage $storage,
         private readonly LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * Handles uploading of an .h5p file.
@@ -100,11 +98,11 @@ class H5PLibraryAdmin
                     }
 
                     if (isset($params->metadata)) {
-                        $metadata = \H5PMetadata::toDBArray((array)$params->metadata);
+                        $metadata = \H5PMetadata::toDBArray((array) $params->metadata);
                         unset($metadata['title']);
                         /** @var H5PContentsMetadata $H5PContentMetadata */
                         $H5PContentMetadata = H5PContentsMetadata::firstOrNew([
-                            'content_id' => $id
+                            'content_id' => $id,
                         ]);
                         $H5PContentMetadata->fill($metadata);
                         $H5PContentMetadata->save();
@@ -173,7 +171,6 @@ class H5PLibraryAdmin
                     if ($content->save() !== true) {
                         throw new \Exception("Setting of score failed");
                     }
-                    event(new ResourceSaved($content->getEdlibDataObject()));
                 });
         }
 
@@ -199,12 +196,12 @@ class H5PLibraryAdmin
             $out->params = $contents
                 ->map(function ($content) {
                     return [
-                            'id' => $content->id,
-                            'library' => $content->library->getLibraryString(),
-                            'libraryName' => $content->library->name,
-                            'libraryId' => $content->library_id,
-                            'params' => $content->parameters,
-                        ];
+                        'id' => $content->id,
+                        'library' => $content->library->getLibraryString(),
+                        'libraryName' => $content->library->name,
+                        'libraryId' => $content->library_id,
+                        'params' => $content->parameters,
+                    ];
                 })
                 ->toArray();
         }
@@ -230,12 +227,12 @@ class H5PLibraryAdmin
             throw new \Exception('Error, invalid library!');
         }
 
-        $library = (object)[
+        $library = (object) [
             'name' => $library_parts[1],
-            'version' => (object)[
+            'version' => (object) [
                 'major' => $library_parts[2],
-                'minor' => $library_parts[3]
-            ]
+                'minor' => $library_parts[3],
+            ],
         ];
         $library->semantics = $core->loadLibrarySemantics($library->name, $library->version->major, $library->version->minor);
         if ($library->semantics === null) {

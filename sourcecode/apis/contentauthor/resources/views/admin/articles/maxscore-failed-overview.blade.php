@@ -12,13 +12,11 @@
                             <th>ID</th>
                             <th>Title</th>
                             <th>Created</th>
-                            <th>Owner</th>
                         @forelse($resources as $resource)
                             <tr>
                                 <td>{{$resource->id}}</td>
                                 <td>{{$resource->title}}</td>
                                 <td>{{$resource->created_at}}</td>
-                                <td>{{$resource->ownerName}}</td>
                             </tr>
                         @empty
                             No articless found

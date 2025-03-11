@@ -8,8 +8,6 @@ use Illuminate\Support\HtmlString;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
-
     private static Mix $fakeMix;
 
     protected function setUp(): void
@@ -18,9 +16,6 @@ abstract class TestCase extends BaseTestCase
 
         // Enable testing without building manifests
         $this->instance(Mix::class, self::getFakeMix());
-
-        $this->app['config']['auth.edlib-jwt-pubkey'] =
-            file_get_contents(__DIR__ . '/jwt-test.key.pub');
     }
 
     /**
@@ -29,10 +24,10 @@ abstract class TestCase extends BaseTestCase
      */
     private static function getFakeMix(): Mix
     {
-        return self::$fakeMix ??= new class () extends Mix {
+        return self::$fakeMix ??= new class extends Mix {
             public function __invoke($path, $manifestDirectory = ''): HtmlString
             {
-                $path = rtrim($manifestDirectory, '/').'/'.ltrim($path, '/');
+                $path = rtrim($manifestDirectory, '/') . '/' . ltrim($path, '/');
 
                 return new HtmlString($path);
             }

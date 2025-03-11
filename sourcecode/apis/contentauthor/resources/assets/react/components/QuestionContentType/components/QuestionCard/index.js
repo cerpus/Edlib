@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import CardLayout from './QuestionCardLayout';
+import { Card } from '../utils';
 
 class CardContainer extends Component {
     static propTypes = {
         cardNumber: PropTypes.number.isRequired,
         onDeleteCard: PropTypes.func,
         collectData: PropTypes.func,
-        card: PropTypes.object,
+        card: PropTypes.instanceOf(Card),
         onAddToSet: PropTypes.func,
         isDraggable: PropTypes.bool,
         showAddAnswerButton: PropTypes.bool,
+        questionEditorConfig: PropTypes.object,
+        answerEditorConfig: PropTypes.object,
     };
 
     static defaultProps = {
@@ -60,6 +63,8 @@ class CardContainer extends Component {
                 isDraggable={this.props.isDraggable}
                 card={this.props.card}
                 showAddAnswerButton={this.props.showAddAnswerButton}
+                questionEditorConfig={this.props.questionEditorConfig}
+                answerEditorConfig={this.props.answerEditorConfig}
             />
         );
     }

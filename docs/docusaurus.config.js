@@ -17,7 +17,7 @@ module.exports = {
       id: 'cookie_consent',
       content:
         'This website uses cookies to ensure you get the best experience on our website. <a target="_blank" rel="noopener noreferrer" href="https://www.cookiesandyou.com/"> Learn more</a>',
-      backgroundColor: '#25c2a0',
+      backgroundColor: '#72aa8f',
       textColor: '#ffffff',
       isCloseable: true,
     },
@@ -58,6 +58,7 @@ module.exports = {
       logo: {
         alt: 'Edlib Logo',
         src: 'img/edlib-logo.png',
+        srcDark: 'img/edlib-logo_dark.png',
       },
       items: [
         {to: '/docs/intro', label: 'Documentation', position: 'left'},
@@ -65,6 +66,7 @@ module.exports = {
         {to: '/docs/support/faq', label: 'Support', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
         {to: '/contact-us', label: 'Contact Us', position: 'left'},
+        {to: '/pricing', label: 'Pricing', position: 'left'},
         {
           href: 'https://github.com/cerpus/Edlib',
           label: 'GitHub',
@@ -107,14 +109,6 @@ module.exports = {
               label: 'Contributing',
               to: '/docs/developers/contributing',
             },
-            {
-              label: 'API documentation',
-              to: '/docs/developers/api-documentation/introduction',
-            },
-            {
-              label: 'Plugins',
-              to: '/docs/developers/plugins',
-            },
           ],
         },
         {
@@ -152,7 +146,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Cerpus</a>`,
+      copyright: `Copyright &copy; ${new Date().getFullYear()} Edlib &mdash; <a href="https://cerpus.com">Edlib AS</a>`,
     },
     prism: {
       additionalLanguages: [
@@ -164,6 +158,9 @@ module.exports = {
     [
       '@docusaurus/preset-classic',
       {
+        googleTagManager: {
+          containerId: 'GTM-KNJNCK6D',
+        },
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
         },

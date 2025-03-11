@@ -82,7 +82,7 @@ class EditorStorageTest extends TestCase
             $lib->name,
             $lib->major_version,
             $lib->minor_version,
-            $langCode->language_code
+            $langCode->language_code,
         );
         $translation = json_decode($result, true, flags: JSON_THROW_ON_ERROR);
         $this->assertSame('success', $translation['test']);

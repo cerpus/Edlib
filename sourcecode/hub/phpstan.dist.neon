@@ -1,0 +1,38 @@
+includes:
+    - vendor/ekino/phpstan-banned-code/extension.neon
+    - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+        - bootstrap/app.php
+        - config
+        - database
+        - public/index.php
+        - routes
+        - tests
+
+    # https://github.com/nunomaduro/larastan/blob/master/docs/custom-config-parameters.md#checkmodelproperties
+    checkModelProperties: true
+
+    treatPhpDocTypesAsCertain: false
+
+    banned_code:
+        nodes:
+            -
+                type: Expr_FuncCall
+                functions:
+                    - dd
+                    - dump
+                    - phpinfo
+                    - print_r
+                    - printf
+                    - var_dump
+            -   { type: Expr_ShellExec, functions: null }
+            -   { type: Stmt_Echo, functions: null }
+            -   { type: Stmt_Exit, functions: null }
+            -   { type: Stmt_Print, functions: null }
+
+        use_from_tests: true

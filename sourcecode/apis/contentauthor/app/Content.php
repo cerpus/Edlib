@@ -2,21 +2,14 @@
 
 namespace App;
 
-use App\Apis\AuthApiService;
-use App\Apis\ResourceApiService;
-use App\EdlibResource\CaEdlibResource;
 use App\Http\Libraries\License;
-use App\Libraries\DataObjects\ContentTypeDataObject;
 use App\Libraries\DataObjects\LtiContent;
-use App\Libraries\DataObjects\ResourceUserDataObject;
 use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Versionable;
 use Carbon\Carbon;
-use Cerpus\VersionClient\VersionClient;
-use Cerpus\VersionClient\VersionData;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 use function htmlspecialchars_decode;
+use function property_exists;
 
 use const ENT_HTML5;
 use const ENT_QUOTES;
@@ -40,7 +34,6 @@ use const ENT_QUOTES;
  * @property string|null $version_id
  * @property int|null $max_score
  * @property int $bulk_calculated
- * @property bool $is_published
  * @property string $license
  * @property string $node_id
  * @property Collection $collaborators
@@ -77,7 +70,6 @@ abstract class Content extends Model
 
     protected $casts = [
         'is_private' => 'boolean',
-        'is_published' => 'boolean',
         'is_draft' => 'boolean',
     ];
 
@@ -124,7 +116,7 @@ abstract class Content extends Model
     abstract public function getContentType(bool $withSubType = false);
 
     /**
-     * @return HasOne<NdlaIdMapper>
+     * @return HasOne<NdlaIdMapper, $this>
      */
     public function ndlaMapper(): HasOne
     {
@@ -137,7 +129,7 @@ abstract class Content extends Model
     }
 
     /**
-     * @return HasMany<ContentLock>
+     * @return HasMany<ContentLock, $this>
      */
     public function locks(): HasMany
     {
@@ -164,22 +156,6 @@ abstract class Content extends Model
             ->isNotEmpty();
     }
 
-    public function getOwnerName($ownerId): ?string
-    {
-        $ownerName = null;
-        try {
-            /** @var AuthApiService $authApi */
-            $authApi = app(AuthApiService::class);
-            $user = $authApi->getUser($ownerId);
-            if ($user) {
-                $ownerName = trim(implode(' ', [$user->getFirstName() ?? '', $user->getLastName() ?? '']));
-            }
-        } catch (Exception $e) {
-        }
-
-        return $ownerName;
-    }
-
     /**
      * @throws Exception
      */
@@ -189,18 +165,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $resourceApi = app(ResourceApiService::class);
-        $collaborators = $resourceApi->getCollaborators("contentauthor", $this->id);
-
-        $isCollaborator = false;
-
-        foreach ($collaborators as $collaborator) {
-            if ($collaborator->getTenantId() === $currentUserId) {
-                $isCollaborator = true;
-            }
-        }
-
-        return $isCollaborator;
+        return false;
     }
 
     /**
@@ -326,28 +291,6 @@ abstract class Content extends Model
         $query->where('version_id', null);
     }
 
-    /**
-     * @throws \JsonException
-     */
-    public function getOwnerData(): ResourceUserDataObject
-    {
-        $user = ResourceUserDataObject::create();
-        $user->id = $this->getAttribute($this->userColumn);
-
-        /** @var AuthApiService $authApiService */
-        $authApiService = app(AuthApiService::class);
-
-        $ownerData = $authApiService->getUser($user->id);
-
-        if ($ownerData) {
-            $user->firstname = $ownerData->getFirstName() ?? '';
-            $user->lastname = $ownerData->getLastName() ?? '';
-            $user->email = $ownerData->getEmail() ?? '';
-        }
-
-        return $user;
-    }
-
     public function getVersionColumn()
     {
         return $this->versionColumn;
@@ -359,8 +302,7 @@ abstract class Content extends Model
             return true;
         }
 
-        $versionClient = app(VersionClient::class);
-        $versionData = $versionClient->getVersion($this[$this->getVersionColumn()]);
+        $versionData = $this->getVersion();
 
         if (empty($versionData)) {
             return false;
@@ -371,27 +313,14 @@ abstract class Content extends Model
         return $ndlaMapperCollection->isNotEmpty();
     }
 
-    private function getVersionedIds(VersionData $version): array
+    private function getVersionedIds(ContentVersion $version): array
     {
-        $id = [$version->getExternalReference()];
-        if (!is_null($version->getParent())) {
-            return array_merge($id, $this->getVersionedIds($version->getParent()));
+        $id = [$version->content_id];
+        $parent = $version->previousVersion;
+        if ($parent) {
+            return array_merge($id, $this->getVersionedIds($parent));
         }
         return $id;
-    }
-
-    /**
-     * The reason we have this function is that the isPublished function only returns the db value.
-     * We need a way to evaluate if a resource actually is published by using both the isPublished and isDraft flags
-     */
-    public function isActuallyPublished(): bool
-    {
-        return $this->isPublished() && !$this->isDraft();
-    }
-
-    public function isPublished(): bool
-    {
-        return $this->is_published;
     }
 
     public function isListed(): bool
@@ -404,35 +333,9 @@ abstract class Content extends Model
         return $this->is_draft;
     }
 
-    public static function isUserPublishEnabled(): bool
-    {
-        /** @var H5PAdapterInterface $adapter */
-        $adapter = app(H5PAdapterInterface::class);
-        return $adapter->isUserPublishEnabled();
-    }
-
     public function canList(Request $request): bool
     {
-        if (!self::isUserPublishEnabled() || !$this->exists) {
-            return true;
-        }
-
-        $authId = $request->session()->get('authId') ?? false;
-        return $this->isOwner($authId) || $this->isCollaborator() || $this->isExternalCollaborator($authId);
-    }
-
-    public function canPublish(Request $request): bool
-    {
-        if (self::isUserPublishEnabled() || !$this->exists || ($request->importRequest ?? false)) {
-            return true;
-        }
-
-        return $this->canList($request) || $this->isCopyable();
-    }
-
-    public function canShow(bool $preview = false): bool
-    {
-        return $preview || $this->isActuallyPublished();
+        return true;
     }
 
     /**
@@ -460,11 +363,9 @@ abstract class Content extends Model
 
         $editUrl = route($this->editRouteName, $this->id);
         if ($latest) {
-            /** @var VersionClient $versionClient */
-            $versionClient = app()->make(VersionClient::class);
-            $latest = $versionClient->latest($this->version_id);
-            if ($this->version_id !== $latest->getId()) {
-                $editUrl = route($this->editRouteName, $latest->getExternalReference());
+            $latestVersion = ContentVersion::latestLeaf($this->version_id);
+            if ($this->version_id !== $latestVersion->id) {
+                $editUrl = route($this->editRouteName, $latestVersion->content_id);
             }
         }
 
@@ -481,34 +382,23 @@ abstract class Content extends Model
         return null;
     }
 
-    public function getEdlibDataObject(): CaEdlibResource
+    protected function getIconUrl(): string|null
     {
-        return new CaEdlibResource(
-            (string) $this->id,
-            $this->title_clean ?? $this->title,
-            $this->getContentOwnerId(),
-            $this->isPublished(),
-            $this->isDraft(),
-            $this->isListed(),
-            $this->getISO6393Language(),
-            $this->getContentType(true),
-            $this->getContentLicense(),
-            $this->getMaxScore(),
-            $this->created_at->toDateTimeImmutable(),
-            $this->updated_at->toDateTimeImmutable(),
-            CollaboratorContext::getResourceContextCollaborators($this->id),
-            $this->collaborators
-                ->map(fn ($collaborator) => strtolower($collaborator->email))
-                ->filter(fn ($email) => $email !== "")
-                ->sort()
-                ->values()
-                ->toArray(),
-            $this->getAuthorOverwrite()
-        );
+        return null;
     }
 
-    public function toLtiContent(): LtiContent
+    /**
+     * @return string[]
+     */
+    protected function getTags(): array
     {
+        return [];
+    }
+
+    public function toLtiContent(
+        bool|null $published = null,
+        bool|null $shared = null,
+    ): LtiContent {
         return new LtiContent(
             id: $this->id,
             url: $this->getUrl(),
@@ -517,11 +407,15 @@ abstract class Content extends Model
             hasScore: ($this->getMaxScore() ?? 0) > 0,
             editUrl: $this->getEditUrl(),
             titleHtml: $this->title,
+            languageIso639_3: property_exists($this, 'language_iso_639_3')
+                ? $this->language_iso_639_3
+                : $this->getISO6393Language(),
+            license: $this->license,
+            iconUrl: $this->getIconUrl(),
+            published: $published,
+            shared: $shared,
+            tags: $this->getTags(),
+            maxScore: $this->getMaxScore(),
         );
-    }
-
-    public static function getContentTypeInfo(string $contentType): ?ContentTypeDataObject
-    {
-        return null;
     }
 }

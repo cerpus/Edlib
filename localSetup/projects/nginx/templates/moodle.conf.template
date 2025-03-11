@@ -7,14 +7,13 @@ server {
 }
 
 server {
-  listen 443 ssl;
+  include includes/https.conf;
+
   server_name  moodle.${EDLIB_ROOT_DOMAIN};
 
-  ssl_certificate  /etc/ssl/private/cerpus.crt;
-  ssl_certificate_key  /etc/ssl/private/cerpus.key;
-
   location / {
-    proxy_pass  http://moodle;
+    set $upstream http://moodle;
+    proxy_pass  $upstream;
     proxy_set_header  Host  $host;
     proxy_set_header  X-Forwarded-For  $proxy_add_x_forwarded_for;
     proxy_set_header  X-Forwarded-Proto  $scheme;

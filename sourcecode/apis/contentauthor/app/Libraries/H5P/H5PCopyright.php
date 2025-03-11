@@ -118,13 +118,13 @@ class H5PCopyright
         $copyrightValues = $values['copyright'];
         $copyright = [];
         foreach ([
-                     'title' => 'title',
-                     'license' => 'license',
-                     'licenseVersion' => 'version',
-                     'authors' => 'author',
-                     'source' => 'source',
-                     'years' => 'year',
-                 ] as $index => $field) {
+            'title' => 'title',
+            'license' => 'license',
+            'licenseVersion' => 'version',
+            'authors' => 'author',
+            'source' => 'source',
+            'years' => 'year',
+        ] as $index => $field) {
             if (!array_key_exists($field, $copyrightValues)) {
                 continue;
             }
@@ -174,16 +174,16 @@ class H5PCopyright
         $metadata = $values['metadata'];
         $copyright = [];
         foreach ([
-                     'title',
-                     'authors',
-                     'source',
-                     'yearFrom',
-                     'yearTo',
-                     'license',
-                     'licenseVersion',
-                     'licenseExtra',
-                     'contentType'
-                 ] as $field) {
+            'title',
+            'authors',
+            'source',
+            'yearFrom',
+            'yearTo',
+            'license',
+            'licenseVersion',
+            'licenseExtra',
+            'contentType',
+        ] as $field) {
             if (!array_key_exists($field, $metadata)) {
                 continue;
             }

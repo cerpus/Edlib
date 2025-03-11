@@ -90,7 +90,7 @@ class H5PProgress implements ProgressInterface
                         $contentId,
                         $dataId,
                         $subContentId,
-                        $context
+                        $context,
                     );
                 } else {
                     // Insert new data
@@ -102,7 +102,7 @@ class H5PProgress implements ProgressInterface
                         $data,
                         $preload,
                         $invalidate,
-                        $context
+                        $context,
                     );
                 }
             }
@@ -182,7 +182,7 @@ class H5PProgress implements ProgressInterface
     {
         $sql = "delete from $this->tableName where content_id=:id";
         $params = [
-            ':id' => $id
+            ':id' => $id,
         ];
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -196,7 +196,7 @@ class H5PProgress implements ProgressInterface
             ':content_id' => $content_id,
             ':data_id' => $data_id,
             ':user_id' => $this->currentUserId,
-            ':sub_content_id' => $sub_content_id
+            ':sub_content_id' => $sub_content_id,
         ];
         if (is_null($context)) {
             $sql .= " and context IS NULL";
@@ -216,7 +216,7 @@ class H5PProgress implements ProgressInterface
             ':user_id' => $this->currentUserId,
             ':data_id' => $data_id,
             ':sub_content_id' => $sub_content_id,
-            ':context' => $context
+            ':context' => $context,
         ];
 
         $sql = "select context from $this->tableName where content_id=:content_id and user_id=:user_id and data_id=:data_id and sub_content_id=:sub_content_id and (context = :context OR context IS NULL)";
@@ -279,7 +279,7 @@ class H5PProgress implements ProgressInterface
             'preload' => $preload,
             'invalidate' => $invalidate,
             'now' => Carbon::now(),
-            'context' => $context
+            'context' => $context,
         ];
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params);
@@ -289,7 +289,7 @@ class H5PProgress implements ProgressInterface
     {
         $sql = "select count(content_id) as progresses from $this->tableName where content_id=:id";
         $params = [
-            ':id' => $id
+            ':id' => $id,
         ];
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
@@ -311,7 +311,7 @@ class H5PProgress implements ProgressInterface
             'opened' => @$requestValues['opened'],
             'finished' => @$requestValues['finished'],
             'time' => @$requestValues['time'],
-            'context' => @$requestValues['context']
+            'context' => @$requestValues['context'],
         ];
         if (is_null($data['time'])) {
             $data['time'] = 0;
@@ -324,7 +324,7 @@ class H5PProgress implements ProgressInterface
             $data['opened'],
             $data['finished'],
             $data['time'],
-            $data['context']
+            $data['context'],
         );
     }
 }

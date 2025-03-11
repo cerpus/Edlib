@@ -1,85 +1,141 @@
 @extends('layouts.admin')
-
+@php
+    $activeTab = request()->query('activetab', 'tabContentTypes');
+@endphp
 @section('content')
     <div class="container">
+        <div class="page-header">
+            <h1>Manage H5P content types</h1>
+        </div>
         <div class="row">
             <div class="col-md-12">
-                <div id="minor-publishing" class="panel panel-default">
+                <div class="panel with-nav-tabs panel-default">
                     <div class="panel-heading">
-                        <h3>Install or update H5P content types and libraries</h3>
+                        <div class="panel-heading">
+                            <ul class="nav nav-tabs">
+                                <li @class(['active' => $activeTab === 'tabContentTypes'])>
+                                    <a href="#tabContentTypes" data-toggle="tab">
+                                        Installed content types
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabLibraries'])>
+                                    <a href="#tabLibraries" data-toggle="tab">
+                                        Installed libraries
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabUpload'])>
+                                    <a href="#tabUpload" data-toggle="tab">
+                                        Upload content type
+                                    </a>
+                                </li>
+                                <li @class(['active' => $activeTab === 'tabInstall'])>
+                                    <a href="#tabInstall" data-toggle="tab">
+                                        Install from h5p.org
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-
-                    <div class="panel-body row">
-                        <form method="post" enctype="multipart/form-data" id="h5p-library-form" class="col-md-6">
-                            <h4>By file upload</h4>
-                            <p>File must be .h5p format.</p>
-                            <input type="file" name="h5p_file" id="h5p-file"/>
-                            <br>
-                            <div class="h5p-disable-file-check">
-                                <label><input type="checkbox" name="h5p_upgrade_only" id="h5p-upgrade-only"/> Only update existing libraries</label>
-                                <br>
-                                <label><input type="checkbox" name="h5p_disable_file_check" id="h5p-disable-file-check"/> Disable file extension check</label>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div
+                                id="tabContentTypes"
+                                @class([
+                                    "tab-pane fade",
+                                    'in active' => $activeTab === 'tabContentTypes',
+                                ])
+                            >
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4>Local cache of content types available from h5p.org</h4>
+                                    </div>
+                                    @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabContentTypes'])
+                                </div>
+                                <p>
+                                    The list contains content types that are currently installed in Edlib.
+                                    If available new versions can be downloaded and installed.
+                                </p>
+                                <p>
+                                    @include('admin.fragments.update-explanation')
+                                </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                </p>
+                                <div class="panel-body row">
+                                    @include('admin.fragments.library-table', [
+                                        'libraries' => $installedContentTypes,
+                                        'showCount' => true,
+                                        'activetab' => 'tabContentTypes'
+                                    ])
+                                </div>
                             </div>
-                            <br>
-                            <input type="hidden" id="lets_upgrade_that" name="lets_upgrade_that" value="228e7591a1">
-                            <input type="hidden" name="_wp_http_referer" value="/wordpress/wp-admin/admin.php?page=h5p_libraries">
-                            {!! csrf_field() !!}
-                            <div id="major-publishing-actions" class="submitbox">
-                                <input type="submit" name="submit" value="Upload" class="button button-primary button-large btn btn-primary"/>
+                            <div
+                                @class([
+                                    "tab-pane fade",
+                                    'in active' => $activeTab === 'tabLibraries',
+                                ])
+                                id="tabLibraries"
+                            >
+                                <p>Libraries are used by content types, and are installed/updated when content types are installed/updated.</p>
+                                <div class="panel-body row">
+                                    @include('admin.fragments.library-table', [
+                                        'libraries' => $installedLibraries,
+                                        'showCount' => true,
+                                        'activetab' => 'tabLibraries'
+                                    ])
+                                </div>
                             </div>
-                        </form>
-
-                        <form action="{{ route('admin.check-for-updates') }}" method="post">
-                            @csrf
-                            <h4>Content types from h5p.org</h4>
-                            <div style="margin: 1em 0;">Last updated:
-                                @isset($contentTypeCacheUpdateAt)
-                                    {{ \Carbon\Carbon::createFromTimestamp($contentTypeCacheUpdateAt)->format('Y-m-d H:i:s e') }}
-                                @endempty
+                            <div
+                                id="tabUpload"
+                                @class([
+                                    "tab-pane fade",
+                                    'in active' => $activeTab === 'tabUpload',
+                                ])
+                            >
+                                <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
+                                <p>Any content in the file will not be imported, only content types and libraries.</p>
+                                <p>
+                                    Content type and libraries must be compatible with H5P Core version {{ join('.', H5PCore::$coreApi) }}
+                                </p>
+                                <p>
+                                    @include('admin.fragments.update-explanation')
+                                </p>
+                                @include('admin.library-upgrade.upload-content-type', [
+                                    'activetab' => 'tabUpload',
+                                ])
                             </div>
-                            <button type="submit" class="btn btn-success">Check for updates</button>
-                        </form>
-                    </div>
-
-                    @include('fragments.invalidFlashMessage')
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>Content types installed</h3>
-                    </div>
-
-                    <div class="panel-body row">
-                        @include('admin.fragments.library-table', [
-                            'libraries' => $installedContentTypes,
-                            'showCount' => true,
-                        ])
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>Libraries installed</h3>
-                    </div>
-
-                    <div class="panel-body row">
-                        @include('admin.fragments.library-table', [
-                            'libraries' => $installedLibraries,
-                            'showCount' => true,
-                        ])
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3>Install from H5P.org</h3>
-                    </div>
-
-                    <div class="panel-body row">
-                        @include('admin.fragments.library-table', [
-                            'libraries' => $available,
-                            'showSummary' => true,
-                        ])
+                            <div
+                                id="tabInstall"
+                                @class([
+                                    "tab-pane fade",
+                                    'in active' => $activeTab === 'tabInstall',
+                                ])
+                            >
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4>Local cache of content types available from h5p.org</h4>
+                                    </div>
+                                    @include('admin.library-upgrade.update-content-type-cache', ['activeTab' => 'tabInstall'])
+                                </div>
+                                <h4>Content types available from <a href="https://h5p.org" target="_blank">h5p.org</a></h4>
+                                <p>
+                                    The list contains content types that was available when the local cache was updated. Available content types are maintained by H5P Group.
+                                </p>
+                                <p>
+                                    @include('admin.fragments.update-explanation')
+                                </p>
+                                <p>
+                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                </p>
+                                <div class="panel-body row">
+                                    @include('admin.fragments.library-table', [
+                                        'libraries' => $available,
+                                        'showSummary' => true,
+                                        'activetab' => 'tabInstall'
+                                    ])
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

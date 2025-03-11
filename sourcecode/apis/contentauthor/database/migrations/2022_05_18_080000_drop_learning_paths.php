@@ -11,7 +11,5 @@ class DropLearningPaths extends Migration
         Schema::dropIfExists('learning_paths');
     }
 
-    public function down(): void
-    {
-    }
+    public function down(): void {}
 }

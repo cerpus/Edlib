@@ -20,7 +20,10 @@ RUN set -eux; \
     a2enmod remoteip rewrite;
 
 VOLUME /var/www/html
-RUN git clone -b "MOODLE_402_STABLE" https://github.com/moodle/moodle.git /var/www/html
+RUN set -ex; \
+    cd /var/www/html; \
+    curl -fsSL https://github.com/moodle/moodle/archive/refs/tags/v4.3.3.tar.gz \
+        | tar xzv --strip-components=1;
 
 COPY httpd.conf /etc/apache2/conf-enabled/
 

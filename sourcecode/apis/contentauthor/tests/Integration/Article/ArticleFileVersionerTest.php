@@ -28,7 +28,7 @@ class ArticleFileVersionerTest extends TestCase
 <p><img src="/' . $articleId . '/tree.jpg" style="height:80px; width:454px" /></p>
 <p><img src="/' . $articleId . '/tree2.jpg" style="height:80px; width:454px" /></p>
 <p>&nbsp;</p>
-'
+',
         ]);
         $originalFile = sprintf(ContentStorageSettings::ARTICLE_FILE, $this->originalArticle->id, 'tree.jpg');
         $fromFile = base_path('tests/files/tree.jpg');
@@ -42,16 +42,6 @@ class ArticleFileVersionerTest extends TestCase
         $file->mime = 'image/jpeg';
 
         $this->originalArticle->files()->save($file);
-    }
-
-    public function tearDown(): void
-    {
-        // Remove directories
-        $disk = Storage::disk();
-        $directories = $disk->directories('/');
-        collect($directories)->each(function ($directory) use ($disk) {
-            $disk->deleteDirectory($directory);
-        });
     }
 
     public function testSetup()

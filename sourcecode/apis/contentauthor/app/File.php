@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Libraries\ContentAuthorStorage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +15,7 @@ class File extends Model
     use HasFactory;
 
     /**
-     * @return BelongsTo<Article, self>
+     * @return BelongsTo<Article, $this>
      */
     public function article(): BelongsTo
     {
@@ -25,14 +24,12 @@ class File extends Model
 
     public function generatePath(): string
     {
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name), true);
+        return Storage::disk()->url(sprintf(ContentStorageSettings::ARTICLE_FILE, $this->article->id, $this->name));
     }
 
     public function generateTempPath(): string
     {
-        $contentAuthorStorage = app(ContentAuthorStorage::class);
-        return $contentAuthorStorage->getAssetUrl(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name), true);
+        return Storage::disk()->url(sprintf(ContentStorageSettings::ARTICLE_FILE, 'tmp', $this->name));
     }
 
     public function moveTempToArticle(Article $article): bool

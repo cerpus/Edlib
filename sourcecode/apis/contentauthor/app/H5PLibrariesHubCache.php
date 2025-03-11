@@ -39,7 +39,7 @@ class H5PLibrariesHubCache extends Model
     }
 
     /**
-     * @return HasMany<H5PLibrary>
+     * @return HasMany<H5PLibrary, $this>
      */
     public function libraries(): HasMany
     {

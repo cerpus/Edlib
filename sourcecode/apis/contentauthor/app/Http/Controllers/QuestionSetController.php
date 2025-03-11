@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\ACL\ArticleAccess;
 use App\Gametype;
-use App\H5PLibrary;
 use App\Http\Libraries\License;
-use App\Http\Libraries\LtiTrait;
 use App\Http\Requests\ApiQuestionsetRequest;
 use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\Millionaire\Millionaire;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
-use App\Libraries\H5P\Packages\QuestionSet as QuestionSetPackage;
 use App\Libraries\QuestionSet\QuestionSetHandler;
 use App\Lti\Lti;
 use App\QuestionSet;
@@ -28,40 +23,25 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
-use function Cerpus\Helper\Helpers\profile as config;
+use function config;
 
 class QuestionSetController extends Controller
 {
-    use LtiTrait;
     use ReturnToCore;
-    use ArticleAccess;
     use FractalTransformer;
 
     public function __construct(private readonly Lti $lti)
     {
-        $this->middleware('lti.verify-auth')->only(['create', 'edit', 'store', 'update']);
-        $this->middleware('lti.question-set')->only(['ltiCreate']);
-        $this->middleware('questionset-access', ['only' => ['ltiEdit']]);
+        $this->middleware('lti.question-set')->only(['create']);
     }
 
     private function getQuestionsetContentTypes(): Collection
     {
         $contentTypes = collect();
-        if (
-            H5PLibrary::fromMachineName(QuestionSetPackage::$machineName)
-            ->version(QuestionSetPackage::$majorVersion, QuestionSetPackage::$minorVersion)
-            ->count() > 0
-        ) {
-            $contentTypes->push([
-                'img' => '/graphical/QuizIcon.png',
-                'label' => 'Question Set (H5P)',
-                'outcome' => QuestionSetPackage::$machineName,
-            ]);
-        }
         if (Gametype::ofName(Millionaire::$machineName)->count() > 0) {
             $contentTypes->push([
                 'img' => '/graphical/MillionaireIcon.png',
-                'label' => 'Millionaire mini game',
+                'label' => trans('game.millionaire-title'),
                 'outcome' => Millionaire::$machineName,
             ]);
         }
@@ -70,26 +50,20 @@ class QuestionSetController extends Controller
 
     public function create(Request $request): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
         $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
         $editorSetup = EditorConfigObject::create([
-            'userPublishEnabled' => true,
-            'canPublish' => true,
             'canList' => true,
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
         ])->toJson();
 
         $state = QuestionSetStateDataObject::create([
-            'links' => (object)[
-                "store" => route('questionset.store')
+            'links' => (object) [
+                "store" => route('questionset.store'),
             ],
             'questionSetJsonData' => $extQuestionSetData,
             'contentTypes' => $contenttypes,
@@ -99,6 +73,8 @@ class QuestionSetController extends Controller
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('questionset.store'),
             '_method' => "POST",
+            'numberOfDefaultQuestions' => 2,
+            'numberOfDefaultAnswers' => 2,
         ])->toJson();
 
         return view('question.create')->with(compact([
@@ -108,10 +84,7 @@ class QuestionSetController extends Controller
         ]));
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function store(ApiQuestionsetRequest $request)
+    public function store(ApiQuestionsetRequest $request): JsonResponse
     {
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
@@ -126,13 +99,10 @@ class QuestionSetController extends Controller
 
     public function edit(Request $request, $id): View
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
-
+        $ltiRequest = $this->lti->getRequest($request);
         $questionset = QuestionSet::findOrFail($id);
 
-        $links = (object)[
+        $links = (object) [
             "store" => route('questionset.store'),
             "self" => route('questionset.update', [
                 'questionset' => $questionset->id,
@@ -143,14 +113,8 @@ class QuestionSetController extends Controller
         $questionSetData = $this->buildItem($questionset, new QuestionSetsTransformer());
         $contenttypes = $this->getQuestionsetContentTypes();
         $emails = $questionset->getCollaboratorEmails();
-        $ownerName = $questionset->getOwnerName($questionset->owner);
-
-        /** @var H5PAdapterInterface $adapter */
-        $adapter = app(H5PAdapterInterface::class);
 
         $editorSetup = EditorConfigObject::create([
-            'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-            'canPublish' => $questionset->canPublish($request),
             'canList' => $questionset->canList($request),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
@@ -158,7 +122,7 @@ class QuestionSetController extends Controller
         $editorSetup->setContentProperties(ResourceInfoDataObject::create([
             'id' => $questionset->id,
             'createdAt' => $questionset->created_at->toIso8601String(),
-            'ownerName' => !empty($ownerName) ? $ownerName : null,
+            'ownerName' => null,
         ]));
 
         $editorSetup = $editorSetup->toJson();
@@ -167,7 +131,7 @@ class QuestionSetController extends Controller
             'id' => $questionset->id,
             'title' => $questionset->title,
             'license' => $questionset->license,
-            'isPublished' => $questionset->isPublished(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $questionset->isDraft(),
             'share' => !$questionset->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -182,15 +146,12 @@ class QuestionSetController extends Controller
             'emails',
             'emails',
             'state',
-            'editorSetup'
+            'editorSetup',
         ]));
     }
 
     public function update(ApiQuestionsetRequest $request, QuestionSet $questionset)
     {
-        if (!$this->canCreate()) {
-            abort(403);
-        }
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
         /** @var QuestionSetHandler $questionsetHandler */
@@ -198,7 +159,7 @@ class QuestionSetController extends Controller
         $questionSet = $questionsetHandler->update(
             $questionset,
             $questionsetData,
-            $request
+            $request,
         );
 
         $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
@@ -208,12 +169,8 @@ class QuestionSetController extends Controller
 
     public function show($id)
     {
-        return $this->doShow($id, null);
-    }
-
-    public function doShow($id, $context, $preview = false)
-    {
-        return trans("questions.preview");
+        $qCount = QuestionSet::findOrFail($id)->questions()->count();
+        return trans("questions.preview", ['qCount' => $qCount]);
     }
 
     public function setQuestionImage(Request $request)

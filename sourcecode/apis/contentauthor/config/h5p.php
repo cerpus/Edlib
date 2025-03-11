@@ -11,15 +11,17 @@ return [
         'publicPath' => '',
         'path' => env("UPLOAD_STORAGE_PATH_H5P", public_path() . '/h5pstorage'),
     ],
+    'audio' => [
+        'adapter' => env('H5P_AUDIO_ADAPTER'),
+    ],
+    'image' => [
+        'adapter' => env('H5P_IMAGE_ADAPTER'),
+    ],
     'video' => [
+        'adapter' => env('H5P_VIDEO_ADAPTER'),
         'enable' => env("H5P_VIDEO_STREAM_ENABLED", true),
-        'url' => env("H5P_VIDEO_URL"),
-        'key' => env("H5P_VIDEO_ADAPTER_KEY"),
-        'secret' => env("H5P_VIDEO_ADAPTER_SECRET"),
-        'deleteVideoSourceAfterConvertToStream' => (bool)env("H5P_VIDEO_ADAPTER_DELETEVIDEO", true),
+        'deleteVideoSourceAfterConvertToStream' => (bool) env("H5P_VIDEO_ADAPTER_DELETEVIDEO", true),
         'pingDelay' => env("H5P_VIDEO_DELAY", 10),
-        'accountId' => env("H5P_VIDEO_ACCOUNT_ID"),
-        'authUrl' => env("H5P_VIDEO_AUTH_URL"),
     ],
     'singleContentUpgrade' => env('H5P_SINGLE_CONTENT_UPGRADE', true),
     'developmentMode' => env('H5P_DEVELOPMENT_MODE', false),
@@ -30,15 +32,6 @@ return [
     'crossOriginRegexp' => env('H5P_CROSSORIGIN_REGEXP', '/.+/'),
     'overrideDisableSetting' => env("H5P_OVERRIDE_DISABLE_SETTING", false),
     'h5pAdapter' => env('H5P_ADAPTER', 'cerpus'),
-    'image' => [
-        'url' => env("H5P_IMAGE_URL"),
-        'properties' => [
-            'width' => env("H5P_IMAGE_PROPERTIES_WIDTH", 2500),
-        ]
-    ],
-    'audio' => [
-        'url' => env("H5P_AUDIO_URL"),
-    ],
     'saveFrequency' => env('H5P_SAVE_FREQUENCY', 15),
     'include-custom-css' => env("H5P_INCLUDE_CUSTOM_CSS", false),
     "default-resource-language" => env("H5P_DEFAULT_RESOURCE_LANGUAGE", "eng"),
@@ -46,6 +39,6 @@ return [
     'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),
     'showDisplayOptions' => env("H5P_SHOW_DISPLAY_OPTIONS", false),
 
-    // one of 'nynorskroboten', 'nynorobot'
-    'nynorskAdapter' => env('H5P_NYNORSK_ADAPTER', 'nynorskroboten'),
+    // one of 'null', 'nynorskroboten', 'nynorobot'
+    'translator' => env('H5P_TRANSLATOR', env('H5P_NYNORSK_ADAPTER', 'null')),
 ];

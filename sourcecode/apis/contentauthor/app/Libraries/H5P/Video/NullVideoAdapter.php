@@ -60,4 +60,29 @@ final class NullVideoAdapter implements H5PVideoInterface
     {
         throw new BadMethodCallException('not implemented');
     }
+
+    public function getViewCss(): array
+    {
+        return [];
+    }
+
+    public function getViewScripts(): array
+    {
+        return [];
+    }
+
+    public function getEditorCss(): array
+    {
+        return [];
+    }
+
+    public function getEditorScripts(): array
+    {
+        return [];
+    }
+
+    public function getConfigJs(): array
+    {
+        return [];
+    }
 }

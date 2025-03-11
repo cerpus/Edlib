@@ -3,6 +3,7 @@
 namespace Tests\Integration\Libraries\H5P\Package;
 
 use App\Libraries\H5P\Packages\Questionnaire;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class QuestionnaireTest extends TestCase
@@ -12,9 +13,7 @@ class QuestionnaireTest extends TestCase
         'oneText' => '{"questionnaireElements":[{"library":{"params":{"placeholderText":"Skriv din ærlige mening her.","inputRows":"3","question":"Hva er ditt syn på fiske?"},"library":"H5P.OpenEndedQuestion 1.0","subContentId":"5f1cab82-66cf-4df5-897d-a26ad3346eee"},"requiredField":false}],"successScreenOptions":{"enableSuccessScreen":false,"successScreenImage":{"params":{"contentName":"Image"},"library":"H5P.Image 1.0","subContentId":"de165056-273c-4b8c-a9ed-4ee240d70136"},"successMessage":"Du er nå ferdig med spørreskjemaet."},"uiElements":{"buttonLabels":{"prevLabel":"Forrige","continueLabel":"Fortsett","nextLabel":"Neste","submitLabel":"Send inn"},"accessibility":{"requiredTextExitLabel":"Lukk feilmelding","progressBarText":"Spørsmål %current av %max"},"requiredMessage":"Dette spørsmålet krever et svar","requiredText":"nødvendig","submitScreenTitle":"Du er nå ferdig med å svare på spørsmålene.","submitScreenSubtitle":"Trykk under for å sende inn dine svar"}}',
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validateStructure()
     {
         $questionnaire = new Questionnaire("InvalidJson");
@@ -24,25 +23,23 @@ class QuestionnaireTest extends TestCase
         $this->assertFalse($questionnaire->validate());
 
         $questionnaire = new Questionnaire(json_encode([
-            'questionnaireElements' => "snafu"
+            'questionnaireElements' => "snafu",
         ]));
         $this->assertTrue($questionnaire->validate());
 
         $questionnaire = new Questionnaire(json_encode([
             'questionnaireElements' => [
-                'foo' => 'bar'
-            ]
+                'foo' => 'bar',
+            ],
         ]));
         $this->assertTrue($questionnaire->validate());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getQuestions()
     {
         $questionnaire = new Questionnaire(json_encode([
-            'questionnaireElements' => null
+            'questionnaireElements' => null,
         ]));
         $this->assertEmpty($questionnaire->getElements());
 

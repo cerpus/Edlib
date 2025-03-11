@@ -15,7 +15,7 @@ class CoursePresentation extends H5PBase
 
     public function getElements(): array
     {
-        $interactions = collect((array)$this->getSlides());
+        $interactions = collect((array) $this->getSlides());
         if ($interactions->isEmpty()) {
             return [];
         }
@@ -56,7 +56,7 @@ class CoursePresentation extends H5PBase
 
         return [
             'elements' => $elements,
-            'composedComponent' => $this->isComposedComponent()
+            'composedComponent' => $this->isComposedComponent(),
         ];
     }
 
@@ -93,7 +93,7 @@ class CoursePresentation extends H5PBase
 
     public function alterSource($sourceFile, array $newSource)
     {
-        $slides = collect((array)$this->getSlides());
+        $slides = collect((array) $this->getSlides());
         if ($slides->isEmpty()) {
             return true;
         }
