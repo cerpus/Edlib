@@ -28,7 +28,6 @@ on:
         default: false
 
 env:
-  workingDirectory: sourcecode/apis/contentauthor
   shouldPublishImage: ${{ inputs.versionToRelease && !inputs.deploy && '1' || '0' }}
   shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
 
