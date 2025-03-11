@@ -285,11 +285,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
-    public function isUserPublishEnabled(): bool
-    {
-        return filter_var(config("feature.enableUserPublish"), FILTER_VALIDATE_BOOLEAN);
-    }
-
     public function useMaxScore(): bool
     {
         return false;

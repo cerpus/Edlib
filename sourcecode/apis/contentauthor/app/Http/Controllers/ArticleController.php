@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Article;
-use App\Content;
 use App\ContentVersion;
 use App\Events\ArticleWasSaved;
 use App\Exceptions\UnhandledVersionReasonException;
@@ -14,7 +13,6 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\Adapters\CerpusH5PAdapter;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Libraries\HTMLPurify\Config\MathMLConfig;
 use App\Lti\Lti;
 use App\SessionKeys;
@@ -58,13 +56,8 @@ class ArticleController extends Controller
             ],
         ]);
 
-        /** @var H5PAdapterInterface $adapter */
-        $adapter = app(H5PAdapterInterface::class);
-
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => $adapter->isUserPublishEnabled(),
-                'canPublish' => true,
                 'canList' => true,
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             ],
@@ -103,7 +96,6 @@ class ArticleController extends Controller
         // next line commented out in anticipation of permanently deciding if attribution for Articles is no longer maintained
         //$article->updateAttribution($inputs['origin'] ?? null, $inputs['originators'] ?? []);
 
-        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', 0);
 
         $article->save();
@@ -153,6 +145,7 @@ class ArticleController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $ltiRequest = $this->lti->getRequest($request);
         $article = Article::findOrFail($id);
 
         $origin = $article->getAttribution()->getOrigin();
@@ -170,8 +163,6 @@ class ArticleController extends Controller
 
         $editorSetup = EditorConfigObject::create(
             [
-                'userPublishEnabled' => Content::isUserPublishEnabled(),
-                'canPublish' => $article->canPublish($request),
                 'canList' => $article->canList($request),
                 'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
                 'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
@@ -206,7 +197,7 @@ class ArticleController extends Controller
             'title' => $article->title,
             'content' => $article->render(),
             'license' => $article->license,
-            'isPublished' => $article->isPublished(),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $article->isDraft(),
             'share' => !$article->isListed() ? 'private' : 'share',
             'redirectToken' => $request->get('redirectToken'),
@@ -259,7 +250,6 @@ class ArticleController extends Controller
         }
         $article->max_score = $article->getMaxScoreHelper($article->content);
         $article->license = $request->input('license', $oldLicense);
-        $article->is_published = $article::isUserPublishEnabled() ? $request->input('isPublished', 1) : 1;
         $article->is_draft = $request->input('isDraft', false);
 
         //$article->updateAttribution($request->input('origin'), $request->input('originators', []));

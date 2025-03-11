@@ -26,7 +26,6 @@ class H5PImportRequest extends FormRequest
         return [
             'h5p' => 'required|file',
             'userId' => 'required|string',
-            'disablePublishMetadata' => 'sometimes|boolean',
             'isDraft' => 'sometimes|boolean',
             'isPublic' => 'sometimes|boolean',
         ];

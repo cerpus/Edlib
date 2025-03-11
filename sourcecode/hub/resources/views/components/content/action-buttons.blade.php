@@ -1,6 +1,6 @@
 @props(['content'])
 
-@if(\Illuminate\Support\Facades\Session::has('lti'))
+@if ($content->useUrl)
     <x-content.action-buttons.use :url="$content->useUrl" />
     @if($content->editUrl)
         <x-content.action-buttons.edit :url="$content->editUrl" />

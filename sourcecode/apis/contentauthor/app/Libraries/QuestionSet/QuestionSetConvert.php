@@ -32,7 +32,6 @@ readonly class QuestionSetConvert
             'share' => $metaData->share,
             'authId' => $questionSet['owner'],
             'tags' => $metaData->tags,
-            'is_published' => $questionSet['is_published'],
             'language_code' => $questionSet['language_code'],
         ], new Millionaire());
     }

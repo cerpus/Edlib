@@ -104,6 +104,8 @@ RUN set -eux; \
     cp -R /app/vendor/h5p/h5p-core public/h5p-php-library; \
     chown -R www-data:www-data .
 
+COPY docker/php/fpm-prod.conf "/usr/local/etc/php-fpm.d/zz-fpm-prod.conf"
+
 
 FROM prod AS test
 

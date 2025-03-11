@@ -37,7 +37,6 @@
                                     <th>CA Language</th>
                                     <th>H5P Language</th>
                                     <th>License</th>
-                                    <th>Published</th>
                                     <th>Has lock</th>
                                     <th>Latest</th>
                                 </tr>
@@ -51,9 +50,8 @@
                                             <td>{{ $content['item']->language_iso_639_3 }}</td>
                                             <td>{{ $content['item']->metadata->default_language }}</td>
                                             <td>{{ $content['item']->license }}</td>
-                                            <td>{{ $content['item']->isPublished() ? 'Y' : 'N' }}</td>
                                             <td>{{ $content['item']->hasLock() ? 'Y' : 'N' }}</td>
-                                            <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Y' : 'N') : '' }}</td>
+                                            <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>
                                         </tr>
                                     @endif
                                 @endforeach

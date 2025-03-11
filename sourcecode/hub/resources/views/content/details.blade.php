@@ -35,6 +35,18 @@
             </div>
 
             @can('edit', [$content])
+                @if ($content->latestVersion?->is($version))
+                    @if (!$version->published)
+                        <x-form action="{{ route('content.publish-version', [$content, $version]) }}" method="PATCH">
+                            <x-form.button class="btn-primary w-100 mb-3">
+                                {{ trans('messages.publish') }}
+                            </x-form.button>
+                        </x-form>
+                    @else
+                        {{-- TODO: unpublish toggle --}}
+                    @endif
+                @endif
+
                 <x-form class="form-check form-switch mb-3">
                     <x-form.checkbox
                         name="shared"

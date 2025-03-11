@@ -63,10 +63,6 @@
                                 <td>{{ $content->license }}</td>
                             </tr>
                             <tr>
-                                <th>Published</th>
-                                <td>{{ $content->isPublished() ? 'Yes' : 'No' }}</td>
-                            </tr>
-                            <tr>
                                 <th>Has lock</th>
                                 <td>
                                     {{ $hasLock ?

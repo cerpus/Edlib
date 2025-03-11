@@ -32,7 +32,6 @@ class H5PContentFactory extends Factory
             'version_id' => null,
             'max_score' => 0,
             'content_create_mode' => 'unitTest',
-            'is_published' => 0,
             'language_iso_639_3' => $this->faker->randomElement(['eng', 'nno', 'nob', 'sma', 'sme', 'swe']),
         ];
     }

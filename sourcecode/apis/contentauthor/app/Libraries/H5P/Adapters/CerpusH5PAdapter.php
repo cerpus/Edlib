@@ -132,12 +132,6 @@ class CerpusH5PAdapter implements H5PAdapterInterface
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
     }
 
-    public function isUserPublishEnabled(): bool
-    {
-        $isEnabled = config("feature.enableUserPublish");
-        return is_null($isEnabled) || filter_var($isEnabled, FILTER_VALIDATE_BOOLEAN);
-    }
-
     public function useMaxScore(): bool
     {
         return true;

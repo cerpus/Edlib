@@ -47,7 +47,6 @@ class H5PImport
             'user_id' => $userId,
             'max_score' => null,
             'slug' => \H5PCore::slugify($core->mainJsonData['title']),
-            'is_published' => !blank($isDraft) ? !$isDraft : null,
             'is_private' => $isPrivate,
         ]);
 

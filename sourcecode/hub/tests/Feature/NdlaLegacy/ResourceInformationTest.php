@@ -54,6 +54,7 @@ final class ResourceInformationTest extends TestCase
             ->assertOk()
             ->assertJson([
                 'proxied' => 'json data',
+                'published' => true,
             ]);
 
         $this->assertIsArray($history);
