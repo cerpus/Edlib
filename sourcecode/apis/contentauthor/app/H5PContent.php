@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Events\H5pContentDeleted;
+use App\Events\H5pContentUpdated;
 use App\Http\Libraries\H5PFileVersioner;
 use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use App\Libraries\H5P\H5PLibraryAdmin;
@@ -65,6 +67,11 @@ class H5PContent extends Content implements VersionableObject
     protected $casts = [
         'library_id' => "int",
         'is_draft' => 'boolean',
+    ];
+
+    protected $dispatchesEvents = [
+        'updated' => H5pContentUpdated::class,
+        'deleted' => H5pContentDeleted::class,
     ];
 
     /**
@@ -330,6 +337,16 @@ class H5PContent extends Content implements VersionableObject
     public function getMachineName(): string
     {
         return $this->library()->firstOrFail()->name;
+    }
+
+    public function getCopyrightCacheKey(): string
+    {
+        return 'h5p-copyright-' . $this->id;
+    }
+
+    public function getInfoCacheKey(): string
+    {
+        return 'h5p-info-' . $this->id;
     }
 
     protected function getIconUrl(): string
