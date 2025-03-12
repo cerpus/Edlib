@@ -119,6 +119,7 @@ jobs:
     name: Deploy NDLA staging
     if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
     needs:
+      - get_variables
       - deploy_ndla_test
       - deploy_test
     uses: ./.github/workflows/deploy-eb.yaml
@@ -131,6 +132,7 @@ jobs:
     name: Deploy NDLA prod
     if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
     needs:
+      - get_variables
       - deploy_ndla_staging
     uses: ./.github/workflows/deploy-eb.yaml
     with:
@@ -142,6 +144,7 @@ jobs:
     name: Deploy prod
     if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
     needs:
+      - get_variables
       - deploy_test
     uses: ./.github/workflows/deploy-eb.yaml
     with:
