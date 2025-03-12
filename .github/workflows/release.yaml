@@ -101,3 +101,51 @@ jobs:
       version: ${{ needs.get_variables.outputs.releaseRef }}
       environment: test
     secrets: inherit
+
+  deploy_ndla_test:
+    name: Deploy NDLA test
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - building_done
+      - create_release
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_test
+    secrets: inherit
+
+  deploy_ndla_staging:
+    name: Deploy NDLA staging
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - deploy_ndla_test
+      - deploy_test
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_staging
+    secrets: inherit
+
+  deploy_ndla_prod:
+    name: Deploy NDLA prod
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - deploy_ndla_staging
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_prod
+    secrets: inherit
+
+  deploy_prod:
+    name: Deploy prod
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - deploy_test
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: prod
+    secrets: inherit
+
