@@ -95,17 +95,12 @@ jobs:
           aws s3 cp $location/eb.zip s3://${{ vars.HUB_EB_S3_BUCKET }}/$FILE_KEY
           aws elasticbeanstalk create-application-version \
             --application-name ${{ steps.get_variables.outputs.beanstalkApplication }} \
-            --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }} \
             --version-label "${{ steps.get_variables.outputs.beanstalkVersion }}" \
             --description "Release version ${{ inputs.version }}" \
             --source-bundle S3Bucket="${{ vars.HUB_EB_S3_BUCKET }}",S3Key="$FILE_KEY"
 
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
-          name="${{ matrix.api }}"
-          if [ "$name" == "contentauthor" ]; then
-            name="content-author"
-          fi
           aws elasticbeanstalk update-environment \
             --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }} \
             --version-label "${{ steps.get_variables.outputs.beanstalkVersion }}"
