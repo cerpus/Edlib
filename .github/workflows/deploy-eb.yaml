@@ -68,7 +68,7 @@ jobs:
         id: build_zip_file
         run: |
           location="${{ steps.get_variables.outputs.location }}"
-          cd $location
+          cd $location/eb
           tag_php="php-${{ inputs.version }}"
           tag_web="web-${{ inputs.version }}"
           image="ghcr.io/cerpus/edlib-${{ matrix.api }}"
@@ -76,7 +76,7 @@ jobs:
           image_with_tag_web="${image}:${tag_web}"
           sed -i -e "s,edlib:php-latest,${image_with_tag_php},g" eb/docker-compose.yml
           sed -i -e "s,edlib:web-latest,${image_with_tag_web},g" eb/docker-compose.yml
-          zip -r eb.zip eb
+          zip -r ../eb.zip .
 
 #      @TODO remove when everything is working
       - uses: actions/upload-artifact@v4
