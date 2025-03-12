@@ -5,17 +5,25 @@ on:
         required: true
         type: string
         description: The environment to deploy to
+      version:
+        required: true
+        type: string
+        description: The environment to deploy to
 
 jobs:
   deploy:
     name: Deploy to ${{ inputs.environment }}
-    environment: ${{ environment }}
+    environment: ${{ inputs.environment }}
     concurrency: deploy-hub-${{ inputs.environment }}
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
       contents: read
-
+    strategy:
+      matrix:
+        api:
+          - hub
+          - contentauthor
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,8 +35,50 @@ jobs:
           role-duration-seconds: 3600
           role-session-name: GithubCerpusDevDeploy
 
+      - name: Build zip file for Elastic Beanstalk
+        id: build_zip_file
+        run: |
+          api="${{ matrix.api }}"
+          location="sourcecode/${{ matrix.api }}"
+          if [ "$api" == "contentauthor" ]; then
+            location="sourcecode/apis/contentauthor"
+          fi
+          
+          cd $location
+          tag_php="php-${{ inputs.version }}"
+          tag_web="web-${{ inputs.version }}"
+          image="ghcr.io/cerpus/edlib-hub"
+          image_with_tag_php="${image}:${tag_php}"
+          image_with_tag_web="${image}:${tag_web}"
+          sed -i -e "s,edlib:php-latest,${image_with_tag_php},g" eb/docker-compose.yml
+          sed -i -e "s,edlib:web-latest,${image_with_tag_web},g" eb/docker-compose.yml
+          zip -r eb.zip eb
+          
+          echo "::set-output name=location::$location"
+
+#      @TODO remove when everything is working
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hub-eb
+          path: sourcecode/hub/eb.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: contentauthor-eb
+          path: sourcecode/apis/contentauthor/eb.zip
+
+      - name: Re-deploy docker-compose on Elastic Beanstalk
+        run: |
+          location="${{ steps.build_zip_file.outputs.location }}"
+          FILE_KEY="deploy-files/${{ vars.HUB_ENVIRONMENT_NAME }}/${{ inputs.version }}.zip"
+          aws s3 cp $location/eb.zip s3://${{ vars.HUB_EB_S3_BUCKET }}/$FILE_KEY
+          aws elasticbeanstalk create-application-version 
+            --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
+            --version-label "${{ vars.HUB_APPLICATION_VERSION }}-${{ inputs.version }}"
+            --description "Release version ${{ inputs.version }}"
+            --source-bundle S3Bucket="${{ vars.HUB_EB_S3_BUCKET }}",S3Key="$FILE_KEY"
+
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
           aws elasticbeanstalk update-environment 
             --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
-            --version-label ${{ vars.HUB_APPLICATION_VERSION }}
+            --version-label "${{ vars.HUB_APPLICATION_VERSION }}-${{ inputs.version }}"

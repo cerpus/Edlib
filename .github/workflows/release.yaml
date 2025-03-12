@@ -75,29 +75,11 @@ jobs:
               sha: context.sha
             })
 
-#  auto_deploy:
-#    needs:
-#      - building_done
-#      - get_variables
-#    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        environment:
-#          - cerpus_test
-#    environment: ${{ matrix.environment }}
-#    concurrency: deploy-${{ matrix.environment }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: Deploy
-#        uses: ./.github/actions/awsDeploy
-#        with:
-#          version: ${{ needs.get_variables.outputs.releaseRef }}
-#          environment: ${{ matrix.environment }}
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-#          AWS_EKS_CLUSTER_NAME: ${{ secrets.AWS_EKS_CLUSTER_NAME }}
-#          SLACK_HOOK_URL: ${{ secrets.SLACK_HOOK_URL }}
-#          EXTRA_SLACK_HOOK_URL: ${{ secrets.EXTRA_SLACK_HOOK_URL }}
+  deploy_test:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    needs: get_variables
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: test
+    secrets: inherit

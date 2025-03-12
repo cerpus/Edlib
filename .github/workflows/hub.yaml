@@ -123,7 +123,7 @@ jobs:
             --memory-limit=512M
         working-directory: ${{ github.workspace }}
 
-  test: # This should only be test
+  test:
     if: "inputs.version && !inputs.deploy"
     needs: [composer-validate]
     runs-on: ubuntu-22.04
@@ -206,7 +206,7 @@ jobs:
           context: sourcecode/hub
 
 
-  build_publish: # This should only be test
+  build_publish:
     if: inputs.version && !inputs.deploy
     needs: [test, php-cs-fixer, phpstan]
     runs-on: ubuntu-22.04
@@ -236,13 +236,8 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-hub
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }},prefix=php-
-            type=semver,pattern={{version}},prefix=php-
-            type=semver,pattern={{major}}.{{minor}},prefix=php-
-            type=semver,pattern={{major}},prefix=php-
-            type=ref,event=branch,prefix=php-
-            type=ref,event=pr,prefix=php-
-            type=sha,prefix=php-
+            type=raw,value=latest,prefix=php-
+            type=raw,value=${{ inputs.version }},prefix=php-
 
       - name: Build PHP image
         uses: docker/build-push-action@v5
@@ -250,7 +245,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/buildx-cache-new,mode=max
           context: sourcecode/hub
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+          push: true
           target: prod
           tags: ${{ steps.php_meta.outputs.tags }}
 
@@ -261,13 +256,8 @@ jobs:
           images: |
             name=ghcr.io/cerpus/edlib-hub
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }},prefix=web-
-            type=semver,pattern={{version}},prefix=web-
-            type=semver,pattern={{major}}.{{minor}},prefix=web-
-            type=semver,pattern={{major}},prefix=web-
-            type=ref,event=branch,prefix=web-
-            type=ref,event=pr,prefix=web-
-            type=sha,prefix=web-
+            type=raw,value=latest,prefix=web-
+            type=raw,value=${{ inputs.version }},prefix=web-
 
       - name: Build web image
         uses: docker/build-push-action@v5
@@ -275,7 +265,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           context: sourcecode/hub
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+          push: true
           target: web
           tags: ${{ steps.web_meta.outputs.tags }}
 
@@ -283,36 +273,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-  deploy-eb:
-    name: Deploy hub to test environments
-    if: inputs.deploy
-    needs:
-      - build_publish
-    strategy:
-      matrix:
-        environment:
-          - test
-          - ndla_staging
-    environment: ${{ matrix.environment }}
-    concurrency: deploy-hub-${{ matrix.environment }}
-    runs-on: ubuntu-22.04
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-     - name: Checkout
-       uses: actions/checkout@v4
-
-     - name: Configure AWS Credentials
-       uses: aws-actions/configure-aws-credentials@v4
-       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-        aws-region: eu-west-1
-        role-duration-seconds: 3600
-        role-session-name: GithubCerpusDevDeploy
-     
-     - name: Re-deploy docker-compose on Elastic Beanstalk
-       run: |
-        aws elasticbeanstalk update-environment --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }} --version-label ${{ vars.HUB_APPLICATION_VERSION }}
