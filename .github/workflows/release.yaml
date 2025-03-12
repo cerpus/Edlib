@@ -1,11 +1,10 @@
-
-name: "Create release"
+name: "Release"
 
 on:
   workflow_dispatch:
     inputs:
       releaseName:
-        description: 'Name of release'
+        description: 'Name of release (Use semver)'
         required: false
         default: ''
   push:
@@ -37,10 +36,10 @@ jobs:
   # ---------- APIS -----------------
   build_image_hub:
     needs: get_variables
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/hub.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
-      deploy: true
+      deploy: false
 
   building_done:
     runs-on: ubuntu-latest

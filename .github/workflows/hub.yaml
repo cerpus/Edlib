@@ -1,21 +1,27 @@
 name: Hub
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - ".github/workflows/hub.yaml"
-      - "sourcecode/hub/**"
-    tags:
-      - 'v*'
   pull_request:
     branches:
       - master
     paths:
       - '.github/workflows/hub.yaml'
       - 'sourcecode/hub/**'
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      version:
+        description: 'A version to release'
+        required: true
+        type: string
+      deploy:
+        description: 'A version to release'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  shouldPublishImage: ${{ inputs.version && !inputs.deploy && '1' || '0' }}
+  shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
 
 defaults:
   run:
@@ -37,7 +43,7 @@ jobs:
         run: composer validate --no-check-publish
 
   php-cs-fixer:
-    if: github.ref != 'refs/heads/master'
+    if: env.shouldDeploy == '0'
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
@@ -84,8 +90,8 @@ jobs:
           commit_message: Run php-cs-fixer
 
   phpstan:
-    if: always()
-    needs: [php-cs-fixer]
+    if: env.shouldDeploy == '0'
+    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     steps:
@@ -121,9 +127,9 @@ jobs:
             --memory-limit=512M
         working-directory: ${{ github.workspace }}
 
-  build_test_publish:
-    if: always()
-    needs: [php-cs-fixer]
+  test: # This should only be test
+    if: env.shouldPublishImage == '1' && env.shouldDeploy == '0'
+    needs: [composer-validate]
     runs-on: ubuntu-22.04
 
     services:
@@ -203,6 +209,11 @@ jobs:
           flags: hub
           context: sourcecode/hub
 
+
+  build_publish: # This should only be test
+    if: env.shouldPublishImage == '1' && env.shouldDeploy == '0'
+    needs: [test, php-cs-fixer, phpstan]
+    runs-on: ubuntu-22.04
       - name: Gather Docker metadata for PHP image
         id: php_meta
         uses: docker/metadata-action@v5
@@ -260,8 +271,7 @@ jobs:
 
   deploy-eb:
     name: Deploy hub to test environments
-    if: always() && needs.build_test_publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-    needs: [build_test_publish]
+    if: env.shouldDeploy == '1'
     strategy:
       matrix:
         environment:
