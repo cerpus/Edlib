@@ -27,3 +27,7 @@ jobs:
           cat eb/docker-compose.yml
           zip -r hub.zip eb
           ls -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hub-eb
+          path: sourcecode/hub/hub.zip
