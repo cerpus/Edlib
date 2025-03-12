@@ -102,5 +102,9 @@ jobs:
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
           aws elasticbeanstalk update-environment \
+            --application-name ${{ steps.get_variables.outputs.beanstalkApplication }} \
             --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }} \
             --version-label "${{ steps.get_variables.outputs.beanstalkVersion }}"
+          aws elasticbeanstalk wait environment-updated \
+            --application-name ${{ steps.get_variables.outputs.beanstalkApplication }} \
+            --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }}
