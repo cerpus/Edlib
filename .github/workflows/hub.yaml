@@ -214,6 +214,7 @@ jobs:
     if: env.shouldPublishImage == '1' && env.shouldDeploy == '0'
     needs: [test, php-cs-fixer, phpstan]
     runs-on: ubuntu-22.04
+    steps:
       - name: Gather Docker metadata for PHP image
         id: php_meta
         uses: docker/metadata-action@v5
