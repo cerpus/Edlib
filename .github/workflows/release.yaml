@@ -90,7 +90,7 @@ jobs:
 
   deploy_test:
     name: Deploy test
-    if: github.actor != 'dependabot[bot]' && success()
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
     needs:
       - get_variables
       - building_done
