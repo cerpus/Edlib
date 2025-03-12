@@ -22,8 +22,8 @@ jobs:
           image="ghcr.io/cerpus/edlib-hub"
           image_with_tag_php="${image}:${tag_php}"
           image_with_tag_web="${image}:${tag_web}"
-          sed -i -e 's,edlib:php-latest,${image_with_tag_php},g' eb/docker-compose.yml
-          sed -i -e 's,edlib:web-latest,${image_with_tag_web},g' eb/docker-compose.yml
+          sed -i -e "s,edlib:php-latest,${image_with_tag_php},g" eb/docker-compose.yml
+          sed -i -e "s,edlib:web-latest,${image_with_tag_web},g" eb/docker-compose.yml
           cat eb/docker-compose.yml
           zip -r hub.zip eb
           ls -l
