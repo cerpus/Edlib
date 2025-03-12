@@ -59,6 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build_image_hub
+      - build_image_content_author
     steps:
       - name: "Done building images"
         run: |
