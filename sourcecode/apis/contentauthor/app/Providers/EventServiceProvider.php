@@ -11,6 +11,16 @@ class EventServiceProvider extends ServiceProvider
      * The event listener mappings for the application.
      */
     protected $listen = [
+        // TODO: enable auto-discovery
+
+        \App\Events\H5pContentUpdated::class => [
+            \App\Listeners\H5P\InfoCacheListener::class . '@handleUpdated',
+        ],
+
+        \App\Events\H5pContentDeleted::class => [
+            \App\Listeners\H5P\InfoCacheListener::class . '@handleDeleted',
+        ],
+
         \App\Events\ArticleWasSaved::class => [
             \App\Listeners\Article\HandleVersioning::class,
             \App\Listeners\Article\HandleCollaborators::class,
