@@ -12,9 +12,9 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to ${{ inputs.environment }}
+    name: Deploy ${{ matrix.api }}
     environment: ${{ inputs.environment }}
-    concurrency: deploy-hub-${{ inputs.environment }}
+    concurrency: deploy-${{ matrix.api }}-${{ inputs.environment }}
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
