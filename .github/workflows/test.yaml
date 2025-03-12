@@ -1,0 +1,25 @@
+name: "Release"
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  get_variables:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the ref
+        id: get_ref
+        run: |
+          cd sourcecode/hub
+          tag_php="php-${{github.sha}}"
+          tag_web="web-${{github.sha}}"
+          image="ghcr.io/cerpus/edlib-hub"
+          image_with_tag_php="${image}:${tag_php}"
+          image_with_tag_web="${image}:${tag_web}"
+          sed 's,edlib:php-latest,$image_with_tag_php,g' eb/docker-compose.yml > eb/docker-compose.yml
+          sed 's,edlib:web-latest,$image_with_tag_web,g' eb/docker-compose.yml > eb/docker-compose.yml
+          cat eb/docker-compose.yml
+          zip -r hub.zip eb
+          ls -l

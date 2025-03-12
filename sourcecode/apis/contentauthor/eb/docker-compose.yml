@@ -1,0 +1,58 @@
+volumes:
+  ca_storage:
+
+services:
+  contentauthor:
+    image: ghcr.io/cerpus/edlib-contentauthor:php-latest
+    env_file:
+      - .env
+    healthcheck:
+      test: [CMD, nc, -z, localhost, '9000']
+    platform: linux/amd64
+    volumes:
+      - ca_storage:/app/storage
+
+  contentauthor-cron:
+    image: ghcr.io/cerpus/edlib-contentauthor:php-latest
+    command: [php, artisan, 'schedule:work']
+    depends_on:
+      contentauthor-startup: { condition: service_completed_successfully }
+    env_file:
+      - .env
+    platform: linux/amd64
+    volumes:
+      - ca_storage:/app/storage
+
+  contentauthor-startup:
+    image: ghcr.io/cerpus/edlib-contentauthor:php-latest
+    command: [startup.sh]
+    env_file:
+      - .env
+    platform: linux/amd64
+    volumes:
+      - ca_storage:/app/storage
+
+  contentauthor-web:
+    image: ghcr.io/cerpus/edlib-contentauthor:web-latest
+    depends_on:
+      contentauthor: { condition: service_healthy }
+    environment:
+      PHP_FPM_HOST: contentauthor:9000
+    env_file:
+      - .env
+    platform: linux/amd64
+    volumes:
+      - ca_storage:/app/storage:ro
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+
+  contentauthor-worker:
+    image: ghcr.io/cerpus/edlib-contentauthor:php-latest
+    command: [php, artisan, 'queue:work']
+    env_file:
+      - .env
+    platform: linux/amd64
+    volumes:
+      - ca_storage:/app/storage
