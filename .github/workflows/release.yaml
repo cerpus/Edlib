@@ -40,6 +40,7 @@ jobs:
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
       deploy: false
+    secrets: inherit
 
   building_done:
     runs-on: ubuntu-latest

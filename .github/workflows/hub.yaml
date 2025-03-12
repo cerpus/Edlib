@@ -269,6 +269,8 @@ jobs:
   deploy-eb:
     name: Deploy hub to test environments
     if: inputs.deploy
+    needs:
+      - build_publish
     strategy:
       matrix:
         environment:
