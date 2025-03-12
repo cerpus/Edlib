@@ -14,11 +14,11 @@ class EventServiceProvider extends ServiceProvider
         // TODO: enable auto-discovery
 
         \App\Events\H5pContentUpdated::class => [
-            \App\Listeners\H5P\InfoCacheListener::class,
+            \App\Listeners\H5P\InfoCacheListener::class . '@handleUpdated',
         ],
 
         \App\Events\H5pContentDeleted::class => [
-            \App\Listeners\H5P\InfoCacheListener::class,
+            \App\Listeners\H5P\InfoCacheListener::class . '@handleDeleted',
         ],
 
         \App\Events\ArticleWasSaved::class => [
