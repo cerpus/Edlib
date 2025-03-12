@@ -30,13 +30,21 @@ jobs:
 
             ref="${{ github.event.inputs.releaseName }}"
           fi
-
-          echo "::set-output name=releaseRef::$ref"
+          
+          echo "releaseRef=$ref" >> $GITHUB_OUTPUT
 
   # ---------- APIS -----------------
   build_image_hub:
     needs: get_variables
     uses: ./.github/workflows/hub.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: false
+    secrets: inherit
+
+  build_image_content_author:
+    needs: get_variables
+    uses: ./.github/workflows/contentauthor.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
       deploy: false
@@ -76,8 +84,10 @@ jobs:
             })
 
   deploy_test:
+    name: Deploy test
     if: ${{ github.actor != 'dependabot[bot]' }}
     needs:
+      - get_variables
       - building_done
     uses: ./.github/workflows/deploy-eb.yaml
     with:
