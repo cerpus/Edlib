@@ -40,7 +40,38 @@ final class OembedTest extends TestCase
                     ->where('height', 600)
                     ->where('title', 'My content')
                     ->where('version', '1.0')
-                    ->has('html'),
+                    ->where('html', fn(string $html) => str_contains(
+                        $html,
+                        "src=\"https://hub-test-ndla-legacy.edlib.test/resource/$id\"",
+                    )),
+            );
+    }
+
+    public function testCanPassLocale(): void
+    {
+        $id = $this->faker->uuid;
+
+        Content::factory()
+            ->withVersion(ContentVersion::factory()->state([
+                'title' => 'My content',
+            ]))
+            ->tag('edlib2_usage_id:' . $id)
+            ->create();
+
+        $this->getJson("https://hub-test-ndla-legacy.edlib.test/oembed?url=https%3A%2F%2Fhub-test-ndla-legacy.edlib.test%2Fresource%2F$id%3Flocale=nb-NO&format=json")
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->where('type', 'rich')
+                    ->where('width', 800)
+                    ->where('height', 600)
+                    ->where('title', 'My content')
+                    ->where('version', '1.0')
+                    ->where('html', fn(string $html) => str_contains(
+                        $html,
+                        "src=\"https://hub-test-ndla-legacy.edlib.test/resource/$id?locale=nb-NO\"",
+                    )),
             );
     }
 }

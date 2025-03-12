@@ -6,7 +6,9 @@ namespace App\Http\Controllers\NdlaLegacy;
 
 use App\Models\Content;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
+use function is_string;
 use function redirect;
 
 /**
@@ -15,8 +17,18 @@ use function redirect;
  */
 final readonly class ViewResourceController
 {
-    public function __invoke(Content $edlib2UsageContent): RedirectResponse
+    public function __invoke(Content $edlib2UsageContent, Request $request): RedirectResponse
     {
-        return redirect()->route('content.embed', [$edlib2UsageContent]);
+        $query = [];
+
+        $locale = $request->input('locale');
+        if (is_string($locale)) {
+            $query['locale'] = $locale;
+        }
+
+        return redirect()->route('content.embed', [
+            $edlib2UsageContent,
+            ...$query,
+        ]);
     }
 }

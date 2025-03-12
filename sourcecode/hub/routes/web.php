@@ -19,6 +19,7 @@ use App\Http\Middleware\EnsureFrameCookies;
 use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
 use App\Http\Middleware\LaunchCreateIfSingleTool;
+use App\Http\Middleware\SetsLocaleFromQuery;
 use App\Http\Middleware\StartScopedLtiSession;
 use App\Models\Content;
 use App\Models\User;
@@ -140,12 +141,14 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/{content}/embed')
         ->uses([ContentController::class, 'embed'])
+        ->middleware([SetsLocaleFromQuery::class])
         ->name('content.embed')
         ->can('view', 'content')
         ->whereUlid('content');
 
     Route::get('/content/{content}/version/{version}/embed')
         ->uses([ContentController::class, 'embed'])
+        ->middleware([SetsLocaleFromQuery::class])
         ->name('content.embed-version')
         ->can('view', ['content', 'version'])
         ->whereUlid(['content', 'version'])
