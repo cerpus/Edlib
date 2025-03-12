@@ -77,7 +77,8 @@ jobs:
 
   deploy_test:
     if: ${{ github.actor != 'dependabot[bot]' }}
-    needs: get_variables
+    needs:
+      - building_done
     uses: ./.github/workflows/deploy-eb.yaml
     with:
       version: ${{ needs.get_variables.outputs.releaseRef }}
