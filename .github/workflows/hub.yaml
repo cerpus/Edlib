@@ -19,10 +19,6 @@ on:
         type: boolean
         default: false
 
-env:
-  shouldPublishImage: ${{ inputs.version && !inputs.deploy && '1' || '0' }}
-  shouldDeploy: ${{ inputs.deploy && '1' || '0' }}
-
 defaults:
   run:
     working-directory: sourcecode/hub
@@ -43,7 +39,7 @@ jobs:
         run: composer validate --no-check-publish
 
   php-cs-fixer:
-    if: env.shouldDeploy == '0'
+    if: "!inputs.deploy"
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
@@ -90,7 +86,7 @@ jobs:
           commit_message: Run php-cs-fixer
 
   phpstan:
-    if: env.shouldDeploy == '0'
+    if: "!inputs.deploy"
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
@@ -128,7 +124,7 @@ jobs:
         working-directory: ${{ github.workspace }}
 
   test: # This should only be test
-    if: env.shouldPublishImage == '1' && env.shouldDeploy == '0'
+    if: "inputs.version && !inputs.deploy"
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
@@ -211,7 +207,7 @@ jobs:
 
 
   build_publish: # This should only be test
-    if: env.shouldPublishImage == '1' && env.shouldDeploy == '0'
+    if: inputs.version && !inputs.deploy
     needs: [test, php-cs-fixer, phpstan]
     runs-on: ubuntu-22.04
     steps:
@@ -272,7 +268,7 @@ jobs:
 
   deploy-eb:
     name: Deploy hub to test environments
-    if: env.shouldDeploy == '1'
+    if: inputs.deploy
     strategy:
       matrix:
         environment:
