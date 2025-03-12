@@ -27,6 +27,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Get variables
+        id: get_variables
+        run: |
+          api="${{ matrix.api }}"
+          location="sourcecode/${{ matrix.api }}"
+          beanstalkName="${{ matrix.api }}"
+          environment="${{ inputs.environment }}"
+          
+          if [ "$api" == "contentauthor" ]; then
+            location="sourcecode/apis/contentauthor"
+            beanstalkName="content-author"
+          fi
+          
+          envGroup="edlib-cerpus"
+          envSuffix=$environment
+          if [ "$environment" == "ndla_test" ] || [ "$environment" == "ndla_staging" ] || [ "$environment" == "ndla_prod" ]; then
+            envGroup="edlib-ndla"
+            envSuffix=${environment:5}
+          fi
+          
+          beanstalkApplication="$envGroup-$beanstalkName"
+          beanstalkEnvironment="$envGroup-$envSuffix-$beanstalkName"
+          beanstalkVersion="$envGroup-$envSuffix-$beanstalkName-${{ inputs.version }}"
+
+          echo "location=$location" >> $GITHUB_OUTPUT
+          echo "beanstalkApplication=$beanstalkApplication" >> $GITHUB_OUTPUT
+          echo "beanstalkEnvironment=$beanstalkEnvironment" >> $GITHUB_OUTPUT
+          echo "beanstalkVersion=$beanstalkVersion" >> $GITHUB_OUTPUT
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -38,23 +67,16 @@ jobs:
       - name: Build zip file for Elastic Beanstalk
         id: build_zip_file
         run: |
-          api="${{ matrix.api }}"
-          location="sourcecode/${{ matrix.api }}"
-          if [ "$api" == "contentauthor" ]; then
-            location="sourcecode/apis/contentauthor"
-          fi
-          
+          location="${{ steps.get_variables.outputs.location }}"
           cd $location
           tag_php="php-${{ inputs.version }}"
           tag_web="web-${{ inputs.version }}"
-          image="ghcr.io/cerpus/edlib-hub"
+          image="ghcr.io/cerpus/edlib-${{ matrix.api }}"
           image_with_tag_php="${image}:${tag_php}"
           image_with_tag_web="${image}:${tag_web}"
           sed -i -e "s,edlib:php-latest,${image_with_tag_php},g" eb/docker-compose.yml
           sed -i -e "s,edlib:web-latest,${image_with_tag_web},g" eb/docker-compose.yml
           zip -r eb.zip eb
-          
-          echo "::set-output name=location::$location"
 
 #      @TODO remove when everything is working
       - uses: actions/upload-artifact@v4
@@ -68,17 +90,22 @@ jobs:
 
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
-          location="${{ steps.build_zip_file.outputs.location }}"
-          FILE_KEY="deploy-files/${{ vars.HUB_ENVIRONMENT_NAME }}/${{ inputs.version }}.zip"
+          location="${{ steps.get_variables.outputs.location }}"
+          FILE_KEY="deploy-files/${{ matrix.api }}-${{ inputs.environment }}/${{ inputs.version }}.zip"
           aws s3 cp $location/eb.zip s3://${{ vars.HUB_EB_S3_BUCKET }}/$FILE_KEY
-          aws elasticbeanstalk create-application-version 
-            --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
-            --version-label "${{ vars.HUB_APPLICATION_VERSION }}-${{ inputs.version }}"
-            --description "Release version ${{ inputs.version }}"
+          aws elasticbeanstalk create-application-version \
+            --application-name ${{ steps.get_variables.outputs.beanstalkApplication }} \
+            --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }} \
+            --version-label "${{ steps.get_variables.outputs.beanstalkVersion }}" \
+            --description "Release version ${{ inputs.version }}" \
             --source-bundle S3Bucket="${{ vars.HUB_EB_S3_BUCKET }}",S3Key="$FILE_KEY"
 
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
-          aws elasticbeanstalk update-environment 
-            --environment-name ${{ vars.HUB_ENVIRONMENT_NAME }}
-            --version-label "${{ vars.HUB_APPLICATION_VERSION }}-${{ inputs.version }}"
+          name="${{ matrix.api }}"
+          if [ "$name" == "contentauthor" ]; then
+            name="content-author"
+          fi
+          aws elasticbeanstalk update-environment \
+            --environment-name ${{ steps.get_variables.outputs.beanstalkEnvironment }} \
+            --version-label "${{ steps.get_variables.outputs.beanstalkVersion }}"
