@@ -693,7 +693,7 @@ class H5PController extends Controller
 
     public function getCopyright(H5PContent $h5p, H5PCopyright $copyright, CacheRepository $cache)
     {
-        $copyrights = $cache->sear($h5p->getCopyrightCacheKey(), fn() => $copyright->getCopyrights($h5p));
+        $copyrights = $cache->rememberForever($h5p->getCopyrightCacheKey(), fn() => $copyright->getCopyrights($h5p));
 
         if (empty($copyrights)) {
             return response('No copyright found', Response::HTTP_NOT_FOUND);
@@ -704,7 +704,7 @@ class H5PController extends Controller
 
     public function getInfo(H5PContent $h5p, H5PInfo $h5pInfo, CacheRepository $cache)
     {
-        $information = $cache->sear($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
+        $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
 
         return response()->json($information);
     }
