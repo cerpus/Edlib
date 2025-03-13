@@ -78,16 +78,6 @@ jobs:
           sed -i -e "s,edlib:web-latest,${image_with_tag_web},g" ./docker-compose.yml
           zip -r ../eb.zip .
 
-#      @TODO remove when everything is working
-      - uses: actions/upload-artifact@v4
-        with:
-          name: hub-eb
-          path: sourcecode/hub/eb.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: contentauthor-eb
-          path: sourcecode/apis/contentauthor/eb.zip
-
       - name: Re-deploy docker-compose on Elastic Beanstalk
         run: |
           location="${{ steps.get_variables.outputs.location }}"
