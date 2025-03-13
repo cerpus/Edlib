@@ -72,13 +72,13 @@ class AdminConfig implements ConfigInterface
     }
 
     /**
-     * Scripts used by the bulk update that updates the content type language strings stored
-     * with the content
+     * Scripts required by bulk update of the translations stored in content
      */
     public function addContentLanguageScripts(): void
     {
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
+        $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-init.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'language/en.js'));
         $this->addAsset('scripts', (string) mix('js/ndla-content-language.js'));
     }

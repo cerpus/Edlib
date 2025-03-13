@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
+use App\Http\Controllers\Admin\AdminH5PTranslation;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
 use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
@@ -49,12 +50,12 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
             ->name('admin.content-library');
         Route::get('content/{content}/details/{version?}', [AdminH5PDetailsController::class, 'contentHistory'])
             ->name('admin.content-details');
-        Route::get('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslation'])
+        Route::get('libraries/{library}/translation/{locale}', [AdminH5PTranslation::class, 'edit'])
             ->name('admin.library-translation');
-        Route::post('libraries/{library}/translation/{locale}', [AdminH5PDetailsController::class, 'libraryTranslationUpdate']);
-        Route::get('libraries/{library}/translation/{locale}/content', [AdminH5PDetailsController::class, 'contentTranslationUpdate'])
+        Route::post('libraries/{library}/translation/{locale}', [AdminH5PTranslation::class, 'update']);
+        Route::get('libraries/{library}/translation/{locale}/content', [AdminH5PTranslation::class, 'contentRefresh'])
             ->name('admin.library-transation-content');
-        Route::post('libraries/{library}/translation/{locale}/content/update', [AdminH5PDetailsController::class, 'updateContentTranslation'])
+        Route::post('libraries/{library}/translation/{locale}/content/update', [AdminH5PTranslation::class, 'contentUpdate'])
             ->name('admin.library-transation-content-update');
 
         Route::get('libraries/{library}', [ContentUpgradeController::class, 'upgrade'])->name('admin.library');

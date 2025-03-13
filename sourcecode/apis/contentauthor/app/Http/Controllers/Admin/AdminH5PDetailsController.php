@@ -9,20 +9,14 @@ use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\H5PLibraryLibrary;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminTranslationUpdateRequest;
 use App\Libraries\ContentAuthorStorage;
-use App\Libraries\H5P\AdminConfig;
-use App\Libraries\H5P\H5PLibraryAdmin;
-use DB;
 use ErrorException;
 use H5PCore;
 use H5PValidator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -180,133 +174,6 @@ class AdminH5PDetailsController extends Controller
             'history' => $history,
             'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
         ]);
-    }
-
-    public function libraryTranslation(H5PLibrary $library, string $locale): View
-    {
-        return view('admin.library-upgrade.translation', $this->libraryTranslationData($library, $locale));
-    }
-
-    public function libraryTranslationUpdate(AdminTranslationUpdateRequest $request, H5PLibrary $library, string $locale): View
-    {
-        $messages = collect();
-        $input = $request->validated();
-
-        if (array_key_exists('translationFile', $input) && $request->file('translationFile')->isValid()) {
-            $translation = $request->file('translationFile')->getContent();
-        } else {
-            $translation = $input['translation'];
-        }
-
-        if (empty($translation)) {
-            $messages->add('Content was empty');
-        } else {
-            try {
-                json_decode($translation, flags: JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                $messages->add($e->getMessage());
-            }
-
-            if ($messages->isEmpty()) {
-                $count = $library->languages()
-                    ->where('language_code', $locale)
-                    ->limit(1)
-                    ->update(['translation' => $translation]);
-
-                if ($count === 0) {
-                    $messages->add('No rows was updated');
-                }
-            }
-        }
-
-        $data = $this->libraryTranslationData($library, $locale);
-        $data['messages'] = $messages;
-
-        return view('admin.library-upgrade.translation', $data);
-    }
-
-    private function libraryTranslationData(H5PLibrary $library, string $locale): array
-    {
-        $libLang = H5PLibraryLanguage::where('library_id', $library->id)
-            ->where('language_code', $locale)
-            ->first();
-
-        $updatableCount = DB::table('content_versions')
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
-            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
-            ->where(function ($query) {
-                $query
-                    ->whereNull('cv.content_id')
-                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-            })
-            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->where('h5p_contents.library_id', $library->id)
-            ->where('h5p_contents_metadata.default_language', $locale);
-
-        $totalCount = DB::table('h5p_contents')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->where('h5p_contents.library_id', $library->id)
-            ->where('h5p_contents_metadata.default_language', $locale)
-            ->count();
-
-        $filename = sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale);
-        if (Storage::exists($filename)) {
-            $fileTranslation = Storage::disk()->get($filename);
-            $fileModified = Carbon::createFromTimestamp(Storage::disk()->lastModified($filename));
-        }
-
-        return [
-            'library' => $library,
-            'languageCode' => $locale,
-            'translationDb' => $libLang,
-            'translationFile' => $fileTranslation ?? null,
-            'fileModified' => $fileModified ?? null,
-            'totalCount' => $totalCount,
-            'updatableCount' => $updatableCount->first()->total,
-        ];
-    }
-
-    public function contentTranslationUpdate(H5PLibrary $library, string $locale): View
-    {
-        $adminConfig = app(AdminConfig::class);
-        $adminConfig->getConfig();
-        $adminConfig->addContentLanguageScripts();
-
-        $contentCount = DB::table('content_versions')
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
-            ->leftJoin(DB::raw('content_versions as cv'), 'cv.parent_id', '=', 'content_versions.id')
-            ->where(function ($query) {
-                $query
-                    ->whereNull('cv.content_id')
-                    ->orWhereNotIn('cv.version_purpose', [ContentVersion::PURPOSE_UPGRADE, ContentVersion::PURPOSE_UPDATE]);
-            })
-            ->join('h5p_contents', 'h5p_contents.id', '=', 'content_versions.content_id')
-            ->join('h5p_contents_metadata', 'h5p_contents.id', '=', 'h5p_contents_metadata.content_id')
-            ->where('h5p_contents.library_id', $library->id)
-            ->where('h5p_contents_metadata.default_language', $locale);
-
-        $jsConfig = [
-            'ajaxPath' => $adminConfig->config->ajaxPath,
-            'endpoint' => route('admin.library-transation-content-update', [$library, $locale]),
-            'libraryId' => $library->id,
-            'library' => $library->getLibraryString(false),
-            'locale' => $locale,
-        ];
-
-        return view('admin.content-language-update', [
-            'library' => $library,
-            'languageCode' => $locale,
-            'contentCount' => $contentCount->first()->total,
-            'jsConfig' => $jsConfig,
-            'scripts' => $adminConfig->getScriptAssets(),
-            'styles' => $adminConfig->getStyleAssets(),
-        ]);
-    }
-
-    public function updateContentTranslation(Request $request): JsonResponse
-    {
-        return response()->json(app(H5PLibraryAdmin::class)->updateContentTranslation($request));
     }
 
     private function getVersions(ContentVersion $versionData, Collection $stack, $getChildren = true): Collection

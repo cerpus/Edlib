@@ -27,17 +27,15 @@
                                 stored in the content.
                                 <br>
                                 When creating/editing these are the texts that are available in the
-                                "Text overrides and translations" section in the editor. Any existing customisation
-                                to these texts will be lost.
+                                "Text overrides and translations" section in the editor. If any of these texts was
+                                changed when the content was created/modified, these changes will be lost.
                             </p>
                             <p>
-                                Translations from other content types used in the content will also be updated.
+                                Translations from other content types or libraries used in the content will also be updated.
                             </p>
                             <p>
-                                If the content is changed, it will be stored as a new content and added as a new version
-                                of the original.
-                                Only the content will be changed, other info will be preserved.
-                                There is currently no way of restoring the original if the content is broken as a result of this update.
+                                The content is replaced, i.e. it will not be stored as new content nor will a version be created.
+                                Timestamps will not be changed.
                             </p>
                         </div>
                         <div class="panel-body row">
@@ -50,6 +48,13 @@
                                 disabled="disabled"
                             >
                                 Start
+                            </a>
+                            <a
+                                class="btn btn-default disabled"
+                                id="cancelRefresh"
+                                disabled="disabled"
+                            >
+                                Cancel
                             </a>
                         </div>
                         <div class="progress hidden" data-total="{{$contentCount}}" data-inprogress="0" data-success="0" data-failed="0">

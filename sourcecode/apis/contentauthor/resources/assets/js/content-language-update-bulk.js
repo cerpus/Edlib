@@ -62,13 +62,28 @@ $(document).ready(function () {
             logView.removeClass('hidden');
         });
 
-    // Enable 'Start' button
-    $('#startRefresh')
-        .removeClass('disabled')
-        .removeAttr('disabled')
-        .click(function () {
-            new ContentTranslationRefreshTool(window.bulkTranslationConfig || {});
-        })
+    try {
+        const refresher = new ContentTranslationRefreshTool(window.bulkTranslationConfig || {});
+
+        // Enable 'Start' button
+        $('#startRefresh')
+            .removeClass('disabled')
+            .removeAttr('disabled')
+            .click(function () {
+                $('#cancelRefresh')
+                    .removeClass('disabled')
+                    .removeAttr('disabled')
+                    .click(function () {
+                        refresher.stop();
+                        $('#cancelRefresh').addClass('disabled')
+                            .attr('disabled', 'disabled');
+                    });
+                refresher.start();
+            })
+    } catch (e) {
+        console.log(e);
+        $("#bulk-container").trigger('error', {error: e});
+    }
 });
 
 /**
@@ -80,6 +95,7 @@ $(document).ready(function () {
  * @property {number} libraryId     Id of the library
  * @property {string} locale        Locale that the translations are in
  */
+
 /**
  * Bulk update of the translations stored in content parameters
  *
@@ -87,46 +103,75 @@ $(document).ready(function () {
  * @constructor
  */
 function ContentTranslationRefreshTool(config) {
-    this.started = new Date().getTime();
     this.config = config;
     this.working = false;
     this.left = 0;
     this.upgraded = {};
+    this.isStopping = false;
+    this.processor = new ContentTranslationRefresh(
+        this.config.library,
+        this.config.locale,
+        this.config.ajaxPath,
+        msg => this.writeLog(msg)
+    );
+}
 
+ContentTranslationRefreshTool.prototype.start = function () {
+    this.started = new Date().getTime();
     this.trigger('start');
     this.writeLog('Requesting content...');
     this.nextBatch();
 }
 
+ContentTranslationRefreshTool.prototype.stop = function () {
+    this.isStopping = true;
+    this.writeLog('Stopping...');
+}
+
 ContentTranslationRefreshTool.prototype.nextBatch = function () {
     const self = this;
+
+    if (this.isStopping) {
+        this.writeLog('Stopped');
+        return;
+    }
+
+    this.writeLog('Saving processed and requesting new content...');
 
     const payload = {
         libraryId: this.config.libraryId,
         locale: this.config.locale,
         processed: this.upgraded,
-    }
+    };
 
-    $.post(this.config.endpoint, payload, function (inData) {
-        if (!(inData instanceof Object)) {
-            // Output errors from backend
-            return self.writeLog(inData);
-        } else if (inData.errors.length > 0) {
-            inData.errors.forEach(e => self.writeLog(e));
+    $.post(
+        this.config.endpoint,
+        payload,
+        function (inData) {
+            if (!(inData instanceof Object)) {
+                return self.writeLog(inData);
+            } else if (inData.messages.length > 0) {
+                // Output messages from backend
+                inData.messages.forEach(e => self.writeLog(e));
+            }
+            // Nothing left to process
+            if (inData.left === 0) {
+                const total = new Date().getTime() - self.started;
+
+                $('#cancelRefresh').addClass('disabled').attr('disabled', 'disabled');
+
+                self.writeLog('No content received');
+                self.writeLog('All content processed in ' + (total / 1000) + ' seconds');
+            } else {
+                self.writeLog('Got ' + inData.params.length + ' of ' + inData.left);
+            }
+            self.left = inData.left;
+
+            // Start processing
+            self.processBatch(inData.params);
         }
-        // Nothing left to process
-        if (inData.left === 0) {
-            const total = new Date().getTime() - self.started;
-
-            self.writeLog('No content received');
-            self.writeLog('All content processed in ' + (total / 1000) + ' seconds');
-        } else {
-            self.writeLog('Got ' + inData.params.length + ' of ' + inData.left);
-        }
-        self.left = inData.left;
-
-        // Start processing
-        self.processBatch(inData.params);
+    ).fail(jqXHR => {
+        self.writeLog('Request failed: (' + jqXHR.status + ') ' + jqXHR?.responseJSON?.message ?? jqXHR?.responseText ?? jqXHR.statusText);
     });
 };
 
@@ -146,7 +191,7 @@ ContentTranslationRefreshTool.prototype.processBatch = function (parameters) {
 ContentTranslationRefreshTool.prototype.assignWork = function () {
     const data = this.parameters[this.current + 1];
 
-    if (data === undefined) {
+    if (this.isStopping || data === undefined) {
         // Out of work
         return false;
     }
@@ -158,15 +203,12 @@ ContentTranslationRefreshTool.prototype.assignWork = function () {
 
 ContentTranslationRefreshTool.prototype.process = async function (id, data) {
     try {
-        const params = await H5PEditor.ContentTranslationRefresh(
-            this.config,
-            JSON.parse(data),
-            msg => this.writeLog(msg)
-        );
+        const params = await this.processor.process(JSON.parse(data));
         this.trigger('progress', true);
-        this.workDone(id, JSON.stringify(params));
+        this.workDone(id, params);
     } catch (e) {
         console.log('Processing failed, content id ' + id);
+        console.log('Content to process:', data);
         console.error(e);
 
         this.failed(id, {message : e});
@@ -177,10 +219,9 @@ ContentTranslationRefreshTool.prototype.process = async function (id, data) {
 
 ContentTranslationRefreshTool.prototype.workDone = function (id, result) {
     this.working = false;
-    this.upgraded[id] = result;
+    this.upgraded[id] = JSON.stringify(result);
 
     if (this.assignWork() === false && !this.working) {
-        this.writeLog('Saving and requesting content...');
         this.nextBatch();
     }
 };
