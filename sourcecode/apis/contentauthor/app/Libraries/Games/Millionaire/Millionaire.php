@@ -167,7 +167,7 @@ class Millionaire extends GameBase
             ],
             'questionSetJsonData' => $extQuestionSetData,
             'license' => License::getDefaultLicense(),
-            'isPublished' => false,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->input('redirectToken'),
             'route' => route('questionset.store'),

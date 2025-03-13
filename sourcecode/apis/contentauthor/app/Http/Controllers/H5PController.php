@@ -175,7 +175,7 @@ class H5PController extends Controller
         $state = H5PStateDataObject::create($displayOptions + [
             'library' => $contenttype,
             'license' => License::getDefaultLicense(),
-            'isPublished' => false,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isShared' => $ltiRequest?->getShared() ?? false,
             'language_iso_639_3' => $language,
             'redirectToken' => $request->get('redirectToken'),

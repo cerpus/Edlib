@@ -69,7 +69,7 @@ class QuestionSetController extends Controller
             'questionSetJsonData' => $extQuestionSetData,
             'contentTypes' => $contenttypes,
             'license' => License::getDefaultLicense(),
-            'isPublished' => false,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('questionset.store'),

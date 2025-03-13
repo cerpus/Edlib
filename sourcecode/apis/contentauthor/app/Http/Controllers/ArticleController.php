@@ -65,7 +65,7 @@ class ArticleController extends Controller
 
         $state = ArticleStateDataObject::create([
             'license' => $license,
-            'isPublished' => false,
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.store'),
