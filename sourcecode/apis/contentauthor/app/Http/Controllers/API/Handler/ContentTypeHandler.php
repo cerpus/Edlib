@@ -31,7 +31,6 @@ class ContentTypeHandler
                 'metadata' => [], //TODO add support for H5P metadata
             ]),
             'library' => $questionset->getLibraryWithVersion(),
-            'share' => $questionsetData['sharing'] === true || $questionsetData['sharing'] === "share" ? "share" : "private",
             'license' => $questionsetData['license'],
             'max_score' => array_key_exists('score', $questionsetData) ? $questionsetData['score'] : null,
         ];

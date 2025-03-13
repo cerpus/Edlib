@@ -9,6 +9,7 @@ use App\Libraries\DataObjects\EditorConfigObject;
 use App\Libraries\DataObjects\QuestionSetStateDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\Games\GameBase;
+use App\Lti\Lti;
 use App\QuestionSet;
 use App\QuestionSetQuestion;
 use App\QuestionSetQuestionAnswer;
@@ -28,7 +29,8 @@ class Millionaire extends GameBase
 
     protected int $maxScore = 15;
 
-    // Find and return the most recent version of the millionaire game
+    public function __construct(private readonly Lti $lti) {}
+
     public function getGameType()
     {
         $gameType = Gametype::mostRecent(self::$machineName);
@@ -148,6 +150,8 @@ class Millionaire extends GameBase
 
     public function create(Request $request): View
     {
+        $ltiRequest = $this->lti->getRequest($request);
+
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET);
         Session::forget(SessionKeys::EXT_QUESTION_SET);
 
@@ -164,7 +168,7 @@ class Millionaire extends GameBase
             'questionSetJsonData' => $extQuestionSetData,
             'license' => License::getDefaultLicense(),
             'isPublished' => false,
-            'share' => config('h5p.defaultShareSetting'),
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->input('redirectToken'),
             'route' => route('questionset.store'),
             '_method' => "POST",
@@ -184,6 +188,8 @@ class Millionaire extends GameBase
 
     public function edit(Game $game, Request $request): View
     {
+        $ltiRequest = $this->lti->getRequest($request);
+
         $this->addIncludeParse('questions.answers');
         $gameData = $this->convertDataToQuestionSet($game);
 
@@ -203,7 +209,7 @@ class Millionaire extends GameBase
             'id' => $game->id,
             'title' => $game->title,
             'license' => $game->license,
-            'share' => !$game->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('game.update', ['game' => $game->id]),
             '_method' => "PUT",
