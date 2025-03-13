@@ -1479,4 +1479,18 @@ final class ContentTest extends DuskTestCase
                 ->assertDontSee('You are viewing an unpublished draft version.'),
         );
     }
+
+    public function testEmbedUsesLocaleFromQuery(): void
+    {
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->shared()
+            ->create();
+
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->visit("https://hub-test.edlib.test/content/$content->id/embed?locale=nb-NO")
+                ->assertAttribute('', 'lang', 'nb-NO'),
+        );
+    }
 }

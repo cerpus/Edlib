@@ -9,8 +9,12 @@ use BadMethodCallException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+use function parse_str;
+use function parse_url;
 use function preg_match;
 use function preg_quote;
+
+use const PHP_URL_QUERY;
 
 class OembedRequest extends FormRequest
 {
@@ -34,6 +38,18 @@ class OembedRequest extends FormRequest
         }
 
         return $matches[1];
+    }
+
+    public function getUrlLocale(): string|null
+    {
+        $qs = parse_url($this->validated('url'), PHP_URL_QUERY) ?: '';
+        parse_str($qs, $query);
+
+        if (!is_string($query['locale'] ?? null)) {
+            return null;
+        }
+
+        return $query['locale'];
     }
 
     private function getResourceRegex(NdlaLegacyConfig $config): string
