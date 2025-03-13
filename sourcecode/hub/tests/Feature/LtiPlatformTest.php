@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Events\LaunchLti;
 use App\Lti\LtiLaunchBuilder;
+use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\LtiTool;
 use App\Models\User;
@@ -166,26 +167,50 @@ final class LtiPlatformTest extends TestCase
 
         $request = $this->app->make(LtiLaunchBuilder::class)
             ->toItemSelectionLaunch(
-                $version->tool ?? $this->fail(),
-                $this->faker->url,
-                $this->faker->url,
-                $version,
+                tool: $version->tool ?? $this->fail(),
+                url: $this->faker->url,
+                itemReturnUrl: $this->faker->url,
+                version: $version,
             )
             ->getRequest();
 
         $this->assertSame($flagValue, $request->get('ext_edlib3_published'));
     }
 
-    public function testClaimsDoNotContainPublishedFlagWhenNotEditing(): void
+    #[TestWith(['1', true])]
+    #[TestWith(['0', false])]
+    public function testClaimsContainSharedFlagWhenEditing(
+        string $flagValue,
+        bool $shared,
+    ): void {
+        $content = Content::factory()
+            ->withVersion(ContentVersion::factory()->published())
+            ->shared($shared)
+            ->create();
+
+        $request = $this->app->make(LtiLaunchBuilder::class)
+            ->toItemSelectionLaunch(
+                tool: $content->latestPublishedVersion->tool ?? $this->fail(),
+                url: $this->faker->url,
+                itemReturnUrl: $this->faker->url,
+                version: $content->latestPublishedVersion ?? $this->fail(),
+            )
+            ->getRequest();
+
+        $this->assertSame($flagValue, $request->get('ext_edlib3_shared'));
+    }
+
+    public function testClaimsDoNotContainContentStatusFlagsWhenNotEditing(): void
     {
         $request = $this->app->make(LtiLaunchBuilder::class)
             ->toItemSelectionLaunch(
-                LtiTool::factory()->create(),
-                $this->faker->url,
-                $this->faker->url,
+                tool: LtiTool::factory()->create(),
+                url: $this->faker->url,
+                itemReturnUrl: $this->faker->url,
             )
             ->getRequest();
 
         $this->assertFalse($request->has('ext_edlib3_published'));
+        $this->assertFalse($request->has('ext_edlib3_shared'));
     }
 }
