@@ -22,7 +22,7 @@ class AddContentStatusFlagsToLtiLaunch
         $event->setLaunch(
             $event->getLaunch()
                 ->withClaim('ext_edlib3_published', $version->published ? '1' : '0')
-                ->withClaim('ext_edlib3_shared', $content->shared ? '1' : '0')
+                ->withClaim('ext_edlib3_shared', $content->shared ? '1' : '0'),
         );
     }
 }
