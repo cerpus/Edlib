@@ -1,6 +1,3 @@
-volumes:
-  ca_storage:
-
 services:
   contentauthor:
     image: edlib:php-latest
@@ -9,8 +6,6 @@ services:
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
     platform: linux/amd64
-    volumes:
-      - ca_storage:/app/storage
 
   contentauthor-cron:
     image: edlib:php-latest
@@ -20,8 +15,6 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - ca_storage:/app/storage
 
   contentauthor-startup:
     image: edlib:php-latest
@@ -29,8 +22,6 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - ca_storage:/app/storage
 
   contentauthor-web:
     image: edlib:web-latest
@@ -41,12 +32,9 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - ca_storage:/app/storage:ro
     ports:
       - 80:80
       - 443:443
-      - 443:443/udp
 
   contentauthor-worker:
     image: edlib:php-latest
@@ -54,5 +42,3 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - ca_storage:/app/storage

@@ -1,6 +1,3 @@
-volumes:
-  hub_storage:
-
 services:
   hub:
     image: edlib:php-latest
@@ -13,8 +10,6 @@ services:
     healthcheck:
       test: [CMD, nc, -z, localhost, '9000']
     platform: linux/amd64
-    volumes:
-      - hub_storage:/app/storage
 
   hub-cron:
     image: edlib:php-latest
@@ -24,18 +19,13 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - hub_storage:/app/storage
 
   hub-startup:
     image: edlib:php-latest
-    command: [prod-startup.sh]
+    command: [startup.sh]
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - hub_storage:/app/storage
-      - ./startup.sh:/usr/local/bin/prod-startup.sh:ro
 
   hub-web:
     image: edlib:web-latest
@@ -46,8 +36,6 @@ services:
     environment:
       PHP_FPM_HOST: hub:9000
     platform: linux/amd64
-    volumes:
-      - hub_storage:/app/storage:ro
     ports:
       - 80:80
       - 443:443
@@ -60,5 +48,3 @@ services:
     env_file:
       - .env
     platform: linux/amd64
-    volumes:
-      - hub_storage:/app/storage
