@@ -50,6 +50,7 @@ class QuestionSetController extends Controller
 
     public function create(Request $request): View
     {
+        $ltiRequest = $this->lti->getRequest($request);
         $emails = '';
         $contenttypes = $this->getQuestionsetContentTypes();
         $extQuestionSetData = Session::get(SessionKeys::EXT_QUESTION_SET, null);
@@ -68,8 +69,8 @@ class QuestionSetController extends Controller
             'questionSetJsonData' => $extQuestionSetData,
             'contentTypes' => $contenttypes,
             'license' => License::getDefaultLicense(),
-            'isPublished' => false,
-            'share' => config('h5p.defaultShareSetting'),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('questionset.store'),
             '_method' => "POST",
@@ -92,7 +93,13 @@ class QuestionSetController extends Controller
         $questionsetHandler = app(QuestionSetHandler::class);
         $questionSet = $questionsetHandler->store($questionsetData, $request);
 
-        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl(
+            $questionSet->toLtiContent(
+                published: $request->validated('isPublished'),
+                shared: $request->validated('isShared'),
+            ),
+            $request->get('redirectToken'),
+        );
 
         return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
@@ -133,7 +140,7 @@ class QuestionSetController extends Controller
             'license' => $questionset->license,
             'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $questionset->isDraft(),
-            'share' => !$questionset->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('questionset.update', ['questionset' => $id]),
             '_method' => "PUT",
@@ -152,6 +159,7 @@ class QuestionSetController extends Controller
 
     public function update(ApiQuestionsetRequest $request, QuestionSet $questionset)
     {
+        $ltiRequest = $this->lti->getRequest($request);
         $questionsetData = json_decode($request->get('questionSetJsonData'), true);
 
         /** @var QuestionSetHandler $questionsetHandler */
@@ -162,7 +170,10 @@ class QuestionSetController extends Controller
             $request,
         );
 
-        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl($questionSet->toLtiContent(
+            published: $ltiRequest?->getPublished() ?? false,
+            shared: $ltiRequest?->getShared() ?? false,
+        ), $request->get('redirectToken'));
 
         return response()->json(['url' => $url], Response::HTTP_OK);
     }

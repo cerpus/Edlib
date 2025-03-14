@@ -232,7 +232,6 @@ final class FrameworkTest extends TestCase
             'slug' => 'slugger',
             'user_id' => $this->faker->uuid,
             'max_score' => 42,
-            'is_private' => false,
             'is_draft' => false,
             'language_iso_639_3' => 'nob',
             'library' => [

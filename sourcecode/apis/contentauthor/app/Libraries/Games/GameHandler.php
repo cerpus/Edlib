@@ -31,7 +31,6 @@ class GameHandler
 
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $values['license'],
-            share: $values['share'],
             reason: ContentVersion::PURPOSE_CREATE,
             tags: $values['tags'],
         )));
@@ -79,7 +78,6 @@ class GameHandler
 
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $request->get('license'),
-            share: $request->get('share'),
             reason: $reason,
             tags: $request->get('tags', []),
         )));

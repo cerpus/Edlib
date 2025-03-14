@@ -59,7 +59,6 @@ class H5PContent extends Content implements VersionableObject
 
     protected $guarded = [
         'user_id',
-        'is_private',
         'version_id',
         'library_id',
     ];

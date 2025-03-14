@@ -60,7 +60,7 @@ class ArticleControllerTest extends TestCase
             'content' => 'Something',
             'origin' => null,
             'originators' => null,
-            'share' => 'share',
+            'isShared' => true,
             'license' => License::LICENSE_BY,
         ])
             ->assertCreated();

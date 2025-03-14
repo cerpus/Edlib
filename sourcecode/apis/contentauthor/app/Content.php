@@ -30,7 +30,6 @@ use const ENT_QUOTES;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property string $title
- * @property bool $is_private
  * @property string|null $version_id
  * @property int|null $max_score
  * @property int $bulk_calculated
@@ -69,12 +68,7 @@ abstract class Content extends Model
     public string $editRouteName;
 
     protected $casts = [
-        'is_private' => 'boolean',
         'is_draft' => 'boolean',
-    ];
-
-    protected $attributes = [
-        'is_private' => false,
     ];
 
     public const RESOURCE_TYPE_CSS = '%s-resource';
@@ -321,11 +315,6 @@ abstract class Content extends Model
             return array_merge($id, $this->getVersionedIds($parent));
         }
         return $id;
-    }
-
-    public function isListed(): bool
-    {
-        return !$this->is_private;
     }
 
     public function isDraft(): bool

@@ -37,18 +37,4 @@ class ArticleFactory extends Factory
             ];
         });
     }
-
-    public function listed(): self
-    {
-        return $this->state(fn() => [
-            'is_private' => false,
-        ]);
-    }
-
-    public function unlisted(): self
-    {
-        return $this->state(fn() => [
-            'is_private' => true,
-        ]);
-    }
 }

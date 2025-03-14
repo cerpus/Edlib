@@ -175,8 +175,8 @@ class H5PController extends Controller
         $state = H5PStateDataObject::create($displayOptions + [
             'library' => $contenttype,
             'license' => License::getDefaultLicense(),
-            'isPublished' => false,
-            'share' => config('h5p.defaultShareSetting'),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'language_iso_639_3' => $language,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('h5p.store'),
@@ -313,7 +313,7 @@ class H5PController extends Controller
             'license' => $h5pContent->license ?: License::getDefaultLicense(),
             'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $h5pContent->isDraft(),
-            'share' => !$h5pContent->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('h5p.update', ['h5p' => $id]),
             'max_score' => $h5pContent->max_score,
@@ -382,9 +382,7 @@ class H5PController extends Controller
             'url' => $this->getRedirectToCoreUrl(
                 $newH5pContent->toLtiContent(
                     published: $request->validated('isPublished'),
-                    shared: ($share = $request->validated('share'))
-                        ? $share === 'share'
-                        : null,
+                    shared: $request->validated('isShared'),
                 ),
                 $request->input('redirectToken'),
             ),
@@ -446,9 +444,7 @@ class H5PController extends Controller
             'url' => $this->getRedirectToCoreUrl(
                 $content->toLtiContent(
                     published: $request->validated('isPublished'),
-                    shared: ($share = $request->validated('share'))
-                        ? $share === 'share'
-                        : null,
+                    shared: $request->validated('isShared'),
                 ),
                 $request->input('redirectToken'),
             ),
@@ -476,22 +472,9 @@ class H5PController extends Controller
             $request->filled("col-emails") ? $request->request->get("col-emails") : "",
         );
 
-        $this->store_content_is_private($newH5pContent, $request);
-
         event(new H5PWasSaved($newH5pContent, $request, ContentVersion::PURPOSE_CREATE));
 
         return $newH5pContent;
-    }
-
-    /**
-     * Store whenever or not content is private.
-     */
-    private function store_content_is_private(H5PContent $content, $request)
-    {
-        $isPrivate = mb_strtoupper($request->get("share", "private")) === 'PRIVATE';
-
-        $content->is_private = $isPrivate;
-        $content->save();
     }
 
     /**
@@ -638,7 +621,6 @@ class H5PController extends Controller
                 $this->store_content_shares($content['id'], $request->filled("col-emails") ? $request->request->get("col-emails") : "");
             }
 
-            $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
         } elseif ($versionPurpose === ContentVersion::PURPOSE_UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
             $emails = $h5pContent->collaborators->pluck('email')->toArray();
@@ -648,9 +630,8 @@ class H5PController extends Controller
             }
             $collaborators = implode(',', $emails);
 
-            // TODO Update license and privacy based on the old h5p
+            // TODO Update license based on the old h5p
 
-            $this->store_content_is_private($newH5pContent, $request);
             $this->storeContentLicense($request, $content['id']);
             $this->store_content_shares($content['id'], $collaborators);
         }

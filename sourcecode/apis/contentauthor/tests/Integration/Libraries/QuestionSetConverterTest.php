@@ -47,7 +47,6 @@ class QuestionSetConverterTest extends TestCase
         ]);
         $resourceMetaObject = new ResourceMetadataDataObject(
             license: License::LICENSE_BY_NC,
-            share: 'share',
             tags: ['List', 'of', 'tags'],
         );
 
@@ -112,7 +111,6 @@ class QuestionSetConverterTest extends TestCase
 
         $resourceMetaObject = new ResourceMetadataDataObject(
             license: License::LICENSE_BY_NC,
-            share: 'share',
             tags: ['List', 'of', 'tags'],
         );
 

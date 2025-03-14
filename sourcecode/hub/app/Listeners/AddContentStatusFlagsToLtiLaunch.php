@@ -6,7 +6,7 @@ namespace App\Listeners;
 
 use App\Events\LaunchItemSelection;
 
-class AddPublishFlagToLtiLaunch
+class AddContentStatusFlagsToLtiLaunch
 {
     public function handle(LaunchItemSelection $event): void
     {
@@ -16,9 +16,13 @@ class AddPublishFlagToLtiLaunch
             return;
         }
 
+        $content = $version->content;
+        assert($content !== null);
+
         $event->setLaunch(
             $event->getLaunch()
-                ->withClaim('ext_edlib3_published', $version->published ? '1' : '0'),
+                ->withClaim('ext_edlib3_published', $version->published ? '1' : '0')
+                ->withClaim('ext_edlib3_shared', $content->shared ? '1' : '0'),
         );
     }
 }

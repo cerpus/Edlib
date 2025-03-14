@@ -36,7 +36,6 @@ return [
     'include-custom-css' => env("H5P_INCLUDE_CUSTOM_CSS", false),
     "default-resource-language" => env("H5P_DEFAULT_RESOURCE_LANGUAGE", "eng"),
     'upload-media-files-timeout' => env("H5P_UPLOAD_MEDIA_FILES_TIMEOUT", 5),
-    'defaultShareSetting' => env("H5P_DEFAULT_SHARE_SETTING", 'private'),
     'showDisplayOptions' => env("H5P_SHOW_DISPLAY_OPTIONS", false),
 
     // one of 'null', 'nynorskroboten', 'nynorobot'

@@ -24,7 +24,6 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\ArticleWasSaved::class => [
             \App\Listeners\Article\HandleVersioning::class,
             \App\Listeners\Article\HandleCollaborators::class,
-            \App\Listeners\Article\HandlePrivacy::class,
         ],
 
         \App\Events\ArticleWasCopied::class => [
@@ -45,12 +44,10 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         \App\Events\QuestionsetWasSaved::class => [
-            \App\Listeners\Questionset\HandlePrivacy::class,
             \App\Listeners\Questionset\HandleQuestionbank::class,
         ],
 
         \App\Events\GameWasSaved::class => [
-            \App\Listeners\Game\HandlePrivacy::class,
             \App\Listeners\Game\HandleVersioning::class,
             //            'App\Listeners\ResourceEventSubscriber@onGameSaved', //TODO Comment in when H5P also has 'on...Saved' logic
         ],

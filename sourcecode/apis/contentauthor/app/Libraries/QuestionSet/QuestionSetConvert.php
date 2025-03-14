@@ -13,6 +13,7 @@ readonly class QuestionSetConvert
 {
     public function __construct(
         private GameHandler $gameHandler,
+        private Millionaire $millionaire,
     ) {}
 
     public function convert(string $convertTo, QuestionSet|array $questionSet, ResourceMetadataDataObject $metadata): Content
@@ -29,10 +30,9 @@ readonly class QuestionSetConvert
             'title' => $questionSet['title'],
             'cards' => is_array($questionSet) ? $questionSet['cards'] : $questionSet,
             'license' => $metaData->license,
-            'share' => $metaData->share,
             'authId' => $questionSet['owner'],
             'tags' => $metaData->tags,
             'language_code' => $questionSet['language_code'],
-        ], new Millionaire());
+        ], $this->millionaire);
     }
 }

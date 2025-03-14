@@ -8,8 +8,6 @@ use Illuminate\Contracts\Validation\Rule;
 class LicenseContent implements Rule
 {
     /**
-     * Determine if the provided 'share' value is valid
-     *
      * @param string $attribute
      * @return bool
      */

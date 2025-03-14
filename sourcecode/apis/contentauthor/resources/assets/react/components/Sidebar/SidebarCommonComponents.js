@@ -3,7 +3,7 @@ import { ContentPropertiesContainer, LicenseIndicator, Sharing } from './compone
 import React from 'react';
 
 const SidebarCommonComponents = (settings, dispatch, state, intl) => {
-    const { license, share } = state;
+    const { license, isShared } = state;
     const { contentProperties, canList, useLicense } = settings;
 
     const components = [];
@@ -37,8 +37,8 @@ const SidebarCommonComponents = (settings, dispatch, state, intl) => {
             title: intl.formatMessage({ id: 'SHARINGCOMPONENT.SHARING' }),
             component: (
                 <Sharing
-                    isPrivate={share === 'private'}
-                    onChange={isPrivate => dispatch(FormActions.setSharing, { isPrivate })}
+                    shared={isShared}
+                    onChange={isShared => dispatch(FormActions.setSharing, { isShared })}
                 />
             ),
         });

@@ -22,7 +22,7 @@ class HandleVersioningTest extends TestCase
     public function testHandle(): void
     {
         $game = Game::factory()->create();
-        $metadata = new ResourceMetadataDataObject('BY', null, ContentVersion::PURPOSE_CREATE);
+        $metadata = new ResourceMetadataDataObject(license: 'BY', reason: ContentVersion::PURPOSE_CREATE);
         $event = new GameWasSaved($game, $metadata);
         (new HandleVersioning())->handle($event);
 
@@ -51,7 +51,7 @@ class HandleVersioningTest extends TestCase
             'parent_id' => null,
             'version_purpose' => ContentVersion::PURPOSE_CREATE,
         ]);
-        $metadata = new ResourceMetadataDataObject('BY', null, ContentVersion::PURPOSE_UPDATE);
+        $metadata = new ResourceMetadataDataObject(license: 'BY', reason: ContentVersion::PURPOSE_UPDATE);
         $event = new GameWasSaved($game, $metadata);
         (new HandleVersioning())->handle($event);
 

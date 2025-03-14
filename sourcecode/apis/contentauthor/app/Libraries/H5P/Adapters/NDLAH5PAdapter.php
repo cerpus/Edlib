@@ -272,14 +272,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ->toArray());
     }
 
-    /**
-     * @return bool
-     */
-    public function getDefaultImportPrivacy()
-    {
-        return true; // Private by default. Corresponds to is_private = true
-    }
-
     public function useEmbedLink(): int
     {
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;

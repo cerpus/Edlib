@@ -23,7 +23,6 @@ return [
         'singleContentUpgrade' => env('NDLA_H5P_SINGLE_CONTENT_UPGRADE', true),
         'isHubEnabled' => env('NDLA_H5P_IS_HUB_ENABLED', false),
         'defaultExportOption' => env('NDLA_H5P_DEFAULT_EXPORT_OPTION', H5PDisplayOptionBehaviour::CONTROLLED_BY_AUTHOR_DEFAULT_OFF),
-        'defaultShareSetting' => 'share',
         'include-mathjax' => env("NDLA_H5P_INCLUDE_MATHJAX", true),
         'crossOrigin' => env('NDLA_H5P_CROSSORIGIN'),
         'crossOriginRegexp' => env('NDLA_H5P_CROSSORIGIN_REGEXP', '/.*/'),
