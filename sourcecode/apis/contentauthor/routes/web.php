@@ -30,7 +30,6 @@ Route::post('h5p/adapter', function () {
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
 
-Route::get('images/browse', [NdlaContentController::class, 'browseImages']);
 Route::get('images/browse/{imageId}', [NdlaContentController::class, 'getImage']);
 
 Route::get('videos/browse', [H5PController::class, 'browseVideos']);

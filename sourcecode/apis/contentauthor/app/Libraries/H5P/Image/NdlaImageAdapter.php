@@ -131,11 +131,6 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
         return $imageProperties;
     }
 
-    public function getClientDetailsUrl(): ?string
-    {
-        return $this->url . '/image-api/v3/images';
-    }
-
     public function getViewCss(): array
     {
         return [];
@@ -161,5 +156,18 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     public function getConfigJs(): array
     {
         return [];
+    }
+
+    public function getBrowserConfig(): array
+    {
+        return [
+            'searchUrl' => $this->url . '/image-api/v3/images',
+            'detailsUrl' => $this->url . '/image-api/v3/images',
+            'searchParams' => [
+                'fallback' => config('ndla.image.searchparams.fallback'),
+                'license' => config('ndla.image.searchparams.license'),
+                'page-size' => config('ndla.image.searchparams.pagesize'),
+            ],
+        ];
     }
 }

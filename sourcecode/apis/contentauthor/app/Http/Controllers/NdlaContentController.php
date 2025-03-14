@@ -47,22 +47,6 @@ final readonly class NdlaContentController
         return response($audio, 200, ['Content-Type' => 'application/json']);
     }
 
-    public function browseImages(Request $request): Response
-    {
-        $request = $this->imageClient->request('GET', '/image-api/v3/images', [
-            'query' => [
-                'page' => $request->input('page', 1),
-                'query' => $request->input('searchstring'),
-                'language' => $request->input('language'),
-                'fallback' => $request->input('fallback'),
-            ],
-        ]);
-
-        $images = $request->getBody()->getContents();
-
-        return response($images, 200, ['Content-Type' => 'application/json']);
-    }
-
     public function getImage($imageId, Request $request): Response
     {
         $language = $request->input('language');
