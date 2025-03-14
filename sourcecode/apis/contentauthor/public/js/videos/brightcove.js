@@ -317,7 +317,7 @@ H5P.VideoBrightcove = (function ($) {
         } else {
             // Load the API our self
             var tag = document.createElement('script');
-            tag.src = "/js/videos/brightcove-player-loader.min.js";
+            tag.src = "/build/js/videos/brightcove-player-loader.min.js";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             Brightcove.loaderInterval = setInterval(function () {
