@@ -161,8 +161,8 @@ final class NdlaImageAdapter implements H5PImageInterface, H5PExternalProviderIn
     public function getBrowserConfig(): array
     {
         return [
-            'searchUrl' => $this->url . '/image-api/v3/images',
-            'detailsUrl' => $this->url . '/image-api/v3/images',
+            'searchUrl' => rtrim($this->url, '/') . '/image-api/v3/images',
+            'detailsUrl' => rtrim($this->url, '/') . '/image-api/v3/images',
             'searchParams' => [
                 'fallback' => config('ndla.image.searchparams.fallback'),
                 'license' => config('ndla.image.searchparams.license'),
