@@ -13,15 +13,12 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-use function PHPUnit\Framework\isBool;
-
-class AdminH5PTranslation {
+class AdminH5PTranslation
+{
     /**
      * Edit translation stored in database
      */
@@ -136,12 +133,12 @@ class AdminH5PTranslation {
                         if ($parameters === $original->parameters) {
                             $unchanged++;
                         } else {
-//                            $original->parameters = $parameters;
-//                            $original->filtered = '';
-//                            $original->timestamps = false;
-//                            if ($original->saveQuietly() !== true) {
-//                                throw new \Exception('Content ' . $id . ': Failed saving parameters');
-//                            }
+                            //                            $original->parameters = $parameters;
+                            //                            $original->filtered = '';
+                            //                            $original->timestamps = false;
+                            //                            if ($original->saveQuietly() !== true) {
+                            //                                throw new \Exception('Content ' . $id . ': Failed saving parameters');
+                            //                            }
                             $updated++;
                         }
                     }

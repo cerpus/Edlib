@@ -107,7 +107,7 @@ class AdminH5PDetailsController extends Controller
                 ->pluck('language_code')
                 ->push('en') // 'en' translation is rarely in a file,
                 ->unique() // but just in case it is.
-                ->sort()
+                ->sort(),
         ]);
     }
 
