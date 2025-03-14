@@ -18,6 +18,11 @@ return [
         'properties' => [
             'width' => env('NDLA_H5P_IMAGE_PROPERTIES_WIDTH', 2500),
         ],
+        'searchparams' => [
+            'fallback' => env('NDLA_H5P_IMAGE_SEARCH_FALLBACK', true),
+            'license' => env('NDLA_H5P_IMAGE_SEARCH_LICENSE', 'all'),
+            'pagesize' => env('NDLA_H5P_IMAGE_SEARCH_PAGESIZE', 12),
+        ],
     ],
 
     'audio' => [

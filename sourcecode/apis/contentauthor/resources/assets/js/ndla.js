@@ -471,7 +471,9 @@ class ImageBrowser extends ContentBrowserBase {
             onToggleCallback: cb => this.toggleContentBrowser = cb,
             locale: H5PIntegration.locale,
             getCurrentLanguage: () => H5PEditor.defaultLanguage,
-            apiDetailsUrl: H5PIntegration?.imageBrowserDetailsUrl,
+            searchUrl: H5PIntegration.imageBrowserConfig.searchUrl,
+            detailsUrl: H5PIntegration.imageBrowserConfig.detailsUrl,
+            searchParams: H5PIntegration.imageBrowserConfig.searchParams,
         });
         this.copyrightHandler.handleDisplayCopyrightButton();
     }

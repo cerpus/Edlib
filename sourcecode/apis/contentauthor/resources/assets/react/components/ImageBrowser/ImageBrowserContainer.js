@@ -6,18 +6,19 @@ import { injectIntl } from 'react-intl';
 
 class ImageBrowserContainer extends Component {
     static propTypes = {
-        searchUrl: PropTypes.string,
+        searchUrl: PropTypes.string.isRequired,
         onSelect: PropTypes.func.isRequired,
         locale: PropTypes.string,
         onToggle: PropTypes.func,
         getCurrentLanguage: PropTypes.func,
-        apiDetailsUrl: PropTypes.string.isRequired,
+        detailsUrl: PropTypes.string.isRequired,
+        searchParams: PropTypes.object,
     };
 
     static defaultProps = {
-        searchUrl: '/images/browse',
         locale: 'en',
         getCurrentLanguage: () => 'en',
+        searchParams: {},
     };
 
     constructor(props) {
@@ -26,14 +27,14 @@ class ImageBrowserContainer extends Component {
         this.handleSearch = this.handleSearch.bind(this);
         this.handleOnSelect = this.handleOnSelect.bind(this);
         this.handleFetchImageDetails = this.handleFetchImageDetails.bind(this);
-
     }
 
     handleSearch(searchText, page) {
         return Axios.get(this.props.searchUrl, {
             params: {
+                ...this.props.searchParams,
                 page: page,
-                searchstring: typeof searchText !== 'undefined' ? searchText : null,
+                query: typeof searchText !== 'undefined' ? searchText : null,
                 language: this.props.getCurrentLanguage(),
             },
         })
@@ -43,7 +44,7 @@ class ImageBrowserContainer extends Component {
     }
 
     handleFetchImageDetails(imageId) {
-        return Axios.get( this.props.apiDetailsUrl + '/' + imageId, {
+        return Axios.get( this.props.detailsUrl + '/' + imageId, {
             params: {
                 language: this.props.getCurrentLanguage(),
             },
