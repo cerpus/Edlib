@@ -62,11 +62,11 @@ class H5PCreateConfig extends H5PConfigAbstract
 
         $imageBrowser = app(H5PImageInterface::class);
         if ($imageBrowser instanceof NdlaImageAdapter) {
-            $this->config['imageBrowserDetailsUrl'] = $imageBrowser->getClientDetailsUrl();
+            $this->config['imageBrowserConfig'] = $imageBrowser->getBrowserConfig();
         }
         $audioBrowser = app(H5PAudioInterface::class);
         if ($audioBrowser instanceof NdlaAudioAdapter) {
-            $this->config['audioBrowserDetailsUrl'] = $audioBrowser->getClientDetailsUrl();
+            $this->config['audioBrowserConfig'] = $audioBrowser->getBrowserConfig();
         }
     }
 }

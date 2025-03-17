@@ -30,13 +30,11 @@ Route::post('h5p/adapter', function () {
 Route::get('h5p/{h5p}/copyright', [H5PController::class, 'getCopyright']);
 Route::get('h5p/{h5p}/info', [H5PController::class, 'getInfo']);
 
-Route::get('images/browse', [NdlaContentController::class, 'browseImages']);
 Route::get('images/browse/{imageId}', [NdlaContentController::class, 'getImage']);
 
 Route::get('videos/browse', [H5PController::class, 'browseVideos']);
 Route::get('videos/browse/{videoId}', [H5PController::class, 'getVideo']);
 
-Route::get('audios/browse', [NdlaContentController::class, 'browseAudio']);
 Route::get('audios/browse/{audioId}', [NdlaContentController::class, 'getAudio']);
 
 Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);
