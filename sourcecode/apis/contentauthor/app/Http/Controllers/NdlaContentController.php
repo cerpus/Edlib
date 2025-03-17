@@ -18,23 +18,6 @@ final readonly class NdlaContentController
         private NdlaImageClient $imageClient,
     ) {}
 
-    public function browseAudio(Request $request): Response
-    {
-        $query = [
-            'query' => $request->input('query.query'),
-            'fallback' => $request->input('query.fallback', 'true'),
-            'page-size' => $request->input('query.pageSize'),
-            'language' => $request->input('query.language'),
-        ];
-
-        $request = $this->audioClient->get('/audio-api/v1/audio', [
-            'query' => $query,
-        ]);
-        $audios = $request->getBody()->getContents();
-
-        return response($audios, 200, ['Content-Type' => 'application/json']);
-    }
-
     public function getAudio($audioId, Request $request): Response
     {
         $request = $this->audioClient->get('/audio-api/v1/audio/' . $audioId, [

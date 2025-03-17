@@ -91,4 +91,17 @@ final readonly class NdlaAudioAdapter implements H5PAudioInterface, H5PExternalP
     {
         return [];
     }
+
+    public function getBrowserConfig(): array
+    {
+        return [
+            'searchUrl' => rtrim($this->url, '/') . '/audio-api/v1/audio',
+            'detailsUrl' => rtrim($this->url, '/') . '/audio-api/v1/audio',
+            'searchParams' => [
+                'fallback' => config('ndla.audio.searchparams.fallback'),
+                'license' => config('ndla.audio.searchparams.license'),
+                'page-size' => config('ndla.audio.searchparams.pagesize'),
+            ],
+        ];
+    }
 }

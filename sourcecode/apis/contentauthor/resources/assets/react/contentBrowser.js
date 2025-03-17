@@ -66,7 +66,9 @@ function initAudioBrowser(element, settings) {
         locale,
         onToggleCallback,
         getCurrentLanguage,
-        apiDetailsUrl,
+        searchUrl,
+        detailsUrl,
+        searchParams,
     } = settings;
 
     (async () => {
@@ -79,7 +81,9 @@ function initAudioBrowser(element, settings) {
                     locale={locale}
                     onToggle={onToggleCallback}
                     getCurrentLanguage={getCurrentLanguage}
-                    apiDetailsUrl={apiDetailsUrl}
+                    detailsUrl={detailsUrl}
+                    searchUrl={searchUrl}
+                    searchParams={searchParams}
                 />
             </IntlProvider>,
             element

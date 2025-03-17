@@ -35,7 +35,6 @@ Route::get('images/browse/{imageId}', [NdlaContentController::class, 'getImage']
 Route::get('videos/browse', [H5PController::class, 'browseVideos']);
 Route::get('videos/browse/{videoId}', [H5PController::class, 'getVideo']);
 
-Route::get('audios/browse', [NdlaContentController::class, 'browseAudio']);
 Route::get('audios/browse/{audioId}', [NdlaContentController::class, 'getAudio']);
 
 Route::get('h5p/{h5p}/download', [H5PController::class, 'downloadContent'])->name('content-download')->middleware(['adaptermode']);

@@ -66,7 +66,7 @@ class H5PCreateConfig extends H5PConfigAbstract
         }
         $audioBrowser = app(H5PAudioInterface::class);
         if ($audioBrowser instanceof NdlaAudioAdapter) {
-            $this->config['audioBrowserDetailsUrl'] = $audioBrowser->getClientDetailsUrl();
+            $this->config['audioBrowserConfig'] = $audioBrowser->getBrowserConfig();
         }
     }
 }

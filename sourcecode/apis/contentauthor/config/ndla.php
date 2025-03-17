@@ -21,12 +21,17 @@ return [
         'searchparams' => [
             'fallback' => env('NDLA_H5P_IMAGE_SEARCH_FALLBACK', true),
             'license' => env('NDLA_H5P_IMAGE_SEARCH_LICENSE', 'all'),
-            'pagesize' => env('NDLA_H5P_IMAGE_SEARCH_PAGESIZE', 12),
+            'pagesize' => env('NDLA_H5P_IMAGE_SEARCH_PAGESIZE', 15),
         ],
     ],
 
     'audio' => [
         'url' => env('NDLA_H5P_AUDIO_URL'),
+        'searchparams' => [
+            'fallback' => env('NDLA_H5P_AUDIO_SEARCH_FALLBACK', true),
+            'license' => env('NDLA_H5P_AUDIO_SEARCH_LICENSE', 'all'),
+            'pagesize' => env('NDLA_H5P_AUDIO_SEARCH_PAGESIZE', 10),
+        ],
     ],
 
 ];

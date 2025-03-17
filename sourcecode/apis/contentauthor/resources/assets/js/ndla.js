@@ -309,7 +309,9 @@ class AudioBrowser extends ContentBrowserBase {
             onToggleCallback: cb => this.toggleContentBrowser = cb,
             locale: H5PIntegration.locale,
             getCurrentLanguage: () => H5PEditor.defaultLanguage,
-            apiDetailsUrl: H5PIntegration?.audioBrowserDetailsUrl,
+            searchUrl: H5PIntegration.audioBrowserConfig.searchUrl,
+            detailsUrl: H5PIntegration.audioBrowserConfig.detailsUrl,
+            searchParams: H5PIntegration.audioBrowserConfig.searchParams,
         });
     }
 }
