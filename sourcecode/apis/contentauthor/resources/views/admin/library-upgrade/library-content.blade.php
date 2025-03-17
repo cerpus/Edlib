@@ -48,7 +48,7 @@
                                             <td>{{ $content['item']->created_at->format('Y-m-d H:i:s e') }}</td>
                                             <td>{{ $content['item']->updated_at->format('Y-m-d H:i:s e') }}</td>
                                             <td>{{ $content['item']->language_iso_639_3 }}</td>
-                                            <td>{{ $content['item']->metadata->default_language }}</td>
+                                            <td>{{ $content['item']->metadata?->default_language }}</td>
                                             <td>{{ $content['item']->license }}</td>
                                             <td>{{ $content['item']->hasLock() ? 'Y' : 'N' }}</td>
                                             <td>{{ $content['isLatest'] !== null ? ($content['isLatest'] ? 'Yes' : 'No') : '' }}</td>

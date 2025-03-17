@@ -32,7 +32,11 @@
                             </tr>
                             <tr>
                                 <th>Is leaf</th>
-                                <td>{{ ($requestedVersion?->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}</td>
+                                <td>
+                                    @isset($requestedVersion)
+                                        {{ ($requestedVersion->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}
+                                    @endisset
+                                </td>
                             </tr>
                             <tr>
                                 <th>Latest version id</th>
@@ -56,7 +60,11 @@
                             </tr>
                             <tr>
                                 <th>H5P language</th>
-                                <td>{{ $content->metadata->default_language }} ({{{Iso639p3::englishName($content->metadata->default_language)}}})</td>
+                                <td>
+                                    @isset($content->metadata->default_language)
+                                        {{ $content->metadata->default_language }} ({{{Iso639p3::englishName($content->metadata->default_language)}}})
+                                    @endisset
+                                </td>
                             </tr>
                             <tr>
                                 <th>License</th>
