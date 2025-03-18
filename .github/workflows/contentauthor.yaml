@@ -124,7 +124,7 @@ jobs:
         working-directory: ${{ github.workspace }}
 
   test:
-    if: "inputs.version && !inputs.deploy"
+    if: "!inputs.deploy"
     needs: [composer-validate]
     runs-on: ubuntu-22.04
 
