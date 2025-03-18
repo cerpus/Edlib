@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16eb54bdea6795376ad92505dac66d04",
+    "content-hash": "e49b6c5762b8b789a0f2b087be0545b9",
     "packages": [
         {
             "name": "auth0/auth0-php",
@@ -2150,12 +2150,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/h5p/h5p-php-library.git",
-                "reference": "f3579c0d28205bf34490ee151c07d43a2ffc3507"
+                "reference": "b5f527e140c17da2792283d369f621e9b3f969ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/f3579c0d28205bf34490ee151c07d43a2ffc3507",
-                "reference": "f3579c0d28205bf34490ee151c07d43a2ffc3507",
+                "url": "https://api.github.com/repos/h5p/h5p-php-library/zipball/b5f527e140c17da2792283d369f621e9b3f969ff",
+                "reference": "b5f527e140c17da2792283d369f621e9b3f969ff",
                 "shasum": ""
             },
             "require": {
@@ -2204,7 +2204,7 @@
                 "issues": "https://github.com/h5p/h5p-php-library/issues",
                 "source": "https://github.com/h5p/h5p-php-library/tree/master"
             },
-            "time": "2024-11-14T11:32:39+00:00"
+            "time": "2025-01-24T13:31:52+00:00"
         },
         {
             "name": "h5p/h5p-editor",
@@ -2212,12 +2212,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/h5p/h5p-editor-php-library.git",
-                "reference": "e442a251a6eda93043c637f5bf19beb60e92191b"
+                "reference": "f3a60ec2bdbe410cb2b11e8f8cb4cf206c41364b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/h5p/h5p-editor-php-library/zipball/e442a251a6eda93043c637f5bf19beb60e92191b",
-                "reference": "e442a251a6eda93043c637f5bf19beb60e92191b",
+                "url": "https://api.github.com/repos/h5p/h5p-editor-php-library/zipball/f3a60ec2bdbe410cb2b11e8f8cb4cf206c41364b",
+                "reference": "f3a60ec2bdbe410cb2b11e8f8cb4cf206c41364b",
                 "shasum": ""
             },
             "require": {
@@ -2264,9 +2264,9 @@
             ],
             "support": {
                 "issues": "https://github.com/h5p/h5p-editor-php-library/issues",
-                "source": "https://github.com/h5p/h5p-editor-php-library/tree/master"
+                "source": "https://github.com/h5p/h5p-editor-php-library/tree/layout-builder"
             },
-            "time": "2024-12-05T09:21:10+00:00"
+            "time": "2025-01-31T10:45:45+00:00"
         },
         {
             "name": "kamermans/guzzle-oauth2-subscriber",

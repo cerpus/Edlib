@@ -37,8 +37,6 @@ class Framework implements \H5PFrameworkInterface, Result
     /** @var array<string> */
     private array $infoMessages = [];
 
-    private $adminUrl;
-
     public function __construct(
         private ClientInterface $httpClient,
         private PDO $db,
@@ -116,20 +114,14 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Returns info for the current platform
-     *
-     * @return array
-     *   An associative array containing:
-     *   - name: The name of the plattform, for instance "Wordpress"
-     *   - version: The version of the pattform, for instance "4.0"
-     *   - h5pVersion: The version of the H5P plugin/module
+     * @inheritDoc
      */
-    public function getPlatformInfo()
+    public function getPlatformInfo(): array
     {
         return [
             "name" => "H5PComposer",
             "version" => "0.1",
-            "h5pVersion" => "1.5",
+            "h5pVersion" => implode('.', H5PCore::$coreApi),
         ];
     }
 
@@ -300,53 +292,15 @@ class Framework implements \H5PFrameworkInterface, Result
     }
 
     /**
-     * Saving the unsupported library list
-     *
-     * @param array
-     *   A list of unsupported libraries. Each list entry contains:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function setUnsupportedLibraries($libraries) {}
-
-    /**
-     * Returns unsupported libraries
-     *
-     * @return array
-     *   A list of unsupported libraries. Each entry contains an associative array with:
-     *   - name: MachineName for the library
-     *   - downloadUrl: URL to a location a new version of the library may be downloaded from
-     *   - currentVersion: The unsupported version of the library installed on the system.
-     *     This is an associative array containing:
-     *     - major: The major version of the library
-     *     - minor: The minor version of the library
-     *     - patch: The patch version of the library
-     * TODO: Check if Drupal impl has something here.
-     */
-    public function getUnsupportedLibraries() {}
-
-
-    /**
      * Returns the URL to the library admin page
      *
      * @return string
      *   URL to admin page
-     * TODO: Check if Drupal impl has something here.
      */
-    public function getAdminUrl() {}
-
-    /**
-     * Set the URL to the library admin page
-     */
-    public function setAdminUrl($url)
+    public function getAdminUrl(): string
     {
-        $this->adminUrl = $url;
+        // Not used in CA
+        return '';
     }
 
     /**
@@ -374,20 +328,6 @@ class Framework implements \H5PFrameworkInterface, Result
         }
 
         return (int) $library->id;
-        /*
-         * // The following code sometimes crashes(!!!?) when reached through an import. The Eloquent version seems to be stable.
-         * // Laravel log: "Error SQLSTATE[HY000]: General error: 2006 MySQL server has gone away" (Very rude I feel...)
-         * // MySQL error log: 2019-06-25T08:18:18.872848Z 332 [Note] Aborted connection 332 to db: 'content-author' user: 'root' host: 'localhost' (Got an error reading communication packets)
-
-        $sql = "select id from h5p_libraries where name=? and major_version=? and minor_version=?";
-        $statment = $this->db->prepare($sql);
-        $statment->execute([$machineName, $majorVersion, $minorVersion]);
-        $id = $statment->fetchColumn();
-        if ($id === false) {
-            return false;
-        }
-        return (int)$id;
-        */
     }
 
     /**
@@ -421,30 +361,30 @@ class Framework implements \H5PFrameworkInterface, Result
      * @return bool
      *   TRUE if the library is a patched version of an existing library
      *   FALSE otherwise
-     * TODO: Implement this for real....
      */
     public function isPatchedLibrary($library): bool
     {
+        $operator = $this->isInDevMode() ? '<=' : '<';
+
         return H5PLibrary::fromLibrary([
             $library['machineName'],
             $library['majorVersion'],
             $library['minorVersion'],
         ])
-            ->where('patch_version', "<", $library['patchVersion'])
+            ->where('patch_version', $operator, $library['patchVersion'])
             ->exists();
     }
 
     /**
      * Is H5P in development mode?
      *
-     * @return boolean
+     * @return bool
      *  TRUE if H5P development mode is active
      *  FALSE otherwise
-     * TODO: Implement this for real....
      */
-    public function isInDevMode()
+    public function isInDevMode(): bool
     {
-        return false;
+        return config('h5p.developmentMode', false);
     }
 
     /**
@@ -1172,15 +1112,16 @@ class Framework implements \H5PFrameworkInterface, Result
         return $all;
     }
 
-    public function getLibraryStats($type)
+    public function getLibraryStats($type): array
     {
-        // TODO: implement this
+        // Sending usage stats to h5p.org hub is disabled
         return [];
     }
 
-    public function getNumAuthors()
+    public function getNumAuthors(): int
     {
-        // TODO: Implement getNumAuthors() method.
+        // Sending usage stats to h5p.org hub is disabled
+        return 0;
     }
 
     public function saveCachedAssets($key, $libraries)
@@ -1202,45 +1143,19 @@ class Framework implements \H5PFrameworkInterface, Result
         return $cachedAssets->pluck('hash')->toArray();
     }
 
-
     /**
      * Get the amount of content items associated to a library
-     * @return array
      */
-    public function getLibraryContentCount()
+    public function getLibraryContentCount(): array
     {
-        $libraries = H5PLibrary::all()
-            ->filter(function ($library) {
-                return $library->runnable != "0" && $library->contents()->count() > 0;
-            })
-            ->transform(function ($library) {
-                $item = new \stdClass();
-                $item->key = sprintf(
-                    "%s %s.%s",
-                    $library->name,
-                    $library->major_version,
-                    $library->minor_version,
-                );
-                $item->count = $library->contents()->count();
-
-                return $item;
-            });
-
-        $libraryCount = [];
-        foreach ($libraries as $library) {
-            $libraryCount[$library->key] = $library->count;
-        }
-
-        return $libraryCount;
+        // Sending usage stats to h5p.org hub is disabled
+        return [];
     }
 
     /**
      * Will trigger after the export file is created.
      */
-    public function afterExportCreated($content, $filename)
-    {
-        // TODO: Implement afterExportCreated() method.
-    }
+    public function afterExportCreated($content, $filename) {}
 
     public function hasPermission($permission, $id = null)
     {
@@ -1370,5 +1285,10 @@ class Framework implements \H5PFrameworkInterface, Result
     {
         // H5P Content Hub is not in use
         return true;
+    }
+
+    public function resetHubOrganizationData()
+    {
+        // H5P Content Hub is not in use
     }
 }
