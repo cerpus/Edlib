@@ -21,7 +21,7 @@ server {
     }
 
     access_log /var/log/nginx/access.log  main;
-    access_log /var/log/nginx/application.log.$year-$month-$day-$hour healthd;
+    access_log /var/log/nginx/healthd/application.log.$year-$month-$day-$hour healthd;
 
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
