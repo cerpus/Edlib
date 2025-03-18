@@ -19,7 +19,7 @@ class H5PCreateConfig extends H5PConfigAbstract
         $validator = app(\H5PContentValidator::class);
         $this->editorConfig = [
             'assets' => $this->getEditorAssets(),
-            'libraryUrl' => '/h5p-editor-php-library/'  ,
+            'libraryUrl' => '/h5p-editor-php-library/',
             'copyrightSemantics' => $validator->getCopyrightSemantics(),
             'metadataSemantics' => $validator->getMetadataSemantics(),
             'ajaxPath' => '',
