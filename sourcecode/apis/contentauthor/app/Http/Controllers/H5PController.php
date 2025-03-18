@@ -38,6 +38,7 @@ use App\SessionKeys;
 use App\Traits\ReturnToCore;
 use Exception;
 use H5PCore;
+use Illuminate\Cache\Repository as CacheRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -690,18 +691,21 @@ class H5PController extends Controller
         return $videoAdapter->getVideo($videoId);
     }
 
-    public function getCopyright(H5PContent $h5p)
+    public function getCopyright(H5PContent $h5p, H5PCopyright $copyright, CacheRepository $cache)
     {
-        $copyrights = (resolve(H5PCopyright::class))->getCopyrights($h5p);
+        $copyrights = $cache->rememberForever($h5p->getCopyrightCacheKey(), fn() => $copyright->getCopyrights($h5p));
+
         if (empty($copyrights)) {
             return response('No copyright found', Response::HTTP_NOT_FOUND);
         }
+
         return response()->json($copyrights);
     }
 
-    public function getInfo(H5PContent $h5p, H5PInfo $h5PInfo)
+    public function getInfo(H5PContent $h5p, H5PInfo $h5pInfo, CacheRepository $cache)
     {
-        $information = $h5PInfo->getInformation($h5p);
+        $information = $cache->rememberForever($h5p->getInfoCacheKey(), fn() => $h5pInfo->getInformation($h5p));
+
         return response()->json($information);
     }
 }

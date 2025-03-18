@@ -1,0 +1,154 @@
+name: "Release"
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseName:
+        description: 'Name of release (Use semver)'
+        required: false
+        default: ''
+  push:
+    branches:
+      - master
+
+jobs:
+  get_variables:
+    name: Get build variables
+    if: ${{ github.event_name != 'push' || github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    outputs:
+      releaseRef: ${{ steps.get_ref.outputs.releaseRef }}
+    steps:
+      - name: Get the ref
+        id: get_ref
+        run: |
+          ref="${{ github.sha }}"
+          if [ -n "${{ github.event.inputs.releaseName }}" ]; then
+            if ! [[ "${{ github.event.inputs.releaseName }}" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+              echo "version is not semver"
+              exit 1
+            fi
+
+            ref="${{ github.event.inputs.releaseName }}"
+          fi
+          
+          echo "releaseRef=$ref" >> $GITHUB_OUTPUT
+
+  # ---------- APIS -----------------
+  build_image_hub:
+    name: Hub
+    needs: get_variables
+    uses: ./.github/workflows/hub.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: false
+    secrets: inherit
+
+  build_image_content_author:
+    name: Content author
+    needs: get_variables
+    uses: ./.github/workflows/contentauthor.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      deploy: false
+    secrets: inherit
+
+  building_done:
+    name: "Building done"
+    if:  success()
+    runs-on: ubuntu-latest
+    needs:
+      - build_image_hub
+      - build_image_content_author
+    steps:
+      - name: "Done building images"
+        run: |
+          echo "Done building images"
+
+  create_release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.event.inputs.releaseName != '' && success()
+    needs:
+      - building_done
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create tag
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ github.event.inputs.releaseName }}",
+              sha: context.sha
+            })
+
+  deploy_test:
+    name: Deploy test
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - building_done
+      - create_release
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: test
+    secrets: inherit
+
+  deploy_ndla_test:
+    name: Deploy NDLA test
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - building_done
+      - create_release
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_test
+    secrets: inherit
+
+  deploy_ndla_staging:
+    name: Deploy NDLA staging
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - deploy_ndla_test
+      - deploy_test
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_staging
+    secrets: inherit
+
+  deploy_ndla_prod:
+    name: Deploy NDLA prod
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - deploy_ndla_staging
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: ndla_prod
+    secrets: inherit
+
+  deploy_prod:
+    name: Deploy prod
+    if: github.actor != 'dependabot[bot]' && !failure() && !cancelled()
+    needs:
+      - get_variables
+      - deploy_test
+    uses: ./.github/workflows/deploy-eb.yaml
+    with:
+      version: ${{ needs.get_variables.outputs.releaseRef }}
+      environment: prod
+    secrets: inherit
+

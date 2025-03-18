@@ -24,8 +24,7 @@ final readonly class NdlaAudioAdapter implements H5PAudioInterface, H5PExternalP
 
     private function isSameDomain($pathToFile): bool
     {
-        $url = config('h5p.audio.url') ?: config('h5p.image.url');
-        return str_starts_with($pathToFile, $url);
+        return str_starts_with($pathToFile, $this->url);
     }
 
     private function isAudioMime($mime): bool

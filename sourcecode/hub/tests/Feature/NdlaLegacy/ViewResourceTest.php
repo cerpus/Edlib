@@ -35,4 +35,15 @@ class ViewResourceTest extends TestCase
         $this->get('https://hub-test-ndla-legacy.edlib.test/resource/8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
             ->assertRedirect('https://hub-test.edlib.test/content/' . $content->id . '/embed');
     }
+
+    public function testRedirectIncludesLocale(): void
+    {
+        $content = Content::factory()
+            ->tag('edlib2_usage_id:8dc67e6b-653f-46e4-8ab0-16e61bbfca43')
+            ->withPublishedVersion()
+            ->create();
+
+        $this->get('https://hub-test-ndla-legacy.edlib.test/resource/8dc67e6b-653f-46e4-8ab0-16e61bbfca43?locale=nb-NO')
+            ->assertRedirect('https://hub-test.edlib.test/content/' . $content->id . '/embed?locale=nb-NO');
+    }
 }
