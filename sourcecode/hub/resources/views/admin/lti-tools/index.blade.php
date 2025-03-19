@@ -47,6 +47,14 @@
                                 <th scope="row">{{ trans('messages.send-email-to-lti-tool', ['site' => config('app.name')]) }}</th>
                                 <td class="lti-tool-card-send-email">{{ $tool->send_email ? trans('messages.yes') : trans('messages.no') }}</td>
                             </tr>
+                            <tr>
+                                <th scope="row">{{ trans('messages.default-published-flag') }}</th>
+                                <td class="lti-tool-default-published-flag">{{ $tool->default_published ? trans('messages.yes') : trans('messages.no') }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ trans('messages.default-shared-flag') }}</th>
+                                <td class="lti-tool-default-shared-flag">{{ $tool->default_shared ? trans('messages.yes') : trans('messages.no') }}</td>
+                            </tr>
                         </tbody>
                     </table>
 

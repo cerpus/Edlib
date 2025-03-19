@@ -247,4 +247,7 @@ return [
     'admins' => 'Admins',
     'publish' => 'Publish',
     'content-published-notice' => 'The content has been published.',
+    'tool-settings' => 'Tool settings',
+    'default-published-flag' => 'Published by default',
+    'default-shared-flag' => 'Shared by default',
 ];
