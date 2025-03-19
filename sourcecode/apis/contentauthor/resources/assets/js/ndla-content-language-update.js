@@ -141,7 +141,8 @@ ContentTranslationRefresh.prototype.loadLibrary = async function (library) {
                 library: library,
                 message: 'Timeout'
             }),
-            5 * 1000);
+            5 * 1000
+        );
         H5PEditor.loadLibrary(library, semantics => {
             clearTimeout(timeout);
             resolve({

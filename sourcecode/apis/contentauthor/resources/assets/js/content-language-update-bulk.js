@@ -125,18 +125,16 @@ ContentTranslationRefreshTool.prototype.start = function () {
 
 ContentTranslationRefreshTool.prototype.stop = function () {
     this.isStopping = true;
-    this.writeLog('Stopping...');
+    this.writeLog('Cancelling...');
 }
 
 ContentTranslationRefreshTool.prototype.nextBatch = function () {
     const self = this;
 
     if (this.isStopping) {
-        this.writeLog('Stopped');
+        this.writeLog('User cancelled');
         return;
     }
-
-    this.writeLog('Saving processed and requesting new content...');
 
     const payload = {
         libraryId: this.config.libraryId,
@@ -191,17 +189,17 @@ ContentTranslationRefreshTool.prototype.processBatch = function (parameters) {
 ContentTranslationRefreshTool.prototype.assignWork = function () {
     const data = this.parameters[this.current + 1];
 
-    if (this.isStopping || data === undefined) {
+    if (data === undefined) {
         // Out of work
         return false;
     }
     this.current++;
     this.working = true;
     this.writeLog('Processing id ' + data.id);
-    this.process(data.id, data.params);
+    this.processContent(data.id, data.params);
 };
 
-ContentTranslationRefreshTool.prototype.process = async function (id, data) {
+ContentTranslationRefreshTool.prototype.processContent = async function (id, data) {
     try {
         const params = await this.processor.process(JSON.parse(data));
         this.trigger('progress', true);
@@ -211,7 +209,10 @@ ContentTranslationRefreshTool.prototype.process = async function (id, data) {
         console.log('Content to process:', data);
         console.error(e);
 
-        this.failed(id, {message : e});
+        this.trigger('error', {
+            id: id,
+            error: e,
+        });
         this.trigger('progress', false);
         this.workDone(id, false);
     }
@@ -221,17 +222,16 @@ ContentTranslationRefreshTool.prototype.workDone = function (id, result) {
     this.working = false;
     this.upgraded[id] = JSON.stringify(result);
 
+    if (this.isStopping) {
+        this.writeLog('User cancelled');
+        return;
+    }
+
     if (this.assignWork() === false && !this.working) {
+        this.writeLog('Saving processed and requesting new content...');
         this.nextBatch();
     }
 };
-
-ContentTranslationRefreshTool.prototype.failed = function (contentId, error) {
-    this.trigger('error', {
-        id: contentId,
-        error: error,
-    });
-}
 
 ContentTranslationRefreshTool.prototype.writeLog = function (msg) {
     this.trigger('status', msg);

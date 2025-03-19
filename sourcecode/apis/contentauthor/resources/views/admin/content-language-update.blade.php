@@ -9,15 +9,15 @@
     <div class="container" style="width:80vw;">
         <a href="{{ route('admin.update-libraries') }}">Library list</a>
         <br>
-        <a href="{{ route('admin.check-library', [$library->id]) }}">Library details</a>
+        <a href="{{ route('admin.check-library', [$jsConfig['libraryId']]) }}">Library details</a>
         <br>
-        <a href="{{ route('admin.library-translation', [$library->id, $languageCode]) }}">Library "{{$languageCode}}" translation</a>
+        <a href="{{ route('admin.library-translation', [$jsConfig['libraryId'], $jsConfig['locale']]) }}">Library "{{$jsConfig['locale']}}" translation</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3>
-                            Refresh translations in content for <code>{{ $library->getLibraryString(true) }}</code> and <code>{{$languageCode}}</code> language
+                            Refresh translations in content for <code>{{ $libraryName }}</code> and <code>{{$jsConfig['locale']}}</code> language
                         </h3>
                     </div>
                     <div id="bulk-container">
@@ -34,8 +34,12 @@
                                 Translations from other content types or libraries used in the content will also be updated.
                             </p>
                             <p>
-                                The content is replaced, i.e. it will not be stored as new content nor will a version be created.
-                                Timestamps will not be changed.
+                                The content is replaced, i.e. it will not be stored as new content. The updated timestamp
+                                of the content will be updated.
+                                <br>
+                                A new version log entry will be created.
+                                <br>
+                                Timestamps and versions in the Hub are not changed.
                             </p>
                         </div>
                         <div class="panel-body row">

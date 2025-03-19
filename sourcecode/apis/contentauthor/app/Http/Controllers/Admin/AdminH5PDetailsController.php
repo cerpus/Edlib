@@ -105,8 +105,8 @@ class AdminH5PDetailsController extends Controller
             'languages' => H5PLibraryLanguage::select('language_code')
                 ->where('library_id', $library->id)
                 ->pluck('language_code')
-                ->push('en') // 'en' translation is rarely in a file,
-                ->unique() // but just in case it is.
+                ->push('en') // Allow refresh of 'en' texts in content, 'en' is usually the key/default text and not in a separate file
+                ->unique() // but just in case it is
                 ->sort(),
         ]);
     }

@@ -33,9 +33,7 @@
                             <tr>
                                 <th>Is leaf</th>
                                 <td>
-                                    @isset($requestedVersion)
-                                        {{ ($requestedVersion->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}
-                                    @endisset
+                                    {{ ($requestedVersion?->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}
                                 </td>
                             </tr>
                             <tr>
@@ -225,7 +223,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($content->contentLibraries()->orderBy('dependency_type')->orderBy('weight')->get() as $contentLib)
+                            @foreach($content->contentLibraries()->orderBy('dependency_type')->orderBy('library_id')->get() as $contentLib)
                                 <tr>
                                     <td>
                                         <a href="{{ route('admin.check-library', [$contentLib->library_id]) }}">
@@ -242,7 +240,7 @@
                                     <td>
                                         {{ $contentLib->dependency_type }}
                                     </td>
-                                </td>
+                                </tr>
                             @endforeach
                             </tbody>
                         </table>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\ContentVersion;
+use App\Events\H5PWasSaved;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
@@ -78,7 +79,9 @@ class AdminH5PTranslation
         $adminConfig->addContentLanguageScripts();
 
         $contentCount = $this->getRefreshQuery($library->id, $locale)
-            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'));
+            ->select(DB::raw('count(distinct(h5p_contents.id)) as total'))
+            ->first()
+            ->total;
 
         $jsConfig = [
             'ajaxPath' => $adminConfig->config->ajaxPath,
@@ -89,9 +92,8 @@ class AdminH5PTranslation
         ];
 
         return view('admin.content-language-update', [
-            'library' => $library,
-            'languageCode' => $locale,
-            'contentCount' => $contentCount->first()->total,
+            'libraryName' => $library->getLibraryString(true),
+            'contentCount' => $contentCount,
             'jsConfig' => $jsConfig,
             'scripts' => $adminConfig->getScriptAssets(),
             'styles' => $adminConfig->getStyleAssets(),
@@ -113,11 +115,11 @@ class AdminH5PTranslation
         $params = collect($request->validated('processed'));
 
         try {
-            $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$messages) {
+            $params->each(function ($item, $id) use (&$failed, &$unchanged, &$updated, &$messages, $request) {
                 $decoded = json_decode($item, flags: JSON_THROW_ON_ERROR);
 
                 if (empty($decoded)) {
-                    // Failed on client side
+                    // Failed on client side, error message is already be displayed
                     $failed++;
                 } else {
                     /** @var H5PContent $original */
@@ -125,20 +127,24 @@ class AdminH5PTranslation
                     $version = ContentVersion::latestLeaf($original->version_id);
 
                     if ($original->version_id !== $version->id) {
-                        // This should not be necessary, see to-do below
                         $unchanged++;
                         $messages[] = 'Content ' . $id . ' is not latest version, leaving unchanged';
                     } else {
+                        // JSON stored in database has escaped unicode and slashes, the JS encoded content in $item
+                        // does not, so we re-encode
                         $parameters = json_encode($decoded, flags: JSON_THROW_ON_ERROR);
                         if ($parameters === $original->parameters) {
+                            $messages[] = 'Content ' . $id . ' not changed';
                             $unchanged++;
                         } else {
-                            //                            $original->parameters = $parameters;
-                            //                            $original->filtered = '';
-                            //                            $original->timestamps = false;
-                            //                            if ($original->saveQuietly() !== true) {
-                            //                                throw new \Exception('Content ' . $id . ': Failed saving parameters');
-                            //                            }
+                            $original->parameters = $parameters;
+                            $original->filtered = '';
+                            if ($original->save() !== true) {
+                                throw new \Exception('Content ' . $id . ': Failed saving parameters');
+                            }
+                            // Trigger creation of new version log entry
+                            event(new H5PWasSaved($original, $request, ContentVersion::PURPOSE_UPDATE, $original));
+                            $messages[] = 'Content ' . $id . ' updated';
                             $updated++;
                         }
                     }
@@ -158,7 +164,6 @@ class AdminH5PTranslation
             'messages' => $messages,
         ];
 
-        // Todo: Only get leaf content
         $contentQuery = $this->getRefreshQuery($libraryId, $locale)
             ->where('content_versions.content_id', '>', $params->count() > 0 ? $params->keys()->last() : 0)
             ->orderBy('h5p_contents.id');
