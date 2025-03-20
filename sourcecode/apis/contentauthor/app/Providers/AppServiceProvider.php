@@ -12,6 +12,7 @@ use App\Observers\ContentVersionsObserver;
 use App\Observers\H5POptionObserver;
 use Cerpus\EdlibResourceKit\Oauth1\Credentials;
 use Cerpus\EdlibResourceKit\Oauth1\CredentialStoreInterface;
+use Illuminate\Foundation\Mix;
 use Illuminate\Http\Request;
 use Illuminate\Log\Logger;
 use Illuminate\Pagination\Paginator;
@@ -42,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Mix::class, \App\Support\Mix::class);
+
         $this->app->singleton(CredentialStoreInterface::class, fn() => new Credentials(
             config('app.consumer-key'),
             config('app.consumer-secret'),
