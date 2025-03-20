@@ -21,6 +21,8 @@ final class LtiToolTransformer extends TransformerAbstract
             'edit_mode' => $tool->edit_mode->value,
             'send_email' => $tool->send_email,
             'send_name' => $tool->send_name,
+            'default_published' => $tool->default_published,
+            'default_shared' => $tool->default_shared,
             'proxies_lti_launches' => true, // deprecated
             'links' => [
                 'self' => route('api.lti-tools.show', [$tool]),

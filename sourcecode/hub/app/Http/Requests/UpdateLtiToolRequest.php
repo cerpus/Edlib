@@ -24,6 +24,8 @@ final class UpdateLtiToolRequest extends FormRequest
 
         $parameters->set('send_name', $parameters->getBoolean('send_name', false));
         $parameters->set('send_email', $parameters->getBoolean('send_email', false));
+        $parameters->set('default_published', $parameters->getBoolean('default_published', false));
+        $parameters->set('default_shared', $parameters->getBoolean('default_shared', false));
     }
 
     /**
@@ -40,6 +42,8 @@ final class UpdateLtiToolRequest extends FormRequest
             'send_name' => ['boolean'],
             'send_email' => ['boolean'],
             'slug' => ['sometimes', 'string', 'max:50', 'regex:/^[a-z0-9-_]+$/'],
+            'default_published' => ['boolean'],
+            'default_shared' => ['boolean'],
         ];
     }
 }

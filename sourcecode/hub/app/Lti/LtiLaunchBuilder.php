@@ -126,7 +126,7 @@ class LtiLaunchBuilder
         $event = new LaunchLti($url, $launch, $tool);
         $this->dispatcher->dispatch($event);
 
-        $event = new LaunchItemSelection($event->getLaunch(), $version);
+        $event = new LaunchItemSelection($event->getLaunch(), $version, $tool);
         $this->dispatcher->dispatch($event);
 
         $request = new Oauth1Request('POST', $url, $event->getLaunch()->claims);

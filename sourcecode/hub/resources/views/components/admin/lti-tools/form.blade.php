@@ -87,5 +87,23 @@
         />
     </fieldset>
 
+    <fieldset>
+        <legend>{{ trans('messages.tool-settings') }}</legend>
+
+        <x-form.field
+            name="default_published"
+            type="checkbox"
+            :checked="$tool?->default_published"
+            :label="trans('messages.default-published-flag')"
+        />
+
+        <x-form.field
+            name="default_shared"
+            type="checkbox"
+            :checked="$tool?->default_shared"
+            :label="trans('messages.default-shared-flag')"
+        />
+    </fieldset>
+
     {{ $button }}
 </x-form>
