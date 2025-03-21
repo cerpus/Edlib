@@ -6,7 +6,7 @@ namespace App\Events;
 
 use App\Models\Content;
 
-final readonly class ContentSaving
+final readonly class ContentCreated
 {
     public function __construct(public Content $content) {}
 }
