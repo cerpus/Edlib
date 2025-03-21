@@ -1505,26 +1505,29 @@ final class ContentTest extends DuskTestCase
             ->withContext(Context::factory()->name('my_context'), ContentRole::Editor)
             ->create();
 
-        $this->browse(fn(Browser $browser) => $browser
-            ->loginAs($user->email)
-            ->assertAuthenticated()
-            ->visit('https://hub-test.edlib.test/lti/playground')
-            ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
-            ->type('key', $platform->key)
-            ->type('secret', $platform->secret)
-            ->type(
-                'parameters',
-                "lis_person_contact_email_primary={$user->email}",
-            )
-            ->press('Launch')
-            ->waitFor('iframe')
-            ->withinFrame('iframe', fn(Browser $iframe) => $iframe
-                ->with(new ContentCard(), fn(Browser $card) => $card->press('Copy'))
-                ->assertSeeIn('h1', '(copy)')
-                ->clickLink('Roles')
-                ->waitFor('.content-contexts')
-                ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'my_context'),
-            )
+        $this->browse(
+            fn(Browser $browser) => $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit('https://hub-test.edlib.test/lti/playground')
+                ->type('launch_url', 'https://hub-test.edlib.test/lti/dl')
+                ->type('key', $platform->key)
+                ->type('secret', $platform->secret)
+                ->type(
+                    'parameters',
+                    "lis_person_contact_email_primary={$user->email}",
+                )
+                ->press('Launch')
+                ->waitFor('iframe')
+                ->withinFrame(
+                    'iframe',
+                    fn(Browser $iframe) => $iframe
+                        ->with(new ContentCard(), fn(Browser $card) => $card->press('Copy'))
+                        ->assertSeeIn('h1', '(copy)')
+                        ->clickLink('Roles')
+                        ->waitFor('.content-contexts')
+                        ->assertSeeIn('.content-contexts > tbody > tr:first-child > td:nth-child(1)', 'my_context'),
+                ),
         );
     }
 }
