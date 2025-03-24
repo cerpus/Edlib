@@ -80,7 +80,7 @@ class AdminConfig implements ConfigInterface
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-editor.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'scripts/h5peditor-init.js'));
         $this->addAsset('scripts', $this->getAssetUrl('editor', 'language/en.js'));
-        $this->addAsset('scripts', (string) mix('js/ndla-content-language.js'));
+        $this->addAsset('scripts', (string) mix('js/content-language-update.js'));
     }
 
     public function getSettings(H5PLibrary $library)
