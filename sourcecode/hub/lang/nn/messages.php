@@ -101,4 +101,5 @@ return [
     'delete-content-confirm-text' => 'Innhaldet vil bli fjerna fra Edlib og ei feilmelding vil visast der innhaldet er i bruk.',
     'theme-edlib' => 'Edlib lys',
     'theme-dark' => 'Edlib mørk',
+    'links' => 'Lenker',
 ];

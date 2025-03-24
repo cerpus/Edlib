@@ -181,4 +181,5 @@ return [
     'theme-dark' => 'Edlib mørk',
     'publish' => 'Publiser',
     'content-published-notice' => 'Innholdet har blitt publisert.',
+    'links' => 'Lenker',
 ];

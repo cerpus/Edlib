@@ -99,23 +99,12 @@
                         </div>
 
                         <div class="col-6 col-md-4 col-lg-3">
-                            <h2 class="fs-5">Edlib</h2>
+                            <h2 class="fs-5">{{ trans('messages.links') }}</h2>
 
                             <ul class="list-unstyled">
                                 <li><x-layout.footer-link href="https://docs.edlib.com/" target="_blank">{{ trans('messages.documentation') }}</x-layout.footer-link></li>
                                 <li><x-layout.footer-link href="https://github.com/cerpus/Edlib" target="_blank">{{ trans('messages.github') }}</x-layout.footer-link></li>
-                                <li><x-layout.footer-link href="https://www.facebook.com/cerpus/" target="_blank">{{ trans('messages.facebook') }}</x-layout.footer-link></li>
-                                <li><x-layout.footer-link href="https://twitter.com/edlibopensource" target="_blank">{{ trans('messages.twitter') }}</x-layout.footer-link></li>
-                            </ul>
-                        </div>
-
-                        <div class="col-6 col-md-4 col-lg-3">
-                            <h2 class="fs-5">{{ config('app.name') }}</h2>
-
-                            <ul class="list-unstyled">
-                                @if (config('app.contact-url'))
-                                    <li><x-layout.footer-link href="{{ config('app.contact-url') }}" target="_blank">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
-                                @endif
+                                <li><x-layout.footer-link href="https://docs.edlib.com/contact-us" target="_blank">{{ trans('messages.contact-us') }}</x-layout.footer-link></li>
                             </ul>
                         </div>
                     </div>
