@@ -32,6 +32,8 @@ class LtiTool extends Model
         'send_name' => false,
         'send_email' => false,
         'edit_mode' => LtiToolEditMode::Replace,
+        'default_published' => false,
+        'default_shared' => false,
     ];
 
     protected $casts = [
@@ -39,6 +41,8 @@ class LtiTool extends Model
         'edit_mode' => LtiToolEditMode::class,
         'send_name' => 'boolean',
         'send_email' => 'boolean',
+        'default_published' => 'boolean',
+        'default_shared' => 'boolean',
     ];
 
     protected $hidden = [
@@ -54,6 +58,8 @@ class LtiTool extends Model
         'send_email',
         'edit_mode',
         'slug',
+        'default_published',
+        'default_shared',
     ];
 
     public static function booted(): void
