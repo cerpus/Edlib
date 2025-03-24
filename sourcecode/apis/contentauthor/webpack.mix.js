@@ -27,6 +27,7 @@ mix
     .js('resources/assets/entrypoints/h5peditor-image-popup.js', 'js/h5peditor-image-popup.js')
     .sass('resources/assets/entrypoints/h5picons.scss', 'css/h5picons.css')
     .js('resources/assets/entrypoints/h5pmetadata.js', 'js/h5pmetadata.js')
+    .js('resources/assets/entrypoints/ndla-h5peditor-html.js', 'js/ndla-h5peditor-html.js')
     .sass('resources/assets/entrypoints/link.scss', 'css/link.css')
     .js('resources/assets/entrypoints/maxscore.js', 'js/maxscore.js')
     .js('resources/assets/entrypoints/metadata.js', 'js/metadata.js')

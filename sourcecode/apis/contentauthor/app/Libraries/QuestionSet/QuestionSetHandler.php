@@ -84,7 +84,6 @@ class QuestionSetHandler
             $questionSet,
             new ResourceMetadataDataObject(
                 license: $request->get('license'),
-                share: $request->get('share'),
                 tags: $request->get('tags'),
             ),
         );

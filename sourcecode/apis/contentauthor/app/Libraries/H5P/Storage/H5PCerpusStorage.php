@@ -492,9 +492,7 @@ class H5PCerpusStorage implements H5PFileStorage, H5PDownloadInterface, CerpusSt
      */
     public function getUpgradeScript($machineName, $majorVersion, $minorVersion)
     {
-        /** @var H5PLibrary $library */
-        $library = H5PLibrary::fromLibrary([$machineName, $majorVersion, $minorVersion])->latestVersion()->first();
-        $path = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, $library->getFolderName());
+        $path = sprintf(ContentStorageSettings::UPGRADE_SCRIPT_PATH, $machineName);
 
         return $this->filesystem->exists($path) ? "/$path" : null;
     }
