@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\NdlaLegacy;
 
 use App\Models\Content;
+use App\Models\Context;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -25,6 +26,7 @@ final class CopyTest extends TestCase
 
         $content = Content::factory()
             ->withPublishedVersion()
+            ->withContext(Context::factory()->name('my_context'))
             ->tag('edlib2_usage_id:f4d10eb4-a6af-4c18-9736-b16b70959c66')
             ->create();
 
@@ -34,16 +36,26 @@ final class CopyTest extends TestCase
             ])
             ->assertOk()
             ->assertJson(function (AssertableJson $json) use ($content) {
-                $json->has('url')->where('url', function (string $url) use ($content) {
-                    $expectedId = Content::where('id', '<>', $content->id)
-                        ->firstOrFail()
-                        ->tags()
-                        ->where('prefix', 'edlib2_usage_id')
-                        ->firstOrFail()
-                        ->name;
+                $json->has('url');
 
-                    return $url === 'https://hub-test-ndla-legacy.edlib.test/resource/' . $expectedId;
-                });
+                $content = Content::where('id', '<>', $content->id)->firstOrFail();
+                $expectedId = $content
+                    ->tags()
+                    ->where('prefix', 'edlib2_usage_id')
+                    ->firstOrFail()
+                    ->name;
+
+                $this->assertSame(
+                    ['my_context'],
+                    $content->contexts
+                        ->map(fn(Context $context) => $context->name)
+                        ->toArray(),
+                );
+
+                $this->assertSame(
+                    'https://hub-test-ndla-legacy.edlib.test/resource/' . $expectedId,
+                    $json->toArray()['url'],
+                );
             });
     }
 }
