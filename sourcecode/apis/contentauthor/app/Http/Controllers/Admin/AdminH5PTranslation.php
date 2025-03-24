@@ -65,7 +65,7 @@ class AdminH5PTranslation
         $data = $this->translationData($library, $locale);
         $data['messages'] = $messages;
 
-        return view('admin.library-upgrade.translation', $data);
+        return view('admin.library-translation', $data);
     }
 
     /**

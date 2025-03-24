@@ -33,7 +33,13 @@
                             <tr>
                                 <th>Is leaf</th>
                                 <td>
-                                    {{ ($requestedVersion?->isLeaf() ?? $content->getVersion()->isLeaf()) ? 'Yes' : 'No' }}
+                                    @if($requestedVersion)
+                                        {{ $requestedVersion?->isLeaf() ? 'Yes' : 'No' }}
+                                    @elseif($content->getVersion())
+                                        {{ $content->getVersion()->isLeaf() ? 'Yes' : 'No' }}
+                                    @else
+                                        ?
+                                    @endempty
                                 </td>
                             </tr>
                             <tr>
