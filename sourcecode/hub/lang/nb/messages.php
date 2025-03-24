@@ -117,7 +117,7 @@ return [
     'draft' => 'Utkast',
     'by' => 'av',
     'recent-content' => 'Siste innhold',
-    'about-edlib' => ':site er drevet av :edlib, et system for organisering av læreressurser, basert på åpen kildekode utviklet av Edlib AS.',
+    'about-edlib' => ':edlib er et system for organisering av læreressurser, basert på åpen kildekode utviklet av Edlib AS.',
     'contact-us' => 'Kontakt oss',
     'documentation' => 'Dokumentasjon',
     'facebook' => 'Facebook',
@@ -181,4 +181,5 @@ return [
     'theme-dark' => 'Edlib mørk',
     'publish' => 'Publiser',
     'content-published-notice' => 'Innholdet har blitt publisert.',
+    'links' => 'Lenker',
 ];

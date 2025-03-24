@@ -79,7 +79,7 @@ return [
     'details' => 'Detaljar',
     'result-list' => 'Vis resultata som ei liste',
     'result-grid' => 'Vis resultata som eit rutenett',
-    'about-edlib' => ':site er drive av :edlib, eit system for organisering av læreressursar, basert på open kjeldekode utvikla av Edlib AS.',
+    'about-edlib' => ':edlib er eit system for organisering av læreressursar, basert på open kjeldekode utvikla av Edlib AS.',
     'statistics' => 'Statistikk',
     'preview' => 'Førehandsvisning',
     'number-of-views' => 'Antall visningar',
@@ -101,4 +101,5 @@ return [
     'delete-content-confirm-text' => 'Innhaldet vil bli fjerna fra Edlib og ei feilmelding vil visast der innhaldet er i bruk.',
     'theme-edlib' => 'Edlib lys',
     'theme-dark' => 'Edlib mørk',
+    'links' => 'Lenker',
 ];
