@@ -32,7 +32,7 @@
                         </div>
                     @elseif (isset($messages))
                         <div class="alert alert-success">
-                            {{ $translationDb->updated_at->format('Y-m-d H:i:s e') }}: Database updated
+                            {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s e') }}: Database updated
                         </div>
                     @endif
                     <div class="panel-body row">
@@ -110,18 +110,8 @@
                             @endif
                             <table class="table table-striped">
                                 <tr>
-                                    <th>
-                                        Database (Max 51200 characters)
-                                        @if($translationDb && $translationDb->updated_at)
-                                            <br>Modified {{ $translationDb->updated_at->format('Y-m-d H:i:s e') }}
-                                        @endif
-                                    </th>
-                                    <th>
-                                        File (read only)
-                                        @if($fileModified)
-                                            <br>Modified {{ $fileModified->format('Y-m-d H:i:s e') }}
-                                        @endif
-                                    </th>
+                                    <th>Database (Max 51200 characters)</th>
+                                    <th>File (read only)</th>
                                 </tr>
                                 <tr>
                                     <td style="width: 50%;">

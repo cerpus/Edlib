@@ -14,7 +14,6 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,7 +24,7 @@ class AdminH5PTranslation
      */
     public function edit(H5PLibrary $library, string $locale): View
     {
-        return view('admin.library-upgrade.translation', $this->translationData($library, $locale));
+        return view('admin.library-translation', $this->translationData($library, $locale));
     }
 
     /**
@@ -91,7 +90,7 @@ class AdminH5PTranslation
             'locale' => $locale,
         ];
 
-        return view('admin.content-language-update', [
+        return view('admin.content-translation-update', [
             'libraryName' => $library->getLibraryString(true),
             'contentCount' => $contentCount,
             'jsConfig' => $jsConfig,
@@ -203,7 +202,6 @@ class AdminH5PTranslation
         $filename = sprintf('libraries/%s/language/%s.json', $library->getFolderName(), $locale);
         if (Storage::exists($filename)) {
             $fileTranslation = Storage::disk()->get($filename);
-            $fileModified = Carbon::createFromTimestamp(Storage::disk()->lastModified($filename));
         }
 
         return [
@@ -211,7 +209,6 @@ class AdminH5PTranslation
             'languageCode' => $locale,
             'translationDb' => $libLang,
             'translationFile' => $fileTranslation ?? null,
-            'fileModified' => $fileModified ?? null,
             'totalCount' => $totalCount,
             'updatableCount' => $updatableCount->first()->total,
         ];

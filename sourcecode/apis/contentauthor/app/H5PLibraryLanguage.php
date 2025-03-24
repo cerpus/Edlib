@@ -24,6 +24,8 @@ class H5PLibraryLanguage extends Model
         'translation',
     ];
 
+    public $timestamps = false;
+
     /**
      * @return BelongsTo<H5PLibrary, $this>
      */

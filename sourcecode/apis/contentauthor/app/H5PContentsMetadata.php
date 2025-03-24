@@ -6,19 +6,8 @@ use App\Libraries\H5P\Dataobjects\H5PMetadataObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
- * @property int $id
- * @property int $content_id
- * @property string $authors
- * @property string $license
- * @property string $license_version
- * @property string $license_extras
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property string $default_language
- *
  * @method static self make(array $attributes = [])
  */
 class H5PContentsMetadata extends Model

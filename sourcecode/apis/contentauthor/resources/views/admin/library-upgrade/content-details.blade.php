@@ -209,43 +209,6 @@
                         </div>
                     </div>
                 @endempty
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Libraries</h4>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Library</th>
-                                <th>Library type</th>
-                                <th>Dependency type</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($content->contentLibraries()->orderBy('dependency_type')->orderBy('library_id')->get() as $contentLib)
-                                <tr>
-                                    <td>
-                                        <a href="{{ route('admin.check-library', [$contentLib->library_id]) }}">
-                                            {{ $contentLib->library->getLibraryString(true) }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @if($contentLib->library->runnable)
-                                            Content type
-                                        @else
-                                            Library
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ $contentLib->dependency_type }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
