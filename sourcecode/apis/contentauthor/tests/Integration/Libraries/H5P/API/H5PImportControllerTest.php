@@ -59,11 +59,10 @@ namespace Tests\Integration\Libraries\H5P\API {
             H5PLibrary::factory()->create();
         }
 
-        private function setupAdapter($isPublic)
+        private function setupAdapter()
         {
             $testAdapter = $this->createStub(H5PAdapterInterface::class);
             $testAdapter->method('getAdapterName')->willReturn("UnitTest");
-            $testAdapter->method('getDefaultImportPrivacy')->willReturn($isPublic);
             app()->instance(H5PAdapterInterface::class, $testAdapter);
         }
 
@@ -72,7 +71,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5P()
         {
             $this->_setUp();
-            $this->setupAdapter(isPublic: false);
+            $this->setupAdapter();
 
             collect([
                 [
@@ -122,7 +121,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                         ->first();
                     $this->assertJsonStringEqualsJsonString($expectedParameterStructure, $h5pContent->parameters);
                     $this->assertEquals('U', $h5pContent->metadata->license);
-                    $this->assertFalse($h5pContent->isListed());
                     $this->assertDatabaseHas('content_versions', [
                         'id' => $h5pContent->version_id,
                         'content_id' => $h5pContent->id,
@@ -141,7 +139,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5PWithImage()
         {
             $this->_setUp();
-            $this->setupAdapter(isPublic: true);
+            $this->setupAdapter();
 
             $user = User::factory()->make();
             Session::put('authId', $user->auth_id);
@@ -182,7 +180,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                 $h5pContent->parameters,
             );
             $this->assertEquals('U', $h5pContent->metadata->license);
-            $this->assertTrue($h5pContent->isListed());
 
             $imagePath = 'content/%s/images/file-5edde9091ebe0.jpg';
             $this->assertFileExists($this->fakeDisk->path(sprintf($imagePath, $h5pContent->id)));
@@ -204,7 +201,7 @@ namespace Tests\Integration\Libraries\H5P\API {
         public function importH5PWithMetadata()
         {
             $this->_setUp();
-            $this->setupAdapter(isPublic: false);
+            $this->setupAdapter();
 
             $title = "Text about PhpUnit";
             $machineName = "H5P.DragText";
@@ -213,7 +210,6 @@ namespace Tests\Integration\Libraries\H5P\API {
             $parameters = [
                 'h5p' => $file,
                 'userId' => $user->auth_id,
-                'isPublic' => true,
             ];
             $response = $this
                 ->postJson(route('api.import.h5p'), $parameters)
@@ -242,7 +238,6 @@ namespace Tests\Integration\Libraries\H5P\API {
                 '{"taskDescription":"Drag the words into the correct boxes","overallFeedback":[{"from":0,"to":100}],"checkAnswer":"Check","tryAgain":"Retry","showSolution":"Show solution","dropZoneIndex":"Drop Zone @index.","empty":"Drop Zone @index is empty.","contains":"Drop Zone @index contains draggable @draggable.","ariaDraggableIndex":"@index of @count draggables.","tipLabel":"Show tip","correctText":"Correct!","incorrectText":"Incorrect!","resetDropTitle":"Reset drop","resetDropDescription":"Are you sure you want to reset this drop zone?","grabbed":"Draggable is grabbed.","cancelledDragging":"Cancelled dragging.","correctAnswer":"Correct answer:","feedbackHeader":"Feedback","behaviour":{"enableRetry":true,"enableSolutionsButton":true,"enableCheckButton":true,"instantFeedback":false},"scoreBarLabel":"You got :num out of :total points","textField":"*PhpUnit* is an *awesome* tool"}',
                 $h5pContent->parameters,
             );
-            $this->assertTrue($h5pContent->isListed());
 
             $this->assertDatabaseHas('h5p_contents_metadata', [
                 'content_id' => $h5pContent->id,

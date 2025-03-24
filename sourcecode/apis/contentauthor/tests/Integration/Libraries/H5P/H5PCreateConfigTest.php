@@ -78,13 +78,12 @@ class H5PCreateConfigTest extends TestCase
         // Adapter specific
         if ($adapterMode === 'ndla') {
             $this->assertContains('/js/cropperjs/cropper.min.css', $data->editor->assets->css);
-            $this->assertContains('/js/h5p/wiris/h5peditor-html-wiris-addon.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
+            $this->assertContains('/js/ndla-h5peditor-html.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-image-popup.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
             $this->assertContains('/js/h5peditor-custom.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
-
-            $this->assertSame('https://www.wiris.net/client/plugins/ckeditor/plugin.js', $data->editor->wirisPath);
         } elseif ($adapterMode === 'cerpus') {
             $this->assertObjectNotHasProperty('wirisPath', $data->editor);
+            $this->assertNotContains('/js/ndla-h5peditor-html.js?ver=' . H5PConfigAbstract::CACHE_BUSTER_STRING, $data->editor->assets->js);
         }
     }
 

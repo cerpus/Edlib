@@ -65,8 +65,8 @@ class ArticleController extends Controller
 
         $state = ArticleStateDataObject::create([
             'license' => $license,
-            'isPublished' => false,
-            'share' => config('h5p.defaultShareSetting'),
+            'isPublished' => $ltiRequest?->getPublished() ?? false,
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.store'),
             '_method' => "POST",
@@ -107,10 +107,13 @@ class ArticleController extends Controller
             $emailCollaborators = collect(explode(",", $request->get('col-emails')));
         }
 
-        // Handles privacy, collaborators, and registering a new version
+        // Handles collaborators, and registering a new version
         event(new ArticleWasSaved($article, $request, $emailCollaborators, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
-        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl($article->toLtiContent(
+            published: $request->validated('isPublished'),
+            shared: $request->validated('isShared'),
+        ), $request->get('redirectToken'));
 
         return response()->json(['url' => $url], Response::HTTP_CREATED);
     }
@@ -199,7 +202,7 @@ class ArticleController extends Controller
             'license' => $article->license,
             'isPublished' => $ltiRequest?->getPublished() ?? false,
             'isDraft' => $article->isDraft(),
-            'share' => !$article->isListed() ? 'private' : 'share',
+            'isShared' => $ltiRequest?->getShared() ?? false,
             'redirectToken' => $request->get('redirectToken'),
             'route' => route('article.update', ['article' => $id]),
             '_method' => "PUT",
@@ -265,7 +268,13 @@ class ArticleController extends Controller
 
         event(new ArticleWasSaved($article, $request, $collaborators, Session::get('authId'), $reason, Session::all()));
 
-        $url = $this->getRedirectToCoreUrl($article->toLtiContent(), $request->get('redirectToken'));
+        $url = $this->getRedirectToCoreUrl(
+            $article->toLtiContent(
+                published: $request->validated('isPublished'),
+                shared: $request->validated('isShared'),
+            ),
+            $request->get('redirectToken'),
+        );
 
         return response()->json([
             'url' => $url,

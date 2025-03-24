@@ -2,12 +2,26 @@ upstream php {
     server ${PHP_FPM_HOST};
 }
 
+log_format healthd '$msec"$uri"'
+                '$status"$request_time"$upstream_response_time"'
+                '$http_x_forwarded_for';
+
 server {
     listen 80;
     index index.php;
     root /app/public;
     charset utf-8;
     client_max_body_size 2G;
+
+    if ($time_iso8601 ~ "^(\d{4})-(\d{2})-(\d{2})T(\d{2})") {
+        set $year $1;
+        set $month $2;
+        set $day $3;
+        set $hour $4;
+    }
+
+    access_log /var/log/nginx/access.log  main;
+    access_log /var/log/nginx/healthd/application.log.$year-$month-$day-$hour healthd;
 
     location / {
         try_files $uri $uri/ /index.php$is_args$args;

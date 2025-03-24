@@ -159,7 +159,7 @@ class H5PLibraryListTest extends TestCase
     {
         $this->artisan('h5p:library-list:available -a -l test.audio')
             ->expectsOutput('Library cache updated: ' . $this->cacheUpdated->format('Y-m-d H:i:s e'))
-            ->expectsOutput('Installed H5P Core version: 1.26')
+            ->expectsOutput('Installed H5P Core version: 1.27')
             ->expectsOutput('Libraries found: 1')
             ->expectsTable(
                 ['Name', 'Version', 'H5P Core version', 'Creator'],
@@ -199,7 +199,7 @@ class H5PLibraryListTest extends TestCase
     public function testCanListOutdatedIgnoringCoreVersion(): void
     {
         $this->artisan('h5p:library-list:outdated --ignore-core-version')
-            ->expectsOutput('Installed H5P Core version: 1.26')
+            ->expectsOutput('Installed H5P Core version: 1.27')
             ->expectsOutput('Library cache updated: ' . $this->cacheUpdated->format('Y-m-d H:i:s e'))
             ->expectsOutput('Libraries found: 2')
             ->expectsTable(

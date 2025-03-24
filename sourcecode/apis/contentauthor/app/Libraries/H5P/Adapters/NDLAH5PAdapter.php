@@ -51,84 +51,15 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             $field->font = new \stdClass();
         }
 
-        $field->font->size = [
-            (object) [
-                'label' => '50%',
-                'css' => '0.5em',
-            ],
-            (object) [
-                'label' => '56.25%',
-                'css' => '0.5625em',
-            ],
-            (object) [
-                'label' => '62.50%',
-                'css' => '0.625em',
-            ],
-            (object) [
-                'label' => '68.75%',
-                'css' => '0.6875em',
-            ],
-            (object) [
-                'label' => '75%',
-                'css' => '0.75em',
-            ],
-            (object) [
-                'label' => '87.50%',
-                'css' => '0.875em',
-            ],
-            (object) [
-                'label' => '100%',
-                'css' => '1em',
-            ],
-            (object) [
-                'label' => '112.50%',
-                'css' => '1.125em',
-            ],
-            (object) [
-                'label' => '125%',
-                'css' => '1.25em',
-            ],
-            (object) [
-                'label' => '137.50%',
-                'css' => '1.375em',
-            ],
-            (object) [
-                'label' => '150%',
-                'css' => '1.5em',
-            ],
-            (object) [
-                'label' => '162.50%',
-                'css' => '1.625em',
-            ],
-            (object) [
-                'label' => '175%',
-                'css' => '1.75em',
-            ],
-            (object) [
-                'label' => '225%',
-                'css' => '2.25em',
-            ],
-            (object) [
-                'label' => '300%',
-                'css' => '3em',
-            ],
-            (object) [
-                'label' => '450%',
-                'css' => '4.5em',
-            ],
-            (object) [
-                'label' => '675%',
-                'css' => '6.75em',
-            ],
-            (object) [
-                'label' => '1350%',
-                'css' => '13.5em',
-            ],
-            (object) [
-                'label' => '3375%',
-                'css' => '33.75em',
-            ],
-        ];
+        $field->font->size = collect([
+            '50%', '56.25%', '62.50%', '68.75%', '75%', '87.50%', '100%', '112.50%', '125%', '137.50%',
+            '150%', '162.50%', '175%', '225%', '300%', '450%', '675%', '1350%', '3375%',
+        ])
+            ->map(fn(string $size) => (object) [
+                'label' => $size,
+                'css' => $size,
+            ])
+            ->toArray();
     }
 
 
@@ -150,19 +81,31 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getEditorSettings(): array
     {
         return [
-            'wirisPath' => 'https://www.wiris.net/client/plugins/ckeditor/plugin.js',
+            'wysiwygButtons' => [
+                'language',
+                'mathtype',
+            ],
+            'textPartLanguages' =>
+                collect(explode(',', config('h5p.ckeditor.textPartLanguages', '')))
+                    ->map(fn(string $language) => [
+                        'title' => locale_get_display_name($language, app()->getLocale()),
+                        'languageCode' => $language,
+                    ])
+                    ->sortBy('title')
+                    ->values(),
         ];
     }
 
 
     public function getCustomEditorScripts(): array
     {
-        $js[] = "/js/h5p/wiris/h5peditor-html-wiris-addon.js";
-        $js[] = (string) mix('js/h5peditor-image-popup.js');
-        $js[] = (string) mix('js/h5peditor-custom.js');
-
         return array_unique([
-            ...$js,
+            // Custom HTML component to enable CKEDitor 5 plugins TextPartLanguage, MathType and ChemType
+            (string) mix('js/ndla-h5peditor-html.js'),
+            // Custom image editor/cropper
+            (string) mix('js/h5peditor-image-popup.js'),
+            // H5P.getCrossOrigin override
+            (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getEditorScripts(),
             ...$this->imageAdapter->getEditorScripts(),
             ...$this->videoAdapter->getEditorScripts(),
@@ -177,8 +120,7 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomViewScripts(): array
     {
         return [
-            '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-AMS-MML_SVG',
-            '/js/h5p/wiris/view.js',
+            '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js',
             (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
@@ -272,14 +214,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
             ->toArray());
     }
 
-    /**
-     * @return bool
-     */
-    public function getDefaultImportPrivacy()
-    {
-        return true; // Private by default. Corresponds to is_private = true
-    }
-
     public function useEmbedLink(): int
     {
         return \H5PDisplayOptionBehaviour::ALWAYS_SHOW;
@@ -316,5 +250,14 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getAdapterName(): string
     {
         return 'ndla';
+    }
+
+    public function filterEditorScripts(): array
+    {
+        return [
+            // Remove default HTML component. Custom version added in getCustomEditorScripts()
+            'ckeditor/ckeditor.js',
+            'scripts/h5peditor-html.js',
+        ];
     }
 }

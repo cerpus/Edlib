@@ -190,4 +190,14 @@ class LtiRequest extends \Cerpus\EdlibResourceKit\Oauth1\Request
 
         return $value;
     }
+
+    public function getShared(): bool|null
+    {
+        $value = $this->param('ext_edlib3_shared');
+        if ($value !== null) {
+            $value = filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        }
+
+        return $value;
+    }
 }
