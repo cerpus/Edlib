@@ -248,4 +248,7 @@ return [
     'publish' => 'Publish',
     'content-published-notice' => 'The content has been published.',
     'links' => 'Links',
+    'tool-settings' => 'Tool settings',
+    'default-published-flag' => 'Published by default',
+    'default-shared-flag' => 'Shared by default',
 ];

@@ -51,11 +51,13 @@ support this, content selected via the default endpoint just replaces the previo
 
 * `ext_edlib3_published`
 
-  Sent by the hub when editing content. Will be `1` if published, or `0` otherwise.
+  Sent by the hub when creating or editing content. When editing, will be `1` if published, or `0` otherwise. When
+  creating, will be the desired default value of the published flag.
 
 * `ext_edlib3_shared`
 
-  Sent by the hub when editing content. Will be `1` if the content is shared, or `0` otherwise.
+  Sent by the hub when creating or editing content. When editing, will be `1` if the content is shared, or `0`
+  otherwise. When creating, will be the desired default value of the shared flag.
 
 ## Resizing
 

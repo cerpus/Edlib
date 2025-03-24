@@ -200,17 +200,41 @@ final class LtiPlatformTest extends TestCase
         $this->assertSame($flagValue, $request->get('ext_edlib3_shared'));
     }
 
-    public function testClaimsDoNotContainContentStatusFlagsWhenNotEditing(): void
-    {
+    #[TestWith(['1', true])]
+    #[TestWith(['0', false])]
+    public function testClaimsContainDefaultPublishedFlagWhenCreating(
+        string $flagValue,
+        bool $defaultPublished,
+    ): void {
+        $tool = LtiTool::factory()->defaultPublished($defaultPublished)->create();
+
         $request = $this->app->make(LtiLaunchBuilder::class)
             ->toItemSelectionLaunch(
-                tool: LtiTool::factory()->create(),
+                tool: $tool,
                 url: $this->faker->url,
                 itemReturnUrl: $this->faker->url,
             )
             ->getRequest();
 
-        $this->assertFalse($request->has('ext_edlib3_published'));
-        $this->assertFalse($request->has('ext_edlib3_shared'));
+        $this->assertSame($flagValue, $request->get('ext_edlib3_published'));
+    }
+
+    #[TestWith(['1', true])]
+    #[TestWith(['0', false])]
+    public function testClaimsContainDefaultSharedFlagWhenCreating(
+        string $flagValue,
+        bool $defaultShared,
+    ): void {
+        $tool = LtiTool::factory()->defaultShared($defaultShared)->create();
+
+        $request = $this->app->make(LtiLaunchBuilder::class)
+            ->toItemSelectionLaunch(
+                tool: $tool,
+                url: $this->faker->url,
+                itemReturnUrl: $this->faker->url,
+            )
+            ->getRequest();
+
+        $this->assertSame($flagValue, $request->get('ext_edlib3_shared'));
     }
 }
