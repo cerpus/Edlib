@@ -120,7 +120,8 @@ class NDLAH5PAdapter implements H5PAdapterInterface
     public function getCustomViewScripts(): array
     {
         return [
-            '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js',
+            // Display of formulas
+            '//www.wiris.net/demo/plugins/app/WIRISplugins.js?viewer=image',
             (string) mix('js/h5peditor-custom.js'),
             ...$this->audioAdapter->getViewScripts(),
             ...$this->imageAdapter->getViewScripts(),
