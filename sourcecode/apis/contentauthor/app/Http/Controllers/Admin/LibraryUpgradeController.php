@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LibraryUpgradeController extends Controller
@@ -30,7 +31,7 @@ class LibraryUpgradeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         (new Capability())->refresh();
 
@@ -56,6 +57,8 @@ class LibraryUpgradeController extends Controller
         // Add settings for each library
         $libraries = collect();
         $contentTypes = collect();
+        $available = collect();
+
         foreach ($storedLibraries as $versions) {
             $lastVersion = end($versions);
             reset($versions);
@@ -66,7 +69,8 @@ class LibraryUpgradeController extends Controller
                     'machineName' => $library->name,
                     'majorVersion' => $library->major_version,
                     'minorVersion' => $library->minor_version,
-                    'title' => sprintf('%s (%d.%d.%d)', $library->title, $library->major_version, $library->minor_version, $library->patch_version),
+                    'title' => $library->title,
+                    'version' => sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version),
                     'numContent' => $usage['content'],
                     'numLibraryDependencies' => $usage['libraries'],
                     'hubUpgrade' => null,
@@ -76,6 +80,7 @@ class LibraryUpgradeController extends Controller
                     'hubUpgradeIsPatch' => null,
                     'hubUpgradeError' => '',
                     'hubUpgradeMessage' => '',
+                    'hubAvailable' => false,
                 ];
 
                 if ($library->runnable) {
@@ -87,18 +92,24 @@ class LibraryUpgradeController extends Controller
                         'library' => $library->id,
                     ]);
 
-                    $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
-                    if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
-                        $item['hubUpgradeIsPatch'] = false;
-                        $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
-                        if (empty($newVersion)) {
-                            $item['hubUpgradeIsPatch'] = true;
-                            $newVersion = $isPatchUpdate($hasHubCache);
-                        }
-                        if (!empty($newVersion)) {
-                            $item['hubUpgrade'] = array_shift($newVersion);
-                            $item['hubUpgradeMessage'] = $this->libraryUpdateMessage($item['hubUpgrade'], $item['hubUpgradeIsPatch']);
-                            $item['hubUpgradeError'] = $this->libraryUpdateErrorMessage($hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version, $item['hubUpgrade']);
+                    if (config('h5p.isHubEnabled')) {
+                        $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
+                        if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
+                            $item['hubVersion'] = sprintf('%d.%d.%d', $hasHubCache->major_version, $hasHubCache->minor_version, $hasHubCache->patch_version);;
+                            $item['hubUpgradeIsPatch'] = false;
+                            $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
+                            if (empty($newVersion)) {
+                                $item['hubUpgradeIsPatch'] = true;
+                                $newVersion = $isPatchUpdate($hasHubCache);
+                            }
+                            if (!empty($newVersion)) {
+                                $item['summary'] = $hasHubCache->summary;
+                                $item['external_link'] = $hasHubCache->example;
+                                $item['hubUpgrade'] = array_shift($newVersion);
+                                $item['hubUpgradeMessage'] = $this->libraryUpdateMessage($item['hubUpgrade'], $item['hubUpgradeIsPatch']);
+                                $item['hubUpgradeError'] = $this->libraryUpdateErrorMessage($hasHubCache->h5p_major_version, $hasHubCache->h5p_minor_version, $item['hubUpgrade']);
+                                $available->push($item);
+                            }
                         }
                     }
                     $contentTypes->push($item);
@@ -108,7 +119,6 @@ class LibraryUpgradeController extends Controller
             }
         }
 
-        $available = collect();
         if (config('h5p.isHubEnabled')) {
             $hubCacheLibraries
                 ->each(function ($hubCache) use ($contentTypes, $available) {
@@ -118,11 +128,11 @@ class LibraryUpgradeController extends Controller
                             'machineName' => $hubCache->name,
                             'majorVersion' => $hubCache->major_version,
                             'minorVersion' => $hubCache->minor_version,
-                            'title' => sprintf('%s (%d.%d.%d)', $hubCache->title, $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
+                            'title' => $hubCache->title,
+                            'version' => '',
+                            'hubVersion' => sprintf('%d.%d.%d', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                             'summary' => $hubCache->summary,
                             'external_link' => $hubCache->example,
-                            'numContent' => 0,
-                            'numLibraryDependencies' => 0,
                             'hubUpgrade' => sprintf('%s.%s.%s', $hubCache->major_version, $hubCache->minor_version, $hubCache->patch_version),
                             'isLast' => true,
                             'hubUpgradeIsPatch' => null,
@@ -134,11 +144,41 @@ class LibraryUpgradeController extends Controller
         }
 
         return view('admin.library-upgrade.index', [
-            'installedLibraries' => $libraries->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
-            'installedContentTypes' => $contentTypes->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
+            'installedContentTypes' => $contentTypes
+                ->sortBy([
+                    ['majorVersion', SORT_NUMERIC | SORT_DESC],
+                    ['minorVersion', SORT_NUMERIC | SORT_DESC],
+                ])
+                ->groupBy('machineName')
+                ->sort(function (Collection $a, Collection $b) use ($request) {
+                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'));
+                })
+                ->values(),
+            'installedLibraries' => $libraries
+                ->sortBy([
+                    ['majorVersion', SORT_NUMERIC | SORT_DESC],
+                    ['minorVersion', SORT_NUMERIC | SORT_DESC],
+                ])
+                ->groupBy('machineName')
+                ->sort(function (Collection $a, Collection $b) use ($request) {
+                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'));
+                })
+                ->values(),
             'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
             'contentTypeCacheUpdateAt' => H5POption::select('option_value')->where('option_name', 'content_type_cache_updated_at')->first(),
         ]);
+    }
+
+    /**
+     * Compare attribute $sortBy on first item in collections using strnatcasecmp
+     */
+    private function collectionSortCompare(Collection $a, Collection $b, string $sortBy): int
+    {
+        if (array_key_exists($sortBy, $a->first()) && array_key_exists($sortBy, $b->first())) {
+            return strnatcasecmp($a->first()[$sortBy], $b->first()[$sortBy]);
+        }
+
+        return 0;
     }
 
     /**

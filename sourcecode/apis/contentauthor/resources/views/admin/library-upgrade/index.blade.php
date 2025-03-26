@@ -54,17 +54,18 @@
                                 <p>
                                     The list contains content types that are currently installed in Edlib.
                                     If available new versions can be downloaded and installed.
+                                    Hub version is the version that was available when the local cache was updated.
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                    Installed H5P Core version: <b>{{ join('.', H5PCore::$coreApi) }}</b>
                                 </p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.library-table', [
+                                    @include('admin.fragments.collapse-table', [
                                         'libraries' => $installedContentTypes,
-                                        'showCount' => true,
+                                        'isContentType' => true,
                                         'activetab' => 'tabContentTypes'
                                     ])
                                 </div>
@@ -78,9 +79,9 @@
                             >
                                 <p>Libraries are used by content types, and are installed/updated when content types are installed/updated.</p>
                                 <div class="panel-body row">
-                                    @include('admin.fragments.library-table', [
+                                    @include('admin.fragments.collapse-table', [
                                         'libraries' => $installedLibraries,
-                                        'showCount' => true,
+                                        'isContentType' => false,
                                         'activetab' => 'tabLibraries'
                                     ])
                                 </div>
@@ -95,7 +96,7 @@
                                 <h4>Install or update H5P content types and libraries by uploading a file in <code>.h5p</code> format.</h4>
                                 <p>Any content in the file will not be imported, only content types and libraries.</p>
                                 <p>
-                                    Content type and libraries must be compatible with H5P Core version {{ join('.', H5PCore::$coreApi) }}
+                                    Content type and libraries must be compatible with H5P Core version <b>{{ join('.', H5PCore::$coreApi) }}</b>
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
@@ -119,18 +120,17 @@
                                 </div>
                                 <h4>Content types available from <a href="https://h5p.org" target="_blank">h5p.org</a></h4>
                                 <p>
-                                    The list contains content types that was available when the local cache was updated. Available content types are maintained by H5P Group.
+                                    The list contains content types and versions that was available when the local cache was updated. Available content types are maintained by H5P Group.
                                 </p>
                                 <p>
                                     @include('admin.fragments.update-explanation')
                                 </p>
                                 <p>
-                                    Installed H5P Core version: {{ join('.', H5PCore::$coreApi) }}
+                                    Installed H5P Core version: <b>{{ join('.', H5PCore::$coreApi) }}</b>
                                 </p>
                                 <div class="panel-body row">
                                     @include('admin.fragments.library-table', [
                                         'libraries' => $available,
-                                        'showSummary' => true,
                                         'activetab' => 'tabInstall'
                                     ])
                                 </div>
