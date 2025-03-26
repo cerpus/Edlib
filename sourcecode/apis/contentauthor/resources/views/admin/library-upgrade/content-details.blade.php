@@ -29,8 +29,9 @@
                                             type="submit"
                                             title="Preview"
                                             aria-label="Preview"
+                                            class="btn btn-default"
                                         >
-                                            <i aria-hidden="true" class="glyphicon glyphicon-eye-open"></i>
+                                            <span aria-hidden="true" class="fa fa-television"></span>
                                         </button>
                                     </form>
                                     <form
@@ -44,8 +45,9 @@
                                             type="submit"
                                             title="Export"
                                             aria-label="Export"
+                                            class="btn btn-default"
                                         >
-                                            <i aria-hidden="true" class="glyphicon glyphicon-export"></i>
+                                            <i aria-hidden="true" class="fa fa-download"></i>
                                         </button>
                                     </form>
                                 </td>
