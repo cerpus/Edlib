@@ -276,7 +276,7 @@ class AdminH5PDetailsController extends Controller
         $content = $viewConfig->getContent();
         $settings = $h5pView->getSettings();
         $styles = array_merge($h5pView->getStyles(), [
-            mix('css/admin-preview.css')
+            mix('css/admin-preview.css'),
         ]);
 
         return view('admin.h5p-preview', [

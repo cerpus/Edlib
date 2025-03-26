@@ -95,7 +95,7 @@ class LibraryUpgradeController extends Controller
                     if (config('h5p.isHubEnabled')) {
                         $hasHubCache = $hubCacheLibraries->firstWhere('machineName', $library->name);
                         if (!empty($hasHubCache) && $lastVersion->id === $library->id) {
-                            $item['hubVersion'] = sprintf('%d.%d.%d', $hasHubCache->major_version, $hasHubCache->minor_version, $hasHubCache->patch_version);;
+                            $item['hubVersion'] = sprintf('%d.%d.%d', $hasHubCache->major_version, $hasHubCache->minor_version, $hasHubCache->patch_version);
                             $item['hubUpgradeIsPatch'] = false;
                             $newVersion = $this->core->getUpgrades($library, [$hasHubCache]);
                             if (empty($newVersion)) {
