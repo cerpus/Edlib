@@ -11,30 +11,28 @@
             <div class="col-md-12">
                 <div class="panel with-nav-tabs panel-default">
                     <div class="panel-heading">
-                        <div class="panel-heading">
-                            <ul class="nav nav-tabs">
-                                <li @class(['active' => $activeTab === 'tabContentTypes'])>
-                                    <a href="#tabContentTypes" data-toggle="tab">
-                                        Installed content types
-                                    </a>
-                                </li>
-                                <li @class(['active' => $activeTab === 'tabLibraries'])>
-                                    <a href="#tabLibraries" data-toggle="tab">
-                                        Installed libraries
-                                    </a>
-                                </li>
-                                <li @class(['active' => $activeTab === 'tabUpload'])>
-                                    <a href="#tabUpload" data-toggle="tab">
-                                        Upload content type
-                                    </a>
-                                </li>
-                                <li @class(['active' => $activeTab === 'tabInstall'])>
-                                    <a href="#tabInstall" data-toggle="tab">
-                                        Install from h5p.org
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <ul class="nav nav-tabs">
+                            <li @class(['active' => $activeTab === 'tabContentTypes'])>
+                                <a href="#tabContentTypes" data-toggle="tab">
+                                    Installed content types
+                                </a>
+                            </li>
+                            <li @class(['active' => $activeTab === 'tabLibraries'])>
+                                <a href="#tabLibraries" data-toggle="tab">
+                                    Installed libraries
+                                </a>
+                            </li>
+                            <li @class(['active' => $activeTab === 'tabUpload'])>
+                                <a href="#tabUpload" data-toggle="tab">
+                                    Upload content type
+                                </a>
+                            </li>
+                            <li @class(['active' => $activeTab === 'tabInstall'])>
+                                <a href="#tabInstall" data-toggle="tab">
+                                    Install from h5p.org
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
