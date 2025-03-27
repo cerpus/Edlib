@@ -87,7 +87,6 @@ class ContentTypeControllerTest extends TestCase
                 'message' => true,
                 'errors' => [
                     'title' => [true],
-                    'sharing' => [true],
                     'license' => [true],
                     'questions' => [true],
                 ],

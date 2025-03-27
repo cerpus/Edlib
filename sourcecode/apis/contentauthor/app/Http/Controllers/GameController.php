@@ -51,7 +51,13 @@ class GameController extends Controller
             $game->setCollaborators($collaborators);
         }
 
-        $url = $this->getRedirectToCoreUrl($updatedGame->toLtiContent(), $request->input('redirectToken'));
+        $url = $this->getRedirectToCoreUrl(
+            $updatedGame->toLtiContent(
+                published: $request->validated('isPublished'),
+                shared: $request->validated('isShared'),
+            ),
+            $request->input('redirectToken'),
+        );
 
         return response()->json(['url' => $url], Response::HTTP_OK);
     }

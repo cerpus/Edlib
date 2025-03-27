@@ -26,10 +26,10 @@ const form = (state, action) => {
             };
         }
         case actions.setSharing: {
-            const { isPrivate } = action.payload;
+            const { isShared } = action.payload;
             return {
                 ...state,
-                share: isPrivate !== true ? 'share' : 'private',
+                isShared,
             };
         }
         case actions.setDisplayOptions: {

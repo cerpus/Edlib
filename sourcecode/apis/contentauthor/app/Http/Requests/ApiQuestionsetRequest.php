@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Libraries\Games\Millionaire\Millionaire;
 use App\Libraries\H5P\Packages\QuestionSet;
 use App\Rules\LicenseContent;
-use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -13,14 +12,13 @@ class ApiQuestionsetRequest extends FormRequest
 {
     private ?string $selectedPresentation;
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    protected function prepareForValidation(): void
     {
-        return true; //$this->session()->has("userId");
+        if ($this->has('isShared')) {
+            $this->merge([
+                'isShared' => $this->boolean('isShared'),
+            ]);
+        }
     }
 
     /**
@@ -101,7 +99,7 @@ class ApiQuestionsetRequest extends FormRequest
             'questionSetJsonData' => 'sometimes|json',
             'title' => 'required|string',
             'tags' => 'present|array',
-            'share' => ['sometimes', new shareContent()],
+            'isShared' => ['sometimes', 'boolean'],
         ];
     }
 

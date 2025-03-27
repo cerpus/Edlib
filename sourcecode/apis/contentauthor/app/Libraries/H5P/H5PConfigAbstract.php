@@ -319,6 +319,8 @@ abstract class H5PConfigAbstract implements ConfigInterface
         return array_merge(
             [
                 (string) mix("js/h5pmetadata.js"),
+                // Used by 'Update content' functionality, upgrading to a newer version of the content type, in Editor
+                '/js/editor-setup.js',
             ],
             $this->adapter->getCustomEditorScripts(),
         );

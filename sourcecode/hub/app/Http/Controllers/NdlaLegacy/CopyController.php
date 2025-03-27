@@ -36,8 +36,11 @@ final readonly class CopyController
 
         $newId = DB::transaction(function () use ($original, $user) {
             $copy = $original->createCopyBelongingTo($user);
+
             $tag = Tag::findOrCreateFromString('edlib2_usage_id:' . Str::uuid());
             $copy->tags()->attach($tag);
+
+            $copy->contexts()->syncWithoutDetaching($original->contexts);
 
             return $tag->name;
         });

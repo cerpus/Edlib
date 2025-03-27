@@ -25,6 +25,8 @@ final class LtiToolFactory extends Factory
             'send_name' => $this->faker->boolean,
             'send_email' => $this->faker->boolean,
             'slug' => $this->faker->unique()->slug(nbWords: 2),
+            'default_published' => $this->faker->boolean,
+            'default_shared' => $this->faker->boolean,
         ];
     }
 
@@ -69,5 +71,15 @@ final class LtiToolFactory extends Factory
     public function editMode(LtiToolEditMode $editMode): self
     {
         return $this->state(['edit_mode' => $editMode]);
+    }
+
+    public function defaultPublished(bool $defaultPublished = true): self
+    {
+        return $this->state(['default_published' => $defaultPublished]);
+    }
+
+    public function defaultShared(bool $defaultShared = true): self
+    {
+        return $this->state(['default_shared' => $defaultShared]);
     }
 }

@@ -3,9 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\LicenseContent;
-use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ArticleRequest extends FormRequest
 {
@@ -33,8 +31,8 @@ class ArticleRequest extends FormRequest
             'originators' => 'nullable|array',
             'originators.*.name' => 'required|min:1|max:1000',
             'originators.*.role' => 'required|in:Source,Supplier,Writer',
-            'share' => ['sometimes', new shareContent()],
-            'license' => [Rule::requiredIf($this->input('share') === 'share'), 'string', app(LicenseContent::class)],
+            'isShared' => ['sometimes', 'boolean'],
+            'license' => ['required_if_accepted:isShared', 'string', app(LicenseContent::class)],
         ];
     }
 }

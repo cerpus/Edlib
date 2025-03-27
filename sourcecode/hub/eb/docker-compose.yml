@@ -33,6 +33,8 @@ services:
       hub: { condition: service_healthy }
     env_file:
       - .env
+    volumes:
+      - "${EB_LOG_BASE_DIR}/hub-web:/var/log/nginx"
     environment:
       PHP_FPM_HOST: hub:9000
     platform: linux/amd64

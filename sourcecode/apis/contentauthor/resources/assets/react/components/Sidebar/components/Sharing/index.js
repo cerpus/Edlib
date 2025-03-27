@@ -1,3 +1,3 @@
 import './Sharing.css';
 
-export { default } from './SharingContainer';
+export { default } from './Sharing';
