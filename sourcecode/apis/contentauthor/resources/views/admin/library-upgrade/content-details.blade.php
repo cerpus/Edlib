@@ -16,7 +16,41 @@
                         <table class="table table-striped">
                             <tr>
                                 <th>Id</th>
-                                <td>{{ $content->id }}</td>
+                                <td>
+                                    {{ $content->id }}
+                                    <form
+                                        action="{{route('admin.content-preview', $content)}}"
+                                        method="POST"
+                                        target="_blank"
+                                        style="display:inline-block; margin-left:1em;"
+                                    >
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            title="Preview"
+                                            aria-label="Preview"
+                                            class="btn btn-default"
+                                        >
+                                            <span aria-hidden="true" class="fa fa-television"></span>
+                                        </button>
+                                    </form>
+                                    <form
+                                        action="{{route('admin.content-export', $content)}}"
+                                        method="POST"
+                                        target="_blank"
+                                        style="display:inline-block; margin-left:1em;"
+                                    >
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            title="Export"
+                                            aria-label="Export"
+                                            class="btn btn-default"
+                                        >
+                                            <i aria-hidden="true" class="fa fa-download"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Title</th>
@@ -195,6 +229,46 @@
                         </div>
                     </div>
                 @endempty
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Libraries</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <th>Id</th>
+                                <th>Machine name</th>
+                                <th>Version</th>
+                                <th>Dependency type</th>
+                            </tr>
+                            @foreach($libraries as $cLib)
+                                <tr @class(['alert-danger' => $cLib['name'] === null])>
+                                    @isset($cLib['name'])
+                                        <td>
+                                            <a href="{{ route('admin.check-library', [$cLib['id']]) }}">
+                                                {{ $cLib['id'] }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('admin.check-library', [$cLib['id']]) }}">
+                                                {{ $cLib['name'] }}
+                                            </a>
+                                        </td>
+                                    @else
+                                        <td>
+                                            {{ $cLib['id'] }}
+                                        </td>
+                                        <td>
+                                            -- Not found --
+                                        </td>
+                                    @endisset
+                                    <td>{{ $cLib['version'] }}</td>
+                                    <td>{{ $cLib['dependency_type'] }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

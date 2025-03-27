@@ -10,6 +10,7 @@ mix
     .copy('node_modules/@brightcove/player-loader/dist/brightcove-player-loader.min.js', 'public/js/videos')
     .copyDirectory('node_modules/cropperjs/dist', 'public/js/cropperjs')
     .sass('resources/assets/entrypoints/admin.scss', 'css/admin.css')
+    .sass('resources/assets/entrypoints/admin-preview.scss', 'css/admin-preview.css')
     .js('resources/assets/entrypoints/admin.js', 'js/admin.js')
     .js('resources/assets/entrypoints/article.js', 'js/article.js')
     .sass('resources/assets/entrypoints/article.scss', 'css/article.css')
