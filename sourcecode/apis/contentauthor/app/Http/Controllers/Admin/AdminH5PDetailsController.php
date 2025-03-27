@@ -328,7 +328,7 @@ class AdminH5PDetailsController extends Controller
                     'content_id' => $child->content_id,
                     'versionDate' => $child->created_at,
                     'version_purpose' => $child->version_purpose,
-                    'content' => $this->getContentInfo($versionData),
+                    'content' => $this->getContentInfo($child),
                 ];
             }
         }
