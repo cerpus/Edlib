@@ -6,8 +6,8 @@ namespace App\Models;
 
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
-use App\Events\ContentCreated;
 use App\Events\ContentForceDeleting;
+use App\Events\ContentSaving;
 use App\Support\HasUlidsFromCreationDate;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
@@ -45,7 +45,7 @@ class Content extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
-        'created' => ContentCreated::class,
+        'saving' => ContentSaving::class,
         'forceDeleting' => ContentForceDeleting::class,
     ];
 
@@ -96,15 +96,13 @@ class Content extends Model
         return route('content.version-details', [$this, $version]);
     }
 
-    public function createCopyBelongingTo(
-        User $user,
-        ContentVersion|null $version = null,
-    ): self {
+    public function createCopyBelongingTo(User $user, ContentVersion|null $version = null): self
+    {
         $previousVersion = $version ?? $this->latestVersion()->firstOrFail();
 
         return DB::transaction(function () use ($user, $previousVersion) {
             $copy = new Content();
-            $copy->save();
+            $copy->saveQuietly();
 
             $version = $previousVersion->replicate();
             assert($version instanceof ContentVersion);
@@ -122,6 +120,7 @@ class Content extends Model
             }
 
             $copy->users()->save($user, ['role' => ContentRole::Owner]);
+            $copy->save();
 
             return $copy;
         });

@@ -342,17 +342,17 @@ class ContentController extends Controller
 
         $version = DB::transaction(function () use ($item, $tool) {
             $content = new Content();
-            if ($item instanceof EdlibLtiLinkItem && $item->isShared() !== null) {
-                $content->shared = $item->isShared();
-            }
-            $content->save();
-
+            $content->saveQuietly();
             $content->users()->save($this->getUser(), [
                 'role' => ContentRole::Owner,
             ]);
-            $content->versions()->save(
-                $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser()),
-            );
+            $version = $content->createVersionFromLinkItem($item, $tool, $this->getUser());
+
+            if ($item instanceof EdlibLtiLinkItem && $item->isShared() !== null) {
+                $content->shared = $item->isShared();
+            }
+
+            $content->save();
 
             return $version;
         });

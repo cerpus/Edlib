@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
-use App\Events\ContentCreated;
+use App\Events\ContentSaving;
 use App\Models\LtiPlatform;
 use Illuminate\Http\Request;
 
@@ -12,8 +12,12 @@ final readonly class AddContextsToContent
 {
     public function __construct(private Request $request) {}
 
-    public function handleCreated(ContentCreated $event): void
+    public function handleSaving(ContentSaving $event): void
     {
+        if (!$event->content->wasRecentlyCreated) {
+            return;
+        }
+
         $platform = $this->getLaunchingLtiPlatform();
 
         if (!$platform) {
