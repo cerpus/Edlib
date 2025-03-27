@@ -1,4 +1,4 @@
-FROM debian:12
+FROM debian:11
 
 RUN set -eux; \
     export DEBIAN_FRONTEND=noninteractive; \
