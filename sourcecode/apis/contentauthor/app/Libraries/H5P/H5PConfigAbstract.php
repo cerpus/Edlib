@@ -248,7 +248,6 @@ abstract class H5PConfigAbstract implements ConfigInterface
 
     protected function addDefaultEditorAssets(): void
     {
-        $this->addAsset("scripts", $this->getAssetUrl(null, "/js/cerpus.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-editor.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", "scripts/h5peditor-init.js"));
         $this->addAsset("scripts", $this->getAssetUrl("editor", $this->getLanguage()));
