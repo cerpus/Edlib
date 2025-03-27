@@ -41,6 +41,8 @@ final class LtiToolTest extends TestCase
                             ->where('proxies_lti_launches', true)
                             ->where('send_name', $tool->send_name)
                             ->where('send_email', $tool->send_email)
+                            ->where('default_published', $tool->default_published)
+                            ->where('default_shared', $tool->default_shared)
                             ->where('links.self', 'https://hub-test.edlib.test/api/lti-tools/' . $tool->id),
                     ),
             );

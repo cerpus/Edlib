@@ -6,9 +6,7 @@ namespace App\Http\Requests;
 
 use App\H5PContent;
 use App\Rules\LicenseContent;
-use App\Rules\shareContent;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 use function assert;
 
@@ -19,6 +17,12 @@ class H5PStorageRequest extends FormRequest
         if ($this->has('isPublished')) {
             $this->merge([
                 'isPublished' => $this->boolean('isPublished'),
+            ]);
+        }
+
+        if ($this->has('isShared')) {
+            $this->merge([
+                'isShared' => $this->boolean('isShared'),
             ]);
         }
     }
@@ -37,12 +41,9 @@ class H5PStorageRequest extends FormRequest
             'isNewLanguageVariant' => 'nullable|boolean',
             'isDraft' => 'required|boolean',
             'isPublished' => ['sometimes', 'boolean'],
-            'share' => [
-                'sometimes',
-                new shareContent(),
-            ],
+            'isShared' => ['sometimes', 'boolean'],
             'license' => [
-                Rule::requiredIf($this->input('share') === 'share'),
+                'required_if_accepted:isShared',
                 config('app.enable_licensing') ? 'string' : 'nullable',
                 new LicenseContent(),
             ],

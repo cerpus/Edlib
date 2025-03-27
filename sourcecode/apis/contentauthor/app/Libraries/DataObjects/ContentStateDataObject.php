@@ -13,7 +13,7 @@ abstract class ContentStateDataObject
     public $redirectToken;
     public $isPublished = false;
     public $isDraft = false;
-    public $share = 'private';
+    public $isShared = false;
 
     public function __construct()
     {
