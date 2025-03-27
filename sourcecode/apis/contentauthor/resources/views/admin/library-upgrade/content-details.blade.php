@@ -31,6 +31,18 @@
                                 <td>{{ $content->updated_at->format('Y-m-d H:i:s e') }}</td>
                             </tr>
                             <tr>
+                                <th>Is leaf</th>
+                                <td>
+                                    @if($requestedVersion)
+                                        {{ $requestedVersion?->isLeaf() ? 'Yes' : 'No' }}
+                                    @elseif($content->getVersion())
+                                        {{ $content->getVersion()->isLeaf() ? 'Yes' : 'No' }}
+                                    @else
+                                        ?
+                                    @endempty
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>Latest version id</th>
                                 <td>
                                     @if($requestedVersion && $requestedVersion->id !== $content->version_id)
@@ -43,10 +55,18 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Language</th>
+                                <th>Edlib language</th>
                                 <td>
                                     @isset($content->language_iso_639_3)
                                         {{ $content->language_iso_639_3 }} ({{ Iso639p3::englishName($content->language_iso_639_3) }})
+                                    @endisset
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>H5P language</th>
+                                <td>
+                                    @isset($content->metadata->default_language)
+                                        {{ $content->metadata->default_language }} ({{{Iso639p3::englishName($content->metadata->default_language)}}})
                                     @endisset
                                 </td>
                             </tr>
@@ -67,7 +87,7 @@
                                 <th>Library</th>
                                 <td>
                                     <a href="{{ route('admin.check-library', [$content->library->id]) }}">
-                                        {{ sprintf('%s %d.%d.%d', $content->library->name, $content->library->major_version, $content->library->minor_version, $content->library->patch_version) }}
+                                        {{ $content->library->getLibraryString(true) }}
                                     </a>
                                 </td>
                             </tr>
