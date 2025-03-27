@@ -751,6 +751,7 @@ final class ContentTest extends DuskTestCase
     {
         $this->markTestSkipped('Skipped due to Dusk/WebDriver/Chromedriver bug');
 
+        // @phpstan-ignore deadCode.unreachable
         $content = Content::factory()->withPublishedVersion()->create();
 
         $this->browse(function (Browser $browser) use ($content) {
