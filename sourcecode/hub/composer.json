@@ -5,6 +5,7 @@
         "ext-bcmath": "*",
         "ext-dom": "*",
         "ext-intl": "*",
+        "ext-pdo": "*",
         "cerpus/edlib-resource-kit": "^0.8.x-dev",
         "cerpus/edlib-resource-kit-laravel": "^0.8.x-dev",
         "firebase/php-jwt": "^6.10.2",
