@@ -28,8 +28,8 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
-
 use PDO;
+
 use function assert;
 use function property_exists;
 
