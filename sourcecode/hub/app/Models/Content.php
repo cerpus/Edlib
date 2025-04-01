@@ -361,7 +361,6 @@ class Content extends Model
         $statement->bindValue(':cutoff', $cutoff->format('c'));
         $statement->execute();
 
-        // @phpstan-ignore return.type
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
