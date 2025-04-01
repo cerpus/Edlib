@@ -7,6 +7,7 @@ namespace Tests\Feature\Api;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\ContentViewsAccumulated;
 use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -413,5 +414,17 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents/' . $content->id . '/views')
             ->assertOk()
             ->assertJsonCount(5, 'data');
+    }
+
+    public function testsCountsViewsIncludingIndividualAndAccumulated(): void
+    {
+        $content = Content::factory()
+            ->withView(ContentView::factory())
+            ->withView(ContentView::factory())
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(3))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(4))
+            ->create();
+
+        $this->assertSame(9, $content->countTotalViews());
     }
 }

@@ -64,7 +64,7 @@
                 <tbody>
                     <tr>
                         <th scope="row">{{ trans('messages.views') }}</th>
-                        <td>{{$content->views->count()}}</td>
+                        <td class="content-details-total-views">{{ $content->countTotalViews() }}</td>
                     </tr>
                     <tr>
                         <th scope="row">{{ trans('messages.created-with') }}</th>

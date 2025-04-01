@@ -12,6 +12,7 @@ use App\Support\HasUlidsFromCreationDate;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Database\Factories\ContentFactory;
+use DateTimeInterface;
 use DomainException;
 use DOMDocument;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,6 +29,7 @@ use InvalidArgumentException;
 use Laravel\Scout\Builder as ScoutBuilder;
 use Laravel\Scout\Searchable;
 
+use PDO;
 use function assert;
 use function property_exists;
 
@@ -277,6 +279,21 @@ class Content extends Model
     }
 
     /**
+     * @return HasMany<ContentViewsAccumulated, $this>
+     */
+    public function viewsAccumulated(): HasMany
+    {
+        return $this->hasMany(ContentViewsAccumulated::class);
+    }
+
+    public function countTotalViews(): int
+    {
+        // this is an int, despite what Larastan claims
+        // @phpstan-ignore return.type
+        return $this->views()->count() + $this->viewsAccumulated()->sum('view_count');
+    }
+
+    /**
      * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
@@ -317,6 +334,38 @@ class Content extends Model
     }
 
     /**
+     * @return array<array-key, array{
+     *     content_id: string,
+     *     source: value-of<ContentViewSource>,
+     *     lti_platform_id: string|null,
+     *     date: string,
+     *     hour: int,
+     *     count: int,
+     * }>
+     */
+    public static function getAccumulatableViews(DateTimeInterface $cutoff): array
+    {
+        $statement = DB::getPdo()->prepare(<<<'EOSQL'
+        SELECT
+            content_id,
+            source,
+            lti_platform_id,
+            (created_at AT TIME ZONE 'UTC')::DATE AS date,
+            EXTRACT(hour FROM created_at AT TIME ZONE 'UTC') AS hour,
+            COUNT(*) AS count
+        FROM content_views
+        WHERE created_at < :cutoff
+        GROUP BY content_id, source, lti_platform_id, date, hour
+        ORDER BY date, hour
+        EOSQL);
+        $statement->bindValue(':cutoff', $cutoff->format('c'));
+        $statement->execute();
+
+        // @phpstan-ignore return.type
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toSearchableArray(): array
@@ -343,6 +392,7 @@ class Content extends Model
             'tags' => $version->getSerializedTags(),
             'gives_score' => $version->givesScore(),
             'content_type' => $version->getDisplayedContentType(),
+            'views' => $this->countTotalViews(),
         ];
     }
 
@@ -359,6 +409,7 @@ class Content extends Model
         return Content::search($keywords)
             ->where('published', true)
             ->where('shared', true)
+            ->options(['facets' => ['views']])
         ;
     }
 
@@ -369,6 +420,7 @@ class Content extends Model
     {
         return Content::search($keywords)
             ->where('user_ids', $user->id)
+            ->options(['facets' => ['views']])
         ;
     }
 

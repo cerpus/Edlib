@@ -31,4 +31,11 @@ class ContentViewsAccumulatedFactory extends Factory
             'source' => $this->faker->randomElement(ContentViewSource::cases()),
         ];
     }
+
+    public function viewCount(int $viewCount): self
+    {
+        return $this->state([
+            'view_count' => $viewCount,
+        ]);
+    }
 }

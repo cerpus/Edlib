@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Laravel\Scout\Builder;
+use Laravel\Scout\Builder as ScoutBuilder;
 use Override;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -22,8 +22,8 @@ use function trans;
 
 class ContentFilter extends FormRequest
 {
-    /** @var Builder<Content>  */
-    private Builder $builder;
+    /** @var ScoutBuilder<Content>  */
+    private ScoutBuilder $builder;
     private bool $forUser = false;
     private bool $languageChanged = false;
     private bool $queryChanged = false;
@@ -42,7 +42,7 @@ class ContentFilter extends FormRequest
         return [
             'q' => ['sometimes', 'string', 'max:300'],
             'language' => ['sometimes', 'string', 'max:100'],
-            'sort' => ['sometimes', Rule::in('created', 'updated')],
+            'sort' => ['sometimes', Rule::in('created', 'updated', 'views')],
             'type' => ['sometimes', 'array'],
         ];
     }
@@ -125,7 +125,7 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @return "updated"|"created"
+     * @return "updated"|"created"|"views"
      */
     public function getSortBy(): string
     {
@@ -140,6 +140,7 @@ class ContentFilter extends FormRequest
         return [
             'updated' => trans('messages.edited'),
             'created' => trans('messages.created'),
+            'views' => trans('messages.views'),
         ];
     }
 
@@ -199,22 +200,22 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param Builder<Content> $query
-     * @return Builder<Content>
+     * @param ScoutBuilder<Content> $query
+     * @return ScoutBuilder<Content>
      */
-    public function applyCriteria(Builder $query): Builder
+    public function applyCriteria(ScoutBuilder $query): ScoutBuilder
     {
         $this->detectChanges();
 
         $query
             ->when(
                 $this->getLanguage(),
-                fn(Builder $query) => $query
+                fn(ScoutBuilder $query) => $query
                     ->where('language_iso_639_3', $this->getLanguage()),
             )
             ->when(
                 count($this->getContentTypes()) > 0,
-                fn(Builder $query) => $query
+                fn(ScoutBuilder $query) => $query
                     ->whereIn('content_type', $this->getContentTypes()),
             )
         ;
@@ -224,6 +225,7 @@ class ContentFilter extends FormRequest
         return $query->orderBy(match ($this->getSortBy()) {
             'created' => 'created_at',
             'updated' => $this->isForUser() ? 'updated_at' : 'published_at',
+            'views' => 'views',
         }, 'desc');
     }
 
@@ -272,10 +274,10 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param Builder<Content> $builder
+     * @param ScoutBuilder<Content> $builder
      * @return LengthAwarePaginator<ContentDisplayItem>
      */
-    public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
+    public function paginateWithModel(ScoutBuilder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
     {
         $paginator = $builder->paginateRaw();
         assert($paginator instanceof LengthAwarePaginator);
@@ -290,16 +292,16 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param Builder<Content> $builder
+     * @param ScoutBuilder<Content> $builder
      * @return Collection<int, ContentDisplayItem>
      */
-    public function getWithModel(Builder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
+    public function getWithModel(ScoutBuilder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
     {
         return $this->attachModel($builder->take($limit)->raw()['hits'], $forUser, $showDrafts);
     }
 
     /**
-     * @param array<int, array{id: string, content_type: string|null}> $hits
+     * @param array<int, array{id: string, content_type: string|null, views: int|null}> $hits
      * @return Collection<int, ContentDisplayItem>
      */
     private function attachModel(array $hits, bool $forUser, bool $showDrafts): Collection
@@ -344,7 +346,7 @@ class ContentFilter extends FormRequest
                     title: $version->title,
                     createdAt: $version->created_at?->toImmutable(),
                     isPublished: $version->published,
-                    viewsCount: $content->views_count,
+                    viewsCount: $item['views'] ?? 0,
                     contentType: $item['content_type'] ?? $version->getDisplayedContentType(),
                     languageIso639_3: strtoupper($version->language_iso_639_3),
                     languageDisplayName: $languageName,

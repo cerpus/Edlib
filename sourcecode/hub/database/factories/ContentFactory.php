@@ -91,4 +91,9 @@ final class ContentFactory extends Factory
 
         return $this->has($view, 'views');
     }
+
+    public function withViewsAccumulated(ContentViewsAccumulatedFactory|null $views = null): self
+    {
+        return $this->has($views, 'viewsAccumulated');
+    }
 }

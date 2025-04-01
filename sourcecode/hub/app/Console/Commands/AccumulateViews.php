@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Models\Content;
 use App\Models\ContentView;
 use App\Models\ContentViewsAccumulated;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Facades\DB;
-use PDO;
 
-final class AccumulateViews extends Command
+final class AccumulateViews extends Command implements Isolatable
 {
     protected $signature = <<<'EOSIGNATURE'
     edlib:accumulate-views
@@ -29,39 +30,26 @@ final class AccumulateViews extends Command
             $this->fail('Cutoff must be in the past');
         }
 
-        $statement = DB::getPdo()->prepare(<<<'EOSQL'
-        SELECT
-            content_id,
-            source,
-            lti_platform_id,
-            (created_at AT TIME ZONE 'UTC')::DATE AS date,
-            EXTRACT(hour FROM created_at AT TIME ZONE 'UTC') AS hour,
-            COUNT(*) AS count
-        FROM content_views
-        WHERE created_at < :cutoff
-        GROUP BY content_id, source, lti_platform_id, date, hour
-        ORDER BY date, hour
-        EOSQL);
-        $statement->bindValue(':cutoff', $cutoff->format('c'));
-        $statement->execute();
-
-        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $criteria = [
-                'content_id' => $row['content_id'],
-                'source' => $row['source'],
-                'lti_platform_id' => $row['lti_platform_id'],
-                'date' => $row['date'],
-                'hour' => $row['hour'],
-            ];
+        foreach (Content::getAccumulatableViews($cutoff) as $row) {
             $beforeCount += $row['count'];
 
-            $accumulated = ContentViewsAccumulated::where($criteria)->firstOr(
-                fn() => ContentViewsAccumulated::forceCreate($criteria),
-            );
-            $accumulated->view_count += $row['count'];
-            $accumulated->save();
+            DB::transaction(function () use ($row, $cutoff) {
+                $criteria = [
+                    'content_id' => $row['content_id'],
+                    'source' => $row['source'],
+                    'lti_platform_id' => $row['lti_platform_id'],
+                    'date' => $row['date'],
+                    'hour' => $row['hour'],
+                ];
 
-            ContentView::where('created_at', '<', $cutoff)->delete();
+                $accumulated = ContentViewsAccumulated::where($criteria)
+                    ->firstOr(fn() => ContentViewsAccumulated::forceCreate($criteria));
+                $accumulated->view_count += $row['count'];
+                $accumulated->save();
+
+                ContentView::where('created_at', '<', $cutoff)->delete();
+                Content::where('id', $row['content_id'])->touch();
+            });
 
             $afterCount++;
         }
