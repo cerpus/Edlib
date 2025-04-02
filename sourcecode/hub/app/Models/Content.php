@@ -405,8 +405,10 @@ class Content extends Model
         $stats = new ContentStats();
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $stats->addStat(ContentViewSource::from(
-                $row['the_source']),
+            $stats->addStat(
+                ContentViewSource::from(
+                    $row['the_source'],
+                ),
                 (int) $row['view_count'],
                 (int) $row['year'],
                 (int) $row['month'],
