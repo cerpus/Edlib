@@ -43,8 +43,7 @@ class ContentStats
 
     /**
      * @return array<int|string, array<value-of<ContentViewSource>, int>|array{point: string, total: int}>
-     *     View stats, mapped by data point (i.e. dates) and their corresponding
-     *     views, grouped by source, and the total included as the blank string.
+     *     View stats, mapped by data point (i.e. dates).
      */
     public function getData(DateRangeResolution|null $resolution = null): array
     {

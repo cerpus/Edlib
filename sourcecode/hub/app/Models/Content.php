@@ -14,7 +14,8 @@ use Carbon\CarbonImmutable;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Database\Factories\ContentFactory;
-use DateTimeInterface;
+use DateTimeImmutable;
+use DateTimeZone;
 use DomainException;
 use DOMDocument;
 use Illuminate\Database\Eloquent\Builder;
@@ -345,7 +346,7 @@ class Content extends Model
      *     count: int,
      * }>
      */
-    public static function getAccumulatableViews(DateTimeInterface $cutoff): array
+    public static function getAccumulatableViews(DateTimeImmutable $cutoff): array
     {
         $statement = DB::getPdo()->prepare(<<<'EOSQL'
         SELECT
@@ -367,11 +368,14 @@ class Content extends Model
     }
 
     public function buildStatsGraph(
-        DateTimeInterface|null $start,
-        DateTimeInterface|null $end,
+        DateTimeImmutable|null $start,
+        DateTimeImmutable|null $end,
     ): ContentStats {
         $start ??= new CarbonImmutable('@0');
         $end ??= new CarbonImmutable('now');
+
+        $start = $start->setTimezone(new DateTimeZone('UTC'));
+        $end = $end->setTimezone(new DateTimeZone('UTC'));
 
         // TODO: lti platforms as separate stats
         $statement = DB::getPdo()->prepare(<<<'EOSQL'
@@ -406,9 +410,7 @@ class Content extends Model
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $stats->addStat(
-                ContentViewSource::from(
-                    $row['the_source'],
-                ),
+                ContentViewSource::from($row['the_source']),
                 (int) $row['view_count'],
                 (int) $row['year'],
                 (int) $row['month'],

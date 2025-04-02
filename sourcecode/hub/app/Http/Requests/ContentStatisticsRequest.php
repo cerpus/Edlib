@@ -6,8 +6,8 @@ namespace App\Http\Requests;
 
 use App\Enums\ContentViewSource;
 use App\Enums\DateRangeResolution;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class ContentStatisticsRequest extends FormRequest
@@ -23,14 +23,14 @@ class ContentStatisticsRequest extends FormRequest
         ];
     }
 
-    public function getStartDate(): Carbon|null
+    public function getStartDate(): CarbonImmutable|null
     {
-        return $this->has('start') ? Carbon::createFromTimestampMsUTC($this->get('start')) : null;
+        return $this->has('start') ? CarbonImmutable::createFromTimestampMsUTC($this->get('start')) : null;
     }
 
-    public function getEndDate(): Carbon|null
+    public function getEndDate(): CarbonImmutable|null
     {
-        return $this->has('end') ? Carbon::createFromTimestampMsUTC($this->get('end')) : null;
+        return $this->has('end') ? CarbonImmutable::createFromTimestampMsUTC($this->get('end')) : null;
     }
 
     /**
