@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\DataObjects\ContentStats;
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
 use App\Events\ContentSaving;
 use App\Support\HasUlidsFromCreationDate;
+use Carbon\CarbonImmutable;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\ContentItem;
 use Database\Factories\ContentFactory;
@@ -362,6 +364,57 @@ class Content extends Model
         $statement->execute();
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function buildStatsGraph(
+        DateTimeInterface|null $start,
+        DateTimeInterface|null $end,
+    ): ContentStats {
+        $start ??= new CarbonImmutable('@0');
+        $end ??= new CarbonImmutable('now');
+
+        // TODO: lti platforms as separate stats
+        $statement = DB::getPdo()->prepare(<<<'EOSQL'
+        SELECT
+            COALESCE(cva.source, cv.source) AS the_source,
+            COALESCE(SUM(cva.view_count), 0) + COALESCE(COUNT(cv), 0) AS view_count,
+            EXTRACT(YEAR FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS year,
+            EXTRACT(MONTH FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS month,
+            EXTRACT(DAY FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS day
+        FROM contents c
+           LEFT JOIN content_views cv ON c.id = cv.content_id
+           LEFT JOIN content_views_accumulated cva ON c.id = cva.content_id AND cv.source IS NULL OR cv.source = cva.source
+        WHERE c.id = :content_id AND cv.id IS NOT NULL OR cva.id IS NOT NULL AND (
+            cv.created_at >= :start_ts AND cv.created_at <= :end_ts OR (
+                (cva.date > :start_date OR cva.date = :start_date AND cva.hour >= :start_hour) AND
+                (cva.date < :end_date OR cva.date = :end_date AND cva.hour <= :end_hour)
+            )
+        )
+        GROUP BY the_source, year, month, day
+        ORDER BY year, month, day, the_source
+        EOSQL);
+        $statement->bindValue(':content_id', $this->id);
+        $statement->bindValue(':start_ts', $start->format('c'));
+        $statement->bindValue(':start_date', $start->format('Y-m-d'));
+        $statement->bindValue(':start_hour', $start->format('G'));
+        $statement->bindValue(':end_ts', $end->format('c'));
+        $statement->bindValue(':end_date', $end->format('Y-m-d'));
+        $statement->bindValue(':end_hour', $end->format('G'));
+        $statement->execute();
+
+        $stats = new ContentStats();
+
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $stats->addStat(ContentViewSource::from(
+                $row['the_source']),
+                (int) $row['view_count'],
+                (int) $row['year'],
+                (int) $row['month'],
+                (int) $row['day'],
+            );
+        }
+
+        return $stats;
     }
 
     /**
