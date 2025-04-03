@@ -9,6 +9,7 @@ use App\Models\Content;
 use App\Models\ContentViewsAccumulated;
 use App\Models\LtiPlatform;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use InvalidArgumentException;
 use Override;
 
 /**
@@ -32,10 +33,42 @@ class ContentViewsAccumulatedFactory extends Factory
         ];
     }
 
+    public function source(ContentViewSource $source, LtiPlatformFactory|null $ltiPlatform = null): self
+    {
+        $instance = $this->state([
+            'source' => $source,
+        ]);
+
+        if ($source->isLtiPlatform()) {
+            if ($ltiPlatform === null) {
+                throw new InvalidArgumentException(
+                    '$ltiPlatform must be provided with LTI platform source',
+                );
+            }
+
+            $instance = $this->state([
+                'lti_platform_id' => $ltiPlatform,
+            ]);
+        }
+
+        return $instance;
+    }
+
     public function viewCount(int $viewCount): self
     {
         return $this->state([
             'view_count' => $viewCount,
+        ]);
+    }
+
+    /**
+     * @param int<0, 23> $hour
+     */
+    public function dateAndHour(string $date, int $hour): self
+    {
+        return $this->state([
+            'date' => $date,
+            'hour' => $hour,
         ]);
     }
 }

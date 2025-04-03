@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ContentViewSource;
 use Database\Factories\ContentViewsAccumulatedFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +24,18 @@ class ContentViewsAccumulated extends Model
 
     protected $attributes = [
         'view_count' => 0,
+    ];
+
+    protected $casts = [
+        'source' => ContentViewSource::class,
+    ];
+
+    protected $fillable = [
+        'source',
+        'lti_platform_id',
+        'view_count',
+        'date',
+        'hour',
     ];
 
     /**
