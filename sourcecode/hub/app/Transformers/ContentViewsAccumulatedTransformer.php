@@ -10,6 +10,9 @@ use League\Fractal\TransformerAbstract;
 
 final class ContentViewsAccumulatedTransformer extends TransformerAbstract
 {
+    /**
+     * @var string[]
+     */
     protected array $availableIncludes = ['content', 'lti_platform'];
 
     public function __construct(
@@ -17,6 +20,9 @@ final class ContentViewsAccumulatedTransformer extends TransformerAbstract
         private readonly LtiPlatformTransformer $ltiPlatformTransformer,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function transform(ContentViewsAccumulated $viewsAccumulated): array
     {
         return [
