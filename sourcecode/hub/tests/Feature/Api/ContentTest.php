@@ -428,14 +428,17 @@ final class ContentTest extends TestCase
             'hour' => 23,
         ])
             ->assertOk()
-            ->assertJson(fn(AssertableJson $json) => $json
-                ->has('data', fn(AssertableJson $data) => $data
-                    ->has('id')
-                    ->where('source', 'embed')
-                    ->where('view_count', 123)
-                    ->where('date', '2023-02-01')
-                    ->where('hour', 23)
-                )
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn(AssertableJson $data) => $data
+                            ->has('id')
+                            ->where('source', 'embed')
+                            ->where('view_count', 123)
+                            ->where('date', '2023-02-01')
+                            ->where('hour', 23),
+                    ),
             );
     }
 
@@ -446,7 +449,7 @@ final class ContentTest extends TestCase
                 ContentViewsAccumulated::factory()
                     ->source(ContentViewSource::Embed)
                     ->dateAndHour('2023-02-01', 23)
-                    ->viewCount(2)
+                    ->viewCount(2),
             )
             ->create();
 
@@ -457,14 +460,17 @@ final class ContentTest extends TestCase
             'hour' => '23',
         ])
             ->assertOk()
-            ->assertJson(fn(AssertableJson $json) => $json
-                ->has('data', fn(AssertableJson $data) => $data
-                    ->has('id')
-                    ->where('source', 'embed')
-                    ->where('view_count', 5)
-                    ->where('date', '2023-02-01')
-                    ->where('hour', 23)
-                )
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn(AssertableJson $data) => $data
+                            ->has('id')
+                            ->where('source', 'embed')
+                            ->where('view_count', 5)
+                            ->where('date', '2023-02-01')
+                            ->where('hour', 23),
+                    ),
             );
     }
 }
