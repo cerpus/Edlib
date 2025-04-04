@@ -12,7 +12,6 @@ use App\Models\LtiTool;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
-use Cerpus\EdlibResourceKit\Lti\Message\DeepLinking\LtiLinkItem;
 use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
