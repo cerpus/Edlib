@@ -13,7 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Laravel\Scout\Builder as ScoutBuilder;
+use Laravel\Scout\Builder;
 use Override;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -22,8 +22,8 @@ use function trans;
 
 class ContentFilter extends FormRequest
 {
-    /** @var ScoutBuilder<Content>  */
-    private ScoutBuilder $builder;
+    /** @var Builder<Content>  */
+    private Builder $builder;
     private bool $forUser = false;
     private bool $languageChanged = false;
     private bool $queryChanged = false;
@@ -200,22 +200,22 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param ScoutBuilder<Content> $query
-     * @return ScoutBuilder<Content>
+     * @param Builder<Content> $query
+     * @return Builder<Content>
      */
-    public function applyCriteria(ScoutBuilder $query): ScoutBuilder
+    public function applyCriteria(Builder $query): Builder
     {
         $this->detectChanges();
 
         $query
             ->when(
                 $this->getLanguage(),
-                fn(ScoutBuilder $query) => $query
+                fn(Builder $query) => $query
                     ->where('language_iso_639_3', $this->getLanguage()),
             )
             ->when(
                 count($this->getContentTypes()) > 0,
-                fn(ScoutBuilder $query) => $query
+                fn(Builder $query) => $query
                     ->whereIn('content_type', $this->getContentTypes()),
             )
         ;
@@ -274,10 +274,10 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param ScoutBuilder<Content> $builder
+     * @param Builder<Content> $builder
      * @return LengthAwarePaginator<ContentDisplayItem>
      */
-    public function paginateWithModel(ScoutBuilder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
+    public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
     {
         $paginator = $builder->paginateRaw();
         assert($paginator instanceof LengthAwarePaginator);
@@ -292,10 +292,10 @@ class ContentFilter extends FormRequest
     }
 
     /**
-     * @param ScoutBuilder<Content> $builder
+     * @param Builder<Content> $builder
      * @return Collection<int, ContentDisplayItem>
      */
-    public function getWithModel(ScoutBuilder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
+    public function getWithModel(Builder $builder, int $limit, bool $forUser = false, bool $showDrafts = false): Collection
     {
         return $this->attachModel($builder->take($limit)->raw()['hits'], $forUser, $showDrafts);
     }
