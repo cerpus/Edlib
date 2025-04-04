@@ -59,9 +59,11 @@ class ContentAuthorController extends Controller
         ContentItemsMapperInterface $mapper,
     ): JsonResponse {
         $item = $mapper->map($request->input('content_items'))[0];
-        assert($item instanceof LtiLinkItem);
+        assert($item instanceof EdlibLtiLinkItem);
 
         $user = User::findOrFail($request->get('user_id'));
+        assert($user instanceof User);
+
         $item = $item->withPublished($version->published);
 
         $version = DB::transaction(function () use ($content, $version, $item, $tool, $user) {
@@ -71,7 +73,7 @@ class ContentAuthorController extends Controller
             $version->previousVersion()->associate($previousVersion);
             $version->save();
 
-            if ($item instanceof EdlibLtiLinkItem && $item->isShared() !== null) {
+            if ($item->isShared() !== null) {
                 $content->shared = $item->isShared();
                 $content->save();
             }
