@@ -40,8 +40,7 @@ class AdminContentMigrateController extends Controller
         private readonly H5PFrameworkInterface $framework,
         private readonly SignerInterface $signer,
         private readonly ContentItemsSerializerInterface $serializer,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): View
     {
@@ -202,11 +201,11 @@ class AdminContentMigrateController extends Controller
         $request->attributes->set('library', $toLibrary->getLibraryString(false));
         $request->attributes->set('title', $sourceH5p->title);
         $request->attributes->set('parameters', json_encode(
-            (object)[
+            (object) [
                 'params' => json_decode($params, associative: true, flags: JSON_THROW_ON_ERROR),
                 'metadata' => $sourceH5p->getMetadataStructure(),
             ],
-            flags: JSON_THROW_ON_ERROR
+            flags: JSON_THROW_ON_ERROR,
         ));
 
         $request->attributes->set('isDraft', $sourceH5p->is_draft);
@@ -258,7 +257,7 @@ class AdminContentMigrateController extends Controller
 
         $infoRequest = $this->signer->sign(
             $infoRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret'))
+            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
         );
 
         $client = app(Client::class);
@@ -308,7 +307,7 @@ class AdminContentMigrateController extends Controller
 
         $returnRequest = $this->signer->sign(
             $returnRequest,
-            new Credentials(config('app.consumer-key'), config('app.consumer-secret'))
+            new Credentials(config('app.consumer-key'), config('app.consumer-secret')),
         );
 
         $client = app(Client::class);
@@ -359,7 +358,7 @@ class AdminContentMigrateController extends Controller
                 (object) [
                     'name' => $params->library,
                 ],
-            ]
+            ],
         ]);
         $dependencies = $validator->getDependencies();
 
