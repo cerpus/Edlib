@@ -8,6 +8,7 @@
     <td>
         {{ $library['title'] }}
     </td>
+    <td>{{ $library['updated'] }}</td>
     <td>{{ $library['version'] }}</td>
     @if($isContentType)
         <td>

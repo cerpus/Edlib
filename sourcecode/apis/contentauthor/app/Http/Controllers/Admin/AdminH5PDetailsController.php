@@ -187,11 +187,12 @@ class AdminH5PDetailsController extends Controller
                     return [
                         'id' => $library->library_id,
                         'dependency_type' => $library->dependency_type,
+                        'weight' => $library->weight,
                         'name' => $lib?->name,
                         'version' => $lib ? sprintf('%d.%d.%d', $lib->major_version, $lib->minor_version, $lib->patch_version) : '',
                     ];
                 })
-                ->sortBy(['dependency_type', 'name']),
+                ->sortBy(['dependency_type', 'weight']),
         ]);
     }
 

@@ -1,27 +1,25 @@
 <table class="table table-striped">
     <tr>
         <th></th>
-        <th>
+        <th @class(['alert-info' => request()->has('sort') === false || request()->get('sort') === 'machineName'])>
             Machine name
-            @if(request()->has('sort') === false || request()->get('sort') === 'machineName')
+            <a href="?sort=machineName&activetab={{$activetab}}">
                 <span class="fa fa-sort-alpha-asc"></span>
-            @else
-                <a href="?sort=machineName">
-                    <span class="fa fa-sort-alpha-asc"></span>
-                </a>
-            @endif
+            </a>
         </th>
-        <th>
+        <th @class(['alert-info' => request()->get('sort') === 'title'])>
             Title
-            @if(request()->get('sort', 'machineName') !== 'title')
-                <a href="?sort=title">
-                    <span class="fa fa-sort-alpha-asc"></span>
-                </a>
-            @else
+            <a href="?sort=title&activetab={{$activetab}}">
                 <span class="fa fa-sort-alpha-asc"></span>
-            @endif
+            </a>
         </th>
-        <th>Installed</th>
+        <th @class(['alert-info' => request()->get('sort') === 'updated'])>
+            Updated
+            <a href="?sort=updated&activetab={{$activetab}}">
+                <span class="fa fa-sort-amount-desc"></span>
+            </a>
+        </th>
+        <th>Version</th>
         @if($isContentType)
             <th>Hub version</th>
         @endif

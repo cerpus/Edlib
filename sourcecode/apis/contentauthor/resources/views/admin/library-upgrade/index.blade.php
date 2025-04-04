@@ -3,7 +3,7 @@
     $activeTab = request()->query('activetab', 'tabContentTypes');
 @endphp
 @section('content')
-    <div class="container">
+    <div class="container-admin">
         <div class="page-header">
             <h1>Manage H5P content types</h1>
         </div>

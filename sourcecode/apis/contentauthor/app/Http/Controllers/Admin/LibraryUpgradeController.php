@@ -35,7 +35,11 @@ class LibraryUpgradeController extends Controller
     {
         (new Capability())->refresh();
 
-        $storedLibraries = $this->h5pFramework->loadLibraries();
+        $storedLibraries = H5PLibrary::orderBy('major_version')
+            ->orderBy('minor_version')
+            ->orderBy('patch_version')
+            ->get()
+            ->groupBy('name');
 
         $config = resolve(AdminConfig::class);
         $config->getConfig();
@@ -60,8 +64,7 @@ class LibraryUpgradeController extends Controller
         $available = collect();
 
         foreach ($storedLibraries as $versions) {
-            $lastVersion = end($versions);
-            reset($versions);
+            $lastVersion = $versions->last();
             foreach ($versions as $library) {
                 $usage = $this->h5pFramework->getLibraryUsage($library->id);
 
@@ -71,6 +74,7 @@ class LibraryUpgradeController extends Controller
                     'minorVersion' => $library->minor_version,
                     'title' => $library->title,
                     'version' => sprintf('%d.%d.%d', $library->major_version, $library->minor_version, $library->patch_version),
+                    'updated' => $library->updated_at?->format('Y-m-d H:i:s e') ?? '',
                     'numContent' => $usage['content'],
                     'numLibraryDependencies' => $usage['libraries'],
                     'hubUpgrade' => null,
@@ -143,6 +147,11 @@ class LibraryUpgradeController extends Controller
                 });
         }
 
+        $sortOrder = match ($request->get('sort', 'machineName')) {
+            'updated' => 'desc',
+            default => 'asc',
+        };
+
         return view('admin.library-upgrade.index', [
             'installedContentTypes' => $contentTypes
                 ->sortBy([
@@ -150,8 +159,8 @@ class LibraryUpgradeController extends Controller
                     ['minorVersion', SORT_NUMERIC | SORT_DESC],
                 ])
                 ->groupBy('machineName')
-                ->sort(function (Collection $a, Collection $b) use ($request) {
-                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'));
+                ->sort(function (Collection $a, Collection $b) use ($request, $sortOrder) {
+                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'), $sortOrder);
                 })
                 ->values(),
             'installedLibraries' => $libraries
@@ -160,8 +169,8 @@ class LibraryUpgradeController extends Controller
                     ['minorVersion', SORT_NUMERIC | SORT_DESC],
                 ])
                 ->groupBy('machineName')
-                ->sort(function (Collection $a, Collection $b) use ($request) {
-                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'));
+                ->sort(function (Collection $a, Collection $b) use ($request, $sortOrder) {
+                    return $this->collectionSortCompare($a, $b, $request->get('sort', 'machineName'), $sortOrder);
                 })
                 ->values(),
             'available' => $available->sortBy('machineName', SORT_STRING | SORT_FLAG_CASE)->toArray(),
@@ -172,10 +181,13 @@ class LibraryUpgradeController extends Controller
     /**
      * Compare attribute $sortBy on first item in collections using strnatcasecmp
      */
-    private function collectionSortCompare(Collection $a, Collection $b, string $sortBy): int
+    private function collectionSortCompare(Collection $a, Collection $b, string $sortBy, $order = 'asc'): int
     {
         if (array_key_exists($sortBy, $a->first()) && array_key_exists($sortBy, $b->first())) {
-            return strnatcasecmp($a->first()[$sortBy], $b->first()[$sortBy]);
+            return match ($order) {
+                'desc' => strnatcasecmp($b->first()[$sortBy], $a->first()[$sortBy]),
+                default => strnatcasecmp($a->first()[$sortBy], $b->first()[$sortBy]),
+            };
         }
 
         return 0;
