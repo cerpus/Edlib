@@ -5,6 +5,7 @@
  */
 
 use App\Http\Controllers\Admin\AdminArticleController;
+use App\Http\Controllers\Admin\AdminContentMigrateController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminH5PDetailsController;
 use App\Http\Controllers\Admin\CapabilityController;
@@ -58,6 +59,10 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
         Route::post('content/upgrade', [AdminController::class, 'contentUpgrade'])->name('admin.content-upgrade');
 
         Route::match(['GET', 'POST'], 'ajax', [AdminController::class, 'ajaxLoading'])->name('admin.ajax');
+
+        // Migrate content from H5P.NDLAThreeImage to H5P.EscapeRoom
+        Route::match(['GET', 'POST'], '/migrate/library-content', [AdminContentMigrateController::class, 'index'])
+            ->name('admin.migrate.library-content');
 
         /*
          * Capabilities

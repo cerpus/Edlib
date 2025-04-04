@@ -89,6 +89,9 @@
                                     </a>
                                 </li>
                             @endif
+                            <li>
+                                <a href="{{ route('admin.migrate.library-content') }}">Migrate library content</a>
+                            </li>
                         </ul>
                     </li>
                     @if(app(\App\Libraries\H5P\Interfaces\H5PAdapterInterface::class)->getAdapterName() !== 'ndla')
