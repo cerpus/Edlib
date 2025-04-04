@@ -203,6 +203,7 @@ return [
         'nb' => 'Norsk',
         'nn' => 'Nynorsk',
         'sv' => 'Svenska',
+        'zh-hans' => '简体中文',
     ],
 
     'site-name' => env('LICENSE_SITE', 'ContentAuthor'),
