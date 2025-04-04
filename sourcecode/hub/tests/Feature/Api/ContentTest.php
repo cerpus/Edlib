@@ -417,18 +417,6 @@ final class ContentTest extends TestCase
             ->assertJsonCount(5, 'data');
     }
 
-    public function testsCountsViewsIncludingIndividualAndAccumulated(): void
-    {
-        $content = Content::factory()
-            ->withView(ContentView::factory())
-            ->withView(ContentView::factory())
-            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(3))
-            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(4))
-            ->create();
-
-        $this->assertSame(9, $content->countTotalViews());
-    }
-
     public function testStoresAccumulatedViews(): void
     {
         $content = Content::factory()->create();

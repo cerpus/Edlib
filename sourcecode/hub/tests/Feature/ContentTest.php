@@ -8,6 +8,8 @@ use App\Enums\ContentRole;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
+use App\Models\ContentView;
+use App\Models\ContentViewsAccumulated;
 use App\Models\LtiPlatform;
 use App\Models\User;
 use Carbon\Carbon;
@@ -210,5 +212,17 @@ final class ContentTest extends TestCase
 
         $this->assertFalse($content->hasUser($user));
         $this->assertFalse($content->hasUserWithMinimumRole($user, $roleToCheck));
+    }
+
+    public function testsCountsViewsIncludingIndividualAndAccumulated(): void
+    {
+        $content = Content::factory()
+            ->withView(ContentView::factory())
+            ->withView(ContentView::factory())
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(3))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->viewCount(4))
+            ->create();
+
+        $this->assertSame(9, $content->countTotalViews());
     }
 }
