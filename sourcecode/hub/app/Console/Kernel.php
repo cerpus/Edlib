@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console;
 
+use App\Console\Commands\AccumulateViews;
 use App\Jobs\PruneVersionlessContent;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -16,6 +17,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->job(PruneVersionlessContent::class)->daily();
+
+        $schedule->job(AccumulateViews::class)->daily();
     }
 
     /**

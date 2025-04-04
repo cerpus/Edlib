@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Api;
 
+use App\Enums\ContentViewSource;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\ContentViewsAccumulated;
 use App\Models\LtiTool;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -413,5 +415,62 @@ final class ContentTest extends TestCase
         $this->getJson('/api/contents/' . $content->id . '/views')
             ->assertOk()
             ->assertJsonCount(5, 'data');
+    }
+
+    public function testStoresAccumulatedViews(): void
+    {
+        $content = Content::factory()->create();
+
+        $this->putJson('/api/contents/' . $content->id . '/views_accumulated', [
+            'source' => 'embed',
+            'view_count' => 123,
+            'date' => '2023-02-01',
+            'hour' => 23,
+        ])
+            ->assertOk()
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn(AssertableJson $data) => $data
+                            ->has('id')
+                            ->where('source', 'embed')
+                            ->where('view_count', 123)
+                            ->where('date', '2023-02-01')
+                            ->where('hour', 23),
+                    ),
+            );
+    }
+
+    public function testUpdatesAccumulatedViews(): void
+    {
+        $content = Content::factory()
+            ->withViewsAccumulated(
+                ContentViewsAccumulated::factory()
+                    ->source(ContentViewSource::Embed)
+                    ->dateAndHour('2023-02-01', 23)
+                    ->viewCount(2),
+            )
+            ->create();
+
+        $this->putJson('/api/contents/' . $content->id . '/views_accumulated', [
+            'source' => 'embed',
+            'view_count' => 3,
+            'date' => '2023-02-01',
+            'hour' => '23',
+        ])
+            ->assertOk()
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has(
+                        'data',
+                        fn(AssertableJson $data) => $data
+                            ->has('id')
+                            ->where('source', 'embed')
+                            ->where('view_count', 5)
+                            ->where('date', '2023-02-01')
+                            ->where('hour', 23),
+                    ),
+            );
     }
 }

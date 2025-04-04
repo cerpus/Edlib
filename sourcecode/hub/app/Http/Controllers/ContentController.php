@@ -464,11 +464,14 @@ class ContentController extends Controller
 
     public function statistics(ContentStatisticsRequest $request, Content $content): View|JsonResponse
     {
-        $data = $request->getData($content);
+        $graph = $content->buildStatsGraph(
+            $request->getStartDate(),
+            $request->getEndDate(),
+        );
 
         if ($request->ajax()) {
             return response()->json([
-                'values' => $data,
+                'values' => $graph->getData(),
                 'formats' => $request->getDateFormatsForResolution(),
             ]);
         }
@@ -476,7 +479,7 @@ class ContentController extends Controller
         return view('content.statistics', [
             'content' => $content,
             'graph' => [
-                'values' => $data,
+                'values' => $graph->getData(),
                 'groups' => $request->dataGroups(),
                 'defaultHiddenGroups' => $request->dataGroups()->flip()->except(['total'])->keys(),
                 'texts' => [
@@ -491,7 +494,7 @@ class ContentController extends Controller
                     'loading' => trans('messages.loading'),
                     'loadingFailed' => trans('messages.chart-load-error'),
                 ],
-                'formats' => $request->getDateFormatsForResolution(),
+                'formats' => $request->getDateFormatsForResolution($graph->inferResolution()),
             ],
         ]);
     }

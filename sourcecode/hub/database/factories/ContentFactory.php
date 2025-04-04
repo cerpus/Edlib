@@ -8,6 +8,7 @@ use App\Enums\ContentRole;
 use App\Models\Content;
 use App\Models\ContentVersion;
 use App\Models\ContentView;
+use App\Models\ContentViewsAccumulated;
 use App\Models\Context;
 use App\Models\Tag;
 use App\Models\User;
@@ -90,5 +91,12 @@ final class ContentFactory extends Factory
         $view ??= ContentView::factory();
 
         return $this->has($view, 'views');
+    }
+
+    public function withViewsAccumulated(ContentViewsAccumulatedFactory|null $views = null): self
+    {
+        $views ??= ContentViewsAccumulated::factory();
+
+        return $this->has($views, 'viewsAccumulated');
     }
 }
