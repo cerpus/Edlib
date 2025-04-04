@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContentInfoRequest;
@@ -78,11 +80,12 @@ class ContentAuthorController extends Controller
         });
         assert($version instanceof ContentVersion);
 
-        return response()->json([
-            'id' => $version->content_id,
-            'version_id' => $version->id,
-        ],
-            Response::HTTP_CREATED
+        return response()->json(
+            [
+                'id' => $version->content_id,
+                'version_id' => $version->id,
+            ],
+            Response::HTTP_CREATED,
         );
     }
 }

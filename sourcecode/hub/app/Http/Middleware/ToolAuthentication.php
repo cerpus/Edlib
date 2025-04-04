@@ -25,17 +25,18 @@ final readonly class ToolAuthentication
         if ($tool === null) {
             throw new UnauthorizedHttpException(
                 challenge: 'OAuth',
-                message:'OAuth 1.0 validation failure: Unknown consumer',
+                message: 'OAuth 1.0 validation failure: Unknown consumer',
             );
         }
 
         try {
             $oauthRequest = new OAuthRequest(
                 $request->method(),
-                $request->url(), [
+                $request->url(),
+                [
                     ...$request->query->all(),
                     ...$request->request->all(),
-                ]
+                ],
             );
             $credentials = $tool->getOauth1Credentials();
 
