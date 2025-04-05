@@ -31,8 +31,8 @@ use Illuminate\Support\Facades\Storage;
  * @method static static find($id, $columns = ['*'])
  *
  * @property int $id
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string $name H5P machinename
  * @property string $title
  * @property int $major_version
