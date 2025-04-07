@@ -8,7 +8,9 @@ use App\Enums\ContentViewSource;
 use App\Models\Content;
 use App\Models\ContentView;
 use App\Models\LtiPlatform;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use InvalidArgumentException;
 use Override;
 
 /**
@@ -32,6 +34,34 @@ final class ContentViewFactory extends Factory
                 4 => $this->faker->ipv4,
                 default => null,
             },
+            'created_at' => $this->faker->dateTime,
         ];
+    }
+
+    public function createdAt(DateTimeImmutable $createdAt): self
+    {
+        return $this->state([
+            'created_at' => $createdAt,
+        ]);
+    }
+
+    public function source(ContentViewSource $source, LtiPlatformFactory|null $ltiPlatform = null): self
+    {
+        if ($source->isLtiPlatform() && $ltiPlatform === null) {
+            throw new InvalidArgumentException(
+                '$ltiPlatform must be provided with ContentViewSource::LtiPlatform',
+            );
+        }
+
+        if (!$source->isLtiPlatform() && $ltiPlatform !== null) {
+            throw new InvalidArgumentException(
+                '$ltiPlatform must only be provided with ContentViewSource::LtiPlatform',
+            );
+        }
+
+        return $this->state([
+            'source' => $source,
+            'lti_platform_id' => $ltiPlatform,
+        ]);
     }
 }

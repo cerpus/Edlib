@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Enums\ContentRole;
+use App\Enums\ContentViewSource;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
@@ -15,6 +16,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Cerpus\EdlibResourceKit\Oauth1\Request;
 use Cerpus\EdlibResourceKit\Oauth1\Signer;
+use DateTimeImmutable;
 use DomainException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -224,5 +226,40 @@ final class ContentTest extends TestCase
             ->create();
 
         $this->assertSame(9, $content->countTotalViews());
+    }
+
+    public function testBuildsStatsGraph(): void
+    {
+        $content = Content::factory()
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-01 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Detail))
+            ->withView(ContentView::factory()->createdAt(new DateTimeImmutable('2025-01-02 00:00:00 UTC'))->source(ContentViewSource::Embed))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-01', 0)->source(ContentViewSource::Detail)->viewCount(3))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-02', 0)->source(ContentViewSource::Detail)->viewCount(5))
+            ->withViewsAccumulated(ContentViewsAccumulated::factory()->dateAndHour('2025-01-02', 0)->source(ContentViewSource::Embed)->viewCount(2))
+            ->create();
+
+        $this->assertEquals([
+            [
+                'detail' => 4,
+                'embed' => 0,
+                'lti_platform' => 0,
+                'standalone' => 0,
+                'point' => '2025-01-01',
+                'total' => 4,
+            ],
+            [
+                'detail' => 7,
+                'embed' => 3,
+                'standalone' => 0,
+                'lti_platform' => 0,
+                'point' => '2025-01-02',
+                'total' => 10,
+            ]
+        ], $content->buildStatsGraph(
+            start: new DateTimeImmutable('2025-01-01 00:00:00 UTC'),
+            end: new DateTimeImmutable('2025-02-01 00:00:00 UTC'),
+        )->getData());
     }
 }

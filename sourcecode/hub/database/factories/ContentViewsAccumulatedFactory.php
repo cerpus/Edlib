@@ -35,23 +35,22 @@ class ContentViewsAccumulatedFactory extends Factory
 
     public function source(ContentViewSource $source, LtiPlatformFactory|null $ltiPlatform = null): self
     {
-        $instance = $this->state([
-            'source' => $source,
-        ]);
-
-        if ($source->isLtiPlatform()) {
-            if ($ltiPlatform === null) {
-                throw new InvalidArgumentException(
-                    '$ltiPlatform must be provided with LTI platform source',
-                );
-            }
-
-            $instance = $this->state([
-                'lti_platform_id' => $ltiPlatform,
-            ]);
+        if ($source->isLtiPlatform() && $ltiPlatform === null) {
+            throw new InvalidArgumentException(
+                '$ltiPlatform must be provided with ContentViewSource::LtiPlatform',
+            );
         }
 
-        return $instance;
+        if (!$source->isLtiPlatform() && $ltiPlatform !== null) {
+            throw new InvalidArgumentException(
+                '$ltiPlatform must only be provided with ContentViewSource::LtiPlatform',
+            );
+        }
+
+        return $this->state([
+            'source' => $source,
+            'lti_platform_id' => $ltiPlatform,
+        ]);
     }
 
     public function viewCount(int $viewCount): self

@@ -380,22 +380,26 @@ class Content extends Model
         // TODO: lti platforms as separate stats
         $statement = DB::getPdo()->prepare(<<<'EOSQL'
         SELECT
-            COALESCE(cva.source, cv.source) AS the_source,
-            COALESCE(SUM(cva.view_count), 0) + COALESCE(COUNT(cv), 0) AS view_count,
-            EXTRACT(YEAR FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS year,
-            EXTRACT(MONTH FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS month,
-            EXTRACT(DAY FROM COALESCE(cva.date, cv.created_at AT TIME ZONE 'UTC')) AS day
-        FROM contents c
-           LEFT JOIN content_views cv ON c.id = cv.content_id
-           LEFT JOIN content_views_accumulated cva ON c.id = cva.content_id AND cv.source IS NULL OR cv.source = cva.source
-        WHERE c.id = :content_id AND cv.id IS NOT NULL OR cva.id IS NOT NULL AND (
-            cv.created_at >= :start_ts AND cv.created_at <= :end_ts OR (
-                (cva.date > :start_date OR cva.date = :start_date AND cva.hour >= :start_hour) AND
-                (cva.date < :end_date OR cva.date = :end_date AND cva.hour <= :end_hour)
-            )
-        )
-        GROUP BY the_source, year, month, day
-        ORDER BY year, month, day, the_source
+            source,
+            COUNT(*) AS view_count,
+            EXTRACT(YEAR FROM created_at AT TIME ZONE 'UTC') AS year,
+            EXTRACT(MONTH FROM created_at AT TIME ZONE 'UTC') AS month,
+            EXTRACT(DAY FROM created_at AT TIME ZONE 'UTC') AS day
+        FROM content_views
+        WHERE content_id = :content_id AND created_at >= :start_ts AND created_at <= :end_ts
+        GROUP BY source, year, month, day
+        UNION ALL
+        SELECT
+            source,
+            SUM(view_count) AS view_count,
+            EXTRACT(YEAR FROM date) AS year,
+            EXTRACT(MONTH FROM date) AS month,
+            EXTRACT(DAY FROM date) AS day
+        FROM content_views_accumulated
+        WHERE content_id = :content_id AND
+            (date > :start_date OR date = :start_date AND hour >= :start_hour) AND
+            (date < :end_date OR date = :end_date AND hour <= :end_hour)
+        GROUP BY source, year, month, day
         EOSQL);
         $statement->bindValue(':content_id', $this->id);
         $statement->bindValue(':start_ts', $start->format('c'));
@@ -410,7 +414,7 @@ class Content extends Model
 
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $stats->addStat(
-                ContentViewSource::from($row['the_source']),
+                ContentViewSource::from($row['source']),
                 (int) $row['view_count'],
                 (int) $row['year'],
                 (int) $row['month'],
