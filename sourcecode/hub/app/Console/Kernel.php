@@ -18,7 +18,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(PruneVersionlessContent::class)->daily();
 
-        $schedule->job(AccumulateViews::class)->daily();
+        $schedule->command(AccumulateViews::class, ['1 week ago midnight'])
+            ->withoutOverlapping()
+            ->weekly();
     }
 
     /**
