@@ -256,7 +256,7 @@ final class ContentTest extends TestCase
                 'lti_platform' => 0,
                 'point' => '2025-01-02',
                 'total' => 10,
-            ]
+            ],
         ], $content->buildStatsGraph(
             start: new DateTimeImmutable('2025-01-01 00:00:00 UTC'),
             end: new DateTimeImmutable('2025-02-01 00:00:00 UTC'),
