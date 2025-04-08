@@ -26,11 +26,6 @@ Route::whereUlid('content')->name('api.contents.')->group(function () {
         ->can('view', 'apiContent')
         ->name('show');
 
-    Route::get('/contents/{apiContent}/views')
-        ->uses([ContentController::class, 'views'])
-        ->can('admin')
-        ->name('views');
-
     Route::post('/contents')
         ->uses([ContentController::class, 'store'])
         ->can('create', \App\Models\Content::class);
@@ -62,6 +57,11 @@ Route::whereUlid('content')->whereUlid('view')->name('api.contents.views.')->gro
     Route::get('/contents/{apiContent}/views')
         ->uses([ContentViewController::class, 'index'])
         ->name('index')
+        ->can('edit', 'apiContent');
+
+    Route::put('/contents/{apiContent}/views_accumulated')
+        ->uses([ContentViewController::class, 'storeAccumulatedViews'])
+        ->name('store-accumulated-views')
         ->can('edit', 'apiContent');
 });
 
