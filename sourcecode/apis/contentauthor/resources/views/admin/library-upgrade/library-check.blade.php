@@ -1,6 +1,6 @@
 @extends ('layouts.admin')
 @section ('content')
-    <div class="container">
+    <div class="container-admin">
         <a href="{{ route('admin.update-libraries') }}">Library list</a>
         <div class="row">
             <div class="col-md-12">
