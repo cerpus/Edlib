@@ -252,7 +252,7 @@ class AdminContentMigrateController extends Controller
         $requestUrl = $ltiRequest->param('ext_edlib3_content_info_endpoint');
 
         $infoRequest = new Oauth1Request('POST', $requestUrl, [
-            'content_url' => route('h5p.ltishow', $content->id),
+            'lti_launch_url' => route('h5p.ltishow', $content->id),
         ]);
 
         $infoRequest = $this->signer->sign(

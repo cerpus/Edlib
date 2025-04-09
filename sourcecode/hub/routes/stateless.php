@@ -11,7 +11,6 @@ use App\Http\Controllers\LtiSample\PresentationController;
 use App\Http\Controllers\LtiSample\ResizeController;
 use App\Http\Controllers\OembedController;
 use App\Http\Middleware\LtiValidatedRequest;
-use App\Http\Middleware\ToolAuthentication;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('signed')
@@ -41,7 +40,7 @@ Route::get('/sitemap.xml')
 
 Route::name('author.content.')
     ->prefix('/author')
-    ->middleware([ToolAuthentication::class])
+    ->middleware([LtiValidatedRequest::class . ':tool'])
     ->group(function () {
         Route::post('/tool/{tool}/content/info')
             ->uses([ContentAuthorController::class, 'info'])

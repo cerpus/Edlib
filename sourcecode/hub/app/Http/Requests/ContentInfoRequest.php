@@ -14,7 +14,7 @@ class ContentInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content_url' => 'required|url',
+            'lti_launch_url' => 'required|url',
         ];
     }
 }

@@ -12,7 +12,6 @@ use App\Models\LtiTool;
 use App\Models\User;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
 use Cerpus\EdlibResourceKit\Lti\Lti11\Mapper\DeepLinking\ContentItemsMapperInterface;
-use Illuminate\Http\Client\HttpClientException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
@@ -23,12 +22,8 @@ class ContentAuthorController extends Controller
 {
     public function info(ContentInfoRequest $request, LtiTool $tool): JsonResponse
     {
-        if ($tool->consumer_key !== $request->get('oauth_consumer_key')) {
-            throw new HttpClientException('Consumer key mismatch');
-        }
-
-        $versions = ContentVersion::where('lti_launch_url', $request->validated('content_url'))
-            ->where('lti_tool_id', $tool->id)
+        $versions = $tool->contentVersions()
+            ->where('lti_launch_url', $request->validated('lti_launch_url'))
             ->get();
 
         if ($versions->count() === 0) {
