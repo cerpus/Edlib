@@ -6,6 +6,7 @@ use App\H5PLibrariesHubCache;
 use App\H5PLibrary;
 use App\H5PLibraryLanguage;
 use App\Http\Controllers\Admin\Capability;
+use Illuminate\Database\Eloquent\Builder;
 
 class EditorAjax implements \H5PEditorAjaxInterface
 {
@@ -96,6 +97,7 @@ class EditorAjax implements \H5PEditorAjaxInterface
                 collect($libraries)
                     ->each(function ($library) use ($query) {
                         $query->orWhereHas('library', function ($query) use ($library) {
+                            /** @var Builder<H5PLibraryLanguage> $query */
                             $query->fromLibrary(\H5PCore::libraryFromString($library));
                         });
                     });
