@@ -28,6 +28,10 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
     function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin');
 
+        Route::post('/clear-cache')
+            ->uses([AdminController::class, 'clearCache'])
+            ->name('admin.clear-cache');
+
         /*
          * Update H5P libraries
          */

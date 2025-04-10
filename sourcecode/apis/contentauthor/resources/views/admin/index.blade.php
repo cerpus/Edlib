@@ -7,6 +7,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Admin</div>
                     <div class="panel-body">
+                        @if (\Illuminate\Support\Facades\Session::has('message'))
+                            <div class="alert alert-info">
+                                {{ \Illuminate\Support\Facades\Session::get('message') }}
+                            </div>
+                        @endif
+
                         <h2 class="text-center">Active edit locks: {{ $editLockCount }}</h2>
                         <a class="col-md-4 well well-lg" href="{{ route('admin.capability') }}">
                             <i class="glyphicon glyphicon-edit"></i> Capabilities
@@ -17,6 +23,12 @@
                         <a class="col-md-4 well well-lg" href="{{ route('admin.games') }}">
                             <i class="glyphicon glyphicon-upload"></i> Update games
                         </a>
+
+                        <form action="{{ route('admin.clear-cache') }}" method="POST">
+                            @csrf
+
+                            <button class="btn btn-danger">{{ trans('admin.clear-cache') }}</button>
+                        </form>
                     </div>
                 </div>
             </div>
