@@ -481,7 +481,7 @@ final class ContentTest extends TestCase
                 ContentViewsAccumulated::factory()
                     ->source(ContentViewSource::Embed)
                     ->dateAndHour('2024-03-02', 10)
-                    ->viewCount(5)
+                    ->viewCount(5),
             )
             ->create();
 
@@ -510,7 +510,7 @@ final class ContentTest extends TestCase
                     ->where('data.0.source', 'detail')
                     ->where('data.0.view_count', 12)
                     ->where('data.1.source', 'embed')
-                    ->where('data.1.view_count', 8)
+                    ->where('data.1.view_count', 8),
             );
     }
 }
