@@ -473,4 +473,44 @@ final class ContentTest extends TestCase
                     ),
             );
     }
+
+    public function testUpdatesMultipleAccumulatedViews(): void
+    {
+        $content = Content::factory()
+            ->withViewsAccumulated(
+                ContentViewsAccumulated::factory()
+                    ->source(ContentViewSource::Embed)
+                    ->dateAndHour('2024-03-02', 10)
+                    ->viewCount(5)
+            )
+            ->create();
+
+        $this->putJson('/api/contents/' . $content->id . '/multiple_views_accumulated', [
+            'views' => [
+                // new view
+                [
+                    'source' => 'detail',
+                    'date' => '2024-03-02',
+                    'hour' => 10,
+                    'view_count' => 12,
+                ],
+                // update existing view
+                [
+                    'source' => 'embed',
+                    'date' => '2024-03-02',
+                    'hour' => 10,
+                    'view_count' => 3,
+                ],
+            ],
+        ])
+            ->assertOk()
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has('data')
+                    ->where('data.0.source', 'detail')
+                    ->where('data.0.view_count', 12)
+                    ->where('data.1.source', 'embed')
+                    ->where('data.1.view_count', 8)
+            );
+    }
 }

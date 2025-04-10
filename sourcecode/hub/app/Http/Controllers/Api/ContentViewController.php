@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\ContentViewSource;
 use App\Http\Requests\Api\AccumulatedViewsRequest;
+use App\Http\Requests\Api\MultipleAccumulatedViewsRequest;
 use App\Models\Content;
 use App\Models\ContentViewsAccumulated;
 use App\Transformers\ContentViewsAccumulatedTransformer;
@@ -51,6 +52,38 @@ final readonly class ContentViewController
         });
 
         return fractal($entry)
+            ->transformWith($this->viewsAccumulatedTransformer)
+            ->respond();
+    }
+
+    public function storeMultipleAccumulatedViews(
+        Content $apiContent,
+        MultipleAccumulatedViewsRequest $request,
+    ): JsonResponse {
+        $data = $request->safe();
+
+        $views = DB::transaction(function () use ($apiContent, $data) {
+            $views = [];
+            foreach ($data->array('views') as $viewData) {
+                $entry = $apiContent->viewsAccumulated()->firstOrNew([
+                    'source' => ContentViewSource::from($viewData['source']),
+                    'lti_platform_id' => $viewData['lti_platform_id'] ?? null,
+                    'date' => $viewData['date'],
+                    'hour' => (int) $viewData['hour'],
+                ]);
+                assert($entry instanceof ContentViewsAccumulated);
+
+                $entry->view_count += $viewData['view_count'];
+                $entry->save();
+
+                $views[] = $entry;
+            }
+
+            return $views;
+        });
+
+        return fractal()
+            ->collection($views)
             ->transformWith($this->viewsAccumulatedTransformer)
             ->respond();
     }

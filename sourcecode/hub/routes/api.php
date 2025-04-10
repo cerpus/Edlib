@@ -61,7 +61,12 @@ Route::whereUlid('content')->whereUlid('view')->name('api.contents.views.')->gro
 
     Route::put('/contents/{apiContent}/views_accumulated')
         ->uses([ContentViewController::class, 'storeAccumulatedViews'])
-        ->name('store-accumulated-views')
+        ->name('store-views-accumulated')
+        ->can('edit', 'apiContent');
+
+    Route::put('/contents/{apiContent}/multiple_views_accumulated')
+        ->uses([ContentViewController::class, 'storeMultipleAccumulatedViews'])
+        ->name('store-multiple-views-accumulated')
         ->can('edit', 'apiContent');
 });
 
