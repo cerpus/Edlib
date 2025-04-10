@@ -275,7 +275,7 @@ class ContentFilter extends FormRequest
 
     /**
      * @param Builder<Content> $builder
-     * @return LengthAwarePaginator<ContentDisplayItem>
+     * @return LengthAwarePaginator<int, ContentDisplayItem>
      */
     public function paginateWithModel(Builder $builder, bool $forUser = false, bool $showDrafts = false): LengthAwarePaginator
     {

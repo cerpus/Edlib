@@ -297,7 +297,7 @@ class Content extends Model
     }
 
     /**
-     * @return BelongsToMany<User, $this>
+     * @return BelongsToMany<User, $this, ContentUser, "pivot">
      */
     public function users(): BelongsToMany
     {

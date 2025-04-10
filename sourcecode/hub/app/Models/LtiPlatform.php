@@ -65,7 +65,7 @@ class LtiPlatform extends Model
     }
 
     /**
-     * @return BelongsToMany<Context, $this>
+     * @return BelongsToMany<Context, $this, LtiPlatformContext, "pivot">
      */
     public function contexts(): BelongsToMany
     {
