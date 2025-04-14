@@ -149,9 +149,9 @@ H5P.fullScreen = function ($element, instance, exitCallback, body, forceSemiFull
     else {
         // Create real fullscreen.
         before('h5p-fullscreen');
-        var first = true, eventName = H5P.fullScreenBrowserPrefix === 'webkit' ? 'webkitfullscreenchange' : 'fullscreenchange';
+        var first = true;
 
-        document.addEventListener(eventName, function fullscreenCallback() {
+        document.addEventListener('fullscreenchange', function fullscreenCallback() {
             if (first) {
                 // We are entering fullscreen mode
                 first = false;
@@ -161,7 +161,7 @@ H5P.fullScreen = function ($element, instance, exitCallback, body, forceSemiFull
 
             // We are exiting fullscreen
             done('h5p-fullscreen');
-            document.removeEventListener(eventName, fullscreenCallback, false);
+            document.removeEventListener('fullscreenchange', fullscreenCallback, false);
         });
 
         $element[0].requestFullscreen();
