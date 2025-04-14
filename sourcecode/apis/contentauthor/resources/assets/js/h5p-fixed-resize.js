@@ -160,7 +160,7 @@ H5P.fullScreen = function ($element, instance, exitCallback, body, forceSemiFull
             }
 
             // We are exiting fullscreen
-            done('h5p-fullscreen');
+            setTimeout(() => done('h5p-fullscreen'), 200);
             document.removeEventListener('fullscreenchange', fullscreenCallback, false);
         });
 
