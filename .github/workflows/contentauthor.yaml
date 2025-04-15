@@ -152,7 +152,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build test image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: sourcecode/apis/contentauthor
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -212,7 +212,7 @@ jobs:
             type=raw,value=${{ inputs.version }},prefix=php-
 
       - name: Build PHP image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
@@ -232,7 +232,7 @@ jobs:
             type=raw,value=${{ inputs.version }},prefix=web-
 
       - name: Build web image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
