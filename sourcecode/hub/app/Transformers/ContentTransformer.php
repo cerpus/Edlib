@@ -13,18 +13,21 @@ final class ContentTransformer extends TransformerAbstract
 {
     /** @var string[] */
     protected array $availableIncludes = [
+        'contexts',
         'roles',
         'versions',
     ];
 
     /** @var string[] */
     protected array $defaultIncludes = [
+        'contexts',
         'roles',
         'versions',
     ];
 
     public function __construct(
         private readonly ContentVersionTransformer $contentVersionTransformer,
+        private readonly ContextTransformer $contextTransformer,
     ) {}
 
     /**
@@ -43,6 +46,11 @@ final class ContentTransformer extends TransformerAbstract
                 'views' => route('api.contents.views.index', [$content]),
             ],
         ];
+    }
+
+    public function includeContexts(Content $content): Collection
+    {
+        return $this->collection($content->contexts, $this->contextTransformer);
     }
 
     public function includeRoles(Content $content): Collection
