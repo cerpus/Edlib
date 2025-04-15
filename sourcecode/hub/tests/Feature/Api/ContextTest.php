@@ -72,12 +72,13 @@ final class ContextTest extends TestCase
 
         $this->withBasicAuth($user->getApiKey(), $user->getApiSecret())
             ->postJson('https://hub-test.edlib.test/api/contexts', [
-                'name' => 'my_new_context'
+                'name' => 'my_new_context',
             ])
             ->assertCreated()
-            ->assertJson(fn(AssertableJson $json) => $json
-                ->has('data.id')
-                ->where('data.name', 'my_new_context')
+            ->assertJson(
+                fn(AssertableJson $json) => $json
+                    ->has('data.id')
+                    ->where('data.name', 'my_new_context'),
             );
     }
 
