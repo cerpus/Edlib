@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\ContentLock;
 use App\ContentVersion;
 use App\H5PContent;
 use App\H5PLibrary;
@@ -168,7 +167,6 @@ class AdminH5PDetailsController extends Controller
             'content' => $content,
             'requestedVersion' => $version,
             'history' => $history,
-            'hasLock' => ContentLock::notExpiredById($content->id)?->updated_at,
         ]);
     }
 

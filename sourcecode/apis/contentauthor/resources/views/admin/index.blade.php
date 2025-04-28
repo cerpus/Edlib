@@ -13,7 +13,6 @@
                             </div>
                         @endif
 
-                        <h2 class="text-center">Active edit locks: {{ $editLockCount }}</h2>
                         <a class="col-md-4 well well-lg" href="{{ route('admin.capability') }}">
                             <i class="glyphicon glyphicon-edit"></i> Capabilities
                         </a>

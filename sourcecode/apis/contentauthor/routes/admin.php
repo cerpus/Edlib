@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\CapabilityController;
 use App\Http\Controllers\Admin\ContentUpgradeController;
 use App\Http\Controllers\Admin\GamesAdminController;
 use App\Http\Controllers\Admin\LibraryUpgradeController;
-use App\Http\Controllers\Admin\LocksController;
 use App\Http\Controllers\Admin\LtiAdminAccess;
 use App\Http\Controllers\Admin\PresaveController;
 use App\Http\Controllers\Admin\VersioningController;
@@ -101,9 +100,5 @@ Route::middleware(['auth:sso', 'can:superadmin'])->prefix('admin')->group(
 
         // More general Admin Backend routes
         Route::get('support/versioning', [VersioningController::class, 'index'])->name('admin.support.versioning');
-
-        // Locks admin
-        Route::get("locks", [LocksController::class, 'index'])->name("admin.locks");
-        Route::delete("locks", [LocksController::class, 'destroy'])->name("admin.locks.delete");
     },
 );

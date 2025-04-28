@@ -189,7 +189,6 @@ class NDLAH5PAdapter implements H5PAdapterInterface
         config(collect([
             'app.enable_licensing',
             'feature.licensing',
-            'feature.content-locking',
             'feature.context-collaboration',
             'feature.collaboration',
             'feature.export_h5p_on_save',

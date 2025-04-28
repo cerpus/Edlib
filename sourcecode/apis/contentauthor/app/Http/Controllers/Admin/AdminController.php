@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Controller;
@@ -24,8 +23,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $editLockCount = ContentLock::active()->get()->count();
-        return view('admin.index')->with(compact('editLockCount'));
+        return view('admin.index');
     }
 
     public function contentUpgrade(Request $request)

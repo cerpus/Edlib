@@ -40,9 +40,6 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('admin.locks') }}">Manage Edit Locks</a>
-                            </li>
-                            <li>
                                 <a href="{{ route('admin.presave.index') }}">Presave</a>
                             </li>
                             <li>
