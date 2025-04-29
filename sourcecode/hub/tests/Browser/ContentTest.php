@@ -1493,4 +1493,38 @@ final class ContentTest extends DuskTestCase
                 ->assertAttribute('', 'lang', 'nb-NO'),
         );
     }
+
+    public function testContentIsLockedWhileEditing(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()
+            ->withPublishedVersion()
+            ->withUser($user)
+            ->create();
+
+        $version = $content->latestVersion ?? $this->fail();
+
+        $this->browse(function (Browser $browser) use ($content, $version, $user) {
+            $browser
+                ->loginAs($user->email)
+                ->assertAuthenticated()
+                ->visit("/content/{$content->id}/version/{$version->id}/edit")
+                ->assertTitleContains('Editing content')
+            ;
+
+            // new window cannot open the editor
+            $previousWindow = $browser->driver->getWindowHandle();
+            $browser->driver->switchTo()->newWindow();
+            $browser
+                ->visit("/content/{$content->id}/version/{$version->id}/edit")
+                ->assertTitleContains('The content is locked for editing.');
+
+            // first window can refresh the page
+            $browser->driver->switchTo()->window($previousWindow);
+            $browser
+                ->refresh()
+                ->waitFor('iframe')
+                ->assertTitleContains('Editing content');
+        });
+    }
 }

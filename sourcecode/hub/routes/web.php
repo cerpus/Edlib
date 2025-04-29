@@ -16,6 +16,7 @@ use App\Http\Controllers\LtiSample\DeepLinkController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\EnsureFrameCookies;
+use App\Http\Middleware\LockContent;
 use App\Http\Middleware\LtiSessionRequired;
 use App\Http\Middleware\LtiValidatedRequest;
 use App\Http\Middleware\LaunchCreateIfSingleTool;
@@ -166,6 +167,7 @@ Route::controller(ContentController::class)->group(function () {
 
     Route::get('/content/{content}/version/{version}/edit')
         ->uses([ContentController::class, 'edit'])
+        ->middleware(['auth', LockContent::class])
         ->name('content.edit')
         ->can('edit', ['content', 'version'])
         ->whereUlid(['content', 'version'])
@@ -190,6 +192,18 @@ Route::controller(ContentController::class)->group(function () {
         ->can('create', Content::class)
         ->can('launchCreator', ['tool', 'extra'])
         ->scopeBindings();
+
+    Route::put('/content/{content}/lock')
+        ->uses([ContentController::class, 'refreshLock'])
+        ->name('content.refresh-lock')
+        ->can('edit', 'content')
+        ->whereUlid('content');
+
+    Route::post('/content/{content}/release-lock')
+        ->uses([ContentController::class, 'releaseLock'])
+        ->name('content.release-lock')
+        ->can('edit', 'content')
+        ->whereUlid('content');
 });
 
 Route::prefix('/lti/dl')->middleware([

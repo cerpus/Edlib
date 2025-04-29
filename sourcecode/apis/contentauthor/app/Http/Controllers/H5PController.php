@@ -13,7 +13,6 @@ use App\Http\Requests\H5PStorageRequest;
 use App\Jobs\H5PFilesUpload;
 use App\Libraries\DataObjects\H5PEditorConfigObject;
 use App\Libraries\DataObjects\H5PStateDataObject;
-use App\Libraries\DataObjects\LockedDataObject;
 use App\Libraries\DataObjects\ResourceInfoDataObject;
 use App\Libraries\H5P\AdminConfig;
 use App\Libraries\H5P\AjaxRequest;
@@ -261,7 +260,6 @@ class H5PController extends Controller
             'showDisplayOptions' => config('h5p.showDisplayOptions'),
             'useLicense' => config('feature.licensing') === true || config('feature.licensing') === '1',
             'h5pLanguage' => $h5pLanguage,
-            'pulseUrl' => config('feature.content-locking') ? route('lock.pulse', ['id' => $id]) : null,
             'editorLanguage' => Session::get('locale', config('app.fallback_locale')),
             'enableUnsavedWarning' => $ltiRequest?->getEnableUnsavedWarning() ?? config('feature.enable-unsaved-warning'),
             'supportedTranslations' => app()->make(TranslationServiceInterface::class)->getSupportedLanguages(),
@@ -288,20 +286,6 @@ class H5PController extends Controller
             'maxScore' => $library->supportsMaxScore() ? $h5pContent->max_score : null,
             'ownerName' => null,
         ]));
-
-        if ($h5pContent->canUpdateOriginalResource(Session::get('authId', false))) {
-            if (($locked = $h5pContent->hasLock())) {
-                $editUrl = $h5pContent->getEditUrl();
-                $pollUrl = route('lock.status', $id);
-                $editorSetup->setLockedProperties(LockedDataObject::create([
-                    'pollUrl' => $pollUrl,
-                    'editor' => $locked->getEditor(),
-                    'editUrl' => $editUrl,
-                ]));
-            } else {
-                $h5pContent->lock();
-            }
-        }
 
         $state = H5PStateDataObject::create($displayOptions + [
             'id' => $h5pContent->id,
@@ -375,8 +359,6 @@ class H5PController extends Controller
         }
 
         $core->fs->deleteExport(sprintf("%s-%d.h5p", $h5p->slug, $h5p->id));
-
-        $h5p->unlock();
 
         $responseValues = [
             'url' => $this->getRedirectToCoreUrl(

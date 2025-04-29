@@ -6,27 +6,15 @@ import Button from '@material-ui/core/Button';
 import { FormActions, useForm } from '../../../../contexts/FormContext';
 import Axios from '../../../../utils/axiosSetup';
 
-const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
+const SaveBox = ({ onSave, intl, onSaveCallback }) => {
     const { dispatch } = useForm();
 
     const [processing, setProcessing] = useState(false);
-    let pulseLockInterval;
-
-    const pollStatus = () => Axios.post(pulseUrl);
 
     useEffect(() => {
         if (onSaveCallback) {
             onSaveCallback(saveForm);
         }
-
-        if (pulseUrl) {
-            pulseLockInterval = setInterval(pollStatus, 60000);
-        }
-        return () => {
-            if (pulseLockInterval) {
-                clearInterval(pulseLockInterval);
-            }
-        };
     }, []);
 
     const resetErrors = () => dispatch({ type: FormActions.resetError });
@@ -179,7 +167,6 @@ const SaveBox = ({ onSave, intl, onSaveCallback, pulseUrl }) => {
 SaveBox.propTypes = {
     onSave: PropTypes.func,
     onSaveCallback: PropTypes.func,
-    pulseUrl: PropTypes.string,
 };
 
 export default injectIntl(SaveBox);

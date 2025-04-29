@@ -498,4 +498,24 @@ class ContentController extends Controller
             ],
         ]);
     }
+
+    /**
+     * @throws \App\Exceptions\ContentLockedException
+     */
+    public function refreshLock(Content $content, Request $request): Response
+    {
+        // no locking when making a copy
+        if (!$request->session()->get('lti.ext_edlib3_copy_before_save')) {
+            $content->refreshLock($this->getUser());
+        }
+
+        return response()->noContent();
+    }
+
+    public function releaseLock(Content $content): Response
+    {
+        $content->releaseLock($this->getUser());
+
+        return response()->noContent();
+    }
 }

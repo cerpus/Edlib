@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
+use App\Exceptions\ContentLockedException;
 use App\Jobs\PruneVersionlessContent;
 use App\Models\Content;
 use App\Models\ContentVersion;
@@ -261,5 +262,95 @@ final class ContentTest extends TestCase
             start: new DateTimeImmutable('2025-01-01 00:00:00 UTC'),
             end: new DateTimeImmutable('2025-02-01 00:00:00 UTC'),
         )->getData());
+    }
+
+    public function testAcquiresLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        $this->assertFalse($content->isLocked());
+
+        $content->acquireLock($user);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testCannotAcquireHeldLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($user);
+
+        $this->expectException(ContentLockedException::class);
+
+        $content->acquireLock($user);
+    }
+
+    public function testExpiredLockDoesNotCountAsLockHeld(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        Carbon::setTestNow('2024-01-01T00:00:00Z');
+        $content->acquireLock($user);
+        $this->assertTrue($content->isLocked());
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $this->assertFalse($content->isLocked());
+    }
+
+    public function testCanAcquireLockWhenExpiredLockExists(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+
+        Carbon::setTestNow('2024-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testReleasesLock(): void
+    {
+        $user = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($user);
+
+        $content->releaseLock($user);
+
+        $this->assertFalse($content->isLocked());
+    }
+
+    public function testDoesNotReleaseLockHeldByAnotherUser(): void
+    {
+        $holder = User::factory()->create();
+        $releaser = User::factory()->create();
+        $content = Content::factory()->create();
+        $content->acquireLock($holder);
+
+        $content->releaseLock($releaser);
+
+        $this->assertTrue($content->isLocked());
+    }
+
+    public function testRefreshesLock(): void
+    {
+        $content = Content::factory()->create();
+        $user = User::factory()->create();
+
+        Carbon::setTestNow('2025-01-01T00:00:00Z');
+        $content->acquireLock($user);
+
+        Carbon::setTestNow('2025-01-01T00:00:30Z');
+        $content->refreshLock($user);
+
+        $lock = $content->getActiveLock();
+        $this->assertNotNull($lock);
+        $this->assertSame('2025-01-01T00:00:00Z', $lock->created_at?->toIso8601ZuluString());
+        $this->assertSame('2025-01-01T00:00:30Z', $lock->updated_at?->toIso8601ZuluString());
     }
 }

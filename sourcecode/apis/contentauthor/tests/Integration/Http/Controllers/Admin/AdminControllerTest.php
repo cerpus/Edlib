@@ -2,19 +2,16 @@
 
 namespace Tests\Integration\Http\Controllers\Admin;
 
-use App\ContentLock;
 use App\H5PContent;
 use App\H5PLibrary;
 use App\Http\Controllers\Admin\AdminController;
 use App\Libraries\H5P\H5PLibraryAdmin;
-use Generator;
 use H5PCore;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
@@ -112,23 +109,6 @@ class AdminControllerTest extends TestCase
             'max_score' => 3,
             'bulk_calculated' => H5PLibraryAdmin::BULK_UPDATED,
         ]);
-    }
-
-    #[DataProvider('provider_index')]
-    public function test_index(int $lockCount): void
-    {
-        ContentLock::factory($lockCount)->create();
-        $result = app(AdminController::class)->index();
-
-        $this->assertInstanceOf(View::class, $result);
-        $data = $result->getData();
-        $this->assertEquals($lockCount, $data['editLockCount']);
-    }
-
-    public static function provider_index(): Generator
-    {
-        yield [0];
-        yield [3];
     }
 
     public function test_viewFailedCalculations(): void

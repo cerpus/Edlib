@@ -55,15 +55,6 @@
                                 <td>{{ $content->license }}</td>
                             </tr>
                             <tr>
-                                <th>Has lock</th>
-                                <td>
-                                    {{ $hasLock ?
-                                        sprintf('Yes. Last updated %s, expires %s', $hasLock->format('H:i:s e'), $hasLock->addSeconds(\App\ContentLock::EXPIRES)->format('H:i:s e'))
-                                        : 'No'
-                                    }}
-                                </td>
-                            </tr>
-                            <tr>
                                 <th>Library</th>
                                 <td>
                                     <a href="{{ route('admin.check-library', [$content->library->id]) }}">
