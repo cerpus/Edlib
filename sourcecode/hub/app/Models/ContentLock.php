@@ -17,8 +17,8 @@ class ContentLock extends Model
     use HasFactory;
     use HasUlidsFromCreationDate;
 
-    const TTL_SECONDS = 90;
-    const REFRESH_TIME_SECONDS = 30;
+    public const TTL_SECONDS = 90;
+    public const REFRESH_TIME_SECONDS = 30;
 
     /**
      * @return BelongsTo<Content, $this>
