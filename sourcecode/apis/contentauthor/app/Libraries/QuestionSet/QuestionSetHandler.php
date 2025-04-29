@@ -44,8 +44,6 @@ class QuestionSetHandler
         }
 
         $this->storeNewQuestionsWithAnswers($questionSet, $values['cards']);
-        $collaborators = explode(',', $request->input('col-emails', ''));
-        $questionSet->setCollaborators($collaborators);
 
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_CREATE, Session::all()));
 
@@ -167,11 +165,6 @@ class QuestionSetHandler
 
             $this->storeNewQuestionsWithAnswers($questionSet, $newQuestions);
         });
-
-        if ($questionSet->isOwner(Session::get('authId'))) {
-            $collaborators = explode(',', $request->input('col-emails', ''));
-            $questionSet->setCollaborators($collaborators);
-        }
 
         event(new QuestionsetWasSaved($questionSet, $request, Session::get('authId'), ContentVersion::PURPOSE_UPDATE, Session::all()));
 

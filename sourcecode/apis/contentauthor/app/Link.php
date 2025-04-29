@@ -22,8 +22,6 @@ use function route;
  * @property string $link_text
  * @property ?string $metadata
  *
- * @property Collection<Collaborator> $collaborators
- *
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
  * @method static self|Collection|Builder|Builder[] findOrFail(mixed $id, array|string $columns = ['*'])
  */
@@ -37,14 +35,6 @@ class Link extends Content implements VersionableObject
     public function givesScore(): int
     {
         return 0;
-    }
-
-    /**
-     * @return HasMany<ArticleCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(ArticleCollaborator::class, 'article_id');
     }
 
     public function getContentOwnerId(): string

@@ -12,7 +12,6 @@ use App\Listeners\Article\HandleVersioning;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class HandleVersioningTest extends TestCase
@@ -27,7 +26,6 @@ class HandleVersioningTest extends TestCase
         $event = new ArticleWasSaved(
             $article,
             new Request(),
-            new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
             [],
@@ -69,7 +67,6 @@ class HandleVersioningTest extends TestCase
         $event = new ArticleWasSaved(
             $article,
             new Request(),
-            new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
             [],
@@ -119,7 +116,6 @@ class HandleVersioningTest extends TestCase
         $event = new ArticleWasSaved(
             $article,
             new Request(),
-            new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
             [],
@@ -161,7 +157,6 @@ class HandleVersioningTest extends TestCase
         $event = new ArticleWasSaved(
             $article,
             new Request(),
-            new Collection(),
             null,
             ContentVersion::PURPOSE_CREATE,
             [],

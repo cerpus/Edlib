@@ -65,9 +65,7 @@ class GameHandler
 
     public function update(Game $game, Request $request): Game
     {
-        /** @var Game $game */
-        list($game, $reason) = $this->handleCopy($game, $request);
-
+        $game = $this->handleCopy($game, $request);
         $gametype = self::makeGameTypeFromId($game->gameType->id);
 
         $game->title = $request->get('title');
@@ -78,37 +76,19 @@ class GameHandler
 
         event(new GameWasSaved($game, new ResourceMetadataDataObject(
             license: $request->get('license'),
-            reason: $reason,
+            reason: ContentVersion::PURPOSE_COPY,
             tags: $request->get('tags', []),
         )));
 
         return $game;
     }
 
-    private function handleCopy(Game $game, Request $request)
+    private function handleCopy(Game $game, Request $request): Game
     {
-        $reason = $game->shouldCreateFork(Session::get('authId', false)) ? ContentVersion::PURPOSE_COPY : ContentVersion::PURPOSE_UPDATE;
-
-        if ($reason === ContentVersion::PURPOSE_COPY && !$request->get("license", false)) {
+        if (!$request->get("license", false)) {
             $request->merge(["license" => $game->getContentLicense()]);
         }
 
-        // If you are a collaborator, use the old license
-        if ($game->isCollaborator()) {
-            $request->merge(["license" => $game->getContentLicense()]);
-        }
-
-        if ($game->requestShouldBecomeNewVersion($request)) {
-            switch ($reason) {
-                case ContentVersion::PURPOSE_UPDATE:
-                    $game = $game->makeCopy();
-                    break;
-                case ContentVersion::PURPOSE_COPY:
-                    $game = $game->makeCopy(Session::get('authId'));
-                    break;
-            }
-        }
-
-        return [$game, $reason];
+        return $game->makeCopy(Session::get('authId'));
     }
 }

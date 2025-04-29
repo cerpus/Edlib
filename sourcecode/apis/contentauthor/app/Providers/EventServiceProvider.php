@@ -23,7 +23,6 @@ class EventServiceProvider extends ServiceProvider
 
         \App\Events\ArticleWasSaved::class => [
             \App\Listeners\Article\HandleVersioning::class,
-            \App\Listeners\Article\HandleCollaborators::class,
         ],
 
         \App\Events\ArticleWasCopied::class => [

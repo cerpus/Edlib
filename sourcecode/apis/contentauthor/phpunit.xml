@@ -32,8 +32,6 @@
         <server name="DB_DATABASE" value=":memory:"/>
         <server name="ENABLE_LICENSING" value="true"/>
         <server name="FEATURE_CONTENT_LOCKING" value="true"/>
-        <server name="FEATURE_CONTEXT_COLLABORATION" value="true"/>
-        <server name="FEATURE_COLLABORATION" value="true"/>
         <server name="LICENSE_SITE" value="ContentAuthorTest"/>
         <server name="H5P_CONSUMER_KEY" value="h5p"/>
         <server name="H5P_CONSUMER_SECRET" value="secret2"/>

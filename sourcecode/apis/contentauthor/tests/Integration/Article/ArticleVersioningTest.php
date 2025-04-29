@@ -3,7 +3,6 @@
 namespace Tests\Integration\Article;
 
 use App\Article;
-use App\ArticleCollaborator;
 use App\Content;
 use App\ContentVersion;
 use App\User;
@@ -53,10 +52,6 @@ class ArticleVersioningTest extends TestCase
             'license' => 'BY',
             'is_draft' => false,
         ]);
-        $c1 = ArticleCollaborator::factory()->make(['email' => 'A@B.COM']);
-        $c2 = ArticleCollaborator::factory()->make(['email' => 'c@d.com']);
-        $originalArticle->collaborators()->save($c1);
-        $originalArticle->collaborators()->save($c2);
 
         /*
          * Nothing has changed -> no new version
@@ -110,9 +105,6 @@ class ArticleVersioningTest extends TestCase
         );
         $this->assertTrue($originalArticle->requestShouldBecomeNewVersion($request));
 
-        /*
-         * New collaborator -> no new  version
-         */
         $request->request->add(
             [
                 'title' => $originalArticle->title,
@@ -145,10 +137,6 @@ class ArticleVersioningTest extends TestCase
         ]);
         $article->version_id = $version->id;
         $article->save();
-
-        $article->collaborators()->save(
-            ArticleCollaborator::factory()->make(['email' => $collaborator->email]),
-        );
 
         $article->fresh();
 
@@ -212,8 +200,6 @@ class ArticleVersioningTest extends TestCase
 
         /** @var Article $copiedArticle */
         $copiedArticle = Article::where('owner_id', $copyist->auth_id)->first();
-        $this->assertDatabaseMissing('article_collaborators', ['article_id' => $copiedArticle->id]);
-        $this->assertDatabaseCount('article_collaborators', 2);
         $this->assertDatabaseCount('content_versions', 3);
         $this->assertDatabaseHas('content_versions', [
             'id' => $copiedArticle->version_id,
@@ -222,8 +208,6 @@ class ArticleVersioningTest extends TestCase
 
         $article->license = 'PRIVATE';
         $article->save();
-
-        $this->assertDatabaseCount('article_collaborators', 2);
 
         // Can edit if you are a collaborator even if the resource is non copyable
         $this->withSession([
@@ -249,7 +233,6 @@ class ArticleVersioningTest extends TestCase
             'parent_id' => $useLinearVersioning ? $secondArticle->version_id : $article->version_id,
             'content_type' => Content::TYPE_ARTICLE,
         ]);
-        $this->assertDatabaseCount('article_collaborators', 3);
         $this->assertDatabaseCount('content_versions', 4);
     }
 

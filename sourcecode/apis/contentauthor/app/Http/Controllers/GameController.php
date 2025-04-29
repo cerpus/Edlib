@@ -46,10 +46,6 @@ class GameController extends Controller
         $gamehandler = app(GameHandler::class);
         $request->request->add(json_decode($request->get('questionSetJsonData'), true));
         $updatedGame = $gamehandler->update($game, $request);
-        if ($game->isOwner(Session::get('authId'))) {
-            $collaborators = explode(',', $request->input('col-emails', ''));
-            $game->setCollaborators($collaborators);
-        }
 
         $url = $this->getRedirectToCoreUrl(
             $updatedGame->toLtiContent(

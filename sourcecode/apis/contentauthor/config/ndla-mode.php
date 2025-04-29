@@ -3,8 +3,6 @@
 return [
     'feature' => [
         'licensing' => env('NDLA_FEATURE_LICENSING', false),
-        'context-collaboration' => env('NDLA_FEATURE_CONTEXT_COLLABORATION', false),
-        'collaboration' => env('NDLA_FEATURE_COLLABORATION', false),
         'export_h5p_on_save' => env('NDLA_FEATURE_EXPORT_H5P_ON_SAVE', false),
         "export_h5p_with_local_files" => env("NLDA_FEATURE_EXPORT_H5P_WITH_LOCAL_FILES", false),
     ],

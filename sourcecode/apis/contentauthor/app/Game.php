@@ -6,7 +6,6 @@ use App\Exceptions\GameTypeNotFoundException;
 use App\Libraries\Games\Contracts\GameTypeContract;
 use App\Libraries\Games\GameHandler;
 use App\Libraries\Versioning\VersionableObject;
-use App\Traits\Collaboratable;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,7 +33,6 @@ use function route;
  */
 class Game extends Content implements VersionableObject
 {
-    use Collaboratable;
     use HasFactory;
     use HasUuids;
 

@@ -4,19 +4,16 @@ namespace App;
 
 use App\Http\Libraries\License;
 use App\Libraries\DataObjects\LtiContent;
-use App\Libraries\H5P\Interfaces\H5PAdapterInterface;
 use App\Traits\Attributable;
 use App\Traits\HasLanguage;
 use App\Traits\HasTranslations;
 use App\Traits\Versionable;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 use function htmlspecialchars_decode;
 use function property_exists;
@@ -34,7 +31,6 @@ use const ENT_QUOTES;
  * @property int $bulk_calculated
  * @property string $license
  * @property string $node_id
- * @property Collection $collaborators
  * @property bool $is_draft
  * @property-read string|null $title_clean
  * @property-read NdlaIdMapper|null $ndlaMapper
@@ -58,7 +54,6 @@ abstract class Content extends Model
 
     // These should be made to clean things up a bit:
     // HasLicense / Licenseable
-    // HasCollaborators / Collaboratable(?)
     // HasVersions / Versionable
 
     public string $userColumn = 'user_id';
@@ -120,56 +115,6 @@ abstract class Content extends Model
         return License::isContentCopyable($this->license);
     }
 
-    public function isCollaborator(): bool
-    {
-        if (app(H5PAdapterInterface::class)->enableEverybodyIsCollaborators()) {
-            return true;
-        }
-
-        if (empty($this->collaborators)) {
-            return false;
-        }
-
-        return $this->collaborators
-            ->map(function ($collaborator) {
-                return $collaborator->email;
-            })
-            ->filter(function ($email) {
-                return in_array($email, Session::get('verifiedEmails', [Session::get('email')]));
-            })
-            ->isNotEmpty();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function isExternalCollaborator($currentUserId): bool
-    {
-        if (CollaboratorContext::isUserCollaborator($currentUserId, $this->id)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @deprecated This is flawed logic
-     */
-    public function shouldCreateFork($userId): bool
-    {
-        return !$this->isOwner($userId) && !$this->isCollaborator() && $this->isCopyable();
-    }
-
-    public function canUpdateOriginalResource(mixed $userId): bool
-    {
-        return $this->isOwner($userId) || $this->isCollaborator();
-    }
-
-    public function shouldCreateForkBasedOnSession($username = 'authId'): bool
-    {
-        return $this->shouldCreateFork(Session::get($username, false));
-    }
-
     protected function getRequestTitle(Request $request)
     {
         return $request->get('title');
@@ -188,40 +133,6 @@ abstract class Content extends Model
     public function getContentLicense(): string
     {
         return $this->license ?? '';
-    }
-
-    /**
-     * Return a sorted, lowercased, comma-separated list of collaborators in the request
-     *
-     * @return string
-     */
-    protected function getRequestCollaborators(Request $request)
-    {
-        $requestCollaborators = collect(explode(',', $request->get('collaborators')))
-            ->each(function ($collaborator) {
-                return strtolower($collaborator);
-            })
-            ->sort()
-            ->all();
-
-        return implode(',', $requestCollaborators);
-    }
-
-    /**
-     * Return a sorted, lowercased, comma-separated list of collaborators attached to the content
-     *
-     * @return string
-     */
-    protected function getContentCollaborators()
-    {
-        $collaborators = $this->collaborators
-            ->map(function ($collaborator) {
-                return strtolower($collaborator->email);
-            })
-            ->sort()
-            ->all();
-
-        return implode(',', $collaborators);
     }
 
     /**

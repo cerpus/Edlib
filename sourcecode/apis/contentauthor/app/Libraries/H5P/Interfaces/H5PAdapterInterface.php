@@ -64,8 +64,6 @@ interface H5PAdapterInterface
     /** @return void */
     public function setConfig(ConfigInterface $config);
 
-    public function enableEverybodyIsCollaborators(): bool;
-
     public function useMaxScore(): bool;
 
     public function addTrackingScripts(): ?string;

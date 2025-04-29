@@ -41,8 +41,6 @@ use const LIBXML_HTML_NOIMPLIED;
  * @property ?string $node_id
  * @property ?string $ndla_url
  *
- * @property Collection<Collaborator> $collaborators
- *
  * @method static Builder|null|self noMaxScore()
  * @method static Builder|null|self ofBulkCalculated($type)
  * @method static self|Collection<self> find(string|array $id, string|array $columns = ['*'])
@@ -74,14 +72,6 @@ class Article extends Content implements VersionableObject
         }
 
         return self::rewriteUploadUrls($this->content);
-    }
-
-    /**
-     * @return HasMany<ArticleCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(ArticleCollaborator::class);
     }
 
     /**

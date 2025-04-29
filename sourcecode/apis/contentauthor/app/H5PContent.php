@@ -40,7 +40,6 @@ use function route;
  * @property ?int $max_score
  * @property int $bulk_calculated
  *
- * @property Collection<Collaborator> $collaborators
  * @property H5PLibrary $library
  *
  * @see H5PContent::noMaxScoreScope()
@@ -72,14 +71,6 @@ class H5PContent extends Content implements VersionableObject
         'updated' => H5pContentUpdated::class,
         'deleted' => H5pContentDeleted::class,
     ];
-
-    /**
-     * @return HasMany<H5PCollaborator, $this>
-     */
-    public function collaborators(): HasMany
-    {
-        return $this->hasMany(H5PCollaborator::class, 'h5p_id');
-    }
 
     /**
      * @return BelongsTo<H5PLibrary, $this>

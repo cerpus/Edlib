@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\ContentVersion;
 use App\Events\H5PWasSaved;
-use App\H5PCollaborator;
 use App\H5PContent;
 use App\H5PFile;
 use App\H5PLibrary;
@@ -50,7 +49,6 @@ use Illuminate\View\View;
 use Iso639p3;
 use MatthiasMullie\Minify\CSS;
 use stdClass;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 use function app;
 use function config;
@@ -188,7 +186,6 @@ class H5PController extends Controller
                 'config' => $h5pView->getSettings(),
                 'jsScript' => $h5pView->getScripts(false),
                 'styles' => $h5pView->getStyles(false),
-                'emails' => '',
                 'libName' => $contenttype,
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
@@ -314,7 +311,6 @@ class H5PController extends Controller
                 'jsScript' => $scripts,
                 'styles' => $h5pView->getStyles(false),
                 'libName' => $h5pCore->libraryToString($content['library']),
-                'emails' => $this->get_content_shares($id),
                 'hasUserProgress' => $this->hasUserProgress($h5pContent),
                 'editorSetup' => $editorSetup->toJson(),
                 'state' => $state,
@@ -323,21 +319,13 @@ class H5PController extends Controller
         );
     }
 
-    private function getVersionPurpose(Request $request, H5PContent $h5p, $authId): string
+    private function getVersionPurpose(Request $request): string
     {
         if ($request->get("isNewLanguageVariant", false)) {
             return ContentVersion::PURPOSE_TRANSLATION;
         }
 
-        if (!$h5p->canUpdateOriginalResource($authId)) {
-            if (!$h5p->isCopyable()) {
-                throw new AccessDeniedHttpException('Cannot copy this resource');
-            }
-
-            return ContentVersion::PURPOSE_COPY;
-        }
-
-        return ContentVersion::PURPOSE_UPDATE;
+        return ContentVersion::PURPOSE_COPY;
     }
 
     /**
@@ -348,7 +336,7 @@ class H5PController extends Controller
     public function update(H5PStorageRequest $request, H5PContent $h5p, H5PCore $core): Response|JsonResponse
     {
         $authId = Session::get('authId', false);
-        $versionPurpose = $this->getVersionPurpose($request, $h5p, $authId);
+        $versionPurpose = $this->getVersionPurpose($request);
         [$oldContent, $content, $newH5pContent] = $this->performUpdate($request, $h5p, $authId, $versionPurpose);
 
         Cache::forget($this->viewDataCacheName . $content['id']);
@@ -449,40 +437,9 @@ class H5PController extends Controller
         /** @var H5PContent $newH5pContent */
         $newH5pContent = H5PContent::find($content['id']);
 
-        $this->store_content_shares(
-            $content['id'],
-            $request->filled("col-emails") ? $request->request->get("col-emails") : "",
-        );
-
         event(new H5PWasSaved($newH5pContent, $request, ContentVersion::PURPOSE_CREATE));
 
         return $newH5pContent;
-    }
-
-    /**
-     * Store who has access to handled content.
-     */
-    private function store_content_shares(int $id, $emailsList)
-    {
-        $emails = !empty($emailsList) ? explode(",", $emailsList) : [];
-        $validEmails = [];
-
-        foreach ($emails as $email) {
-            if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
-                $validEmails[] = $email;
-            }
-        }
-
-        H5PCollaborator::where("h5p_id", $id)->delete();
-
-        foreach ($validEmails as $validEmail) {
-            $collaborator = new H5PCollaborator();
-            $collaborator->h5p_id = $id;
-            $collaborator->email = $validEmail;
-            if ($collaborator->save() !== true) {
-                throw new Exception("Could not store collaborator");
-            }
-        }
     }
 
     /**
@@ -516,29 +473,6 @@ class H5PController extends Controller
         }
 
         return License::getDefaultLicense();
-    }
-
-    /**
-     * Get content shares for h5p resource
-     */
-    private function get_content_shares(int $id): string
-    {
-        $db = DB::connection()->getPdo();
-        $sql = 'SELECT email FROM cerpus_contents_shares WHERE h5p_id=:id';
-        $params = [':id' => $id];
-        $statement = $db->prepare($sql);
-        $statement->execute($params);
-        $result = $statement->fetchAll($db::FETCH_COLUMN, 0);
-        $emails = [];
-        foreach ($result as $email_raw) {
-            $emails[] = $email_raw;
-        }
-        $emails_str = implode(',', $emails);
-        if (isset($emails)) {
-            return $emails_str;
-        } else {
-            return '';
-        }
     }
 
     public function ajaxLoading(Request $request, AjaxRequest $ajaxRequest): object|array|string|null
@@ -583,11 +517,6 @@ class H5PController extends Controller
         if (!$request->filled('license')) {
             $request->request->add(['license' => $h5pContent->getContentLicense()]);
         }
-        if (!$request->filled('col-emails')) {
-            $request->request->add([
-                'col-emails' => implode(',', $h5pContent->collaborators->pluck('email')->toArray()),
-            ]);
-        }
 
         $makeNewVersion = $h5pContent->requestShouldBecomeNewVersion($request);
         $oldContent['useVersioning'] = $makeNewVersion;
@@ -599,23 +528,7 @@ class H5PController extends Controller
 
         // If user is the original owner of the resource
         if ($newH5pContent->isOwner($authId)) {
-            if (in_array($versionPurpose, [ContentVersion::PURPOSE_UPDATE, ContentVersion::PURPOSE_UPGRADE])) {
-                $this->store_content_shares($content['id'], $request->filled("col-emails") ? $request->request->get("col-emails") : "");
-            }
-
             $this->storeContentLicense($request, $content['id']);
-        } elseif ($versionPurpose === ContentVersion::PURPOSE_UPDATE) { // Transfer the old collaborators to the new version, even if the user saving is not the owner
-            $emails = $h5pContent->collaborators->pluck('email')->toArray();
-            $currentUserEmail = Session::get('email', "noemail");
-            if ($currentUserEmail !== "noemail" && !in_array($currentUserEmail, $emails)) {
-                $emails[] = $currentUserEmail;
-            }
-            $collaborators = implode(',', $emails);
-
-            // TODO Update license based on the old h5p
-
-            $this->storeContentLicense($request, $content['id']);
-            $this->store_content_shares($content['id'], $collaborators);
         }
         return [$oldContent, $content, $newH5pContent->fresh()];
     }

@@ -10,11 +10,6 @@ Create the initial version of all content run the following command
 $ CACHE_DRIVER=file php artisan cerpus:init-versioning
 ```
 
-## Enabling context collaboration message processing
-
-In .env
-`FEATURE_CONTEXT_COLLABORATION=true`
-
 # LTI params
 
 Content Author will use some LTI parameters if passed in.
