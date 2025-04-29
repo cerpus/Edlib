@@ -251,4 +251,7 @@ return [
     'tool-settings' => 'Tool settings',
     'default-published-flag' => 'Published by default',
     'default-shared-flag' => 'Shared by default',
+    'the-content-is-locked-for-editing' => 'The content is locked for editing.',
+    'the-lock-is-held-by' => 'The lock is held by: :name.',
+    'active-content-locks' => 'Active content locks',
 ];

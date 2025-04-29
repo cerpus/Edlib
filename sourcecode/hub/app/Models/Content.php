@@ -9,6 +9,7 @@ use App\Enums\ContentRole;
 use App\Enums\ContentViewSource;
 use App\Events\ContentForceDeleting;
 use App\Events\ContentSaving;
+use App\Exceptions\ContentLockedException;
 use App\Support\HasUlidsFromCreationDate;
 use Carbon\CarbonImmutable;
 use Cerpus\EdlibResourceKit\Lti\Edlib\DeepLinking\EdlibLtiLinkItem;
@@ -25,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -213,6 +215,57 @@ class Content extends Model
         $version->save();
 
         return $version;
+    }
+
+    /**
+     * @return HasMany<ContentLock, $this>
+     */
+    public function locks(): HasMany
+    {
+        return $this->hasMany(ContentLock::class);
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->locks()->active()->exists();
+    }
+
+    public function getActiveLock(): ContentLock|null
+    {
+        return $this->locks()->active()->first();
+    }
+
+    /**
+     * @throws ContentLockedException
+     */
+    public function acquireLock(User $user): void
+    {
+        $this->locks()->inactive()->delete();
+
+        try {
+            $this->locks()->forceCreate(['user_id' => $user->id]);
+        } catch (UniqueConstraintViolationException $e) {
+            throw new ContentLockedException($this, $e);
+        }
+    }
+
+    /**
+     * @throws ContentLockedException
+     */
+    public function refreshLock(User $user): void
+    {
+        $lock = $this->locks()->active()->whereBelongsTo($user)->first();
+
+        if ($lock) {
+            $lock->touch();
+        } else {
+            $this->acquireLock($user);
+        }
+    }
+
+    public function releaseLock(User $user): void
+    {
+        $this->locks()->whereBelongsTo($user)->delete();
     }
 
     /**
