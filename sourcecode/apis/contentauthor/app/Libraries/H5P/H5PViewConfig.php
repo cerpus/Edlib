@@ -15,10 +15,7 @@ use H5PCore;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-use function htmlspecialchars;
 use function request;
-use function sprintf;
-use function url;
 
 class H5PViewConfig extends H5PConfigAbstract
 {
@@ -28,10 +25,8 @@ class H5PViewConfig extends H5PConfigAbstract
     private ?string $context = null;
     private ?H5PAlterParametersSettingsDataObject $alterParametersSettings = null;
     private ?string $filterParams = null;
-    private ?string $embedId = null;
     private string $embedCode = '';
     private string $embedResizeCode = '';
-    private ?string $resourceLinkTitle = null;
 
     public function __construct(H5PAdapterInterface $adapter, H5PCore $h5pCore)
     {
@@ -85,23 +80,11 @@ class H5PViewConfig extends H5PConfigAbstract
         $this->contentConfig['title'] = $this->content['title'];
         $this->contentConfig['metadata'] = $this->content['metadata'];
 
-        $embedPathTemplate = config('edlib.embedPath');
         if ($this->embedCode) {
             $this->contentConfig['embedCode'] = $this->embedCode;
             if ($this->embedResizeCode) {
                 $this->contentConfig['resizeCode'] = $this->embedResizeCode;
             }
-        } elseif ($embedPathTemplate && $this->embedId !== null) {
-            $this->config['documentUrl'] = str_replace('<resourceId>', $this->embedId, $embedPathTemplate);
-            $this->contentConfig['embedCode'] = sprintf(
-                self::EMBED_TEMPLATE,
-                htmlspecialchars($this->config['documentUrl'], ENT_QUOTES),
-                htmlspecialchars($this->resourceLinkTitle ?? $this->content['title'] ?? '', ENT_QUOTES),
-            );
-            $this->contentConfig['resizeCode'] = sprintf(
-                '<script src="%s"></script>',
-                htmlspecialchars(url('/h5p-php-library/js/h5p-resizer.js')),
-            );
         }
 
         $this->config['saveFreq'] = $this->getSaveFrequency();
@@ -116,12 +99,6 @@ class H5PViewConfig extends H5PConfigAbstract
         return $this;
     }
 
-    public function setEmbedId(string|null $embedId): static
-    {
-        $this->embedId = $embedId;
-        return $this;
-    }
-
     public function setEmbedCode(string $embedCode): static
     {
         $this->embedCode = $embedCode;
@@ -131,12 +108,6 @@ class H5PViewConfig extends H5PConfigAbstract
     public function setEmbedResizeCode(string $embedResizeCode): static
     {
         $this->embedResizeCode = $embedResizeCode;
-        return $this;
-    }
-
-    public function setResourceLinkTitle(string|null $resourceLinkTitle): static
-    {
-        $this->resourceLinkTitle = $resourceLinkTitle;
         return $this;
     }
 

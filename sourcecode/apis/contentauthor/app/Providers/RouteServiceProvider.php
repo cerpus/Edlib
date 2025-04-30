@@ -26,11 +26,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        Route::prefix('/internal')
-            ->middleware('internal-api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/internal-api.php'));
-
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         $this->mapAdminRoutes();

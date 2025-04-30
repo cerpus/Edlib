@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.site-name', 'Laravel') }} </title>
+    <title>{{ config('app.site-name') }} </title>
 
     <!-- Styles -->
     <link href="{{ mix('css/admin.css') }}" rel="stylesheet">
@@ -27,7 +27,7 @@
     <div class="container">
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <a class="navbar-brand" href="{{ route('admin') }}">
-                {{ config('app.site-name', 'Laravel'). ' Admin' }}
+                {{ config('app.site-name'). ' Admin' }}
             </a>
             <ul class="nav navbar-nav navbar-right">
                 <!-- Authentication Links -->

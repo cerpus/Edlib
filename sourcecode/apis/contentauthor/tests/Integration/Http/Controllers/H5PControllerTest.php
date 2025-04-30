@@ -316,8 +316,6 @@ class H5PControllerTest extends TestCase
 
         $request = new Oauth1Request('POST', 'http://localhost/h5p/' . $content->id, [
             'lti_message_type' => 'basic-lti-launch-request',
-            'ext_embed_id' => $resourceId,
-            'resource_link_title' => 'Some resource title',
         ]);
         $request = $this->app->make(SignerInterface::class)->sign(
             $request,
@@ -358,7 +356,6 @@ class H5PControllerTest extends TestCase
         $this->assertObjectHasProperty('libraryUrl', $config);
         $this->assertEquals('/ajax?action=', $config->ajaxPath);
         $this->assertTrue($config->canGiveScore);
-        $this->assertStringEndsWith("/s/resources/$resourceId", $config->documentUrl);
 
         $contents = $config->contents->{"cid-$content->id"};
         $this->assertEquals('H5P.Foobar 1.18', $contents->library);
@@ -368,8 +365,6 @@ class H5PControllerTest extends TestCase
         $this->assertObjectHasProperty('resizeCode', $contents);
         $this->assertObjectHasProperty('displayOptions', $contents);
         $this->assertObjectHasProperty('contentUserData', $contents);
-        $this->assertStringContainsString("/s/resources/$resourceId", $contents->embedCode);
-        $this->assertStringContainsString('Some resource title', $contents->embedCode);
 
         // Adapter specific
         if ($adapterMode === "ndla") {
