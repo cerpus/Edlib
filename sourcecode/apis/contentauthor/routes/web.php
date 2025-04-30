@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\ContentTypeController;
-use App\Http\Controllers\API\H5PImportController;
 use App\Http\Controllers\API\LinkInfoController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleCopyrightController;
