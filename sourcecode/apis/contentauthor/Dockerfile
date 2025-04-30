@@ -15,7 +15,6 @@ RUN install-php-extensions \
         pcntl \
         pdo_mysql \
         redis \
-        xmlrpc \
         zip
 
 COPY --from=composer/composer:2-bin /composer /usr/local/bin/
