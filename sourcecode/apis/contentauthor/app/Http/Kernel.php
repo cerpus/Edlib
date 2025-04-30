@@ -72,7 +72,6 @@ class Kernel extends HttpKernel
         'core.return' => \App\Http\Middleware\StoreLtiRequestInSession::class,
         'core.locale' => \App\Http\Middleware\LtiLocale::class,
         'core.behavior-settings' => \App\Http\Middleware\LtiBehaviorSettings::class,
-        'signed.oauth10-request' => \App\Http\Middleware\SignedOauth10Request::class,
         'lti.add-to-session' => \App\Http\Middleware\LtiAddToSession::class,
         'lti.question-set' => \App\Http\Middleware\LtiQuestionSet::class,
         'lti.redirect-to-editor' => \App\Http\Middleware\LtiRedirectToEditor::class,

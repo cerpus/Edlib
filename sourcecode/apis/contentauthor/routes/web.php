@@ -89,11 +89,6 @@ Route::get('api/progress', [Progress::class, 'getProgress'])->name("getProgress"
 
 Route::match(['GET', 'POST'], '/ajax', [H5PController::class, 'ajaxLoading'])->middleware("adaptermode"); // TODO: Refactor into its own controller
 
-Route::group(['prefix' => 'api', 'middleware' => ['signed.oauth10-request']], function () {
-    Route::post('v1/contenttypes/questionsets', [ContentTypeController::class, 'storeH5PQuestionset']);
-    Route::post('v1/h5p/import', [H5PImportController::class, 'importH5P'])->name('api.import.h5p');
-});
-
 Route::get('article/{article}/copyright', [ArticleCopyrightController::class, 'copyright'])->name('article.copyright');
 
 Route::get('/health', [HealthController::class, 'index']);
